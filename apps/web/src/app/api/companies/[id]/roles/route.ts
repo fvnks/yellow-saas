@@ -1,0 +1,62 @@
+import { query } from '../../../lib/db';
+import {
+  getCompanyId,
+  successResponse,
+  errorResponse,
+  parseSearchParams,
+  paginatedResponse,
+  isDemoMode,
+} from '../../../lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    if (isDemoMode) {
+      return paginatedResponse([], 0, 1, 50);
+    }
+
+    const { rows } = await query(
+      `SELECT * FROM roles WHERE company_id = $1 ORDER BY created_at ASC`,
+      [companyId]
+    );
+
+    return paginatedResponse(rows, rows.length, 1, 50);
+  } catch {
+    return errorResponse('Internal server error', 500);
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+    const { name, description } = body;
+
+    if (!name) return errorResponse('Role name is required', 400);
+
+    if (isDemoMode) {
+      return successResponse({ id: crypto.randomUUID(), name, description, is_system: false, company_id: companyId }, 201);
+    }
+
+    try {
+      const { rows } = await query(
+        `INSERT INTO roles (company_id, name, description, is_system)
+         VALUES ($1, $2, $3, false)
+         RETURNING *`,
+        [companyId, name, description || null]
+      );
+
+      return successResponse(rows[0], 201);
+    } catch (error: any) {
+      if (error.code === '23505') return errorResponse('Ya existe un rol con ese nombre', 400);
+      return errorResponse(error.message, 500);
+    }
+  } catch {
+    return errorResponse('Internal server error', 500);
+  }
+}

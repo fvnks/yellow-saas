@@ -1,0 +1,90 @@
+import { query } from '../../../../lib/db';
+import { getCompanyId, successResponse, errorResponse } from '../../../../lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string; customerId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const result = await query(
+      'SELECT * FROM customers WHERE id = $1 AND company_id = $2',
+      [params.customerId, companyId]
+    );
+
+    if (result.rows.length === 0) return errorResponse('Customer not found', 404);
+
+    return successResponse(result.rows[0]);
+  } catch {
+    return errorResponse('Failed to fetch customer', 500);
+  }
+}
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string; customerId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+
+    const result = await query(
+      `UPDATE customers SET
+        name = $1, code = $2, trade_name = $3, tax_id = $4, tax_id_type = $5,
+        address = $6, city = $7, region = $8, country = $9, postal_code = $10,
+        phone = $11, email = $12, website = $13, contact_person = $14,
+        contact_phone = $15, contact_email = $16, payment_terms = $17,
+        credit_limit = $18, price_list_id = $19, tax_exempt = $20, notes = $21,
+        is_active = $22, updated_at = NOW()
+       WHERE id = $23 AND company_id = $24
+       RETURNING *`,
+      [body.name, body.code, body.trade_name, body.tax_id, body.tax_id_type,
+       body.address, body.city, body.region, body.country, body.postal_code,
+       body.phone, body.email, body.website, body.contact_person,
+       body.contact_phone, body.contact_email, body.payment_terms,
+       body.credit_limit, body.price_list_id, body.tax_exempt, body.notes,
+       body.is_active, params.customerId, companyId]
+    );
+
+    if (result.rows.length === 0) return errorResponse('Customer not found', 404);
+
+    return successResponse(result.rows[0]);
+  } catch {
+    return errorResponse('Failed to update customer', 500);
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string; customerId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const ordersCheck = await query(
+      'SELECT id FROM sales_orders WHERE customer_id = $1 AND company_id = $2 LIMIT 1',
+      [params.customerId, companyId]
+    );
+
+    if (ordersCheck.rows.length > 0) {
+      return errorResponse('Cannot delete customer with existing sales orders', 400);
+    }
+
+    const result = await query(
+      'DELETE FROM customers WHERE id = $1 AND company_id = $2 RETURNING id',
+      [params.customerId, companyId]
+    );
+
+    if (result.rows.length === 0) return errorResponse('Customer not found', 404);
+
+    return successResponse({ message: 'Customer deleted successfully' });
+  } catch {
+    return errorResponse('Failed to delete customer', 500);
+  }
+}

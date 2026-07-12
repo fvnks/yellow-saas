@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "preserve",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@yellow-erp/ui": ["packages/ui/src"],
+      "@yellow-erp/db": ["packages/db/src"],
+      "@yellow-erp/auth": ["packages/auth/src"],
+      "@yellow-erp/api": ["packages/api/src"]
+    }
+  },
+  "exclude": ["node_modules", "dist", ".next"]
+}

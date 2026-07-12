@@ -1,0 +1,263 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
+import { Plus, Search, Warehouse, MapPin, Truck, Users, Edit, Trash2, Activity, Package } from 'lucide-react';
+import Link from 'next/link';
+import { getApiClient } from '../../../lib/api-client';
+
+interface Warehouse {
+  id: string;
+  name: string;
+  code: string;
+  type: string;
+  address: string;
+  city: string;
+  region: string;
+  manager: string;
+  phone: string;
+  email: string;
+  active: boolean;
+  products: number;
+  movements: number;
+}
+
+export default function WarehousesPage() {
+  const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+
+  useEffect(() => {
+    const api = getApiClient('demo-company-id');
+    api.getWarehouses().then((res) => {
+      const apiData = res.data || [];
+      const mapped = apiData.map((w) => ({
+        id: w.id,
+        name: w.name || '',
+        code: w.code || '',
+        type: 'Principal',
+        address: '',
+        city: '',
+        region: '',
+        manager: '',
+        phone: '',
+        email: '',
+        active: true,
+        products: w.total_products || 0,
+        movements: 0,
+        capacity: 0,
+        utilization: 0,
+      }));
+      setWarehouses(mapped);
+      setLoading(false);
+    }).catch(() => setLoading(false));
+  }, []);
+
+  const filteredWarehouses = warehouses.filter(w => {
+    const matchesSearch = w.name.toLowerCase().includes(search.toLowerCase()) || w.code.toLowerCase().includes(search.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || (statusFilter === 'active' && w.active) || (statusFilter === 'inactive' && !w.active);
+    return matchesSearch && matchesStatus;
+  });
+
+  const getTypeConfig = (type: string) => {
+    switch (type) {
+      case 'principal': return { label: 'Principal', variant: 'success' as const, icon: <Warehouse className="w-3 h-3" /> };
+      case 'secundaria': return { label: 'Secundaria', variant: 'info' as const, icon: <MapPin className="w-3 h-3" /> };
+      case 'temporal': return { label: 'Temporal', variant: 'warning' as const, icon: <Truck className="w-3 h-3" /> };
+      default: return { label: type, variant: 'neutral' as const, icon: <Warehouse className="w-3 h-3" /> };
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-bold text-slate-900">Bodegas</h1>
+          <p className="text-sm text-slate-500 mt-1">Gestión de ubicaciones de inventario</p>
+        </div>
+        <Link href="/dashboard/warehouses/new">
+          <Button>
+            <Plus className="w-4 h-4 mr-2" />
+            Nueva Bodega
+          </Button>
+        </Link>
+      </div>
+
+      {/* KPIs */}
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Bodegas</p>
+                <p className="text-2xl font-bold text-slate-900 mt-1">{warehouses.length}</p>
+              </div>
+              <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+                <Warehouse className="w-5 h-5 text-indigo-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Activas</p>
+                <p className="text-2xl font-bold text-slate-900 mt-1">{warehouses.filter(w => w.active).length}</p>
+              </div>
+              <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
+                <Activity className="w-5 h-5 text-emerald-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Productos</p>
+                <p className="text-2xl font-bold text-slate-900 mt-1">{warehouses.reduce((sum, w) => sum + w.products, 0).toLocaleString('es-CL')}</p>
+              </div>
+              <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+                <Package className="w-5 h-5 text-amber-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Movimientos Mes</p>
+                <p className="text-2xl font-bold text-slate-900 mt-1">{warehouses.reduce((sum, w) => sum + w.movements, 0).toLocaleString('es-CL')}</p>
+              </div>
+              <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                <Truck className="w-5 h-5 text-blue-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Filters */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input
+                type="search"
+                placeholder="Buscar por nombre, código, ciudad..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+              />
+            </div>
+            <Select
+              placeholder="Estado"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              options={[
+                { value: 'all', label: 'Todas' },
+                { value: 'active', label: 'Activas' },
+                { value: 'inactive', label: 'Inactivas' },
+              ]}
+              className="w-full sm:w-40"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Warehouses Table */}
+      <Card>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-12"></TableHead>
+                <TableHead>Nombre</TableHead>
+                <TableHead>Código</TableHead>
+                <TableHead>Tipo</TableHead>
+                <TableHead>Ciudad / Región</TableHead>
+                <TableHead>Encargado</TableHead>
+                <TableHead className="text-center">Productos</TableHead>
+                <TableHead className="text-center">Movimientos</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead className="w-12">Acciones</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredWarehouses.map((warehouse, index) => {
+                const typeConfig = getTypeConfig(warehouse.type);
+                return (
+                  <TableRow key={warehouse.id}>
+                    <TableCell>
+                      <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center">
+                        <Warehouse className="w-5 h-5 text-slate-400" />
+                      </div>
+                    </TableCell>
+                    <TableCell className="font-medium">{warehouse.name}</TableCell>
+                    <TableCell className="font-mono text-slate-500">{warehouse.code}</TableCell>
+                    <TableCell>
+                      <Badge variant={typeConfig.variant} className="gap-1">
+                        {typeConfig.icon}
+                        {typeConfig.label}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div>
+                        <p className="text-slate-900">{warehouse.city}</p>
+                        <p className="text-xs text-slate-500">{warehouse.region}</p>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center">
+                          <Users className="w-4 h-4 text-slate-400" />
+                        </div>
+                        <span>{warehouse.manager}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-center font-medium">{warehouse.products.toLocaleString('es-CL')}</TableCell>
+                    <TableCell className="text-center text-slate-500">{warehouse.movements.toLocaleString('es-CL')}</TableCell>
+                    <TableCell>
+                      <Badge variant={warehouse.active ? 'success' : 'neutral'}>
+                        {warehouse.active ? 'Activa' : 'Inactiva'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center justify-center gap-1">
+                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Ver">
+                          <Activity className="w-4 h-4" />
+                        </button>
+                        <Link href={`/dashboard/warehouses/${warehouse.id}/edit`}>
+                          <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Editar">
+                            <Edit className="w-4 h-4" />
+                          </button>
+                        </Link>
+                        <button className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* Pagination */}
+      <div className="flex items-center justify-between text-xs text-slate-500">
+        <p>Mostrando 1 a {filteredWarehouses.length} de {warehouses.length} bodegas</p>
+        <div className="flex items-center gap-2">
+          <Button variant="secondary" size="sm" disabled>Anterior</Button>
+          <Button variant="secondary" size="sm" disabled>Siguiente</Button>
+        </div>
+      </div>
+    </div>
+  );
+}

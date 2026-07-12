@@ -1,0 +1,723 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
+import { Plus, Search, Filter, Download, Eye, Edit, Trash2, CreditCard, Calendar, Truck, User, Package, FileText, DollarSign, Building2, ShoppingCart, CheckCircle, AlertCircle, Mail, Users } from 'lucide-react';
+import Link from 'next/link';
+import { getApiClient } from '../../../lib/api-client';
+
+interface Quotation {
+  id: string;
+  number: string;
+  supplier: string;
+  date: string;
+  expiryDate: string;
+  total: number;
+  items: number;
+  status: string;
+}
+
+interface Supplier {
+  id: string;
+  name: string;
+  code: string;
+  contact: string;
+  email: string;
+  phone: string;
+  active: boolean;
+}
+
+export default function PurchasesPage() {
+  const [purchaseOrders, setPurchaseOrders] = useState<any[]>([]);
+  const [quotations, setQuotations] = useState<Quotation[]>([]);
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+  const [customers, setCustomers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [supplierFilter, setSupplierFilter] = useState('all');
+  const [activeTab, setActiveTab] = useState('orders');
+
+  useEffect(() => {
+    const api = getApiClient('demo-company-id');
+    
+    Promise.all([
+      api.getPurchaseOrders().catch(() => ({ data: [] })),
+      api.getQuotations().catch(() => ({ data: [] })),
+      api.getSuppliers().catch(() => ({ data: [] })),
+      api.getCustomers().catch(() => ({ data: [] })),
+    ]).then(([ordersRes, quotationsRes, suppliersRes, customersRes]) => {
+      const ordersMapped = (ordersRes.data || []).map((o) => ({
+        id: o.id,
+        number: o.order_number,
+        supplier: o.supplier_id,
+        date: o.created_at?.split('T')[0] || '',
+        total: o.total,
+        status: o.status,
+        items: 0,
+        deliveryDate: '',
+      }));
+
+      const quotationsMapped = (quotationsRes.data || []).map((q) => ({
+        id: q.id,
+        number: q.number,
+        supplier: q.supplier?.name || q.supplier_id || '',
+        date: q.quote_date?.split('T')[0] || '',
+        expiryDate: q.expiry_date?.split('T')[0] || '',
+        total: q.total_amount,
+        items: 0,
+        status: q.status,
+      }));
+
+      const suppliersMapped = (suppliersRes.data || []).map((s) => ({
+        id: s.id,
+        name: s.name,
+        code: s.tax_id || '',
+        contact: s.email || '',
+        email: s.email || '',
+        phone: s.phone || '',
+        active: true,
+      }));
+
+      const customersMapped = (customersRes.data || []).map((c) => ({
+        id: c.id,
+        name: c.name || '',
+        email: c.email || '',
+        phone: c.phone || '',
+        tax_id: c.tax_id || '',
+        address: c.address || '',
+        active: true,
+      }));
+
+      setPurchaseOrders(ordersMapped);
+      setQuotations(quotationsMapped);
+      setSuppliers(suppliersMapped);
+      setCustomers(customersMapped);
+      setLoading(false);
+    });
+  }, []);
+
+  const filteredOrders = purchaseOrders.filter(o => {
+    const matchesSearch = o.number.toLowerCase().includes(search.toLowerCase()) || o.supplier.toLowerCase().includes(search.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || o.status === statusFilter;
+    const matchesSupplier = supplierFilter === 'all' || o.supplier === supplierFilter;
+    return matchesSearch && matchesStatus && matchesSupplier;
+  });
+
+  const filteredQuotations = quotations.filter(q => {
+    const matchesSearch = q.number.toLowerCase().includes(search.toLowerCase()) || q.supplier.toLowerCase().includes(search.toLowerCase());
+    return matchesSearch;
+  });
+
+  const filteredCustomers = customers.filter(c => {
+    const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase()) ||
+      c.email.toLowerCase().includes(search.toLowerCase()) ||
+      c.tax_id.toLowerCase().includes(search.toLowerCase());
+    return matchesSearch;
+  });
+
+  const getOrderStatusConfig = (status: string) => {
+    switch (status) {
+      case 'pending': return { label: 'Pendiente', variant: 'warning' as const };
+      case 'approved': return { label: 'Aprobado', variant: 'info' as const };
+      case 'processing': return { label: 'Procesando', variant: 'info' as const };
+      case 'delivered': return { label: 'Entregado', variant: 'success' as const };
+      case 'cancelled': return { label: 'Cancelado', variant: 'danger' as const };
+      default: return { label: status, variant: 'neutral' as const };
+    }
+  };
+
+  const getPaymentStatusConfig = (status: string) => {
+    switch (status) {
+      case 'paid': return { label: 'Pagado', variant: 'success' as const };
+      case 'partial': return { label: 'Parcial', variant: 'warning' as const };
+      case 'pending': return { label: 'Pendiente', variant: 'info' as const };
+      case 'refunded': return { label: 'Devuelto', variant: 'danger' as const };
+      default: return { label: status, variant: 'neutral' as const };
+    }
+  };
+
+  const getQuotationStatusConfig = (status: string) => {
+    switch (status) {
+      case 'pending': return { label: 'Pendiente', variant: 'warning' as const };
+      case 'accepted': return { label: 'Aceptado', variant: 'success' as const };
+      case 'rejected': return { label: 'Rechazado', variant: 'danger' as const };
+      case 'expired': return { label: 'Vencida', variant: 'danger' as const };
+      case 'cancelled': return { label: 'Cancelada', variant: 'neutral' as const };
+      default: return { label: status, variant: 'neutral' as const };
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-bold text-slate-900">Compras</h1>
+          <p className="text-sm text-slate-500 mt-1">Gestión de compras, cotizaciones y proveedores</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="secondary" size="sm">
+            <Download className="w-4 h-4 mr-2" />
+            Exportar
+          </Button>
+          {activeTab === 'orders' && (
+            <Link href="/dashboard/purchases/new">
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                Nueva Orden de Compra
+              </Button>
+            </Link>
+          )}
+          {activeTab === 'quotations' && (
+            <Link href="/dashboard/purchases/quotations/new">
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                Nueva Cotización
+              </Button>
+            </Link>
+          )}
+          {activeTab === 'suppliers' && (
+            <Link href="/dashboard/purchases/suppliers/new">
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                Nuevo Proveedor
+              </Button>
+            </Link>
+          )}
+          {activeTab === 'customers' && (
+            <Link href="/dashboard/customers/new">
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                Nuevo Cliente
+              </Button>
+            </Link>
+          )}
+        </div>
+      </div>
+
+      {/* KPI Cards */}
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-6">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Órdenes Pendientes</p>
+                <p className="text-2xl font-bold text-slate-900 mt-1">{purchaseOrders.filter(o => o.status === 'pending').length}</p>
+              </div>
+              <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+                <CreditCard className="w-5 h-5 text-amber-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Aprobadas</p>
+                <p className="text-2xl font-bold text-slate-900 mt-1">{purchaseOrders.filter(o => o.status === 'approved').length}</p>
+              </div>
+              <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+                <CheckCircle className="w-5 h-5 text-indigo-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Cotizaciones</p>
+                <p className="text-2xl font-bold text-slate-900 mt-1">{quotations.length}</p>
+              </div>
+              <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
+                <FileText className="w-5 h-5 text-emerald-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Proveedores</p>
+                <p className="text-2xl font-bold text-slate-900 mt-1">{suppliers.length}</p>
+              </div>
+              <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                <Building2 className="w-5 h-5 text-blue-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Valor Total</p>
+                <p className="text-2xl font-bold text-slate-900 mt-1">${purchaseOrders.reduce((sum, o) => sum + o.total, 0).toLocaleString('es-CL')}</p>
+              </div>
+              <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center">
+                <DollarSign className="w-5 h-5 text-rose-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Clientes</p>
+                <p className="text-2xl font-bold text-slate-900 mt-1">{customers.length}</p>
+              </div>
+              <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+                <Users className="w-5 h-5 text-indigo-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+        <Link href="/dashboard/purchases/new">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 hover:bg-slate-50 transition-colors cursor-pointer">
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+                <ShoppingCart className="w-5 h-5 text-indigo-600" />
+              </div>
+              <span className="text-sm font-medium text-slate-700 text-center">Nueva Orden</span>
+            </div>
+          </div>
+        </Link>
+        <Link href="/dashboard/purchases/quotations/new">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 hover:bg-slate-50 transition-colors cursor-pointer">
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
+                <FileText className="w-5 h-5 text-emerald-600" />
+              </div>
+              <span className="text-sm font-medium text-slate-700 text-center">Nueva Cotización</span>
+            </div>
+          </div>
+        </Link>
+        <Link href="/dashboard/purchases/suppliers/new">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 hover:bg-slate-50 transition-colors cursor-pointer">
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                <Building2 className="w-5 h-5 text-blue-600" />
+              </div>
+              <span className="text-sm font-medium text-slate-700 text-center">Nuevo Proveedor</span>
+            </div>
+          </div>
+        </Link>
+        <Link href="/dashboard/purchases/requests/new">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 hover:bg-slate-50 transition-colors cursor-pointer">
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+                <Plus className="w-5 h-5 text-amber-600" />
+              </div>
+              <span className="text-sm font-medium text-slate-700 text-center">Nueva Solicitud</span>
+            </div>
+          </div>
+        </Link>
+      </div>
+
+      {/* Tabs */}
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="border-b border-slate-200">
+          <div className="flex">
+            {[
+              { id: 'orders' as const, label: 'Órdenes de Compra', icon: ShoppingCart, count: purchaseOrders.length },
+              { id: 'quotations' as const, label: 'Cotizaciones', icon: FileText, count: quotations.length },
+              { id: 'suppliers' as const, label: 'Proveedores', icon: Building2, count: suppliers.length },
+              { id: 'customers' as const, label: 'Clientes', icon: Users, count: customers.length },
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => { setActiveTab(tab.id); setSearch(''); setStatusFilter('all'); setSupplierFilter('all'); }}
+                className={`px-6 py-3 text-sm font-medium transition-colors flex items-center gap-2 ${
+                  activeTab === tab.id ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-slate-500 hover:text-slate-700'
+                }`}
+                role="tab"
+                aria-selected={activeTab === tab.id}
+              >
+                <tab.icon className="w-4 h-4" />
+                {tab.label}
+                <Badge variant="neutral">{tab.count}</Badge>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Filters */}
+        <div className="p-4 border-b border-slate-100">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input
+                type="search"
+                placeholder={activeTab === 'orders' ? 'Buscar por Nº orden, proveedor...' : activeTab === 'quotations' ? 'Buscar por Nº cotización, proveedor...' : 'Buscar por nombre, proveedor...'}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+              />
+            </div>
+            {activeTab === 'orders' && (
+              <>
+                <Select
+                  placeholder="Estado"
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  options={[
+                    { value: 'all', label: 'Todos' },
+                    { value: 'pending', label: 'Pendiente' },
+                    { value: 'approved', label: 'Aprobado' },
+                    { value: 'processing', label: 'Procesando' },
+                    { value: 'delivered', label: 'Entregado' },
+                    { value: 'cancelled', label: 'Cancelado' },
+                  ]}
+                  className="w-full sm:w-40"
+                />
+                <Select
+                  placeholder="Proveedor"
+                  value={supplierFilter}
+                  onChange={(e) => setSupplierFilter(e.target.value)}
+                  options={[
+                    { value: 'all', label: 'Todos' },
+                    ...suppliers.map(s => ({ value: s.name, label: s.name })),
+                  ]}
+                  className="w-full sm:w-48"
+                />
+              </>
+            )}
+            {activeTab === 'suppliers' && (
+              <Select
+                placeholder="Estado"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                options={[
+                  { value: 'all', label: 'Todos' },
+                  { value: 'active', label: 'Activos' },
+                  { value: 'inactive', label: 'Inactivos' },
+                ]}
+                className="w-full sm:w-40"
+              />
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Orders Section */}
+      {activeTab === 'orders' && (
+        <div role="tabpanel" aria-labelledby="orders-tab">
+          {/* Orders Table */}
+          <Card>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Nº Orden</TableHead>
+                    <TableHead>Proveedor</TableHead>
+                    <TableHead>Fecha</TableHead>
+                    <TableHead>Entrega</TableHead>
+                    <TableHead>Almacén</TableHead>
+                    <TableHead className="text-center">Items</TableHead>
+                    <TableHead className="text-right">Total</TableHead>
+                    <TableHead>Estado</TableHead>
+                    <TableHead>Pago</TableHead>
+                    <TableHead>Usuario</TableHead>
+                    <TableHead className="w-12">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredOrders.map((order, index) => {
+                    const orderConfig = getOrderStatusConfig(order.status);
+                    const paymentConfig = getPaymentStatusConfig(order.paymentStatus);
+                    return (
+                      <TableRow key={order.id}>
+                        <TableCell className="font-mono text-slate-900">{order.number}</TableCell>
+                        <TableCell>
+                          <div>
+                            <p className="font-medium text-slate-900">{order.supplier}</p>
+                            <p className="text-xs text-slate-500">{order.supplierCode}</p>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-3 h-3 text-slate-400" />
+                            {order.date}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1">
+                            <Truck className="w-3 h-3 text-slate-400" />
+                            {order.expectedDate}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-xs">{order.warehouse}</TableCell>
+                        <TableCell className="text-center font-medium">{order.items}</TableCell>
+                        <TableCell className="text-right font-medium">${order.total.toLocaleString('es-CL')}</TableCell>
+                        <TableCell>
+                          <Badge variant={orderConfig.variant}>{orderConfig.label}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={paymentConfig.variant}>{paymentConfig.label}</Badge>
+                        </TableCell>
+                        <TableCell className="text-xs">{order.createdBy}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center justify-center gap-1">
+                            <Link href={`/dashboard/purchases/${order.id}`}>
+                              <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Ver">
+                                <Eye className="w-4 h-4" />
+                              </button>
+                            </Link>
+                            <button className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+
+          {/* Pagination */}
+          <div className="flex items-center justify-between text-xs text-slate-500">
+            <p>Mostrando 1 a {filteredOrders.length} de {purchaseOrders.length} órdenes</p>
+            <div className="flex items-center gap-2">
+              <Button variant="secondary" size="sm" disabled>Anterior</Button>
+              <Button variant="secondary" size="sm" disabled>Siguiente</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Quotations Section */}
+      {activeTab === 'quotations' && (
+        <div role="tabpanel" aria-labelledby="quotations-tab">
+          <Card>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Nº Cotización</TableHead>
+                    <TableHead>Proveedor</TableHead>
+                    <TableHead>Fecha Emisión</TableHead>
+                    <TableHead>Fecha Vencimiento</TableHead>
+                    <TableHead className="text-center">Items</TableHead>
+                    <TableHead className="text-right">Total</TableHead>
+                    <TableHead>Estado</TableHead>
+                    <TableHead className="w-12">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredQuotations.map((quote, index) => {
+                    const statusConfig = getQuotationStatusConfig(quote.status);
+                    return (
+                      <TableRow key={quote.id}>
+                        <TableCell className="font-mono text-slate-900">{quote.number}</TableCell>
+                        <TableCell>{quote.supplier}</TableCell>
+                        <TableCell>{quote.date}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-3 h-3 text-slate-400" />
+                            {quote.expiryDate}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">{quote.items}</TableCell>
+                        <TableCell className="text-right font-medium">${quote.total.toLocaleString('es-CL')}</TableCell>
+                        <TableCell>
+                          <Badge variant={statusConfig.variant}>{statusConfig.label}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center justify-center gap-1">
+                            <Link href={`/dashboard/purchases/quotations/${quote.id}`}>
+                              <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Ver">
+                                <Eye className="w-4 h-4" />
+                              </button>
+                            </Link>
+                            <Link href={`/dashboard/purchases/quotations/${quote.id}/edit`}>
+                              <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Editar">
+                                <Edit className="w-4 h-4" />
+                              </button>
+                            </Link>
+                            <button className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Suppliers Section */}
+      {activeTab === 'suppliers' && (
+        <div role="tabpanel" aria-labelledby="suppliers-tab">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Catálogo de Proveedores</CardTitle>
+              <Link href="/dashboard/purchases/suppliers/new">
+                <Button>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Nuevo Proveedor
+                </Button>
+              </Link>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Proveedor</TableHead>
+                    <TableHead>Código</TableHead>
+                    <TableHead>Contacto</TableHead>
+                    <TableHead>Correo Electrónico</TableHead>
+                    <TableHead>Teléfono</TableHead>
+                    <TableHead>Estado</TableHead>
+                    <TableHead className="w-12">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {suppliers.map((supplier) => {
+                    const getContactColor = (contact: string) => {
+                      if (contact === 'Carmen Silva') return 'text-indigo-600 font-medium';
+                      if (contact === 'Luis Morales') return 'text-emerald-600 font-medium';
+                      return 'text-slate-900';
+                    };
+                    return (
+                      <TableRow key={supplier.id}>
+                        <TableCell className="font-medium">{supplier.name}</TableCell>
+                        <TableCell className="font-mono text-slate-500">{supplier.code}</TableCell>
+                        <TableCell className={getContactColor(supplier.contact)}>{supplier.contact}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1 text-xs">
+                            <Mail className="w-3 h-3 text-slate-400" />
+                            <a href={`mailto:${supplier.email}`} className="text-slate-700 hover:text-slate-900">{supplier.email}</a>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1 text-xs">
+                            <Truck className="w-3 h-3 text-slate-400" />
+                            <a href={`tel:${supplier.phone}`} className="text-slate-700 hover:text-slate-900">{supplier.phone}</a>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={supplier.active ? 'success' : 'neutral'}>
+                            {supplier.active ? 'Activo' : 'Inactivo'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center justify-center gap-1">
+                            <Link href={`/dashboard/purchases/suppliers/${supplier.id}`}>
+                              <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Ver">
+                                <Eye className="w-4 h-4" />
+                              </button>
+                            </Link>
+                            <button className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Customers Section */}
+      {activeTab === 'customers' && (
+        <div role="tabpanel" aria-labelledby="customers-tab">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Catálogo de Clientes</CardTitle>
+              <Link href="/dashboard/customers/new">
+                <Button>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Nuevo Cliente
+                </Button>
+              </Link>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Cliente</TableHead>
+                    <TableHead>RUT</TableHead>
+                    <TableHead>Correo Electrónico</TableHead>
+                    <TableHead>Teléfono</TableHead>
+                    <TableHead>Dirección</TableHead>
+                    <TableHead>Estado</TableHead>
+                    <TableHead className="w-12">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredCustomers.map((customer) => (
+                    <TableRow key={customer.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center">
+                            <Users className="w-4 h-4 text-indigo-600" />
+                          </div>
+                          <span className="font-medium text-slate-900">{customer.name}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-mono text-slate-500">{customer.tax_id}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1 text-xs">
+                          <Mail className="w-3 h-3 text-slate-400" />
+                          <a href={`mailto:${customer.email}`} className="text-slate-700 hover:text-slate-900">{customer.email}</a>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1 text-xs">
+                          <Truck className="w-3 h-3 text-slate-400" />
+                          <a href={`tel:${customer.phone}`} className="text-slate-700 hover:text-slate-900">{customer.phone}</a>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-xs text-slate-500 max-w-[200px] truncate">{customer.address}</TableCell>
+                      <TableCell>
+                        <Badge variant={customer.active ? 'success' : 'neutral'}>
+                          {customer.active ? 'Activo' : 'Inactivo'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center justify-center gap-1">
+                          <Link href={`/dashboard/customers/${customer.id}`}>
+                            <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Ver">
+                              <Eye className="w-4 h-4" />
+                            </button>
+                          </Link>
+                          <Link href={`/dashboard/customers/${customer.id}/edit`}>
+                            <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Editar">
+                              <Edit className="w-4 h-4" />
+                            </button>
+                          </Link>
+                          <button className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+    </div>
+  );
+}
