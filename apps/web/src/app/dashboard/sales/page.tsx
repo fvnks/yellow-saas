@@ -199,7 +199,7 @@ export default function SalesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Ventas</h1>
-          <p className="text-sm text-slate-500 mt-1">Ã“rdenes, guías de despacho, facturación y POS</p>
+          <p className="text-sm text-slate-500 mt-1">Órdenes, guías de despacho, facturación y POS</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm">
@@ -290,7 +290,7 @@ export default function SalesPage() {
         <div className="border-b border-slate-200">
           <div className="flex">
             {[
-              { id: 'orders' as const, label: 'Ã“rdenes de Venta', icon: ShoppingCart, count: orders.length },
+              { id: 'orders' as const, label: 'Órdenes de Venta', icon: ShoppingCart, count: orders.length },
               { id: 'delivery' as const, label: 'Guías de Despacho', icon: Truck, count: deliveryGuides.length },
               { id: 'invoices' as const, label: 'Facturación', icon: FileText, count: invoices.length },
               { id: 'customers' as const, label: 'Clientes', icon: Users, count: customers.length },
