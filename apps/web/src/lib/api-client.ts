@@ -495,6 +495,31 @@ export class ApiClient {
   async markAllNotificationsRead() {
     return this.request<{ message: string }>('/notifications/read-all', { method: 'POST' });
   }
+
+  // Inventory Counts
+  async getInventoryCounts(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/inventory-counts', params || {});
+  }
+
+  async getInventoryCount(id: string) {
+    return this.request<any>(`/inventory-counts/${id}`);
+  }
+
+  async createInventoryCount(data: { warehouse_id: string; count_type?: string; notes?: string }) {
+    return this.request<any>('/inventory-counts', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async startInventoryCount(id: string) {
+    return this.request<any>(`/inventory-counts/${id}/start`, { method: 'POST' });
+  }
+
+  async completeInventoryCount(id: string) {
+    return this.request<any>(`/inventory-counts/${id}/complete`, { method: 'POST' });
+  }
+
+  async updateInventoryCountItem(countId: string, itemId: string, data: { counted_quantity: number; notes?: string }) {
+    return this.request<any>(`/inventory-counts/${countId}/items/${itemId}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
 }
 
 // Singleton with dynamic company_id from JWT
