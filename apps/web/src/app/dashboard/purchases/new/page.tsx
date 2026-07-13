@@ -10,7 +10,7 @@ import { getApiClient } from '../../../../lib/api-client';
 const suppliers = [
   { id: '1', name: 'Logistica Norte SpA', code: 'SUP-001' },
   { id: '2', name: 'Distribuidora Chile', code: 'SUP-002' },
-  { id: '3', name: 'MecÃ¡nica y Repuestos', code: 'SUP-003' },
+  { id: '3', name: 'Mecánica y Repuestos', code: 'SUP-003' },
   { id: '4', name: 'Almacenes Sur', code: 'SUP-004' },
 ];
 
@@ -24,7 +24,7 @@ const products = [
   { id: '1', name: 'Laptop HP ProBook 450', sku: 'LP-HP-450', price: 650000 },
   { id: '2', name: 'Mouse Logitech MX Master 3S', sku: 'MS-LG-MX3', price: 89000 },
   { id: '3', name: 'Monitor Dell 27" 4K', sku: 'MN-DELL-27', price: 420000 },
-  { id: '4', name: 'Teclado MecÃ¡nico Keychron K2', sku: 'KB-KC-K2', price: 95000 },
+  { id: '4', name: 'Teclado Mecánico Keychron K2', sku: 'KB-KC-K2', price: 95000 },
   { id: '5', name: 'Disco SSD Samsung 980 PRO 1TB', sku: 'SSD-SAM-980', price: 110000 },
 ];
 
@@ -133,7 +133,7 @@ export default function NewPurchaseOrderPage() {
             {/* Supplier & Warehouse */}
             <Card>
               <CardHeader>
-                <CardTitle>InformaciÃ³n General</CardTitle>
+                <CardTitle>Información General</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -145,10 +145,10 @@ export default function NewPurchaseOrderPage() {
                     required
                   />
                   <Select
-                    label="AlmacÃ©n de Destino"
+                    label="Almacén de Destino"
                     value={formData.warehouseId}
                     onChange={handleFormChange('warehouseId')}
-                    options={[{ value: '', label: 'Seleccionar almacÃ©n...' }, ...warehouses.map(w => ({ value: w.id, label: `${w.code} - ${w.name}` }))]}
+                    options={[{ value: '', label: 'Seleccionar almacén...' }, ...warehouses.map(w => ({ value: w.id, label: `${w.code} - ${w.name}` }))]}
                     required
                   />
                   <Input
@@ -163,11 +163,11 @@ export default function NewPurchaseOrderPage() {
                     onChange={handleFormChange('paymentTerms')}
                     options={[
                       { value: '0', label: 'Contado' },
-                      { value: '15', label: '15 dÃ­as' },
-                      { value: '30', label: '30 dÃ­as' },
-                      { value: '45', label: '45 dÃ­as' },
-                      { value: '60', label: '60 dÃ­as' },
-                      { value: '90', label: '90 dÃ­as' },
+                      { value: '15', label: '15 días' },
+                      { value: '30', label: '30 días' },
+                      { value: '45', label: '45 días' },
+                      { value: '60', label: '60 días' },
+                      { value: '90', label: '90 días' },
                     ]}
                   />
                 </div>

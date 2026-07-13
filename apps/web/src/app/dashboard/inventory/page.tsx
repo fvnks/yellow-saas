@@ -73,7 +73,7 @@ export default function InventoryPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Inventario</h1>
-          <p className="text-sm text-slate-500 mt-1">GestiÃ³n de productos y stock</p>
+          <p className="text-sm text-slate-500 mt-1">Gestión de productos y stock</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm">
@@ -115,7 +115,7 @@ export default function InventoryPage() {
               className="w-full sm:w-40"
             />
             <Select
-              placeholder="CategorÃ­a"
+              placeholder="Categoría"
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
               options={[
@@ -137,9 +137,9 @@ export default function InventoryPage() {
                 <TableHead className="w-12">Imagen</TableHead>
                 <TableHead>Producto</TableHead>
                 <TableHead>SKU</TableHead>
-                <TableHead>CategorÃ­a</TableHead>
+                <TableHead>Categoría</TableHead>
                 <TableHead className="text-center">Stock</TableHead>
-                <TableHead className="text-center">MÃ­nimo</TableHead>
+                <TableHead className="text-center">Mínimo</TableHead>
                 <TableHead className="text-right">Precio Venta</TableHead>
                 <TableHead className="text-right">Costo</TableHead>
                 <TableHead>Estado</TableHead>

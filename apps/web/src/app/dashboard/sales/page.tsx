@@ -25,7 +25,7 @@ const paymentStatusConfig: Record<string, { label: string; variant: 'success' | 
 
 const deliveryStatusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   delivered: { label: 'Entregado', variant: 'success' },
-  in_transit: { label: 'En TrÃ¡nsito', variant: 'info' },
+  in_transit: { label: 'En Tránsito', variant: 'info' },
   pending: { label: 'Pendiente', variant: 'warning' },
   cancelled: { label: 'Cancelado', variant: 'danger' },
 };
@@ -199,7 +199,7 @@ export default function SalesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Ventas</h1>
-          <p className="text-sm text-slate-500 mt-1">Ã“rdenes, guÃ­as de despacho, facturaciÃ³n y POS</p>
+          <p className="text-sm text-slate-500 mt-1">Ã“rdenes, guías de despacho, facturación y POS</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm">
@@ -213,7 +213,7 @@ export default function SalesPage() {
           )}
           {activeTab === 'delivery' && (
             <Link href="/dashboard/sales/delivery/new">
-              <Button><Plus className="w-4 h-4 mr-2" /> Nueva GuÃ­a</Button>
+              <Button><Plus className="w-4 h-4 mr-2" /> Nueva Guía</Button>
             </Link>
           )}
           {activeTab === 'invoices' && (
@@ -291,8 +291,8 @@ export default function SalesPage() {
           <div className="flex">
             {[
               { id: 'orders' as const, label: 'Ã“rdenes de Venta', icon: ShoppingCart, count: orders.length },
-              { id: 'delivery' as const, label: 'GuÃ­as de Despacho', icon: Truck, count: deliveryGuides.length },
-              { id: 'invoices' as const, label: 'FacturaciÃ³n', icon: FileText, count: invoices.length },
+              { id: 'delivery' as const, label: 'Guías de Despacho', icon: Truck, count: deliveryGuides.length },
+              { id: 'invoices' as const, label: 'Facturación', icon: FileText, count: invoices.length },
               { id: 'customers' as const, label: 'Clientes', icon: Users, count: customers.length },
               { id: 'pos' as const, label: 'POS', icon: Monitor, count: null },
             ].map(tab => (
@@ -319,7 +319,7 @@ export default function SalesPage() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="search"
-                  placeholder="Buscar por nÃºmero, cliente..."
+                  placeholder="Buscar por número, cliente..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
@@ -340,7 +340,7 @@ export default function SalesPage() {
                   ] : activeTab === 'delivery' ? [
                     { value: 'all', label: 'Todos los estados' },
                     { value: 'pending', label: 'Pendientes' },
-                    { value: 'in_transit', label: 'En TrÃ¡nsito' },
+                    { value: 'in_transit', label: 'En Tránsito' },
                     { value: 'delivered', label: 'Entregados' },
                     { value: 'cancelled', label: 'Cancelados' },
                   ] : [
@@ -364,7 +364,7 @@ export default function SalesPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">NÂº Orden</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nº Orden</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
                   <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Items</th>
@@ -409,7 +409,7 @@ export default function SalesPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">NÂº GuÃ­a</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nº Guía</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Orden Ref.</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Transporte</th>
@@ -447,7 +447,7 @@ export default function SalesPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">NÂº Factura</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nº Factura</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Orden Ref.</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
                   <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total</th>
@@ -493,8 +493,8 @@ export default function SalesPage() {
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">RUT</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Email</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">TelÃ©fono</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">DirecciÃ³n</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Teléfono</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Dirección</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
                   <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
                 </tr>
@@ -597,7 +597,7 @@ export default function SalesPage() {
                   {cart.length === 0 ? (
                     <div className="text-center py-12">
                       <ShoppingCart className="w-12 h-12 text-slate-200 mx-auto mb-3" />
-                      <p className="text-sm text-slate-500">Carrito vacÃ­o</p>
+                      <p className="text-sm text-slate-500">Carrito vacío</p>
                       <p className="text-xs text-slate-400 mt-1">Selecciona productos</p>
                     </div>
                   ) : (
@@ -681,7 +681,7 @@ export default function SalesPage() {
                 <p className="text-3xl font-bold text-slate-900">${cartTotal.toLocaleString('es-CL')}</p>
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">MÃ©todo de Pago</label>
+                <label className="block text-xs font-medium text-slate-700">Método de Pago</label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
                     { id: 'cash', label: 'Efectivo', icon: Banknote },

@@ -140,7 +140,7 @@ export default function POSPage() {
           {cart.length === 0 ? (
             <div className="text-center py-12">
               <ShoppingCart className="w-12 h-12 text-slate-200 mx-auto mb-3" />
-              <p className="text-sm text-slate-500">Carrito vacÃ­o</p>
+              <p className="text-sm text-slate-500">Carrito vacío</p>
               <p className="text-xs text-slate-400 mt-1">Selecciona productos para agregar</p>
             </div>
           ) : (
@@ -222,7 +222,7 @@ export default function POSPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">MÃ©todo de Pago</label>
+                <label className="block text-xs font-medium text-slate-700">Método de Pago</label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
                     { id: 'cash', label: 'Efectivo', icon: Banknote },

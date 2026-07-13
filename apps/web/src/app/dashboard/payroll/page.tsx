@@ -78,8 +78,8 @@ export default function PayrollPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">NÃ³mina</h1>
-          <p className="text-sm text-slate-500 mt-1">GestiÃ³n de remuneraciones y beneficios</p>
+          <h1 className="text-xl font-bold text-slate-900">Nómina</h1>
+          <p className="text-sm text-slate-500 mt-1">Gestión de remuneraciones y beneficios</p>
         </div>
         {activeTab === 'employees' ? (
           <Link href="/dashboard/payroll/new">
@@ -91,16 +91,16 @@ export default function PayrollPage() {
         ) : (
           <Button>
             <Calculator className="w-4 h-4 mr-2" />
-            Generar NÃ³mina
+            Generar Nómina
           </Button>
         )}
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <KPICard label="Empleados Activos" value={activeEmployees} icon={Users} trend={`${employees.length} total`} trendUp={true} />
-        <KPICard label="NÃ³mina Mensual" value={`$${(totalPayroll/1000000).toFixed(1)}M`} icon={Wallet} trend="+3% vs anterior" trendUp={true} />
-        <KPICard label="Ãšltimo PerÃ­odo" value="Jun 2026" icon={Calendar} trend="Pagado" trendUp={true} />
-        <KPICard label="ProvisiÃ³n" value={`$${(totalPayroll*0.35/1000000).toFixed(1)}M`} icon={DollarSign} trend="35% carga social" trendUp={true} />
+        <KPICard label="Nómina Mensual" value={`$${(totalPayroll/1000000).toFixed(1)}M`} icon={Wallet} trend="+3% vs anterior" trendUp={true} />
+        <KPICard label="Ãšltimo Período" value="Jun 2026" icon={Calendar} trend="Pagado" trendUp={true} />
+        <KPICard label="Provisión" value={`$${(totalPayroll*0.35/1000000).toFixed(1)}M`} icon={DollarSign} trend="35% carga social" trendUp={true} />
       </div>
 
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
@@ -108,7 +108,7 @@ export default function PayrollPage() {
           <div className="flex">
             {[
               { id: 'employees' as const, label: 'Empleados', icon: Users, count: employees.length },
-              { id: 'history' as const, label: 'Historial de NÃ³minas', icon: FileText, count: null },
+              { id: 'history' as const, label: 'Historial de Nóminas', icon: FileText, count: null },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -201,8 +201,8 @@ export default function PayrollPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">ID NÃ³mina</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">PerÃ­odo</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">ID Nómina</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Período</th>
                   <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Empleados</th>
                   <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Monto Total</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha Pago</th>

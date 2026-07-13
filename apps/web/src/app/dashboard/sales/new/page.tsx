@@ -25,7 +25,7 @@ const products = [
   { id: '1', name: 'Laptop HP ProBook 450', sku: 'LP-HP-450', price: 650000, stock: 25, warehouse: 'BC-01' },
   { id: '2', name: 'Mouse Logitech MX Master 3S', sku: 'MS-LG-MX3', price: 89000, stock: 150, warehouse: 'BC-01' },
   { id: '3', name: 'Monitor Dell 27" 4K', sku: 'MN-DELL-27', price: 420000, stock: 18, warehouse: 'BN-02' },
-  { id: '4', name: 'Teclado MecÃ¡nico Keychron K2', sku: 'KB-KC-K2', price: 95000, stock: 45, warehouse: 'BN-02' },
+  { id: '4', name: 'Teclado Mecánico Keychron K2', sku: 'KB-KC-K2', price: 95000, stock: 45, warehouse: 'BN-02' },
   { id: '5', name: 'Disco SSD Samsung 980 PRO 1TB', sku: 'SSD-SAM-980', price: 110000, stock: 60, warehouse: 'BS-03' },
   { id: '6', name: 'Webcam Logitech C920 HD', sku: 'WC-LG-C92', price: 65000, stock: 35, warehouse: 'BS-03' },
 ];
@@ -144,7 +144,7 @@ export default function NewSalePage() {
             {/* Customer & Warehouse */}
             <Card>
               <CardHeader>
-                <CardTitle>InformaciÃ³n General</CardTitle>
+                <CardTitle>Información General</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -156,10 +156,10 @@ export default function NewSalePage() {
                     required
                   />
                   <Select
-                    label="AlmacÃ©n de Origen"
+                    label="Almacén de Origen"
                     value={formData.warehouseId}
                     onChange={handleFormChange('warehouseId')}
-                    options={[{ value: '', label: 'Seleccionar almacÃ©n...' }, ...warehouses.map(w => ({ value: w.id, label: `${w.code} - ${w.name}` }))]}
+                    options={[{ value: '', label: 'Seleccionar almacén...' }, ...warehouses.map(w => ({ value: w.id, label: `${w.code} - ${w.name}` }))]}
                     required
                   />
                   <Input
@@ -169,14 +169,14 @@ export default function NewSalePage() {
                     onChange={handleFormChange('deliveryDate')}
                   />
                   <Select
-                    label="MÃ©todo de Pago"
+                    label="Método de Pago"
                     value={formData.paymentMethod}
                     onChange={handleFormChange('paymentMethod')}
                     options={[
-                      { value: '', label: 'Seleccionar mÃ©todo...' },
+                      { value: '', label: 'Seleccionar método...' },
                       { value: 'transfer', label: 'Transferencia Bancaria' },
-                      { value: 'credit', label: 'Tarjeta de CrÃ©dito' },
-                      { value: 'debit', label: 'Tarjeta de DÃ©bito' },
+                      { value: 'credit', label: 'Tarjeta de Crédito' },
+                      { value: 'debit', label: 'Tarjeta de Débito' },
                       { value: 'cash', label: 'Efectivo' },
                       { value: 'check', label: 'Cheque' },
                     ]}
@@ -187,16 +187,16 @@ export default function NewSalePage() {
                     onChange={handleFormChange('paymentTerms')}
                     options={[
                       { value: '0', label: 'Contado' },
-                      { value: '15', label: '15 dÃ­as' },
-                      { value: '30', label: '30 dÃ­as' },
-                      { value: '45', label: '45 dÃ­as' },
-                      { value: '60', label: '60 dÃ­as' },
-                      { value: '90', label: '90 dÃ­as' },
+                      { value: '15', label: '15 días' },
+                      { value: '30', label: '30 días' },
+                      { value: '45', label: '45 días' },
+                      { value: '60', label: '60 días' },
+                      { value: '90', label: '90 días' },
                     ]}
                   />
                 </div>
                 <Input
-                  label="DirecciÃ³n de EnvÃ­o"
+                  label="Dirección de Envío"
                   value={formData.shippingAddress}
                   onChange={handleFormChange('shippingAddress')}
                   placeholder="Av. Principal 1234, Santiago, Chile"
@@ -223,7 +223,7 @@ export default function NewSalePage() {
                       <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-24">Cantidad</th>
                       <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-28">Precio Unit.</th>
                       <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-20">Dto %</th>
-                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-28">Total LÃ­nea</th>
+                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-28">Total Línea</th>
                       <th className="w-12 px-4 py-3"></th>
                     </tr>
                   </thead>
