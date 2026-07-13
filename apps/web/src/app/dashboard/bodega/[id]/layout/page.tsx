@@ -140,20 +140,25 @@ export default function WarehouseLayoutPage({ params }: { params: { id: string }
     setSelectedPosition(null);
   };
 
-  const handleMouseDown = useCallback((e: React.MouseEvent, type: 'zone' | 'position' | 'resize-zone' | 'resize-position', zoneId: string, positionId?: string) => {
+  const handleMouseDown = useCallback((e: React.MouseEvent | React.TouchEvent, type: 'zone' | 'position' | 'resize-zone' | 'resize-position', zoneId: string, positionId?: string) => {
     e.stopPropagation();
+    if ('preventDefault' in e) e.preventDefault();
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
     setIsDragging(true);
     setDragType(type);
     setDragTarget({ zoneId, positionId });
-    setDragStart({ x: e.clientX, y: e.clientY });
+    setDragStart({ x: clientX, y: clientY });
     if (type === 'zone' || type === 'resize-zone') setSelectedZone(zoneId);
     if (type === 'position' || type === 'resize-position') { setSelectedZone(zoneId); setSelectedPosition(positionId || null); }
   }, []);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+  const handleMouseMove = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     if (!isDragging || !dragType || !dragTarget) return;
-    const dx = e.clientX - dragStart.x;
-    const dy = e.clientY - dragStart.y;
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    const dx = clientX - dragStart.x;
+    const dy = clientY - dragStart.y;
 
     setZones(prev => prev.map(z => {
       if (dragType === 'zone' && z.id === dragTarget.zoneId) {
@@ -177,7 +182,7 @@ export default function WarehouseLayoutPage({ params }: { params: { id: string }
       return z;
     }));
 
-    setDragStart({ x: e.clientX, y: e.clientY });
+    setDragStart({ x: clientX, y: clientY });
   }, [isDragging, dragType, dragTarget, dragStart]);
 
   const handleMouseUp = useCallback(() => {
@@ -200,7 +205,7 @@ export default function WarehouseLayoutPage({ params }: { params: { id: string }
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <Link href="/dashboard/bodega" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
@@ -208,15 +213,15 @@ export default function WarehouseLayoutPage({ params }: { params: { id: string }
           <h1 className="text-xl font-bold text-slate-900">Layout de Bodega</h1>
           <p className="text-sm text-slate-500 mt-1">Arrastra y redimensiona zonas y posiciones</p>
         </div>
-        <Button onClick={handleSave} disabled={saving}>
+        <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto justify-center">
           <Save className="w-4 h-4 mr-2" />
           {saving ? 'Guardando...' : 'Guardar'}
         </Button>
       </div>
 
-      <div className="flex gap-6">
+      <div className="flex flex-col lg:flex-row gap-6">
         {/* Sidebar */}
-        <div className="w-64 space-y-4">
+        <div className="w-full lg:w-64 space-y-4">
           <Card>
             <CardHeader><CardTitle className="text-sm">Herramientas</CardTitle></CardHeader>
             <CardContent className="space-y-3">
@@ -321,10 +326,12 @@ export default function WarehouseLayoutPage({ params }: { params: { id: string }
             <CardContent className="p-0">
               <div
                 className="relative bg-slate-50 overflow-auto cursor-crosshair"
-                style={{ minHeight: '700px', backgroundImage: 'radial-gradient(circle, #cbd5e1 1px, transparent 1px)', backgroundSize: '20px 20px' }}
+                style={{ minHeight: '400px', backgroundImage: 'radial-gradient(circle, #cbd5e1 1px, transparent 1px)', backgroundSize: '20px 20px' }}
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
                 onMouseLeave={handleMouseUp}
+                onTouchMove={handleMouseMove}
+                onTouchEnd={handleMouseUp}
                 onClick={() => { setSelectedZone(null); setSelectedPosition(null); setSelectedShelfId(null); }}
               >
                 {zones.length === 0 && (
@@ -342,6 +349,7 @@ export default function WarehouseLayoutPage({ params }: { params: { id: string }
                     className={`absolute border-2 rounded-lg cursor-move transition-shadow ${selectedZone === zone.id ? 'shadow-lg ring-2 ring-indigo-500' : 'hover:shadow-md'}`}
                     style={{ left: zone.x, top: zone.y, width: zone.width, height: zone.height, backgroundColor: `${zone.color}15`, borderColor: zone.color }}
                     onMouseDown={(e) => handleMouseDown(e, 'zone', zone.id)}
+                    onTouchStart={(e) => handleMouseDown(e, 'zone', zone.id)}
                     onClick={(e) => { e.stopPropagation(); setSelectedZone(zone.id); setSelectedPosition(null); setSelectedShelfId(null); }}
                   >
                     {/* Zone label */}
@@ -351,7 +359,7 @@ export default function WarehouseLayoutPage({ params }: { params: { id: string }
                     </div>
 
                     {/* Resize handle */}
-                    <div className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize z-10" onMouseDown={(e) => handleMouseDown(e, 'resize-zone', zone.id)}>
+                    <div className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize z-10" onMouseDown={(e) => handleMouseDown(e, 'resize-zone', zone.id)} onTouchStart={(e) => handleMouseDown(e, 'resize-zone', zone.id)}>
                       <Maximize2 className="w-3 h-3 text-slate-400" />
                     </div>
 
@@ -375,13 +383,14 @@ export default function WarehouseLayoutPage({ params }: { params: { id: string }
                         className={`absolute border-2 rounded cursor-move flex flex-col items-center justify-center transition-shadow ${selectedPosition === pos.id ? 'shadow-lg ring-2 ring-indigo-500 z-20' : 'hover:shadow-md z-10'} ${pos.product ? 'bg-indigo-50 border-indigo-300' : 'bg-white border-slate-300 hover:border-indigo-300'}`}
                         style={{ left: pos.x, top: pos.y, width: pos.width, height: pos.height }}
                         onMouseDown={(e) => handleMouseDown(e, 'position', zone.id, pos.id)}
+                        onTouchStart={(e) => handleMouseDown(e, 'position', zone.id, pos.id)}
                         onClick={(e) => { e.stopPropagation(); setSelectedZone(zone.id); setSelectedPosition(pos.id); setSelectedShelfId(null); }}
                       >
                         <span className="text-[9px] font-bold text-slate-700 leading-none">{pos.code || pos.name}</span>
                         <span className="text-[7px] text-slate-400 leading-none mt-1">Cap: {pos.capacity}</span>
 
                         {/* Position resize handle */}
-                        <div className="absolute bottom-0 right-0 w-3 h-3 cursor-se-resize z-30" onMouseDown={(e) => handleMouseDown(e, 'resize-position', zone.id, pos.id)}>
+                        <div className="absolute bottom-0 right-0 w-3 h-3 cursor-se-resize z-30" onMouseDown={(e) => handleMouseDown(e, 'resize-position', zone.id, pos.id)} onTouchStart={(e) => handleMouseDown(e, 'resize-position', zone.id, pos.id)}>
                           <Maximize2 className="w-2.5 h-2.5 text-slate-400" />
                         </div>
                       </div>
@@ -415,7 +424,7 @@ export default function WarehouseLayoutPage({ params }: { params: { id: string }
 
             return (
               <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
-                <div className="px-6 py-3 border-b border-slate-100 flex items-center gap-2">
+                <div className="px-4 sm:px-6 py-3 border-b border-slate-100 flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: zone.color }} />
                   <span className="text-sm font-semibold text-slate-900 truncate">{label}</span>
                   <span className="text-xs text-slate-400 ml-auto shrink-0">{productsToShow.length} producto{productsToShow.length !== 1 ? 's' : ''}</span>
