@@ -74,7 +74,7 @@ export class ApiClient {
     return this.request<{ id: string; name: string; sku: string; price: number; stock: number }>(`/products/${id}`);
   }
 
-  async createProduct(data: { name: string; sku: string; price: number; category_id?: string; warehouse_id: string; initial_stock: number }) {
+  async createProduct(data: { name: string; sku: string; price?: number; category_id?: string; warehouse_id?: string; initial_stock?: number; description?: string; type?: string; unit_of_measure?: string; cost_price?: number; sale_price?: number; min_stock?: number; max_stock?: number; track_stock?: boolean; barcode?: string; tax_id?: string; is_active?: boolean }) {
     return this.request<{ id: string }>('/products', { method: 'POST', body: JSON.stringify(data) });
   }
 
