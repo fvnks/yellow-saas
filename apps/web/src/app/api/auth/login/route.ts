@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await query(
-      'SELECT id, email, name, company_id, role, password_hash FROM profiles WHERE email = $1 AND status = $2',
+      'SELECT id, email, full_name, company_id, role, password_hash FROM profiles WHERE email = $1 AND status = $2',
       [email, 'active']
     );
 
@@ -25,6 +25,11 @@ export async function POST(request: NextRequest) {
     }
 
     const user = result.rows[0];
+
+    if (!user.password_hash) {
+      return errorResponse('Credenciales inválidas', 401);
+    }
+
     const validPassword = await bcrypt.compare(password, user.password_hash);
 
     if (!validPassword) {
@@ -35,7 +40,7 @@ export async function POST(request: NextRequest) {
       {
         id: user.id,
         email: user.email,
-        name: user.name,
+        name: user.full_name,
         company_id: user.company_id,
         role: user.role,
       },
@@ -49,7 +54,7 @@ export async function POST(request: NextRequest) {
       user: {
         id: user.id,
         email: user.email,
-        name: user.name,
+        name: user.full_name,
         role: user.role,
       },
     });
