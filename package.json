@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
+    "start": "cd apps/web && npx next start",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "db:push": "turbo run db:push --filter=db",

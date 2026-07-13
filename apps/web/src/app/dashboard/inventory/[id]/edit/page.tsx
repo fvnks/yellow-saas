@@ -191,7 +191,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
       await api.assignProductToPosition(selectedWarehouse, {
         product_id: id,
         zone_id: selectedZone,
-        shelf_id: selectedShelf || null,
+        shelf_id: selectedShelf,
         position_id: selectedPosition
       });
     }

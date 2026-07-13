@@ -26,23 +26,19 @@ const PermissionsContext = createContext<PermissionsContextType>({
   refresh: () => {},
 });
 
-export function PermissionsProvider({ children, companyId }: { children: ReactNode; companyId?: string }) {
+export function PermissionsProvider({ children }: { children: ReactNode }) {
   const [permissions, setPermissions] = useState<Permission[]>([]);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(() => {
-    if (!companyId) {
-      setLoading(false);
-      return;
-    }
-    const api = getApiClient(companyId);
+    const api = getApiClient();
     api.getPermissions()
       .then((data) => {
         setPermissions(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [companyId]);
+  }, []);
 
   useEffect(() => {
     load();

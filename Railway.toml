@@ -1,0 +1,5 @@
+[build]
+  command = "turbo run build --filter=@yellow-erp/web..."
+
+[deploy]
+  startCommand = "cd apps/web && npx next start"

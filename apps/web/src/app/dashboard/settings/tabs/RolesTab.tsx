@@ -210,12 +210,11 @@ export default function RolesTab() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {perms.map(perm => (
-                      <label key={perm.id} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-colors cursor-pointer"
-                        className={selectedPerms.includes(perm.id) ? ACTION_COLORS[perm.action] : 'border-slate-200 hover:border-slate-300'}
+                      <label key={perm.id} className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-colors cursor-pointer ${selectedPerms.includes(perm.id) ? ACTION_COLORS[perm.action] : 'border-slate-200 hover:border-slate-300'}`}
                       >
                         <input type="checkbox" checked={selectedPerms.includes(perm.id)} onChange={() => togglePerm(perm.id)} className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500" />
                         <span className="text-xs font-medium capitalize">{ACTION_LABELS[perm.action]}</span>
-                        <Badge variant={perm.action as 'create' | 'read' | 'update' | 'delete'} className="text-[9px]">{perm.description}</Badge>
+                        <Badge variant={(perm.action === 'create' ? 'success' : perm.action === 'read' ? 'info' : perm.action === 'update' ? 'warning' : 'danger') as 'success' | 'info' | 'warning' | 'danger'} className="text-[9px]">{perm.description}</Badge>
                       </label>
                     ))}
                   </div>
