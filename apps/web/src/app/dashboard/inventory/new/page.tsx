@@ -2,10 +2,39 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select } from '@yellow-erp/ui';
-import { ArrowLeft, Save, Package } from 'lucide-react';
+import { ArrowLeft, Save, Package, MapPin, Warehouse } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getApiClient } from '../../../../lib/api-client';
+
+interface LayoutPosition {
+  id: string;
+  name: string;
+  code: string;
+  capacity: number;
+  current_stock: number;
+  product?: { id: string; name: string; sku: string } | null;
+}
+
+interface LayoutShelf {
+  id: string;
+  name: string;
+  code: string;
+  positions: LayoutPosition[];
+}
+
+interface LayoutZone {
+  id: string;
+  name: string;
+  code: string;
+  color: string;
+  shelves: LayoutShelf[];
+}
+
+interface WarehouseOption {
+  id: string;
+  name: string;
+}
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -25,6 +54,76 @@ export default function NewProductPage() {
   const [barcode, setBarcode] = useState('');
   const [isActive, setIsActive] = useState(true);
 
+  const [warehouses, setWarehouses] = useState<WarehouseOption[]>([]);
+  const [selectedWarehouse, setSelectedWarehouse] = useState('');
+  const [zones, setZones] = useState<LayoutZone[]>([]);
+  const [selectedZone, setSelectedZone] = useState('');
+  const [shelves, setShelves] = useState<LayoutShelf[]>([]);
+  const [selectedShelf, setSelectedShelf] = useState('');
+  const [positions, setPositions] = useState<LayoutPosition[]>([]);
+  const [selectedPosition, setSelectedPosition] = useState('');
+  const [layoutLoading, setLayoutLoading] = useState(false);
+
+  useEffect(() => {
+    const api = getApiClient();
+    api.getWarehouses().then((res) => {
+      const list = (res.data || []).map((w: { id: string; name: string }) => ({ id: w.id, name: w.name }));
+      setWarehouses(list);
+    }).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (!selectedWarehouse) {
+      setZones([]);
+      setSelectedZone('');
+      setShelves([]);
+      setSelectedShelf('');
+      setPositions([]);
+      setSelectedPosition('');
+      return;
+    }
+    setLayoutLoading(true);
+    const api = getApiClient();
+    api.getWarehouseLayout(selectedWarehouse)
+      .then((data) => {
+        const layout = (data as { zones: LayoutZone[] }).zones || [];
+        setZones(layout);
+        setSelectedZone('');
+        setShelves([]);
+        setSelectedShelf('');
+        setPositions([]);
+        setSelectedPosition('');
+        setLayoutLoading(false);
+      })
+      .catch(() => setLayoutLoading(false));
+  }, [selectedWarehouse]);
+
+  useEffect(() => {
+    if (!selectedZone) {
+      setShelves([]);
+      setSelectedShelf('');
+      setPositions([]);
+      setSelectedPosition('');
+      return;
+    }
+    const zone = zones.find(z => z.id === selectedZone);
+    setShelves(zone?.shelves || []);
+    setSelectedShelf('');
+    setPositions([]);
+    setSelectedPosition('');
+  }, [selectedZone, zones]);
+
+  useEffect(() => {
+    if (!selectedShelf) {
+      setPositions([]);
+      setSelectedPosition('');
+      return;
+    }
+    const shelf = shelves.find(s => s.id === selectedShelf);
+    setPositions(shelf?.positions || []);
+    setSelectedPosition('');
+  }, [selectedShelf, shelves]);
+
   const handleSave = async () => {
     if (!name.trim() || !sku.trim()) {
       setError('Nombre y SKU son obligatorios');
@@ -34,10 +133,9 @@ export default function NewProductPage() {
     setError('');
     try {
       const api = getApiClient();
-      await api.createProduct({
+      const result = await api.createProduct({
         name: name.trim(),
         sku: sku.trim(),
-        price: salePrice,
         description: description.trim(),
         type,
         unit_of_measure: unitOfMeasure,
@@ -49,6 +147,17 @@ export default function NewProductPage() {
         barcode: barcode.trim(),
         is_active: isActive,
       } as any);
+
+      const productId = (result as any)?.id || (result as any)?.data?.id;
+      if (productId && selectedPosition && selectedWarehouse) {
+        await api.assignProductToPosition(selectedWarehouse, {
+          product_id: productId,
+          zone_id: selectedZone,
+          shelf_id: selectedShelf,
+          position_id: selectedPosition,
+        });
+      }
+
       router.push('/dashboard/inventory');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al crear el producto');
@@ -146,6 +255,69 @@ export default function NewProductPage() {
         <div className="space-y-6">
           <Card>
             <CardHeader>
+              <CardTitle>Ubicación en Bodega</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-xs text-slate-500">Selecciona dónde almacenar este producto en el layout de la bodega.</p>
+              <Select
+                label="Bodega"
+                value={selectedWarehouse}
+                onChange={(e) => setSelectedWarehouse(e.target.value)}
+                options={[
+                  { value: '', label: 'Sin asignar' },
+                  ...warehouses.map(w => ({ value: w.id, label: w.name })),
+                ]}
+              />
+              {selectedWarehouse && (
+                <>
+                  <Select
+                    label="Zona"
+                    value={selectedZone}
+                    onChange={(e) => setSelectedZone(e.target.value)}
+                    disabled={layoutLoading}
+                    options={[
+                      { value: '', label: 'Seleccionar zona...' },
+                      ...zones.map(z => ({ value: z.id, label: `${z.name} (${z.code || ''})` })),
+                    ]}
+                  />
+                  {selectedZone && (
+                    <Select
+                      label="Estante"
+                      value={selectedShelf}
+                      onChange={(e) => setSelectedShelf(e.target.value)}
+                      options={[
+                        { value: '', label: 'Seleccionar estante...' },
+                        ...shelves.map(s => ({ value: s.id, label: `${s.name} (${s.code || ''})` })),
+                      ]}
+                    />
+                  )}
+                  {selectedShelf && (
+                    <Select
+                      label="Posición"
+                      value={selectedPosition}
+                      onChange={(e) => setSelectedPosition(e.target.value)}
+                      options={[
+                        { value: '', label: 'Sin posición...' },
+                        ...positions.filter(p => !p.product).map(p => ({
+                          value: p.id,
+                          label: `${p.name} (${p.code || ''}) - Libre: ${p.capacity}`,
+                        })),
+                      ]}
+                    />
+                  )}
+                </>
+              )}
+              {selectedPosition && (
+                <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-emerald-600" />
+                  <span className="text-xs text-emerald-700 font-medium">Producto será ubicado en esta posición</span>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
               <CardTitle>Inventario</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -204,6 +376,17 @@ export default function NewProductPage() {
                   {costPrice > 0 ? `${(((salePrice - costPrice) / costPrice) * 100).toFixed(1)}%` : '—'}
                 </span>
               </div>
+              {selectedWarehouse && (
+                <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+                  <Warehouse className="w-4 h-4 text-indigo-600" />
+                  <span className="text-xs text-slate-600">
+                    {warehouses.find(w => w.id === selectedWarehouse)?.name}
+                    {selectedZone && ` > ${zones.find(z => z.id === selectedZone)?.name}`}
+                    {selectedShelf && ` > ${shelves.find(s => s.id === selectedShelf)?.name}`}
+                    {selectedPosition && ` > ${positions.find(p => p.id === selectedPosition)?.name}`}
+                  </span>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
