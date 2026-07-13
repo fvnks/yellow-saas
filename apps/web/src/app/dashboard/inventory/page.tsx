@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
-import { Plus, Search, Filter, Download, MoreVertical, Edit, Trash2, Package, Eye } from 'lucide-react';
+import { Plus, Search, Filter, Download, MoreVertical, Edit, Trash2, Package, Eye, ScanBarcode, Upload } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '../../../lib/api-client';
+import BarcodeScanner from '../../../components/barcode/barcode-scanner';
 
 interface Product {
   id: string;
@@ -26,6 +27,12 @@ export default function InventoryPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [showScanner, setShowScanner] = useState(false);
+
+  const handleBarcodeScan = useCallback((barcode: string) => {
+    setSearch(barcode);
+    setShowScanner(false);
+  }, []);
 
   useEffect(() => {
     const api = getApiClient();
@@ -78,6 +85,10 @@ export default function InventoryPage() {
           <p className="text-sm text-slate-500 mt-1">Gesti�n de productos y stock</p>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="secondary" size="sm" onClick={() => window.location.href = '/dashboard/inventory/import'}>
+            <Upload className="w-4 h-4 mr-2" />
+            Importar
+          </Button>
           <Button variant="secondary" size="sm">
             <Download className="w-4 h-4 mr-2" />
             Exportar
@@ -102,8 +113,15 @@ export default function InventoryPage() {
                 placeholder="Buscar por nombre, SKU..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                className="w-full pl-10 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
               />
+              <button
+                onClick={() => setShowScanner(true)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors"
+                title="Escanear codigo de barras"
+              >
+                <ScanBarcode className="w-4 h-4" />
+              </button>
             </div>
             <Select
               placeholder="Estado"
@@ -216,6 +234,10 @@ export default function InventoryPage() {
           <Button variant="secondary" size="sm" disabled>Siguiente</Button>
         </div>
       </div>
+
+      {showScanner && (
+        <BarcodeScanner onScan={handleBarcodeScan} onClose={() => setShowScanner(false)} />
+      )}
     </div>
   );
 }

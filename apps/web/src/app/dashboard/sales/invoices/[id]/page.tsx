@@ -3,7 +3,9 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Printer, Download, CreditCard, User, Calendar, FileText } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { getApiClient } from '../../../../../lib/api-client';
+import { generateInvoicePDF } from '../../../../../lib/pdf';
 
 interface InvoiceItem {
   id: string;
@@ -61,6 +63,30 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
     window.print();
   };
 
+  const handleDownloadPDF = () => {
+    if (!invoice) return;
+    generateInvoicePDF({
+      number: invoice.invoice_number,
+      date: invoice.invoice_date,
+      due_date: invoice.due_date,
+      company: { name: 'Yellow Technologies SpA', rut: '76.123.456-7', address: 'Av. Providencia 1234, Oficina 501, Santiago' },
+      customer: invoice.customer ? { name: invoice.customer.name, rut: invoice.customer.tax_id } : undefined,
+      items: (invoice.items || []).map(item => ({
+        name: item.product?.name || '',
+        sku: item.product?.sku || '',
+        quantity: item.quantity,
+        unit_price: item.unit_price,
+        discount: item.discount_percent,
+        tax_rate: item.tax_rate,
+        total: item.line_total,
+      })),
+      subtotal,
+      tax_amount: tax,
+      total,
+      notes: invoice.notes,
+    });
+  };
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -111,7 +137,7 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
           <button onClick={handlePrint} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <Printer className="w-4 h-4" /> Imprimir
           </button>
-          <button onClick={handlePrint} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          <button onClick={handleDownloadPDF} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <Download className="w-4 h-4" /> Descargar PDF
           </button>
         </div>
