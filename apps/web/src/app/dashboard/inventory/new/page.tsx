@@ -63,12 +63,17 @@ export default function NewProductPage() {
   const [positions, setPositions] = useState<LayoutPosition[]>([]);
   const [selectedPosition, setSelectedPosition] = useState('');
   const [layoutLoading, setLayoutLoading] = useState(false);
+  const [costCenters, setCostCenters] = useState<{ id: string; name: string; code: string }[]>([]);
+  const [selectedCostCenter, setSelectedCostCenter] = useState('');
 
   useEffect(() => {
     const api = getApiClient();
     api.getWarehouses().then((res) => {
       const list = (res.data || []).map((w: { id: string; name: string }) => ({ id: w.id, name: w.name }));
       setWarehouses(list);
+    }).catch(() => {});
+    api.getCostCenters().then((res) => {
+      setCostCenters((res.data || []).map((cc: any) => ({ id: cc.id, name: cc.name, code: cc.code })));
     }).catch(() => {});
   }, []);
 
@@ -146,6 +151,7 @@ export default function NewProductPage() {
         track_stock: trackStock,
         barcode: barcode.trim(),
         is_active: isActive,
+        cost_center_id: selectedCostCenter || undefined,
       } as any);
 
       const productId = (result as any)?.id || (result as any)?.data?.id;
@@ -236,6 +242,15 @@ export default function NewProductPage() {
                 />
               </div>
               <Input label="Código de Barras" value={barcode} onChange={(e) => setBarcode(e.target.value)} placeholder="Código de barras" />
+              <Select
+                label="Centro de Costo"
+                value={selectedCostCenter}
+                onChange={(e) => setSelectedCostCenter(e.target.value)}
+                options={[
+                  { value: '', label: 'Sin asignar' },
+                  ...costCenters.map(cc => ({ value: cc.id, label: `${cc.code} - ${cc.name}` })),
+                ]}
+              />
             </CardContent>
           </Card>
 

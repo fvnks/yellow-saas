@@ -435,6 +435,28 @@ export class ApiClient {
       total_purchases_month: number;
     }>('/dashboard/kpis');
   }
+
+  // Cost Centers
+  async getCostCenters(params?: { search?: string; page?: number; limit?: number }) {
+    const searchParams = new URLSearchParams();
+    if (params?.search) searchParams.set('search', params.search);
+    if (params?.page) searchParams.set('page', params.page.toString());
+    if (params?.limit) searchParams.set('limit', params.limit.toString());
+    const qs = searchParams.toString();
+    return this.request<{ data: any[]; total: number }>(`/cost-centers${qs ? `?${qs}` : ''}`);
+  }
+
+  async createCostCenter(data: { code: string; name: string; description?: string; parent_id?: string }) {
+    return this.request<any>('/cost-centers', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateCostCenter(id: string, data: { code?: string; name?: string; description?: string; parent_id?: string; is_active?: boolean }) {
+    return this.request<any>(`/cost-centers/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteCostCenter(id: string) {
+    return this.request<{ message: string }>(`/cost-centers/${id}`, { method: 'DELETE' });
+  }
 }
 
 // Singleton with dynamic company_id from JWT

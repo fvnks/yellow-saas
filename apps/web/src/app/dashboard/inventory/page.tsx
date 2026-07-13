@@ -17,6 +17,7 @@ interface Product {
   cost: number;
   status: string;
   warehouse: string;
+  cost_center?: { id: string; name: string; code: string } | null;
 }
 
 export default function InventoryPage() {
@@ -30,7 +31,7 @@ export default function InventoryPage() {
     const api = getApiClient();
     api.getProducts().then((res) => {
       const apiData = res.data || [];
-      const mapped = apiData.map((p) => ({
+      const mapped = (apiData as any[]).map((p) => ({
         id: p.id,
         name: p.name || '',
         sku: p.sku || '',
@@ -41,6 +42,7 @@ export default function InventoryPage() {
         cost: 0,
         status: 'active',
         warehouse: p.warehouse || '',
+        cost_center: p.cost_center || null,
       }));
       setProducts(mapped);
       setLoading(false);
@@ -145,6 +147,7 @@ export default function InventoryPage() {
                 <TableHead className="text-right">Costo</TableHead>
                 <TableHead>Estado</TableHead>
                 <TableHead>Bodega</TableHead>
+                <TableHead>Centro Costo</TableHead>
                 <TableHead className="w-12">Acciones</TableHead>
               </TableRow>
             </TableHeader>
@@ -172,6 +175,13 @@ export default function InventoryPage() {
                       <Badge variant={statusConfig.variant}>{statusConfig.label}</Badge>
                     </TableCell>
                     <TableCell>{product.warehouse}</TableCell>
+                    <TableCell>
+                      {product.cost_center ? (
+                        <span className="text-xs text-slate-600">{product.cost_center.code}</span>
+                      ) : (
+                        <span className="text-xs text-slate-400">—</span>
+                      )}
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-1">
                         <Link href={`/dashboard/inventory/${product.id}`}>
