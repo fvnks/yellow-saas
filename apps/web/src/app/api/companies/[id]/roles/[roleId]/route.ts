@@ -3,7 +3,6 @@ import {
   getCompanyId,
   successResponse,
   errorResponse,
-  isDemoMode,
 } from '../../../../lib/helpers';
 import { NextRequest } from 'next/server';
 
@@ -14,10 +13,6 @@ export async function GET(
   try {
     const companyId = params.id;
     if (!companyId) return errorResponse('Company ID not found', 400);
-
-    if (isDemoMode) {
-      return successResponse({ id: params.roleId, name: 'Demo Role', description: '', is_system: false });
-    }
 
     const { rows: roleRows } = await query(
       `SELECT * FROM roles WHERE id = $1 AND company_id = $2`,
@@ -53,10 +48,6 @@ export async function PUT(
     const body = await request.json();
     const { name, description } = body;
 
-    if (isDemoMode) {
-      return successResponse({ id: params.roleId, name, description, is_system: false });
-    }
-
     try {
       const { rows } = await query(
         `UPDATE roles SET name = $1, description = $2, updated_at = NOW()
@@ -84,10 +75,6 @@ export async function DELETE(
   try {
     const companyId = params.id;
     if (!companyId) return errorResponse('Company ID not found', 400);
-
-    if (isDemoMode) {
-      return successResponse({ deleted: true });
-    }
 
     const { rows: role } = await query(
       `SELECT is_system FROM roles WHERE id = $1 AND company_id = $2`,

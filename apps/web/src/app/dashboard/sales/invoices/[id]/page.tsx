@@ -48,7 +48,7 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const api = getApiClient('demo-company-id');
+    const api = getApiClient();
     api.getInvoice(id)
       .then((data) => {
         setInvoice(data as unknown as InvoiceDetail);

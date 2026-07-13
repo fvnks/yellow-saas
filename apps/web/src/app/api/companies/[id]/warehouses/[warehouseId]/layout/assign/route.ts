@@ -3,7 +3,6 @@ import {
   getCompanyId,
   successResponse,
   errorResponse,
-  isDemoMode,
 } from '../../../../../../lib/helpers';
 import { NextRequest } from 'next/server';
 
@@ -12,10 +11,6 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     const { warehouseId } = params;
     const body = await request.json();
     const { position_id, product_id } = body;
-
-    if (isDemoMode) {
-      return successResponse({ assigned: true, position_id, product_id });
-    }
 
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);

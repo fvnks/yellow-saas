@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select, KPICard } from '@yellow-erp/ui';
@@ -6,7 +6,7 @@ import { Plus, Edit, Trash2, Copy, Tag, Percent, Star, List } from 'lucide-react
 import { getApiClient } from '../../../lib/api-client';
 
 const fallbackLists = [
-  { id: '1', name: 'Lista General', description: 'Precios estándar para todos los clientes', products: 156, status: 'default', createdAt: '2026-01-15' },
+  { id: '1', name: 'Lista General', description: 'Precios estÃ¡ndar para todos los clientes', products: 156, status: 'default', createdAt: '2026-01-15' },
   { id: '2', name: 'Mayoristas', description: 'Descuentos por volumen para distribuidores', products: 89, status: 'active', createdAt: '2026-02-20' },
   { id: '3', name: 'VIP', description: 'Precios preferenciales para clientes premium', products: 45, status: 'inactive', createdAt: '2026-03-10' },
 ];
@@ -15,7 +15,7 @@ const fallbackProducts = [
   { id: '1', name: 'Laptop HP ProBook 450 G10', sku: 'LP-HP-450', listPrice: 650000, generalPrice: 650000, difference: 0 },
   { id: '2', name: 'Mouse Logitech MX Master 3S', sku: 'MS-LG-MX3', listPrice: 79000, generalPrice: 89000, difference: -10000 },
   { id: '3', name: 'Monitor Dell UltraSharp 27"', sku: 'MN-DELL-27', listPrice: 395000, generalPrice: 420000, difference: -25000 },
-  { id: '4', name: 'Teclado Mecánico Keychron K2', sku: 'KB-KC-K2', listPrice: 85000, generalPrice: 95000, difference: -10000 },
+  { id: '4', name: 'Teclado MecÃ¡nico Keychron K2', sku: 'KB-KC-K2', listPrice: 85000, generalPrice: 95000, difference: -10000 },
   { id: '5', name: 'Disco SSD Samsung 980 PRO 1TB', sku: 'SSD-SAM-980', listPrice: 99000, generalPrice: 110000, difference: -11000 },
   { id: '6', name: 'Impresora HP LaserJet Pro', sku: 'IMP-HP-LJ', listPrice: 265000, generalPrice: 280000, difference: -15000 },
 ];
@@ -27,7 +27,7 @@ export default function PriceListsPage() {
   const [selectedList, setSelectedList] = useState('1');
 
   useEffect(() => {
-    const api = getApiClient('demo-company-id');
+    const api = getApiClient();
     api.getPriceLists()
       .then(res => {
         if (res.data && res.data.length > 0) {
@@ -65,7 +65,7 @@ export default function PriceListsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Listas de Precio</h1>
-          <p className="text-sm text-slate-500 mt-1">Gestión de precios y descuentos por cliente</p>
+          <p className="text-sm text-slate-500 mt-1">GestiÃ³n de precios y descuentos por cliente</p>
         </div>
         <Button>
           <Plus className="w-4 h-4 mr-2" />
@@ -101,7 +101,7 @@ export default function PriceListsPage() {
         <KPICard
           label="Lista por Defecto"
           value={defaultList}
-          change="Aplicada automáticamente"
+          change="Aplicada automÃ¡ticamente"
           changeType="neutral"
           icon={Star}
           iconColor="blue"
@@ -117,7 +117,7 @@ export default function PriceListsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Nombre</TableHead>
-                <TableHead>Descripción</TableHead>
+                <TableHead>DescripciÃ³n</TableHead>
                 <TableHead>Productos</TableHead>
                 <TableHead>Estado</TableHead>
                 <TableHead>Creada</TableHead>
@@ -201,3 +201,4 @@ export default function PriceListsPage() {
     </div>
   );
 }
+

@@ -41,7 +41,7 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const api = getApiClient('demo-company-id');
+    const api = getApiClient();
     api.getDeliveryGuide(id)
       .then((data) => {
         setGuide(data as unknown as DeliveryGuideDetail);

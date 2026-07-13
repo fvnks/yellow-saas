@@ -5,18 +5,11 @@ import {
   errorResponse,
   parseSearchParams,
   paginatedResponse,
-  isDemoMode,
 } from '../../../lib/helpers';
 import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
-    if (isDemoMode) {
-      const { page, limit } = parseSearchParams(request);
-      const allData: unknown[] = [];
-      return paginatedResponse(allData, allData.length, page, limit);
-    }
-
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
@@ -77,7 +70,13 @@ export async function GET(request: NextRequest) {
     params.push(offset, limit);
     const { rows } = await query(
       `SELECT al.*,
-        (SELECT json_build_object('id', pr.id, 'full_name', pr.full_name, 'email', pr.email) FROM profiles pr WHERE pr.id = al.user_id) as "user"
+        (SELECT json_build_object('id', pr.id, 'full_name', pr.full_name, 'email', pr.email) FROM profiles pr WHERE pr.id = al.user_id) as "user",
+        CASE
+          WHEN al.old_data IS NOT NULL AND al.new_data IS NOT NULL THEN 'Updated'
+          WHEN al.old_data IS NOT NULL THEN 'Deleted'
+          WHEN al.new_data IS NOT NULL THEN 'Created'
+          ELSE al.action
+        END as details
        FROM audit_logs al
        ${where}
        ORDER BY al.${sort} ${order === 'asc' ? 'ASC' : 'DESC'}

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Badge, Input, Select, KPICard } from '@yellow-erp/ui';
@@ -6,18 +6,18 @@ import { ScrollText, Search, Filter, Download, Eye, Calendar, User, Activity, Al
 import { getApiClient } from '../../../lib/api-client';
 
 const fallbackLogs = [
-  { id: 1, timestamp: '2026-07-11 14:32:15', user: 'admin@yellow.cl', action: 'create', module: 'Ventas', entity: 'Venta #VT-2026-089', details: 'Creó venta a Empresa Norte por $3.250.000', ip: '192.168.1.100' },
-  { id: 2, timestamp: '2026-07-11 14:28:45', user: 'juan@yellow.cl', action: 'update', module: 'Inventario', entity: 'Producto LP-HP-450', details: 'Actualizó stock de 15 a 12 unidades', ip: '192.168.1.101' },
-  { id: 3, timestamp: '2026-07-11 13:15:22', user: 'admin@yellow.cl', action: 'delete', module: 'Clientes', entity: 'Cliente #CLI-023', details: 'Eliminó cliente "Empresa Test SpA"', ip: '192.168.1.100' },
-  { id: 4, timestamp: '2026-07-11 12:45:10', user: 'maria@yellow.cl', action: 'login', module: 'Auth', entity: '-', details: 'Inicio de sesión exitoso', ip: '10.0.0.55' },
-  { id: 5, timestamp: '2026-07-11 11:30:00', user: 'admin@yellow.cl', action: 'create', module: 'Compras', entity: 'Orden OC-2026-015', details: 'Creó orden de compra a Distribuidora Chile por $1.890.000', ip: '192.168.1.100' },
-  { id: 6, timestamp: '2026-07-11 10:20:33', user: 'juan@yellow.cl', action: 'update', module: 'Facturación', entity: 'Factura FAC-2026-044', details: 'Cambió estado de "Borrador" a "Enviada"', ip: '192.168.1.101' },
-  { id: 7, timestamp: '2026-07-11 09:15:18', user: 'admin@yellow.cl', action: 'config', module: 'Configuración', entity: 'Empresa', details: 'Actualizó datos de la empresa', ip: '192.168.1.100' },
-  { id: 8, timestamp: '2026-07-10 18:45:00', user: 'maria@yellow.cl', action: 'export', module: 'Reportes', entity: 'Reporte Mensual', details: 'Exportó reporte de ventas junio 2026 (PDF)', ip: '10.0.0.55' },
-  { id: 9, timestamp: '2026-07-10 16:22:11', user: 'admin@yellow.cl', action: 'create', module: 'Nómina', entity: 'Nómina NÓM-2026-006', details: 'Generó nómina de junio 2026 para 6 empleados', ip: '192.168.1.100' },
-  { id: 10, timestamp: '2026-07-10 14:10:55', user: 'juan@yellow.cl', action: 'update', module: 'Almacenes', entity: 'Stock BC-01', details: 'Registró movimiento de entrada: +50 unidades SKU-001', ip: '192.168.1.101' },
-  { id: 11, timestamp: '2026-07-10 11:05:30', user: 'admin@yellow.cl', action: 'delete', module: 'Proveedores', entity: 'Proveedor SUP-008', details: 'Eliminó proveedor "Distribuidora Test"', ip: '192.168.1.100' },
-  { id: 12, timestamp: '2026-07-10 09:00:00', user: 'maria@yellow.cl', action: 'login', module: 'Auth', entity: '-', details: 'Inicio de sesión exitoso', ip: '10.0.0.55' },
+  { id: 1, timestamp: '2026-07-11 14:32:15', user: 'admin@yellow.cl', action: 'create', module: 'Ventas', entity: 'Venta #VT-2026-089', details: 'CreÃ³ venta a Empresa Norte por $3.250.000', ip: '192.168.1.100' },
+  { id: 2, timestamp: '2026-07-11 14:28:45', user: 'juan@yellow.cl', action: 'update', module: 'Inventario', entity: 'Producto LP-HP-450', details: 'ActualizÃ³ stock de 15 a 12 unidades', ip: '192.168.1.101' },
+  { id: 3, timestamp: '2026-07-11 13:15:22', user: 'admin@yellow.cl', action: 'delete', module: 'Clientes', entity: 'Cliente #CLI-023', details: 'EliminÃ³ cliente "Empresa Test SpA"', ip: '192.168.1.100' },
+  { id: 4, timestamp: '2026-07-11 12:45:10', user: 'maria@yellow.cl', action: 'login', module: 'Auth', entity: '-', details: 'Inicio de sesiÃ³n exitoso', ip: '10.0.0.55' },
+  { id: 5, timestamp: '2026-07-11 11:30:00', user: 'admin@yellow.cl', action: 'create', module: 'Compras', entity: 'Orden OC-2026-015', details: 'CreÃ³ orden de compra a Distribuidora Chile por $1.890.000', ip: '192.168.1.100' },
+  { id: 6, timestamp: '2026-07-11 10:20:33', user: 'juan@yellow.cl', action: 'update', module: 'FacturaciÃ³n', entity: 'Factura FAC-2026-044', details: 'CambiÃ³ estado de "Borrador" a "Enviada"', ip: '192.168.1.101' },
+  { id: 7, timestamp: '2026-07-11 09:15:18', user: 'admin@yellow.cl', action: 'config', module: 'ConfiguraciÃ³n', entity: 'Empresa', details: 'ActualizÃ³ datos de la empresa', ip: '192.168.1.100' },
+  { id: 8, timestamp: '2026-07-10 18:45:00', user: 'maria@yellow.cl', action: 'export', module: 'Reportes', entity: 'Reporte Mensual', details: 'ExportÃ³ reporte de ventas junio 2026 (PDF)', ip: '10.0.0.55' },
+  { id: 9, timestamp: '2026-07-10 16:22:11', user: 'admin@yellow.cl', action: 'create', module: 'NÃ³mina', entity: 'NÃ³mina NÃ“M-2026-006', details: 'GenerÃ³ nÃ³mina de junio 2026 para 6 empleados', ip: '192.168.1.100' },
+  { id: 10, timestamp: '2026-07-10 14:10:55', user: 'juan@yellow.cl', action: 'update', module: 'Almacenes', entity: 'Stock BC-01', details: 'RegistrÃ³ movimiento de entrada: +50 unidades SKU-001', ip: '192.168.1.101' },
+  { id: 11, timestamp: '2026-07-10 11:05:30', user: 'admin@yellow.cl', action: 'delete', module: 'Proveedores', entity: 'Proveedor SUP-008', details: 'EliminÃ³ proveedor "Distribuidora Test"', ip: '192.168.1.100' },
+  { id: 12, timestamp: '2026-07-10 09:00:00', user: 'maria@yellow.cl', action: 'login', module: 'Auth', entity: '-', details: 'Inicio de sesiÃ³n exitoso', ip: '10.0.0.55' },
 ];
 
 const actionConfig: Record<string, { label: string; icon: typeof CheckCircle2; color: string }> = {
@@ -34,10 +34,10 @@ const moduleColors: Record<string, string> = {
   'Inventario': 'bg-blue-50 text-blue-700 border-blue-200',
   'Clientes': 'bg-indigo-50 text-indigo-700 border-indigo-200',
   'Compras': 'bg-amber-50 text-amber-700 border-amber-200',
-  'Facturación': 'bg-purple-50 text-purple-700 border-purple-200',
-  'Configuración': 'bg-slate-100 text-slate-700 border-slate-200',
+  'FacturaciÃ³n': 'bg-purple-50 text-purple-700 border-purple-200',
+  'ConfiguraciÃ³n': 'bg-slate-100 text-slate-700 border-slate-200',
   'Reportes': 'bg-cyan-50 text-cyan-700 border-cyan-200',
-  'Nómina': 'bg-pink-50 text-pink-700 border-pink-200',
+  'NÃ³mina': 'bg-pink-50 text-pink-700 border-pink-200',
   'Almacenes': 'bg-orange-50 text-orange-700 border-orange-200',
   'Proveedores': 'bg-teal-50 text-teal-700 border-teal-200',
   'Auth': 'bg-violet-50 text-violet-700 border-violet-200',
@@ -51,15 +51,15 @@ export default function AuditPage() {
   const [moduleFilter, setModuleFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('all');
 
-  useEffect(() => {
-    const api = getApiClient('demo-company-id');
+useEffect(() => {
+    const api = getApiClient();
     api.getAuditLogs()
       .then(res => {
         if (res.data && res.data.length > 0) {
           const mapped = res.data.map((log, index) => ({
             id: index + 1,
             timestamp: log.created_at,
-            user: log.user_id || 'unknown',
+            user: log.user?.full_name || log.user?.email || 'unknown',
             action: log.action,
             module: log.entity_type,
             entity: log.entity_id || '-',
@@ -88,7 +88,7 @@ export default function AuditPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Auditoría</h1>
+          <h1 className="text-xl font-bold text-slate-900">AuditorÃ­a</h1>
           <p className="text-sm text-slate-500 mt-1">Registro de actividades y cambios del sistema</p>
         </div>
         <Button variant="secondary">
@@ -99,9 +99,9 @@ export default function AuditPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <KPICard label="Eventos Hoy" value={auditLogs.filter(l => l.timestamp.startsWith('2026-07-11')).length} icon={Activity} trend="Registrados" trendUp={true} />
-        <KPICard label="Usuarios Activos" value={new Set(auditLogs.map(l => l.user)).size} icon={User} trend="Últimas 24h" trendUp={true} />
-        <KPICard label="Eliminaciones" value={auditLogs.filter(l => l.action === 'delete').length} icon={XCircle} trend="Última semana" trendUp={false} />
-        <KPICard label="Módulos Afectados" value={modules.length} icon={ScrollText} trend="Diferentes módulos" trendUp={true} />
+        <KPICard label="Usuarios Activos" value={new Set(auditLogs.map(l => l.user)).size} icon={User} trend="Ãšltimas 24h" trendUp={true} />
+        <KPICard label="Eliminaciones" value={auditLogs.filter(l => l.action === 'delete').length} icon={XCircle} trend="Ãšltima semana" trendUp={false} />
+        <KPICard label="MÃ³dulos Afectados" value={modules.length} icon={ScrollText} trend="Diferentes mÃ³dulos" trendUp={true} />
       </div>
 
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
@@ -125,7 +125,7 @@ export default function AuditPage() {
               { value: 'update', label: 'Actualizar' },
               { value: 'delete', label: 'Eliminar' },
               { value: 'login', label: 'Login' },
-              { value: 'config', label: 'Configuración' },
+              { value: 'config', label: 'ConfiguraciÃ³n' },
               { value: 'export', label: 'Exportar' },
             ]}
           />
@@ -133,7 +133,7 @@ export default function AuditPage() {
             value={moduleFilter}
             onChange={(e) => setModuleFilter(e.target.value)}
             options={[
-              { value: 'all', label: 'Todos los módulos' },
+              { value: 'all', label: 'Todos los mÃ³dulos' },
               ...modules.map(m => ({ value: m, label: m })),
             ]}
           />
@@ -147,8 +147,8 @@ export default function AuditPage() {
               <tr className="border-b border-slate-200">
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha/Hora</th>
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Usuario</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acción</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Módulo</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">AcciÃ³n</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">MÃ³dulo</th>
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Entidad</th>
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Detalles</th>
                 <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">IP</th>
@@ -191,9 +191,10 @@ export default function AuditPage() {
       {filteredLogs.length === 0 && (
         <div className="text-center py-12">
           <ScrollText className="w-12 h-12 text-slate-200 mx-auto mb-3" />
-          <p className="text-sm text-slate-500">No se encontraron registros de auditoría</p>
+          <p className="text-sm text-slate-500">No se encontraron registros de auditorÃ­a</p>
         </div>
       )}
     </div>
   );
 }
+

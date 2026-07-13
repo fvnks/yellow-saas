@@ -3,26 +3,12 @@ import {
   getCompanyId,
   successResponse,
   errorResponse,
-  isDemoMode,
 } from '../../../../lib/helpers';
 import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest, { params }: { params: { id: string; quotationId: string } }) {
   try {
     const { quotationId } = params;
-
-    if (isDemoMode) {
-      return successResponse({
-        id: quotationId,
-        number: 'COT-000001',
-        supplier_id: '1',
-        supplier: { id: '1', name: 'Logistica Norte SpA' },
-        status: 'pending',
-        quote_date: new Date().toISOString(),
-        total_amount: 1500000,
-        items: [],
-      });
-    }
 
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
@@ -54,10 +40,6 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   try {
     const { quotationId } = params;
     const body = await request.json();
-
-    if (isDemoMode) {
-      return successResponse({ id: quotationId, ...body, updated_at: new Date().toISOString() });
-    }
 
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
@@ -136,10 +118,6 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 export async function DELETE(request: NextRequest, { params }: { params: { id: string; quotationId: string } }) {
   try {
     const { quotationId } = params;
-
-    if (isDemoMode) {
-      return successResponse({ id: quotationId, deleted: true });
-    }
 
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);

@@ -3,7 +3,6 @@ import {
   getCompanyId,
   successResponse,
   errorResponse,
-  isDemoMode,
 } from '../../../../../lib/helpers';
 import { NextRequest } from 'next/server';
 
@@ -19,10 +18,6 @@ export async function PUT(
     const { permission_ids } = body;
 
     if (!Array.isArray(permission_ids)) return errorResponse('permission_ids must be an array', 400);
-
-    if (isDemoMode) {
-      return successResponse({ updated: true });
-    }
 
     // Verify role belongs to company
     const { rows: role } = await query(

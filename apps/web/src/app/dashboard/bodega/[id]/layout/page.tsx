@@ -70,7 +70,7 @@ export default function WarehouseLayoutPage({ params }: { params: { id: string }
   const [selectedShelfId, setSelectedShelfId] = useState<string | null>(null);
 
   useEffect(() => {
-    const api = getApiClient('demo-company-id');
+    const api = getApiClient();
     api.getWarehouseLayout(id)
       .then((data) => {
         setZones((data as unknown as { zones: Zone[] }).zones || []);
@@ -81,8 +81,8 @@ export default function WarehouseLayoutPage({ params }: { params: { id: string }
 
   const handleSave = async () => {
     setSaving(true);
-    const api = getApiClient('demo-company-id');
-    await api.saveWarehouseLayout(id, { zones });
+    const api = getApiClient();
+    await api.updateWarehouseLayout(id, { zones, shelves: [], positions: [] });
     setSaving(false);
   };
 
