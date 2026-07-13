@@ -37,9 +37,8 @@ function LoginForm() {
       }
 
       document.cookie = `auth-token=${data.data.token}; path=/; max-age=${7 * 24 * 60 * 60}`;
-      router.push(redirect);
-      router.refresh();
-    } catch {
+      window.location.href = redirect;
+    } catch (err) {
       setError('Error de conexión. Intenta nuevamente.');
       setLoading(false);
     }
