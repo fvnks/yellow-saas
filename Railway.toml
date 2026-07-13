@@ -2,4 +2,4 @@
   command = "turbo run build --filter=@yellow-erp/web..."
 
 [deploy]
-  startCommand = "node server.js"
+  startCommand = "node apps/web/server.js"
