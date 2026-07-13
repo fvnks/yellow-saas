@@ -21,15 +21,28 @@ function LoginForm() {
     setError('');
     setLoading(true);
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (email === 'admin@yellow.cl' && password === 'demo123') {
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        setError(data.error?.message || 'Credenciales inválidas');
+        setLoading(false);
+        return;
+      }
+
+      document.cookie = `auth-token=${data.data.token}; path=/; max-age=${7 * 24 * 60 * 60}`;
       router.push(redirect);
       router.refresh();
-    } else {
-      setError('Credenciales inválidas. Usa: admin@yellow.cl / demo123');
+    } catch {
+      setError('Error de conexión. Intenta nuevamente.');
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -61,7 +74,7 @@ function LoginForm() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@yellow.cl"
+                placeholder="admin@yellow-erp.cl"
                 required
                 autoComplete="email"
               />
@@ -94,8 +107,8 @@ function LoginForm() {
             <div className="mt-6 p-4 bg-slate-50 rounded-lg">
               <p className="text-xs text-slate-600 text-center mb-2">Credenciales de prueba:</p>
               <div className="text-xs text-slate-500 font-mono space-y-1 text-center">
-                <p>Email: admin@yellow.cl</p>
-                <p>Pass: demo123</p>
+                <p>Email: admin@yellow-erp.cl</p>
+                <p>Pass: admin123</p>
               </div>
             </div>
           </CardContent>
