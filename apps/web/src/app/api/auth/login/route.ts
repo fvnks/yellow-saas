@@ -21,19 +21,19 @@ export async function POST(request: NextRequest) {
     );
 
     if (result.rows.length === 0) {
-      return errorResponse('Credenciales inválidas', 401);
+      return errorResponse('Usuario no encontrado', 401);
     }
 
     const user = result.rows[0];
 
     if (!user.password_hash) {
-      return errorResponse('Credenciales inválidas', 401);
+      return errorResponse('Usuario sin contraseña', 401);
     }
 
     const validPassword = await bcrypt.compare(password, user.password_hash);
 
     if (!validPassword) {
-      return errorResponse('Credenciales inválidas', 401);
+      return errorResponse('Contraseña incorrecta', 401);
     }
 
     const token = jwt.sign(
