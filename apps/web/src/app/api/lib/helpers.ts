@@ -10,11 +10,11 @@ export async function getCompanyId(request: NextRequest): Promise<string | null>
 }
 
 export function successResponse(data: unknown, status = 200) {
-  return NextResponse.json({ data }, { status });
+  return NextResponse.json({ success: true, data }, { status });
 }
 
 export function errorResponse(message: string, status = 400) {
-  return NextResponse.json({ error: message }, { status });
+  return NextResponse.json({ success: false, error: { message } }, { status });
 }
 
 export function paginatedResponse(data: unknown[], total: number, page: number, limit: number) {
