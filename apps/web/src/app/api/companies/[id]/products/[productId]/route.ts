@@ -1,5 +1,5 @@
 import { query } from '../../../../lib/db';
-import { getCompanyId, successResponse, errorResponse, isDemoMode } from '../../../../lib/helpers';
+import { getCompanyId, successResponse, errorResponse } from '../../../../lib/helpers';
 import { NextRequest } from 'next/server';
 
 export async function GET(
@@ -7,19 +7,6 @@ export async function GET(
   { params }: { params: { id: string; productId: string } }
 ) {
   try {
-    if (isDemoMode) {
-      const demoProducts: Record<string, unknown> = {
-        '1': { id: '1', sku: 'LP-HP-450', name: 'Laptop HP ProBook 450', description: 'Laptop empresarial', type: 'product', unit_of_measure: 'un', cost_price: 450000, sale_price: 650000, min_stock: 5, max_stock: 50, track_stock: true, barcode: '7891234567890', is_active: true },
-        '2': { id: '2', sku: 'MS-LG-MX3', name: 'Mouse Logitech MX Master 3S', description: 'Mouse inalámbrico', type: 'product', unit_of_measure: 'un', cost_price: 55000, sale_price: 89000, min_stock: 10, max_stock: 200, track_stock: true, barcode: '7891234567891', is_active: true },
-        '3': { id: '3', sku: 'MN-DELL-27', name: 'Monitor Dell 27" 4K', description: 'Monitor 4K', type: 'product', unit_of_measure: 'un', cost_price: 280000, sale_price: 420000, min_stock: 3, max_stock: 30, track_stock: true, barcode: '7891234567892', is_active: true },
-        '4': { id: '4', sku: 'KB-KC-K2', name: 'Teclado Mecánico Keychron K2', description: 'Teclado wireless', type: 'product', unit_of_measure: 'un', cost_price: 60000, sale_price: 95000, min_stock: 5, max_stock: 60, track_stock: true, barcode: '7891234567893', is_active: true },
-        '5': { id: '5', sku: 'SSD-SAM-980', name: 'Disco SSD Samsung 980 PRO 1TB', description: 'SSD NVMe', type: 'product', unit_of_measure: 'un', cost_price: 70000, sale_price: 110000, min_stock: 10, max_stock: 100, track_stock: true, barcode: '7891234567894', is_active: true },
-      };
-      const product = demoProducts[params.productId];
-      if (!product) return errorResponse('Product not found', 404);
-      return successResponse(product);
-    }
-
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
@@ -56,11 +43,6 @@ export async function PUT(
   { params }: { params: { id: string; productId: string } }
 ) {
   try {
-    if (isDemoMode) {
-      const body = await request.json();
-      return successResponse({ id: params.productId, ...body, updated_at: new Date().toISOString() });
-    }
-
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
@@ -93,10 +75,6 @@ export async function DELETE(
   { params }: { params: { id: string; productId: string } }
 ) {
   try {
-    if (isDemoMode) {
-      return successResponse({ message: 'Product deleted successfully' });
-    }
-
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
 

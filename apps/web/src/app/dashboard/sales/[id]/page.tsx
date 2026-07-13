@@ -45,7 +45,7 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const api = getApiClient('demo-company-id');
+    const api = getApiClient();
     api.getSalesOrder(id)
       .then((data) => {
         setOrder(data as unknown as OrderDetail);

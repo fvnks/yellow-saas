@@ -35,7 +35,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const api = getApiClient('demo-company-id');
+    const api = getApiClient();
     api.getProduct(id)
       .then((data) => {
         setProduct(data as unknown as ProductData);

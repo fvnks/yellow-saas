@@ -38,7 +38,7 @@ const ACTION_COLORS: Record<string, string> = {
   delete: 'bg-rose-50 text-rose-700 border-rose-200',
 };
 
-export default function RolesTab({ companyId = 'demo-company-id' }: { companyId?: string }) {
+export default function RolesTab() {
   const [roles, setRoles] = useState<Role[]>([]);
   const [allPermissions, setAllPermissions] = useState<Permission[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +50,7 @@ export default function RolesTab({ companyId = 'demo-company-id' }: { companyId?
   const [saving, setSaving] = useState(false);
 
   const loadRoles = useCallback(() => {
-    const api = getApiClient(companyId);
+    const api = getApiClient();
     Promise.all([api.getRoles(), api.getPermissions()])
       .then(([r, p]) => {
         setRoles(Array.isArray(r?.data) ? r.data : Array.isArray(r) ? r : []);
@@ -58,7 +58,7 @@ export default function RolesTab({ companyId = 'demo-company-id' }: { companyId?
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [companyId]);
+  }, []);
 
   useEffect(() => { loadRoles(); }, [loadRoles]);
 
@@ -66,7 +66,7 @@ export default function RolesTab({ companyId = 'demo-company-id' }: { companyId?
     if (!newRoleName.trim()) return;
     setSaving(true);
     try {
-      const api = getApiClient(companyId);
+      const api = getApiClient();
       await api.createRole({ name: newRoleName, description: newRoleDesc });
       setNewRoleName('');
       setNewRoleDesc('');
@@ -85,7 +85,7 @@ export default function RolesTab({ companyId = 'demo-company-id' }: { companyId?
     if (!editingRole) return;
     setSaving(true);
     try {
-      const api = getApiClient(companyId);
+      const api = getApiClient();
       await api.updateRolePermissions(editingRole.id, selectedPerms);
       setEditingRole(null);
       setSelectedPerms([]);
@@ -96,7 +96,7 @@ export default function RolesTab({ companyId = 'demo-company-id' }: { companyId?
 
   const handleDeleteRole = async (roleId: string) => {
     if (!confirm('Eliminar este rol?')) return;
-    const api = getApiClient(companyId);
+    const api = getApiClient();
     await api.deleteRole(roleId);
     loadRoles();
   };
@@ -149,23 +149,29 @@ export default function RolesTab({ companyId = 'demo-company-id' }: { companyId?
               </tr>
             </thead>
             <tbody>
-              {roles.map((role) => (
-                <tr key={role.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                  <td className="px-6 py-3 text-xs font-medium text-slate-900">{role.name}</td>
-                  <td className="px-6 py-3 text-xs text-slate-500">{role.description || '—'}</td>
+              {roles.map(role => (
+                <tr key={role.id} className="border-b border-slate-100 hover:bg-slate-50">
+                  <td className="px-6 py-3 text-sm font-medium text-slate-900">{role.name}</td>
+                  <td className="px-6 py-3 text-sm text-slate-500 max-w-[200px] truncate">{role.description || '—'}</td>
                   <td className="px-6 py-3">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border ${role.is_system ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-slate-100 text-slate-600 border-slate-200'}`}>
-                      {role.is_system ? 'Sistema' : 'Personalizado'}
-                    </span>
+                    <Badge variant={role.is_system ? 'info' : 'neutral'}>{role.is_system ? 'Sistema' : 'Personalizado'}</Badge>
                   </td>
-                  <td className="px-6 py-3 text-xs text-slate-600">{role.permissions?.length || 0}</td>
-                  <td className="px-6 py-3 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <button onClick={() => handleEditRole(role)} className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                  <td className="px-6 py-3 text-sm text-slate-500">{role.permissions?.length || 0} permisos</td>
+                  <td className="px-6 py-3">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleEditRole(role)}
+                        className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"
+                        title="Editar permisos"
+                      >
                         <Pencil className="w-4 h-4" />
                       </button>
                       {!role.is_system && (
-                        <button onClick={() => handleDeleteRole(role.id)} className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
+                        <button
+                          onClick={() => handleDeleteRole(role.id)}
+                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                          title="Eliminar rol"
+                        >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       )}
@@ -174,80 +180,76 @@ export default function RolesTab({ companyId = 'demo-company-id' }: { companyId?
                 </tr>
               ))}
               {roles.length === 0 && (
-                <tr><td colSpan={5} className="px-6 py-12 text-center text-xs text-slate-500">No hay roles creados</td></tr>
+                <tr>
+                  <td colSpan={5} className="px-6 py-8 text-center text-sm text-slate-400">No hay roles personalizados</td>
+                </tr>
               )}
             </tbody>
           </table>
         </div>
       </div>
 
-      {showNewRole && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
-          <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-slate-900">Nuevo Rol</h3>
-            <button onClick={() => setShowNewRole(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
-          </div>
-          <div className="p-6 space-y-4">
-            <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Nombre del Rol</label>
-              <input type="text" value={newRoleName} onChange={(e) => setNewRoleName(e.target.value)} placeholder="Ej: Vendedor"
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+      {editingRole && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-in fade-in-0">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto animate-in zoom-in-95 fade-in-0">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-slate-900">Permisos para: {editingRole.name}</h3>
+              <button onClick={() => { setEditingRole(null); setSelectedPerms([]); }} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded"><X className="w-5 h-5" /></button>
             </div>
-            <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Descripcion</label>
-              <input type="text" value={newRoleDesc} onChange={(e) => setNewRoleDesc(e.target.value)} placeholder="Describe las funciones de este rol"
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+            <div className="p-6 space-y-6">
+              {Object.entries(groupedPerms).map(([module, perms]) => (
+                <div key={module} className="border border-slate-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium text-slate-900 capitalize">{MODULE_LABELS[module] || module}</h4>
+                    <button
+                      onClick={() => toggleModule(module)}
+                      className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                    >
+                      {perms.every(p => selectedPerms.includes(p.id)) ? 'Deseleccionar todo' : 'Seleccionar todo'}
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {perms.map(perm => (
+                      <label key={perm.id} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-colors cursor-pointer"
+                        className={selectedPerms.includes(perm.id) ? ACTION_COLORS[perm.action] : 'border-slate-200 hover:border-slate-300'}
+                      >
+                        <input type="checkbox" checked={selectedPerms.includes(perm.id)} onChange={() => togglePerm(perm.id)} className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500" />
+                        <span className="text-xs font-medium capitalize">{ACTION_LABELS[perm.action]}</span>
+                        <Badge variant={perm.action as 'create' | 'read' | 'update' | 'delete'} className="text-[9px]">{perm.description}</Badge>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="flex justify-end gap-3">
-              <button onClick={() => setShowNewRole(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
-              <button onClick={handleCreateRole} disabled={saving} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">{saving ? 'Creando...' : 'Crear Rol'}</button>
+            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+              <Button variant="secondary" onClick={() => { setEditingRole(null); setSelectedPerms([]); }}>Cancelar</Button>
+              <Button onClick={handleSavePermissions} disabled={saving}>
+                <Save className="w-4 h-4 mr-2" />
+                {saving ? 'Guardando...' : 'Guardar Permisos'}
+              </Button>
             </div>
           </div>
         </div>
       )}
 
-      {editingRole && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
-          <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-slate-900">Permisos: {editingRole.name}</h3>
-            <button onClick={() => setEditingRole(null)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
-          </div>
-          <div className="p-6 space-y-4">
-            <p className="text-xs text-slate-500">Selecciona los modulos y acciones que este rol puede realizar.</p>
-            <div className="space-y-4">
-              {Object.entries(groupedPerms).map(([module, perms]) => {
-                const modulePerms = perms.map(p => p.id);
-                const allSelected = modulePerms.every(id => selectedPerms.includes(id));
-                const someSelected = modulePerms.some(id => selectedPerms.includes(id));
-                return (
-                  <div key={module} className="border border-slate-200 rounded-lg p-4">
-                    <div className="flex items-center gap-3 mb-3">
-                      <input type="checkbox" checked={allSelected}
-                        ref={(el) => { if (el) el.indeterminate = someSelected && !allSelected; }}
-                        onChange={() => toggleModule(module)}
-                        className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500" />
-                      <span className="text-sm font-semibold text-slate-900">{MODULE_LABELS[module] || module}</span>
-                    </div>
-                    <div className="flex flex-wrap gap-2 ml-7">
-                      {perms.map((perm) => (
-                        <button key={perm.id} onClick={() => togglePerm(perm.id)}
-                          className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
-                            selectedPerms.includes(perm.id) ? ACTION_COLORS[perm.action] : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'
-                          }`}>
-                          {selectedPerms.includes(perm.id) && <Check className="w-3 h-3" />}
-                          {ACTION_LABELS[perm.action]}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
+      {showNewRole && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-in fade-in-0">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md animate-in zoom-in-95 fade-in-0">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-slate-900">Nuevo Rol</h3>
+              <button onClick={() => setShowNewRole(false)} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded"><X className="w-5 h-5" /></button>
             </div>
-            <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
-              <button onClick={() => setEditingRole(null)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
-              <button onClick={handleSavePermissions} disabled={saving} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
-                <Save className="w-4 h-4" /> {saving ? 'Guardando...' : 'Guardar Permisos'}
-              </button>
+            <div className="p-6 space-y-4">
+              <Input label="Nombre del Rol" value={newRoleName} onChange={e => setNewRoleName(e.target.value)} placeholder="Ej: Supervisor Ventas" required />
+              <Input label="Descripcion" value={newRoleDesc} onChange={e => setNewRoleDesc(e.target.value)} placeholder="Descripcion opcional" />
+              <div className="flex justify-end gap-3 pt-4">
+                <Button variant="secondary" onClick={() => { setShowNewRole(false); setNewRoleName(''); setNewRoleDesc(''); }}>Cancelar</Button>
+                <Button onClick={handleCreateRole} disabled={saving || !newRoleName.trim()}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  {saving ? 'Creando...' : 'Crear Rol'}
+                </Button>
+              </div>
             </div>
           </div>
         </div>

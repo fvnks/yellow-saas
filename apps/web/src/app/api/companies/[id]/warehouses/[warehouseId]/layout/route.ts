@@ -3,42 +3,15 @@ import {
   getCompanyId,
   successResponse,
   errorResponse,
-  isDemoMode,
 } from '../../../../../lib/helpers';
 import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest, { params }: { params: { id: string; warehouseId: string } }) {
   try {
-    const { warehouseId } = params;
-
-    if (isDemoMode) {
-      return successResponse({
-        zones: [
-          { id: 'z1', name: 'Recepción', code: 'REC', color: '#10b981', x: 20, y: 20, width: 300, height: 200, sort_order: 0, shelves: [], positions: [
-            { id: 'dp1', name: 'Carga 1', code: 'C1', x: 30, y: 40, width: 80, height: 60, capacity: 50, current_stock: 0, sort_order: 0, product: null },
-            { id: 'dp2', name: 'Carga 2', code: 'C2', x: 130, y: 40, width: 80, height: 60, capacity: 50, current_stock: 0, sort_order: 1, product: null },
-          ]},
-          { id: 'z2', name: 'Almacenamiento A', code: 'ALA', color: '#6366f1', x: 340, y: 20, width: 450, height: 350, sort_order: 1, shelves: [
-            { id: 's1', name: 'Estante A1', code: 'EA1', x: 20, y: 20, width: 410, height: 50, sort_order: 0 },
-            { id: 's2', name: 'Estante A2', code: 'EA2', x: 20, y: 90, width: 410, height: 50, sort_order: 1 },
-            { id: 's3', name: 'Estante A3', code: 'EA3', x: 20, y: 160, width: 410, height: 50, sort_order: 2 },
-          ], positions: [
-            { id: 'p1', name: 'A1-1', code: 'A1-1', x: 30, y: 30, width: 80, height: 60, capacity: 100, current_stock: 45, sort_order: 0, shelf_id: 's1', product: { id: '1', name: 'Laptop HP ProBook 450', sku: 'LP-HP-450' } },
-            { id: 'p2', name: 'A1-2', code: 'A1-2', x: 130, y: 30, width: 80, height: 60, capacity: 100, current_stock: 80, sort_order: 1, shelf_id: 's1', product: { id: '2', name: 'Mouse Logitech MX Master 3S', sku: 'MS-LG-MX3' } },
-            { id: 'p3', name: 'A1-3', code: 'A1-3', x: 230, y: 30, width: 80, height: 60, capacity: 100, current_stock: 0, sort_order: 2, shelf_id: 's1', product: null },
-            { id: 'p4', name: 'A2-1', code: 'A2-1', x: 30, y: 100, width: 80, height: 60, capacity: 50, current_stock: 20, sort_order: 3, shelf_id: 's2', product: { id: '3', name: 'Monitor Dell 27" 4K', sku: 'MN-DELL-27' } },
-            { id: 'p5', name: 'A2-2', code: 'A2-2', x: 130, y: 100, width: 80, height: 60, capacity: 50, current_stock: 0, sort_order: 4, shelf_id: 's2', product: null },
-            { id: 'p6', name: 'A3-1', code: 'A3-1', x: 30, y: 170, width: 80, height: 60, capacity: 200, current_stock: 150, sort_order: 5, shelf_id: 's3', product: { id: '5', name: 'Disco SSD Samsung 980 PRO 1TB', sku: 'SSD-SAM-980' } },
-          ]},
-          { id: 'z3', name: 'Despacho', code: 'DES', color: '#f59e0b', x: 20, y: 240, width: 300, height: 180, sort_order: 2, shelves: [], positions: [
-            { id: 'dp3', name: 'Despacho 1', code: 'D1', x: 30, y: 30, width: 100, height: 60, capacity: 30, current_stock: 0, sort_order: 6, product: null },
-          ]},
-        ],
-      });
-    }
-
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { warehouseId } = params;
 
     const { rows: zones } = await query(
       `SELECT * FROM warehouse_zones WHERE warehouse_id = $1 AND company_id = $2 ORDER BY sort_order`,
@@ -80,10 +53,6 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   try {
     const { warehouseId } = params;
     const body = await request.json();
-
-    if (isDemoMode) {
-      return successResponse({ saved: true, zones: body.zones || [] });
-    }
 
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);

@@ -56,7 +56,7 @@ export default function EditSalePage() {
   const [items, setItems] = useState<OrderItem[]>([{ product_id: '', quantity: 1, unit_price: 0, discount_percent: 0 }]);
 
   useEffect(() => {
-    const api = getApiClient('demo-company-id');
+    const api = getApiClient();
     Promise.all([
       api.getSalesOrder(id),
       api.getCustomers(),
@@ -142,7 +142,7 @@ export default function EditSalePage() {
     e.preventDefault();
     setSaving(true);
     try {
-      const api = getApiClient('demo-company-id');
+      const api = getApiClient();
       await api.updateSalesOrder(id, {
         customer_id: formData.customerId,
         warehouse_id: formData.warehouseId,

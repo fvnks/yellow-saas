@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -9,21 +9,21 @@ import { getApiClient } from '../../../../../lib/api-client';
 
 const regions = [
   { value: '15', label: 'Metropolitana de Santiago' },
-  { value: '1', label: 'Tarapacá' },
+  { value: '1', label: 'TarapacÃ¡' },
   { value: '2', label: 'Antofagasta' },
   { value: '3', label: 'Atacama' },
   { value: '4', label: 'Coquimbo' },
-  { value: '5', label: 'Valparaíso' },
+  { value: '5', label: 'ValparaÃ­so' },
   { value: '6', label: "O'Higgins" },
   { value: '7', label: 'Maule' },
-  { value: '8', label: 'Biobío' },
-  { value: '9', label: 'La Araucanía' },
-  { value: '10', label: 'Los Ríos' },
+  { value: '8', label: 'BiobÃ­o' },
+  { value: '9', label: 'La AraucanÃ­a' },
+  { value: '10', label: 'Los RÃ­os' },
   { value: '11', label: 'Los Lagos' },
-  { value: '12', label: 'Aysén' },
+  { value: '12', label: 'AysÃ©n' },
   { value: '13', label: 'Magallanes' },
   { value: '14', label: 'Arica y Parinacota' },
-  { value: '16', label: 'Ñuble' },
+  { value: '16', label: 'Ã‘uble' },
 ];
 
 interface Contact {
@@ -73,7 +73,7 @@ export default function NewSupplierPage() {
     setLoading(true);
     setError('');
     try {
-      const api = getApiClient('demo-company-id');
+      const api = getApiClient();
       await api.createSupplier({
         name: formData.name,
         email: formData.email,
@@ -114,11 +114,11 @@ export default function NewSupplierPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input label="Nombre / Fantasía" value={formData.name} onChange={handleFormChange('name')} placeholder="Ej: Suministros Tecnológicos" required />
-                  <Input label="Razón Social" value={formData.razonSocial} onChange={handleFormChange('razonSocial')} placeholder="Ej: Suministros Tecnológicos SpA" />
+                  <Input label="Nombre / FantasÃ­a" value={formData.name} onChange={handleFormChange('name')} placeholder="Ej: Suministros TecnolÃ³gicos" required />
+                  <Input label="RazÃ³n Social" value={formData.razonSocial} onChange={handleFormChange('razonSocial')} placeholder="Ej: Suministros TecnolÃ³gicos SpA" />
                   <Input label="RUT" value={formData.rut} onChange={handleFormChange('rut')} placeholder="XX.XXX.XXX-X" />
                   <Input label="Email" type="email" value={formData.email} onChange={handleFormChange('email')} placeholder="contacto@proveedor.cl" />
-                  <Input label="Teléfono" value={formData.phone} onChange={handleFormChange('phone')} placeholder="+56 9 XXXX XXXX" />
+                  <Input label="TelÃ©fono" value={formData.phone} onChange={handleFormChange('phone')} placeholder="+56 9 XXXX XXXX" />
                   <Input label="Sitio Web" value={formData.website} onChange={handleFormChange('website')} placeholder="https://proveedor.cl" />
                 </div>
               </CardContent>
@@ -127,13 +127,13 @@ export default function NewSupplierPage() {
             {/* Address */}
             <Card>
               <CardHeader>
-                <CardTitle>Dirección</CardTitle>
+                <CardTitle>DirecciÃ³n</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <Input label="Dirección" value={formData.address} onChange={handleFormChange('address')} placeholder="Av. Ejemplo 1234, Oficina 501" />
+                <Input label="DirecciÃ³n" value={formData.address} onChange={handleFormChange('address')} placeholder="Av. Ejemplo 1234, Oficina 501" />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input label="Ciudad" value={formData.city} onChange={handleFormChange('city')} placeholder="Santiago" />
-                  <Select label="Región" value={formData.region} onChange={handleFormChange('region')} options={[{ value: '', label: 'Seleccionar región...' }, ...regions]} />
+                  <Select label="RegiÃ³n" value={formData.region} onChange={handleFormChange('region')} options={[{ value: '', label: 'Seleccionar regiÃ³n...' }, ...regions]} />
                 </div>
               </CardContent>
             </Card>
@@ -168,7 +168,7 @@ export default function NewSupplierPage() {
                       <Input label="Nombre" value={contact.name} onChange={(e) => handleContactChange(index, 'name', e.target.value)} placeholder="Nombre del contacto" />
                       <Input label="Cargo" value={contact.role} onChange={(e) => handleContactChange(index, 'role', e.target.value)} placeholder="Ej: Ventas" />
                       <Input label="Email" type="email" value={contact.email} onChange={(e) => handleContactChange(index, 'email', e.target.value)} placeholder="contacto@proveedor.cl" />
-                      <Input label="Teléfono" value={contact.phone} onChange={(e) => handleContactChange(index, 'phone', e.target.value)} placeholder="+56 9 XXXX XXXX" />
+                      <Input label="TelÃ©fono" value={contact.phone} onChange={(e) => handleContactChange(index, 'phone', e.target.value)} placeholder="+56 9 XXXX XXXX" />
                     </div>
                   </div>
                 ))}

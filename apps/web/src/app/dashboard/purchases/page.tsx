@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
@@ -39,7 +39,7 @@ export default function PurchasesPage() {
   const [activeTab, setActiveTab] = useState('orders');
 
   useEffect(() => {
-    const api = getApiClient('demo-company-id');
+    const api = getApiClient();
     
     Promise.all([
       api.getPurchaseOrders().catch(() => ({ data: [] })),
@@ -154,7 +154,7 @@ export default function PurchasesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Compras</h1>
-          <p className="text-sm text-slate-500 mt-1">Gestión de compras, cotizaciones y proveedores</p>
+          <p className="text-sm text-slate-500 mt-1">GestiÃ³n de compras, cotizaciones y proveedores</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm">
@@ -173,7 +173,7 @@ export default function PurchasesPage() {
             <Link href="/dashboard/purchases/quotations/new">
               <Button>
                 <Plus className="w-4 h-4 mr-2" />
-                Nueva Cotización
+                Nueva CotizaciÃ³n
               </Button>
             </Link>
           )}
@@ -202,7 +202,7 @@ export default function PurchasesPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Órdenes Pendientes</p>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Ã“rdenes Pendientes</p>
                 <p className="text-2xl font-bold text-slate-900 mt-1">{purchaseOrders.filter(o => o.status === 'pending').length}</p>
               </div>
               <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
@@ -296,7 +296,7 @@ export default function PurchasesPage() {
               <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
                 <FileText className="w-5 h-5 text-emerald-600" />
               </div>
-              <span className="text-sm font-medium text-slate-700 text-center">Nueva Cotización</span>
+              <span className="text-sm font-medium text-slate-700 text-center">Nueva CotizaciÃ³n</span>
             </div>
           </div>
         </Link>
@@ -327,7 +327,7 @@ export default function PurchasesPage() {
         <div className="border-b border-slate-200">
           <div className="flex">
             {[
-              { id: 'orders' as const, label: 'Órdenes de Compra', icon: ShoppingCart, count: purchaseOrders.length },
+              { id: 'orders' as const, label: 'Ã“rdenes de Compra', icon: ShoppingCart, count: purchaseOrders.length },
               { id: 'quotations' as const, label: 'Cotizaciones', icon: FileText, count: quotations.length },
               { id: 'suppliers' as const, label: 'Proveedores', icon: Building2, count: suppliers.length },
               { id: 'customers' as const, label: 'Clientes', icon: Users, count: customers.length },
@@ -356,7 +356,7 @@ export default function PurchasesPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
                 type="search"
-                placeholder={activeTab === 'orders' ? 'Buscar por Nº orden, proveedor...' : activeTab === 'quotations' ? 'Buscar por Nº cotización, proveedor...' : 'Buscar por nombre, proveedor...'}
+                placeholder={activeTab === 'orders' ? 'Buscar por NÂº orden, proveedor...' : activeTab === 'quotations' ? 'Buscar por NÂº cotizaciÃ³n, proveedor...' : 'Buscar por nombre, proveedor...'}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
@@ -416,11 +416,11 @@ export default function PurchasesPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Nº Orden</TableHead>
+                    <TableHead>NÂº Orden</TableHead>
                     <TableHead>Proveedor</TableHead>
                     <TableHead>Fecha</TableHead>
                     <TableHead>Entrega</TableHead>
-                    <TableHead>Almacén</TableHead>
+                    <TableHead>AlmacÃ©n</TableHead>
                     <TableHead className="text-center">Items</TableHead>
                     <TableHead className="text-right">Total</TableHead>
                     <TableHead>Estado</TableHead>
@@ -486,7 +486,7 @@ export default function PurchasesPage() {
 
           {/* Pagination */}
           <div className="flex items-center justify-between text-xs text-slate-500">
-            <p>Mostrando 1 a {filteredOrders.length} de {purchaseOrders.length} órdenes</p>
+            <p>Mostrando 1 a {filteredOrders.length} de {purchaseOrders.length} Ã³rdenes</p>
             <div className="flex items-center gap-2">
               <Button variant="secondary" size="sm" disabled>Anterior</Button>
               <Button variant="secondary" size="sm" disabled>Siguiente</Button>
@@ -503,9 +503,9 @@ export default function PurchasesPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Nº Cotización</TableHead>
+                    <TableHead>NÂº CotizaciÃ³n</TableHead>
                     <TableHead>Proveedor</TableHead>
-                    <TableHead>Fecha Emisión</TableHead>
+                    <TableHead>Fecha EmisiÃ³n</TableHead>
                     <TableHead>Fecha Vencimiento</TableHead>
                     <TableHead className="text-center">Items</TableHead>
                     <TableHead className="text-right">Total</TableHead>
@@ -564,7 +564,7 @@ export default function PurchasesPage() {
         <div role="tabpanel" aria-labelledby="suppliers-tab">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Catálogo de Proveedores</CardTitle>
+              <CardTitle>CatÃ¡logo de Proveedores</CardTitle>
               <Link href="/dashboard/purchases/suppliers/new">
                 <Button>
                   <Plus className="w-4 h-4 mr-2" />
@@ -577,10 +577,10 @@ export default function PurchasesPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Proveedor</TableHead>
-                    <TableHead>Código</TableHead>
+                    <TableHead>CÃ³digo</TableHead>
                     <TableHead>Contacto</TableHead>
-                    <TableHead>Correo Electrónico</TableHead>
-                    <TableHead>Teléfono</TableHead>
+                    <TableHead>Correo ElectrÃ³nico</TableHead>
+                    <TableHead>TelÃ©fono</TableHead>
                     <TableHead>Estado</TableHead>
                     <TableHead className="w-12">Acciones</TableHead>
                   </TableRow>
@@ -641,7 +641,7 @@ export default function PurchasesPage() {
         <div role="tabpanel" aria-labelledby="customers-tab">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Catálogo de Clientes</CardTitle>
+              <CardTitle>CatÃ¡logo de Clientes</CardTitle>
               <Link href="/dashboard/customers/new">
                 <Button>
                   <Plus className="w-4 h-4 mr-2" />
@@ -655,9 +655,9 @@ export default function PurchasesPage() {
                   <TableRow>
                     <TableHead>Cliente</TableHead>
                     <TableHead>RUT</TableHead>
-                    <TableHead>Correo Electrónico</TableHead>
-                    <TableHead>Teléfono</TableHead>
-                    <TableHead>Dirección</TableHead>
+                    <TableHead>Correo ElectrÃ³nico</TableHead>
+                    <TableHead>TelÃ©fono</TableHead>
+                    <TableHead>DirecciÃ³n</TableHead>
                     <TableHead>Estado</TableHead>
                     <TableHead className="w-12">Acciones</TableHead>
                   </TableRow>

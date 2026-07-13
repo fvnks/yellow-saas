@@ -1,5 +1,35 @@
 const API_BASE = '/api';
 
+function getTokenFromCookie(): string | null {
+  if (typeof window === 'undefined') return null;
+  const cookies = document.cookie.split(';');
+  const authCookie = cookies.find(c => c.trim().startsWith('auth-token='));
+  return authCookie ? authCookie.split('=')[1] : null;
+}
+
+function parseJwt(token: string): { company_id?: string } | null {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch {
+    return null;
+  }
+}
+
+function getCompanyIdFromToken(): string | null {
+  const token = getTokenFromCookie();
+  if (!token) return null;
+  const payload = parseJwt(token);
+  return payload?.company_id || null;
+}
+
 export class ApiClient {
   private companyId: string;
 
@@ -48,76 +78,75 @@ export class ApiClient {
     return this.request<{ id: string }>('/products', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async updateProduct(id: string, data: Record<string, unknown>) {
-    return this.request(`/products/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  async updateProduct(id: string, data: Partial<{ name: string; sku: string; price: number; category_id: string; description: string; type: string; unit_of_measure: string; cost_price: number; sale_price: number; min_stock: number; max_stock: number; track_stock: boolean; barcode: string; tax_id: string; is_active: boolean }>) {
+    return this.request<{ id: string }>(`/products/${id}`, { method: 'PUT', body: JSON.stringify(data) });
   }
 
   async deleteProduct(id: string) {
-    return this.request(`/products/${id}`, { method: 'DELETE' });
+    return this.request<{ message: string }>(`/products/${id}`, { method: 'DELETE' });
   }
 
   // Warehouses
   async getWarehouses(params?: Record<string, string>) {
-    return this.requestWithPagination<{ id: string; name: string; code: string; total_products: number; total_stock: number }>('/warehouses', params || {});
+    return this.requestWithPagination<{ id: string; name: string; code: string; total_products: number; total_stock: number; is_default: boolean }>('/warehouses', params || {});
   }
 
-  async createWarehouse(data: { name: string; code: string; address?: string; is_default?: boolean }) {
+  async getWarehouse(id: string) {
+    return this.request<{ id: string; name: string; code: string; address: string; city: string; region: string; country: string; postal_code: string; phone: string; email: string; is_default: boolean; is_active: boolean }>(`/warehouses/${id}`);
+  }
+
+  async createWarehouse(data: { name: string; code: string; address?: string; city?: string; region?: string; country?: string; postal_code?: string; phone?: string; email?: string; is_default?: boolean }) {
     return this.request<{ id: string }>('/warehouses', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  // Warehouse Layout
-  async getWarehouseLayout(warehouseId: string) {
-    return this.request<{ zones: { id: string; name: string; code: string; color: string; x: number; y: number; width: number; height: number; shelves: { id: string; name: string; code: string; x: number; y: number; width: number; height: number; positions: { id: string; name: string; code: string; capacity: number; current_stock: number }[] }[] }[] }>(`/warehouses/${warehouseId}/layout`);
+  async updateWarehouse(id: string, data: Partial<{ name: string; code: string; address: string; city: string; region: string; country: string; postal_code: string; phone: string; email: string; is_default: boolean; is_active: boolean }>) {
+    return this.request<{ id: string }>(`/warehouses/${id}`, { method: 'PUT', body: JSON.stringify(data) });
   }
 
-  async saveWarehouseLayout(warehouseId: string, data: { zones: { name: string; code?: string; color?: string; x: number; y: number; width: number; height: number; shelves?: { name: string; code?: string; x: number; y: number; width: number; height: number }[]; positions?: { name: string; code?: string; x: number; y: number; width: number; height: number; capacity?: number; product_id?: string }[] }[] }) {
-    return this.request(`/warehouses/${warehouseId}/layout`, { method: 'PUT', body: JSON.stringify(data) });
-  }
-
-  async assignProductToPosition(warehouseId: string, positionId: string, productId: string | null) {
-    return this.request(`/warehouses/${warehouseId}/layout/assign`, { method: 'PUT', body: JSON.stringify({ position_id: positionId, product_id: productId }) });
+  async deleteWarehouse(id: string) {
+    return this.request<{ message: string }>(`/warehouses/${id}`, { method: 'DELETE' });
   }
 
   // Customers
   async getCustomers(params?: Record<string, string>) {
-    return this.requestWithPagination<{ id: string; name: string; email: string; phone: string; tax_id: string; address: string }>('/customers', params || {});
+    return this.requestWithPagination<{ id: string; name: string; code: string; trade_name: string; tax_id: string; email: string; phone: string; address: string; city: string; region: string; country: string; contact_person: string; contact_phone: string; contact_email: string; payment_terms: number; credit_limit: number; price_list_id: string; tax_exempt: boolean; is_active: boolean }>('/customers', params || {});
   }
 
   async getCustomer(id: string) {
-    return this.request<{ id: string; name: string; email: string; phone: string; tax_id: string; address: string }>(`/customers/${id}`);
+    return this.request<{ id: string; name: string; code: string; trade_name: string; tax_id: string; email: string; phone: string; address: string }>(`/customers/${id}`);
   }
 
-  async createCustomer(data: { name: string; email?: string; phone?: string; tax_id?: string; address?: string }) {
+  async createCustomer(data: { name: string; code?: string; trade_name?: string; tax_id?: string; tax_id_type?: string; address?: string; city?: string; region?: string; country?: string; postal_code?: string; phone?: string; email?: string; website?: string; contact_person?: string; contact_phone?: string; contact_email?: string; payment_terms?: number; credit_limit?: number; price_list_id?: string; tax_exempt?: boolean; notes?: string }) {
     return this.request<{ id: string }>('/customers', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async updateCustomer(id: string, data: Record<string, unknown>) {
-    return this.request(`/customers/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  async updateCustomer(id: string, data: Partial<{ name: string; code: string; trade_name: string; tax_id: string; tax_id_type: string; address: string; city: string; region: string; country: string; postal_code: string; phone: string; email: string; website: string; contact_person: string; contact_phone: string; contact_email: string; payment_terms: number; credit_limit: number; price_list_id: string; tax_exempt: boolean; notes: string; is_active: boolean }>) {
+    return this.request<{ id: string }>(`/customers/${id}`, { method: 'PUT', body: JSON.stringify(data) });
   }
 
   async deleteCustomer(id: string) {
-    return this.request(`/customers/${id}`, { method: 'DELETE' });
+    return this.request<{ message: string }>(`/customers/${id}`, { method: 'DELETE' });
   }
 
   // Suppliers
   async getSuppliers(params?: Record<string, string>) {
-    return this.requestWithPagination<{ id: string; name: string; email: string; phone: string; tax_id: string }>('/suppliers', params || {});
+    return this.requestWithPagination<{ id: string; name: string; code: string; trade_name: string; tax_id: string; email: string; phone: string; address: string; city: string; region: string; country: string; contact_person: string; contact_phone: string; contact_email: string; payment_terms: number; credit_limit: number; is_active: boolean }>('/suppliers', params || {});
   }
 
   async getSupplier(id: string) {
-    return this.request<{ id: string; name: string; email: string; phone: string; tax_id: string; address: string }>(`/suppliers/${id}`);
+    return this.request<{ id: string; name: string; code: string; trade_name: string; tax_id: string; email: string; phone: string; address: string }>(`/suppliers/${id}`);
   }
 
-  async createSupplier(data: { name: string; email?: string; phone?: string; tax_id?: string; address?: string }) {
+  async createSupplier(data: { name: string; code?: string; trade_name?: string; tax_id?: string; tax_id_type?: string; address?: string; city?: string; region?: string; country?: string; postal_code?: string; phone?: string; email?: string; website?: string; contact_person?: string; contact_phone?: string; contact_email?: string; payment_terms?: number; credit_limit?: number; is_active?: boolean }) {
     return this.request<{ id: string }>('/suppliers', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async updateSupplier(id: string, data: Record<string, unknown>) {
-    return this.request(`/suppliers/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  async updateSupplier(id: string, data: Partial<{ name: string; code: string; trade_name: string; tax_id: string; tax_id_type: string; address: string; city: string; region: string; country: string; postal_code: string; phone: string; email: string; website: string; contact_person: string; contact_phone: string; contact_email: string; payment_terms: number; credit_limit: number; is_active: boolean }>) {
+    return this.request<{ id: string }>(`/suppliers/${id}`, { method: 'PUT', body: JSON.stringify(data) });
   }
 
   async deleteSupplier(id: string) {
-    return this.request(`/suppliers/${id}`, { method: 'DELETE' });
+    return this.request<{ message: string }>(`/suppliers/${id}`, { method: 'DELETE' });
   }
 
   // Sales Orders
@@ -126,87 +155,19 @@ export class ApiClient {
   }
 
   async getSalesOrder(id: string) {
-    return this.request<{ id: string; order_number: string; customer_id: string; warehouse_id: string; status: string; total: number; delivery_date: string; payment_terms: number; notes: string; created_at: string; customer?: { id: string; name: string; tax_id: string }; warehouse?: { id: string; name: string; code: string }; items?: { id: string; product_id: string; quantity: number; unit_price: number; discount_percent: number; line_total: number; product?: { id: string; name: string; sku: string } }[] }>(`/sales-orders/${id}`);
+    return this.request<{ id: string; order_number: string; customer_id: string; status: string; total: number; items: any[] }>(`/sales-orders/${id}`);
   }
 
-  async createSalesOrder(data: {
-    customer_id: string;
-    warehouse_id: string;
-    delivery_date?: string;
-    payment_method?: string;
-    payment_terms?: number;
-    shipping_address?: string;
-    notes?: string;
-    items: { product_id: string; quantity: number; unit_price: number; discount?: number }[];
-  }) {
-    return this.request<{ id: string; order_number: string }>('/sales-orders', { method: 'POST', body: JSON.stringify(data) });
+  async createSalesOrder(data: { order_number: string; customer_id: string; warehouse_id?: string; order_date?: string; delivery_date?: string; payment_terms?: number; subtotal: number; tax_amount: number; total: number; notes?: string; items: { product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }) {
+    return this.request<{ id: string }>('/sales-orders', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async updateSalesOrder(id: string, data: Record<string, unknown>) {
-    return this.request(`/sales-orders/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  async updateSalesOrder(id: string, data: Partial<{ customer_id: string; warehouse_id: string; status: string; delivery_date: string; payment_terms: number; notes: string }>) {
+    return this.request<{ id: string }>(`/sales-orders/${id}`, { method: 'PUT', body: JSON.stringify(data) });
   }
 
   async deleteSalesOrder(id: string) {
-    return this.request(`/sales-orders/${id}`, { method: 'DELETE' });
-  }
-
-  // Purchase Orders
-  async getPurchaseOrders(params?: Record<string, string>) {
-    return this.requestWithPagination<{ id: string; order_number: string; supplier_id: string; status: string; total: number; created_at: string }>('/purchase-orders', params || {});
-  }
-
-  async getPurchaseOrder(id: string) {
-    return this.request<{ id: string; order_number: string; supplier_id: string; warehouse_id: string; status: string; total: number; expected_date: string; payment_terms: number; notes: string; created_at: string; supplier?: { id: string; name: string; tax_id: string }; warehouse?: { id: string; name: string; code: string }; items?: { id: string; product_id: string; quantity: number; received_quantity: number; unit_price: number; discount_percent: number; line_total: number; product?: { id: string; name: string; sku: string } }[] }>(`/purchase-orders/${id}`);
-  }
-
-  async createPurchaseOrder(data: {
-    supplier_id: string;
-    warehouse_id: string;
-    expected_date?: string;
-    payment_terms?: number;
-    notes?: string;
-    items: { product_id: string; quantity: number; unit_price: number }[];
-  }) {
-    return this.request<{ id: string; order_number: string }>('/purchase-orders', { method: 'POST', body: JSON.stringify(data) });
-  }
-
-  async updatePurchaseOrder(id: string, data: Record<string, unknown>) {
-    return this.request(`/purchase-orders/${id}`, { method: 'PUT', body: JSON.stringify(data) });
-  }
-
-  async deletePurchaseOrder(id: string) {
-    return this.request(`/purchase-orders/${id}`, { method: 'DELETE' });
-  }
-
-  // Quotations
-  async getQuotations(params?: Record<string, string>) {
-    return this.requestWithPagination<{ id: string; number: string; supplier_id: string; status: string; total_amount: number; quote_date: string; expiry_date: string; supplier?: { id: string; name: string } }>('/quotations', params || {});
-  }
-
-  async getQuotation(id: string) {
-    return this.request<{ id: string; number: string; supplier_id: string; status: string; total_amount: number; quote_date: string; expiry_date: string; valid_until: string; payment_terms: string; delivery_terms: string; notes: string; internal_notes: string; supplier?: { id: string; name: string; tax_id: string; email: string; phone: string }; items?: { id: string; product_id: string; quantity: number; unit_price: number; discount_percent: number; discount_amount: number; tax_rate: number; tax_amount: number; line_total: number; notes: string; product?: { id: string; name: string; sku: string; unit: string } }[] }>(`/quotations/${id}`);
-  }
-
-  async createQuotation(data: {
-    supplier_id: string;
-    quote_date?: string;
-    expiry_date?: string;
-    valid_until?: string;
-    payment_terms?: string;
-    delivery_terms?: string;
-    notes?: string;
-    internal_notes?: string;
-    items: { product_id: string; quantity: number; unit_price: number; discount_percent?: number; discount_amount?: number; tax_rate?: number; tax_amount?: number; notes?: string }[];
-  }) {
-    return this.request<{ id: string; number: string }>('/quotations', { method: 'POST', body: JSON.stringify(data) });
-  }
-
-  async updateQuotation(id: string, data: Record<string, unknown>) {
-    return this.request(`/quotations/${id}`, { method: 'PUT', body: JSON.stringify(data) });
-  }
-
-  async deleteQuotation(id: string) {
-    return this.request(`/quotations/${id}`, { method: 'DELETE' });
+    return this.request<{ message: string }>(`/sales-orders/${id}`, { method: 'DELETE' });
   }
 
   // Delivery Guides
@@ -215,19 +176,19 @@ export class ApiClient {
   }
 
   async getDeliveryGuide(id: string) {
-    return this.request<{ id: string; guide_number: string; status: string; transport: string; driver_name: string; vehicle_plate: string; shipping_address: string; created_at: string; order?: { id: string; order_number: string; customer?: { id: string; name: string; tax_id: string } }; warehouse?: { id: string; name: string; code: string }; items?: { id: string; product_id: string; quantity: number; observation: string; product?: { id: string; name: string; sku: string } }[] }>(`/delivery-guides/${id}`);
+    return this.request<{ id: string; guide_number: string; order_id: string; status: string; transport: string; driver_name: string; vehicle_plate: string; shipping_address: string }>(`/delivery-guides/${id}`);
   }
 
-  async createDeliveryGuide(data: {
-    order_id: string;
-    warehouse_id: string;
-    transport: string;
-    driver_name: string;
-    vehicle_plate: string;
-    shipping_address: string;
-    items: { product_id: string; quantity: number; observation?: string }[];
-  }) {
+  async createDeliveryGuide(data: { order_id: string; warehouse_id: string; transport: string; driver_name: string; vehicle_plate: string; shipping_address: string; items: { product_id: string; quantity: number; observation?: string }[] }) {
     return this.request<{ id: string; guide_number: string }>('/delivery-guides', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateDeliveryGuide(id: string, data: Partial<{ status: string; transport: string; driver_name: string; vehicle_plate: string; shipping_address: string }>) {
+    return this.request<{ id: string }>(`/delivery-guides/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteDeliveryGuide(id: string) {
+    return this.request<{ message: string }>(`/delivery-guides/${id}`, { method: 'DELETE' });
   }
 
   // Invoices
@@ -236,18 +197,91 @@ export class ApiClient {
   }
 
   async getInvoice(id: string) {
-    return this.request<{ id: string; invoice_number: string; status: string; invoice_date: string; due_date: string; payment_terms: number; subtotal: number; tax_amount: number; total_amount: number; notes: string; created_at: string; customer?: { id: string; name: string; tax_id: string }; warehouse?: { id: string; name: string; code: string }; items?: { id: string; product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number; tax_amount: number; line_total: number; product?: { id: string; name: string; sku: string } }[] }>(`/invoices/${id}`);
+    return this.request<{ id: string; invoice_number: string; status: string; invoice_date: string; due_date: string; payment_terms: number; subtotal: number; tax_amount: number; total_amount: number; notes: string; customer: { id: string; name: string; tax_id: string }; items: any[] }>(`/invoices/${id}`);
   }
 
-  async createInvoice(data: {
-    order_id: string;
-    customer_id: string;
-    invoice_date: string;
-    due_date: string;
-    payment_method: string;
-    items: { product_id: string; quantity: number; unit_price: number; discount?: number }[];
-  }) {
+  async createInvoice(data: { order_id: string; customer_id: string; invoice_date: string; due_date: string; payment_method: string; items: { product_id: string; quantity: number; unit_price: number; discount?: number }[] }) {
     return this.request<{ id: string; invoice_number: string }>('/invoices', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateInvoice(id: string, data: Partial<{ status: string; invoice_date: string; due_date: string; payment_terms: number; notes: string }>) {
+    return this.request<{ id: string }>(`/invoices/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteInvoice(id: string) {
+    return this.request<{ message: string }>(`/invoices/${id}`, { method: 'DELETE' });
+  }
+
+  // Purchase Orders
+  async getPurchaseOrders(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; order_number: string; supplier_id: string; status: string; total: number; created_at: string }>('/purchase-orders', params || {});
+  }
+
+  async getPurchaseOrder(id: string) {
+    return this.request<{ id: string; order_number: string; supplier_id: string; status: string; total: number; items: any[] }>(`/purchase-orders/${id}`);
+  }
+
+  async createPurchaseOrder(data: { order_number: string; supplier_id: string; warehouse_id?: string; order_date?: string; expected_date?: string; payment_terms?: number; subtotal: number; tax_amount: number; total: number; notes?: string; items: { product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }) {
+    return this.request<{ id: string }>('/purchase-orders', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updatePurchaseOrder(id: string, data: Partial<{ supplier_id: string; warehouse_id: string; status: string; expected_date: string; payment_terms: number; notes: string }>) {
+    return this.request<{ id: string }>(`/purchase-orders/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deletePurchaseOrder(id: string) {
+    return this.request<{ message: string }>(`/purchase-orders/${id}`, { method: 'DELETE' });
+  }
+
+  // Quotations
+  async getQuotations(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; number: string; supplier_id: string; status: string; total_amount: number; quote_date: string; expiry_date: string; supplier?: { id: string; name: string } }>('/quotations', params || {});
+  }
+
+  async getQuotation(id: string) {
+    return this.request<{ id: string; number: string; supplier_id: string; status: string; total_amount: number; quote_date: string; expiry_date: string; notes: string; supplier: { id: string; name: string }; items: any[] }>(`/quotations/${id}`);
+  }
+
+  async createQuotation(data: { number: string; supplier_id: string; quote_date: string; expiry_date: string; total_amount: number; notes?: string; items: { product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }) {
+    return this.request<{ id: string; number: string }>('/quotations', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateQuotation(id: string, data: Partial<{ supplier_id: string; status: string; quote_date: string; expiry_date: string; total_amount: number; notes: string }>) {
+    return this.request<{ id: string }>(`/quotations/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteQuotation(id: string) {
+    return this.request<{ message: string }>(`/quotations/${id}`, { method: 'DELETE' });
+  }
+
+  // Employees
+  async getEmployees(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; name: string; position: string; department: string; salary: number; status: string }>('/employees', params || {});
+  }
+
+  async getEmployee(id: string) {
+    return this.request<{ id: string; name: string; position: string; department: string; salary: number; status: string }>(`/employees/${id}`);
+  }
+
+  async createEmployee(data: { employee_code: string; first_name: string; last_name: string; email?: string; phone?: string; address?: string; birth_date?: string; hire_date: string; department?: string; position?: string; contract_type?: string; base_salary?: number; salary_frequency?: string; bank_account?: string; bank_name?: string; tax_id?: string; afp_id?: string; health_id?: string }) {
+    return this.request<{ id: string }>('/employees', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateEmployee(id: string, data: Partial<{ employee_code: string; first_name: string; last_name: string; email: string; phone: string; address: string; birth_date: string; hire_date: string; termination_date: string; department: string; position: string; contract_type: string; base_salary: number; salary_frequency: string; bank_account: string; bank_name: string; tax_id: string; afp_id: string; health_id: string; status: string }>) {
+    return this.request<{ id: string }>(`/employees/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteEmployee(id: string) {
+    return this.request<{ message: string }>(`/employees/${id}`, { method: 'DELETE' });
+  }
+
+  // Inventory Categories
+  async getCategories(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; name: string; description: string; color: string; icon: string; sort_order: number; is_active: boolean }>('/inventory-categories', params || {});
+  }
+
+  async createCategory(data: { name: string; description?: string; color?: string; icon?: string; sort_order?: number }) {
+    return this.request<{ id: string }>('/inventory-categories', { method: 'POST', body: JSON.stringify(data) });
   }
 
   // Stock Movements
@@ -264,92 +298,164 @@ export class ApiClient {
     return this.requestWithPagination<{ id: string; name: string; is_default: boolean; items_count: number }>('/price-lists', params || {});
   }
 
-  async createPriceList(data: { name: string; description?: string; is_default?: boolean; items: { product_id: string; price: number }[] }) {
+  async getPriceList(id: string) {
+    return this.request<{ id: string; name: string; is_default: boolean; items: any[] }>(`/price-lists/${id}`);
+  }
+
+  async createPriceList(data: { name: string; description?: string; is_default?: boolean; currency?: string; adjustment_type?: string; adjustment_value?: number }) {
     return this.request<{ id: string }>('/price-lists', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updatePriceList(id: string, data: Partial<{ name: string; description: string; is_default: boolean; currency: string; adjustment_type: string; adjustment_value: number; is_active: boolean }>) {
+    return this.request<{ id: string }>(`/price-lists/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deletePriceList(id: string) {
+    return this.request<{ message: string }>(`/price-lists/${id}`, { method: 'DELETE' });
   }
 
   // Journal Entries
   async getJournalEntries(params?: Record<string, string>) {
-    return this.requestWithPagination<{ id: string; entry_number: string; date: string; description: string; total_debit: number; status: string }>('/journal-entries', params || {});
+    return this.requestWithPagination<{ id: string; entry_number: string; entry_date: string; description: string; total_debit: number; total_credit: number; status: string }>('/journal-entries', params || {});
   }
 
-  async createJournalEntry(data: { date: string; description: string; lines: { account_id: string; debit: number; credit: number; description?: string }[] }) {
-    return this.request<{ id: string; entry_number: string }>('/journal-entries', { method: 'POST', body: JSON.stringify(data) });
+  async getJournalEntry(id: string) {
+    return this.request<{ id: string; entry_number: string; entry_date: string; description: string; total_debit: number; total_credit: number; status: string; lines: any[] }>(`/journal-entries/${id}`);
   }
 
-  // Employees
-  async getEmployees(params?: Record<string, string>) {
-    return this.requestWithPagination<{ id: string; name: string; position: string; department: string; salary: number; status: string }>('/employees', params || {});
+  async createJournalEntry(data: { entry_number: string; entry_date: string; description: string; reference_type?: string; reference_id?: string; lines: { account_id: string; description?: string; debit: number; credit: number }[] }) {
+    return this.request<{ id: string }>('/journal-entries', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async createEmployee(data: { name: string; rut?: string; position: string; department: string; salary: number; hire_date: string }) {
-    return this.request<{ id: string }>('/employees', { method: 'POST', body: JSON.stringify(data) });
+  async updateJournalEntry(id: string, data: Partial<{ entry_date: string; description: string; lines: { account_id: string; description?: string; debit: number; credit: number }[] }>) {
+    return this.request<{ id: string }>(`/journal-entries/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteJournalEntry(id: string) {
+    return this.request<{ message: string }>(`/journal-entries/${id}`, { method: 'DELETE' });
+  }
+
+  // Accounts
+  async getAccounts(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; code: string; name: string; type: string; parent_id: string; is_active: boolean; is_control: boolean }>('/accounts', params || {});
+  }
+
+  async createAccount(data: { code: string; name: string; type: string; parent_id?: string; is_active?: boolean; is_control?: boolean }) {
+    return this.request<{ id: string }>('/accounts', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  // Audit
+  async getAuditLogs(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; action: string; entity_type: string; entity_id: string; created_at: string; user?: { full_name: string; email: string }; details?: string }>('/audit', params || {});
   }
 
   // Roles
-  async getRoles() {
-    return this.requestWithPagination<{ id: string; name: string; description: string; is_system: boolean }>('/roles', {});
+  async getRoles(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; name: string; description: string; is_system: boolean; created_at: string }>('/roles', params || {});
   }
 
   async getRole(id: string) {
-    return this.request<{ id: string; name: string; description: string; is_system: boolean; permissions: { id: string; module: string; action: string; description: string }[] }>(`/roles/${id}`);
+    return this.request<{ id: string; name: string; description: string; is_system: boolean; permissions: { id: string; module: string; action: string; label: string }[] }>(`/roles/${id}`);
   }
 
   async createRole(data: { name: string; description?: string }) {
     return this.request<{ id: string }>('/roles', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async updateRole(id: string, data: { name: string; description?: string }) {
-    return this.request(`/roles/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  async updateRole(id: string, data: Partial<{ name: string; description: string }>) {
+    return this.request<{ id: string }>(`/roles/${id}`, { method: 'PUT', body: JSON.stringify(data) });
   }
 
   async deleteRole(id: string) {
-    return this.request(`/roles/${id}`, { method: 'DELETE' });
+    return this.request<{ message: string }>(`/roles/${id}`, { method: 'DELETE' });
   }
 
   async updateRolePermissions(roleId: string, permissionIds: string[]) {
-    return this.request(`/roles/${roleId}/permissions`, { method: 'PUT', body: JSON.stringify({ permission_ids: permissionIds }) });
+    return this.request<{ message: string }>(`/roles/${roleId}/permissions`, { method: 'PUT', body: JSON.stringify({ permission_ids: permissionIds }) });
   }
 
   // Permissions
   async getPermissions() {
-    return this.request<{ id: string; module: string; action: string; description: string }[]>('/permissions');
+    return this.requestWithPagination<{ id: string; module: string; action: string; label: string }>('/permissions', {});
   }
 
   // User Roles
-  async getUserRoles() {
-    return this.request<{ id: string; user_id: string; role_id: string; role: { id: string; name: string }; user: { id: string; email: string; full_name: string } }[]>('/user-roles');
+  async getUserRoles(params?: Record<string, string>) {
+    return this.requestWithPagination<{ user_id: string; role_id: string }>('/user-roles', params || {});
   }
 
   async assignUserRole(userId: string, roleId: string) {
-    return this.request('/user-roles', { method: 'POST', body: JSON.stringify({ user_id: userId, role_id: roleId }) });
+    return this.request<{ message: string }>('/user-roles', { method: 'POST', body: JSON.stringify({ user_id: userId, role_id: roleId }) });
   }
 
   async removeUserRole(userId: string, roleId: string) {
-    return this.request('/user-roles', { method: 'DELETE', body: JSON.stringify({ user_id: userId, role_id: roleId }) });
+    return this.request<{ message: string }>(`/user-roles/${userId}/${roleId}`, { method: 'DELETE' });
   }
 
-  // Audit
-  async getAuditLogs(params?: Record<string, string>) {
-    return this.requestWithPagination<{ id: string; action: string; entity_type: string; entity_id: string; details: string; user_id: string; created_at: string }>('/audit', params || {});
+  // Stock Levels
+  async getStockLevels(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; product_id: string; warehouse_id: string; quantity: number; reserved_quantity: number; available_quantity: number }>('/stock-levels', params || {});
+  }
+
+  // Warehouse Layout
+  async getWarehouseLayout(warehouseId: string) {
+    return this.request<{ zones: any[]; shelves: any[]; positions: any[] }>(`/warehouses/${warehouseId}/layout`);
+  }
+
+  async updateWarehouseLayout(warehouseId: string, data: { zones: any[]; shelves: any[]; positions: any[] }) {
+    return this.request<{ message: string }>(`/warehouses/${warehouseId}/layout`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async assignProductToPosition(warehouseId: string, data: { product_id: string; zone_id: string; shelf_id: string; position_id: string }) {
+    return this.request<{ message: string }>(`/warehouses/${warehouseId}/layout/assign`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  // Settings
+  async getSettings() {
+    return this.request<{ company_name: string; timezone: string; currency: string; date_format: string; invoice_prefix: string; decimal_places: number }>('/settings');
+  }
+
+  async updateSettings(data: { company_name?: string; timezone?: string; currency?: string; date_format?: string; invoice_prefix?: string; decimal_places?: number }) {
+    return this.request<{ message: string }>('/settings', { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  // Dashboard KPIs
+  async getDashboardKpis() {
+    return this.request<{
+      total_products: number;
+      total_stock_value: number;
+      low_stock_count: number;
+      out_of_stock_count: number;
+      total_customers: number;
+      total_suppliers: number;
+      pending_orders: number;
+      pending_deliveries: number;
+      pending_invoices: number;
+      total_sales_month: number;
+      total_purchases_month: number;
+    }>('/dashboard/kpis');
   }
 }
 
-// Helper to get companyId from current URL or context
-export function getCompanyIdFromPath(): string | null {
-  if (typeof window === 'undefined') return null;
-  const path = window.location.pathname;
-  const match = path.match(/\/dashboard\/(\w+)/);
-  return match ? match[1] : null;
-}
-
-// Singleton for demo purposes - in real app this would come from auth context
+// Singleton with dynamic company_id from JWT
 let _client: ApiClient | null = null;
 
-export function getApiClient(companyId?: string): ApiClient {
-  const id = companyId || 'demo-company-id';
-  if (!_client || _client['companyId'] !== id) {
-    _client = new ApiClient(id);
+function getCurrentCompanyId(): string | null {
+  if (typeof window === 'undefined') return null;
+  return getCompanyIdFromToken();
+}
+
+export function getApiClient(): ApiClient {
+  const companyId = getCurrentCompanyId();
+  if (!companyId) {
+    throw new Error('No company ID found in token. Please log in.');
+  }
+  if (!_client || _client['companyId'] !== companyId) {
+    _client = new ApiClient(companyId);
   }
   return _client;
+}
+
+export function clearApiClient() {
+  _client = null;
 }

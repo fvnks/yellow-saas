@@ -84,7 +84,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
   const [layoutLoading, setLayoutLoading] = useState(false);
 
   useEffect(() => {
-    const api = getApiClient('demo-company-id');
+    const api = getApiClient();
     Promise.all([
       api.getProduct(id),
       api.getWarehouses(),
@@ -123,7 +123,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
       return;
     }
     setLayoutLoading(true);
-    const api = getApiClient('demo-company-id');
+    const api = getApiClient();
     api.getWarehouseLayout(selectedWarehouse)
       .then((data) => {
         const layout = (data as { zones: LayoutZone[] }).zones || [];
@@ -171,7 +171,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
     }
     setSaving(true);
     setError('');
-    const api = getApiClient('demo-company-id');
+    const api = getApiClient();
     await api.updateProduct(id, {
       sku: sku.trim(),
       name: name.trim(),
@@ -188,7 +188,12 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
     });
 
     if (selectedPosition && selectedWarehouse) {
-      await api.assignProductToPosition(selectedWarehouse, selectedPosition, id);
+      await api.assignProductToPosition(selectedWarehouse, {
+        product_id: id,
+        zone_id: selectedZone,
+        shelf_id: selectedShelf || null,
+        position_id: selectedPosition
+      });
     }
 
     setSaving(false);

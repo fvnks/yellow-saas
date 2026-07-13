@@ -25,7 +25,7 @@ export default function SupplierDetailPage({ params }: { params: { id: string } 
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
-    const api = getApiClient('demo-company-id');
+    const api = getApiClient();
     api.getSupplier(id)
       .then((data) => {
         setSupplier(data as unknown as Supplier);
@@ -41,7 +41,7 @@ export default function SupplierDetailPage({ params }: { params: { id: string } 
     if (!confirm('¿Estás seguro de eliminar este proveedor?')) return;
     setDeleting(true);
     try {
-      const api = getApiClient('demo-company-id');
+      const api = getApiClient();
       await api.deleteSupplier(id);
       router.push('/dashboard/purchases');
     } catch {

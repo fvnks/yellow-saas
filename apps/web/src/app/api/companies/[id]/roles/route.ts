@@ -5,7 +5,6 @@ import {
   errorResponse,
   parseSearchParams,
   paginatedResponse,
-  isDemoMode,
 } from '../../../lib/helpers';
 import { NextRequest } from 'next/server';
 
@@ -13,10 +12,6 @@ export async function GET(request: NextRequest) {
   try {
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
-
-    if (isDemoMode) {
-      return paginatedResponse([], 0, 1, 50);
-    }
 
     const { rows } = await query(
       `SELECT * FROM roles WHERE company_id = $1 ORDER BY created_at ASC`,
@@ -38,10 +33,6 @@ export async function POST(request: NextRequest) {
     const { name, description } = body;
 
     if (!name) return errorResponse('Role name is required', 400);
-
-    if (isDemoMode) {
-      return successResponse({ id: crypto.randomUUID(), name, description, is_system: false, company_id: companyId }, 201);
-    }
 
     try {
       const { rows } = await query(

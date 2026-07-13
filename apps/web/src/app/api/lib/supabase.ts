@@ -1,2 +1,2 @@
 export { query, transaction, pool } from './db';
-export { isDemoMode, getCompanyId, successResponse, errorResponse, paginatedResponse, parseSearchParams, getDemoData } from './helpers';
+export { getCompanyId, successResponse, errorResponse, paginatedResponse, parseSearchParams } from './helpers';

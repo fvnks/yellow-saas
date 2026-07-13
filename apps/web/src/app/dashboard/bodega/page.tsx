@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
@@ -45,7 +45,7 @@ export default function BodegaPage() {
   const [categoryFilter, setCategoryFilter] = useState('all');
 
   useEffect(() => {
-    const api = getApiClient('demo-company-id');
+    const api = getApiClient();
     Promise.all([
       api.getProducts(),
       api.getWarehouses()
@@ -110,7 +110,7 @@ export default function BodegaPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Inventario y Bodega</h1>
-          <p className="text-sm text-slate-500 mt-1">Gestión de inventario y bodegas</p>
+          <p className="text-sm text-slate-500 mt-1">GestiÃ³n de inventario y bodegas</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm">
@@ -223,7 +223,7 @@ export default function BodegaPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
                 type="search"
-                placeholder={activeTab === 'inventory' ? 'Buscar por nombre, SKU...' : 'Buscar por nombre, código...'}
+                placeholder={activeTab === 'inventory' ? 'Buscar por nombre, SKU...' : 'Buscar por nombre, cÃ³digo...'}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
@@ -243,7 +243,7 @@ export default function BodegaPage() {
                   className="w-full sm:w-40"
                 />
                 <Select
-                  placeholder="Categoría"
+                  placeholder="CategorÃ­a"
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
                   options={[
@@ -278,9 +278,9 @@ export default function BodegaPage() {
                   <TableHead className="w-12">Imagen</TableHead>
                   <TableHead>Producto</TableHead>
                   <TableHead>SKU</TableHead>
-                  <TableHead>Categoría</TableHead>
+                  <TableHead>CategorÃ­a</TableHead>
                   <TableHead className="text-center">Stock</TableHead>
-                  <TableHead className="text-center">Mínimo</TableHead>
+                  <TableHead className="text-center">MÃ­nimo</TableHead>
                   <TableHead className="text-right">Precio Venta</TableHead>
                   <TableHead className="text-right">Costo</TableHead>
                   <TableHead>Estado</TableHead>
@@ -351,9 +351,9 @@ export default function BodegaPage() {
                 <TableRow>
                   <TableHead className="w-12"></TableHead>
                   <TableHead>Nombre</TableHead>
-                  <TableHead>Código</TableHead>
+                  <TableHead>CÃ³digo</TableHead>
                   <TableHead>Tipo</TableHead>
-                  <TableHead>Ciudad / Región</TableHead>
+                  <TableHead>Ciudad / RegiÃ³n</TableHead>
                   <TableHead>Encargado</TableHead>
                   <TableHead className="text-center">Productos</TableHead>
                   <TableHead className="text-center">Movimientos</TableHead>
@@ -432,3 +432,4 @@ export default function BodegaPage() {
     </div>
   );
 }
+

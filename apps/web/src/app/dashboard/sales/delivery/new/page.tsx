@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -66,7 +66,7 @@ export default function NewDeliveryGuidePage() {
     setError('');
     setSuccess('');
     try {
-      const api = getApiClient('demo-company-id');
+      const api = getApiClient();
       const result = await api.createDeliveryGuide({
         order_id: formData.orderId,
         warehouse_id: '1',
@@ -80,10 +80,10 @@ export default function NewDeliveryGuidePage() {
           observation: i.observation,
         })),
       });
-      setSuccess(`Guía ${result.guide_number} creada. Stock descontado correctamente.`);
+      setSuccess(`GuÃ­a ${result.guide_number} creada. Stock descontado correctamente.`);
       setTimeout(() => router.push('/dashboard/sales'), 1500);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Error al crear la guía de despacho');
+      setError(err instanceof Error ? err.message : 'Error al crear la guÃ­a de despacho');
     } finally {
       setLoading(false);
     }
@@ -96,8 +96,8 @@ export default function NewDeliveryGuidePage() {
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Nueva Guía de Despacho</h1>
-          <p className="text-sm text-slate-500 mt-1">Crear guía de despacho para envío de mercadería</p>
+          <h1 className="text-xl font-bold text-slate-900">Nueva GuÃ­a de Despacho</h1>
+          <p className="text-sm text-slate-500 mt-1">Crear guÃ­a de despacho para envÃ­o de mercaderÃ­a</p>
         </div>
       </div>
 
@@ -109,7 +109,7 @@ export default function NewDeliveryGuidePage() {
           <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Información de la Guía</CardTitle>
+                <CardTitle>InformaciÃ³n de la GuÃ­a</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -135,17 +135,17 @@ export default function NewDeliveryGuidePage() {
                     label="Nombre del Chofer"
                     value={formData.driverName}
                     onChange={handleFormChange('driverName')}
-                    placeholder="Juan Pérez"
+                    placeholder="Juan PÃ©rez"
                   />
                 </div>
                 <Input
-                  label="Patente del Vehículo"
+                  label="Patente del VehÃ­culo"
                   value={formData.vehiclePlate}
                   onChange={handleFormChange('vehiclePlate')}
                   placeholder="ABCD-12"
                 />
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Dirección de Envío</label>
+                  <label className="block text-xs font-medium text-slate-700">DirecciÃ³n de EnvÃ­o</label>
                   <textarea
                     value={formData.shippingAddress}
                     onChange={handleFormChange('shippingAddress')}
@@ -170,7 +170,7 @@ export default function NewDeliveryGuidePage() {
                       <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">SKU</th>
                       <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-24">Stock Disp.</th>
                       <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-28">Cant. Despachar</th>
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Observación</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">ObservaciÃ³n</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -202,7 +202,7 @@ export default function NewDeliveryGuidePage() {
                               value={item.observation}
                               onChange={(e) => handleItemChange(index, 'observation', e.target.value)}
                               className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
-                              placeholder="Observación..."
+                              placeholder="ObservaciÃ³n..."
                             />
                           </td>
                         </tr>
@@ -219,7 +219,7 @@ export default function NewDeliveryGuidePage() {
                 <div>
                   <p className="text-sm font-medium text-amber-800">Stock insuficiente</p>
                   <p className="text-xs text-amber-600 mt-1">
-                    Algunos items exceden el stock disponible. La cantidad será ajustada automáticamente al stock disponible.
+                    Algunos items exceden el stock disponible. La cantidad serÃ¡ ajustada automÃ¡ticamente al stock disponible.
                   </p>
                 </div>
               </div>
@@ -244,7 +244,7 @@ export default function NewDeliveryGuidePage() {
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-slate-500">Orden ref.</span>
                     <span className="font-medium text-slate-900">
-                      {orders.find(o => o.id === formData.orderId)?.number || '—'}
+                      {orders.find(o => o.id === formData.orderId)?.number || 'â€”'}
                     </span>
                   </div>
                   <hr className="border-slate-200" />
@@ -275,3 +275,4 @@ export default function NewDeliveryGuidePage() {
     </div>
   );
 }
+

@@ -1,10 +1,5 @@
 import { query } from '../../../lib/db';
-import {
-  getCompanyId,
-  successResponse,
-  errorResponse,
-  isDemoMode,
-} from '../../../lib/helpers';
+import { getCompanyId, successResponse, errorResponse } from '../../../lib/helpers';
 import { NextRequest } from 'next/server';
 
 const ALL_PERMISSIONS = [
@@ -84,10 +79,6 @@ const ALL_PERMISSIONS = [
 
 export async function GET(request: NextRequest) {
   try {
-    if (isDemoMode) {
-      return successResponse(ALL_PERMISSIONS);
-    }
-
     const { rows } = await query(
       `SELECT * FROM permissions ORDER BY module, action`
     );

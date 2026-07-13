@@ -49,7 +49,7 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <PermissionsProvider companyId="demo-company-id">
+    <PermissionsProvider>
       <DashboardLayoutInner>{children}</DashboardLayoutInner>
     </PermissionsProvider>
   );

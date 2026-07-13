@@ -5,21 +5,11 @@ import {
   errorResponse,
   parseSearchParams,
   paginatedResponse,
-  isDemoMode,
-  getDemoData,
 } from '../../../lib/helpers';
 import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
-    if (isDemoMode) {
-      const { page, limit } = parseSearchParams(request);
-      const allData = getDemoData('journal-entries');
-      const start = (page - 1) * limit;
-      const paged = allData.slice(start, start + limit);
-      return paginatedResponse(paged, allData.length, page, limit);
-    }
-
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
@@ -84,10 +74,6 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-
-    if (isDemoMode) {
-      return successResponse({ id: crypto.randomUUID(), ...body, created_at: new Date().toISOString() }, 201);
-    }
 
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
