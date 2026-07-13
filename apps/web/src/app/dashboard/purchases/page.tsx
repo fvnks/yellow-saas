@@ -202,7 +202,7 @@ export default function PurchasesPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Ã“rdenes Pendientes</p>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Órdenes Pendientes</p>
                 <p className="text-2xl font-bold text-slate-900 mt-1">{purchaseOrders.filter(o => o.status === 'pending').length}</p>
               </div>
               <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
@@ -327,7 +327,7 @@ export default function PurchasesPage() {
         <div className="border-b border-slate-200">
           <div className="flex">
             {[
-              { id: 'orders' as const, label: 'Ã“rdenes de Compra', icon: ShoppingCart, count: purchaseOrders.length },
+              { id: 'orders' as const, label: 'Órdenes de Compra', icon: ShoppingCart, count: purchaseOrders.length },
               { id: 'quotations' as const, label: 'Cotizaciones', icon: FileText, count: quotations.length },
               { id: 'suppliers' as const, label: 'Proveedores', icon: Building2, count: suppliers.length },
               { id: 'customers' as const, label: 'Clientes', icon: Users, count: customers.length },

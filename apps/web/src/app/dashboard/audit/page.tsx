@@ -14,7 +14,7 @@ const fallbackLogs = [
   { id: 6, timestamp: '2026-07-11 10:20:33', user: 'juan@yellow.cl', action: 'update', module: 'Facturación', entity: 'Factura FAC-2026-044', details: 'Cambió estado de "Borrador" a "Enviada"', ip: '192.168.1.101' },
   { id: 7, timestamp: '2026-07-11 09:15:18', user: 'admin@yellow.cl', action: 'config', module: 'Configuración', entity: 'Empresa', details: 'Actualizó datos de la empresa', ip: '192.168.1.100' },
   { id: 8, timestamp: '2026-07-10 18:45:00', user: 'maria@yellow.cl', action: 'export', module: 'Reportes', entity: 'Reporte Mensual', details: 'Exportó reporte de ventas junio 2026 (PDF)', ip: '10.0.0.55' },
-  { id: 9, timestamp: '2026-07-10 16:22:11', user: 'admin@yellow.cl', action: 'create', module: 'Nómina', entity: 'Nómina NÃ“M-2026-006', details: 'Generó nómina de junio 2026 para 6 empleados', ip: '192.168.1.100' },
+  { id: 9, timestamp: '2026-07-10 16:22:11', user: 'admin@yellow.cl', action: 'create', module: 'Nómina', entity: 'Nómina NÓM-2026-006', details: 'Generó nómina de junio 2026 para 6 empleados', ip: '192.168.1.100' },
   { id: 10, timestamp: '2026-07-10 14:10:55', user: 'juan@yellow.cl', action: 'update', module: 'Almacenes', entity: 'Stock BC-01', details: 'Registró movimiento de entrada: +50 unidades SKU-001', ip: '192.168.1.101' },
   { id: 11, timestamp: '2026-07-10 11:05:30', user: 'admin@yellow.cl', action: 'delete', module: 'Proveedores', entity: 'Proveedor SUP-008', details: 'Eliminó proveedor "Distribuidora Test"', ip: '192.168.1.100' },
   { id: 12, timestamp: '2026-07-10 09:00:00', user: 'maria@yellow.cl', action: 'login', module: 'Auth', entity: '-', details: 'Inicio de sesión exitoso', ip: '10.0.0.55' },
