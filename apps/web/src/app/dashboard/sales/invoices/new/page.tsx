@@ -14,13 +14,13 @@ const orders = [
 
 const customers = [
   { id: '1', name: 'Empresa ABC SpA', rut: '76.123.456-7', email: 'contacto@empresaabc.cl', address: 'Av. Providencia 1234, Santiago' },
-  { id: '2', name: 'Comercial XYZ Ltda', rut: '89.234.567-8', email: 'ventas@xyz.cl', address: 'Calle Los Aromos 567, ValparaÃ­so' },
+  { id: '2', name: 'Comercial XYZ Ltda', rut: '89.234.567-8', email: 'ventas@xyz.cl', address: 'Calle Los Aromos 567, Valparaíso' },
   { id: '3', name: 'Distribuidora Norte', rut: '70.345.678-9', email: 'info@distrinorte.cl', address: 'Av. del Comercio 890, Antofagasta' },
   { id: '4', name: 'Retail Sur SA', rut: '90.456.789-0', email: 'compras@retailsur.cl', address: 'Pasaje Las Flores 321, Temuco' },
   { id: '5', name: 'Importadora Chile', rut: '75.567.890-1', email: 'importaciones@importchile.cl', address: 'Bulnes 456, Santiago' },
 ];
 
-const paymentMethods = ['Efectivo', 'Transferencia', 'Tarjeta', 'CrÃ©dito'];
+const paymentMethods = ['Efectivo', 'Transferencia', 'Tarjeta', 'Crédito'];
 
 interface InvoiceItem {
   productId: string;
@@ -132,7 +132,7 @@ export default function NewInvoicePage() {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
-                    label="NÃºmero de Factura"
+                    label="Número de Factura"
                     value={formData.invoiceNumber}
                     onChange={handleFormChange('invoiceNumber')}
                   />
@@ -155,10 +155,10 @@ export default function NewInvoicePage() {
                     onChange={handleFormChange('dueDate')}
                   />
                   <Select
-                    label="MÃ©todo de Pago"
+                    label="Método de Pago"
                     value={formData.paymentMethod}
                     onChange={handleFormChange('paymentMethod')}
-                    options={[{ value: '', label: 'Seleccionar mÃ©todo...' }, ...paymentMethods.map(m => ({ value: m, label: m }))]}
+                    options={[{ value: '', label: 'Seleccionar método...' }, ...paymentMethods.map(m => ({ value: m, label: m }))]}
                   />
                 </div>
               </CardContent>
@@ -190,7 +190,7 @@ export default function NewInvoicePage() {
                       <span className="text-sm text-slate-900">{selectedCustomer.email}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500">DirecciÃ³n</span>
+                      <span className="text-xs font-medium text-slate-500">Dirección</span>
                       <span className="text-sm text-slate-900">{selectedCustomer.address}</span>
                     </div>
                   </div>

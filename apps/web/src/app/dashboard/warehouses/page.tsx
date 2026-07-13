@@ -75,7 +75,7 @@ export default function WarehousesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Bodegas</h1>
-          <p className="text-sm text-slate-500 mt-1">GestiÃ³n de ubicaciones de inventario</p>
+          <p className="text-sm text-slate-500 mt-1">Gestión de ubicaciones de inventario</p>
         </div>
         <Link href="/dashboard/warehouses/new">
           <Button>
@@ -149,7 +149,7 @@ export default function WarehousesPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
                 type="search"
-                placeholder="Buscar por nombre, cÃ³digo, ciudad..."
+                placeholder="Buscar por nombre, código, ciudad..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
@@ -178,9 +178,9 @@ export default function WarehousesPage() {
               <TableRow>
                 <TableHead className="w-12"></TableHead>
                 <TableHead>Nombre</TableHead>
-                <TableHead>CÃ³digo</TableHead>
+                <TableHead>Código</TableHead>
                 <TableHead>Tipo</TableHead>
-                <TableHead>Ciudad / RegiÃ³n</TableHead>
+                <TableHead>Ciudad / Región</TableHead>
                 <TableHead>Encargado</TableHead>
                 <TableHead className="text-center">Productos</TableHead>
                 <TableHead className="text-center">Movimientos</TableHead>

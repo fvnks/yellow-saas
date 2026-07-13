@@ -7,15 +7,15 @@ import Link from 'next/link';
 import { getApiClient } from '../../../lib/api-client';
 
 const mockProjects = [
-  { id: 'PRJ-001', name: 'ImplementaciÃ³n ERP Cliente A', client: 'Empresa Norte SpA', status: 'in_progress', progress: 65, startDate: '2026-04-01', endDate: '2026-08-30', budget: 15000000, spent: 9750000, team: ['Juan PÃ©rez', 'MarÃ­a LÃ³pez'] },
-  { id: 'PRJ-002', name: 'Desarrollo App MÃ³vil', client: 'TechStart Ltda', status: 'in_progress', progress: 40, startDate: '2026-05-15', endDate: '2026-11-30', budget: 25000000, spent: 10000000, team: ['Carlos MuÃ±oz'] },
-  { id: 'PRJ-003', name: 'MigraciÃ³n Sistema Legacy', client: 'Distribuidora Sur', status: 'planning', progress: 10, startDate: '2026-07-01', endDate: '2026-12-31', budget: 8000000, spent: 800000, team: ['Ana GarcÃ­a', 'Pedro Soto', 'Laura DÃ­az'] },
-  { id: 'PRJ-004', name: 'CapacitaciÃ³n Usuarios', client: 'Almacenes Centro', status: 'completed', progress: 100, startDate: '2026-03-01', endDate: '2026-05-30', budget: 3500000, spent: 3200000, team: ['MarÃ­a LÃ³pez'] },
-  { id: 'PRJ-005', name: 'IntegraciÃ³n Pasarela de Pago', client: 'E-Commerce SpA', status: 'on_hold', progress: 25, startDate: '2026-06-01', endDate: '2026-09-30', budget: 6000000, spent: 1500000, team: ['Carlos MuÃ±oz', 'Juan PÃ©rez'] },
+  { id: 'PRJ-001', name: 'Implementación ERP Cliente A', client: 'Empresa Norte SpA', status: 'in_progress', progress: 65, startDate: '2026-04-01', endDate: '2026-08-30', budget: 15000000, spent: 9750000, team: ['Juan Pérez', 'María López'] },
+  { id: 'PRJ-002', name: 'Desarrollo App Móvil', client: 'TechStart Ltda', status: 'in_progress', progress: 40, startDate: '2026-05-15', endDate: '2026-11-30', budget: 25000000, spent: 10000000, team: ['Carlos Muñoz'] },
+  { id: 'PRJ-003', name: 'Migración Sistema Legacy', client: 'Distribuidora Sur', status: 'planning', progress: 10, startDate: '2026-07-01', endDate: '2026-12-31', budget: 8000000, spent: 800000, team: ['Ana García', 'Pedro Soto', 'Laura Díaz'] },
+  { id: 'PRJ-004', name: 'Capacitación Usuarios', client: 'Almacenes Centro', status: 'completed', progress: 100, startDate: '2026-03-01', endDate: '2026-05-30', budget: 3500000, spent: 3200000, team: ['María López'] },
+  { id: 'PRJ-005', name: 'Integración Pasarela de Pago', client: 'E-Commerce SpA', status: 'on_hold', progress: 25, startDate: '2026-06-01', endDate: '2026-09-30', budget: 6000000, spent: 1500000, team: ['Carlos Muñoz', 'Juan Pérez'] },
 ];
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
-  planning: { label: 'PlanificaciÃ³n', variant: 'info' },
+  planning: { label: 'Planificación', variant: 'info' },
   in_progress: { label: 'En Progreso', variant: 'success' },
   on_hold: { label: 'En Pausa', variant: 'warning' },
   completed: { label: 'Completado', variant: 'neutral' },
@@ -59,7 +59,7 @@ export default function ProjectsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Proyectos</h1>
-          <p className="text-sm text-slate-500 mt-1">GestiÃ³n de proyectos y presupuestos</p>
+          <p className="text-sm text-slate-500 mt-1">Gestión de proyectos y presupuestos</p>
         </div>
         <Link href="/dashboard/projects/new">
           <Button>
@@ -85,7 +85,7 @@ export default function ProjectsPage() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              placeholder="Buscar por nombre, cliente o cÃ³digo..."
+              placeholder="Buscar por nombre, cliente o código..."
             />
           </div>
           <Select
@@ -93,7 +93,7 @@ export default function ProjectsPage() {
             onChange={(e) => setStatusFilter(e.target.value)}
             options={[
               { value: 'all', label: 'Todos los estados' },
-              { value: 'planning', label: 'PlanificaciÃ³n' },
+              { value: 'planning', label: 'Planificación' },
               { value: 'in_progress', label: 'En Progreso' },
               { value: 'on_hold', label: 'En Pausa' },
               { value: 'completed', label: 'Completado' },
@@ -156,7 +156,7 @@ export default function ProjectsPage() {
                 </div>
               ))}
               {project.team.length > 3 && (
-                <span className="text-xs text-slate-400">+{project.team.length - 3} mÃ¡s</span>
+                <span className="text-xs text-slate-400">+{project.team.length - 3} más</span>
               )}
             </div>
           </div>
