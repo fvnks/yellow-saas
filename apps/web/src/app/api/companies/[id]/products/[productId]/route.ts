@@ -12,6 +12,7 @@ export async function GET(
 
     const result = await query(
       `SELECT p.*,
+        CASE WHEN cc.id IS NOT NULL THEN json_build_object('id', cc.id, 'name', cc.name, 'code', cc.code) ELSE NULL END as cost_center,
         COALESCE(
           (SELECT json_agg(json_build_object(
             'id', sl.id,
@@ -26,6 +27,7 @@ export async function GET(
           ), '[]'
         ) as stock_levels
        FROM products p
+       LEFT JOIN cost_centers cc ON p.cost_center_id = cc.id
        WHERE p.id = $1 AND p.company_id = $2`,
       [params.productId, companyId]
     );
@@ -53,13 +55,13 @@ export async function PUT(
         sku = $1, name = $2, category_id = $3, description = $4, type = $5,
         unit_of_measure = $6, cost_price = $7, sale_price = $8, min_stock = $9,
         max_stock = $10, track_stock = $11, barcode = $12, tax_id = $13,
-        is_active = $14, updated_at = NOW()
-       WHERE id = $15 AND company_id = $16
+        is_active = $14, cost_center_id = $15, updated_at = NOW()
+       WHERE id = $16 AND company_id = $17
        RETURNING *`,
       [body.sku, body.name, body.category_id, body.description, body.type,
        body.unit_of_measure, body.cost_price, body.sale_price, body.min_stock,
        body.max_stock, body.track_stock, body.barcode, body.tax_id,
-       body.is_active, params.productId, companyId]
+       body.is_active, body.cost_center_id || null, params.productId, companyId]
     );
 
     if (result.rows.length === 0) return errorResponse('Product not found', 404);

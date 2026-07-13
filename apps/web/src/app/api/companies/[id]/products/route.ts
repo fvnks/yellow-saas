@@ -42,9 +42,11 @@ export async function GET(request: NextRequest) {
 
     const dataResult = await query(
       `SELECT p.*,
-        json_build_object('id', c.id, 'name', c.name) as category
+        json_build_object('id', c.id, 'name', c.name) as category,
+        CASE WHEN cc.id IS NOT NULL THEN json_build_object('id', cc.id, 'name', cc.name, 'code', cc.code) ELSE NULL END as cost_center
        FROM products p
        LEFT JOIN inventory_categories c ON p.category_id = c.id
+       LEFT JOIN cost_centers cc ON p.cost_center_id = cc.id
        ${whereClause}
        ORDER BY p.${sort} ${order === 'asc' ? 'ASC' : 'DESC'}
        LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
@@ -67,7 +69,7 @@ export async function POST(request: NextRequest) {
     const {
       sku, name, category_id, description, type, unit_of_measure,
       cost_price, sale_price, min_stock, max_stock, track_stock,
-      barcode, tax_id, initial_stock, warehouse_id,
+      barcode, tax_id, initial_stock, warehouse_id, cost_center_id,
     } = body;
 
     if (!sku || !name) {
@@ -75,10 +77,10 @@ export async function POST(request: NextRequest) {
     }
 
     const productResult = await query(
-      `INSERT INTO products (company_id, sku, name, category_id, description, type, unit_of_measure, cost_price, sale_price, min_stock, max_stock, track_stock, barcode, tax_id)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+      `INSERT INTO products (company_id, sku, name, category_id, description, type, unit_of_measure, cost_price, sale_price, min_stock, max_stock, track_stock, barcode, tax_id, cost_center_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
        RETURNING *`,
-      [companyId, sku, name, category_id || null, description || null, type || 'product', unit_of_measure || 'UN', cost_price || 0, sale_price || 0, min_stock || 0, max_stock || 0, track_stock !== false, barcode || null, tax_id || null]
+      [companyId, sku, name, category_id || null, description || null, type || 'product', unit_of_measure || 'UN', cost_price || 0, sale_price || 0, min_stock || 0, max_stock || 0, track_stock !== false, barcode || null, tax_id || null, cost_center_id || null]
     );
 
     const product = productResult.rows[0];

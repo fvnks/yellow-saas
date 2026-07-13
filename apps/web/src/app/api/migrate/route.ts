@@ -62,6 +62,8 @@ export async function POST(request: Request) {
       `CREATE TABLE IF NOT EXISTS role_permissions (role_id UUID NOT NULL REFERENCES roles(id) ON DELETE CASCADE, permission_id UUID NOT NULL REFERENCES permissions(id) ON DELETE CASCADE, PRIMARY KEY (role_id, permission_id))`,
       `CREATE TABLE IF NOT EXISTS user_roles (user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE, role_id UUID NOT NULL REFERENCES roles(id) ON DELETE CASCADE, PRIMARY KEY (user_id, role_id))`,
       `CREATE TABLE IF NOT EXISTS invitations (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, email TEXT NOT NULL, role TEXT DEFAULT 'member' CHECK (role IN ('admin', 'manager', 'member', 'viewer')), token TEXT UNIQUE NOT NULL DEFAULT encode(gen_random_bytes(32), 'hex'), invited_by UUID NOT NULL REFERENCES profiles(id), expires_at TIMESTAMPTZ NOT NULL DEFAULT (now() + interval '7 days'), accepted_at TIMESTAMPTZ, created_at TIMESTAMPTZ DEFAULT now())`,
+      `CREATE TABLE IF NOT EXISTS cost_centers (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, code TEXT NOT NULL, name TEXT NOT NULL, description TEXT, parent_id UUID REFERENCES cost_centers(id) ON DELETE SET NULL, is_active BOOLEAN DEFAULT true, created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now(), UNIQUE (company_id, code))`,
+      `ALTER TABLE products ADD COLUMN IF NOT EXISTS cost_center_id UUID REFERENCES cost_centers(id) ON DELETE SET NULL`,
     ];
 
     for (const sql of tables) {
