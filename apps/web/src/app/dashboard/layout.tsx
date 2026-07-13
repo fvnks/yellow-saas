@@ -25,6 +25,7 @@ import {
   List,
   Truck,
   ClipboardCheck,
+  TrendingUp,
 } from 'lucide-react';
 import { cn } from '@yellow-erp/ui';
 import { Button } from '@yellow-erp/ui';
@@ -43,6 +44,7 @@ const MODULES = [
   { name: 'Contabilidad', href: '/dashboard/accounting', icon: Calculator, permission: 'accounting' },
   { name: 'Proyectos', href: '/dashboard/projects', icon: FolderKanban, permission: 'projects' },
   { name: 'Reportes', href: '/dashboard/reports', icon: BarChart3, permission: 'reports' },
+  { name: 'Reportes Avanzados', href: '/dashboard/reports/advanced', icon: TrendingUp, permission: 'reports' },
   { name: 'Auditoria', href: '/dashboard/audit', icon: ScrollText, permission: 'audit' },
   { name: 'Configuracion', href: '/dashboard/settings', icon: Settings, permission: 'settings' },
 ];
