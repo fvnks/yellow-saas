@@ -457,6 +457,44 @@ export class ApiClient {
   async deleteCostCenter(id: string) {
     return this.request<{ message: string }>(`/cost-centers/${id}`, { method: 'DELETE' });
   }
+
+  // Stock Transfers
+  async getStockTransfers(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/stock-transfers', params || {});
+  }
+
+  async getStockTransfer(id: string) {
+    return this.request<any>(`/stock-transfers/${id}`);
+  }
+
+  async createStockTransfer(data: { source_warehouse_id: string; destination_warehouse_id: string; notes?: string; items: { product_id: string; quantity: number; unit_cost?: number; notes?: string }[] }) {
+    return this.request<any>('/stock-transfers', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async confirmStockTransfer(id: string) {
+    return this.request<{ message: string }>(`/stock-transfers/${id}/confirm`, { method: 'POST' });
+  }
+
+  async cancelStockTransfer(id: string) {
+    return this.request<{ message: string }>(`/stock-transfers/${id}/cancel`, { method: 'POST' });
+  }
+
+  // Notifications
+  async getNotifications(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/notifications', params || {});
+  }
+
+  async getUnreadCount() {
+    return this.request<{ count: number }>('/notifications/unread-count');
+  }
+
+  async markNotificationRead(id: string) {
+    return this.request<{ message: string }>(`/notifications/${id}/read`, { method: 'POST' });
+  }
+
+  async markAllNotificationsRead() {
+    return this.request<{ message: string }>('/notifications/read-all', { method: 'POST' });
+  }
 }
 
 // Singleton with dynamic company_id from JWT
