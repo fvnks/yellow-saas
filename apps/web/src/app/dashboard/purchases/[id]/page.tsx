@@ -192,6 +192,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
               <CardTitle>Items de la Orden</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
+              <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -238,6 +239,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
                   ))}
                 </TableBody>
               </Table>
+              </div>
             </CardContent>
           </Card>
 

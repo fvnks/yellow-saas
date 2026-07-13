@@ -131,7 +131,7 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
       )}
 
       {/* Header */}
-      <header className="h-16 bg-white border-b border-slate-200 fixed top-0 right-0 left-64 z-10 flex items-center justify-between px-6 lg:left-64">
+      <header className="h-16 bg-white border-b border-slate-200 fixed top-0 right-0 left-0 lg:left-64 z-10 flex items-center justify-between px-4 lg:px-6">
         <div className="flex items-center gap-4">
           <button
             onClick={() => setSidebarOpen(true)}
@@ -209,8 +209,8 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
       </header>
 
       {/* Main Content */}
-      <main className="ml-64 pt-16 min-h-screen lg:ml-64">
-        <div className="p-6">{children}</div>
+      <main className="ml-0 lg:ml-64 pt-16 min-h-screen">
+        <div className="p-4 lg:p-6">{children}</div>
       </main>
     </div>
   );

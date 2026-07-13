@@ -106,6 +106,7 @@ export default function SettingsPage() {
                 <Button size="sm"><Plus className="w-4 h-4 mr-2" /> Invitar Usuario</Button>
               </CardHeader>
               <CardContent className="p-0">
+                <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-slate-200">
@@ -136,6 +137,7 @@ export default function SettingsPage() {
                     ))}
                   </tbody>
                 </table>
+                </div>
               </CardContent>
             </Card>
           )}
@@ -176,31 +178,33 @@ export default function SettingsPage() {
                   <CardTitle>Historial de Pagos</CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-slate-200">
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Fecha</th>
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Descripción</th>
-                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Monto</th>
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Estado</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {[
-                        { date: '2026-07-01', desc: 'Plan Professional - Julio 2026', amount: 49900, status: 'paid' },
-                        { date: '2026-06-01', desc: 'Plan Professional - Junio 2026', amount: 49900, status: 'paid' },
-                        { date: '2026-05-01', desc: 'Plan Professional - Mayo 2026', amount: 49900, status: 'paid' },
-                      ].map((payment, i) => (
-                        <tr key={i} className="border-b border-slate-100 hover:bg-slate-50">
-                          <td className="px-4 py-3 text-sm text-slate-600">{payment.date}</td>
-                          <td className="px-4 py-3 text-sm text-slate-900">{payment.desc}</td>
-                          <td className="px-4 py-3 text-sm text-right font-medium">${payment.amount.toLocaleString('es-CL')}</td>
-                          <td className="px-4 py-3"><Badge variant="success">Pagado</Badge></td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </CardContent>
+                   <div className="overflow-x-auto">
+                   <table className="w-full">
+                     <thead>
+                       <tr className="border-b border-slate-200">
+                         <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Fecha</th>
+                         <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Descripción</th>
+                         <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Monto</th>
+                         <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Estado</th>
+                       </tr>
+                     </thead>
+                     <tbody>
+                       {[
+                         { date: '2026-07-01', desc: 'Plan Professional - Julio 2026', amount: 49900, status: 'paid' },
+                         { date: '2026-06-01', desc: 'Plan Professional - Junio 2026', amount: 49900, status: 'paid' },
+                         { date: '2026-05-01', desc: 'Plan Professional - Mayo 2026', amount: 49900, status: 'paid' },
+                       ].map((payment, i) => (
+                         <tr key={i} className="border-b border-slate-100 hover:bg-slate-50">
+                           <td className="px-4 py-3 text-sm text-slate-600">{payment.date}</td>
+                           <td className="px-4 py-3 text-sm text-slate-900">{payment.desc}</td>
+                           <td className="px-4 py-3 text-sm text-right font-medium">${payment.amount.toLocaleString('es-CL')}</td>
+                           <td className="px-4 py-3"><Badge variant="success">Pagado</Badge></td>
+                         </tr>
+                       ))}
+                     </tbody>
+                   </table>
+                   </div>
+                 </CardContent>
               </Card>
             </>
           )}
@@ -272,25 +276,27 @@ export default function SettingsPage() {
                   <CardTitle>Sesiones Activas</CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-slate-200">
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Dispositivo</th>
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">IP</th>
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Última Actividad</th>
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Estado</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className="border-b border-slate-100">
-                        <td className="px-4 py-3 text-sm text-slate-900">Chrome · Windows</td>
-                        <td className="px-4 py-3 text-sm text-slate-600">192.168.1.100</td>
-                        <td className="px-4 py-3 text-sm text-slate-600">Ahora</td>
-                        <td className="px-4 py-3"><Badge variant="success">Actual</Badge></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </CardContent>
+                   <div className="overflow-x-auto">
+                   <table className="w-full">
+                     <thead>
+                       <tr className="border-b border-slate-200">
+                         <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Dispositivo</th>
+                         <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">IP</th>
+                         <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Última Actividad</th>
+                         <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Estado</th>
+                       </tr>
+                     </thead>
+                     <tbody>
+                       <tr className="border-b border-slate-100">
+                         <td className="px-4 py-3 text-sm text-slate-900">Chrome · Windows</td>
+                         <td className="px-4 py-3 text-sm text-slate-600">192.168.1.100</td>
+                         <td className="px-4 py-3 text-sm text-slate-600">Ahora</td>
+                         <td className="px-4 py-3"><Badge variant="success">Actual</Badge></td>
+                       </tr>
+                     </tbody>
+                   </table>
+                   </div>
+                 </CardContent>
               </Card>
             </div>
           )}

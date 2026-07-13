@@ -77,8 +77,8 @@ export default function WarehousesPage() {
           <h1 className="text-xl font-bold text-slate-900">Bodegas</h1>
           <p className="text-sm text-slate-500 mt-1">Gestión de ubicaciones de inventario</p>
         </div>
-        <Link href="/dashboard/warehouses/new">
-          <Button>
+        <Link href="/dashboard/warehouses/new" className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto justify-center">
             <Plus className="w-4 h-4 mr-2" />
             Nueva Bodega
           </Button>
@@ -173,6 +173,7 @@ export default function WarehousesPage() {
       {/* Warehouses Table */}
       <Card>
         <CardContent className="p-0">
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -249,6 +250,7 @@ export default function WarehousesPage() {
               })}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
 

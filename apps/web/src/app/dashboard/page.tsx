@@ -38,12 +38,12 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Dashboard</h1>
           <p className="text-sm text-slate-500 mt-1">Resumen general de tu empresa</p>
         </div>
-        <Button>
+        <Button className="w-full sm:w-auto justify-center">
           <Plus className="w-4 h-4 mr-2" />
           Nueva Venta
         </Button>
@@ -65,6 +65,7 @@ export default function DashboardPage() {
             <Link href="/dashboard/sales" className="text-sm text-slate-500 hover:text-slate-700 font-medium">Ver todas</Link>
           </CardHeader>
           <CardContent className="p-0">
+            <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -92,6 +93,7 @@ export default function DashboardPage() {
                 })}
               </TableBody>
             </Table>
+            </div>
           </CardContent>
         </Card>
 
@@ -102,6 +104,7 @@ export default function DashboardPage() {
             <Link href="/dashboard/inventory?filter=low-stock" className="text-sm text-slate-500 hover:text-slate-700 font-medium">Ver todas</Link>
           </CardHeader>
           <CardContent className="p-0">
+            <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -124,6 +127,7 @@ export default function DashboardPage() {
                 ))}
               </TableBody>
             </Table>
+            </div>
           </CardContent>
         </Card>
       </div>
