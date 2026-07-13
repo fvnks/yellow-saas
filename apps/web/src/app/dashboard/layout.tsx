@@ -23,6 +23,7 @@ import {
   Search,
   BarChart3,
   List,
+  Truck,
 } from 'lucide-react';
 import { cn } from '@yellow-erp/ui';
 import { Button } from '@yellow-erp/ui';
@@ -31,6 +32,7 @@ import { PermissionsProvider, usePermissions } from '../../lib/permissions';
 const MODULES = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, permission: null },
   { name: 'Inventario y Bodega', href: '/dashboard/bodega', icon: Warehouse, permission: 'inventory' },
+  { name: 'Transferencias', href: '/dashboard/transfers', icon: Truck, permission: 'inventory' },
   { name: 'Ventas', href: '/dashboard/sales', icon: ShoppingCart, permission: 'sales_orders' },
   { name: 'Compras', href: '/dashboard/purchases', icon: ShoppingBag, permission: 'purchase_orders' },
   { name: 'CRM', href: '/dashboard/crm', icon: Handshake, permission: 'crm' },
