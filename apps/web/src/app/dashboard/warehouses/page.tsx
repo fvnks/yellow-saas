@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
-import { Plus, Search, Warehouse, MapPin, Truck, Users, Edit, Trash2, Activity, Package } from 'lucide-react';
+import { Plus, Search, Warehouse, MapPin, Truck, Users, Edit, Trash2, Activity, Package, LayoutGrid } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '../../../lib/api-client';
 
@@ -229,9 +229,11 @@ export default function WarehousesPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-1">
-                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Ver">
-                          <Activity className="w-4 h-4" />
-                        </button>
+                        <Link href={`/dashboard/warehouses/${warehouse.id}/layout`}>
+                          <button className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors" aria-label="Layout">
+                            <LayoutGrid className="w-4 h-4" />
+                          </button>
+                        </Link>
                         <Link href={`/dashboard/warehouses/${warehouse.id}/edit`}>
                           <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Editar">
                             <Edit className="w-4 h-4" />
