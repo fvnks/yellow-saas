@@ -58,7 +58,8 @@ export async function POST(request: NextRequest) {
         role: user.role,
       },
     });
-  } catch {
-    return errorResponse('Internal server error', 500);
+  } catch (err) {
+    console.error('Login error:', err);
+    return errorResponse(err instanceof Error ? err.message : 'Internal server error', 500);
   }
 }
