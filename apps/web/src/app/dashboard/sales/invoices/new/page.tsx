@@ -203,6 +203,7 @@ export default function NewInvoicePage() {
                 <CardTitle>Items Facturados</CardTitle>
               </CardHeader>
               <CardContent className="p-0">
+                <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-slate-200">
@@ -259,6 +260,7 @@ export default function NewInvoicePage() {
                     })}
                   </tbody>
                 </table>
+                </div>
               </CardContent>
             </Card>
           </div>

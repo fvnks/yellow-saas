@@ -256,6 +256,7 @@ export default function EditSalePage() {
                 </Button>
               </CardHeader>
               <CardContent className="p-0">
+                <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-slate-200">
@@ -330,6 +331,7 @@ export default function EditSalePage() {
                     ))}
                   </tbody>
                 </table>
+                </div>
               </CardContent>
             </Card>
 

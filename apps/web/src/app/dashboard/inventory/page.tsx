@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
@@ -73,7 +73,7 @@ export default function InventoryPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Inventario</h1>
-          <p className="text-sm text-slate-500 mt-1">Gestión de productos y stock</p>
+          <p className="text-sm text-slate-500 mt-1">Gesti�n de productos y stock</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm">
@@ -115,7 +115,7 @@ export default function InventoryPage() {
               className="w-full sm:w-40"
             />
             <Select
-              placeholder="Categoría"
+              placeholder="Categor�a"
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
               options={[
@@ -131,15 +131,16 @@ export default function InventoryPage() {
       {/* Products Table */}
       <Card>
         <CardContent className="p-0">
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-12">Imagen</TableHead>
                 <TableHead>Producto</TableHead>
                 <TableHead>SKU</TableHead>
-                <TableHead>Categoría</TableHead>
+                <TableHead>Categor�a</TableHead>
                 <TableHead className="text-center">Stock</TableHead>
-                <TableHead className="text-center">Mínimo</TableHead>
+                <TableHead className="text-center">M�nimo</TableHead>
                 <TableHead className="text-right">Precio Venta</TableHead>
                 <TableHead className="text-right">Costo</TableHead>
                 <TableHead>Estado</TableHead>
@@ -193,6 +194,7 @@ export default function InventoryPage() {
               })}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
 

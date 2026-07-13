@@ -162,6 +162,7 @@ export default function NewDeliveryGuidePage() {
                 <CardTitle>Items a Despachar</CardTitle>
               </CardHeader>
               <CardContent className="p-0">
+                <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-slate-200">
@@ -210,6 +211,7 @@ export default function NewDeliveryGuidePage() {
                     })}
                   </tbody>
                 </table>
+                </div>
               </CardContent>
             </Card>
 
