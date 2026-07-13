@@ -101,6 +101,8 @@ export default function NewPurchaseOrderPage() {
           product_id: i.productId,
           quantity: i.quantity,
           unit_price: i.unitPrice,
+          discount_percent: 0,
+          tax_rate: 19,
         })),
       });
       router.push('/dashboard/purchases');

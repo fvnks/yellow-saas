@@ -112,7 +112,8 @@ export default function NewSalePage() {
           product_id: i.productId,
           quantity: i.quantity,
           unit_price: i.unitPrice,
-          discount: i.discount,
+          discount_percent: i.discount || 0,
+          tax_rate: 19,
         })),
       });
       router.push('/dashboard/sales');
