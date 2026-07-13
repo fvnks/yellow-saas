@@ -70,7 +70,7 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          'w-64 bg-white border-r border-slate-200 h-screen fixed left-0 top-0 z-20 flex flex-col transition-transform duration-200 ease-in-out lg:translate-x-0',
+          'w-64 bg-white border-r border-slate-200 h-screen fixed left-0 top-0 z-50 flex flex-col transition-transform duration-200 ease-in-out lg:translate-x-0',
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
@@ -93,6 +93,7 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
               <Link
                 key={module.name}
                 href={module.href}
+                onClick={() => setSidebarOpen(false)}
                 className={cn(
                   'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                   isActive
