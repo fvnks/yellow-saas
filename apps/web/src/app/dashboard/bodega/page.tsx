@@ -7,7 +7,7 @@ import {
   Package, Warehouse, ClipboardCheck, Truck, AlertTriangle, Upload, 
   Plus, Search, Eye, Play, CheckCircle, ArrowRight, Download, MapPin, Users, Activity, Grid, Edit, Trash2, Tag, Percent
 } from 'lucide-react';
-import { getApiClient } from '../../../lib/api-client';
+import { getApiClient, getCompanyIdFromToken } from '../../../lib/api-client';
 import BarcodeScanner from '../../../components/barcode/barcode-scanner';
 import Pagination from '../../../components/ui/pagination';
 
@@ -85,31 +85,32 @@ export default function BodegaPage() {
       const params: Record<string, string> = { page: String(page), limit: String(limit) };
       if (search) params.search = search;
 
-      const [prodRes, whRes, cntRes, trfRes, altRes] = await Promise.all([
-        api.getProducts(params),
-        api.getWarehouses({ limit: '100' }),
-        api.getInventoryCounts({ limit: '100' }).catch(() => ({ data: [] })),
-        api.getStockTransfers({ limit: '100' }).catch(() => ({ data: [] })),
-        fetch('/api/companies/' + (api as any).companyId + '/stock-levels?limit=200')
-          .then(r => r.json())
-          .then(d => {
-            const levels = d.data || [];
-            return levels.filter((l: any) => {
-              const qty = l.quantity || 0;
-              const product = l.product || {};
-              return product.track_stock && product.is_active && product.min_stock > 0 && qty <= product.min_stock;
-            }).map((l: any) => ({
-              product_id: l.product_id,
-              product_name: l.product?.name || '',
-              product_sku: l.product?.sku || '',
-              warehouse_id: l.warehouse_id,
-              warehouse_name: l.warehouse?.name || '',
-              current_stock: l.quantity || 0,
-              min_stock: l.product?.min_stock || 0,
-              status: l.quantity === 0 ? 'out_of_stock' : 'low_stock',
-            }));
-          })
-          .catch(() => []),
+        const companyId = getCompanyIdFromToken();
+        const [prodRes, whRes, cntRes, trfRes, altRes] = await Promise.all([
+          api.getProducts(params),
+          api.getWarehouses({ limit: '100' }),
+          api.getInventoryCounts({ limit: '100' }).catch(() => ({ data: [] })),
+          api.getStockTransfers({ limit: '100' }).catch(() => ({ data: [] })),
+          companyId ? fetch(`/api/companies/${companyId}/stock-levels?limit=200`)
+            .then(r => r.json())
+            .then(d => {
+              const levels = d.data || [];
+              return levels.filter((l: any) => {
+                const qty = l.quantity || 0;
+                const product = l.product || {};
+                return product.track_stock && product.is_active && product.min_stock > 0 && qty <= product.min_stock;
+              }).map((l: any) => ({
+                product_id: l.product_id,
+                product_name: l.product?.name || '',
+                product_sku: l.product?.sku || '',
+                warehouse_id: l.warehouse_id,
+                warehouse_name: l.warehouse?.name || '',
+                current_stock: l.quantity || 0,
+                min_stock: l.product?.min_stock || 0,
+                status: l.quantity === 0 ? 'out_of_stock' : 'low_stock',
+              }));
+            })
+            .catch(() => []) : Promise.resolve([]),
       ]);
       setProducts((prodRes.data || []).map((p: any) => ({
         id: p.id, name: p.name || '', sku: p.sku || '', stock: p.stock || 0,

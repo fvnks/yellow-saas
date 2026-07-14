@@ -43,15 +43,14 @@ export async function GET(request: NextRequest) {
 
     const dataResult = await query(
       `SELECT p.*,
-        json_build_object('id', c.id, 'name', c.name) as category,
+        CASE WHEN c.id IS NOT NULL THEN json_build_object('id', c.id, 'name', c.name) ELSE NULL END as category,
         CASE WHEN cc.id IS NOT NULL THEN json_build_object('id', cc.id, 'name', cc.name, 'code', cc.code) ELSE NULL END as cost_center,
-        CASE WHEN t.id IS NOT NULL THEN json_build_object('id', t.id, 'name', t.name, 'rate', t.rate, 'code', t.code) ELSE NULL END as tax
+        (SELECT json_build_object('id', t.id, 'name', t.name, 'rate', t.rate, 'code', t.code) FROM taxes t WHERE t.id = p.tax_id AND t.company_id = p.company_id) as tax
        FROM products p
-       LEFT JOIN inventory_categories c ON p.category_id = c.id
-       LEFT JOIN cost_centers cc ON p.cost_center_id = cc.id
-       LEFT JOIN taxes t ON p.tax_id = t.id
+       LEFT JOIN inventory_categories c ON p.category_id = c.id AND c.company_id = p.company_id
+       LEFT JOIN cost_centers cc ON p.cost_center_id = cc.id AND cc.company_id = p.company_id
        ${whereClause}
-       ORDER BY p.${sort} ${order === 'asc' ? 'ASC' : 'DESC'}
+       ORDER BY p.name ASC
        LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
       [...params, limit, offset]
     );
