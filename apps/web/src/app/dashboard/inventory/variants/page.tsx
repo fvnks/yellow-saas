@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Plus, Search, Trash2, Edit, Layers } from 'lucide-react';
-import { getApiClient } from '../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface Variant {
   id: string; sku: string; name: string | null; attributes: Record<string, string>;

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ClipboardCheck, Plus, Search, Eye, Play, CheckCircle } from 'lucide-react';
-import { getApiClient } from '../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface CountItem {
   id: string;

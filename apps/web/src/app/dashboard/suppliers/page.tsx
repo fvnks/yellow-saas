@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
 import { Plus, Search, Filter, Download, Eye, Edit, Trash2, Truck, Phone, Mail, MapPin, CreditCard, Building2, Package } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 const initialSuppliers = [
   { id: '1', code: 'SUP-001', name: 'Logistica Norte SpA', tradeName: 'Logistica Norte', taxId: '76.567.890-1', phone: '+56 2 2345 6780', email: 'contacto@norte.cl', address: 'Av. Providencia 2000', city: 'Santiago', region: 'Metropolitana', paymentTerms: 30, creditLimit: 8000000, currentBalance: 2500000, currency: 'CLP', isActive: true, products: 45 },

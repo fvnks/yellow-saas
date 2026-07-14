@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, Badge, Button, Select } from '@yellow-erp/ui';
 import { ArrowLeft, Plus, Search, Truck, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface Transfer {
   id: string;

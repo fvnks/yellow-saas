@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { ArrowLeft, Printer, Download, CreditCard, User, Calendar, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { getApiClient } from '../../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 import { generateInvoicePDF } from '../../../../../lib/pdf';
 
 interface InvoiceItem {

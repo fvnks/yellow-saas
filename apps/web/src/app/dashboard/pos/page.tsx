@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Badge, Input, Select } from '@yellow-erp/ui';
 import { Monitor, ShoppingCart, Plus, Search, CreditCard, Banknote, Receipt, ArrowRight, Package, X, Check, User } from 'lucide-react';
-import { getApiClient } from '../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface CartItem {
   id: string;

@@ -1,11 +1,11 @@
-import { query } from '@/lib/db';
+import { query } from '@/api/lib/db';
 import {
   getCompanyId,
   successResponse,
   errorResponse,
   parseSearchParams,
   paginatedResponse,
-} from '@/lib/helpers';
+} from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
@@ -122,7 +122,7 @@ async function calculateABCClassification(companyId: string, periodStart: string
   if (products.length === 0) return [];
 
   const sortedByValue = [...products].sort((a, b) => b.total_value - a.total_value);
-  const totalValue = sortedByValue.reduce((sum, p) => sum + (a.total_value || 0), 0);
+  const totalValue = sortedByValue.reduce((sum, p) => sum + (p.total_value || 0), 0);
 
   let cummulative = 0;
   const classifications: any[] = [];

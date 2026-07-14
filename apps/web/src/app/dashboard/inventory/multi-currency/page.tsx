@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Select, Input } from '@yellow-erp/ui';
 import { ArrowLeft, Calculator, Download, RefreshCw, Globe, Currency } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface ValuationItem {
   id: string;
@@ -18,7 +18,7 @@ interface ValuationItem {
   fx_gain_loss: number;
   valuation_date: string;
   created_at: string;
-  product: { id: string; name: string; sku: string; cost_price: number };
+  product: { id: string; name: string; sku: string; cost_price: number; quantity: number };
   warehouse: { id: string; name: string; code: string };
   exchange_rate: { id: string; rate: number; rate_date: string; from_currency: string; to_currency: string };
 }

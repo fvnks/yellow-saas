@@ -1,5 +1,5 @@
-import { query } from '../../../../../../lib/db';
-import { getCompanyId, successResponse, errorResponse, parseSearchParams, paginatedResponse } from '../../../../../../lib/helpers';
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse, parseSearchParams, paginatedResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
 export async function GET(
@@ -15,24 +15,24 @@ export async function GET(
     const status = url.searchParams.get('status');
 
     let whereClause = 'WHERE wd.endpoint_id = $1 AND wd.company_id = $2';
-    const params: any[] = [params.endpointId, companyId];
+    const queryParams: any[] = [params.endpointId, companyId];
     let paramIndex = 3;
 
     if (status) {
       whereClause += ` AND wd.status = $${paramIndex}`;
-      params.push(status);
+      queryParams.push(status);
       paramIndex++;
     }
 
     const countResult = await query(
       `SELECT COUNT(*) FROM webhook_deliveries wd ${whereClause}`,
-      params
+      queryParams
     );
 
-    params.push(limit, offset);
+    queryParams.push(limit, offset);
     const dataResult = await query(
       `SELECT wd.* FROM webhook_deliveries wd ${whereClause} ORDER BY wd.created_at DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
-      params
+      queryParams
     );
 
     return paginatedResponse(dataResult.rows, parseInt(countResult.rows[0].count), page, limit);

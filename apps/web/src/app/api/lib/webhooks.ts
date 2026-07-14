@@ -131,7 +131,7 @@ async function processDelivery(delivery: any): Promise<void> {
     );
   } else {
     const nextAttempt = attempt + 1;
-    const isLastAttempt = nextAttempt >= retryPolicy.max_retries;
+    const isLastAttempt = nextAttempt >= retryPolicy.max_retries!;
 
     if (isLastAttempt) {
       await query(
@@ -140,8 +140,8 @@ async function processDelivery(delivery: any): Promise<void> {
       );
     } else {
       const delay = Math.min(
-        retryPolicy.base_delay_ms * Math.pow(retryPolicy.backoff_multiplier, attempt),
-        retryPolicy.max_delay_ms
+        retryPolicy.base_delay_ms! * Math.pow(retryPolicy.backoff_multiplier!, attempt),
+        retryPolicy.max_delay_ms!
       );
       const nextRetryAt = new Date(Date.now() + delay);
 

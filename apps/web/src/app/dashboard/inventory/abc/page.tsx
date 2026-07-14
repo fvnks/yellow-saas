@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
 import { ArrowLeft, RefreshCw, Calculator, Download, FileText } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface ABCItem {
   id: string;
@@ -69,7 +69,7 @@ export default function ABCClassificationPage() {
     setError('');
     try {
       const api = getApiClient();
-      await api.createProductABCClassification({ period_start: periodStart, period_end: periodEnd, warehouse_id: filters.warehouse_id !== 'all' ? filters.warehouse_id : undefined, recalculate: true });
+      await (api as any).createProductABCClassification({ period_start: periodStart, period_end: periodEnd, warehouse_id: filters.warehouse_id !== 'all' ? filters.warehouse_id : undefined, recalculate: true });
       setCalculating(false);
       loadData();
     } catch (err: any) {
@@ -155,10 +155,10 @@ export default function ABCClassificationPage() {
                       <td className="px-4 py-3 text-xs font-mono text-slate-500">{item.product.sku}</td>
                       <td className="px-4 py-3 text-xs text-slate-700">{item.warehouse.name}</td>
                       <td className="px-4 py-3 text-center">
-                        <Badge variant={abcColors[item.abc_class as keyof typeof abcColors]}>{item.abc_class}</Badge>
+                        <Badge variant={abcColors[item.abc_class as keyof typeof abcColors] as any}>{item.abc_class}</Badge>
                       </td>
                       <td className="px-4 py-3 text-center">
-                        <Badge variant={xyzColors[item.xyz_class as keyof typeof xyzColors]}>{item.xyz_class}</Badge>
+                        <Badge variant={xyzColors[item.xyz_class as keyof typeof xyzColors] as any}>{item.xyz_class}</Badge>
                       </td>
                       <td className="px-4 py-3 text-center text-xs font-mono text-slate-700">{item.combined_class}</td>
                       <td className="px-4 py-3 text-right text-xs font-bold">${item.annual_consumption_value?.toLocaleString('es-CL') || 0}</td>

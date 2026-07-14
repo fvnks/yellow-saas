@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, Search, Hash, Package } from 'lucide-react';
-import { getApiClient } from '../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface ProductSerial { id: string; serial_number: string; status: string; notes: string | null; created_at: string; product: { id: string; name: string; sku: string }; warehouse: { id: string; name: string } | null; }
 

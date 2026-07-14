@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Plus, Search, Trash2, Edit } from 'lucide-react';
-import { getApiClient } from '../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface UOM { id: string; code: string; name: string; type: string; base_unit: string | null; conversion_factor: number; is_active: boolean; }
 

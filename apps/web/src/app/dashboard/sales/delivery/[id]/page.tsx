@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Printer, Download, Truck, User, Calendar, MapPin, Package } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface DeliveryGuideItem {
   id: string;

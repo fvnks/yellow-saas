@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Badge, Button } from '@yellow-erp/ui';
 import { ArrowLeft, Save, Plus, Trash2, Maximize2, Grid } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface Position {
   id: string;

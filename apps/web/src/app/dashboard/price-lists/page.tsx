@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select, KPICard } from '@yellow-erp/ui';
 import { Plus, Edit, Trash2, Copy, Tag, Percent, Star, List } from 'lucide-react';
-import { getApiClient } from '../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 const fallbackLists = [
   { id: '1', name: 'Lista General', description: 'Precios est�ndar para todos los clientes', products: 156, status: 'default', createdAt: '2026-01-15' },

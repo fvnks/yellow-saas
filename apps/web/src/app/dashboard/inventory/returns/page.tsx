@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, Search, Package, CheckCircle, Eye, X, RotateCcw } from 'lucide-react';
-import { getApiClient } from '../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface CustomerReturn { id: string; return_number: string; status: string; reason: string | null; total_amount: number | null; created_at: string; customer: { id: string; name: string } | null; warehouse: { id: string; name: string }; items?: ReturnItem[]; }
 

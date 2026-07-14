@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Badge, Input, Select, KPICard } from '@yellow-erp/ui';
 import { ScrollText, Search, Filter, Download, Eye, Calendar, User, Activity, AlertTriangle, CheckCircle2, XCircle, Info } from 'lucide-react';
-import { getApiClient } from '../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 const fallbackLogs = [
   { id: 1, timestamp: '2026-07-11 14:32:15', user: 'admin@yellow.cl', action: 'create', module: 'Ventas', entity: 'Venta #VT-2026-089', details: 'Creó venta a Empresa Norte por $3.250.000', ip: '192.168.1.100' },

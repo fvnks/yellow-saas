@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
 import { Plus, Search, Filter, Download, Eye, Edit, Trash2, Users, Phone, Mail, MapPin, CreditCard, Building2 } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 const initialCustomers = [
   { id: '1', code: 'CUST-001', name: 'Empresa ABC SpA', tradeName: 'ABC Industrial', taxId: '76.567.890-3', phone: '+56 2 2345 6789', email: 'contacto@abc.cl', address: 'Av. Providencia 1234', city: 'Santiago', region: 'Metropolitana', paymentTerms: 30, creditLimit: 5000000, currentBalance: 1200000, priceListId: 'pl-1', taxExempt: false, status: 'active' },

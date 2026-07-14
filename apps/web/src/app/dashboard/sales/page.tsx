@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Select, Input } from '@yellow-erp/ui';
 import { Plus, Search, Download, Eye, Edit, Trash2, ShoppingCart, DollarSign, Truck, CreditCard, Package, FileText, ClipboardList, Monitor, Banknote, Receipt, X, Check, Users } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 const orderStatusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   delivered: { label: 'Entregado', variant: 'success' },

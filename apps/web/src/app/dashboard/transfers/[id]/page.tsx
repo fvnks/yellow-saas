@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, Badge, Button } from '@yellow
 import { ArrowLeft, CheckCircle, XCircle, Truck, ArrowRight, Package } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { getApiClient } from '../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface TransferDetail {
   id: string;

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Badge, Input, Select, KPICard } from '@yellow-erp/ui';
 import { FolderKanban, Plus, Search, Calendar, Users, Clock, CheckCircle2, AlertCircle, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 const mockProjects = [
   { id: 'PRJ-001', name: 'Implementación ERP Cliente A', client: 'Empresa Norte SpA', status: 'in_progress', progress: 65, startDate: '2026-04-01', endDate: '2026-08-30', budget: 15000000, spent: 9750000, team: ['Juan Pérez', 'María López'] },

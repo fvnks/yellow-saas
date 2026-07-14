@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, Search, Trash2, Link2 } from 'lucide-react';
-import { getApiClient } from '../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface ProductRelation { id: string; relation_type: string; product: { id: string; name: string; sku: string }; related_product: { id: string; name: string; sku: string } | null; }
 

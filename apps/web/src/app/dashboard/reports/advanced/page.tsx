@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { BarChart3, TrendingUp, Package, Users, DollarSign, Calendar, Download, Filter } from 'lucide-react';
-import { getApiClient } from '../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface ReportData {
   sales_by_month: { month: string; total: number }[];
