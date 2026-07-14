@@ -386,7 +386,7 @@ export default function LabelDesignerPage() {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm" onClick={exportTemplate} disabled={!activeTemplate}><Download className="w-4 h-4 mr-2" /> Exportar</Button>
-          <input type="file" accept=".json" onChange={importTemplate} className="hidden" id="import-file" ref={e => e && (window as any).importFileInput = e} />
+          <input type="file" accept=".json" onChange={importTemplate} className="hidden" id="import-file" ref={(e) => { if (e) (window as any).importFileInput = e; }} />
           <Button variant="secondary" size="sm" onClick={() => (window as any).importFileInput?.click()}><Upload className="w-4 h-4 mr-2" /> Importar</Button>
           <Button variant="secondary" size="sm" onClick={duplicateTemplate} disabled={!activeTemplate}><Copy className="w-4 h-4 mr-2" /> Duplicar</Button>
           <Button variant="secondary" size="sm" onClick={deleteTemplate} disabled={!activeTemplate} className="text-rose-600 hover:bg-rose-50"><Trash2 className="w-4 h-4 mr-2" /> Eliminar</Button>
@@ -454,8 +454,9 @@ export default function LabelDesignerPage() {
                     <span className="text-xs text-slate-400 flex-1 text-right">{Math.round(el.x)}×{Math.round(el.y)}</span>
                     <button onClick={() => duplicateElement(el.id)} className="p-1 hover:bg-slate-100 rounded" title="Duplicar"><Copy className="w-3 h-3" /></button>
                     <button onClick={() => deleteElement(el.id)} className="p-1 hover:bg-rose-50 rounded text-rose-500" title="Eliminar"><Trash2 className="w-3 h-3" /></button>
-                  </div>
-                ))}
+</div>
+                )
+              ))}
             </CardContent>
           </Card>
         </div>
@@ -563,17 +564,17 @@ export default function LabelDesignerPage() {
           <Card>
             <CardHeader><CardTitle className="flex items-center gap-2"><Settings className="w-4 h-4" /> Propiedades</CardTitle></CardHeader>
             <CardContent className="space-y-4">
-              {activeTemplate && (
-                <div className="space-y-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                  <h4 className="font-medium text-sm text-slate-700">Plantilla</h4>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <Input label="Ancho (mm)" value={activeTemplate.width_mm} onChange={e => { if (activeTemplate) { activeTemplate.width_mm = Number(e.target.value); } }} }} />
-                    <Input label="Alto (mm)" value={activeTemplate.height_mm} onChange={e => { if (activeTemplate) { activeTemplate.height_mm = Number(e.target.value); } }} />
-                    <Input label="Margen (mm)" value={activeTemplate.margin_mm} onChange={e => { if (activeTemplate) { activeTemplate.margin_mm = Number(e.target.value); } }} />
-                    <Input label="Color fondo" type="color" value={activeTemplate.background_color} onChange={e => { if (activeTemplate) { activeTemplate.background_color = e.target.value; } }} />
+{activeTemplate && (
+                  <div className="space-y-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                    <h4 className="font-medium text-sm text-slate-700">Plantilla</h4>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <Input label="Ancho (mm)" value={activeTemplate.width_mm} onChange={e => { if (activeTemplate) { activeTemplate.width_mm = Number(e.target.value); } }} />
+                      <Input label="Alto (mm)" value={activeTemplate.height_mm} onChange={e => { if (activeTemplate) { activeTemplate.height_mm = Number(e.target.value); } }} />
+                      <Input label="Margen (mm)" value={activeTemplate.margin_mm} onChange={e => { if (activeTemplate) { activeTemplate.margin_mm = Number(e.target.value); } }} />
+                      <Input label="Color fondo" type="color" value={activeTemplate.background_color} onChange={e => { if (activeTemplate) { activeTemplate.background_color = e.target.value; } }} />
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
               <div className="space-y-3">
                 <h4 className="font-medium text-sm text-slate-700">Grid</h4>
@@ -650,7 +651,7 @@ export default function LabelDesignerPage() {
                       </div>
                       {selectedElement.type !== 'line' && (
                         <Input label="Radio" type="number" min="0" step="0.5" value={selectedElement.borderRadius || 0} onChange={e => updateElement(selectedElement.id, { borderRadius: Number(e.target.value) })} />
-                      )}
+              )}
                     </div>
                   )}
 
@@ -658,8 +659,9 @@ export default function LabelDesignerPage() {
                     <Button variant="secondary" size="sm" onClick={() => duplicateElement(selectedElement.id)}><Copy className="w-4 h-4 mr-1" /> Duplicar</Button>
                     <Button variant="secondary" size="sm" onClick={() => deleteElement(selectedElement.id)} className="text-rose-600 hover:bg-rose-50"><Trash2 className="w-4 h-4 mr-1" /> Eliminar</Button>
                   </div>
-                </div>
-              )}
+</div>
+              )
+            }
 
               {!selectedElement && !activeTemplate && (
                 <p className="text-center text-slate-500 text-sm py-8">Selecciona una plantilla y un elemento para editar propiedades</p>

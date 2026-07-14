@@ -237,8 +237,8 @@ export default function ValuationPage() {
               <CardTitle>Ejecutar Nueva Valoración</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleRunValuation} className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Select label="Método" value={runForm.valuation_method_id} onChange={e => setRunForm({...runForm, valuation_method_id: e.target.value})} options={[{value:'', label:'Seleccionar...'}, ...methods.filter(m => m.is_active).map(m => ({value: m.id, label: `${m.code} - ${m.name}`}))} required />
+<form onSubmit={handleRunValuation} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Select label="Método" value={runForm.valuation_method_id} onChange={e => setRunForm({...runForm, valuation_method_id: e.target.value})} options={[{value:'', label:'Seleccionar...'}, ...methods.filter(m => m.is_active).map(m => ({value: m.id, label: `${m.code} - ${m.name}`}))]}/>
                 <Input label="Fecha Inicio" type="date" value={runForm.period_start} onChange={e => setRunForm({...runForm, period_start: e.target.value})} required />
                 <Input label="Fecha Fin" type="date" value={runForm.period_end} onChange={e => setRunForm({...runForm, period_end: e.target.value})} required />
                 <Button type="submit" disabled={running} className="self-end">

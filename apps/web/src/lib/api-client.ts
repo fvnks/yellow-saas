@@ -67,14 +67,14 @@ export class ApiClient {
 
   // Products
   async getProducts(params?: Record<string, string>) {
-    return this.requestWithPagination<{ id: string; name: string; sku: string; price: number; stock: number; warehouse: string; cost_price?: number; stock_levels?: { id?: string; quantity?: number; warehouse?: { id?: string; name?: string; code?: string } | null }[] }>('/products', params || {});
+    return this.requestWithPagination<{ id: string; name: string; sku: string; price: number; stock: number; warehouse: string; cost_price?: number; stock_levels?: { id?: string; quantity?: number; warehouse?: { id?: string; name?: string; code?: string } | null }[]; cost_center?: { id: string; name: string; code: string } | null; image_url?: string | null }>('/products', params || {});
   }
 
   async getProduct(id: string) {
-    return this.request<{ id: string; name: string; sku: string; price: number; stock: number }>(`/products/${id}`);
+    return this.request<{ id: string; name: string; sku: string; price: number; stock: number; cost_center?: { id: string; name: string; code: string } | null; image_url?: string | null }>(`/products/${id}`);
   }
 
-  async createProduct(data: { name: string; sku: string; price?: number; category_id?: string; warehouse_id?: string; initial_stock?: number; description?: string; type?: string; unit_of_measure?: string; cost_price?: number; sale_price?: number; min_stock?: number; max_stock?: number; track_stock?: boolean; barcode?: string; tax_id?: string; is_active?: boolean }) {
+  async createProduct(data: { name: string; sku: string; price?: number; category_id?: string; warehouse_id?: string; initial_stock?: number; description?: string; type?: string; unit_of_measure?: string; cost_price?: number; sale_price?: number; min_stock?: number; max_stock?: number; track_stock?: boolean; barcode?: string; tax_id?: string; is_active?: boolean; cost_center_id?: string; image_url?: string }) {
     return this.request<{ id: string }>('/products', { method: 'POST', body: JSON.stringify(data) });
   }
 
@@ -706,11 +706,10 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>('/inventory-valuation-runs', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  // Reorder Suggestions
+// Reorder Suggestions
   async getReorderSuggestions(params?: Record<string, string>) {
     return this.requestWithPagination<any>('/reorder-suggestions', params || {});
   }
-}
 
   // Product Serials
   async getProductSerials(params?: Record<string, string>) {
