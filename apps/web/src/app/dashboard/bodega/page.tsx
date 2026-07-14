@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
   Package, Warehouse, ClipboardCheck, Truck, AlertTriangle, Upload, 
-  Plus, Search, Eye, Play, CheckCircle, ArrowRight, Download, MapPin, Users, Activity, Grid, Edit, Trash2
+  Plus, Search, Eye, Play, CheckCircle, ArrowRight, Download, MapPin, Users, Activity, Grid, Edit, Trash2, Tag, Percent
 } from 'lucide-react';
 import { getApiClient } from '../../../lib/api-client';
 import BarcodeScanner from '../../../components/barcode/barcode-scanner';
@@ -16,6 +16,7 @@ interface Product {
   id: string; name: string; sku: string; stock: number; minStock: number;
   price: number; cost: number; status: string; warehouse: string;
   cost_center?: { id: string; name: string; code: string } | null;
+  category?: string; tax?: { id: string; name: string; rate: number; code: string } | null;
 }
 interface WarehouseItem {
   id: string; name: string; code: string; address?: string; city?: string;
@@ -105,8 +106,9 @@ export default function BodegaPage() {
       ]);
       setProducts((prodRes.data || []).map((p: any) => ({
         id: p.id, name: p.name || '', sku: p.sku || '', stock: p.stock || 0,
-        minStock: p.min_stock || 10, price: p.price || 0, cost: 0,
-        status: 'active', warehouse: p.warehouse || '', cost_center: p.cost_center || null,
+        minStock: p.min_stock || 10, price: p.sale_price || p.price || 0, cost: p.cost_price || 0,
+        status: p.is_active ? 'active' : 'inactive', warehouse: p.warehouse || '', cost_center: p.cost_center || null,
+        category: p.category?.name || '', tax: p.tax || null,
       })));
       setWarehouses(whRes.data || []);
       setCounts(cntRes.data || []);
@@ -151,6 +153,35 @@ export default function BodegaPage() {
 
   const formatCurrency = (n: number) => new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(n);
 
+  const handleDeleteProduct = async (id: string) => {
+    if (!confirm('Eliminar este producto?')) return;
+    try {
+      const api = getApiClient();
+      await api.deleteProduct(id);
+      loadAll();
+    } catch (err) { console.error(err); }
+  };
+
+  const handleDeleteWarehouse = async (id: string) => {
+    if (!confirm('Eliminar esta bodega?')) return;
+    try {
+      const api = getApiClient();
+      await api.deleteWarehouse(id);
+      loadAll();
+    } catch (err) { console.error(err); }
+  };
+
+  const handleExportProducts = () => {
+    const headers = ['Nombre', 'SKU', 'Categoria', 'Stock', 'Costo', 'Precio', 'Estado'];
+    const rows = filteredProducts.map(p => [p.name, p.sku, p.category || '', p.stock, p.cost, p.price, p.status]);
+    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'inventario.csv'; a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -160,6 +191,12 @@ export default function BodegaPage() {
           <p className="text-sm text-slate-500 mt-1">Gestion completa de inventario</p>
         </div>
         <div className="flex items-center gap-2">
+          <Link href="/dashboard/inventory/categories" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+            <Tag className="w-4 h-4" /> Categorias
+          </Link>
+          <Link href="/dashboard/inventory/taxes" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+            <Percent className="w-4 h-4" /> Impuestos
+          </Link>
           {activeTab === 'products' && (
             <>
               <button onClick={() => setShowScanner(true)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
@@ -297,7 +334,9 @@ export default function BodegaPage() {
                       <tr className="border-b border-slate-200">
                         <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
                         <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">SKU</th>
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Categoria</th>
                         <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Stock</th>
+                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Costo</th>
                         <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Precio</th>
                         <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
                         <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
@@ -310,7 +349,9 @@ export default function BodegaPage() {
                           <tr key={p.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                             <td className="px-4 py-3 text-xs font-medium text-slate-900">{p.name}</td>
                             <td className="px-4 py-3 text-[9px] font-mono text-slate-500">{p.sku}</td>
+                            <td className="px-4 py-3 text-xs text-slate-600">{p.category || '-'}</td>
                             <td className="px-4 py-3 text-center text-xs font-bold" style={{ color: ss.variant === 'danger' ? '#e11d48' : ss.variant === 'warning' ? '#f59e0b' : '#059669' }}>{p.stock}</td>
+                            <td className="px-4 py-3 text-right text-xs text-slate-700">{formatCurrency(p.cost)}</td>
                             <td className="px-4 py-3 text-right text-xs text-slate-700">{formatCurrency(p.price)}</td>
                             <td className="px-4 py-3 text-center">
                               <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
@@ -323,6 +364,7 @@ export default function BodegaPage() {
                               <div className="flex justify-end gap-1">
                                 <Link href={`/dashboard/inventory/${p.id}`} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"><Eye className="w-4 h-4" /></Link>
                                 <Link href={`/dashboard/inventory/${p.id}/edit`} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"><Edit className="w-4 h-4" /></Link>
+                                <button onClick={() => handleDeleteProduct(p.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-4 h-4" /></button>
                               </div>
                             </td>
                           </tr>
@@ -364,6 +406,7 @@ export default function BodegaPage() {
                             <div className="flex justify-end gap-1">
                               <Link href={`/dashboard/bodega/${w.id}/layout`} className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"><Grid className="w-4 h-4" /></Link>
                               <Link href={`/dashboard/warehouses/${w.id}/edit`} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"><Edit className="w-4 h-4" /></Link>
+                              <button onClick={() => handleDeleteWarehouse(w.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-4 h-4" /></button>
                             </div>
                           </td>
                         </tr>

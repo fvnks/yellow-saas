@@ -284,6 +284,35 @@ export class ApiClient {
     return this.request<{ id: string }>('/inventory-categories', { method: 'POST', body: JSON.stringify(data) });
   }
 
+  async updateCategory(id: string, data: { name?: string; description?: string; color?: string; icon?: string; sort_order?: number; is_active?: boolean }) {
+    return this.request<any>(`/inventory-categories/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteCategory(id: string) {
+    return this.request<{ message: string }>(`/inventory-categories/${id}`, { method: 'DELETE' });
+  }
+
+  // Taxes
+  async getTaxes(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/taxes', params || {});
+  }
+
+  async getTax(id: string) {
+    return this.request<any>(`/taxes/${id}`);
+  }
+
+  async createTax(data: { name: string; code: string; rate: number; type?: string; sri_code?: string }) {
+    return this.request<any>('/taxes', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateTax(id: string, data: { name?: string; code?: string; rate?: number; type?: string; sri_code?: string; is_active?: boolean }) {
+    return this.request<any>(`/taxes/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteTax(id: string) {
+    return this.request<{ message: string }>(`/taxes/${id}`, { method: 'DELETE' });
+  }
+
   // Stock Movements
   async getStockMovements(params?: Record<string, string>) {
     return this.requestWithPagination<{ id: string; product_id: string; warehouse_id: string; type: string; quantity: number; created_at: string }>('/stock-movements', params || {});
