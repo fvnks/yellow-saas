@@ -1,0 +1,44 @@
+import { query } from '../../../../lib/db';
+import { getCompanyId, successResponse, errorResponse } from '../../../../lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function PUT(request: NextRequest, { params }: { params: { id: string; reservationId: string } }) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+    const { status, quantity } = body;
+
+    const result = await query(
+      `UPDATE stock_reservations SET
+        status = COALESCE($1, status),
+        quantity = COALESCE($2, quantity),
+        updated_at = now()
+       WHERE id = $3 AND company_id = $4 RETURNING *`,
+      [status, quantity, params.reservationId, companyId]
+    );
+
+    if (result.rows.length === 0) return errorResponse('Reservation not found', 404);
+    return successResponse(result.rows[0]);
+  } catch (err) {
+    return errorResponse('Internal server error', 500);
+  }
+}
+
+export async function DELETE(request: NextRequest, { params }: { params: { id: string; reservationId: string } }) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const result = await query(
+      `UPDATE stock_reservations SET status = 'released', updated_at = now() WHERE id = $1 AND company_id = $2 RETURNING id`,
+      [params.reservationId, companyId]
+    );
+
+    if (result.rows.length === 0) return errorResponse('Reservation not found', 404);
+    return successResponse({ message: 'Reservation released' });
+  } catch (err) {
+    return errorResponse('Internal server error', 500);
+  }
+}

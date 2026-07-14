@@ -3,9 +3,9 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { 
+  import { 
   Package, Warehouse, ClipboardCheck, Truck, AlertTriangle, Upload, 
-  Plus, Search, Eye, Play, CheckCircle, ArrowRight, Download, MapPin, Users, Activity, Grid, Edit, Trash2, Tag, Percent
+  Plus, Search, Eye, Play, CheckCircle, ArrowRight, Download, MapPin, Users, Activity, Grid, Edit, Trash2, Tag, Percent, FlaskConical, Layers, Ruler, Bookmark
 } from 'lucide-react';
 import { getApiClient, getCompanyIdFromToken } from '../../../lib/api-client';
 import BarcodeScanner from '../../../components/barcode/barcode-scanner';
@@ -205,6 +205,18 @@ export default function BodegaPage() {
           </Link>
           <Link href="/dashboard/inventory/taxes" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
             <Percent className="w-4 h-4" /> Impuestos
+          </Link>
+          <Link href="/dashboard/inventory/batches" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+            <FlaskConical className="w-4 h-4" /> Lotes
+          </Link>
+          <Link href="/dashboard/inventory/variants" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+            <Layers className="w-4 h-4" /> Variantes
+          </Link>
+          <Link href="/dashboard/inventory/reservations" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+            <Bookmark className="w-4 h-4" /> Reservas
+          </Link>
+          <Link href="/dashboard/inventory/uom" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+            <Ruler className="w-4 h-4" /> U.M.
           </Link>
           {activeTab === 'products' && (
             <>

@@ -549,6 +549,78 @@ export class ApiClient {
   async updateInventoryCountItem(countId: string, itemId: string, data: { counted_quantity: number; notes?: string }) {
     return this.request<any>(`/inventory-counts/${countId}/items/${itemId}`, { method: 'PUT', body: JSON.stringify(data) });
   }
+
+  // Product Batches (Lot Tracking)
+  async getProductBatches(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/product-batches', params || {});
+  }
+
+  async getProductBatch(id: string) {
+    return this.request<any>(`/product-batches/${id}`);
+  }
+
+  async createProductBatch(data: { product_id: string; warehouse_id: string; batch_number: string; quantity?: number; expiry_date?: string; manufacturing_date?: string; notes?: string }) {
+    return this.request<any>('/product-batches', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateProductBatch(id: string, data: { quantity?: number; expiry_date?: string; manufacturing_date?: string; status?: string; notes?: string }) {
+    return this.request<any>(`/product-batches/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteProductBatch(id: string) {
+    return this.request<any>(`/product-batches/${id}`, { method: 'DELETE' });
+  }
+
+  // Units of Measure
+  async getUnitsOfMeasure(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/units-of-measure', params || {});
+  }
+
+  async createUnitOfMeasure(data: { code: string; name: string; type: string; base_unit?: string; conversion_factor?: number }) {
+    return this.request<any>('/units-of-measure', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateUnitOfMeasure(id: string, data: { code?: string; name?: string; type?: string; base_unit?: string; conversion_factor?: number; is_active?: boolean }) {
+    return this.request<any>(`/units-of-measure/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteUnitOfMeasure(id: string) {
+    return this.request<any>(`/units-of-measure/${id}`, { method: 'DELETE' });
+  }
+
+  // Product Variants
+  async getProductVariants(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/product-variants', params || {});
+  }
+
+  async createProductVariant(data: { product_id: string; sku: string; name?: string; attributes?: Record<string, string>; cost_price?: number; sale_price?: number; barcode?: string }) {
+    return this.request<any>('/product-variants', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateProductVariant(id: string, data: { sku?: string; name?: string; attributes?: Record<string, string>; cost_price?: number; sale_price?: number; barcode?: string; stock_quantity?: number; is_active?: boolean }) {
+    return this.request<any>(`/product-variants/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteProductVariant(id: string) {
+    return this.request<any>(`/product-variants/${id}`, { method: 'DELETE' });
+  }
+
+  // Stock Reservations
+  async getStockReservations(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/stock-reservations', params || {});
+  }
+
+  async createStockReservation(data: { product_id: string; warehouse_id: string; quantity: number; reference_type?: string; reference_id?: string; expires_at?: string; notes?: string }) {
+    return this.request<any>('/stock-reservations', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateStockReservation(id: string, data: { status?: string; quantity?: number }) {
+    return this.request<any>(`/stock-reservations/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async releaseStockReservation(id: string) {
+    return this.request<any>(`/stock-reservations/${id}`, { method: 'DELETE' });
+  }
 }
 
 // Singleton with dynamic company_id from JWT
