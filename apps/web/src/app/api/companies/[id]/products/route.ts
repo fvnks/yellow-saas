@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     const {
       sku, name, category_id, description, type, unit_of_measure,
       cost_price, sale_price, min_stock, max_stock, track_stock,
-      barcode, tax_id, initial_stock, warehouse_id, cost_center_id,
+      barcode, tax_id, initial_stock, warehouse_id, cost_center_id, image_url,
     } = body;
 
     if (!sku || !name) {

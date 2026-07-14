@@ -67,7 +67,7 @@ export class ApiClient {
 
   // Products
   async getProducts(params?: Record<string, string>) {
-    return this.requestWithPagination<{ id: string; name: string; sku: string; price: number; stock: number; warehouse: string }>('/products', params || {});
+    return this.requestWithPagination<{ id: string; name: string; sku: string; price: number; stock: number; warehouse: string; cost_price?: number; stock_levels?: { id?: string; quantity?: number; warehouse?: { id?: string; name?: string; code?: string } | null }[] }>('/products', params || {});
   }
 
   async getProduct(id: string) {
@@ -78,7 +78,7 @@ export class ApiClient {
     return this.request<{ id: string }>('/products', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async updateProduct(id: string, data: Partial<{ name: string; sku: string; price: number; category_id: string; description: string; type: string; unit_of_measure: string; cost_price: number; sale_price: number; min_stock: number; max_stock: number; track_stock: boolean; barcode: string; tax_id: string; is_active: boolean }>) {
+  async updateProduct(id: string, data: Partial<{ name: string; sku: string; price: number; category_id: string; description: string; type: string; unit_of_measure: string; cost_price: number; sale_price: number; min_stock: number; max_stock: number; track_stock: boolean; barcode: string; tax_id: string; is_active: boolean; cost_center_id: string; image_url: string }>) {
     return this.request<{ id: string }>(`/products/${id}`, { method: 'PUT', body: JSON.stringify(data) });
   }
 
