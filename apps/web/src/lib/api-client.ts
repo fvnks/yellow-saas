@@ -886,6 +886,38 @@ async deleteAdjustmentReason(id: string) {
   async createSiiInventoryBook(data: { period_start: string; period_end: string; warehouse_id: string; product_id: string; opening_qty?: number; opening_value?: number; entries_qty?: number; entries_value?: number; exits_qty?: number; exits_value?: number; closing_qty?: number; closing_value?: number; cost_method?: string }) {
     return this.request<any>('/sii-inventory-book', { method: 'POST', body: JSON.stringify(data) });
   }
+
+  // Product ABC Classification
+  async getProductABCClassification(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/product-abc-classification', params || {});
+  }
+  async calculateABCClassification(data: { period_start: string; period_end: string; warehouse_id?: string; recalculate?: boolean }) {
+    return this.request<any>('/product-abc-classification', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  // Demand Forecasts
+  async getDemandForecasts(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/demand-forecasts', params || {});
+  }
+  async createDemandForecast(data: { product_id: string; warehouse_id?: string; forecast_date: string; horizon_days: number; forecast_qty: number; model_type: string; model_params?: any }) {
+    return this.request<any>('/demand-forecasts', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  // Exchange Rates
+  async getExchangeRates(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/exchange-rates', params || {});
+  }
+  async createExchangeRate(data: { from_currency: string; to_currency: string; rate: number; rate_date: string; source?: string }) {
+    return this.request<any>('/exchange-rates', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  // Multi-Currency Valuation
+  async getValuationMultiCurrency(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/valuation-multi-currency', params || {});
+  }
+  async createValuationMultiCurrency(data: { target_currency: string; valuation_date: string; recalculate?: boolean }) {
+    return this.request<any>('/valuation-multi-currency', { method: 'POST', body: JSON.stringify(data) });
+  }
 }
 
 // Singleton with dynamic company_id from JWT
