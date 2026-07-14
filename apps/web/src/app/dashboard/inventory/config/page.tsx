@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Plus, Search, Trash2, Edit, Tag, Percent, Ruler, FlaskConical, Layers, Bookmark } from 'lucide-react';
+import { ArrowLeft, Plus, Search, Trash2, Edit, Tag, Percent, Ruler, FlaskConical, Layers, Bookmark, Palette, Hash, Link2, AlertCircle, ExternalLink } from 'lucide-react';
 import { getApiClient } from '../../../../lib/api-client';
 
-type ConfigTab = 'categories' | 'taxes' | 'uom' | 'batches' | 'variants' | 'reservations';
+type ConfigTab = 'categories' | 'taxes' | 'uom' | 'batches' | 'variants' | 'reservations' | 'reasons' | 'tags' | 'serials' | 'relations';
 
 interface Category { id: string; name: string; description: string; color: string; icon: string; is_active: boolean; product_count?: number; }
 interface Tax { id: string; code: string; name: string; rate: number; type: string; is_default: boolean; is_active: boolean; }
@@ -13,8 +13,18 @@ interface UOM { id: string; code: string; name: string; type: string; conversion
 interface Batch { id: string; batch_number: string; quantity: number; status: string; expiry_date: string | null; product: { name: string; sku: string }; warehouse: { name: string }; }
 interface Variant { id: string; sku: string; name: string | null; attributes: Record<string, string>; cost_price: number | null; sale_price: number | null; is_active: boolean; product: { name: string; sku: string }; }
 interface Reservation { id: string; quantity: number; status: string; reference_type: string | null; expires_at: string | null; product: { name: string; sku: string }; warehouse: { name: string }; }
+interface AdjustmentReason { id: string; name: string; description: string | null; is_active: boolean; }
+interface ProductTag { id: string; name: string; color: string; is_active: boolean; product_count?: number; }
 
 const typeLabels: Record<string, string> = { weight: 'Peso', volume: 'Volumen', length: 'Longitud', area: 'Area', piece: 'Pieza', time: 'Tiempo' };
+const TAG_COLORS = [
+  { name: 'indigo', value: '#6366f1' },
+  { name: 'emerald', value: '#10b981' },
+  { name: 'amber', value: '#f59e0b' },
+  { name: 'rose', value: '#f43f5e' },
+  { name: 'blue', value: '#3b82f6' },
+  { name: 'slate', value: '#64748b' },
+];
 
 export default function InventoryConfigPage() {
   const router = useRouter();
@@ -54,6 +64,18 @@ export default function InventoryConfigPage() {
   // Reservations
   const [reservations, setReservations] = useState<Reservation[]>([]);
 
+  // Adjustment Reasons
+  const [reasons, setReasons] = useState<AdjustmentReason[]>([]);
+  const [showReasonForm, setShowReasonForm] = useState(false);
+  const [editingReason, setEditingReason] = useState<AdjustmentReason | null>(null);
+  const [reasonForm, setReasonForm] = useState({ name: '', description: '' });
+
+  // Tags (inline)
+  const [tags, setTags] = useState<ProductTag[]>([]);
+  const [showTagForm, setShowTagForm] = useState(false);
+  const [editingTag, setEditingTag] = useState<ProductTag | null>(null);
+  const [tagForm, setTagForm] = useState({ name: '', color: '#6366f1' });
+
   useEffect(() => { loadTab(); }, [activeTab, search]);
 
   const loadTab = async () => {
@@ -83,6 +105,8 @@ export default function InventoryConfigPage() {
           break;
         }
         case 'reservations': { const r = await api.getStockReservations({ limit: '100' }); setReservations(r.data || []); break; }
+        case 'reasons': { const r = await api.getAdjustmentReasons({ limit: '200', ...searchParam }); setReasons(r.data || []); break; }
+        case 'tags': { const r = await api.getProductTags({ limit: '200', ...searchParam }); setTags(r.data || []); break; }
       }
     } catch (e) { console.error(e); }
     setLoading(false);
@@ -141,6 +165,34 @@ export default function InventoryConfigPage() {
   // --- Reservation handlers ---
   const releaseReservation = async (id: string) => { if (!confirm('Liberar?')) return; await getApiClient().releaseStockReservation(id); loadTab(); };
 
+  // --- Adjustment Reason handlers ---
+  const saveReason = async () => {
+    if (!reasonForm.name) return;
+    const api = getApiClient();
+    if (editingReason) {
+      await api.updateAdjustmentReason(editingReason.id, reasonForm);
+    } else {
+      await api.createAdjustmentReason(reasonForm);
+    }
+    setShowReasonForm(false); setEditingReason(null); setReasonForm({ name: '', description: '' }); loadTab();
+  };
+  const editReason = (r: AdjustmentReason) => { setEditingReason(r); setReasonForm({ name: r.name, description: r.description || '' }); setShowReasonForm(true); };
+  const deleteReason = async (id: string) => { if (!confirm('Eliminar motivo?')) return; await getApiClient().deleteAdjustmentReason(id); loadTab(); };
+
+  // --- Tag handlers (inline) ---
+  const saveTag = async () => {
+    if (!tagForm.name) return;
+    const api = getApiClient();
+    if (editingTag) {
+      await api.updateProductTag(editingTag.id, tagForm);
+    } else {
+      await api.createProductTag(tagForm);
+    }
+    setShowTagForm(false); setEditingTag(null); setTagForm({ name: '', color: '#6366f1' }); loadTab();
+  };
+  const editTag = (t: ProductTag) => { setEditingTag(t); setTagForm({ name: t.name, color: t.color }); setShowTagForm(true); };
+  const deleteTag = async (id: string) => { if (!confirm('Eliminar tag?')) return; await getApiClient().deleteProductTag(id); loadTab(); };
+
   const tabs: { id: ConfigTab; label: string; icon: any; count: number }[] = [
     { id: 'categories', label: 'Categorias', icon: Tag, count: categories.length },
     { id: 'taxes', label: 'Impuestos', icon: Percent, count: taxes.length },
@@ -148,6 +200,10 @@ export default function InventoryConfigPage() {
     { id: 'batches', label: 'Lotes', icon: FlaskConical, count: batches.length },
     { id: 'variants', label: 'Variantes', icon: Layers, count: variants.length },
     { id: 'reservations', label: 'Reservas', icon: Bookmark, count: reservations.length },
+    { id: 'reasons', label: 'Motivos', icon: AlertCircle, count: reasons.length },
+    { id: 'tags', label: 'Tags', icon: Palette, count: tags.length },
+    { id: 'serials', label: 'Seriales', icon: Hash, count: 0 },
+    { id: 'relations', label: 'Relaciones', icon: Link2, count: 0 },
   ];
 
   return (
@@ -160,13 +216,15 @@ export default function InventoryConfigPage() {
             <p className="text-sm text-slate-500 mt-1">Categorias, impuestos, unidades, lotes, variantes y reservas</p>
           </div>
         </div>
-        {(activeTab === 'categories' || activeTab === 'taxes' || activeTab === 'uom' || activeTab === 'batches' || activeTab === 'variants') && (
+        {(activeTab === 'categories' || activeTab === 'taxes' || activeTab === 'uom' || activeTab === 'batches' || activeTab === 'variants' || activeTab === 'reasons' || activeTab === 'tags') && (
           <button onClick={() => {
             if (activeTab === 'categories') { setShowCatForm(true); setCatForm({ name: '', description: '', color: '#6366f1' }); }
             if (activeTab === 'taxes') { setShowTaxForm(true); setTaxForm({ code: '', name: '', rate: '', type: 'iva' }); }
             if (activeTab === 'uom') { setShowUomForm(true); setUomForm({ code: '', name: '', type: 'piece', conversion_factor: '1' }); }
             if (activeTab === 'batches') setShowBatchForm(true);
             if (activeTab === 'variants') setShowVariantForm(true);
+            if (activeTab === 'reasons') { setShowReasonForm(true); setEditingReason(null); setReasonForm({ name: '', description: '' }); }
+            if (activeTab === 'tags') { setShowTagForm(true); setEditingTag(null); setTagForm({ name: '', color: '#6366f1' }); }
           }}
             className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <Plus className="w-4 h-4" /> Nuevo
@@ -180,7 +238,7 @@ export default function InventoryConfigPage() {
           {tabs.map(tab => {
             const Icon = tab.icon;
             return (
-              <button key={tab.id} onClick={() => { setActiveTab(tab.id); setSearch(''); setShowCatForm(false); setShowTaxForm(false); setShowUomForm(false); setShowBatchForm(false); setShowVariantForm(false); }}
+              <button key={tab.id} onClick={() => { setActiveTab(tab.id); setSearch(''); setShowCatForm(false); setShowTaxForm(false); setShowUomForm(false); setShowBatchForm(false); setShowVariantForm(false); setShowReasonForm(false); setShowTagForm(false); }}
                 className={`px-4 py-3 text-sm font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${
                   activeTab === tab.id ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-slate-500 hover:text-slate-700'
                 }`}>
@@ -482,6 +540,122 @@ export default function InventoryConfigPage() {
                     </tbody>
                   </table>
                   {reservations.length === 0 && <div className="p-8 text-center text-sm text-slate-500">No hay reservas</div>}
+                </div>
+              )}
+
+              {/* ========== REASONS ========== */}
+              {activeTab === 'reasons' && (
+                <>
+                  {showReasonForm && (
+                    <div className="p-4 border-b border-slate-100 bg-slate-50">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <input type="text" value={reasonForm.name} onChange={e => setReasonForm({...reasonForm, name: e.target.value})} placeholder="Nombre del motivo" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        <input type="text" value={reasonForm.description} onChange={e => setReasonForm({...reasonForm, description: e.target.value})} placeholder="Descripcion (opcional)" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        <div className="flex gap-2">
+                          <button onClick={saveReason} className="bg-slate-900 hover:bg-black text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">{editingReason ? 'Actualizar' : 'Guardar'}</button>
+                          <button onClick={() => { setShowReasonForm(false); setEditingReason(null); }} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead><tr className="border-b border-slate-200">
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Descripcion</th>
+                        <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
+                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                      </tr></thead>
+                      <tbody>
+                        {reasons.map(r => (
+                          <tr key={r.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                            <td className="px-4 py-2 text-xs font-medium text-slate-900">{r.name}</td>
+                            <td className="px-4 py-2 text-xs text-slate-500">{r.description || '-'}</td>
+                            <td className="px-4 py-2 text-center">
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${r.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-600 border border-slate-200'}`}>
+                                {r.is_active ? 'Activo' : 'Inactivo'}
+                              </span>
+                            </td>
+                            <td className="px-4 py-2"><div className="flex justify-end gap-1">
+                              <button onClick={() => editReason(r)} className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"><Edit className="w-3.5 h-3.5" /></button>
+                              <button onClick={() => deleteReason(r.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                            </div></td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    {reasons.length === 0 && <div className="p-8 text-center text-sm text-slate-500">No hay motivos de ajuste</div>}
+                  </div>
+                </>
+              )}
+
+              {/* ========== TAGS (INLINE) ========== */}
+              {activeTab === 'tags' && (
+                <>
+                  {showTagForm && (
+                    <div className="p-4 border-b border-slate-100 bg-slate-50">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <input type="text" value={tagForm.name} onChange={e => setTagForm({...tagForm, name: e.target.value})} placeholder="Nombre del tag" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        <div className="flex gap-2 items-center">
+                          {TAG_COLORS.map(c => (
+                            <button key={c.name} onClick={() => setTagForm({...tagForm, color: c.value})}
+                              className={`w-8 h-8 rounded-lg border-2 transition-all ${tagForm.color === c.value ? 'border-slate-900 scale-110' : 'border-transparent hover:scale-105'}`}
+                              style={{ backgroundColor: c.value }} title={c.name} />
+                          ))}
+                        </div>
+                        <div className="flex gap-2">
+                          <button onClick={saveTag} className="bg-slate-900 hover:bg-black text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">{editingTag ? 'Actualizar' : 'Guardar'}</button>
+                          <button onClick={() => { setShowTagForm(false); setEditingTag(null); }} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead><tr className="border-b border-slate-200">
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Color</th>
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
+                        <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Productos</th>
+                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                      </tr></thead>
+                      <tbody>
+                        {tags.map(t => (
+                          <tr key={t.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                            <td className="px-4 py-2"><div className="w-4 h-4 rounded" style={{ backgroundColor: t.color }} /></td>
+                            <td className="px-4 py-2 text-xs font-medium text-slate-900">{t.name}</td>
+                            <td className="px-4 py-2 text-center text-xs text-slate-500">{t.product_count ?? 0}</td>
+                            <td className="px-4 py-2"><div className="flex justify-end gap-1">
+                              <button onClick={() => editTag(t)} className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"><Edit className="w-3.5 h-3.5" /></button>
+                              <button onClick={() => deleteTag(t.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                            </div></td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    {tags.length === 0 && <div className="p-8 text-center text-sm text-slate-500">No hay tags</div>}
+                  </div>
+                </>
+              )}
+
+              {/* ========== SERIALS (LINK) ========== */}
+              {activeTab === 'serials' && (
+                <div className="p-8 text-center">
+                  <Hash className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+                  <p className="text-sm text-slate-500 mb-4">Gestion de numeros de serie por producto</p>
+                  <a href="/dashboard/inventory/serials" className="inline-flex items-center gap-2 text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+                    Ir a Seriales <ExternalLink className="w-4 h-4" />
+                  </a>
+                </div>
+              )}
+
+              {/* ========== RELATIONS (LINK) ========== */}
+              {activeTab === 'relations' && (
+                <div className="p-8 text-center">
+                  <Link2 className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+                  <p className="text-sm text-slate-500 mb-4">Conecta productos relacionados entre si</p>
+                  <a href="/dashboard/inventory/relations" className="inline-flex items-center gap-2 text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+                    Ir a Relaciones <ExternalLink className="w-4 h-4" />
+                  </a>
                 </div>
               )}
             </>

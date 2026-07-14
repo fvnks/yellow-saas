@@ -2,6 +2,23 @@ import { query } from '../../../../lib/db';
 import { getCompanyId, successResponse, errorResponse } from '../../../../lib/helpers';
 import { NextRequest } from 'next/server';
 
+async function trackPriceChange(companyId: string, productId: string, oldProduct: any, body: any) {
+  const tracks: Promise<any>[] = [];
+  if (body.cost_price !== undefined && body.cost_price !== oldProduct.cost_price) {
+    tracks.push(query(
+      `INSERT INTO product_price_history (company_id, product_id, price_type, old_price, new_price) VALUES ($1, $2, 'cost', $3, $4)`,
+      [companyId, productId, oldProduct.cost_price, body.cost_price]
+    ));
+  }
+  if (body.sale_price !== undefined && body.sale_price !== oldProduct.sale_price) {
+    tracks.push(query(
+      `INSERT INTO product_price_history (company_id, product_id, price_type, old_price, new_price) VALUES ($1, $2, 'sale', $3, $4)`,
+      [companyId, productId, oldProduct.sale_price, body.sale_price]
+    ));
+  }
+  await Promise.all(tracks);
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string; productId: string } }
@@ -49,6 +66,11 @@ export async function PUT(
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const body = await request.json();
+
+    const existing = await query('SELECT cost_price, sale_price FROM products WHERE id = $1 AND company_id = $2', [params.productId, companyId]);
+    if (existing.rows.length > 0) {
+      await trackPriceChange(companyId, params.productId, existing.rows[0], body);
+    }
 
     const result = await query(
       `UPDATE products SET

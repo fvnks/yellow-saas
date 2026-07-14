@@ -1,0 +1,81 @@
+import { query } from '../../../../../lib/db';
+import { getCompanyId, successResponse, errorResponse } from '../../../../../lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { id: string; returnId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const returnCheck = await query(
+      `SELECT cr.*,
+        (SELECT json_agg(json_build_object(
+          'id', cri.id,
+          'product_id', cri.product_id,
+          'quantity', cri.quantity,
+          'unit_price', cri.unit_price,
+          'restock', cri.restock
+        )) FROM customer_return_items cri WHERE cri.return_id = cr.id) as items
+       FROM customer_returns cr
+       WHERE cr.id = $1 AND cr.company_id = $2`,
+      [params.returnId, companyId]
+    );
+
+    if (returnCheck.rows.length === 0) return errorResponse('Return not found', 404);
+
+    const returnRecord = returnCheck.rows[0];
+
+    if (returnRecord.status === 'completed') {
+      return errorResponse('Return is already completed', 400);
+    }
+
+    if (returnRecord.status === 'rejected') {
+      return errorResponse('Cannot complete a rejected return', 400);
+    }
+
+    await query('BEGIN');
+
+    try {
+      for (const item of returnRecord.items) {
+        if (!item.restock) continue;
+
+        const qty = Number(item.quantity);
+        const cost = Number(item.unit_price) || 0;
+
+        await query(
+          `INSERT INTO stock_movements (company_id, product_id, warehouse_id, type, quantity, unit_cost, reference_type, reference_id, notes)
+           VALUES ($1, $2, $3, 'in', $4, $5, 'return', $6, $7)`,
+          [
+            companyId, item.product_id, returnRecord.warehouse_id,
+            qty, cost, returnRecord.id, `Devolución ${returnRecord.return_number}`,
+          ]
+        );
+
+        await query(
+          `INSERT INTO stock_levels (company_id, product_id, warehouse_id, quantity)
+           VALUES ($1, $2, $3, $4)
+           ON CONFLICT (company_id, product_id, warehouse_id)
+           DO UPDATE SET quantity = stock_levels.quantity + $4, updated_at = NOW()`,
+          [companyId, item.product_id, returnRecord.warehouse_id, qty]
+        );
+      }
+
+      await query(
+        `UPDATE customer_returns SET status = 'completed', completed_at = NOW(), updated_at = NOW()
+         WHERE id = $1 AND company_id = $2`,
+        [params.returnId, companyId]
+      );
+
+      await query('COMMIT');
+      return successResponse({ message: 'Return completed and stock restocked successfully' });
+    } catch (err) {
+      await query('ROLLBACK');
+      throw err;
+    }
+  } catch {
+    return errorResponse('Failed to complete return', 500);
+  }
+}
