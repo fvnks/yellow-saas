@@ -1,0 +1,95 @@
+import { query } from '../../../../../lib/db';
+import {
+  getCompanyId,
+  successResponse,
+  errorResponse,
+  parseSearchParams,
+  paginatedResponse,
+} from '../../../../../lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { page, limit, offset } = parseSearchParams(request);
+    const url = new URL(request.url);
+    const supplierId = url.searchParams.get('supplier_id');
+    const status = url.searchParams.get('status');
+
+    let whereClause = 'WHERE ca.company_id = $1';
+    const params: any[] = [companyId];
+    let paramIndex = 2;
+
+    if (supplierId) {
+      whereClause += ` AND ca.supplier_id = $${paramIndex}`;
+      params.push(supplierId);
+      paramIndex++;
+    }
+
+    if (status) {
+      whereClause += ` AND ca.status = $${paramIndex}`;
+      params.push(status);
+      paramIndex++;
+    }
+
+    const countResult = await query(
+      `SELECT COUNT(*) FROM consignment_agreements ca ${whereClause}`,
+      params
+    );
+
+    params.push(limit, offset);
+    const dataResult = await query(
+      `SELECT ca.*,
+        json_build_object('id', s.id, 'name', s.name, 'code', s.code) as supplier,
+        json_build_object('id', w.id, 'name', w.name, 'code', w.code) as warehouse
+       FROM consignment_agreements ca
+       LEFT JOIN suppliers s ON ca.supplier_id = s.id
+       LEFT JOIN warehouses w ON ca.warehouse_id = w.id
+       ${whereClause}
+       ORDER BY ca.created_at DESC
+       LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
+      params
+    );
+
+    return paginatedResponse(dataResult.rows, parseInt(countResult.rows[0].count), page, limit);
+  } catch (err) {
+    console.error('Consignment agreements error:', err);
+    return errorResponse('Internal server error', 500);
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+    const { supplier_id, warehouse_id, agreement_number, start_date, end_date, commission_percent, settlement_frequency, notes } = body;
+
+    if (!supplier_id || !warehouse_id || !agreement_number || !start_date) {
+      return errorResponse('supplier_id, warehouse_id, agreement_number, and start_date are required', 400);
+    }
+
+    const validFrequencies = ['weekly', 'monthly', 'quarterly'];
+    if (settlement_frequency && !validFrequencies.includes(settlement_frequency)) {
+      return errorResponse(`settlement_frequency must be one of: ${validFrequencies.join(', ')}`, 400);
+    }
+
+    const result = await query(
+      `INSERT INTO consignment_agreements (company_id, supplier_id, warehouse_id, agreement_number, start_date, end_date, commission_percent, settlement_frequency, notes)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       RETURNING *`,
+      [companyId, supplier_id, warehouse_id, agreement_number, start_date, end_date || null, commission_percent || 0, settlement_frequency || 'monthly', notes || null]
+    );
+
+    return successResponse(result.rows[0], 201);
+  } catch (err) {
+    console.error('Create consignment agreement error:', err);
+    if (err instanceof Error && err.message.includes('duplicate key')) {
+      return errorResponse('Agreement number already exists', 400);
+    }
+    return errorResponse('Internal server error', 500);
+  }
+}

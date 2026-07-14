@@ -862,6 +862,30 @@ async deleteAdjustmentReason(id: string) {
   async runCycleCountSchedule(id: string) {
     return this.request<any>(`/cycle-count-schedules/${id}/run`, { method: 'POST' });
   }
+
+  // Landed Cost
+  async getLandedCostAllocations(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/landed-cost-allocations', params || {});
+  }
+  async createLandedCostAllocation(data: { purchase_order_id: string; cost_type: string; amount: number; currency?: string; exchange_rate?: number; allocation_method?: string; description?: string }) {
+    return this.request<any>('/landed-cost-allocations', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  // Consignment
+  async getConsignmentStock(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/consignment-stock', params || {});
+  }
+  async createConsignmentStock(data: { supplier_id: string; warehouse_id: string; product_id: string; quantity: number; unit_cost?: number; received_at?: string; agreement_id?: string }) {
+    return this.request<any>('/consignment-stock', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  // SII Inventory Book
+  async getSiiInventoryBook(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/sii-inventory-book', params || {});
+  }
+  async createSiiInventoryBook(data: { period_start: string; period_end: string; warehouse_id: string; product_id: string; opening_qty?: number; opening_value?: number; entries_qty?: number; entries_value?: number; exits_qty?: number; exits_value?: number; closing_qty?: number; closing_value?: number; cost_method?: string }) {
+    return this.request<any>('/sii-inventory-book', { method: 'POST', body: JSON.stringify(data) });
+  }
 }
 
 // Singleton with dynamic company_id from JWT
