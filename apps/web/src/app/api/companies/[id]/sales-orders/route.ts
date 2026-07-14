@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     let paramIndex = 2;
 
     if (search) {
-      where += ` AND so.number ILIKE $${paramIndex}`;
+      where += ` AND so.order_number ILIKE $${paramIndex}`;
       params.push(`%${search}%`);
       paramIndex++;
     }
@@ -49,9 +49,9 @@ export async function GET(request: NextRequest) {
         (SELECT json_build_object('id', c.id, 'name', c.name, 'tax_id', c.tax_id) FROM customers c WHERE c.id = so.customer_id) as customer,
         (SELECT json_build_object('id', w.id, 'name', w.name, 'code', w.code) FROM warehouses w WHERE w.id = so.warehouse_id) as warehouse,
         (SELECT json_agg(json_build_object(
-          'id', soi.id, 'product_id', soi.product_id, 'variant_id', soi.variant_id, 'quantity', soi.quantity,
-          'unit_price', soi.unit_price, 'discount_percent', soi.discount_percent, 'discount_amount', soi.discount_amount,
-          'tax_rate', soi.tax_rate, 'tax_amount', soi.tax_amount, 'line_total', soi.line_total, 'notes', soi.notes,
+          'id', soi.id, 'product_id', soi.product_id, 'quantity', soi.quantity,
+          'unit_price', soi.unit_price, 'discount_percent', soi.discount_percent,
+          'tax_rate', soi.tax_rate, 'line_total', soi.line_total,
           'product', (SELECT json_build_object('id', p.id, 'name', p.name, 'sku', p.sku) FROM products p WHERE p.id = soi.product_id)
         )) FROM sales_order_items soi WHERE soi.order_id = so.id) as items
        FROM sales_orders so
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
 
     const {
       customer_id, warehouse_id, order_date, delivery_date,
-      payment_terms, notes, internal_notes, items,
+      payment_terms, notes, items,
     } = body;
 
     if (!customer_id || !warehouse_id || !items?.length) {
@@ -99,48 +99,39 @@ export async function POST(request: NextRequest) {
     }
 
     const { rows: orderRows } = await query(
-      `INSERT INTO sales_orders (company_id, customer_id, warehouse_id, number, status, order_date, delivery_date, payment_terms, subtotal, tax_amount, total_amount, notes, internal_notes)
-       VALUES ($1, $2, $3, $4, 'draft', $5, $6, $7, $8, $9, $10, $11, $12)
+      `INSERT INTO sales_orders (company_id, customer_id, warehouse_id, order_number, status, order_date, delivery_date, payment_terms, subtotal, tax_amount, total, notes)
+       VALUES ($1, $2, $3, $4, 'draft', $5, $6, $7, $8, $9, $10, $11)
        RETURNING *`,
       [
         companyId, customer_id, warehouse_id, orderNumber,
         order_date || new Date().toISOString(), delivery_date || null,
         payment_terms || 0, subtotal, taxAmount, subtotal + taxAmount,
-        notes || null, internal_notes || null,
+        notes || null,
       ]
     );
 
     const order = orderRows[0];
 
-    const orderItems = items.map((item: Record<string, unknown>, index: number) => {
+    const orderItems = items.map((item: Record<string, unknown>) => {
       const taxRate = Number(item.tax_rate) || 0;
       const quantity = Number(item.quantity) || 0;
       const unitPrice = Number(item.unit_price) || 0;
-      const discountAmount = Number(item.discount_amount) || 0;
       return {
         order_id: order.id,
         company_id: companyId,
         product_id: item.product_id,
-        variant_id: item.variant_id || null,
-        warehouse_id: item.warehouse_id || warehouse_id,
         quantity,
         unit_price: unitPrice,
         discount_percent: item.discount_percent || 0,
-        discount_amount: discountAmount,
         tax_rate: taxRate,
-        tax_amount: taxRate > 0 ? (quantity * unitPrice - discountAmount) * (taxRate / 100) : 0,
-        notes: item.notes || null,
-        sort_order: index,
       };
     });
 
     for (const oi of orderItems) {
       await query(
-        `INSERT INTO sales_order_items (order_id, company_id, product_id, variant_id, warehouse_id, quantity, unit_price, discount_percent, discount_amount, tax_rate, tax_amount, notes, sort_order)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
-        [oi.order_id, oi.company_id, oi.product_id, oi.variant_id, oi.warehouse_id,
-         oi.quantity, oi.unit_price, oi.discount_percent, oi.discount_amount,
-         oi.tax_rate, oi.tax_amount, oi.notes, oi.sort_order]
+        `INSERT INTO sales_order_items (order_id, company_id, product_id, quantity, unit_price, discount_percent, tax_rate)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [oi.order_id, oi.company_id, oi.product_id, oi.quantity, oi.unit_price, oi.discount_percent, oi.tax_rate]
       );
     }
 

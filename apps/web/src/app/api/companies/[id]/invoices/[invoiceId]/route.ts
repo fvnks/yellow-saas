@@ -14,11 +14,11 @@ export async function GET(
       `SELECT i.*,
         (SELECT json_build_object('id', c.id, 'name', c.name, 'tax_id', c.tax_id) FROM customers c WHERE c.id = i.customer_id) as customer,
         (SELECT json_build_object('id', w.id, 'name', w.name, 'code', w.code) FROM warehouses w WHERE w.id = i.warehouse_id) as warehouse,
-        (SELECT json_build_object('id', so.id, 'number', so.number) FROM sales_orders so WHERE so.id = i.sales_order_id) as sales_order,
+        (SELECT json_build_object('id', so.id, 'order_number', so.order_number) FROM sales_orders so WHERE so.id = i.order_id) as sales_order,
         (SELECT json_agg(json_build_object(
-          'id', ii.id, 'product_id', ii.product_id, 'quantity', ii.quantity, 'unit_price', ii.unit_price,
-          'discount_percent', ii.discount_percent, 'discount_amount', ii.discount_amount,
-          'tax_rate', ii.tax_rate, 'tax_amount', ii.tax_amount, 'line_total', ii.line_total, 'notes', ii.notes,
+          'id', ii.id, 'product_id', ii.product_id, 'description', ii.description, 'quantity', ii.quantity, 'unit_price', ii.unit_price,
+          'discount_percent', ii.discount_percent,
+          'tax_rate', ii.tax_rate, 'tax_amount', ii.tax_amount, 'line_total', ii.line_total,
           'product', (SELECT json_build_object('id', p.id, 'name', p.name, 'sku', p.sku) FROM products p WHERE p.id = ii.product_id)
         )) FROM invoice_items ii WHERE ii.invoice_id = i.id) as items
        FROM invoices i
@@ -46,14 +46,14 @@ export async function PUT(
 
     const { rows } = await query(
       `UPDATE invoices SET
-        status = $1, payment_status = $2, customer_id = $3, warehouse_id = $4,
-        sales_order_id = $5, invoice_date = $6, due_date = $7, payment_terms = $8,
-        notes = $9, updated_at = NOW()
-       WHERE id = $10 AND company_id = $11
+        status = $1, payment_status = $2, customer_id = $3,
+        order_id = $4, invoice_date = $5, due_date = $6, payment_terms = $7,
+        notes = $8, updated_at = NOW()
+       WHERE id = $9 AND company_id = $10
        RETURNING *`,
       [
-        body.status, body.payment_status, body.customer_id, body.warehouse_id,
-        body.sales_order_id, body.invoice_date, body.due_date, body.payment_terms,
+        body.status, body.payment_status, body.customer_id,
+        body.order_id, body.invoice_date, body.due_date, body.payment_terms,
         body.notes, params.invoiceId, companyId,
       ]
     );
@@ -80,29 +80,6 @@ export async function DELETE(
     );
 
     if (!invoice[0]) return errorResponse('Invoice not found', 404);
-
-    if (invoice[0].status === 'issued' || invoice[0].status === 'paid') {
-      const { rows: movements } = await query(
-        `SELECT * FROM stock_movements WHERE reference_type = 'invoice' AND reference_id = $1`,
-        [params.invoiceId]
-      );
-
-      for (const m of movements) {
-        const { rows: stock } = await query(
-          `SELECT quantity FROM stock_levels WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`,
-          [companyId, m.product_id, m.warehouse_id]
-        );
-
-        if (stock[0]) {
-          await query(
-            `UPDATE stock_levels SET quantity = $1 WHERE company_id = $2 AND product_id = $3 AND warehouse_id = $4`,
-            [stock[0].quantity + Math.abs(m.quantity), companyId, m.product_id, m.warehouse_id]
-          );
-        }
-
-        await query(`DELETE FROM stock_movements WHERE id = $1`, [m.id]);
-      }
-    }
 
     await query(`DELETE FROM invoice_items WHERE invoice_id = $1 AND company_id = $2`, [params.invoiceId, companyId]);
     await query(`DELETE FROM invoices WHERE id = $1 AND company_id = $2`, [params.invoiceId, companyId]);

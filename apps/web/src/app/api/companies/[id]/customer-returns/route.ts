@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
 
     const dataResult = await query(
       `SELECT cr.*,
-        json_build_object('id', c.id, 'name', c.name, 'rut', c.rut) as customer,
+        json_build_object('id', c.id, 'name', c.name, 'tax_id', c.tax_id) as customer,
         json_build_object('id', w.id, 'name', w.name, 'code', w.code) as warehouse,
         (SELECT COUNT(*) FROM customer_return_items cri WHERE cri.return_id = cr.id) as item_count
        FROM customer_returns cr

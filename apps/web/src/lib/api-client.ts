@@ -753,6 +753,23 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/customer-returns/${id}/complete`, { method: 'POST' });
   }
 
+  // Sales Quotations
+  async getSalesQuotations(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/sales-quotations', params || {});
+  }
+  async getSalesQuotation(id: string) {
+    return this.request<any>(`/sales-quotations/${id}`);
+  }
+  async createSalesQuotation(data: { customer_id: string; valid_until?: string; notes?: string; items: { product_id: string; quantity: number; unit_price: number; discount_percent?: number; tax_rate?: number }[] }) {
+    return this.request<any>('/sales-quotations', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateSalesQuotation(id: string, data: { status?: string; valid_until?: string; notes?: string; items?: { product_id: string; quantity: number; unit_price: number; discount_percent?: number; tax_rate?: number }[] }) {
+    return this.request<any>(`/sales-quotations/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteSalesQuotation(id: string) {
+    return this.request<any>(`/sales-quotations/${id}`, { method: 'DELETE' });
+  }
+
   // Quality Checklists
   async getQualityChecklists(params?: Record<string, string>) {
     return this.requestWithPagination<any>('/quality-checklists', params || {});

@@ -1,17 +1,11 @@
-﻿'use client';
+'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select } from '@yellow-erp/ui';
-import { ArrowLeft, Save, AlertTriangle, Truck } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, Truck } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
-
-const orders = [
-  { id: '1', number: 'SO-2024-001', customer: 'Empresa ABC SpA' },
-  { id: '2', number: 'SO-2024-002', customer: 'Comercial XYZ Ltda' },
-  { id: '3', number: 'SO-2024-003', customer: 'Distribuidora Norte' },
-];
 
 const transportCompanies = ['Chilexpress', 'Starken', 'Correo de Chile'];
 
@@ -24,17 +18,14 @@ interface DispatchItem {
   observation: string;
 }
 
-const initialItems: DispatchItem[] = [
-  { productId: '1', name: 'Laptop HP ProBook 450', sku: 'LP-HP-450', stock: 25, quantity: 2, observation: '' },
-  { productId: '2', name: 'Mouse Logitech MX Master 3S', sku: 'MS-LG-MX3', stock: 150, quantity: 5, observation: '' },
-  { productId: '3', name: 'Monitor Dell 27"', sku: 'MN-DELL-27', stock: 18, quantity: 1, observation: '' },
-];
-
 export default function NewDeliveryGuidePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [orders, setOrders] = useState<{id: string; order_number: string}[]>([]);
+  const [products, setProducts] = useState<{id: string; name: string; sku: string; quantity?: number; stock?: number}[]>([]);
+  const [dataLoading, setDataLoading] = useState(true);
   const [formData, setFormData] = useState({
     orderId: '',
     transportCompany: '',
@@ -44,7 +35,18 @@ export default function NewDeliveryGuidePage() {
     shippingAddress: '',
   });
 
-  const [items, setItems] = useState<DispatchItem[]>(initialItems);
+  const [items, setItems] = useState<DispatchItem[]>([]);
+
+  useEffect(() => {
+    const api = getApiClient();
+    Promise.all([
+      api.getSalesOrders(),
+      api.getProducts(),
+    ]).then(([ordersRes, productsRes]) => {
+      setOrders((ordersRes.data || []).map((o: any) => ({ id: o.id, order_number: o.order_number })));
+      setProducts((productsRes.data || []).map((p: any) => ({ id: p.id, name: p.name, sku: p.sku, quantity: p.quantity || p.stock || 0 })));
+    }).finally(() => setDataLoading(false));
+  }, []);
 
   const handleFormChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({ ...prev, [field]: e.target.value }));
@@ -69,7 +71,7 @@ export default function NewDeliveryGuidePage() {
       const api = getApiClient();
       const result = await api.createDeliveryGuide({
         order_id: formData.orderId,
-        warehouse_id: '1',
+        warehouse_id: '',
         transport: formData.transportCompany,
         driver_name: formData.driverName,
         vehicle_plate: formData.vehiclePlate,
@@ -80,7 +82,7 @@ export default function NewDeliveryGuidePage() {
           observation: i.observation,
         })),
       });
-      setSuccess(`Guía ${result.guide_number} creada. Stock descontado correctamente.`);
+      setSuccess(`Guía ${result.guide_number} creada correctamente.`);
       setTimeout(() => router.push('/dashboard/sales'), 1500);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error al crear la guía de despacho');
@@ -117,7 +119,7 @@ export default function NewDeliveryGuidePage() {
                     label="Orden de Referencia"
                     value={formData.orderId}
                     onChange={handleFormChange('orderId')}
-                    options={[{ value: '', label: 'Seleccionar orden...' }, ...orders.map(o => ({ value: o.id, label: o.number }))]}
+                    options={[{ value: '', label: 'Seleccionar orden...' }, ...orders.map(o => ({ value: o.id, label: o.order_number }))]}
                   />
                   <Select
                     label="Transportista"
@@ -180,7 +182,27 @@ export default function NewDeliveryGuidePage() {
                       return (
                         <tr key={index} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                           <td className="px-4 py-3 text-xs text-slate-500">{index + 1}</td>
-                          <td className="px-4 py-3 text-xs text-slate-700">{item.name}</td>
+                          <td className="px-4 py-3">
+                            <select
+                              value={item.productId}
+                              onChange={(e) => {
+                                const product = products.find(p => p.id === e.target.value);
+                                if (product) {
+                                  setItems(prev => {
+                                    const newItems = [...prev];
+                                    newItems[index] = { ...newItems[index], productId: product.id, name: product.name, sku: product.sku, stock: product.stock || product.quantity || 0 };
+                                    return newItems;
+                                  });
+                                }
+                              }}
+                              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                            >
+                              <option value="">Seleccionar producto...</option>
+                              {products.map(p => (
+                                <option key={p.id} value={p.id}>{p.name}</option>
+                              ))}
+                            </select>
+                          </td>
                           <td className="px-4 py-3 text-xs text-slate-500">{item.sku}</td>
                           <td className="px-4 py-3 text-center">
                             <span className={`text-xs font-medium ${item.stock > 10 ? 'text-emerald-600' : item.stock > 0 ? 'text-amber-600' : 'text-rose-600'}`}>
@@ -211,6 +233,15 @@ export default function NewDeliveryGuidePage() {
                     })}
                   </tbody>
                 </table>
+                </div>
+                <div className="px-4 py-3 border-t border-slate-200">
+                  <button
+                    type="button"
+                    onClick={() => setItems(prev => [...prev, { productId: '', name: '', sku: '', stock: 0, quantity: 1, observation: '' }])}
+                    className="text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors"
+                  >
+                    + Agregar producto
+                  </button>
                 </div>
               </CardContent>
             </Card>
@@ -246,7 +277,7 @@ export default function NewDeliveryGuidePage() {
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-slate-500">Orden ref.</span>
                     <span className="font-medium text-slate-900">
-                      {orders.find(o => o.id === formData.orderId)?.number || 'â€”'}
+                      {orders.find(o => o.id === formData.orderId)?.order_number || '—'}
                     </span>
                   </div>
                   <hr className="border-slate-200" />
@@ -277,4 +308,3 @@ export default function NewDeliveryGuidePage() {
     </div>
   );
 }
-

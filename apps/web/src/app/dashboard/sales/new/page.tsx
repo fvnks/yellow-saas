@@ -1,34 +1,11 @@
 ﻿'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select } from '@yellow-erp/ui';
 import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
-
-const customers = [
-  { id: '1', name: 'Empresa ABC SpA', rut: '76.123.456-7' },
-  { id: '2', name: 'Comercial XYZ Ltda', rut: '89.234.567-8' },
-  { id: '3', name: 'Distribuidora Norte', rut: '70.345.678-9' },
-  { id: '4', name: 'Retail Sur SA', rit: '90.456.789-0' },
-  { id: '5', name: 'Importadora Chile', rut: '75.567.890-1' },
-];
-
-const warehouses = [
-  { id: '1', name: 'Bodega Central', code: 'BC-01' },
-  { id: '2', name: 'Bodega Norte', code: 'BN-02' },
-  { id: '3', name: 'Bodega Sur', code: 'BS-03' },
-];
-
-const products = [
-  { id: '1', name: 'Laptop HP ProBook 450', sku: 'LP-HP-450', price: 650000, stock: 25, warehouse: 'BC-01' },
-  { id: '2', name: 'Mouse Logitech MX Master 3S', sku: 'MS-LG-MX3', price: 89000, stock: 150, warehouse: 'BC-01' },
-  { id: '3', name: 'Monitor Dell 27" 4K', sku: 'MN-DELL-27', price: 420000, stock: 18, warehouse: 'BN-02' },
-  { id: '4', name: 'Teclado Mecánico Keychron K2', sku: 'KB-KC-K2', price: 95000, stock: 45, warehouse: 'BN-02' },
-  { id: '5', name: 'Disco SSD Samsung 980 PRO 1TB', sku: 'SSD-SAM-980', price: 110000, stock: 60, warehouse: 'BS-03' },
-  { id: '6', name: 'Webcam Logitech C920 HD', sku: 'WC-LG-C92', price: 65000, stock: 35, warehouse: 'BS-03' },
-];
 
 interface OrderItem {
   productId: string;
@@ -41,6 +18,23 @@ export default function NewSalePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [customers, setCustomers] = useState<{id: string; name: string; tax_id: string}[]>([]);
+  const [warehouses, setWarehouses] = useState<{id: string; name: string; code: string}[]>([]);
+  const [products, setProducts] = useState<{id: string; name: string; sku: string; price: number; stock?: number}[]>([]);
+  const [dataLoading, setDataLoading] = useState(true);
+
+  useEffect(() => {
+    const api = getApiClient();
+    Promise.all([
+      api.getCustomers(),
+      api.getWarehouses(),
+      api.getProducts(),
+    ]).then(([customersRes, warehousesRes, productsRes]) => {
+      setCustomers((customersRes.data || []).map((c: any) => ({ id: c.id, name: c.name, tax_id: c.tax_id })));
+      setWarehouses((warehousesRes.data || []).map((w: any) => ({ id: w.id, name: w.name, code: w.code })));
+      setProducts((productsRes.data || []).map((p: any) => ({ id: p.id, name: p.name, sku: p.sku, price: p.price || 0, stock: p.quantity || p.stock || 0 })));
+    }).finally(() => setDataLoading(false));
+  }, []);
   const [formData, setFormData] = useState({
     customerId: '',
     warehouseId: '',
@@ -138,7 +132,13 @@ export default function NewSalePage() {
 
       {error && <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-sm mb-4">{error}</div>}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      {dataLoading && (
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-pulse text-slate-400 text-sm">Cargando datos...</div>
+        </div>
+      )}
+
+      {!dataLoading && <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
             {/* Customer & Warehouse */}
@@ -247,7 +247,7 @@ export default function NewSalePage() {
                             </select>
                           </td>
                           <td className="px-4 py-3 text-center">
-                            {product ? (
+                            {product && product.stock != null ? (
                               <span className={`text-xs font-medium ${product.stock > 10 ? 'text-emerald-600' : product.stock > 0 ? 'text-amber-600' : 'text-rose-600'}`}>
                                 {product.stock} uds
                               </span>
@@ -375,7 +375,7 @@ export default function NewSalePage() {
             </Card>
           </div>
         </div>
-      </form>
+      </form>}
     </div>
   );
 }

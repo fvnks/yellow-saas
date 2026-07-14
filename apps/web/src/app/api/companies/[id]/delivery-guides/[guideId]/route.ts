@@ -12,11 +12,10 @@ export async function GET(
 
     const { rows } = await query(
       `SELECT dg.*,
-        (SELECT json_build_object('id', c.id, 'name', c.name, 'tax_id', c.tax_id) FROM customers c WHERE c.id = dg.customer_id) as customer,
         (SELECT json_build_object('id', w.id, 'name', w.name, 'code', w.code) FROM warehouses w WHERE w.id = dg.warehouse_id) as warehouse,
-        (SELECT json_build_object('id', so.id, 'number', so.number) FROM sales_orders so WHERE so.id = dg.sales_order_id) as sales_order,
+        (SELECT json_build_object('id', so.id, 'order_number', so.order_number) FROM sales_orders so WHERE so.id = dg.order_id) as sales_order,
         (SELECT json_agg(json_build_object(
-          'id', dgi.id, 'product_id', dgi.product_id, 'quantity', dgi.quantity, 'unit_price', dgi.unit_price, 'notes', dgi.notes,
+          'id', dgi.id, 'product_id', dgi.product_id, 'quantity', dgi.quantity, 'observation', dgi.observation,
           'product', (SELECT json_build_object('id', p.id, 'name', p.name, 'sku', p.sku) FROM products p WHERE p.id = dgi.product_id)
         )) FROM delivery_guide_items dgi WHERE dgi.guide_id = dg.id) as items
        FROM delivery_guides dg
@@ -44,14 +43,14 @@ export async function PUT(
 
     const { rows } = await query(
       `UPDATE delivery_guides SET
-        status = $1, customer_id = $2, warehouse_id = $3, sales_order_id = $4,
-        guide_date = $5, carrier = $6, vehicle_plate = $7, notes = $8,
+        status = $1, warehouse_id = $2, order_id = $3,
+        shipping_date = $4, transport = $5, vehicle_plate = $6,
         updated_at = NOW()
-       WHERE id = $9 AND company_id = $10
+       WHERE id = $7 AND company_id = $8
        RETURNING *`,
       [
-        body.status, body.customer_id, body.warehouse_id, body.sales_order_id,
-        body.guide_date, body.carrier, body.vehicle_plate, body.notes,
+        body.status, body.warehouse_id, body.order_id,
+        body.shipping_date, body.transport, body.vehicle_plate,
         params.guideId, companyId,
       ]
     );
@@ -79,27 +78,25 @@ export async function DELETE(
 
     if (!guide[0]) return errorResponse('Delivery guide not found', 404);
 
-    if (guide[0].status === 'delivered') {
-      const { rows: movements } = await query(
-        `SELECT * FROM stock_movements WHERE reference_type = 'delivery_guide' AND reference_id = $1`,
-        [params.guideId]
+    const { rows: movements } = await query(
+      `SELECT * FROM stock_movements WHERE reference_type = 'delivery_guide' AND reference_id = $1`,
+      [params.guideId]
+    );
+
+    for (const m of movements) {
+      const { rows: stock } = await query(
+        `SELECT quantity FROM stock_levels WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`,
+        [companyId, m.product_id, m.warehouse_id]
       );
 
-      for (const m of movements) {
-        const { rows: stock } = await query(
-          `SELECT quantity FROM stock_levels WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`,
-          [companyId, m.product_id, m.warehouse_id]
+      if (stock[0]) {
+        await query(
+          `UPDATE stock_levels SET quantity = $1 WHERE company_id = $2 AND product_id = $3 AND warehouse_id = $4`,
+          [stock[0].quantity + Math.abs(m.quantity), companyId, m.product_id, m.warehouse_id]
         );
-
-        if (stock[0]) {
-          await query(
-            `UPDATE stock_levels SET quantity = $1 WHERE company_id = $2 AND product_id = $3 AND warehouse_id = $4`,
-            [stock[0].quantity + Math.abs(m.quantity), companyId, m.product_id, m.warehouse_id]
-          );
-        }
-
-        await query(`DELETE FROM stock_movements WHERE id = $1`, [m.id]);
       }
+
+      await query(`DELETE FROM stock_movements WHERE id = $1`, [m.id]);
     }
 
     await query(`DELETE FROM delivery_guide_items WHERE guide_id = $1 AND company_id = $2`, [params.guideId, companyId]);

@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     let paramIndex = 2;
 
     if (search) {
-      where += ` AND dg.number ILIKE $${paramIndex}`;
+      where += ` AND dg.guide_number ILIKE $${paramIndex}`;
       params.push(`%${search}%`);
       paramIndex++;
     }
@@ -39,11 +39,10 @@ export async function GET(request: NextRequest) {
     params.push(offset, limit);
     const { rows } = await query(
       `SELECT dg.*,
-        (SELECT json_build_object('id', c.id, 'name', c.name, 'tax_id', c.tax_id) FROM customers c WHERE c.id = dg.customer_id) as customer,
         (SELECT json_build_object('id', w.id, 'name', w.name, 'code', w.code) FROM warehouses w WHERE w.id = dg.warehouse_id) as warehouse,
-        (SELECT json_build_object('id', so.id, 'number', so.number) FROM sales_orders so WHERE so.id = dg.sales_order_id) as sales_order,
+        (SELECT json_build_object('id', so.id, 'order_number', so.order_number) FROM sales_orders so WHERE so.id = dg.order_id) as sales_order,
         (SELECT json_agg(json_build_object(
-          'id', dgi.id, 'product_id', dgi.product_id, 'quantity', dgi.quantity, 'unit_price', dgi.unit_price, 'notes', dgi.notes,
+          'id', dgi.id, 'product_id', dgi.product_id, 'quantity', dgi.quantity, 'observation', dgi.observation,
           'product', (SELECT json_build_object('id', p.id, 'name', p.name, 'sku', p.sku) FROM products p WHERE p.id = dgi.product_id)
         )) FROM delivery_guide_items dgi WHERE dgi.guide_id = dg.id) as items
        FROM delivery_guides dg
@@ -67,12 +66,12 @@ export async function POST(request: NextRequest) {
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const {
-      customer_id, warehouse_id, sales_order_id, guide_date,
-      carrier, vehicle_plate, notes, items,
+      warehouse_id, order_id, shipping_date,
+      transport, vehicle_plate, items,
     } = body;
 
-    if (!customer_id || !warehouse_id || !items?.length) {
-      return errorResponse('Customer, warehouse, and items are required', 400);
+    if (!warehouse_id || !items?.length) {
+      return errorResponse('Warehouse and items are required', 400);
     }
 
     const { rows: countRows } = await query(
@@ -97,32 +96,30 @@ export async function POST(request: NextRequest) {
     }
 
     const { rows: guideRows } = await query(
-      `INSERT INTO delivery_guides (company_id, customer_id, warehouse_id, sales_order_id, number, status, guide_date, carrier, vehicle_plate, notes)
-       VALUES ($1, $2, $3, $4, $5, 'pending', $6, $7, $8, $9)
+      `INSERT INTO delivery_guides (company_id, warehouse_id, order_id, guide_number, status, shipping_date, transport, vehicle_plate)
+       VALUES ($1, $2, $3, $4, 'pending', $5, $6, $7)
        RETURNING *`,
       [
-        companyId, customer_id, warehouse_id, sales_order_id || null, guideNumber,
-        guide_date || new Date().toISOString(), carrier || null, vehicle_plate || null, notes || null,
+        companyId, warehouse_id, order_id || null, guideNumber,
+        shipping_date || new Date().toISOString(), transport || null, vehicle_plate || null,
       ]
     );
 
     const guide = guideRows[0];
 
-    const guideItems = items.map((item: Record<string, unknown>, index: number) => ({
+    const guideItems = items.map((item: Record<string, unknown>) => ({
       guide_id: guide.id,
       company_id: companyId,
       product_id: item.product_id,
       quantity: item.quantity,
-      unit_price: item.unit_price || 0,
-      notes: item.notes || null,
-      sort_order: index,
+      observation: item.observation || null,
     }));
 
     for (const gi of guideItems) {
       await query(
-        `INSERT INTO delivery_guide_items (guide_id, company_id, product_id, quantity, unit_price, notes, sort_order)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-        [gi.guide_id, gi.company_id, gi.product_id, gi.quantity, gi.unit_price, gi.notes, gi.sort_order]
+        `INSERT INTO delivery_guide_items (guide_id, company_id, product_id, quantity, observation)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [gi.guide_id, gi.company_id, gi.product_id, gi.quantity, gi.observation]
       );
     }
 

@@ -15,9 +15,9 @@ export async function GET(
         (SELECT json_build_object('id', c.id, 'name', c.name, 'tax_id', c.tax_id) FROM customers c WHERE c.id = so.customer_id) as customer,
         (SELECT json_build_object('id', w.id, 'name', w.name, 'code', w.code) FROM warehouses w WHERE w.id = so.warehouse_id) as warehouse,
         (SELECT json_agg(json_build_object(
-          'id', soi.id, 'product_id', soi.product_id, 'variant_id', soi.variant_id, 'quantity', soi.quantity,
-          'unit_price', soi.unit_price, 'discount_percent', soi.discount_percent, 'discount_amount', soi.discount_amount,
-          'tax_rate', soi.tax_rate, 'tax_amount', soi.tax_amount, 'line_total', soi.line_total, 'notes', soi.notes,
+          'id', soi.id, 'product_id', soi.product_id, 'quantity', soi.quantity,
+          'unit_price', soi.unit_price, 'discount_percent', soi.discount_percent,
+          'tax_rate', soi.tax_rate, 'line_total', soi.line_total,
           'product', (SELECT json_build_object('id', p.id, 'name', p.name, 'sku', p.sku) FROM products p WHERE p.id = soi.product_id)
         )) FROM sales_order_items soi WHERE soi.order_id = so.id) as items
        FROM sales_orders so
@@ -46,13 +46,13 @@ export async function PUT(
     const { rows } = await query(
       `UPDATE sales_orders SET
         status = $1, customer_id = $2, warehouse_id = $3, order_date = $4,
-        delivery_date = $5, payment_terms = $6, notes = $7, internal_notes = $8,
+        delivery_date = $5, payment_terms = $6, notes = $7,
         updated_at = NOW()
-       WHERE id = $9 AND company_id = $10
+       WHERE id = $8 AND company_id = $9
        RETURNING *`,
       [
         body.status, body.customer_id, body.warehouse_id, body.order_date,
-        body.delivery_date, body.payment_terms, body.notes, body.internal_notes,
+        body.delivery_date, body.payment_terms, body.notes,
         params.orderId, companyId,
       ]
     );
