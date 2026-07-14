@@ -23,7 +23,7 @@ function parseJwt(token: string): { company_id?: string } | null {
   }
 }
 
-function getCompanyIdFromToken(): string | null {
+export function getCompanyIdFromToken(): string | null {
   const token = getTokenFromCookie();
   if (!token) return null;
   const payload = parseJwt(token);
