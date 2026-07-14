@@ -1,0 +1,352 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge, Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@yellow-erp/ui';
+import { Plus, RefreshCw, Edit, Trash2, Eye, ExternalLink, Bell, BellOff, Zap, Shield, Loader2, CheckCircle, XCircle } from 'lucide-react';
+import { getApiClient } from '../../../../../lib/api-client';
+
+interface WebhookEndpoint {
+  id: string;
+  name: string;
+  url: string;
+  events: string[];
+  secret: string | null;
+  is_active: boolean;
+  retry_policy: any;
+  last_triggered_at: string | null;
+  last_success_at: string | null;
+  last_failure_at: string | null;
+  consecutive_failures: number;
+  created_at: string;
+}
+
+interface WebhookDelivery {
+  id: string;
+  endpoint_id: string;
+  event_type: string;
+  payload: any;
+  response_status: number | null;
+  response_body: string | null;
+  attempt: number;
+  status: 'pending' | 'delivered' | 'failed' | 'abandoned';
+  error_message: string | null;
+  next_retry_at: string | null;
+  created_at: string;
+  delivered_at: string | null;
+}
+
+const VALID_EVENTS = [
+  'stock.changed', 'stock.low', 'stock.out',
+  'batch.expiring', 'batch.expired',
+  'return.created', 'return.approved', 'return.rejected', 'return.completed',
+  'purchase_order.created', 'purchase_order.received',
+  'sales_order.created', 'sales_order.shipped',
+  'delivery_guide.created', 'delivery_guide.delivered',
+  'invoice.created', 'invoice.paid', 'invoice.overdue',
+  'purchase_order.created', 'purchase_order.received',
+  'picking.wave.created', 'picking.wave.completed',
+  'picking.task.completed',
+  'cycle_count.started', 'cycle_count.completed',
+  'transfer.created', 'transfer.in_transit', 'transfer.delivered',
+  'adjustment.created',
+];
+
+export default function WebhooksPage() {
+  const [endpoints, setEndpoints] = useState<WebhookEndpoint[]>([]);
+  const [deliveries, setDeliveries] = useState<WebhookDelivery[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [viewingDeliveries, setViewingDeliveries] = useState<string | null>(null);
+  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    url: '',
+    events: [] as string[],
+    secret: '',
+    is_active: true,
+    retry_policy: { max_retries: 5, base_delay_ms: 1000, max_delay_ms: 60000, backoff_multiplier: 2 },
+  });
+
+  useEffect(() => { loadEndpoints(); }, []);
+
+  const loadEndpoints = async () => {
+    setLoading(true);
+    try {
+      const api = getApiClient();
+      const res = await api.getWebhookEndpoints({ limit: '100' });
+      setEndpoints(res.data || []);
+    } catch (err: any) { setError(err.message || 'Error cargando webhooks'); }
+    finally { setLoading(false); }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    try {
+      const api = getApiClient();
+      if (editingId) {
+        await api.updateWebhookEndpoint(editingId, formData);
+      } else {
+        await api.createWebhookEndpoint(formData);
+      }
+      setShowForm(false);
+      setEditingId(null);
+      resetForm();
+      loadEndpoints();
+    } catch (err: any) { setError(err.message || 'Error guardando webhook'); }
+  };
+
+  const handleEdit = (endpoint: WebhookEndpoint) => {
+    setFormData({
+      name: endpoint.name,
+      url: endpoint.url,
+      events: endpoint.events,
+      secret: '',
+      is_active: endpoint.is_active,
+      retry_policy: endpoint.retry_policy,
+    });
+    setEditingId(endpoint.id);
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Eliminar este webhook?')) return;
+    try {
+      const api = getApiClient();
+      await api.deleteWebhookEndpoint(id);
+      loadEndpoints();
+    } catch (err: any) { setError(err.message || 'Error eliminando'); }
+  };
+
+  const handleTest = async (id: string) => {
+    try {
+      const api = getApiClient();
+      const res = await api.testWebhook(id);
+      alert(res.success ? 'Test exitoso' : `Falló: ${res.message}`);
+    } catch (err: any) { alert(`Error: ${err.message}`); }
+  };
+
+  const viewDeliveries = async (endpointId: string) => {
+    setViewingDeliveries(endpointId);
+    try {
+      const api = getApiClient();
+      const res = await api.getWebhookDeliveries(endpointId, { limit: '50' });
+      setDeliveries(res.data || []);
+    } catch (err) { console.error(err); }
+  };
+
+  const closeDeliveries = () => { setViewingDeliveries(null); setDeliveries([]); };
+
+  const resetForm = () => {
+    setFormData({ name: '', url: '', events: [], secret: '', is_active: true, retry_policy: { max_retries: 5, base_delay_ms: 1000, max_delay_ms: 60000, backoff_multiplier: 2 } });
+    setEditingId(null);
+    setShowForm(false);
+  };
+
+  if (loading) return <div className="space-y-6">{[1,2,3].map(i => <div key={i} className="animate-pulse bg-slate-200 h-32 rounded-xl" />)}</div>;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-bold text-slate-900">Webhooks</h1>
+          <p className="text-sm text-slate-500 mt-1">Configura endpoints HTTP para recibir eventos en tiempo real</p>
+        </div>
+        <Button onClick={() => { resetForm(); setShowForm(true); }}><Plus className="w-4 h-4 mr-2" /> Nuevo Webhook</Button>
+      </div>
+
+      {error && <div className="bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-lg text-sm">{error}</div>}
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>Endpoints Registrados</CardTitle>
+          <Button variant="outline" size="sm" onClick={loadEndpoints}><RefreshCw className="w-4 h-4 mr-2" /> Refrescar</Button>
+        </CardHeader>
+        <CardContent>
+          {endpoints.length === 0 ? (
+            <div className="text-center py-12">
+              <Zap className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+              <p className="text-sm text-slate-500">No hay webhooks configurados</p>
+              <p className="text-xs text-slate-400 mt-1">Crea tu primer webhook para recibir eventos en tiempo real</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Nombre</TableHead>
+                    <TableHead>URL</TableHead>
+                    <TableHead>Eventos</TableHead>
+                    <TableHead>Estado</TableHead>
+                    <TableHead>Fallos</TableHead>
+                    <TableHead>Último éxito</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {endpoints.map(ep => (
+                    <TableRow key={ep.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                      <TableCell>
+                        <div>
+                          <p className="text-xs font-medium text-slate-900">{ep.name}</p>
+                          <p className="text-[9px] text-slate-400">{ep.id.slice(0,8)}...</p>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-xs font-mono text-slate-500 max-w-[200px] truncate">{ep.url}</TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                          {ep.events.slice(0,3).map(ev => (
+                            <Badge key={ev} variant="secondary" className="text-[8px] px-1.5 py-0.5">{ev}</Badge>
+                          ))}
+                          {ep.events.length > 3 && <Badge variant="secondary" className="text-[8px] px-1.5 py-0.5 text-slate-500">+{ep.events.length - 3}</Badge>}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={ep.is_active ? 'success' : 'neutral'}>{ep.is_active ? 'Activo' : 'Inactivo'}</Badge>
+                        {ep.consecutive_failures > 0 && <Badge variant="danger" className="ml-1">{ep.consecutive_failures} fallos</Badge>}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <Badge variant={ep.consecutive_failures > 0 ? 'danger' : 'success'} className="text-[9px]">
+                          {ep.consecutive_failures}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-xs text-slate-500">
+                        {ep.last_success_at ? new Date(ep.last_success_at).toLocaleString('es-CL') : '—'}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <Button variant="ghost" size="icon" onClick={() => viewDeliveries(ep.id)} title="Ver entregas"><Eye className="w-4 h-4" /></Button>
+                          <Button variant="ghost" size="icon" onClick={() => handleEdit(ep)} title="Editar"><Edit className="w-4 h-4" /></Button>
+                          <Button variant="ghost" size="icon" onClick={() => handleTest(ep.id)} title="Probar"><Zap className="w-4 h-4" /></Button>
+                          <Button variant="ghost" size="icon" onClick={() => handleDelete(ep.id)} className="text-rose-600 hover:bg-rose-50" title="Eliminar"><Trash2 className="w-4 h-4" /></Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {showForm && (
+        <Card className="border-indigo-200">
+          <CardHeader>
+            <CardTitle>{editingId ? 'Editar Webhook' : 'Nuevo Webhook'}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {error && <div className="bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-lg text-sm mb-4">{error}</div>}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Nombre *</label>
+                  <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Mi Webhook" required />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">URL *</label>
+                  <Input value={formData.url} onChange={e => setFormData({...formData, url: e.target.value})} placeholder="https://mi-app.com/webhook" required />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Eventos *</label>
+                <div className="flex flex-wrap gap-2">
+                  {VALID_EVENTS.map(ev => (
+                    <label key={ev} className="flex items-center gap-1.5 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.events.includes(ev)}
+                        onChange={e => setFormData({...formData, events: e.target.checked ? [...formData.events, ev] : formData.events.filter(x => x !== ev)})}
+                        className="rounded border-slate-300"
+                      />
+                      <span className="text-xs text-slate-700">{ev}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Secret (opcional)</label>
+                  <Input value={formData.secret} onChange={e => setFormData({...formData, secret: e.target.value})} placeholder="Dejar vacío para generar automático" type="password" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Reintentos máximos</label>
+                  <Input type="number" min="1" max="10" value={formData.retry_policy?.max_retries || 5} onChange={e => setFormData({...formData, retry_policy: {...formData.retry_policy, max_retries: Number(e.target.value)}}) } />
+                </div>
+                <div>
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input type="checkbox" checked={formData.is_active} onChange={e => setFormData({...formData, is_active: e.target.checked})} className="rounded border-slate-300" />
+                    Activo
+                  </label>
+                </div>
+              </div>
+              <div className="flex justify-end gap-2 pt-4 border-t border-slate-200">
+                <Button type="button" variant="secondary" onClick={resetForm}>Cancelar</Button>
+                <Button type="submit">{editingId ? 'Actualizar' : 'Crear'}</Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
+
+      {viewingDeliveries && (
+        <Card className="border-amber-200">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Entregas Recientes</CardTitle>
+            <Button variant="ghost" size="sm" onClick={closeDeliveries}><X className="w-4 h-4" /></Button>
+          </CardHeader>
+          <CardContent>
+            {deliveries.length === 0 ? (
+              <p className="text-center text-slate-500 py-8">No hay entregas registradas</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Evento</TableHead>
+                      <TableHead>Estado</TableHead>
+                      <TableHead>Intentos</TableHead>
+                      <TableHead>HTTP Status</TableHead>
+                      <TableHead>Error</TableHead>
+                      <TableHead>Creado</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {deliveries.map(d => (
+                      <TableRow key={d.id} className="border-b border-slate-100 hover:bg-slate-50">
+                        <TableCell className="text-xs font-mono">{d.event_type}</TableCell>
+                        <TableCell>
+                          <Badge variant={
+                            d.status === 'delivered' ? 'success' :
+                            d.status === 'failed' ? 'danger' :
+                            d.status === 'abandoned' ? 'danger' : 'warning'
+                          }>{d.status}</Badge>
+                        </TableCell>
+                        <TableCell className="text-center text-xs">{d.attempt}</TableCell>
+                        <TableCell className="text-center text-xs">{d.response_status || '—'}</TableCell>
+                        <TableCell className="text-xs text-slate-500 max-w-[200px] truncate">{d.error_message || '—'}</TableCell>
+                        <TableCell className="text-xs text-slate-500">{new Date(d.created_at).toLocaleString('es-CL')}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      <Card>
+        <CardHeader><CardTitle>Eventos Disponibles</CardTitle></CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+            {VALID_EVENTS.map(ev => (
+              <Badge key={ev} variant="secondary" className="text-xs font-normal px-2 py-1">{ev}</Badge>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
