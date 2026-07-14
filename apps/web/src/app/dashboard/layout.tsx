@@ -17,6 +17,7 @@ import {
   Menu,
   X,
   ChevronDown,
+  ChevronRight,
   User,
   LogOut,
   Bell,
@@ -25,15 +26,85 @@ import {
   List,
   Truck,
   TrendingUp,
+  Package,
+  Tags,
+  ClipboardList,
+  RotateCcw,
+  Monitor,
+  Users,
+  FileText,
+  ArrowUpDown,
+  Settings2,
+  Wrench,
+  Tag,
+  Hash,
+  BookOpen,
+  Boxes,
+  GitBranch,
 } from 'lucide-react';
 import { cn } from '@yellow-erp/ui';
 import { Button } from '@yellow-erp/ui';
 import { PermissionsProvider, usePermissions } from '../../lib/permissions';
 
-const MODULES = [
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, permission: null },
-  { name: 'Inventario y Bodega', href: '/dashboard/bodega', icon: Warehouse, permission: 'inventory' },
-  { name: 'Ventas', href: '/dashboard/sales', icon: ShoppingCart, permission: 'sales_orders' },
+type ModuleItem = {
+  name: string;
+  href: string;
+  icon: any;
+  permission?: string | null;
+};
+
+type ModuleGroup = {
+  name: string;
+  icon: any;
+  permission?: string | null;
+  href?: string;
+  children?: ModuleItem[];
+};
+
+type SidebarModule = ModuleItem | ModuleGroup;
+
+function isGroup(m: SidebarModule): m is ModuleGroup {
+  return 'children' in m && Array.isArray(m.children);
+}
+
+const MODULES: SidebarModule[] = [
+  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  {
+    name: 'Inventario',
+    icon: Package,
+    permission: 'inventory',
+    href: '/dashboard/inventory',
+    children: [
+      { name: 'Productos', href: '/dashboard/inventory', icon: Package },
+      { name: 'Bodega', href: '/dashboard/bodega', icon: Warehouse },
+      { name: 'Categorías', href: '/dashboard/inventory/categories', icon: Tags },
+      { name: 'Conteos', href: '/dashboard/inventory/counts', icon: ClipboardList },
+      { name: 'Ajustes', href: '/dashboard/inventory/adjustments', icon: ArrowUpDown },
+      { name: 'Series / Lotes', href: '/dashboard/inventory/serials', icon: Hash },
+      { name: 'Reservas', href: '/dashboard/inventory/reservations', icon: Boxes },
+      { name: 'Variantes', href: '/dashboard/inventory/variants', icon: GitBranch },
+      { name: 'BOMs', href: '/dashboard/inventory/boms', icon: Settings2 },
+      { name: 'Etiquetas', href: '/dashboard/inventory/label-designer', icon: Tag },
+      { name: 'Importar', href: '/dashboard/inventory/import', icon: Wrench },
+      { name: 'Reportes', href: '/dashboard/inventory/stock-report', icon: BarChart3 },
+      { name: 'Configuración', href: '/dashboard/inventory/config', icon: Settings },
+    ],
+  },
+  {
+    name: 'Ventas',
+    icon: ShoppingCart,
+    permission: 'sales_orders',
+    href: '/dashboard/sales',
+    children: [
+      { name: 'Órdenes de Venta', href: '/dashboard/sales', icon: ShoppingCart },
+      { name: 'Cotizaciones', href: '/dashboard/sales/quotations/new', icon: ClipboardList },
+      { name: 'Facturación', href: '/dashboard/sales/invoices/new', icon: FileText },
+      { name: 'Guías de Despacho', href: '/dashboard/sales/delivery/new', icon: Truck },
+      { name: 'Devoluciones', href: '/dashboard/sales/returns', icon: RotateCcw },
+      { name: 'POS', href: '/dashboard/pos', icon: Monitor },
+      { name: 'Clientes', href: '/dashboard/customers', icon: Users },
+    ],
+  },
   { name: 'Compras', href: '/dashboard/purchases', icon: ShoppingBag, permission: 'purchase_orders' },
   { name: 'CRM', href: '/dashboard/crm', icon: Handshake, permission: 'crm' },
   { name: 'Listas de Precio', href: '/dashboard/price-lists', icon: List, permission: 'price_lists' },
@@ -62,11 +133,10 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(['Inventario', 'Ventas']);
   const { hasAnyPermission } = usePermissions();
 
   const user = { name: 'Admin Yellow', email: 'admin@yellow.cl', role: 'owner' };
-
-  const visibleModules = MODULES.filter(m => !m.permission || hasAnyPermission(m.permission));
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -89,7 +159,69 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
         </div>
 
         <nav className="flex-1 overflow-y-auto p-3 space-y-1" role="navigation" aria-label="Navegacion principal">
-          {visibleModules.map((module) => {
+          {MODULES.filter(m => !m.permission || hasAnyPermission(m.permission)).map((module) => {
+            if (isGroup(module)) {
+              const isExpanded = expandedGroups.includes(module.name);
+              const hasActiveChild = module.children?.some(
+                child => pathname === child.href || pathname.startsWith(child.href + '/')
+              );
+              const Icon = module.icon;
+              return (
+                <div key={module.name}>
+                  <button
+                    onClick={() => {
+                      setExpandedGroups(prev =>
+                        prev.includes(module.name)
+                          ? prev.filter(n => n !== module.name)
+                          : [...prev, module.name]
+                      );
+                    }}
+                    className={cn(
+                      'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left',
+                      hasActiveChild && !isExpanded
+                        ? 'bg-slate-100 text-slate-900'
+                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                    )}
+                  >
+                    <Icon className="w-5 h-5 flex-shrink-0" />
+                    <span className="flex-1 truncate">{module.name}</span>
+                    {isExpanded ? (
+                      <ChevronDown className="w-4 h-4 text-slate-400" />
+                    ) : (
+                      <ChevronRight className="w-4 h-4 text-slate-400" />
+                    )}
+                  </button>
+                  {isExpanded && module.children && (
+                    <div className="ml-4 mt-1 space-y-0.5 border-l border-slate-200 pl-3">
+                      {module.children
+                        .filter(child => !child.permission || hasAnyPermission(child.permission))
+                        .map((child) => {
+                          const isChildActive = pathname === child.href || pathname.startsWith(child.href + '/');
+                          const ChildIcon = child.icon;
+                          return (
+                            <Link
+                              key={child.href}
+                              href={child.href}
+                              onClick={() => setSidebarOpen(false)}
+                              className={cn(
+                                'flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
+                                isChildActive
+                                  ? 'bg-slate-900 text-white'
+                                  : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'
+                              )}
+                              aria-current={isChildActive ? 'page' : undefined}
+                            >
+                              <ChildIcon className="w-4 h-4 flex-shrink-0" />
+                              <span className="truncate">{child.name}</span>
+                            </Link>
+                          );
+                        })}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
             const isActive = pathname === module.href || pathname.startsWith(module.href + '/');
             const Icon = module.icon;
             return (
