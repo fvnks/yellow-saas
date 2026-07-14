@@ -1,5 +1,5 @@
-import { query } from '../../../../../lib/db';
-import { getCompanyId, successResponse, errorResponse, checkAndCreateLowStockNotification } from '../../../../../lib/helpers';
+import { query } from '@/lib/db';
+import { getCompanyId, successResponse, errorResponse, checkAndCreateLowStockNotification } from '@/lib/helpers';
 import { NextRequest } from 'next/server';
 
 export async function POST(

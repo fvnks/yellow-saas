@@ -21,6 +21,7 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
+      "@/api/*": ["./src/app/api/*"],
       "@yellow-erp/ui": ["../../packages/ui/src"],
       "@yellow-erp/db": ["../../packages/db/src"],
       "@yellow-erp/auth": ["../../packages/auth/src"],
