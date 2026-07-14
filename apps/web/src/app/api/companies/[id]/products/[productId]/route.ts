@@ -1,5 +1,5 @@
-import { query } from '../../../../lib/db';
-import { getCompanyId, successResponse, errorResponse } from '../../../../lib/helpers';
+import { query } from '@/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/lib/helpers';
 import { NextRequest } from 'next/server';
 
 async function trackPriceChange(companyId: string, productId: string, oldProduct: any, body: any) {

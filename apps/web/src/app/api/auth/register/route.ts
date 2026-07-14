@@ -1,5 +1,5 @@
-import { query } from '../../lib/db';
-import { successResponse, errorResponse } from '../../lib/helpers';
+import { query } from '@/lib/db';
+import { successResponse, errorResponse } from '@/lib/helpers';
 import { NextRequest } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
