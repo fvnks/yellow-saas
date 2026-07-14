@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
   import { 
   Package, Warehouse, ClipboardCheck, Truck, AlertTriangle, Upload, 
-  Plus, Search, Eye, Play, CheckCircle, ArrowRight, Download, MapPin, Users, Activity, Grid, Edit, Trash2, Tag, Percent, FlaskConical, Layers, Ruler, Bookmark
+  Plus, Search, Eye, Play, CheckCircle, ArrowRight, Download, MapPin, Users, Activity, Grid, Edit, Trash2, Settings
 } from 'lucide-react';
 import { getApiClient, getCompanyIdFromToken } from '../../../lib/api-client';
 import BarcodeScanner from '../../../components/barcode/barcode-scanner';
@@ -200,23 +200,8 @@ export default function BodegaPage() {
           <p className="text-sm text-slate-500 mt-1">Gestion completa de inventario</p>
         </div>
         <div className="flex items-center gap-2">
-          <Link href="/dashboard/inventory/categories" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
-            <Tag className="w-4 h-4" /> Categorias
-          </Link>
-          <Link href="/dashboard/inventory/taxes" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
-            <Percent className="w-4 h-4" /> Impuestos
-          </Link>
-          <Link href="/dashboard/inventory/batches" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
-            <FlaskConical className="w-4 h-4" /> Lotes
-          </Link>
-          <Link href="/dashboard/inventory/variants" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
-            <Layers className="w-4 h-4" /> Variantes
-          </Link>
-          <Link href="/dashboard/inventory/reservations" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
-            <Bookmark className="w-4 h-4" /> Reservas
-          </Link>
-          <Link href="/dashboard/inventory/uom" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
-            <Ruler className="w-4 h-4" /> U.M.
+          <Link href="/dashboard/inventory/config" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+            <Settings className="w-4 h-4" /> Configurar
           </Link>
           {activeTab === 'products' && (
             <>
