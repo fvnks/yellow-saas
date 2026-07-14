@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Badge, Button, Select } from '@yellow-erp/ui';
 import { ArrowLeft, Package, Edit, Tag, BarChart3, MapPin, FileText, ArrowDownCircle, ArrowUpCircle, RefreshCw, ArrowUpDown, Printer, Layers, Hash, Bookmark } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 import { generateBarcodeLabelsPDF } from '../../../../lib/pdf';
 
 interface ProductData {

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Badge, Button, Select, Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@yellow-erp/ui';
 import { ArrowLeft, RefreshCw, Download, Cloud, CloudOff, AlertCircle, CheckCircle, XCircle, Loader2, Filter, Database, Smartphone } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface OfflineAction {
   id: string;
@@ -48,12 +48,12 @@ export default function PWAOfflineQueuePage() {
       const api = getApiClient();
       const [itemsRes, usersRes] = await Promise.all([
         api.getPwaOfflineQueue({ 
-          status: filter.status === 'all' ? undefined : filter.status,
-          action_type: filter.action_type === 'all' ? undefined : filter.action_type,
-          user_id: filter.user_id === 'all' ? undefined : filter.user_id,
+          status: filter.status === 'all' ? '' : filter.status,
+          action_type: filter.action_type === 'all' ? '' : filter.action_type,
+          user_id: filter.user_id === 'all' ? '' : filter.user_id,
           limit: '500'
         }),
-        api.getUsers({ limit: '100' })
+        (api as any).getUsers({ limit: '100' })
       ]);
       setItems(itemsRes.data || []);
       setUsers(usersRes.data || []);
@@ -83,7 +83,7 @@ export default function PWAOfflineQueuePage() {
   const retryItem = async (id: string) => {
     try {
       const api = getApiClient();
-      await api.syncOfflineAction(id);
+      await (api as any).syncOfflineAction(id);
       loadData();
     } catch (err: any) { alert(`Error: ${err.message}`); }
   };

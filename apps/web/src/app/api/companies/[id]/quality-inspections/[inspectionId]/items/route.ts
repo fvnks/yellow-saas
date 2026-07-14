@@ -1,5 +1,5 @@
-import { query } from '../../../../../../../lib/db';
-import { getCompanyId, successResponse, errorResponse } from '../../../../../../../lib/helpers';
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
 export async function GET(
@@ -52,14 +52,14 @@ export async function POST(
     );
     if (inspectionCheck.rows.length === 0) return errorResponse('Inspection not found', 404);
 
-    const result = await query(
+    const insertResult = await query(
       `INSERT INTO quality_inspection_items (company_id, inspection_id, checklist_item_id, product_id, result, measured_value, notes)
        VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
       [companyId, params.inspectionId, checklist_item_id, product_id || null, result || 'pending', measured_value || null, notes || null]
     );
 
-    return successResponse(result.rows[0], 201);
+    return successResponse(insertResult.rows[0], 201);
   } catch (err) {
     console.error('Create quality inspection item error:', err);
     return errorResponse('Internal server error', 500);

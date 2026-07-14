@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge 
 import { ArrowLeft, Save, Plus, Trash2, Truck, Package } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { getApiClient } from '../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface WarehouseOption { id: string; name: string; code: string; }
 interface ProductOption { id: string; name: string; sku: string; stock: number; }

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
 import { ArrowLeft, Plus, RefreshCw, Download, Edit, Trash2, TrendingUp, TrendingDown } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface ExchangeRate {
   id: string;
@@ -47,8 +47,8 @@ export default function ExchangeRatesPage() {
     setError('');
     try {
       const api = getApiClient();
-      if (editingId) await api.updateExchangeRate(editingId, formData);
-      else await api.createExchangeRate(formData);
+      if (editingId) await (api as any).updateExchangeRate(editingId, { ...formData, rate: Number(formData.rate) });
+      else await (api as any).createExchangeRate({ ...formData, rate: Number(formData.rate) });
       setShowForm(false);
       setEditingId(null);
       resetForm();
@@ -60,7 +60,7 @@ export default function ExchangeRatesPage() {
     if (!confirm('Eliminar esta tasa de cambio?')) return;
     try {
       const api = getApiClient();
-      await api.deleteExchangeRate(id);
+      await (api as any).deleteExchangeRate(id);
       loadRates();
     } catch (err: any) { setError(err.message || 'Error eliminando'); }
   };
@@ -110,11 +110,11 @@ export default function ExchangeRatesPage() {
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">Moneda Origen</label>
-                <Select value={formData.from_currency} onChange={e => setFormData({...formData, from_currency: e.target.value})} options={['CLP', 'USD', 'EUR', 'CNY', 'BRL', 'ARS', 'MXN', 'COP', 'PEN']} disabled={editingId} required />
+                <Select value={formData.from_currency} onChange={e => setFormData({...formData, from_currency: e.target.value})} options={['CLP', 'USD', 'EUR', 'CNY', 'BRL', 'ARS', 'MXN', 'COP', 'PEN'].map(s => ({value: s, label: s}))} disabled={!!editingId} required />
               </div>
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">Moneda Destino</label>
-                <Select value={formData.to_currency} onChange={e => setFormData({...formData, to_currency: e.target.value})} options={['USD', 'EUR', 'CLP', 'CNY', 'BRL', 'ARS', 'MXN', 'COP', 'PEN']} required />
+                <Select value={formData.to_currency} onChange={e => setFormData({...formData, to_currency: e.target.value})} options={['USD', 'EUR', 'CLP', 'CNY', 'BRL', 'ARS', 'MXN', 'COP', 'PEN'].map(s => ({value: s, label: s}))} required />
               </div>
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">Tasa (1 origen = X destino)</label>
@@ -126,7 +126,7 @@ export default function ExchangeRatesPage() {
               </div>
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">Fuente</label>
-                <Select value={formData.source} onChange={e => setFormData({...formData, source: e.target.value})} options={['manual', 'mindicador', 'banco_central', 'fixer', 'exchangerate_api']} />
+                <Select value={formData.source} onChange={e => setFormData({...formData, source: e.target.value})} options={['manual', 'mindicador', 'banco_central', 'fixer', 'exchangerate_api'].map(s => ({value: s, label: s}))} />
               </div>
               <div className="md:col-span-3 flex justify-end gap-2 pt-4 border-t border-slate-200">
                 <Button type="button" variant="secondary" onClick={() => { setShowForm(false); setEditingId(null); resetForm(); }}>Cancelar</Button>
@@ -141,8 +141,8 @@ export default function ExchangeRatesPage() {
         <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-4">
           <CardTitle>Tasas Registradas</CardTitle>
           <div className="flex items-center gap-4 flex-wrap">
-            <Select value={filters.from_currency} onChange={e => setFilters({...filters, from_currency: e.target.value})} options={[{value:'all', label:'Todas Origen'}, ...['CLP', 'USD', 'EUR', 'CNY', 'BRL', 'ARS', 'MXN', 'COP', 'PEN']]} className="w-32" />
-            <Select value={filters.to_currency} onChange={e => setFilters({...filters, to_currency: e.target.value})} options={[{value:'all', label:'Todas Destino'}, ...['USD', 'EUR', 'CLP', 'CNY', 'BRL', 'ARS', 'MXN', 'COP', 'PEN']]} className="w-32" />
+            <Select value={filters.from_currency} onChange={e => setFilters({...filters, from_currency: e.target.value})} options={[{value:'all', label:'Todas Origen'}, ...['CLP', 'USD', 'EUR', 'CNY', 'BRL', 'ARS', 'MXN', 'COP', 'PEN'].map(s => ({value: s, label: s}))]} className="w-32" />
+            <Select value={filters.to_currency} onChange={e => setFilters({...filters, to_currency: e.target.value})} options={[{value:'all', label:'Todas Destino'}, ...['USD', 'EUR', 'CLP', 'CNY', 'BRL', 'ARS', 'MXN', 'COP', 'PEN'].map(s => ({value: s, label: s}))]} className="w-32" />
             <Select value={filters.is_active} onChange={e => setFilters({...filters, is_active: e.target.value})} options={[{value:'all', label:'Todas'}, {value:'true', label:'Activas'}, {value:'false', label:'Inactivas'}]} className="w-28" />
           </div>
         </CardHeader>

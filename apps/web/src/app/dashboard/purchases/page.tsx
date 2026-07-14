@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
 import { Plus, Search, Filter, Download, Eye, Edit, Trash2, CreditCard, Calendar, Truck, User, Package, FileText, DollarSign, Building2, ShoppingCart, CheckCircle, AlertCircle, Mail, Users } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface Quotation {
   id: string;

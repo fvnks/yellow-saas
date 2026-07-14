@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge, Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@yellow-erp/ui';
 import { ArrowLeft, RefreshCw, Calculator, TrendingUp, Download, Settings } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface ForecastItem {
   id: string;
@@ -32,7 +32,7 @@ export default function ForecastPage() {
   const [filter, setFilter] = useState({ model_type: 'all', product_id: '', warehouse_id: 'all' });
   const [products, setProducts] = useState<{ id: string; name: string; sku: string }[]>([]);
   const [warehouses, setWarehouses] = useState<{ value: string; label: string }[]>([]);
-  const [genForm, setGenForm] = useState({ product_ids: [], warehouse_id: '', horizon_days: 30, model_type: 'holt_winters', retrain: false });
+  const [genForm, setGenForm] = useState({ product_ids: [] as string[], warehouse_id: '', horizon_days: 30, model_type: 'holt_winters', retrain: false });
 
   useEffect(() => {
     loadData();
@@ -44,7 +44,7 @@ export default function ForecastPage() {
     try {
       const api = getApiClient();
       const [forecastsRes, productsRes, whRes] = await Promise.all([
-        api.getDemandForecasts({ model_type: filter.model_type === 'all' ? undefined : filter.model_type, product: filter.product_id, warehouse: filter.warehouse_id === 'all' ? undefined : filter.warehouse_id, limit: '200' }),
+        api.getDemandForecasts({ model_type: filter.model_type === 'all' ? '' : filter.model_type, product: filter.product_id || '', warehouse: filter.warehouse_id === 'all' ? '' : filter.warehouse_id, limit: '200' }),
         api.getProducts({ limit: '500' }),
         api.getWarehouses(),
       ]);
@@ -68,8 +68,8 @@ export default function ForecastPage() {
     setError('');
     try {
       const api = getApiClient();
-      await api.createDemandForecast({
-        product_ids: genForm.product_ids,
+      await (api as any).createDemandForecast({
+        product_id: genForm.product_ids.join(','),
         warehouse_id: genForm.warehouse_id || undefined,
         horizon_days: genForm.horizon_days,
         model_type: genForm.model_type,

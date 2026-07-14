@@ -1,5 +1,5 @@
-import { query } from '@/lib/db';
-import { getCompanyId, successResponse, errorResponse } from '@/lib/helpers';
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {

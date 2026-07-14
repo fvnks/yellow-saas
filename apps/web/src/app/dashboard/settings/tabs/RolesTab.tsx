@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Button, Input, Badge } from '@yellow-erp/ui';
 import { Plus, Trash2, Save, X, Check, Pencil } from 'lucide-react';
-import { getApiClient } from '../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface Role {
   id: string;

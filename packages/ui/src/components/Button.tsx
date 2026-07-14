@@ -2,8 +2,8 @@ import { cn } from '../lib/utils';
 import { forwardRef } from 'react';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'ghost' | 'outline';
+  size?: 'sm' | 'md' | 'lg' | 'icon';
   loading?: boolean;
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
@@ -19,12 +19,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       danger: 'bg-rose-600 hover:bg-rose-700 text-white',
       success: 'bg-emerald-600 hover:bg-emerald-700 text-white',
       ghost: 'bg-transparent hover:bg-slate-100 text-slate-700',
+      outline: 'bg-white border border-slate-200 hover:bg-slate-50 text-slate-700',
     };
 
     const sizes = {
       sm: 'px-3 py-1.5 text-xs',
       md: 'px-4 py-2 text-sm',
       lg: 'px-6 py-3 text-base',
+      icon: 'p-2',
     };
 
     return (

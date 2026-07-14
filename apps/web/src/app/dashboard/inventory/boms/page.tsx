@@ -1,10 +1,11 @@
 'use client';
 
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge, Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@yellow-erp/ui';
 import { Plus, Search, Package, Layers, Trash2, Edit, ChevronDown, ChevronUp, Calculator } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface BOMItem {
   id: string;

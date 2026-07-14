@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
 import { Plus, Trash2, Save, Download, Upload, Eye, Grid, Layers, ArrowUpDown, Copy, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
-import { getApiClient } from '../../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface LabelElement {
   id: string;
@@ -63,7 +63,7 @@ export default function LabelDesignerPage() {
   const [showPreview, setShowPreview] = useState(false);
   const [gridSettings, setGridSettings] = useState({ size: 5, snap: true, show: true });
   const [tool, setTool] = useState<'select' | 'text' | 'barcode' | 'qr' | 'line' | 'rect' | 'circle'>('select');
-  const [canvasRef, setCanvasRef] = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
   const [zoom, setZoom] = useState(1);
   const [dragState, setDragState] = useState<{ elementId: string; startX: number; startY: number; elementX: number; elementY: number } | null>(null);
 
@@ -478,7 +478,7 @@ export default function LabelDesignerPage() {
             </CardHeader>
             <CardContent className="flex-1 flex items-center justify-center p-0 relative">
               <div
-                ref={setCanvasRef}
+                ref={canvasRef}
                 className="relative bg-white"
                 style={{ width: canvasWidth * zoom, height: canvasHeight * zoom }}
                 onMouseDown={e => handleCanvasMouseDown(e as any)}
@@ -527,10 +527,9 @@ export default function LabelDesignerPage() {
                     zoom={zoom}
                     onSelect={() => setSelectedElementId(el.id)}
                     onDragStart={(e) => handleCanvasMouseDown(e as any, el.id)}
-                    onResize={(dir, e) => handleResize(el.id, dir, e as any)}
+                    onResize={(dir, e) => handleResize(el.id, dir as any, e as any)}
                     marginPx={marginPx}
                     gridSettings={gridSettings}
-                    zoom={zoom}
                   />
                 ))}
 
@@ -626,7 +625,7 @@ export default function LabelDesignerPage() {
 
                   {selectedElement.type === 'barcode' && (
                     <div className="space-y-2 text-xs">
-                      <Select value={selectedElement.barcodeFormat || 'CODE128'} onChange={e => updateElement(selectedElement.id, { barcodeFormat: e.target.value })} options={['CODE128', 'CODE39', 'EAN13', 'EAN8', 'UPCA', 'UPCE']} />
+                      <Select value={selectedElement.barcodeFormat || 'CODE128'} onChange={e => updateElement(selectedElement.id, { barcodeFormat: e.target.value })} options={[{value:'CODE128',label:'CODE128'},{value:'CODE39',label:'CODE39'},{value:'EAN13',label:'EAN13'},{value:'EAN8',label:'EAN8'},{value:'UPCA',label:'UPCA'},{value:'UPCE',label:'UPCE'}]} />
                       <Input label="Valor" value={selectedElement.barcodeValue || ''} onChange={e => updateElement(selectedElement.id, { barcodeValue: e.target.value })} />
                       <div className="flex items-center gap-2">
                         <label className="flex items-center gap-2 text-xs">
@@ -691,7 +690,6 @@ function LabelElementRenderer({
   onResize,
   marginPx,
   gridSettings,
-  zoom: zoomLevel,
 }: {
   element: LabelElement;
   isSelected: boolean;
@@ -701,7 +699,6 @@ function LabelElementRenderer({
   onResize: (dir: string, e: React.MouseEvent) => void;
   marginPx: number;
   gridSettings: { size: number; snap: boolean };
-  zoom: number;
 }) {
   const scale = zoom;
   const style: React.CSSProperties = {

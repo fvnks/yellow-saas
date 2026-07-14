@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, Trash2, Edit, Tag } from 'lucide-react';
-import { getApiClient } from '../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface ProductTag { id: string; name: string; color: string; is_active: boolean; product_count?: number; }
 

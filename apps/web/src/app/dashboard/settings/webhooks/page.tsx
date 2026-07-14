@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge, Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@yellow-erp/ui';
-import { Plus, RefreshCw, Edit, Trash2, Eye, ExternalLink, Bell, BellOff, Zap, Shield, Loader2, CheckCircle, XCircle } from 'lucide-react';
-import { getApiClient } from '../../../../../lib/api-client';
+import { Plus, RefreshCw, Edit, Trash2, Eye, ExternalLink, Bell, BellOff, Zap, Shield, Loader2, CheckCircle, XCircle, X } from 'lucide-react';
+import { getApiClient } from '@/lib/api-client';
 
 interface WebhookEndpoint {
   id: string;
@@ -122,7 +122,7 @@ export default function WebhooksPage() {
   const handleTest = async (id: string) => {
     try {
       const api = getApiClient();
-      const res = await api.testWebhook(id);
+      const res = await (api as any).testWebhook(id);
       alert(res.success ? 'Test exitoso' : `Falló: ${res.message}`);
     } catch (err: any) { alert(`Error: ${err.message}`); }
   };

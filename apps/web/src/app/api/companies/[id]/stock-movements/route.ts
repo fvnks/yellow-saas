@@ -1,4 +1,4 @@
-import { query } from '@/lib/db';
+import { query } from '@/api/lib/db';
 import {
   getCompanyId,
   successResponse,
@@ -6,7 +6,7 @@ import {
   parseSearchParams,
   paginatedResponse,
   checkAndCreateLowStockNotification,
-} from '@/lib/helpers';
+} from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {

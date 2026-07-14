@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, Badge, Button } from '@yellow
 import { ArrowLeft, Mail, Phone, MapPin, Edit, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { getApiClient } from '../../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface Supplier {
   id: string;

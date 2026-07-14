@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
 import { ArrowLeft, Download, RefreshCw, Truck, AlertTriangle, Plus, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface ReorderItem {
   id: string;
@@ -41,7 +41,7 @@ export default function ReorderSuggestionsPage() {
       const api = getApiClient();
       const [suggestionsRes, whRes] = await Promise.all([
         api.getReorderSuggestions({ 
-          warehouse: filter.warehouse_id === 'all' ? undefined : filter.warehouse_id,
+          warehouse: filter.warehouse_id === 'all' ? '' : filter.warehouse_id,
           only_critical: filter.onlyCritical.toString(),
         }),
         api.getWarehouses(),
@@ -64,7 +64,7 @@ export default function ReorderSuggestionsPage() {
     if (selectedItems.length === items.length) {
       setSelectedItems([]);
     } else {
-      setItems(items.map(i => i.id));
+      setSelectedItems(items.map(i => i.id));
     }
   };
 
@@ -85,6 +85,8 @@ export default function ReorderSuggestionsPage() {
             product_id: item.product_id,
             quantity: item.suggested_qty,
             unit_price: item.product.cost_price,
+            discount_percent: 0,
+            tax_rate: 0,
           }],
         });
       }

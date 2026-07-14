@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Plus, Search, Trash2, Edit, Tag, Percent, Ruler, FlaskConical, Layers, Bookmark, Palette, Hash, Link2, AlertCircle, ExternalLink } from 'lucide-react';
-import { getApiClient } from '../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 type ConfigTab = 'categories' | 'taxes' | 'uom' | 'batches' | 'variants' | 'reservations' | 'reasons' | 'tags' | 'serials' | 'relations';
 

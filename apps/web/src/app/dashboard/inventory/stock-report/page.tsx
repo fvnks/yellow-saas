@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Select } from '@yellow-erp/ui';
 import { ArrowLeft, Download, Package } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface StockRow {
   product_id: string;

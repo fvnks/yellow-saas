@@ -9,7 +9,7 @@ import Link from 'next/link';
   Layers, Calculator, Ship, Handshake, FileText,
   BarChart3, TrendingUp, DollarSign, Globe
 } from 'lucide-react';
-import { getApiClient, getCompanyIdFromToken } from '../../../lib/api-client';
+import { getApiClient, getCompanyIdFromToken } from '@/lib/api-client';
 import BarcodeScanner from '../../../components/barcode/barcode-scanner';
 import Pagination from '../../../components/ui/pagination';
 

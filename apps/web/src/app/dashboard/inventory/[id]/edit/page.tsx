@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select } from 
 import { ArrowLeft, Save, Package, MapPin, Warehouse, Upload, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { getApiClient } from '../../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface ProductData {
   id: string;

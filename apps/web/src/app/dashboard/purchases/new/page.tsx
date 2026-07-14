@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select } from '@yellow-erp/ui';
 import { ArrowLeft, Save, Plus, Trash2, Package } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 const suppliers = [
   { id: '1', name: 'Logistica Norte SpA', code: 'SUP-001' },

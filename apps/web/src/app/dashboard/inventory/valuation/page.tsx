@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Select, Input } from '@yellow-erp/ui';
-import { ArrowLeft, RefreshCw, Download, Calculator, Layers, Settings, FileText, TrendingUp } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Download, Calculator, Layers, Settings, FileText, TrendingUp, Plus } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 
 interface ValuationMethod {
   id: string;

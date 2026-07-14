@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
 import { Plus, Search, Filter, Download, MoreVertical, Edit, Trash2, Package, Eye, ScanBarcode, Upload, Printer } from 'lucide-react';
 import Link from 'next/link';
-import { getApiClient } from '../../../lib/api-client';
+import { getApiClient } from '@/lib/api-client';
 import { generateBarcodeLabelsPDF } from '../../../lib/pdf';
 import BarcodeScanner from '../../../components/barcode/barcode-scanner';
 
