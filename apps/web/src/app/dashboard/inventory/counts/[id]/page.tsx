@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { ArrowLeft, Play, CheckCircle, Search } from 'lucide-react';
 import { getApiClient } from '../../../../../lib/api-client';
 
@@ -25,10 +25,9 @@ interface CountDetail {
   }>;
 }
 
-export default function InventoryCountDetailPage() {
+export default function InventoryCountDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const countId = searchParams.get('id');
+  const countId = params.id;
   const [count, setCount] = useState<CountDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');

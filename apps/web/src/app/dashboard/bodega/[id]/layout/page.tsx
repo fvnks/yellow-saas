@@ -82,7 +82,9 @@ export default function WarehouseLayoutPage({ params }: { params: { id: string }
   const handleSave = async () => {
     setSaving(true);
     const api = getApiClient();
-    await api.updateWarehouseLayout(id, { zones, shelves: [], positions: [] });
+    const allShelves = zones.flatMap(z => z.shelves.map(s => ({ ...s, zone_id: z.id })));
+    const allPositions = zones.flatMap(z => z.positions.map(p => ({ ...p, zone_id: z.id })));
+    await api.updateWarehouseLayout(id, { zones, shelves: allShelves, positions: allPositions });
     setSaving(false);
   };
 
