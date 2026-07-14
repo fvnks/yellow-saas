@@ -710,6 +710,7 @@ export default function BodegaPage() {
               )}
 
               {/* IMPORT TAB */}
+            </>
           )}
         </div>
       </div>
