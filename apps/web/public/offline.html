@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sin conexión - Yellow ERP</title>
+  <meta name="description" content="Yellow ERP - Modo offline">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/favicon.ico">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #1e293b;
+    }
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+      padding: 48px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+    .icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .icon svg { width: 40px; height: 40px; color: white; }
+    h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 12px; color: #0f172a; }
+    p { color: #64748b; line-height: 1.6; margin-bottom: 24px; }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: #fef3c7;
+      border: 1px solid #fcd34d;
+      border-radius: 8px;
+      color: #92400e;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #fcd34d;
+      border-top-color: #f59e0b;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .actions { display: flex; flex-direction: column; gap: 12px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.4); }
+    .btn-secondary {
+      background: white;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+    .btn-secondary:hover { background: #f8fafc; border-color: #cbd5e1; }
+    .features {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #e2e8f0;
+      text-align: left;
+    }
+    .features h3 { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-bottom: 12px; }
+    .feature-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: #f8fafc;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      color: #475569;
+    }
+    .feature-item svg { width: 16px; height: 16px; color: #22c55e; flex-shrink: 0; }
+    .retry-info { margin-top: 16px; font-size: 0.75rem; color: #94a3b8; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="12" x2="2" y2="12"></line>
+        <path d="M5 12v.01M12 12v.01M19 12v.01M5 19a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5z"></path>
+      </svg>
+    </div>
+    <h1>Sin conexión</h1>
+    <p>Yellow ERP está funcionando en modo offline. Tus datos se guardan localmente y se sincronizarán automáticamente cuando recuperes la conexión.</p>
+    
+    <div class="status">
+      <div class="spinner" aria-hidden="true"></div>
+      <span id="statusText">Verificando conexión...</span>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="checkConnection()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M23 4v6h-6"></path>
+          <path d="M1 20v-6h6"></path>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+        Reintentar conexión
+      </button>
+      <a href="/dashboard" class="btn btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        Ir al Dashboard (datos cacheados)
+      </a>
+    </div>
+
+    <div class="features">
+      <h3>Funciones disponibles offline</h3>
+      <div class="feature-list">
+        <div class="feature-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Ver productos y stock</div>
+        <div class="feature-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12l3.45 6.89"></path><path d="M22 12l-3.45 6.89"></path></svg> Historial de movimientos</div>
+        <div class="feature-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg> Formularios guardados localmente</div>
+        <div class="feature-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"></rect><path d="M8 21h8"></path><path d="M12 17v4"></path></svg> Sincronización automática</div>
+      </div>
+    </div>
+
+    <p class="retry-info">La sincronización se realizará automáticamente al recuperar la conexión.</p>
+  </div>
+
+  <script>
+    async function checkConnection() {
+      const statusText = document.getElementById('statusText');
+      const btn = event.target.closest('button');
+      btn.disabled = true;
+      btn.innerHTML = '<svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round" stroke-width="3"/><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/></svg> Verificando...';
+
+      try {
+        const response = await fetch('/api/health', { method: 'GET', cache: 'no-cache', signal: AbortSignal.timeout(5000) });
+        if (response.ok) {
+          statusText.textContent = '¡Conexión restaurada!';
+          document.querySelector('.status').style.background = '#dcfce7';
+          document.querySelector('.status').style.borderColor = '#86efac';
+          document.querySelector('.status').style.color = '#166534';
+          setTimeout(() => location.reload(), 1500);
+        } else {
+          throw new Error('Server error');
+        }
+      } catch (err) {
+        statusText.textContent = 'Sin conexión. Reintentando en 5s...';
+        setTimeout(checkConnection, 5000);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>';
+      }
+    }
+
+    window.addEventListener('online', checkConnection);
+    window.addEventListener('load', checkConnection);
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then(reg => {
+        if (navigator.onLine) {
+          reg.sync.register('sync-offline-queue').catch(() => {});
+        }
+      });
+    }
+  </script>
+</body>
+</html>

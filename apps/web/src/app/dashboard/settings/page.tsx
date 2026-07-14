@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
-import { Settings, Building2, Users, CreditCard, Bell, Shield, Globe, Save, Plus, Trash2, Mail, Key, Database, Mailbox, ShieldCheck } from 'lucide-react';
+import { Settings, Building2, Users, CreditCard, Bell, Shield, Globe, Save, Plus, Trash2, Mail, Key, Database, Mailbox, ShieldCheck, Zap, Webhook } from 'lucide-react';
 import RolesTab from './tabs/RolesTab';
 
 export default function SettingsPage() {
@@ -16,6 +16,7 @@ export default function SettingsPage() {
     { id: 'notifications', label: 'Notificaciones', icon: Bell },
     { id: 'security', label: 'Seguridad', icon: Shield },
     { id: 'integrations', label: 'Integraciones', icon: Globe },
+    { id: 'webhooks', label: 'Webhooks', icon: Zap },
   ];
 
   return (
@@ -328,6 +329,62 @@ export default function SettingsPage() {
                     </Badge>
                   </div>
                 ))}
+              </CardContent>
+            </Card>
+          )}
+
+          {activeTab === 'webhooks' && (
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>Webhooks</CardTitle>
+                <Button onClick={() => (window.location.href = '/dashboard/settings/webhooks')}>
+                  <Zap className="w-4 h-4 mr-2" /> Gestionar Webhooks
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card className="bg-slate-50">
+                    <CardContent className="p-6">
+                      <Zap className="w-8 h-8 text-amber-600 mx-auto mb-2" />
+                      <p className="font-medium text-slate-900">Eventos en Tiempo Real</p>
+                      <p className="text-sm text-slate-500 mt-1">Recibe notificaciones instantáneas de stock, ventas, compras y más</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-slate-50">
+                    <CardContent className="p-6">
+                      <Shield className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
+                      <p className="font-medium text-slate-900">Seguro y Confiable</p>
+                      <p className="text-sm text-slate-500 mt-1">Firma HMAC, reintentos exponenciales y logs de entrega</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-slate-50">
+                    <CardContent className="p-6">
+                      <Globe className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                      <p className="font-medium text-slate-900">Fácil Integración</p>
+                      <p className="text-sm text-slate-500 mt-1">JSON sobre HTTP/HTTPS, eventos tipados y documentados</p>
+                    </CardContent>
+                  </Card>
+                </div>
+                <div className="pt-4 border-t border-slate-200">
+                  <p className="text-sm text-slate-600 mb-4">Configura endpoints HTTP para recibir eventos como:</p>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                    {[
+                      'stock.changed', 'stock.low', 'stock.out',
+                      'batch.expiring', 'batch.expired',
+                      'return.created', 'return.approved',
+                      'order.created', 'order.shipped',
+                      'invoice.created', 'invoice.paid', 'invoice.overdue',
+                      'purchase_order.created', 'purchase_order.received',
+                    ].map((event, i) => (
+                      <Badge key={i} variant="secondary" className="font-mono">{event}</Badge>
+                    ))}
+                  </div>
+                  <div className="mt-4 flex justify-end">
+                    <Button onClick={() => (window.location.href = '/dashboard/settings/webhooks')}>
+                      <Zap className="w-4 h-4 mr-2" /> Ir a Configuración de Webhooks
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           )}

@@ -1,0 +1,85 @@
+import { query } from '../../../../../lib/db';
+import {
+  getCompanyId,
+  successResponse,
+  errorResponse,
+  parseSearchParams,
+  paginatedResponse,
+} from '../../../../../lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { page, limit, search, offset } = parseSearchParams(request);
+    const url = new URL(request.url);
+    const isActive = url.searchParams.get('is_active');
+
+    let whereClause = 'WHERE lt.company_id = $1';
+    const params: any[] = [companyId];
+    let paramIndex = 2;
+
+    if (isActive !== null) {
+      whereClause += ` AND lt.is_active = $${paramIndex}`;
+      params.push(isActive === 'true');
+      paramIndex++;
+    }
+
+    if (search) {
+      whereClause += ` AND (lt.name ILIKE $${paramIndex} OR lt.description ILIKE $${paramIndex})`;
+      params.push(`%${search}%`);
+      paramIndex++;
+    }
+
+    const countResult = await query(
+      `SELECT COUNT(*) FROM label_templates lt ${whereClause}`,
+      params
+    );
+
+    params.push(limit, offset);
+    const dataResult = await query(
+      `SELECT lt.* FROM label_templates lt ${whereClause} ORDER BY lt.is_default DESC, lt.created_at DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
+      params
+    );
+
+    return paginatedResponse(dataResult.rows, parseInt(countResult.rows[0].count), page, limit);
+  } catch (err) {
+    console.error('Label templates error:', err);
+    return errorResponse('Internal server error', 500);
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+    const { name, description, width_mm, height_mm, margin_mm, background_color, template_json, is_default, is_active } = body;
+
+    if (!name || !width_mm || !height_mm || !template_json) {
+      return errorResponse('name, width_mm, height_mm, and template_json are required', 400);
+    }
+
+    if (is_default) {
+      await query('UPDATE label_templates SET is_default = false WHERE company_id = $1', [companyId]);
+    }
+
+    const result = await query(
+      `INSERT INTO label_templates (company_id, name, description, width_mm, height_mm, margin_mm, background_color, template_json, is_default, is_active)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+       RETURNING *`,
+      [companyId, name, description || null, width_mm, height_mm, margin_mm || 2, background_color || '#FFFFFF', JSON.stringify(template_json), is_default || false, is_active !== false]
+    );
+
+    return successResponse(result.rows[0], 201);
+  } catch (err) {
+    console.error('Create label template error:', err);
+    if (err instanceof Error && err.message.includes('duplicate key')) {
+      return errorResponse('Template name already exists', 400);
+    }
+    return errorResponse('Internal server error', 500);
+  }
+}

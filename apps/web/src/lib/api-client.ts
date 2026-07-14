@@ -918,6 +918,49 @@ async deleteAdjustmentReason(id: string) {
   async createValuationMultiCurrency(data: { target_currency: string; valuation_date: string; recalculate?: boolean }) {
     return this.request<any>('/valuation-multi-currency', { method: 'POST', body: JSON.stringify(data) });
   }
+
+  // Label Templates
+  async getLabelTemplates(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/label-templates', params || {});
+  }
+  async createLabelTemplate(data: { name: string; description?: string; width_mm: number; height_mm: number; margin_mm?: number; background_color?: string; template_json: any; is_default?: boolean; is_active?: boolean }) {
+    return this.request<any>('/label-templates', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateLabelTemplate(id: string, data: { name?: string; description?: string; width_mm?: number; height_mm?: number; margin_mm?: number; background_color?: string; template_json?: any; is_default?: boolean; is_active?: boolean }) {
+    return this.request<any>(`/label-templates/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteLabelTemplate(id: string) {
+    return this.request<any>(`/label-templates/${id}`, { method: 'DELETE' });
+  }
+
+  // Webhook Endpoints
+  async getWebhookEndpoints(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/webhook-endpoints', params || {});
+  }
+  async createWebhookEndpoint(data: { url: string; events: string[]; secret?: string; headers?: any; retry_policy?: any; is_active?: boolean }) {
+    return this.request<any>('/webhook-endpoints', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateWebhookEndpoint(id: string, data: { url?: string; events?: string[]; secret?: string; headers?: any; retry_policy?: any; is_active?: boolean }) {
+    return this.request<any>(`/webhook-endpoints/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteWebhookEndpoint(id: string) {
+    return this.request<any>(`/webhook-endpoints/${id}`, { method: 'DELETE' });
+  }
+  async getWebhookDeliveries(endpointId: string, params?: Record<string, string>) {
+    return this.requestWithPagination<any>(`/webhook-endpoints/${endpointId}/deliveries`, params || {});
+  }
+
+  // PWA Offline Queue
+  async getPwaOfflineQueue(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/pwa-offline-queue', params || {});
+  }
+  async addToOfflineQueue(data: { user_id: string; action_type: string; entity_type: string; entity_id?: string; payload: any }) {
+    return this.request<any>('/pwa-offline-queue', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async syncOfflineQueue(ids?: string[]) {
+    return this.request<any>('/pwa-offline-queue/sync', { method: 'POST', body: JSON.stringify({ ids }) });
+  }
 }
 
 // Singleton with dynamic company_id from JWT
