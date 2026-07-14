@@ -55,13 +55,13 @@ export async function PUT(
         sku = $1, name = $2, category_id = $3, description = $4, type = $5,
         unit_of_measure = $6, cost_price = $7, sale_price = $8, min_stock = $9,
         max_stock = $10, track_stock = $11, barcode = $12, tax_id = $13,
-        is_active = $14, cost_center_id = $15, updated_at = NOW()
-       WHERE id = $16 AND company_id = $17
+        is_active = $14, cost_center_id = $15, image_url = $16, updated_at = NOW()
+       WHERE id = $17 AND company_id = $18
        RETURNING *`,
       [body.sku, body.name, body.category_id, body.description, body.type,
        body.unit_of_measure, body.cost_price, body.sale_price, body.min_stock,
        body.max_stock, body.track_stock, body.barcode, body.tax_id,
-       body.is_active, body.cost_center_id || null, params.productId, companyId]
+       body.is_active, body.cost_center_id || null, body.image_url || null, params.productId, companyId]
     );
 
     if (result.rows.length === 0) return errorResponse('Product not found', 404);

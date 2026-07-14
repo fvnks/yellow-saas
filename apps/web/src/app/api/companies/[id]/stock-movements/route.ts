@@ -5,6 +5,7 @@ import {
   errorResponse,
   parseSearchParams,
   paginatedResponse,
+  checkAndCreateLowStockNotification,
 } from '../../../lib/helpers';
 import { NextRequest } from 'next/server';
 
@@ -134,6 +135,10 @@ export async function POST(request: NextRequest) {
          VALUES ($1, $2, $3, $4, NOW())`,
         [companyId, product_id, warehouse_id, finalQuantity]
       );
+    }
+
+    if (finalQuantity < 0) {
+      checkAndCreateLowStockNotification(companyId, product_id, warehouse_id);
     }
 
     return successResponse(movement, 201);

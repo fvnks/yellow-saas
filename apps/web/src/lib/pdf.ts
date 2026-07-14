@@ -1,5 +1,6 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import JsBarcode from 'jsbarcode';
 
 interface DocumentItem {
   name: string;
@@ -239,4 +240,86 @@ export function generateQuotationPDF(data: DocumentData): void {
   }
   
   doc.save(`${data.number}.pdf`);
+}
+
+export interface BarcodeLabelData {
+  name: string;
+  sku: string;
+  barcode?: string;
+  price?: number;
+  unit_of_measure?: string;
+}
+
+export function generateBarcodeLabelsPDF(labels: BarcodeLabelData[]) {
+  const labelWidth = 62;
+  const labelHeight = 40;
+  const margin = 10;
+  const spacing = 4;
+
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const pageWidth = 210;
+  const pageHeight = 297;
+
+  let x = margin;
+  let y = margin;
+
+  labels.forEach((label) => {
+    if (y + labelHeight > pageHeight - margin) {
+      doc.addPage();
+      y = margin;
+      x = margin;
+    }
+
+    doc.setDrawColor(200, 200, 200);
+    doc.roundedRect(x, y, labelWidth, labelHeight, 2, 2);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    const nameTruncated = label.name.length > 20 ? label.name.substring(0, 18) + '...' : label.name;
+    doc.text(nameTruncated, x + 2, y + 6);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6);
+    doc.text(`SKU: ${label.sku}`, x + 2, y + 11);
+
+    if (label.barcode) {
+      try {
+        const canvas = document.createElement('canvas');
+        JsBarcode(canvas, label.barcode, {
+          format: 'CODE128',
+          width: 1.2,
+          height: 20,
+          displayValue: true,
+          fontSize: 7,
+          margin: 0,
+          background: 'transparent',
+        });
+        const imgData = canvas.toDataURL('image/png');
+        doc.addImage(imgData, 'PNG', x + 2, y + 13, labelWidth - 4, 16);
+      } catch {
+        doc.setFontSize(7);
+        doc.text(label.barcode, x + 2, y + 20);
+      }
+    }
+
+    if (label.price) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.text(`$${label.price.toLocaleString('es-CL')}`, x + 2, y + labelHeight - 3);
+    }
+
+    if (label.unit_of_measure) {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(6);
+      doc.text(label.unit_of_measure, x + labelWidth - 2, y + labelHeight - 3, { align: 'right' });
+    }
+
+    x += labelWidth + spacing;
+    if (x + labelWidth > pageWidth - margin) {
+      x = margin;
+      y += labelHeight + spacing;
+    }
+  });
+
+  doc.save('etiquetas.pdf');
 }

@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
-import { Plus, Search, Filter, Download, MoreVertical, Edit, Trash2, Package, Eye, ScanBarcode, Upload } from 'lucide-react';
+import { Plus, Search, Filter, Download, MoreVertical, Edit, Trash2, Package, Eye, ScanBarcode, Upload, Printer } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '../../../lib/api-client';
+import { generateBarcodeLabelsPDF } from '../../../lib/pdf';
 import BarcodeScanner from '../../../components/barcode/barcode-scanner';
 
 interface Product {
@@ -19,6 +20,7 @@ interface Product {
   status: string;
   warehouse: string;
   cost_center?: { id: string; name: string; code: string } | null;
+  imageUrl?: string;
 }
 
 export default function InventoryPage() {
@@ -50,6 +52,7 @@ export default function InventoryPage() {
         status: 'active',
         warehouse: p.warehouse || '',
         cost_center: p.cost_center || null,
+        imageUrl: p.image_url || null,
       }));
       setProducts(mapped);
       setLoading(false);
@@ -89,9 +92,29 @@ export default function InventoryPage() {
             <Upload className="w-4 h-4 mr-2" />
             Importar
           </Button>
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm" onClick={() => {
+            const headers = ['Nombre', 'SKU', 'Categoria', 'Stock', 'Minimo', 'Costo', 'Precio', 'Estado', 'Bodega'];
+            const rows = filteredProducts.map(p => [p.name, p.sku, p.category, p.stock, p.minStock, p.cost, p.price, p.status, p.warehouse]);
+            const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = 'inventario.csv'; a.click();
+            URL.revokeObjectURL(url);
+          }}>
             <Download className="w-4 h-4 mr-2" />
             Exportar
+          </Button>
+          <Button variant="secondary" size="sm" onClick={() => {
+            if (filteredProducts.length === 0) return;
+            generateBarcodeLabelsPDF(filteredProducts.map(p => ({
+              name: p.name,
+              sku: p.sku,
+              barcode: p.sku,
+              price: p.price,
+            })));
+          }}>
+            <Printer className="w-4 h-4 mr-2" />
+            Imprimir Etiquetas
           </Button>
           <Link href="/dashboard/inventory/new">
             <Button>
@@ -176,8 +199,12 @@ export default function InventoryPage() {
                 return (
                   <TableRow key={product.id}>
                     <TableCell>
-                      <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center">
-                        <Package className="w-5 h-5 text-slate-400" />
+                      <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center overflow-hidden">
+                        {product.imageUrl ? (
+                          <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <Package className="w-5 h-5 text-slate-400" />
+                        )}
                       </div>
                     </TableCell>
                     <TableCell className="font-medium">{product.name}</TableCell>
