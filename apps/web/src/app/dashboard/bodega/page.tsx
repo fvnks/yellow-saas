@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { getApiClient } from '../../../lib/api-client';
 import BarcodeScanner from '../../../components/barcode/barcode-scanner';
+import Pagination from '../../../components/ui/pagination';
 
 type Tab = 'products' | 'warehouses' | 'counts' | 'transfers' | 'alerts' | 'import';
 
@@ -65,8 +66,11 @@ export default function BodegaPage() {
   const [transfers, setTransfers] = useState<TransferItem[]>([]);
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
   const [showScanner, setShowScanner] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({ total: 0, totalPages: 1 });
+  const limit = 20;
 
-  useEffect(() => { loadAll(); }, []);
+  useEffect(() => { loadAll(); }, [page, search]);
 
   const loadAll = async () => {
     setLoading(true);
@@ -78,8 +82,11 @@ export default function BodegaPage() {
         setLoading(false);
         return;
       }
+      const params: Record<string, string> = { page: String(page), limit: String(limit) };
+      if (search) params.search = search;
+
       const [prodRes, whRes, cntRes, trfRes, altRes] = await Promise.all([
-        api.getProducts({ limit: '200' }),
+        api.getProducts(params),
         api.getWarehouses({ limit: '100' }),
         api.getInventoryCounts({ limit: '100' }).catch(() => ({ data: [] })),
         api.getStockTransfers({ limit: '100' }).catch(() => ({ data: [] })),
@@ -110,6 +117,7 @@ export default function BodegaPage() {
         status: p.is_active ? 'active' : 'inactive', warehouse: p.warehouse || '', cost_center: p.cost_center || null,
         category: p.category?.name || '', tax: p.tax || null,
       })));
+      setPagination({ total: prodRes.pagination?.total || 0, totalPages: prodRes.pagination?.totalPages || 1 });
       setWarehouses(whRes.data || []);
       setCounts(cntRes.data || []);
       setTransfers(trfRes.data || []);
@@ -374,6 +382,11 @@ export default function BodegaPage() {
                   </table>
                   {filteredProducts.length === 0 && <div className="p-8 text-center text-sm text-slate-500">No se encontraron productos</div>}
                 </div>
+              )}
+
+              {/* Pagination for products */}
+              {activeTab === 'products' && (
+                <Pagination page={page} totalPages={pagination.totalPages} total={pagination.total} limit={limit} onPageChange={setPage} />
               )}
 
               {/* WAREHOUSES TAB */}
