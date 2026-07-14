@@ -82,6 +82,15 @@ export async function POST(request: Request) {
     }
     results.push(`Created ${tables.length} tables`);
 
+    const alters = [
+      `ALTER TABLE products ADD COLUMN IF NOT EXISTS image_url TEXT`,
+      `ALTER TABLE products ADD COLUMN IF NOT EXISTS cost_center_id UUID REFERENCES cost_centers(id) ON DELETE SET NULL`,
+    ];
+    for (const sql of alters) {
+      await query(sql);
+    }
+    results.push(`Applied ${alters.length} ALTER TABLE migrations`);
+
     const permModules = ['dashboard', 'inventory', 'warehouses', 'sales', 'purchases', 'customers', 'suppliers', 'crm', 'payroll', 'accounting', 'projects', 'pos', 'billing', 'settings', 'audit', 'reports'];
     const permActions = ['create', 'read', 'update', 'delete'];
     for (const mod of permModules) {

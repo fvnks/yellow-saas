@@ -79,10 +79,10 @@ export async function POST(request: NextRequest) {
     }
 
     const productResult = await query(
-      `INSERT INTO products (company_id, sku, name, category_id, description, type, unit_of_measure, cost_price, sale_price, min_stock, max_stock, track_stock, barcode, tax_id, cost_center_id)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+      `INSERT INTO products (company_id, sku, name, category_id, description, type, unit_of_measure, cost_price, sale_price, min_stock, max_stock, track_stock, barcode, tax_id, cost_center_id, image_url)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
        RETURNING *`,
-      [companyId, sku, name, category_id || null, description || null, type || 'product', unit_of_measure || 'UN', cost_price || 0, sale_price || 0, min_stock || 0, max_stock || 0, track_stock !== false, barcode || null, tax_id || null, cost_center_id || null]
+      [companyId, sku, name, category_id || null, description || null, type || 'product', unit_of_measure || 'UN', cost_price || 0, sale_price || 0, min_stock || 0, max_stock || 0, track_stock !== false, barcode || null, tax_id || null, cost_center_id || null, image_url || null]
     );
 
     const product = productResult.rows[0];

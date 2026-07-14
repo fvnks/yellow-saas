@@ -621,6 +621,13 @@ export class ApiClient {
   async releaseStockReservation(id: string) {
     return this.request<any>(`/stock-reservations/${id}`, { method: 'DELETE' });
   }
+
+  async uploadImage(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await fetch('/api/upload', { method: 'POST', body: formData });
+    return res.json();
+  }
 }
 
 // Singleton with dynamic company_id from JWT

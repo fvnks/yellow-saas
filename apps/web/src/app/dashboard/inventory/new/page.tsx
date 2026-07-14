@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select } from '@yellow-erp/ui';
-import { ArrowLeft, Save, Package, MapPin, Warehouse } from 'lucide-react';
+import { ArrowLeft, Save, Package, MapPin, Warehouse, Upload, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getApiClient } from '../../../../lib/api-client';
@@ -67,6 +67,9 @@ export default function NewProductPage() {
   const [selectedCostCenter, setSelectedCostCenter] = useState('');
   const [taxes, setTaxes] = useState<{ id: string; name: string; rate: number; code: string }[]>([]);
   const [selectedTaxId, setSelectedTaxId] = useState('');
+  const [uomList, setUomList] = useState<{ code: string; name: string }[]>([]);
+  const [imageUrl, setImageUrl] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => {
     const api = getApiClient();
@@ -79,6 +82,9 @@ export default function NewProductPage() {
     }).catch(() => {});
     api.getTaxes().then((res) => {
       setTaxes((res.data || []).map((t: any) => ({ id: t.id, name: t.name, rate: t.rate, code: t.code })));
+    }).catch(() => {});
+    api.getUnitsOfMeasure({ limit: '200' }).then((res) => {
+      setUomList((res.data || []).map((u: any) => ({ code: u.code, name: u.name })));
     }).catch(() => {});
   }, []);
 
@@ -158,6 +164,7 @@ export default function NewProductPage() {
         is_active: isActive,
         cost_center_id: selectedCostCenter || undefined,
         tax_id: selectedTaxId || undefined,
+        image_url: imageUrl || undefined,
       } as any);
 
       const productId = (result as any)?.id || (result as any)?.data?.id;
@@ -228,7 +235,7 @@ export default function NewProductPage() {
                   options={[
                     { value: 'product', label: 'Producto' },
                     { value: 'service', label: 'Servicio' },
-                    { value: 'raw_material', label: 'Materia Prima' },
+                    { value: 'combo', label: 'Combo' },
                   ]}
                 />
                 <Select
@@ -237,13 +244,7 @@ export default function NewProductPage() {
                   onChange={(e) => setUnitOfMeasure(e.target.value)}
                   options={[
                     { value: 'un', label: 'Unidad' },
-                    { value: 'kg', label: 'Kilogramo' },
-                    { value: 'lt', label: 'Litro' },
-                    { value: 'mt', label: 'Metro' },
-                    { value: 'm2', label: 'Metro Cuadrado' },
-                    { value: 'm3', label: 'Metro Cúbico' },
-                    { value: 'caja', label: 'Caja' },
-                    { value: 'pallet', label: 'Pallet' },
+                    ...uomList.map(u => ({ value: u.code, label: u.name })),
                   ]}
                 />
               </div>
@@ -266,6 +267,48 @@ export default function NewProductPage() {
                   ...taxes.map(t => ({ value: t.id, label: `${t.name} (${t.rate}%)` })),
                 ]}
               />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Imagen del Producto</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {imageUrl ? (
+                <div className="relative">
+                  <img src={imageUrl} alt="Producto" className="w-full h-48 object-cover rounded-lg border border-slate-200" />
+                  <button
+                    type="button"
+                    onClick={() => setImageUrl('')}
+                    className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-sm border border-slate-200 hover:bg-slate-50"
+                  >
+                    <X className="w-4 h-4 text-slate-500" />
+                  </button>
+                </div>
+              ) : (
+                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/50 transition-colors">
+                  <Upload className="w-6 h-6 text-slate-400 mb-2" />
+                  <span className="text-xs text-slate-500">{uploadingImage ? 'Subiendo...' : 'Click para subir imagen'}</span>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    className="hidden"
+                    disabled={uploadingImage}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setUploadingImage(true);
+                      try {
+                        const api = getApiClient();
+                        const res = await api.uploadImage(file);
+                        if (res.success) setImageUrl(res.data.url);
+                      } catch { }
+                      setUploadingImage(false);
+                    }}
+                  />
+                </label>
+              )}
             </CardContent>
           </Card>
 

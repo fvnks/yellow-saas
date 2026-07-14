@@ -1,5 +1,5 @@
 import { query } from '../../../../../lib/db';
-import { getCompanyId, successResponse, errorResponse } from '../../../../../lib/helpers';
+import { getCompanyId, successResponse, errorResponse, checkAndCreateLowStockNotification } from '../../../../../lib/helpers';
 import { NextRequest } from 'next/server';
 
 export async function POST(
@@ -71,6 +71,8 @@ export async function POST(
            WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`,
           [companyId, item.product_id, transfer.source_warehouse_id, qty]
         );
+
+        checkAndCreateLowStockNotification(companyId, item.product_id, transfer.source_warehouse_id);
 
         // Update destination stock (create if not exists)
         const destStock = await query(

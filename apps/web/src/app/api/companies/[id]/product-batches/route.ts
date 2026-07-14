@@ -63,7 +63,28 @@ export async function POST(request: NextRequest) {
       [companyId, product_id, warehouse_id, batch_number, quantity || 0, expiry_date || null, manufacturing_date || null, notes || null]
     );
 
-    return successResponse(result.rows[0], 201);
+    const batch = result.rows[0];
+
+    if (quantity && quantity > 0) {
+      const productResult = await query('SELECT cost_price FROM products WHERE id = $1', [product_id]);
+      const unitCost = productResult.rows[0]?.cost_price || 0;
+
+      await query(
+        `INSERT INTO stock_movements (company_id, product_id, warehouse_id, type, quantity, unit_cost, reference_type, reference_id, notes)
+         VALUES ($1, $2, $3, 'initial', $4, $5, 'batch', $6, $7)`,
+        [companyId, product_id, warehouse_id, quantity, unitCost, batch.id, `Lote ${batch_number}`]
+      );
+
+      await query(
+        `INSERT INTO stock_levels (company_id, product_id, warehouse_id, quantity)
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (company_id, product_id, warehouse_id)
+         DO UPDATE SET quantity = stock_levels.quantity + $4, updated_at = NOW()`,
+        [companyId, product_id, warehouse_id, quantity]
+      );
+    }
+
+    return successResponse(batch, 201);
   } catch (err) {
     console.error('Create batch error:', err);
     return errorResponse('Internal server error', 500);

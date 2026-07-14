@@ -200,6 +200,9 @@ export default function BodegaPage() {
           <p className="text-sm text-slate-500 mt-1">Gestion completa de inventario</p>
         </div>
         <div className="flex items-center gap-2">
+          <Link href="/dashboard/inventory/stock-report" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+            <Package className="w-4 h-4" /> Valorización
+          </Link>
           <Link href="/dashboard/inventory/config" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
             <Settings className="w-4 h-4" /> Configurar
           </Link>
