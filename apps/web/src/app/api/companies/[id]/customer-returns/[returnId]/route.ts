@@ -12,7 +12,7 @@ export async function GET(
 
     const result = await query(
       `SELECT cr.*,
-        json_build_object('id', c.id, 'name', c.name, 'rut', c.rut) as customer,
+        json_build_object('id', c.id, 'name', c.name, 'tax_id', c.tax_id) as customer,
         json_build_object('id', w.id, 'name', w.name, 'code', w.code) as warehouse,
         (SELECT json_agg(json_build_object(
           'id', cri.id,

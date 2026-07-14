@@ -1,24 +1,11 @@
 ﻿'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select } from '@yellow-erp/ui';
-import { ArrowLeft, Save, FileText, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Save, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
-
-const orders = [
-  { id: '1', number: 'SO-2024-001', customer: 'Empresa ABC SpA' },
-  { id: '2', number: 'SO-2024-002', customer: 'Comercial XYZ Ltda' },
-];
-
-const customers = [
-  { id: '1', name: 'Empresa ABC SpA', rut: '76.123.456-7', email: 'contacto@empresaabc.cl', address: 'Av. Providencia 1234, Santiago' },
-  { id: '2', name: 'Comercial XYZ Ltda', rut: '89.234.567-8', email: 'ventas@xyz.cl', address: 'Calle Los Aromos 567, Valparaíso' },
-  { id: '3', name: 'Distribuidora Norte', rut: '70.345.678-9', email: 'info@distrinorte.cl', address: 'Av. del Comercio 890, Antofagasta' },
-  { id: '4', name: 'Retail Sur SA', rut: '90.456.789-0', email: 'compras@retailsur.cl', address: 'Pasaje Las Flores 321, Temuco' },
-  { id: '5', name: 'Importadora Chile', rut: '75.567.890-1', email: 'importaciones@importchile.cl', address: 'Bulnes 456, Santiago' },
-];
 
 const paymentMethods = ['Efectivo', 'Transferencia', 'Tarjeta', 'Crédito'];
 
@@ -31,19 +18,16 @@ interface InvoiceItem {
   discount: number;
 }
 
-const initialItems: InvoiceItem[] = [
-  { productId: '1', name: 'Laptop HP ProBook 450', sku: 'LP-HP-450', quantity: 2, unitPrice: 650000, discount: 0 },
-  { productId: '2', name: 'Mouse Logitech MX Master 3S', sku: 'MS-LG-MX3', quantity: 5, unitPrice: 89000, discount: 0 },
-  { productId: '3', name: 'Monitor Dell 27" 4K', sku: 'MN-DELL-27', quantity: 1, unitPrice: 420000, discount: 0 },
-];
-
 export default function NewInvoicePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [orders, setOrders] = useState<{id: string; order_number: string; customer_name?: string}[]>([]);
+  const [customers, setCustomers] = useState<{id: string; name: string; tax_id: string; email?: string; address?: string}[]>([]);
+  const [products, setProducts] = useState<{id: string; name: string; sku: string; price: number}[]>([]);
+  const [dataLoading, setDataLoading] = useState(true);
   const [formData, setFormData] = useState({
-    invoiceNumber: 'FAC-2026-001',
     orderId: '',
     invoiceDate: '',
     dueDate: '',
@@ -51,8 +35,21 @@ export default function NewInvoicePage() {
     customerId: '',
   });
 
-  const [items, setItems] = useState<InvoiceItem[]>(initialItems);
+  const [items, setItems] = useState<InvoiceItem[]>([]);
   const [paidAmount, setPaidAmount] = useState(0);
+
+  useEffect(() => {
+    const api = getApiClient();
+    Promise.all([
+      api.getSalesOrders(),
+      api.getCustomers(),
+      api.getProducts(),
+    ]).then(([ordersRes, customersRes, productsRes]) => {
+      setOrders((ordersRes.data || []).map((o: any) => ({ id: o.id, order_number: o.order_number })));
+      setCustomers((customersRes.data || []).map((c: any) => ({ id: c.id, name: c.name, tax_id: c.tax_id, email: c.email, address: c.address })));
+      setProducts((productsRes.data || []).map((p: any) => ({ id: p.id, name: p.name, sku: p.sku, price: p.price || 0 })));
+    }).finally(() => setDataLoading(false));
+  }, []);
 
   const handleFormChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData(prev => ({ ...prev, [field]: e.target.value }));
@@ -93,12 +90,14 @@ export default function NewInvoicePage() {
         payment_method: formData.paymentMethod,
         items: items.filter(i => i.productId).map(i => ({
           product_id: i.productId,
+          description: i.name || '',
           quantity: i.quantity,
           unit_price: i.unitPrice,
           discount: i.discount,
+          total: getLineTotal(i),
         })),
       });
-      setSuccess(`Factura ${result.invoice_number} emitida. Stock descontado correctamente.`);
+      setSuccess(`Factura ${result.invoice_number} emitida correctamente.`);
       setTimeout(() => router.push('/dashboard/sales'), 1500);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error al emitir la factura');
@@ -131,16 +130,11 @@ export default function NewInvoicePage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    label="Número de Factura"
-                    value={formData.invoiceNumber}
-                    onChange={handleFormChange('invoiceNumber')}
-                  />
                   <Select
                     label="Orden de Referencia"
                     value={formData.orderId}
                     onChange={handleFormChange('orderId')}
-                    options={[{ value: '', label: 'Seleccionar orden...' }, ...orders.map(o => ({ value: o.id, label: o.number }))]}
+                    options={[{ value: '', label: 'Seleccionar orden...' }, ...orders.map(o => ({ value: o.id, label: o.order_number }))]}
                   />
                   <Input
                     label="Fecha de Factura"
@@ -183,7 +177,7 @@ export default function NewInvoicePage() {
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-medium text-slate-500">RUT</span>
-                      <span className="text-sm text-slate-900">{selectedCustomer.rut}</span>
+                      <span className="text-sm text-slate-900">{selectedCustomer.tax_id}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-medium text-slate-500">Email</span>

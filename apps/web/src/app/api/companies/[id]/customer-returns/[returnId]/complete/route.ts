@@ -64,7 +64,7 @@ export async function POST(
       }
 
       await query(
-        `UPDATE customer_returns SET status = 'completed', completed_at = NOW(), updated_at = NOW()
+        `UPDATE customer_returns SET status = 'completed', updated_at = NOW()
          WHERE id = $1 AND company_id = $2`,
         [params.returnId, companyId]
       );

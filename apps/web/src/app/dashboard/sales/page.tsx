@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Select, Input } from '@yellow-erp/ui';
-import { Plus, Search, Download, Eye, Edit, Trash2, ShoppingCart, DollarSign, Truck, CreditCard, Package, FileText, ClipboardList, Monitor, Banknote, Receipt, X, Check, Users } from 'lucide-react';
+import { Plus, Search, Download, Eye, Edit, Trash2, ShoppingCart, DollarSign, Truck, CreditCard, Package, FileText, ClipboardList, Monitor, Banknote, Receipt, X, Check, Users, RotateCcw } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 
@@ -56,8 +56,10 @@ export default function SalesPage() {
   const [invoices, setInvoices] = useState<any[]>([]);
   const [products, setProducts] = useState<POSProduct[]>([]);
   const [customers, setCustomers] = useState<any[]>([]);
+  const [quotations, setQuotations] = useState<any[]>([]);
+  const [returns, setReturns] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'orders' | 'delivery' | 'invoices' | 'pos' | 'customers'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'delivery' | 'invoices' | 'pos' | 'customers' | 'quotations' | 'returns'>('orders');
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -76,7 +78,9 @@ export default function SalesPage() {
       api.getInvoices(),
       api.getProducts(),
       api.getCustomers().catch(() => ({ data: [] })),
-    ]).then(([ordersRes, guidesRes, invoicesRes, productsRes, customersRes]) => {
+      api.getSalesQuotations().catch(() => ({ data: [] })),
+      api.getCustomerReturns().catch(() => ({ data: [] })),
+    ]).then(([ordersRes, guidesRes, invoicesRes, productsRes, customersRes, quotationsRes, returnsRes]) => {
       const ordersData = (ordersRes.data || []).map((o) => ({
         id: o.id,
         number: o.order_number,
@@ -123,6 +127,26 @@ export default function SalesPage() {
       setInvoices(invoicesData);
       setProducts(productsData);
       setCustomers(customersData);
+      const quotationsData = (quotationsRes.data || []).map((q) => ({
+        id: q.id,
+        number: q.quotation_number,
+        customer: q.customer?.name || q.customer_id,
+        date: q.created_at?.split('T')[0] || '',
+        valid_until: q.valid_until || '',
+        total: q.total || 0,
+        status: q.status,
+      }));
+      setQuotations(quotationsData);
+      const returnsData = (returnsRes.data || []).map((r) => ({
+        id: r.id,
+        number: r.return_number,
+        customer: r.customer?.name || '—',
+        warehouse: r.warehouse?.name || '—',
+        date: r.created_at?.split('T')[0] || '',
+        items: r.item_count || 0,
+        status: r.status,
+      }));
+      setReturns(returnsData);
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);
@@ -186,12 +210,85 @@ export default function SalesPage() {
     setCart(prev => prev.map(i => i.id === id ? { ...i, quantity } : i));
   };
 
-  const handlePayment = async () => {
-    await new Promise(resolve => setTimeout(resolve, 1500));
+const handlePayment = async () => {
+  try {
+    const api = getApiClient();
+    
+    // Find a customer (use first customer or null)
+    const customerId = customers.length > 0 ? customers[0].id : null;
+    
+    // Create a sales order first
+    const orderResult = await api.createSalesOrder({
+      customer_id: customerId || '',
+      notes: `Venta POS - ${paymentMethod}`,
+      items: cart.map(item => ({
+        product_id: item.id,
+        quantity: item.quantity,
+        unit_price: item.price,
+        discount_percent: 0,
+        tax_rate: 19,
+      })),
+    });
+    
+    // Create invoice for the order
+    if (orderResult?.id) {
+      await api.createInvoice({
+        order_id: orderResult.id,
+        customer_id: customerId || '',
+        invoice_date: new Date().toISOString().split('T')[0],
+        due_date: new Date().toISOString().split('T')[0],
+        payment_method: paymentMethod,
+        items: cart.map(item => ({
+          product_id: item.id,
+          quantity: item.quantity,
+          unit_price: item.price,
+          discount: 0,
+          description: item.name,
+        })),
+      });
+    }
+    
     setCart([]);
     setShowPaymentModal(false);
     setAmountPaid(0);
-  };
+    
+    // Reload data
+    const [ordersRes, guidesRes, invoicesRes] = await Promise.all([
+      api.getSalesOrders(),
+      api.getDeliveryGuides(),
+      api.getInvoices(),
+    ]);
+    // Update state with fresh data (keep existing products and customers)
+    setOrders((ordersRes.data || []).map((o) => ({
+      id: o.id,
+      number: o.order_number,
+      customer: o.customer_id,
+      date: o.created_at?.split('T')[0] || '',
+      total: o.total,
+      status: o.status,
+      payment: 'pending',
+    })));
+    setDeliveryGuides((guidesRes.data || []).map((g) => ({
+      id: g.id,
+      number: g.guide_number,
+      orderId: g.order_id,
+      date: g.created_at?.split('T')[0] || '',
+      transport: g.transport,
+      status: g.status,
+    })));
+    setInvoices((invoicesRes.data || []).map((inv) => ({
+      id: inv.id,
+      number: inv.invoice_number,
+      orderId: inv.order_id,
+      date: inv.created_at?.split('T')[0] || '',
+      total: inv.total,
+      status: inv.status,
+      paid: 0,
+    })));
+  } catch (error) {
+    console.error('Error processing payment:', error);
+  }
+};
 
   return (
     <div className="space-y-6">
@@ -224,6 +321,16 @@ export default function SalesPage() {
           {activeTab === 'customers' && (
             <Link href="/dashboard/customers/new">
               <Button><Plus className="w-4 h-4 mr-2" /> Nuevo Cliente</Button>
+            </Link>
+          )}
+          {activeTab === 'quotations' && (
+            <Link href="/dashboard/sales/quotations/new">
+              <Button><Plus className="w-4 h-4 mr-2" /> Nueva Cotización</Button>
+            </Link>
+          )}
+          {activeTab === 'returns' && (
+            <Link href="/dashboard/sales/returns">
+              <Button><Plus className="w-4 h-4 mr-2" /> Nueva Devolución</Button>
             </Link>
           )}
         </div>
@@ -294,6 +401,8 @@ export default function SalesPage() {
               { id: 'delivery' as const, label: 'Guías de Despacho', icon: Truck, count: deliveryGuides.length },
               { id: 'invoices' as const, label: 'Facturación', icon: FileText, count: invoices.length },
               { id: 'customers' as const, label: 'Clientes', icon: Users, count: customers.length },
+              { id: 'quotations' as const, label: 'Cotizaciones', icon: ClipboardList, count: quotations.length },
+              { id: 'returns' as const, label: 'Devoluciones', icon: RotateCcw, count: returns.length },
               { id: 'pos' as const, label: 'POS', icon: Monitor, count: null },
             ].map(tab => (
               <button
@@ -528,6 +637,94 @@ export default function SalesPage() {
                           <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"><Edit className="w-4 h-4" /></button>
                         </Link>
                       </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Quotations Table */}
+        {activeTab === 'quotations' && (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-slate-200">
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nº Cotización</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Válido Hasta</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {quotations.filter(q => {
+                  const matchesSearch = q.number?.toLowerCase().includes(search.toLowerCase()) || q.customer?.toLowerCase().includes(search.toLowerCase());
+                  const matchesStatus = statusFilter === 'all' || q.status === statusFilter;
+                  return matchesSearch && matchesStatus;
+                }).map(q => (
+                  <tr key={q.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                    <td className="px-4 py-3 text-xs font-mono font-medium text-slate-900">{q.number}</td>
+                    <td className="px-4 py-3 text-xs text-slate-700">{q.customer}</td>
+                    <td className="px-4 py-3 text-xs text-slate-500">{q.date}</td>
+                    <td className="px-4 py-3 text-xs text-slate-500">{q.valid_until || '—'}</td>
+                    <td className="px-4 py-3 text-xs font-medium text-slate-900 text-right">${(q.total || 0).toLocaleString('es-CL')}</td>
+                    <td className="px-4 py-3">
+                      <Badge variant={q.status === 'accepted' ? 'success' : q.status === 'rejected' ? 'danger' : q.status === 'sent' ? 'info' : 'neutral'}>
+                        {q.status === 'draft' ? 'Borrador' : q.status === 'sent' ? 'Enviada' : q.status === 'accepted' ? 'Aceptada' : q.status === 'rejected' ? 'Rechazada' : q.status}
+                      </Badge>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <Link href={`/dashboard/sales/quotations/${q.id}`}>
+                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"><Eye className="w-4 h-4" /></button>
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Returns Table */}
+        {activeTab === 'returns' && (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-slate-200">
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nº Devolución</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Bodega</th>
+                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Items</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {returns.filter(r => {
+                  const matchesSearch = r.number?.toLowerCase().includes(search.toLowerCase()) || r.customer?.toLowerCase().includes(search.toLowerCase());
+                  const matchesStatus = statusFilter === 'all' || r.status === statusFilter;
+                  return matchesSearch && matchesStatus;
+                }).map(r => (
+                  <tr key={r.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                    <td className="px-4 py-3 text-xs font-mono font-medium text-slate-900">{r.number}</td>
+                    <td className="px-4 py-3 text-xs text-slate-700">{r.customer}</td>
+                    <td className="px-4 py-3 text-xs text-slate-500">{r.warehouse}</td>
+                    <td className="px-4 py-3 text-xs text-slate-700 text-center">{r.items}</td>
+                    <td className="px-4 py-3 text-xs text-slate-500">{r.date}</td>
+                    <td className="px-4 py-3">
+                      <Badge variant={r.status === 'completed' ? 'success' : r.status === 'cancelled' ? 'danger' : 'warning'}>
+                        {r.status === 'pending' ? 'Pendiente' : r.status === 'completed' ? 'Completada' : r.status === 'cancelled' ? 'Cancelada' : r.status}
+                      </Badge>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <Link href={`/dashboard/sales/returns`}>
+                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"><Eye className="w-4 h-4" /></button>
+                      </Link>
                     </td>
                   </tr>
                 ))}
