@@ -65,6 +65,8 @@ export default function NewProductPage() {
   const [layoutLoading, setLayoutLoading] = useState(false);
   const [costCenters, setCostCenters] = useState<{ id: string; name: string; code: string }[]>([]);
   const [selectedCostCenter, setSelectedCostCenter] = useState('');
+  const [taxes, setTaxes] = useState<{ id: string; name: string; rate: number; code: string }[]>([]);
+  const [selectedTaxId, setSelectedTaxId] = useState('');
 
   useEffect(() => {
     const api = getApiClient();
@@ -74,6 +76,9 @@ export default function NewProductPage() {
     }).catch(() => {});
     api.getCostCenters().then((res) => {
       setCostCenters((res.data || []).map((cc: any) => ({ id: cc.id, name: cc.name, code: cc.code })));
+    }).catch(() => {});
+    api.getTaxes().then((res) => {
+      setTaxes((res.data || []).map((t: any) => ({ id: t.id, name: t.name, rate: t.rate, code: t.code })));
     }).catch(() => {});
   }, []);
 
@@ -152,6 +157,7 @@ export default function NewProductPage() {
         barcode: barcode.trim(),
         is_active: isActive,
         cost_center_id: selectedCostCenter || undefined,
+        tax_id: selectedTaxId || undefined,
       } as any);
 
       const productId = (result as any)?.id || (result as any)?.data?.id;
@@ -249,6 +255,15 @@ export default function NewProductPage() {
                 options={[
                   { value: '', label: 'Sin asignar' },
                   ...costCenters.map(cc => ({ value: cc.id, label: `${cc.code} - ${cc.name}` })),
+                ]}
+              />
+              <Select
+                label="Impuesto"
+                value={selectedTaxId}
+                onChange={(e) => setSelectedTaxId(e.target.value)}
+                options={[
+                  { value: '', label: 'Sin impuesto' },
+                  ...taxes.map(t => ({ value: t.id, label: `${t.name} (${t.rate}%)` })),
                 ]}
               />
             </CardContent>

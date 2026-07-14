@@ -82,13 +82,16 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
   const [positions, setPositions] = useState<LayoutPosition[]>([]);
   const [selectedPosition, setSelectedPosition] = useState('');
   const [layoutLoading, setLayoutLoading] = useState(false);
+  const [taxes, setTaxes] = useState<{ id: string; name: string; rate: number; code: string }[]>([]);
+  const [selectedTaxId, setSelectedTaxId] = useState('');
 
   useEffect(() => {
     const api = getApiClient();
     Promise.all([
       api.getProduct(id),
       api.getWarehouses(),
-    ]).then(([productData, warehousesRes]) => {
+      api.getTaxes().catch(() => ({ data: [] })),
+    ]).then(([productData, warehousesRes, taxesRes]) => {
       const p = productData as unknown as ProductData;
       setSku(p.sku || '');
       setName(p.name || '');
@@ -102,9 +105,11 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
       setTrackStock(p.track_stock !== false);
       setBarcode(p.barcode || '');
       setIsActive(p.is_active !== false);
+      setSelectedTaxId((p as any).tax_id || '');
 
       const whList = (warehousesRes.data || []).map((w: { id: string; name: string }) => ({ id: w.id, name: w.name }));
       setWarehouses(whList);
+      setTaxes((taxesRes.data || []).map((t: any) => ({ id: t.id, name: t.name, rate: t.rate, code: t.code })));
       setLoading(false);
     }).catch(() => {
       setError('No se pudo cargar el producto');
@@ -185,6 +190,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
       track_stock: trackStock,
       barcode: barcode.trim(),
       is_active: isActive,
+      tax_id: selectedTaxId || undefined,
     });
 
     if (selectedPosition && selectedWarehouse) {
@@ -306,6 +312,15 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
                 />
               </div>
               <Input label="Código de Barras" value={barcode} onChange={(e) => setBarcode(e.target.value)} placeholder="Código de barras" />
+              <Select
+                label="Impuesto"
+                value={selectedTaxId}
+                onChange={(e) => setSelectedTaxId(e.target.value)}
+                options={[
+                  { value: '', label: 'Sin impuesto' },
+                  ...taxes.map(t => ({ value: t.id, label: `${t.name} (${t.rate}%)` })),
+                ]}
+              />
             </CardContent>
           </Card>
 

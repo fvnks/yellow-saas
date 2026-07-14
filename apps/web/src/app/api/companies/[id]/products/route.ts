@@ -12,8 +12,9 @@ export async function GET(request: NextRequest) {
     const category = url.searchParams.get('category');
     const warehouse = url.searchParams.get('warehouse');
     const type = url.searchParams.get('type');
+    const includeInactive = url.searchParams.get('include_inactive') === 'true';
 
-    let whereClause = 'WHERE p.company_id = $1 AND p.is_active = true';
+    let whereClause = `WHERE p.company_id = $1${includeInactive ? '' : ' AND p.is_active = true'}`;
     const params: any[] = [companyId];
     let paramIndex = 2;
 
@@ -43,10 +44,12 @@ export async function GET(request: NextRequest) {
     const dataResult = await query(
       `SELECT p.*,
         json_build_object('id', c.id, 'name', c.name) as category,
-        CASE WHEN cc.id IS NOT NULL THEN json_build_object('id', cc.id, 'name', cc.name, 'code', cc.code) ELSE NULL END as cost_center
+        CASE WHEN cc.id IS NOT NULL THEN json_build_object('id', cc.id, 'name', cc.name, 'code', cc.code) ELSE NULL END as cost_center,
+        CASE WHEN t.id IS NOT NULL THEN json_build_object('id', t.id, 'name', t.name, 'rate', t.rate, 'code', t.code) ELSE NULL END as tax
        FROM products p
        LEFT JOIN inventory_categories c ON p.category_id = c.id
        LEFT JOIN cost_centers cc ON p.cost_center_id = cc.id
+       LEFT JOIN taxes t ON p.tax_id = t.id
        ${whereClause}
        ORDER BY p.${sort} ${order === 'asc' ? 'ASC' : 'DESC'}
        LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
