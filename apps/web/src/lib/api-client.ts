@@ -753,6 +753,115 @@ async deleteAdjustmentReason(id: string) {
   async completeCustomerReturn(id: string) {
     return this.request<any>(`/customer-returns/${id}/complete`, { method: 'POST' });
   }
+
+  // Quality Checklists
+  async getQualityChecklists(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/quality-checklists', params || {});
+  }
+  async getQualityChecklist(id: string) {
+    return this.request<any>(`/quality-checklists/${id}`);
+  }
+  async createQualityChecklist(data: { code: string; name: string; description?: string; type: string; version?: string; is_active?: boolean; items?: any[] }) {
+    return this.request<any>('/quality-checklists', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateQualityChecklist(id: string, data: { name?: string; description?: string; type?: string; version?: string; is_active?: boolean; items?: any[] }) {
+    return this.request<any>(`/quality-checklists/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteQualityChecklist(id: string) {
+    return this.request<any>(`/quality-checklists/${id}`, { method: 'DELETE' });
+  }
+  async getQualityChecklistItems(checklistId: string, params?: Record<string, string>) {
+    return this.requestWithPagination<any>(`/quality-checklists/${checklistId}/items`, params || {});
+  }
+  async createQualityChecklistItem(checklistId: string, data: { sequence?: number; check_type?: string; description: string; acceptance_criteria?: string; min_value?: number; max_value?: number; uom?: string; is_critical?: boolean; aql_level?: string }) {
+    return this.request<any>(`/quality-checklists/${checklistId}/items`, { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateQualityChecklistItem(checklistId: string, itemId: string, data: { sequence?: number; check_type?: string; description?: string; acceptance_criteria?: string; min_value?: number; max_value?: number; uom?: string; is_critical?: boolean; aql_level?: string }) {
+    return this.request<any>(`/quality-checklists/${checklistId}/items/${itemId}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteQualityChecklistItem(checklistId: string, itemId: string) {
+    return this.request<any>(`/quality-checklists/${checklistId}/items/${itemId}`, { method: 'DELETE' });
+  }
+
+  // Quality Inspections
+  async getQualityInspections(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/quality-inspections', params || {});
+  }
+  async getQualityInspection(id: string) {
+    return this.request<any>(`/quality-inspections/${id}`);
+  }
+  async createQualityInspection(data: { inspection_number: string; reference_type: string; reference_id?: string; purchase_order_id?: string; supplier_id?: string; warehouse_id: string; checklist_id?: string; inspector_id?: string; sample_size?: number; notes?: string }) {
+    return this.request<any>('/quality-inspections', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateQualityInspection(id: string, data: { status?: string; inspector_id?: string; notes?: string; started_at?: string; completed_at?: string }) {
+    return this.request<any>(`/quality-inspections/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteQualityInspection(id: string) {
+    return this.request<any>(`/quality-inspections/${id}`, { method: 'DELETE' });
+  }
+  async getQualityInspectionItems(inspectionId: string) {
+    return this.request<any>(`/quality-inspections/${inspectionId}/items`);
+  }
+  async createQualityInspectionItem(inspectionId: string, data: { checklist_item_id: string; product_id?: string; result?: string; measured_value?: string; notes?: string }) {
+    return this.request<any>(`/quality-inspections/${inspectionId}/items`, { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateQualityInspectionItem(inspectionId: string, itemId: string, data: { result?: string; measured_value?: string; notes?: string }) {
+    return this.request<any>(`/quality-inspections/${inspectionId}/items/${itemId}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  // Pick Waves
+  async getPickWaves(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/pick-waves', params || {});
+  }
+  async getPickWave(id: string) {
+    return this.request<any>(`/pick-waves/${id}`);
+  }
+  async createPickWave(data: { wave_number: string; warehouse_id: string; priority?: string; assigned_to?: string; order_ids?: string[]; delivery_guide_ids?: string[]; notes?: string }) {
+    return this.request<any>('/pick-waves', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updatePickWave(id: string, data: { status?: string; priority?: string; assigned_to?: string; notes?: string }) {
+    return this.request<any>(`/pick-waves/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deletePickWave(id: string) {
+    return this.request<any>(`/pick-waves/${id}`, { method: 'DELETE' });
+  }
+  async releasePickWave(id: string) {
+    return this.request<any>(`/pick-waves/${id}/release`, { method: 'POST' });
+  }
+  async getPickWaveTasks(waveId: string, params?: Record<string, string>) {
+    return this.requestWithPagination<any>(`/pick-waves/${waveId}/tasks`, params || {});
+  }
+
+  // Pick Tasks
+  async getPickTasks(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/pick-tasks', params || {});
+  }
+  async getPickTask(id: string) {
+    return this.request<any>(`/pick-tasks/${id}`);
+  }
+  async updatePickTask(id: string, data: { quantity_picked?: number; status?: string; assigned_to?: string; started_at?: string; completed_at?: string }) {
+    return this.request<any>(`/pick-tasks/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  // Cycle Count Schedules
+  async getCycleCountSchedules(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/cycle-count-schedules', params || {});
+  }
+  async getCycleCountSchedule(id: string) {
+    return this.request<any>(`/cycle-count-schedules/${id}`);
+  }
+  async createCycleCountSchedule(data: { name: string; description?: string; frequency: string; abc_classification?: string; category_id?: string; warehouse_id: string; responsible_id?: string; next_run_date: string }) {
+    return this.request<any>('/cycle-count-schedules', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateCycleCountSchedule(id: string, data: { name?: string; description?: string; frequency?: string; abc_classification?: string; category_id?: string; warehouse_id?: string; responsible_id?: string; next_run_date?: string; is_active?: boolean }) {
+    return this.request<any>(`/cycle-count-schedules/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteCycleCountSchedule(id: string) {
+    return this.request<any>(`/cycle-count-schedules/${id}`, { method: 'DELETE' });
+  }
+  async runCycleCountSchedule(id: string) {
+    return this.request<any>(`/cycle-count-schedules/${id}/run`, { method: 'POST' });
+  }
 }
 
 // Singleton with dynamic company_id from JWT
