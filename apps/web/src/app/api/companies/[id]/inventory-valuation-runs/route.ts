@@ -1,0 +1,208 @@
+import { query } from '../../../../../lib/db';
+import {
+  getCompanyId,
+  successResponse,
+  errorResponse,
+  parseSearchParams,
+  paginatedResponse,
+} from '../../../../../lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { page, limit, offset } = parseSearchParams(request);
+
+    const countResult = await query(
+      `SELECT COUNT(*) FROM inventory_valuation_runs WHERE company_id = $1`,
+      [companyId]
+    );
+
+    const dataResult = await query(
+      `SELECT ivr.*, ivm.name as method_name
+       FROM inventory_valuation_runs ivr
+       LEFT JOIN inventory_valuation_methods ivm ON ivr.valuation_method_id = ivm.id
+       WHERE ivr.company_id = $1
+       ORDER BY ivr.created_at DESC
+       LIMIT $2 OFFSET $3`,
+      [companyId, limit, offset]
+    );
+
+    return paginatedResponse(dataResult.rows, parseInt(countResult.rows[0].count), page, limit);
+  } catch (err) {
+    console.error('Valuation runs error:', err);
+    return errorResponse('Internal server error', 500);
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+    const { valuation_method_id, period_start, period_end } = body;
+
+    if (!valuation_method_id || !period_start || !period_end) {
+      return errorResponse('valuation_method_id, period_start, and period_end are required', 400);
+    }
+
+    const methodCheck = await query(
+      `SELECT id, code FROM inventory_valuation_methods WHERE id = $1 AND company_id = $2`,
+      [valuation_method_id, companyId]
+    );
+
+    if (methodCheck.rows.length === 0) {
+      return errorResponse('Valuation method not found', 404);
+    }
+
+    const methodCode = methodCheck.rows[0].code;
+
+    const runResult = await query(
+      `INSERT INTO inventory_valuation_runs (company_id, valuation_method_id, period_start, period_end, status)
+       VALUES ($1, $2, $3, $4, 'running')
+       RETURNING *`,
+      [companyId, valuation_method_id, period_start, period_end]
+    );
+
+    const run = runResult.rows[0];
+
+    try {
+      const layers = await calculateValuationLayers(companyId, methodCode, period_start, period_end);
+      
+      await query(
+        `DELETE FROM valuation_layers WHERE company_id = $1 AND layer_date >= $2 AND layer_date <= $3`,
+        [companyId, period_start, period_end]
+      );
+
+      for (const layer of layers) {
+        await query(
+          `INSERT INTO valuation_layers (company_id, product_id, warehouse_id, batch_id, layer_date, quantity_remaining, unit_cost, reference_type, reference_id)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+          [companyId, layer.product_id, layer.warehouse_id, layer.batch_id, layer.received_at, layer.quantity_remaining, layer.unit_cost, layer.reference_type, layer.reference_id]
+        );
+      }
+
+      const totalValue = layers.reduce((sum, l) => sum + (l.quantity_remaining * l.unit_cost), 0);
+
+      await query(
+        `UPDATE inventory_valuation_runs SET total_value = $1, status = 'completed' WHERE id = $2`,
+        [totalValue, run.id]
+      );
+
+      return successResponse({ ...run, total_value: totalValue, layers_count: layers.length }, 201);
+    } catch (err) {
+      await query(
+        `UPDATE inventory_valuation_runs SET status = 'failed', notes = $1 WHERE id = $2`,
+        [err instanceof Error ? err.message : String(err), run.id]
+      );
+      throw err;
+    }
+  } catch (err) {
+    console.error('Run valuation error:', err);
+    return errorResponse('Internal server error', 500);
+  }
+}
+
+async function calculateValuationLayers(companyId: string, methodCode: string, periodStart: string, periodEnd: string) {
+  const movements = await query(
+    `SELECT sm.*, p.id as product_id, p.cost_price as default_cost
+     FROM stock_movements sm
+     JOIN products p ON sm.product_id = p.id
+     WHERE sm.company_id = $1 AND sm.created_at >= $2 AND sm.created_at <= $3
+     AND sm.type IN ('in', 'initial', 'transfer_in', 'adjustment')
+     ORDER BY sm.product_id, sm.warehouse_id, sm.created_at`,
+    [companyId, periodStart, periodEnd]
+  );
+
+  const layers: any[] = [];
+  const warehouseLayers = new Map<string, any[]>();
+
+  for (const mov of movements.rows) {
+    const key = `${mov.product_id}-${mov.warehouse_id}`;
+    if (!warehouseLayers.has(key)) warehouseLayers.set(key, []);
+
+    const whLayers = warehouseLayers.get(key)!;
+
+    if (methodCode === 'FIFO') {
+      whLayers.push({
+        product_id: mov.product_id,
+        warehouse_id: mov.warehouse_id,
+        batch_id: null,
+        received_at: mov.created_at,
+        quantity_remaining: Math.abs(mov.quantity),
+        unit_cost: mov.unit_cost || mov.default_cost || 0,
+        reference_type: mov.reference_type,
+        reference_id: mov.reference_id,
+      });
+    } else if (methodCode === 'LIFO') {
+      whLayers.unshift({
+        product_id: mov.product_id,
+        warehouse_id: mov.warehouse_id,
+        batch_id: null,
+        received_at: mov.created_at,
+        quantity_remaining: Math.abs(mov.quantity),
+        unit_cost: mov.unit_cost || mov.default_cost || 0,
+        reference_type: mov.reference_type,
+        reference_id: mov.reference_id,
+      });
+    } else if (methodCode === 'WAC') {
+      const existing = whLayers.find(l => l.unit_cost === (mov.unit_cost || mov.default_cost || 0));
+      if (existing) {
+        existing.quantity_remaining += Math.abs(mov.quantity);
+      } else {
+        whLayers.push({
+          product_id: mov.product_id,
+          warehouse_id: mov.warehouse_id,
+          batch_id: null,
+          received_at: mov.created_at,
+          quantity_remaining: Math.abs(mov.quantity),
+          unit_cost: mov.unit_cost || mov.default_cost || 0,
+          reference_type: mov.reference_type,
+          reference_id: mov.reference_id,
+        });
+      }
+    } else {
+      whLayers.push({
+        product_id: mov.product_id,
+        warehouse_id: mov.warehouse_id,
+        batch_id: null,
+        received_at: mov.created_at,
+        quantity_remaining: Math.abs(mov.quantity),
+        unit_cost: mov.default_cost || 0,
+        reference_type: mov.reference_type,
+        reference_id: mov.reference_id,
+      });
+    }
+
+    if (mov.type === 'out' || mov.type === 'transfer_out') {
+      consumeLayers(whLayers, Math.abs(mov.quantity), methodCode);
+    }
+  }
+
+  for (const [, whLayers] of warehouseLayers) {
+    for (const layer of whLayers) {
+      if (layer.quantity_remaining > 0) {
+        layers.push(layer);
+      }
+    }
+  }
+
+  return layers;
+}
+
+function consumeLayers(layers: any[], qty: number, method: string) {
+  let remaining = qty;
+  const sortedLayers = method === 'LIFO' ? [...layers].reverse() : layers;
+
+  for (const layer of sortedLayers) {
+    if (remaining <= 0) break;
+    if (layer.quantity_remaining <= 0) continue;
+
+    const consume = Math.min(remaining, layer.quantity_remaining);
+    layer.quantity_remaining -= consume;
+    remaining -= consume;
+  }
+}

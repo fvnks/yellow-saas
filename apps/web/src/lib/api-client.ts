@@ -658,9 +658,59 @@ export class ApiClient {
   async updateAdjustmentReason(id: string, data: { name?: string; description?: string; is_active?: boolean }) {
     return this.request<any>(`/adjustment-reasons/${id}`, { method: 'PUT', body: JSON.stringify(data) });
   }
-  async deleteAdjustmentReason(id: string) {
+async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/adjustment-reasons/${id}`, { method: 'DELETE' });
   }
+
+  // Product BOMs
+  async getProductBOMs(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/product-boms', params || {});
+  }
+  async getProductBOM(id: string) {
+    return this.request<any>(`/product-boms/${id}`);
+  }
+  async createProductBOM(data: { parent_product_id: string; component_product_id: string; quantity?: number; unit_of_measure?: string; scrap_percent?: number; is_optional?: boolean; sort_order?: number }) {
+    return this.request<any>('/product-boms', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateProductBOM(id: string, data: { quantity?: number; unit_of_measure?: string; scrap_percent?: number; is_optional?: boolean; sort_order?: number }) {
+    return this.request<any>(`/product-boms/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteProductBOM(id: string) {
+    return this.request<any>(`/product-boms/${id}`, { method: 'DELETE' });
+  }
+
+  // BOM Explosion (recursive)
+  async explodeBOM(productId: string, quantity: number = 1) {
+    return this.request<any>(`/product-boms/explode/${productId}?quantity=${quantity}`);
+  }
+
+  // Valuation Methods
+  async getValuationMethods(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/inventory-valuation-methods', params || {});
+  }
+  async getValuationMethod(id: string) {
+    return this.request<any>(`/inventory-valuation-methods/${id}`);
+  }
+  async createValuationMethod(data: { code: string; name: string; description?: string; is_default?: boolean }) {
+    return this.request<any>('/inventory-valuation-methods', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateValuationMethod(id: string, data: { name?: string; description?: string; is_default?: boolean; is_active?: boolean }) {
+    return this.request<any>(`/inventory-valuation-methods/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  // Valuation Runs
+  async getValuationRuns(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/inventory-valuation-runs', params || {});
+  }
+  async runValuation(data: { valuation_method_id: string; period_start: string; period_end: string }) {
+    return this.request<any>('/inventory-valuation-runs', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  // Reorder Suggestions
+  async getReorderSuggestions(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/reorder-suggestions', params || {});
+  }
+}
 
   // Product Serials
   async getProductSerials(params?: Record<string, string>) {

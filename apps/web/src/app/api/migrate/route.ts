@@ -88,6 +88,9 @@ export async function POST(request: Request) {
       `ALTER TABLE stock_levels ADD COLUMN IF NOT EXISTS min_stock DECIMAL(14,4) DEFAULT 0`,
       `ALTER TABLE stock_levels ADD COLUMN IF NOT EXISTS max_stock DECIMAL(14,4) DEFAULT 0`,
       `ALTER TABLE stock_levels ADD COLUMN IF NOT EXISTS variant_id UUID REFERENCES product_variants(id) ON DELETE SET NULL`,
+      `ALTER TABLE stock_levels ADD COLUMN IF NOT EXISTS reorder_point DECIMAL(14,4) DEFAULT 0`,
+      `ALTER TABLE stock_levels ADD COLUMN IF NOT EXISTS reorder_qty DECIMAL(14,4) DEFAULT 0`,
+      `ALTER TABLE stock_levels ADD COLUMN IF NOT EXISTS lead_time_days INTEGER DEFAULT 0`,
     ];
     for (const sql of alters) {
       await query(sql);
@@ -103,6 +106,12 @@ export async function POST(request: Request) {
       `CREATE TABLE IF NOT EXISTS product_relations (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE, related_product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE, relation_type TEXT NOT NULL CHECK (relation_type IN ('cross_sell', 'up_sell', 'substitute', 'component')), sort_order INTEGER DEFAULT 0, created_at TIMESTAMPTZ DEFAULT now(), UNIQUE (product_id, related_product_id, relation_type))`,
       `CREATE TABLE IF NOT EXISTS customer_returns (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, return_number TEXT NOT NULL, customer_id UUID REFERENCES customers(id), original_invoice_id UUID REFERENCES invoices(id), warehouse_id UUID NOT NULL REFERENCES warehouses(id), status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'completed')), reason TEXT, notes TEXT, created_by UUID REFERENCES profiles(id), created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now())`,
       `CREATE TABLE IF NOT EXISTS customer_return_items (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, return_id UUID NOT NULL REFERENCES customer_returns(id) ON DELETE CASCADE, product_id UUID NOT NULL REFERENCES products(id), quantity DECIMAL(14,4) NOT NULL, unit_price DECIMAL(14,2) NOT NULL, condition TEXT DEFAULT 'good' CHECK (condition IN ('good', 'damaged', 'defective')), restock BOOLEAN DEFAULT true, notes TEXT, created_at TIMESTAMPTZ DEFAULT now())`,
+
+      // FASE 1: Fundamentos Críticos
+      `CREATE TABLE IF NOT EXISTS product_boms (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, parent_product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE, component_product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE, quantity DECIMAL(14,4) NOT NULL DEFAULT 1, unit_of_measure TEXT DEFAULT 'UN', scrap_percent DECIMAL(5,2) DEFAULT 0, is_optional BOOLEAN DEFAULT false, sort_order INTEGER DEFAULT 0, created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now(), UNIQUE (company_id, parent_product_id, component_product_id))`,
+      `CREATE TABLE IF NOT EXISTS inventory_valuation_methods (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, code TEXT NOT NULL, name TEXT NOT NULL, description TEXT, is_default BOOLEAN DEFAULT false, is_active BOOLEAN DEFAULT true, created_at TIMESTAMPTZ DEFAULT now(), UNIQUE (company_id, code))`,
+      `CREATE TABLE IF NOT EXISTS valuation_layers (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE, warehouse_id UUID NOT NULL REFERENCES warehouses(id) ON DELETE CASCADE, layer_date TIMESTAMPTZ NOT NULL DEFAULT now(), quantity_remaining DECIMAL(14,4) NOT NULL, unit_cost DECIMAL(14,4) NOT NULL, reference_type TEXT, reference_id UUID, created_at TIMESTAMPTZ DEFAULT now())`,
+      `CREATE TABLE IF NOT EXISTS inventory_valuation_runs (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, valuation_method_id UUID REFERENCES inventory_valuation_methods(id), period_start TIMESTAMPTZ NOT NULL, period_end TIMESTAMPTZ NOT NULL, total_value DECIMAL(18,2) DEFAULT 0, status TEXT DEFAULT 'completed' CHECK (status IN ('running', 'completed', 'failed')), notes TEXT, created_by UUID REFERENCES profiles(id), created_at TIMESTAMPTZ DEFAULT now())`,
     ];
     for (const sql of newTables) {
       await query(sql);
@@ -155,6 +164,20 @@ export async function POST(request: Request) {
       );
     }
     results.push('Seeded default adjustment reasons');
+
+    const defaultValuationMethods = [
+      { code: 'FIFO', name: 'FIFO (First In, First Out)', description: 'Los primeros en entrar son los primeros en salir' },
+      { code: 'LIFO', name: 'LIFO (Last In, First Out)', description: 'Los últimos en entrar son los primeros en salir' },
+      { code: 'WAC', name: 'Promedio Ponderado (WAC)', description: 'Costo promedio ponderado de todas las unidades' },
+      { code: 'STANDARD', name: 'Costo Estándar', description: 'Costo predefinido por producto' },
+    ];
+    for (const method of defaultValuationMethods) {
+      await query(
+        `INSERT INTO inventory_valuation_methods (company_id, code, name, description, is_default) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (company_id, code) DO NOTHING`,
+        [companyId, method.code, method.name, method.description, method.code === 'FIFO']
+      );
+    }
+    results.push('Seeded default valuation methods');
 
     return NextResponse.json({ success: true, results });
   } catch (err) {

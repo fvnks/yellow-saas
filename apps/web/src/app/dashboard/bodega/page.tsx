@@ -5,13 +5,14 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
   import { 
   Package, Warehouse, ClipboardCheck, Truck, AlertTriangle, Upload, 
-  Plus, Search, Eye, Play, CheckCircle, ArrowRight, Download, MapPin, Users, Activity, Grid, Edit, Trash2, Settings
+  Plus, Search, Eye, Play, CheckCircle, ArrowRight, Download, MapPin, Users, Activity, Grid, Edit, Trash2, Settings,
+  Layers, Calculator
 } from 'lucide-react';
 import { getApiClient, getCompanyIdFromToken } from '../../../lib/api-client';
 import BarcodeScanner from '../../../components/barcode/barcode-scanner';
 import Pagination from '../../../components/ui/pagination';
 
-type Tab = 'products' | 'warehouses' | 'counts' | 'transfers' | 'alerts' | 'import';
+type Tab = 'products' | 'warehouses' | 'counts' | 'transfers' | 'alerts' | 'boms' | 'valuation' | 'reorder' | 'import';
 
 interface Product {
   id: string; name: string; sku: string; stock: number; minStock: number;
@@ -151,6 +152,9 @@ export default function BodegaPage() {
     { id: 'counts', label: 'Conteos', icon: ClipboardCheck, count: counts.length },
     { id: 'transfers', label: 'Transferencias', icon: Truck, count: transfers.length },
     { id: 'alerts', label: 'Alertas', icon: AlertTriangle, count: alerts.length },
+    { id: 'boms', label: 'BOMs/Kits', icon: Layers, count: 0 },
+    { id: 'valuation', label: 'Valoración', icon: Calculator, count: 0 },
+    { id: 'reorder', label: 'Reposición', icon: Truck, count: 0 },
     { id: 'import', label: 'Importar', icon: Upload, count: 0 },
   ];
 
@@ -562,6 +566,45 @@ export default function BodegaPage() {
                       <Upload className="w-10 h-10 text-slate-400 mx-auto mb-3" />
                       <p className="text-sm font-medium text-slate-700">Ir a importar productos</p>
                       <p className="text-xs text-slate-500 mt-1">Carga masiva con CSV</p>
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {/* BOMS/KITS TAB */}
+              {activeTab === 'boms' && (
+                <div className="p-6">
+                  <div className="max-w-4xl mx-auto">
+                    <Link href="/dashboard/inventory/boms" className="block bg-slate-50 border border-slate-200 rounded-xl p-8 text-center hover:border-indigo-400 hover:bg-indigo-50/50 transition-colors">
+                      <Layers className="w-10 h-10 text-indigo-600 mx-auto mb-3" />
+                      <p className="text-sm font-medium text-slate-700">Gestionar BOMs / Kits</p>
+                      <p className="text-xs text-slate-500 mt-1">Listas de materiales para productos compuestos</p>
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {/* VALUATION TAB */}
+              {activeTab === 'valuation' && (
+                <div className="p-6">
+                  <div className="max-w-4xl mx-auto">
+                    <Link href="/dashboard/inventory/valuation" className="block bg-slate-50 border border-slate-200 rounded-xl p-8 text-center hover:border-indigo-400 hover:bg-indigo-50/50 transition-colors">
+                      <Calculator className="w-10 h-10 text-emerald-600 mx-auto mb-3" />
+                      <p className="text-sm font-medium text-slate-700">Valoración de Inventario</p>
+                      <p className="text-xs text-slate-500 mt-1">Métodos FIFO/LIFO/WAC, capas de stock valorizado</p>
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {/* REORDER TAB */}
+              {activeTab === 'reorder' && (
+                <div className="p-6">
+                  <div className="max-w-4xl mx-auto">
+                    <Link href="/dashboard/inventory/reorder" className="block bg-slate-50 border border-slate-200 rounded-xl p-8 text-center hover:border-indigo-400 hover:bg-indigo-50/50 transition-colors">
+                      <Truck className="w-10 h-10 text-amber-600 mx-auto mb-3" />
+                      <p className="text-sm font-medium text-slate-700">Sugerencias de Reposición</p>
+                      <p className="text-xs text-slate-500 mt-1">Puntos de pedido, lead time, OC sugeridas</p>
                     </Link>
                   </div>
                 </div>
