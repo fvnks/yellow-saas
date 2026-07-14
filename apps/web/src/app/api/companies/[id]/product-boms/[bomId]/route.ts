@@ -1,0 +1,86 @@
+import { query } from '../../../../../lib/db';
+import { getCompanyId, successResponse, errorResponse } from '../../../../../lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string; bomId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const result = await query(
+      `SELECT pb.*,
+        json_build_object('id', p.id, 'name', p.name, 'sku', p.sku, 'unit_of_measure', p.unit_of_measure, 'cost_price', p.cost_price) as parent_product,
+        json_build_object('id', c.id, 'name', c.name, 'sku', c.sku, 'unit_of_measure', c.unit_of_measure, 'cost_price', c.cost_price) as component_product
+       FROM product_boms pb
+       JOIN products p ON pb.parent_product_id = p.id
+       JOIN products c ON pb.component_product_id = c.id
+       WHERE pb.id = $1 AND pb.company_id = $2`,
+      [params.bomId, companyId]
+    );
+
+    if (result.rows.length === 0) return errorResponse('BOM not found', 404);
+
+    return successResponse(result.rows[0]);
+  } catch (err) {
+    console.error('Get BOM error:', err);
+    return errorResponse('Internal server error', 500);
+  }
+}
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string; bomId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+    const { quantity, unit_of_measure, scrap_percent, is_optional, sort_order } = body;
+
+    const result = await query(
+      `UPDATE product_boms SET
+        quantity = COALESCE($1, quantity),
+        unit_of_measure = COALESCE($2, unit_of_measure),
+        scrap_percent = COALESCE($3, scrap_percent),
+        is_optional = COALESCE($4, is_optional),
+        sort_order = COALESCE($5, sort_order),
+        updated_at = NOW()
+       WHERE id = $6 AND company_id = $7
+       RETURNING *`,
+      [quantity, unit_of_measure, scrap_percent, is_optional, sort_order, params.bomId, companyId]
+    );
+
+    if (result.rows.length === 0) return errorResponse('BOM not found', 404);
+
+    return successResponse(result.rows[0]);
+  } catch (err) {
+    console.error('Update BOM error:', err);
+    return errorResponse('Internal server error', 500);
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string; bomId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const result = await query(
+      'DELETE FROM product_boms WHERE id = $1 AND company_id = $2 RETURNING id',
+      [params.bomId, companyId]
+    );
+
+    if (result.rows.length === 0) return errorResponse('BOM not found', 404);
+
+    return successResponse({ message: 'BOM deleted successfully' });
+  } catch (err) {
+    console.error('Delete BOM error:', err);
+    return errorResponse('Internal server error', 500);
+  }
+}
