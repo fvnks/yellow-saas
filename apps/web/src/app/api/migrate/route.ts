@@ -85,11 +85,29 @@ export async function POST(request: Request) {
     const alters = [
       `ALTER TABLE products ADD COLUMN IF NOT EXISTS image_url TEXT`,
       `ALTER TABLE products ADD COLUMN IF NOT EXISTS cost_center_id UUID REFERENCES cost_centers(id) ON DELETE SET NULL`,
+      `ALTER TABLE stock_levels ADD COLUMN IF NOT EXISTS min_stock DECIMAL(14,4) DEFAULT 0`,
+      `ALTER TABLE stock_levels ADD COLUMN IF NOT EXISTS max_stock DECIMAL(14,4) DEFAULT 0`,
+      `ALTER TABLE stock_levels ADD COLUMN IF NOT EXISTS variant_id UUID REFERENCES product_variants(id) ON DELETE SET NULL`,
     ];
     for (const sql of alters) {
       await query(sql);
     }
     results.push(`Applied ${alters.length} ALTER TABLE migrations`);
+
+    const newTables = [
+      `CREATE TABLE IF NOT EXISTS product_tags (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, name TEXT NOT NULL, color TEXT DEFAULT '#6366f1', created_at TIMESTAMPTZ DEFAULT now(), UNIQUE (company_id, name))`,
+      `CREATE TABLE IF NOT EXISTS product_tag_links (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE, tag_id UUID NOT NULL REFERENCES product_tags(id) ON DELETE CASCADE, UNIQUE (product_id, tag_id))`,
+      `CREATE TABLE IF NOT EXISTS product_price_history (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE, price_type TEXT NOT NULL CHECK (price_type IN ('cost', 'sale')), old_price DECIMAL(14,2), new_price DECIMAL(14,2) NOT NULL, changed_by UUID REFERENCES profiles(id), created_at TIMESTAMPTZ DEFAULT now())`,
+      `CREATE TABLE IF NOT EXISTS adjustment_reasons (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, name TEXT NOT NULL, description TEXT, is_active BOOLEAN DEFAULT true, created_at TIMESTAMPTZ DEFAULT now(), UNIQUE (company_id, name))`,
+      `CREATE TABLE IF NOT EXISTS product_serials (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE, warehouse_id UUID NOT NULL REFERENCES warehouses(id), serial_number TEXT NOT NULL, status TEXT DEFAULT 'in_stock' CHECK (status IN ('in_stock', 'sold', 'reserved', 'damaged', 'returned')), sale_id UUID, notes TEXT, created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now(), UNIQUE (company_id, product_id, serial_number))`,
+      `CREATE TABLE IF NOT EXISTS product_relations (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE, related_product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE, relation_type TEXT NOT NULL CHECK (relation_type IN ('cross_sell', 'up_sell', 'substitute', 'component')), sort_order INTEGER DEFAULT 0, created_at TIMESTAMPTZ DEFAULT now(), UNIQUE (product_id, related_product_id, relation_type))`,
+      `CREATE TABLE IF NOT EXISTS customer_returns (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, return_number TEXT NOT NULL, customer_id UUID REFERENCES customers(id), original_invoice_id UUID REFERENCES invoices(id), warehouse_id UUID NOT NULL REFERENCES warehouses(id), status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'completed')), reason TEXT, notes TEXT, created_by UUID REFERENCES profiles(id), created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now())`,
+      `CREATE TABLE IF NOT EXISTS customer_return_items (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, return_id UUID NOT NULL REFERENCES customer_returns(id) ON DELETE CASCADE, product_id UUID NOT NULL REFERENCES products(id), quantity DECIMAL(14,4) NOT NULL, unit_price DECIMAL(14,2) NOT NULL, condition TEXT DEFAULT 'good' CHECK (condition IN ('good', 'damaged', 'defective')), restock BOOLEAN DEFAULT true, notes TEXT, created_at TIMESTAMPTZ DEFAULT now())`,
+    ];
+    for (const sql of newTables) {
+      await query(sql);
+    }
+    results.push(`Created ${newTables.length} new tables`);
 
     const permModules = ['dashboard', 'inventory', 'warehouses', 'sales', 'purchases', 'customers', 'suppliers', 'crm', 'payroll', 'accounting', 'projects', 'pos', 'billing', 'settings', 'audit', 'reports'];
     const permActions = ['create', 'read', 'update', 'delete'];
@@ -128,6 +146,15 @@ export async function POST(request: Request) {
     const roleId = roleResult.rows[0].id;
     await query(`INSERT INTO role_permissions (role_id, permission_id) SELECT $1, id FROM permissions ON CONFLICT DO NOTHING`, [roleId]);
     results.push('Created Admin role with all permissions');
+
+    const defaultReasons = ['Daño físico', 'Robo/Hurto', 'Merma natural', 'Vencimiento', 'Error de ingreso', 'Devolución cliente', 'Ajuste por inventario', 'Muestra/degustación', 'Donación', 'Otro'];
+    for (const reason of defaultReasons) {
+      await query(
+        `INSERT INTO adjustment_reasons (company_id, name) VALUES ($1, $2) ON CONFLICT (company_id, name) DO NOTHING`,
+        [companyId, reason]
+      );
+    }
+    results.push('Seeded default adjustment reasons');
 
     return NextResponse.json({ success: true, results });
   } catch (err) {

@@ -248,11 +248,21 @@ export interface BarcodeLabelData {
   barcode?: string;
   price?: number;
   unit_of_measure?: string;
+  image_url?: string;
 }
 
-export function generateBarcodeLabelsPDF(labels: BarcodeLabelData[]) {
-  const labelWidth = 62;
-  const labelHeight = 40;
+export type LabelTemplate = 'small' | 'medium' | 'large';
+
+const LABEL_TEMPLATES = {
+  small: { width: 45, height: 30, fontSize: 6, barcodeHeight: 14, showImage: false },
+  medium: { width: 62, height: 40, fontSize: 8, barcodeHeight: 20, showImage: false },
+  large: { width: 90, height: 55, fontSize: 9, barcodeHeight: 22, showImage: true },
+};
+
+export function generateBarcodeLabelsPDF(labels: BarcodeLabelData[], template: LabelTemplate = 'medium') {
+  const t = LABEL_TEMPLATES[template];
+  const labelWidth = t.width;
+  const labelHeight = t.height;
   const margin = 10;
   const spacing = 4;
 
@@ -273,38 +283,66 @@ export function generateBarcodeLabelsPDF(labels: BarcodeLabelData[]) {
     doc.setDrawColor(200, 200, 200);
     doc.roundedRect(x, y, labelWidth, labelHeight, 2, 2);
 
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8);
-    const nameTruncated = label.name.length > 20 ? label.name.substring(0, 18) + '...' : label.name;
-    doc.text(nameTruncated, x + 2, y + 6);
+    let contentY = y + 2;
+    const maxNameLen = t.showImage ? 15 : 20;
 
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(6);
-    doc.text(`SKU: ${label.sku}`, x + 2, y + 11);
+    if (t.showImage && label.image_url) {
+      try {
+        doc.addImage(label.image_url, 'JPEG', x + 2, contentY, 12, 12);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(t.fontSize);
+        const nameTruncated = label.name.length > maxNameLen ? label.name.substring(0, maxNameLen - 2) + '...' : label.name;
+        doc.text(nameTruncated, x + 16, contentY + 4);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(t.fontSize - 2);
+        doc.text(`SKU: ${label.sku}`, x + 16, contentY + 9);
+        contentY += 14;
+      } catch {
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(t.fontSize);
+        const nameTruncated = label.name.length > maxNameLen ? label.name.substring(0, maxNameLen - 2) + '...' : label.name;
+        doc.text(nameTruncated, x + 2, contentY + 4);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(t.fontSize - 2);
+        doc.text(`SKU: ${label.sku}`, x + 2, contentY + 9);
+        contentY += 14;
+      }
+    } else {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(t.fontSize);
+      const nameTruncated = label.name.length > maxNameLen ? label.name.substring(0, maxNameLen - 2) + '...' : label.name;
+      doc.text(nameTruncated, x + 2, contentY + 5);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(t.fontSize - 2);
+      doc.text(`SKU: ${label.sku}`, x + 2, contentY + 10);
+      contentY += 13;
+    }
 
     if (label.barcode) {
       try {
         const canvas = document.createElement('canvas');
         JsBarcode(canvas, label.barcode, {
           format: 'CODE128',
-          width: 1.2,
-          height: 20,
+          width: 1,
+          height: t.barcodeHeight,
           displayValue: true,
-          fontSize: 7,
+          fontSize: t.fontSize - 1,
           margin: 0,
           background: 'transparent',
         });
         const imgData = canvas.toDataURL('image/png');
-        doc.addImage(imgData, 'PNG', x + 2, y + 13, labelWidth - 4, 16);
+        const barcodeWidth = labelWidth - 4;
+        const barcodeHeight = labelHeight - contentY + y - (label.price ? 6 : 2);
+        doc.addImage(imgData, 'PNG', x + 2, contentY, barcodeWidth, Math.min(barcodeHeight, 16));
       } catch {
-        doc.setFontSize(7);
-        doc.text(label.barcode, x + 2, y + 20);
+        doc.setFontSize(t.fontSize - 1);
+        doc.text(label.barcode, x + 2, contentY + 5);
       }
     }
 
     if (label.price) {
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(8);
+      doc.setFontSize(t.fontSize);
       doc.text(`$${label.price.toLocaleString('es-CL')}`, x + 2, y + labelHeight - 3);
     }
 

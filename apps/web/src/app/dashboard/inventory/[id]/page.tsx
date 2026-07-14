@@ -184,7 +184,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             barcode: product.barcode || product.sku,
             price: product.sale_price,
             unit_of_measure: product.unit_of_measure,
-          }])}
+            image_url: product.image_url,
+          }], 'large')}
           className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors w-full sm:w-auto justify-center"
         >
           <Printer className="w-4 h-4" /> Imprimir Etiqueta

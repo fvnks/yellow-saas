@@ -111,7 +111,8 @@ export default function InventoryPage() {
               sku: p.sku,
               barcode: p.sku,
               price: p.price,
-            })));
+              image_url: p.imageUrl || undefined,
+            })), 'medium');
           }}>
             <Printer className="w-4 h-4 mr-2" />
             Imprimir Etiquetas

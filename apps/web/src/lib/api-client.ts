@@ -628,6 +628,81 @@ export class ApiClient {
     const res = await fetch('/api/upload', { method: 'POST', body: formData });
     return res.json();
   }
+
+  // Product Tags
+  async getProductTags(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/product-tags', params || {});
+  }
+  async createProductTag(data: { name: string; color?: string }) {
+    return this.request<any>('/product-tags', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateProductTag(id: string, data: { name?: string; color?: string }) {
+    return this.request<any>(`/product-tags/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteProductTag(id: string) {
+    return this.request<any>(`/product-tags/${id}`, { method: 'DELETE' });
+  }
+
+  // Product Price History
+  async getProductPriceHistory(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/product-price-history', params || {});
+  }
+
+  // Adjustment Reasons
+  async getAdjustmentReasons(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/adjustment-reasons', params || {});
+  }
+  async createAdjustmentReason(data: { name: string; description?: string }) {
+    return this.request<any>('/adjustment-reasons', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateAdjustmentReason(id: string, data: { name?: string; description?: string; is_active?: boolean }) {
+    return this.request<any>(`/adjustment-reasons/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteAdjustmentReason(id: string) {
+    return this.request<any>(`/adjustment-reasons/${id}`, { method: 'DELETE' });
+  }
+
+  // Product Serials
+  async getProductSerials(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/product-serials', params || {});
+  }
+  async createProductSerial(data: { product_id: string; warehouse_id: string; serial_number: string; notes?: string }) {
+    return this.request<any>('/product-serials', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateProductSerial(id: string, data: { status?: string; notes?: string }) {
+    return this.request<any>(`/product-serials/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteProductSerial(id: string) {
+    return this.request<any>(`/product-serials/${id}`, { method: 'DELETE' });
+  }
+
+  // Product Relations
+  async getProductRelations(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/product-relations', params || {});
+  }
+  async createProductRelation(data: { product_id: string; related_product_id: string; relation_type: string }) {
+    return this.request<any>('/product-relations', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async deleteProductRelation(id: string) {
+    return this.request<any>(`/product-relations/${id}`, { method: 'DELETE' });
+  }
+
+  // Customer Returns
+  async getCustomerReturns(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/customer-returns', params || {});
+  }
+  async getCustomerReturn(id: string) {
+    return this.request<any>(`/customer-returns/${id}`);
+  }
+  async createCustomerReturn(data: { customer_id?: string; original_invoice_id?: string; warehouse_id: string; reason?: string; notes?: string; items: { product_id: string; quantity: number; unit_price: number; condition?: string; restock?: boolean; notes?: string }[] }) {
+    return this.request<any>('/customer-returns', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateCustomerReturn(id: string, data: { status?: string; notes?: string }) {
+    return this.request<any>(`/customer-returns/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async completeCustomerReturn(id: string) {
+    return this.request<any>(`/customer-returns/${id}/complete`, { method: 'POST' });
+  }
 }
 
 // Singleton with dynamic company_id from JWT

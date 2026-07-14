@@ -139,6 +139,25 @@ export async function POST(request: NextRequest) {
 
     if (finalQuantity < 0) {
       checkAndCreateLowStockNotification(companyId, product_id, warehouse_id);
+
+      const absQty = Math.abs(finalQuantity);
+      const { rows: batches } = await query(
+        `SELECT id, batch_number, quantity FROM product_batches
+         WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3 AND status = 'active'
+         AND (expiry_date IS NULL OR expiry_date >= CURRENT_DATE)
+         ORDER BY COALESCE(manufacturing_date, created_at) ASC`,
+        [companyId, product_id, warehouse_id]
+      );
+      let remaining = absQty;
+      for (const batch of batches) {
+        if (remaining <= 0) break;
+        const deduct = Math.min(remaining, batch.quantity);
+        await query(
+          `UPDATE product_batches SET quantity = quantity - $1, updated_at = NOW(), status = CASE WHEN quantity - $1 <= 0 THEN 'consumed' ELSE status END WHERE id = $2`,
+          [deduct, batch.id]
+        );
+        remaining -= deduct;
+      }
     }
 
     return successResponse(movement, 201);

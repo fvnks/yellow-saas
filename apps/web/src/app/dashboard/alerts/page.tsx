@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent, Badge, Button, Select } from '@yellow-erp/ui';
-import { ArrowLeft, AlertTriangle, Package, Bell, BellOff, CheckCircle } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, Package, Bell, BellOff, CheckCircle, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '../../../lib/api-client';
 
@@ -22,6 +22,7 @@ interface LowStockItem {
 export default function AlertsPage() {
   const [lowStockItems, setLowStockItems] = useState<LowStockItem[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
+  const [expiredBatches, setExpiredBatches] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
 
@@ -30,7 +31,8 @@ export default function AlertsPage() {
     Promise.all([
       api.getProducts({ limit: '500' }),
       api.getNotifications({ limit: '50' }),
-    ]).then(([prodRes, notifRes]: any[]) => {
+      api.getProductBatches({ status: 'active', limit: '500' }),
+    ]).then(([prodRes, notifRes, batchRes]: any[]) => {
       const products = prodRes.data || [];
       const items: LowStockItem[] = [];
       for (const p of products) {
@@ -88,6 +90,15 @@ export default function AlertsPage() {
       }
       setLowStockItems(items);
       setNotifications((notifRes.data || []).slice(0, 20));
+
+      const batches = batchRes.data || [];
+      const now = new Date();
+      const expired = batches.filter((b: any) => {
+        if (!b.expiry_date) return false;
+        return new Date(b.expiry_date) < now;
+      });
+      setExpiredBatches(expired);
+
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);
@@ -144,6 +155,17 @@ export default function AlertsPage() {
             </div>
             <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
               <Bell className="w-6 h-6 text-indigo-600" />
+            </div>
+          </div>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Lotes Vencidos</p>
+              <p className="text-2xl font-bold text-rose-600 mt-1">{expiredBatches.length}</p>
+            </div>
+            <div className="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center">
+              <Clock className="w-6 h-6 text-rose-600" />
             </div>
           </div>
         </div>
@@ -219,6 +241,43 @@ export default function AlertsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {expiredBatches.length > 0 && (
+        <Card>
+          <CardContent>
+            <div className="flex items-center gap-2 mb-4">
+              <Clock className="w-5 h-5 text-rose-600" />
+              <h3 className="text-sm font-semibold text-slate-900">Lotes Vencidos ({expiredBatches.length})</h3>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-slate-200">
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Lote</th>
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Bodega</th>
+                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cantidad</th>
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Vencimiento</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {expiredBatches.map((b) => (
+                    <tr key={b.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                      <td className="px-4 py-3 text-xs font-medium text-slate-900">{b.product?.name || '—'}</td>
+                      <td className="px-4 py-3 text-xs font-mono text-slate-700">{b.batch_number}</td>
+                      <td className="px-4 py-3 text-xs text-slate-700">{b.warehouse?.name || '—'}</td>
+                      <td className="px-4 py-3 text-center text-xs font-bold text-rose-600">{b.quantity}</td>
+                      <td className="px-4 py-3 text-xs text-rose-600 font-medium">
+                        {new Date(b.expiry_date).toLocaleDateString('es-CL')}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
