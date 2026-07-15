@@ -3,11 +3,11 @@ import { getCompanyId, successResponse, errorResponse, parseSearchParams, pagina
 import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
+  const { page, limit, search, offset } = parseSearchParams(request);
   try {
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
-    const { page, limit, search, offset } = parseSearchParams(request);
     const url = new URL(request.url);
     const customerId = url.searchParams.get('customer_id');
     const status = url.searchParams.get('status');
@@ -63,7 +63,10 @@ export async function GET(request: NextRequest) {
     );
 
     return paginatedResponse(dataResult.rows, parseInt(countResult.rows[0].count), page, limit);
-  } catch {
+  } catch (err: any) {
+    if (err?.code === '42P01') {
+      return paginatedResponse([], 0, page, limit);
+    }
     return errorResponse('Internal server error', 500);
   }
 }
@@ -120,7 +123,10 @@ export async function POST(request: NextRequest) {
       await query('ROLLBACK');
       throw err;
     }
-  } catch {
+  } catch (err: any) {
+    if (err?.code === '42P01') {
+      return errorResponse('La tabla de devoluciones no existe. Ejecute la migración.', 500);
+    }
     return errorResponse('Internal server error', 500);
   }
 }
