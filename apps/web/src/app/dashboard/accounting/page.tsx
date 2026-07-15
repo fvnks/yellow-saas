@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
@@ -86,7 +86,7 @@ export default function AccountingPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Contabilidad</h1>
-          <p className="text-sm text-slate-500 mt-1">Libro mayor, asientos contables y configuraci�n fiscal</p>
+          <p className="text-sm text-slate-500 mt-1">Libro mayor, asientos contables y configuración fiscal</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm">
@@ -201,7 +201,7 @@ export default function AccountingPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>C�digo</TableHead>
+                <TableHead>Código</TableHead>
                 <TableHead>Nombre</TableHead>
                 <TableHead>Tipo</TableHead>
                 <TableHead className="text-right">Saldo Actual</TableHead>
@@ -261,7 +261,7 @@ export default function AccountingPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>C�digo</TableHead>
+                <TableHead>Código</TableHead>
                 <TableHead>Nombre</TableHead>
                 <TableHead>Tipo</TableHead>
                 <TableHead className="text-center">Tasa</TableHead>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
@@ -99,7 +99,7 @@ export default function CustomersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Clientes</h1>
-          <p className="text-sm text-slate-500 mt-1">Gesti�n de clientes y contacto comercial</p>
+          <p className="text-sm text-slate-500 mt-1">Gestión de clientes y contacto comercial</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm" onClick={handleExport}>
@@ -160,7 +160,7 @@ export default function CustomersPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Cr�dito Pendiente</p>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Crédito Pendiente</p>
                 <p className="text-2xl font-bold text-slate-900 mt-1">${(customers.filter(c => c.currentBalance > 0).reduce((sum, c) => sum + c.currentBalance, 0) || 0).toLocaleString('es-CL')}</p>
               </div>
               <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center">
@@ -179,7 +179,7 @@ export default function CustomersPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
                 type="search"
-                placeholder="Buscar por nombre, RUT, raz�n social..."
+                placeholder="Buscar por nombre, RUT, razón social..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
@@ -225,7 +225,7 @@ export default function CustomersPage() {
                 <TableHead>Contacto</TableHead>
                 <TableHead>Ciudad</TableHead>
                 <TableHead className="text-center">Plazo</TableHead>
-                <TableHead className="text-center">L�mite Cr�dito</TableHead>
+                <TableHead className="text-center">L�mite Crédito</TableHead>
                 <TableHead className="text-right">Saldo Actual</TableHead>
                 <TableHead>IVA</TableHead>
                 <TableHead>Estado</TableHead>
