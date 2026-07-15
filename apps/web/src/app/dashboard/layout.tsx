@@ -206,7 +206,12 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
                       {module.children
                         .filter(child => !child.permission || hasAnyPermission(child.permission))
                         .map((child) => {
-                          const isChildActive = pathname === child.href || pathname.startsWith(child.href + '/');
+                          const hasExactMatch = module.children?.some(
+                            c => pathname === c.href
+                          );
+                          const isChildActive = hasExactMatch
+                            ? pathname === child.href
+                            : pathname === child.href || pathname.startsWith(child.href + '/');
                           const ChildIcon = child.icon;
                           return (
                             <Link
