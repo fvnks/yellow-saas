@@ -193,7 +193,7 @@ export class ApiClient {
 
   // Invoices
   async getInvoices(params?: Record<string, string>) {
-    return this.requestWithPagination<{ id: string; invoice_number: string; order_id: string; status: string; total: number; created_at: string }>('/invoices', params || {});
+    return this.requestWithPagination<{ id: string; invoice_number: string; order_id: string; status: string; total_amount: number; created_at: string }>('/invoices', params || {});
   }
 
   async getInvoice(id: string) {
@@ -214,14 +214,14 @@ export class ApiClient {
 
   // Purchase Orders
   async getPurchaseOrders(params?: Record<string, string>) {
-    return this.requestWithPagination<{ id: string; order_number: string; supplier_id: string; status: string; total: number; created_at: string }>('/purchase-orders', params || {});
+    return this.requestWithPagination<{ id: string; number: string; supplier_id: string; status: string; total_amount: number; created_at: string }>('/purchase-orders', params || {});
   }
 
   async getPurchaseOrder(id: string) {
-    return this.request<{ id: string; order_number: string; supplier_id: string; status: string; total: number; items: any[] }>(`/purchase-orders/${id}`);
+    return this.request<{ id: string; number: string; supplier_id: string; status: string; total_amount: number; items: any[] }>(`/purchase-orders/${id}`);
   }
 
-  async createPurchaseOrder(data: { order_number?: string; supplier_id: string; warehouse_id?: string; order_date?: string; expected_date?: string; payment_terms?: number; subtotal?: number; tax_amount?: number; total?: number; notes?: string; items: { product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }) {
+  async createPurchaseOrder(data: { number?: string; supplier_id: string; warehouse_id?: string; order_date?: string; expected_date?: string; payment_terms?: number; subtotal?: number; tax_amount?: number; total_amount?: number; notes?: string; items: { product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }) {
     return this.request<{ id: string }>('/purchase-orders', { method: 'POST', body: JSON.stringify(data) });
   }
 

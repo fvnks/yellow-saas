@@ -137,12 +137,12 @@ export default function SalesPage() {
         transport: g.transport,
         status: g.status,
       }));
-      const invoicesData = (invoicesRes.data || []).map((inv) => ({
+      const invoicesData = (invoicesRes.data || []).map((inv: any) => ({
         id: inv.id,
         number: inv.invoice_number,
         orderId: inv.order_id,
         date: inv.created_at?.split('T')[0] || '',
-        total: inv.total,
+        total: inv.total_amount || inv.total || 0,
         status: inv.status,
         paid: 0,
       }));
@@ -315,12 +315,12 @@ const handlePayment = async () => {
       transport: g.transport,
       status: g.status,
     })));
-    setInvoices((invoicesRes.data || []).map((inv) => ({
+    setInvoices((invoicesRes.data || []).map((inv: any) => ({
       id: inv.id,
       number: inv.invoice_number,
       orderId: inv.order_id,
       date: inv.created_at?.split('T')[0] || '',
-      total: inv.total,
+      total: inv.total_amount || inv.total || 0,
       status: inv.status,
       paid: 0,
     })));

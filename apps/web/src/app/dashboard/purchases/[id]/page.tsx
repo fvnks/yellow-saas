@@ -19,9 +19,9 @@ interface OrderItem {
 
 interface OrderDetail {
   id: string;
-  order_number: string;
+  number: string;
   status: string;
-  total: number;
+  total_amount: number;
   expected_date: string;
   payment_terms: number;
   notes: string;
@@ -68,7 +68,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
     const tax = Math.round(subtotal * 0.19);
     const doc = await generateOrdenCompraPDF({
       id: order.id,
-      number: order.order_number,
+      number: order.number,
       type: 'orden_compra',
       date: order.created_at?.split('T')[0] || '',
       payment_terms: order.payment_terms,
@@ -90,10 +90,10 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
       })),
       subtotal,
       tax_amount: tax,
-      total: order.total || subtotal + tax,
+      total: order.total_amount || subtotal + tax,
       notes: order.notes,
     });
-    doc.save(`${order.order_number}.pdf`);
+    doc.save(`${order.number}.pdf`);
   };
 
   if (loading) {
@@ -154,7 +154,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
         <div className="flex-1">
           <div className="flex items-center gap-3">
             <h1 className="text-xl font-bold text-slate-900">Detalle de Orden de Compra</h1>
-            <span className="text-sm font-mono text-slate-500">{order.order_number}</span>
+            <span className="text-sm font-mono text-slate-500">{order.number}</span>
           </div>
           <div className="flex items-center gap-2 mt-1">
             <Badge variant={status.variant}>{status.label}</Badge>
@@ -315,7 +315,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
                 <hr className="border-slate-200" />
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold text-slate-900">Total</span>
-                  <span className="text-xl font-bold text-slate-900">${order.total?.toLocaleString('es-CL') || (subtotal + tax).toLocaleString('es-CL')}</span>
+                  <span className="text-xl font-bold text-slate-900">${order.total_amount?.toLocaleString('es-CL') || (subtotal + tax).toLocaleString('es-CL')}</span>
                 </div>
               </div>
 

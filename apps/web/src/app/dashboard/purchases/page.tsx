@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
@@ -47,12 +47,13 @@ export default function PurchasesPage() {
       api.getSuppliers().catch(() => ({ data: [] })),
       api.getCustomers().catch(() => ({ data: [] })),
     ]).then(([ordersRes, quotationsRes, suppliersRes, customersRes]) => {
-      const ordersMapped = (ordersRes.data || []).map((o) => ({
+      const ordersMapped = (ordersRes.data || []).map((o: any) => ({
         id: o.id,
-        number: o.order_number,
-        supplier: o.supplier_id,
+        number: o.number,
+        supplier: o.supplier?.name || o.supplier_id || '',
+        supplierId: o.supplier_id,
         date: o.created_at?.split('T')[0] || '',
-        total: o.total,
+        total: o.total_amount || o.total || 0,
         status: o.status,
         items: 0,
         deliveryDate: '',
@@ -100,7 +101,7 @@ export default function PurchasesPage() {
   const filteredOrders = purchaseOrders.filter(o => {
     const matchesSearch = o.number.toLowerCase().includes(search.toLowerCase()) || o.supplier.toLowerCase().includes(search.toLowerCase());
     const matchesStatus = statusFilter === 'all' || o.status === statusFilter;
-    const matchesSupplier = supplierFilter === 'all' || o.supplier === supplierFilter;
+    const matchesSupplier = supplierFilter === 'all' || o.supplierId === supplierFilter;
     return matchesSearch && matchesStatus && matchesSupplier;
   });
 
@@ -115,6 +116,42 @@ export default function PurchasesPage() {
       c.tax_id.toLowerCase().includes(search.toLowerCase());
     return matchesSearch;
   });
+
+  const handleDeleteOrder = async (id: string) => {
+    if (!confirm('¿Estás seguro de eliminar esta orden de compra?')) return;
+    try {
+      const api = getApiClient();
+      await api.deletePurchaseOrder(id);
+      setPurchaseOrders(prev => prev.filter(o => o.id !== id));
+    } catch { alert('Error al eliminar la orden'); }
+  };
+
+  const handleDeleteQuotation = async (id: string) => {
+    if (!confirm('¿Estás seguro de eliminar esta cotización?')) return;
+    try {
+      const api = getApiClient();
+      await api.deleteQuotation(id);
+      setQuotations(prev => prev.filter(q => q.id !== id));
+    } catch { alert('Error al eliminar la cotización'); }
+  };
+
+  const handleDeleteSupplier = async (id: string) => {
+    if (!confirm('¿Estás seguro de eliminar este proveedor?')) return;
+    try {
+      const api = getApiClient();
+      await api.deleteSupplier(id);
+      setSuppliers(prev => prev.filter(s => s.id !== id));
+    } catch { alert('Error al eliminar el proveedor'); }
+  };
+
+  const handleDeleteCustomer = async (id: string) => {
+    if (!confirm('¿Estás seguro de eliminar este cliente?')) return;
+    try {
+      const api = getApiClient();
+      await api.deleteCustomer(id);
+      setCustomers(prev => prev.filter(c => c.id !== id));
+    } catch { alert('Error al eliminar el cliente'); }
+  };
 
   const getOrderStatusConfig = (status: string) => {
     switch (status) {
@@ -154,7 +191,7 @@ export default function PurchasesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Compras</h1>
-          <p className="text-sm text-slate-500 mt-1">Gesti�n de compras, cotizaciones y proveedores</p>
+          <p className="text-sm text-slate-500 mt-1">Gestión de compras, cotizaciones y proveedores</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm">
@@ -173,7 +210,7 @@ export default function PurchasesPage() {
             <Link href="/dashboard/purchases/quotations/new">
               <Button>
                 <Plus className="w-4 h-4 mr-2" />
-                Nueva Cotizaci�n
+                Nueva Cotización
               </Button>
             </Link>
           )}
@@ -202,7 +239,7 @@ export default function PurchasesPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">�rdenes Pendientes</p>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Órdenes Pendientes</p>
                 <p className="text-2xl font-bold text-slate-900 mt-1">{purchaseOrders.filter(o => o.status === 'pending').length}</p>
               </div>
               <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
@@ -296,7 +333,7 @@ export default function PurchasesPage() {
               <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
                 <FileText className="w-5 h-5 text-emerald-600" />
               </div>
-              <span className="text-sm font-medium text-slate-700 text-center">Nueva Cotizaci�n</span>
+              <span className="text-sm font-medium text-slate-700 text-center">Nueva Cotización</span>
             </div>
           </div>
         </Link>
@@ -327,7 +364,7 @@ export default function PurchasesPage() {
         <div className="border-b border-slate-200">
           <div className="flex">
             {[
-              { id: 'orders' as const, label: '�rdenes de Compra', icon: ShoppingCart, count: purchaseOrders.length },
+              { id: 'orders' as const, label: 'Órdenes de Compra', icon: ShoppingCart, count: purchaseOrders.length },
               { id: 'quotations' as const, label: 'Cotizaciones', icon: FileText, count: quotations.length },
               { id: 'suppliers' as const, label: 'Proveedores', icon: Building2, count: suppliers.length },
               { id: 'customers' as const, label: 'Clientes', icon: Users, count: customers.length },
@@ -356,7 +393,7 @@ export default function PurchasesPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
                 type="search"
-                placeholder={activeTab === 'orders' ? 'Buscar por N� orden, proveedor...' : activeTab === 'quotations' ? 'Buscar por N� cotizaci�n, proveedor...' : 'Buscar por nombre, proveedor...'}
+                placeholder={activeTab === 'orders' ? 'Buscar por N° orden, proveedor...' : activeTab === 'quotations' ? 'Buscar por N° Cotización, proveedor...' : 'Buscar por nombre, proveedor...'}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
@@ -384,7 +421,7 @@ export default function PurchasesPage() {
                   onChange={(e) => setSupplierFilter(e.target.value)}
                   options={[
                     { value: 'all', label: 'Todos' },
-                    ...suppliers.map(s => ({ value: s.name, label: s.name })),
+                    ...suppliers.map(s => ({ value: s.id, label: s.name })),
                   ]}
                   className="w-full sm:w-48"
                 />
@@ -417,11 +454,11 @@ export default function PurchasesPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>N� Orden</TableHead>
+                    <TableHead>N° orden</TableHead>
                     <TableHead>Proveedor</TableHead>
                     <TableHead>Fecha</TableHead>
                     <TableHead>Entrega</TableHead>
-                    <TableHead>Almac�n</TableHead>
+                    <TableHead>Almacén</TableHead>
                     <TableHead className="text-center">Items</TableHead>
                     <TableHead className="text-right">Total</TableHead>
                     <TableHead>Estado</TableHead>
@@ -472,7 +509,7 @@ export default function PurchasesPage() {
                                 <Eye className="w-4 h-4" />
                               </button>
                             </Link>
-                            <button className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
+                            <button onClick={() => handleDeleteOrder(order.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
@@ -488,7 +525,7 @@ export default function PurchasesPage() {
 
            {/* Pagination */}
           <div className="flex items-center justify-between text-xs text-slate-500">
-            <p>Mostrando 1 a {filteredOrders.length} de {purchaseOrders.length} �rdenes</p>
+            <p>Mostrando 1 a {filteredOrders.length} de {purchaseOrders.length} Órdenes</p>
             <div className="flex items-center gap-2">
               <Button variant="secondary" size="sm" disabled>Anterior</Button>
               <Button variant="secondary" size="sm" disabled>Siguiente</Button>
@@ -506,9 +543,9 @@ export default function PurchasesPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>N� Cotizaci�n</TableHead>
+                    <TableHead>N° Cotización</TableHead>
                     <TableHead>Proveedor</TableHead>
-                    <TableHead>Fecha Emisi�n</TableHead>
+                    <TableHead>Fecha Emisión</TableHead>
                     <TableHead>Fecha Vencimiento</TableHead>
                     <TableHead className="text-center">Items</TableHead>
                     <TableHead className="text-right">Total</TableHead>
@@ -547,7 +584,7 @@ export default function PurchasesPage() {
                                 <Edit className="w-4 h-4" />
                               </button>
                             </Link>
-                            <button className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
+                            <button onClick={() => handleDeleteQuotation(quote.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
@@ -568,7 +605,7 @@ export default function PurchasesPage() {
         <div role="tabpanel" aria-labelledby="suppliers-tab">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Cat�logo de Proveedores</CardTitle>
+              <CardTitle>Catálogo de Proveedores</CardTitle>
               <Link href="/dashboard/purchases/suppliers/new">
                 <Button>
                   <Plus className="w-4 h-4 mr-2" />
@@ -582,10 +619,10 @@ export default function PurchasesPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Proveedor</TableHead>
-                    <TableHead>C�digo</TableHead>
+                    <TableHead>Código</TableHead>
                     <TableHead>Contacto</TableHead>
-                    <TableHead>Correo Electr�nico</TableHead>
-                    <TableHead>Tel�fono</TableHead>
+                    <TableHead>Correo Electrónico</TableHead>
+                    <TableHead>Teléfono</TableHead>
                     <TableHead>Estado</TableHead>
                     <TableHead className="w-12">Acciones</TableHead>
                   </TableRow>
@@ -626,7 +663,7 @@ export default function PurchasesPage() {
                                 <Eye className="w-4 h-4" />
                               </button>
                             </Link>
-                            <button className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
+                            <button onClick={() => handleDeleteSupplier(supplier.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
@@ -647,7 +684,7 @@ export default function PurchasesPage() {
         <div role="tabpanel" aria-labelledby="customers-tab">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Cat�logo de Clientes</CardTitle>
+              <CardTitle>Catálogo de Clientes</CardTitle>
               <Link href="/dashboard/customers/new">
                 <Button>
                   <Plus className="w-4 h-4 mr-2" />
@@ -662,9 +699,9 @@ export default function PurchasesPage() {
                   <TableRow>
                     <TableHead>Cliente</TableHead>
                     <TableHead>RUT</TableHead>
-                    <TableHead>Correo Electr�nico</TableHead>
-                    <TableHead>Tel�fono</TableHead>
-                    <TableHead>Direcci�n</TableHead>
+                    <TableHead>Correo Electrónico</TableHead>
+                    <TableHead>Teléfono</TableHead>
+                    <TableHead>Dirección</TableHead>
                     <TableHead>Estado</TableHead>
                     <TableHead className="w-12">Acciones</TableHead>
                   </TableRow>
@@ -711,7 +748,7 @@ export default function PurchasesPage() {
                               <Edit className="w-4 h-4" />
                             </button>
                           </Link>
-                          <button className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
+                          <button onClick={() => handleDeleteCustomer(customer.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
