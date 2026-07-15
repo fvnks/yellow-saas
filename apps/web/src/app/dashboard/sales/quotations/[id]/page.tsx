@@ -5,7 +5,7 @@ import { ArrowLeft, Printer, Download, ShoppingCart, Trash2, Calendar, User, Fil
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
-import { generateQuotationPDF } from '../../../../../lib/pdf';
+import { generateCotizacionPDF } from '@/lib/pdf-design';
 
 interface QuotationItem {
   product_id: string;
@@ -66,17 +66,26 @@ export default function SalesQuotationDetailPage({ params }: { params: { id: str
     window.print();
   };
 
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = async () => {
     if (!quotation) return;
+    const api = getApiClient();
+    const company = await api.getCompany().catch(() => null);
     const items = quotation.items || [];
     const subtotal = items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0);
     const tax = Math.round(subtotal * 0.19);
-    generateQuotationPDF({
+    const doc = await generateCotizacionPDF({
+      id: quotation.id,
       number: quotation.quotation_number,
+      type: 'cotizacion',
       date: quotation.created_at?.split('T')[0] || '',
-      due_date: quotation.valid_until,
-      company: { name: '', rut: '', address: '' },
-      customer: quotation.customer ? { name: quotation.customer.name, rut: quotation.customer.tax_id } : undefined,
+      valid_until: quotation.valid_until,
+      company: company ? {
+        name: company.name, tax_id: company.tax_id || undefined, razon_social: company.razon_social || undefined,
+        giro: company.giro || undefined, address: company.address || undefined, city: company.city || undefined,
+        region: company.region || undefined, phone: company.phone || undefined, email: company.email || undefined,
+        logo_url: company.logo_url || undefined,
+      } : { name: 'Empresa' },
+      customer: quotation.customer ? { name: quotation.customer.name, tax_id: quotation.customer.tax_id } : undefined,
       items: items.map(item => ({
         name: item.product?.name || '',
         sku: item.product?.sku || '',
@@ -91,6 +100,7 @@ export default function SalesQuotationDetailPage({ params }: { params: { id: str
       total: subtotal + tax,
       notes: quotation.notes,
     });
+    doc.save(`${quotation.quotation_number}.pdf`);
   };
 
   const handleConvertToOrder = async () => {

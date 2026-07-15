@@ -5,7 +5,7 @@ import { ArrowLeft, Printer, Download, CreditCard, User, Calendar, FileText } fr
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
-import { generateInvoicePDF } from '../../../../../lib/pdf';
+import { generateBoletaPDF } from '@/lib/pdf-design';
 
 interface InvoiceItem {
   id: string;
@@ -63,14 +63,23 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
     window.print();
   };
 
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = async () => {
     if (!invoice) return;
-    generateInvoicePDF({
+    const api = getApiClient();
+    const company = await api.getCompany().catch(() => null);
+    const doc = await generateBoletaPDF({
+      id: invoice.id,
       number: invoice.invoice_number,
+      type: 'boleta',
       date: invoice.invoice_date,
       due_date: invoice.due_date,
-      company: { name: '', rut: '', address: '' },
-      customer: invoice.customer ? { name: invoice.customer.name, rut: invoice.customer.tax_id } : undefined,
+      company: company ? {
+        name: company.name, tax_id: company.tax_id || undefined, razon_social: company.razon_social || undefined,
+        giro: company.giro || undefined, address: company.address || undefined, city: company.city || undefined,
+        region: company.region || undefined, phone: company.phone || undefined, email: company.email || undefined,
+        logo_url: company.logo_url || undefined,
+      } : { name: 'Empresa' },
+      customer: invoice.customer ? { name: invoice.customer.name, tax_id: invoice.customer.tax_id } : undefined,
       items: (invoice.items || []).map(item => ({
         name: item.product?.name || '',
         sku: item.product?.sku || '',
@@ -85,6 +94,7 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
       total,
       notes: invoice.notes,
     });
+    doc.save(`${invoice.invoice_number}.pdf`);
   };
 
   if (loading) {

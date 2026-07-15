@@ -92,6 +92,14 @@ export async function POST(request: Request) {
       `ALTER TABLE stock_levels ADD COLUMN IF NOT EXISTS reorder_qty DECIMAL(14,4) DEFAULT 0`,
       `ALTER TABLE stock_levels ADD COLUMN IF NOT EXISTS lead_time_days INTEGER DEFAULT 0`,
       `ALTER TABLE stock_levels ADD COLUMN IF NOT EXISTS qc_status TEXT DEFAULT 'approved' CHECK (qc_status IN ('pending', 'approved', 'rejected', 'quarantine'))`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS tax_id TEXT`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS razon_social TEXT`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS giro TEXT`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS address TEXT`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS city TEXT`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS region TEXT`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS phone TEXT`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS email TEXT`,
     ];
     for (const sql of alters) {
       await query(sql);
