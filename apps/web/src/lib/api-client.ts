@@ -986,6 +986,40 @@ async deleteAdjustmentReason(id: string) {
   async syncOfflineQueue(ids?: string[]) {
     return this.request<any>('/pwa-offline-queue/sync', { method: 'POST', body: JSON.stringify({ ids }) });
   }
+
+  // Sales Registers
+  async getSalesRegisters(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; client: string; invoice_number: string; emission_date: string; status: string; payment_date: string | null; net_amount: number; total_amount: number; guide_number: string | null; seller: string; notes: string | null }>('/sales-registers', params || {});
+  }
+  async getSalesRegister(id: string) {
+    return this.request<any>(`/sales-registers/${id}`);
+  }
+  async createSalesRegister(data: { client: string; invoice_number: string; emission_date?: string; status?: string; payment_date?: string; net_amount?: number; total_amount?: number; guide_number?: string; seller: string; notes?: string }) {
+    return this.request<any>('/sales-registers', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateSalesRegister(id: string, data: Partial<{ client: string; invoice_number: string; emission_date: string; status: string; payment_date: string; net_amount: number; total_amount: number; guide_number: string; seller: string; notes: string }>) {
+    return this.request<any>(`/sales-registers/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteSalesRegister(id: string) {
+    return this.request<any>(`/sales-registers/${id}`, { method: 'DELETE' });
+  }
+
+  // Purchase Registers
+  async getPurchaseRegisters(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; razon_social: string; rut: string | null; invoice_number: string; emission_date: string; status: string; amount: number; area: string; payment_type: string; payment_date: string | null; notes: string | null }>('/purchase-registers', params || {});
+  }
+  async getPurchaseRegister(id: string) {
+    return this.request<any>(`/purchase-registers/${id}`);
+  }
+  async createPurchaseRegister(data: { razon_social: string; rut?: string; invoice_number: string; emission_date?: string; status?: string; amount?: number; area: string; payment_type: string; payment_date?: string; notes?: string }) {
+    return this.request<any>('/purchase-registers', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updatePurchaseRegister(id: string, data: Partial<{ razon_social: string; rut: string; invoice_number: string; emission_date: string; status: string; amount: number; area: string; payment_type: string; payment_date: string; notes: string }>) {
+    return this.request<any>(`/purchase-registers/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deletePurchaseRegister(id: string) {
+    return this.request<any>(`/purchase-registers/${id}`, { method: 'DELETE' });
+  }
 }
 
 // Singleton with dynamic company_id from JWT
