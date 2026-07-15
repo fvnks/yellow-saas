@@ -120,11 +120,11 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm" onClick={() => window.print()}>
             <Printer className="w-4 h-4 mr-2" />
             Imprimir
           </Button>
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm" onClick={() => alert('Función de envío por email próximamente')}>
             <Send className="w-4 h-4 mr-2" />
             Enviar
           </Button>
@@ -286,11 +286,11 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
                 </div>
               </div>
               <div className="flex flex-col gap-2 pt-4">
-                <Button variant="secondary" className="w-full">
+                <Button variant="secondary" className="w-full" onClick={() => window.print()}>
                   <Printer className="w-4 h-4 mr-2" />
                   Imprimir
                 </Button>
-                <Button className="w-full">
+                <Button className="w-full" onClick={() => alert('Función de envío por email próximamente')}>
                   <Send className="w-4 h-4 mr-2" />
                   Enviar por Email
                 </Button>

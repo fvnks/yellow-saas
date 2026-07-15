@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
 
     const {
       customer_id, order_id, invoice_date,
-      due_date, payment_terms, notes, items, document_type,
+      due_date, payment_terms, notes, items, document_type, status: requestedStatus,
     } = body;
 
     if (!items?.length) {
@@ -114,10 +114,11 @@ export async function POST(request: NextRequest) {
 
     const { rows: invoiceRows } = await query(
       `INSERT INTO invoices (company_id, customer_id, order_id, invoice_number, document_type, status, invoice_date, due_date, payment_terms, subtotal, tax_amount, total_amount, notes)
-       VALUES ($1, $2, $3, $4, $5, 'pending', $6, $7, $8, $9, $10, $11, $12)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
        RETURNING *`,
       [
         companyId, customer_id || null, order_id || null, invoiceNumber, docType,
+        requestedStatus || 'pending',
         invoice_date || new Date().toISOString(), due_date || null,
         payment_terms || 0, subtotal, taxAmount, subtotal + taxAmount, notes || null,
       ]
