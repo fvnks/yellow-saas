@@ -228,34 +228,19 @@ const handlePayment = async () => {
   try {
     const api = getApiClient();
     
-    const orderResult = await api.createSalesOrder({
-      customer_id: posSelectedCustomer?.id || '',
-      notes: `Venta POS - ${posDocumentType === 'boleta' ? 'Boleta' : 'Factura'} - ${paymentMethod}`,
+    await api.createInvoice({
+      customer_id: posSelectedCustomer?.id || undefined,
+      invoice_date: new Date().toISOString().split('T')[0],
+      due_date: posDocumentType === 'boleta' ? undefined : new Date().toISOString().split('T')[0],
+      payment_method: paymentMethod,
+      document_type: posDocumentType,
       items: cart.map(item => ({
         product_id: item.id,
         quantity: item.quantity,
         unit_price: item.price,
-        discount_percent: 0,
-        tax_rate: 19,
+        description: item.name,
       })),
     });
-    
-    if (orderResult?.id) {
-      await api.createInvoice({
-        order_id: orderResult.id,
-        customer_id: posSelectedCustomer?.id || '',
-        invoice_date: new Date().toISOString().split('T')[0],
-        due_date: posDocumentType === 'boleta' ? undefined : new Date().toISOString().split('T')[0],
-        payment_method: paymentMethod,
-        document_type: posDocumentType,
-        items: cart.map(item => ({
-          product_id: item.id,
-          quantity: item.quantity,
-          unit_price: item.price,
-          description: item.name,
-        })),
-      });
-    }
     
     setCart([]);
     setShowPaymentModal(false);
