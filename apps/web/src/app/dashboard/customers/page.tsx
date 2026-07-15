@@ -1,12 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
 import { Plus, Search, Filter, Download, Eye, Edit, Trash2, Users, Phone, Mail, MapPin, CreditCard, Building2 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
 
 export default function CustomersPage() {
+  const router = useRouter();
   const [customers, setCustomers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -66,6 +68,31 @@ export default function CustomersPage() {
     }
   };
 
+  const handleExport = useCallback(() => {
+    if (filteredCustomers.length === 0) return;
+    const headers = ['Nombre', 'RUT', 'Email', 'Teléfono', 'Dirección', 'Estado'];
+    const rows = filteredCustomers.map(c => [c.name, c.taxId, c.email, c.phone, c.address, c.status]);
+    const csv = [headers, ...rows].map(r => r.map(v => `"${(v || '').replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `clientes_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [filteredCustomers]);
+
+  const handleDelete = useCallback(async (id: string, name: string) => {
+    if (!confirm(`¿Eliminar cliente "${name}"?`)) return;
+    try {
+      const api = getApiClient();
+      await api.deleteCustomer(id);
+      setCustomers(prev => prev.filter(c => c.id !== id));
+    } catch {
+      alert('Error al eliminar cliente');
+    }
+  }, []);
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -75,7 +102,7 @@ export default function CustomersPage() {
           <p className="text-sm text-slate-500 mt-1">Gesti�n de clientes y contacto comercial</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm" onClick={handleExport}>
             <Download className="w-4 h-4 mr-2" />
             Exportar
           </Button>
@@ -257,15 +284,17 @@ export default function CustomersPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-1">
-                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Ver">
-                          <Eye className="w-4 h-4" />
-                        </button>
+                        <Link href={`/dashboard/customers/${customer.id}`}>
+                          <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Ver">
+                            <Eye className="w-4 h-4" />
+                          </button>
+                        </Link>
                         <Link href={`/dashboard/customers/${customer.id}/edit`}>
                           <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Editar">
                             <Edit className="w-4 h-4" />
                           </button>
                         </Link>
-                        <button className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
+                        <button onClick={() => handleDelete(customer.id, customer.name)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>

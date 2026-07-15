@@ -5,7 +5,7 @@ import { Card, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, 
 import { Plus, Search, Download, Eye, Edit, Trash2, ShoppingCart, DollarSign, Truck, CreditCard, Package, FileText, ClipboardList, Monitor, Banknote, Receipt, X, Check, Users, RotateCcw, User, Printer } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
-import { generatePOSVoucher } from '@/lib/pdf';
+import { generatePOSVoucher, generateInvoicePDF } from '@/lib/pdf';
 
 const orderStatusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   delivered: { label: 'Entregado', variant: 'success' },
@@ -322,6 +322,31 @@ const handlePayment = async () => {
   }
 };
 
+  const handleExport = () => {
+    let headers: string[];
+    let rows: string[][];
+    if (activeTab === 'orders') {
+      headers = ['Nº Orden', 'Cliente', 'Fecha', 'Total', 'Estado'];
+      rows = filteredOrders.map(o => [o.number, o.customer || '', o.date, String(o.total || 0), o.status]);
+    } else if (activeTab === 'delivery') {
+      headers = ['Nº Guía', 'Orden Ref.', 'Fecha', 'Transporte', 'Estado'];
+      rows = filteredGuides.map(g => [g.number, g.orderId || '', g.date, g.transport || '', g.status]);
+    } else if (activeTab === 'invoices') {
+      headers = ['Nº Factura', 'Orden Ref.', 'Fecha', 'Total', 'Estado'];
+      rows = filteredInvoices.map(i => [i.number, i.orderId || '', i.date, String(i.total || 0), i.status]);
+    } else {
+      return;
+    }
+    const csv = [headers, ...rows].map(r => r.map(v => `"${(v || '').replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${activeTab}_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -331,7 +356,7 @@ const handlePayment = async () => {
           <p className="text-sm text-slate-500 mt-1">Órdenes, guías de despacho, facturación y POS</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm" onClick={handleExport}>
             <Download className="w-4 h-4 mr-2" />
             Exportar
           </Button>
@@ -613,9 +638,30 @@ const handlePayment = async () => {
                         <Link href={`/dashboard/sales/invoices/${invoice.id}`}>
                           <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"><Eye className="w-4 h-4" /></button>
                         </Link>
-                        <Link href={`/dashboard/sales/invoices/${invoice.id}`}>
-                          <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"><Download className="w-4 h-4" /></button>
-                        </Link>
+                        <button onClick={async () => {
+                          try {
+                            const api = getApiClient();
+                            const inv = await api.getInvoice(invoice.id);
+                            generateInvoicePDF({
+                              number: inv.invoice_number || invoice.number,
+                              date: inv.invoice_date || invoice.date,
+                              company: { name: 'Yellow ERP SpA', rut: '76.123.456-7', address: 'Santiago, Chile', phone: '+56 9 1234 5678' },
+                              customer: inv.customer ? { name: inv.customer.name, rut: inv.customer.tax_id, address: (inv.customer as any).address } : undefined,
+                              items: (inv.items || []).map((it: any) => ({
+                                name: it.description || it.product?.name || '',
+                                sku: it.product?.sku || '',
+                                quantity: it.quantity,
+                                unit_price: it.unit_price,
+                                total: it.line_total || it.quantity * it.unit_price,
+                              })),
+                              subtotal: Math.round((inv.total_amount || 0) / 1.19),
+                              tax_amount: (inv.total_amount || 0) - Math.round((inv.total_amount || 0) / 1.19),
+                              total: inv.total_amount || 0,
+                            });
+                          } catch { alert('Error al descargar factura'); }
+                        }} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors">
+                          <Download className="w-4 h-4" />
+                        </button>
                       </div>
                     </td>
                   </tr>

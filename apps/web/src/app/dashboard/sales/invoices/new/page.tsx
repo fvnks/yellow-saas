@@ -104,6 +104,37 @@ export default function NewInvoicePage() {
     }
   };
 
+  const handleSaveDraft = async () => {
+    setLoading(true);
+    setError('');
+    setSuccess('');
+    try {
+      const api = getApiClient();
+      const result = await api.createInvoice({
+        order_id: formData.orderId,
+        customer_id: formData.customerId,
+        invoice_date: formData.invoiceDate || new Date().toISOString().split('T')[0],
+        due_date: formData.dueDate,
+        payment_method: formData.paymentMethod,
+        status: 'draft',
+        items: items.filter(i => i.productId).map(i => ({
+          product_id: i.productId,
+          description: i.name || '',
+          quantity: i.quantity,
+          unit_price: i.unitPrice,
+          discount: i.discount,
+          total: getLineTotal(i),
+        })),
+      });
+      setSuccess(`Borrador ${result.invoice_number} guardado.`);
+      setTimeout(() => router.push('/dashboard/sales'), 1500);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error al guardar borrador');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
@@ -306,7 +337,7 @@ export default function NewInvoicePage() {
                     <FileText className="w-4 h-4 mr-2" />
                     Emitir Factura
                   </Button>
-                  <Button type="button" variant="secondary" className="w-full">
+                  <Button type="button" variant="secondary" className="w-full" onClick={handleSaveDraft} loading={loading}>
                     <Save className="w-4 h-4 mr-2" />
                     Guardar Borrador
                   </Button>
