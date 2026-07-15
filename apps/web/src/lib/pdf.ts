@@ -361,3 +361,182 @@ export function generateBarcodeLabelsPDF(labels: BarcodeLabelData[], template: L
 
   doc.save('etiquetas.pdf');
 }
+
+export interface POSVoucherData {
+  invoice_number: string;
+  document_type: 'boleta' | 'factura';
+  date: string;
+  company: CompanyInfo;
+  customer?: { name: string; rut?: string };
+  items: { name: string; quantity: number; unit_price: number; total: number }[];
+  subtotal: number;
+  tax_amount: number;
+  total: number;
+  payment_method: string;
+  amount_paid?: number;
+  change?: number;
+}
+
+export function generatePOSVoucher(data: POSVoucherData): jsPDF {
+  const pageWidth = 80;
+  const margin = 5;
+  const contentWidth = pageWidth - margin * 2;
+  const doc = new jsPDF({ unit: 'mm', format: [pageWidth, 200] });
+
+  let y = 8;
+  const center = (text: string, yPos: number, fontSize: number, bold = false) => {
+    doc.setFontSize(fontSize);
+    doc.setFont('helvetica', bold ? 'bold' : 'normal');
+    doc.text(text, pageWidth / 2, yPos, { align: 'center' });
+  };
+  const line = (text: string, yPos: number, fontSize: number, bold = false, align: 'left' | 'center' | 'right' = 'left') => {
+    doc.setFontSize(fontSize);
+    doc.setFont('helvetica', bold ? 'bold' : 'normal');
+    doc.text(text, align === 'center' ? pageWidth / 2 : margin, yPos, { align });
+  };
+  const dashedLine = (yPos: number) => {
+    doc.setDrawColor(180);
+    doc.setLineDashPattern([1, 1], 0);
+    doc.line(margin, yPos, pageWidth - margin, yPos);
+    doc.setLineDashPattern([], 0);
+  };
+
+  // Company header
+  center(data.company.name || 'Empresa', y, 11, true);
+  y += 5;
+  if (data.company.rut) { center(`RUT: ${data.company.rut}`, y, 7); y += 4; }
+  if (data.company.address) { center(data.company.address, y, 6); y += 3.5; }
+  if (data.company.phone) { center(`Tel: ${data.company.phone}`, y, 6); y += 3.5; }
+  y += 2;
+  dashedLine(y);
+  y += 5;
+
+  // Document type and number
+  const docTypeLabel = data.document_type === 'boleta' ? 'BOLETA' : 'FACTURA';
+  center(docTypeLabel, y, 12, true);
+  y += 6;
+  center(`Nº ${data.invoice_number}`, y, 9, true);
+  y += 5;
+  center(`Fecha: ${data.date}`, y, 7);
+  y += 5;
+  dashedLine(y);
+  y += 5;
+
+  // Customer info (for facturas)
+  if (data.customer) {
+    line('CLIENTE:', y, 7, true);
+    y += 4;
+    line(data.customer.name, y, 7);
+    y += 4;
+    if (data.customer.rut) {
+      line(`RUT: ${data.customer.rut}`, y, 7);
+      y += 4;
+    }
+    dashedLine(y);
+    y += 5;
+  }
+
+  // Items
+  line('DETALLE', y, 7, true);
+  y += 5;
+
+  for (const item of data.items) {
+    const qtyStr = `${item.quantity}x`;
+    const nameStr = item.name.length > 18 ? item.name.substring(0, 16) + '..' : item.name;
+    const priceStr = `$${(item.total || 0).toLocaleString('es-CL')}`;
+
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'bold');
+    doc.text(qtyStr, margin, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(nameStr, margin + 10, y);
+    doc.text(priceStr, pageWidth - margin, y, { align: 'right' });
+    y += 3.5;
+
+    // Unit price sub-line
+    doc.setFontSize(5.5);
+    doc.setTextColor(120);
+    doc.text(`  $${(item.unit_price || 0).toLocaleString('es-CL')} c/u`, margin + 10, y);
+    doc.setTextColor(0);
+    y += 4;
+  }
+
+  dashedLine(y);
+  y += 5;
+
+  // Totals
+  line('Subtotal:', y, 7);
+  line(`$${(data.subtotal || 0).toLocaleString('es-CL')}`, y, 7, false, 'right');
+  y += 4;
+  line('IVA (19%):', y, 7);
+  line(`$${(data.tax_amount || 0).toLocaleString('es-CL')}`, y, 7, false, 'right');
+  y += 5;
+  dashedLine(y);
+  y += 5;
+  line('TOTAL:', y, 9, true);
+  line(`$${(data.total || 0).toLocaleString('es-CL')}`, y, 9, true, 'right');
+  y += 6;
+  dashedLine(y);
+  y += 5;
+
+  // Payment info
+  const paymentLabels: Record<string, string> = {
+    cash: 'Efectivo',
+    card: 'Tarjeta',
+    transfer: 'Transferencia',
+  };
+  line('PAGO:', y, 7, true);
+  y += 4;
+  line(paymentLabels[data.payment_method] || data.payment_method, y, 7);
+  y += 4;
+  if (data.amount_paid) {
+    line('Recibido:', y, 7);
+    line(`$${(data.amount_paid || 0).toLocaleString('es-CL')}`, y, 7, false, 'right');
+    y += 4;
+  }
+  if (data.change !== undefined && data.change > 0) {
+    line('Vuelto:', y, 7);
+    line(`$${(data.change || 0).toLocaleString('es-CL')}`, y, 7, false, 'right');
+    y += 4;
+  }
+  y += 2;
+  dashedLine(y);
+  y += 6;
+
+  // Barcode
+  try {
+    const canvas = document.createElement('canvas');
+    JsBarcode(canvas, data.invoice_number, {
+      format: 'CODE128',
+      width: 1.2,
+      height: 25,
+      displayValue: false,
+      margin: 0,
+    });
+    const imgData = canvas.toDataURL('image/png');
+    const barcodeWidth = contentWidth;
+    const barcodeHeight = 12;
+    doc.addImage(imgData, 'PNG', margin, y, barcodeWidth, barcodeHeight);
+    y += barcodeHeight + 2;
+    center(data.invoice_number, y, 6);
+    y += 5;
+  } catch {
+    center(data.invoice_number, y, 7);
+    y += 5;
+  }
+
+  y += 3;
+  dashedLine(y);
+  y += 6;
+
+  // Thank you message
+  center('¡Gracias por su compra!', y, 8, true);
+  y += 4;
+  center('www.yellow-erp.cl', y, 6);
+
+  // Adjust page height
+  const finalHeight = y + 8;
+  doc.setFontSize(7);
+
+  return doc;
+}
