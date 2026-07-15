@@ -22,6 +22,7 @@ interface InvoiceItem {
 interface InvoiceDetail {
   id: string;
   invoice_number: string;
+  document_type: string;
   status: string;
   invoice_date: string;
   due_date: string;
@@ -47,16 +48,19 @@ const STATUS_MAP: Record<string, { label: string; class: string }> = {
 export default function InvoiceDetailPage({ params }: { params: { id: string } }) {
   const { id } = params;
   const [invoice, setInvoice] = useState<InvoiceDetail | null>(null);
+  const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const api = getApiClient();
-    api.getInvoice(id)
-      .then((data) => {
-        setInvoice(data as unknown as InvoiceDetail);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    Promise.all([
+      api.getInvoice(id),
+      api.getCompany().catch(() => null),
+    ]).then(([data, companyRes]) => {
+      setInvoice(data as unknown as InvoiceDetail);
+      if (companyRes) setCompany(companyRes);
+      setLoading(false);
+    }).catch(() => setLoading(false));
   }, [id]);
 
   const handlePrint = () => {
@@ -65,20 +69,19 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
 
   const handleDownloadPDF = async () => {
     if (!invoice) return;
-    const api = getApiClient();
-    const company = await api.getCompany().catch(() => null);
+    const c = company || {};
     const doc = await generateBoletaPDF({
       id: invoice.id,
       number: invoice.invoice_number,
-      type: 'boleta',
+      type: (invoice.document_type as 'boleta' | 'cotizacion') || 'boleta',
       date: invoice.invoice_date,
       due_date: invoice.due_date,
-      company: company ? {
-        name: company.name, tax_id: company.tax_id || undefined, razon_social: company.razon_social || undefined,
-        giro: company.giro || undefined, address: company.address || undefined, city: company.city || undefined,
-        region: company.region || undefined, phone: company.phone || undefined, email: company.email || undefined,
-        logo_url: company.logo_url || undefined,
-      } : { name: 'Empresa' },
+      company: {
+        name: c.name || 'Empresa', tax_id: c.tax_id || undefined, razon_social: c.razon_social || undefined,
+        giro: c.giro || undefined, address: c.address || undefined, city: c.city || undefined,
+        region: c.region || undefined, phone: c.phone || undefined, email: c.email || undefined,
+        logo_url: c.logo_url || undefined,
+      },
       customer: invoice.customer ? { name: invoice.customer.name, tax_id: invoice.customer.tax_id } : undefined,
       items: (invoice.items || []).map(item => ({
         name: item.product?.name || '',
@@ -159,9 +162,17 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
           {/* Company header */}
           <div className="flex items-start justify-between mb-8 pb-6 border-b border-slate-200">
             <div>
-              <div className="w-16 h-16 bg-amber-400 rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-3">Y</div>
-              <p className="text-lg font-bold text-slate-900">Yellow ERP</p>
-              <p className="text-xs text-slate-500">Configura tu empresa en Configuración</p>
+              {company?.logo_url ? (
+                <img src={company.logo_url} alt="Logo" className="h-16 w-auto mb-3" />
+              ) : (
+                <div className="w-16 h-16 bg-amber-400 rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-3">
+                  {(company?.name || 'E')[0]}
+                </div>
+              )}
+              <p className="text-lg font-bold text-slate-900">{company?.name || 'Empresa'}</p>
+              {company?.tax_id && <p className="text-xs text-slate-500">RUT: {company.tax_id}</p>}
+              {company?.address && <p className="text-xs text-slate-500">{company.address}</p>}
+              {company?.phone && <p className="text-xs text-slate-500">Tel: {company.phone}</p>}
             </div>
             <div className="text-right">
               <h2 className="text-2xl font-bold text-slate-900 mb-1">FACTURA</h2>

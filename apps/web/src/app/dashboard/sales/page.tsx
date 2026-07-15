@@ -5,7 +5,7 @@ import { Card, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, 
 import { Plus, Search, Download, Eye, Edit, Trash2, ShoppingCart, DollarSign, Truck, CreditCard, Package, FileText, ClipboardList, Monitor, Banknote, Receipt, X, Check, Users, RotateCcw, User, Printer } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
-import { generatePOSVoucher, generateInvoicePDF } from '@/lib/pdf';
+import { generatePOSVoucher, generateBoletaPDF } from '@/lib/pdf-design';
 
 const orderStatusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   delivered: { label: 'Entregado', variant: 'success' },
@@ -59,6 +59,7 @@ export default function SalesPage() {
   const [customers, setCustomers] = useState<any[]>([]);
   const [quotations, setQuotations] = useState<any[]>([]);
   const [returns, setReturns] = useState<any[]>([]);
+  const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'orders' | 'delivery' | 'invoices' | 'pos' | 'customers' | 'quotations' | 'returns'>('orders');
   const [search, setSearch] = useState('');
@@ -80,10 +81,16 @@ export default function SalesPage() {
   const buildPosVoucherData = () => {
     if (!posCompletedInvoice) return null;
     return {
-      invoice_number: posCompletedInvoice.invoice_number,
-      document_type: posCompletedInvoice.document_type,
+      id: posCompletedInvoice.id,
+      number: posCompletedInvoice.invoice_number,
+      type: posCompletedInvoice.document_type,
       date: new Date().toLocaleDateString('es-CL'),
-      company: { name: 'Yellow ERP SpA', rut: '76.123.456-7', address: 'Santiago, Chile', phone: '+56 9 1234 5678' },
+      company: company ? {
+        name: company.name, tax_id: company.tax_id || undefined, razon_social: company.razon_social || undefined,
+        giro: company.giro || undefined, address: company.address || undefined, city: company.city || undefined,
+        region: company.region || undefined, phone: company.phone || undefined, email: company.email || undefined,
+        logo_url: company.logo_url || undefined,
+      } : { name: 'Empresa' },
       customer: posCompletedInvoice.customer ? { name: posCompletedInvoice.customer.name, rut: posCompletedInvoice.customer.tax_id } : undefined,
       items: posCompletedInvoice.cart.map(item => ({
         name: item.name,
@@ -110,7 +117,9 @@ export default function SalesPage() {
       api.getCustomers().catch(() => ({ data: [] })),
       api.getSalesQuotations().catch(() => ({ data: [] })),
       api.getCustomerReturns().catch(() => ({ data: [] })),
-    ]).then(([ordersRes, guidesRes, invoicesRes, productsRes, customersRes, quotationsRes, returnsRes]) => {
+      api.getCompany().catch(() => null),
+    ]).then(([ordersRes, guidesRes, invoicesRes, productsRes, customersRes, quotationsRes, returnsRes, companyRes]) => {
+      if (companyRes) setCompany(companyRes);
       const ordersData = (ordersRes.data || []).map((o) => ({
         id: o.id,
         number: o.order_number,
@@ -642,11 +651,19 @@ const handlePayment = async () => {
                           try {
                             const api = getApiClient();
                             const inv = await api.getInvoice(invoice.id);
-                            generateInvoicePDF({
+                            const c = company || {};
+                            const doc = await generateBoletaPDF({
+                              id: inv.id || invoice.id,
                               number: inv.invoice_number || invoice.number,
+                              type: (inv as any).document_type || 'boleta',
                               date: inv.invoice_date || invoice.date,
-                              company: { name: 'Yellow ERP SpA', rut: '76.123.456-7', address: 'Santiago, Chile', phone: '+56 9 1234 5678' },
-                              customer: inv.customer ? { name: inv.customer.name, rut: inv.customer.tax_id, address: (inv.customer as any).address } : undefined,
+                              company: {
+                                name: c.name || 'Empresa', tax_id: c.tax_id || undefined, razon_social: c.razon_social || undefined,
+                                giro: c.giro || undefined, address: c.address || undefined, city: c.city || undefined,
+                                region: c.region || undefined, phone: c.phone || undefined, email: c.email || undefined,
+                                logo_url: c.logo_url || undefined,
+                              },
+                              customer: inv.customer ? { name: inv.customer.name, tax_id: inv.customer.tax_id, address: (inv.customer as any).address } : undefined,
                               items: (inv.items || []).map((it: any) => ({
                                 name: it.description || it.product?.name || '',
                                 sku: it.product?.sku || '',
@@ -658,6 +675,7 @@ const handlePayment = async () => {
                               tax_amount: (inv.total_amount || 0) - Math.round((inv.total_amount || 0) / 1.19),
                               total: inv.total_amount || 0,
                             });
+                            doc.save(`${inv.invoice_number || invoice.number}.pdf`);
                           } catch { alert('Error al descargar factura'); }
                         }} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors">
                           <Download className="w-4 h-4" />
@@ -832,7 +850,7 @@ const handlePayment = async () => {
                     </Button>
                     <Button variant="secondary" onClick={() => {
                       const vd = buildPosVoucherData();
-                      if (vd) { const doc = generatePOSVoucher(vd); doc.save(`${vd.invoice_number}.pdf`); }
+                      if (vd) { const doc = generatePOSVoucher(vd); doc.save(`${vd.number}.pdf`); }
                     }} className="flex-1">
                       <Download className="w-4 h-4 mr-2" />Descargar PDF
                     </Button>

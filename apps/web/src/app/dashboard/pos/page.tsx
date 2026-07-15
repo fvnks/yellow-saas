@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Badge, Input, Select } from '@yellow-erp/ui';
 import { Monitor, ShoppingCart, Plus, Search, CreditCard, Banknote, Receipt, ArrowRight, Package, X, Check, User, FileText, Printer, Download } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
-import { generatePOSVoucher } from '@/lib/pdf';
+import { generatePOSVoucher } from '@/lib/pdf-design';
 
 interface CartItem {
   id: string;
@@ -46,6 +46,7 @@ export default function POSPage() {
   const [showCustomerDropdown, setShowCustomerDropdown] = useState(false);
 
   const [processing, setProcessing] = useState(false);
+  const [company, setCompany] = useState<any>(null);
   const [completedInvoice, setCompletedInvoice] = useState<{ id: string; invoice_number: string; total: number; document_type: 'boleta' | 'factura'; cart: CartItem[]; customer: Customer | null; paymentMethod: string; amountPaid: number } | null>(null);
 
   useEffect(() => {
@@ -53,7 +54,9 @@ export default function POSPage() {
     Promise.all([
       api.getProducts(),
       api.getCustomers().catch(() => ({ data: [] })),
-    ]).then(([productsRes, customersRes]) => {
+      api.getCompany().catch(() => null),
+    ]).then(([productsRes, customersRes, companyRes]) => {
+      if (companyRes) setCompany(companyRes);
       const items = (productsRes.data || []).map((p: any) => ({
         id: p.id,
         name: p.name || '',
@@ -157,10 +160,16 @@ export default function POSPage() {
   const buildVoucherData = () => {
     if (!completedInvoice) return null;
     return {
-      invoice_number: completedInvoice.invoice_number,
-      document_type: completedInvoice.document_type,
+      id: completedInvoice.id,
+      number: completedInvoice.invoice_number,
+      type: completedInvoice.document_type,
       date: new Date().toLocaleDateString('es-CL'),
-      company: { name: 'Yellow ERP SpA', rut: '76.123.456-7', address: 'Santiago, Chile', phone: '+56 9 1234 5678' },
+      company: company ? {
+        name: company.name, tax_id: company.tax_id || undefined, razon_social: company.razon_social || undefined,
+        giro: company.giro || undefined, address: company.address || undefined, city: company.city || undefined,
+        region: company.region || undefined, phone: company.phone || undefined, email: company.email || undefined,
+        logo_url: company.logo_url || undefined,
+      } : { name: 'Empresa' },
       customer: completedInvoice.customer ? { name: completedInvoice.customer.name, rut: completedInvoice.customer.tax_id } : undefined,
       items: completedInvoice.cart.map(item => ({
         name: item.name,
@@ -190,7 +199,7 @@ export default function POSPage() {
     const voucherData = buildVoucherData();
     if (!voucherData) return;
     const doc = generatePOSVoucher(voucherData);
-    doc.save(`${voucherData.invoice_number}.pdf`);
+    doc.save(`${voucherData.number}.pdf`);
   };
 
   const resetPOS = () => {
