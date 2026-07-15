@@ -81,7 +81,7 @@ export default function NewDeliveryGuidePage() {
         })),
       });
       setSuccess(`Guía ${result.guide_number} creada correctamente.`);
-      setTimeout(() => router.push('/dashboard/sales'), 1500);
+      router.push('/dashboard/sales');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error al crear la guía de despacho');
     } finally {

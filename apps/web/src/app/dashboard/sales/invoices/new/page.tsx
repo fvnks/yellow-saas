@@ -96,7 +96,7 @@ export default function NewInvoicePage() {
         })),
       });
       setSuccess(`Factura ${result.invoice_number} emitida correctamente.`);
-      setTimeout(() => router.push('/dashboard/sales'), 1500);
+      router.push('/dashboard/sales');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error al emitir la factura');
     } finally {
@@ -127,7 +127,7 @@ export default function NewInvoicePage() {
         })),
       });
       setSuccess(`Borrador ${result.invoice_number} guardado.`);
-      setTimeout(() => router.push('/dashboard/sales'), 1500);
+      router.push('/dashboard/sales');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error al guardar borrador');
     } finally {
