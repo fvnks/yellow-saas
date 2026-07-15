@@ -1,64 +1,128 @@
 'use client';
 
-import { Card, CardHeader, CardTitle, CardContent, KPICard, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button } from '@yellow-erp/ui';
-import { Plus, TrendingUp, Package, Users, ShoppingCart, CreditCard, DollarSign } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button } from '@yellow-erp/ui';
+import { Plus, Package, Users, ShoppingCart, CreditCard, TrendingUp, TrendingDown } from 'lucide-react';
 import Link from 'next/link';
+import { getApiClient } from '@/lib/api-client';
+
+function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(amount);
+}
+
+const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
+  delivered: { label: 'Entregado', variant: 'success' },
+  shipped: { label: 'Enviado', variant: 'info' },
+  processing: { label: 'Procesando', variant: 'warning' },
+  confirmed: { label: 'Confirmado', variant: 'neutral' },
+  draft: { label: 'Borrador', variant: 'neutral' },
+  pending: { label: 'Pendiente', variant: 'warning' },
+  paid: { label: 'Pagado', variant: 'success' },
+  cancelled: { label: 'Cancelado', variant: 'danger' },
+};
 
 export default function DashboardPage() {
-  const kpis = [
-    { label: 'Ventas del Mes', value: '$12.450.000', change: '+12.5% vs mes anterior', changeType: 'positive' as const, icon: ShoppingCart, iconColor: 'indigo' },
-    { label: 'Productos en Stock', value: '1.234', change: '23 productos bajos', changeType: 'negative' as const, icon: Package, iconColor: 'emerald' },
-    { label: 'Clientes Activos', value: '456', change: '+8 nuevos esta semana', changeType: 'positive' as const, icon: Users, iconColor: 'amber' },
-    { label: 'Pendientes de Cobro', value: '$3.210.000', change: '12 facturas vencidas', changeType: 'negative' as const, icon: CreditCard, iconColor: 'rose' },
-  ];
+  const [loading, setLoading] = useState(true);
+  const [kpis, setKpis] = useState({
+    totalSalesMonth: 0,
+    totalProducts: 0,
+    lowStockCount: 0,
+    totalCustomers: 0,
+    pendingInvoices: 0,
+    totalPurchasesMonth: 0,
+  });
+  const [recentSales, setRecentSales] = useState<any[]>([]);
+  const [lowStockProducts, setLowStockProducts] = useState<any[]>([]);
 
-  const recentSales = [
-    { number: 'SO-2024-001', customer: 'Empresa ABC SpA', date: '11 Jul 2024', amount: '$2.450.000', status: 'delivered' },
-    { number: 'SO-2024-002', customer: 'Comercial XYZ Ltda', date: '10 Jul 2024', amount: '$1.200.000', status: 'shipped' },
-    { number: 'SO-2024-003', customer: 'Distribuidora Norte', date: '10 Jul 2024', amount: '$890.000', status: 'processing' },
-    { number: 'SO-2024-004', customer: 'Retail Sur SA', date: '09 Jul 2024', amount: '$3.100.000', status: 'confirmed' },
-    { number: 'SO-2024-005', customer: 'Importadora Chile', date: '09 Jul 2024', amount: '$560.000', status: 'draft' },
-  ];
+  useEffect(() => {
+    const api = getApiClient();
+    Promise.all([
+      api.getSalesOrders({ limit: '5', sort: 'created_at' }).catch(() => ({ data: [] })),
+      api.getProducts({ limit: '500' }).catch(() => ({ data: [] })),
+      api.getCustomers({ limit: '500' }).catch(() => ({ data: [] })),
+      api.getInvoices({ limit: '500' }).catch(() => ({ data: [] })),
+      api.getPurchaseOrders({ limit: '500' }).catch(() => ({ data: [] })),
+    ]).then(([ordersRes, productsRes, customersRes, invoicesRes, purchasesRes]) => {
+      const orders = ordersRes.data || [];
+      const products = productsRes.data || [];
+      const customers = customersRes.data || [];
+      const invoices = invoicesRes.data || [];
+      const purchases = purchasesRes.data || [];
 
-  const lowStockProducts = [
-    { name: 'Laptop HP ProBook 450', sku: 'LP-HP-450', stock: 2, minStock: 5, warehouse: 'Bodega Central' },
-    { name: 'Mouse Logitech MX Master 3', sku: 'MS-LG-MX3', stock: 0, minStock: 10, warehouse: 'Bodega Norte' },
-    { name: 'Monitor Dell 27" 4K', sku: 'MN-DELL-27', stock: 3, minStock: 5, warehouse: 'Bodega Central' },
-    { name: 'Teclado Mecánico Keychron K2', sku: 'KB-KC-K2', stock: 1, minStock: 5, warehouse: 'Bodega Sur' },
-  ];
+      const totalSalesMonth = orders.reduce((sum: number, o: any) => sum + (o.total || 0), 0);
+      const totalPurchasesMonth = purchases.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0);
+      const pendingInvoices = invoices.filter((i: any) => i.status === 'pending' || i.status === 'overdue').length;
 
-  const statusConfig = {
-    delivered: { label: 'Entregado', variant: 'success' as const },
-    shipped: { label: 'Enviado', variant: 'info' as const },
-    processing: { label: 'Procesando', variant: 'warning' as const },
-    confirmed: { label: 'Confirmado', variant: 'neutral' as const },
-    draft: { label: 'Borrador', variant: 'neutral' as const },
-  };
+      const lowStock = products
+        .filter((p: any) => {
+          const stock = p.stock_levels?.reduce((sum: number, sl: any) => sum + (sl.quantity || 0), 0) || 0;
+          return stock <= (p.min_stock || 10);
+        })
+        .slice(0, 5)
+        .map((p: any) => ({
+          name: p.name,
+          sku: p.sku,
+          stock: p.stock_levels?.reduce((sum: number, sl: any) => sum + (sl.quantity || 0), 0) || 0,
+          minStock: p.min_stock || 10,
+          warehouse: p.stock_levels?.[0]?.warehouse?.name || '—',
+        }));
+
+      setKpis({
+        totalSalesMonth,
+        totalProducts: products.length,
+        lowStockCount: lowStock.length,
+        totalCustomers: customers.length,
+        pendingInvoices,
+        totalPurchasesMonth,
+      });
+      setRecentSales(orders.slice(0, 5));
+      setLowStockProducts(lowStock);
+      setLoading(false);
+    });
+  }, []);
+
+  const kpiCards = [
+    { label: 'Ventas del Mes', value: formatCurrency(kpis.totalSalesMonth), icon: ShoppingCart, iconColor: 'indigo', changeType: 'neutral' as const, change: `${recentSales.length} órdenes recientes` },
+    { label: 'Productos', value: String(kpis.totalProducts), icon: Package, iconColor: 'emerald', changeType: kpis.lowStockCount > 0 ? 'negative' as const : 'positive' as const, change: kpis.lowStockCount > 0 ? `${kpis.lowStockCount} con stock bajo` : 'Stock OK' },
+    { label: 'Clientes', value: String(kpis.totalCustomers), icon: Users, iconColor: 'amber', changeType: 'neutral' as const, change: 'Activos' },
+    { label: 'Compras del Mes', value: formatCurrency(kpis.totalPurchasesMonth), icon: CreditCard, iconColor: 'rose', changeType: 'neutral' as const, change: `${kpis.pendingInvoices} facturas pendientes` },
+  ];
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Dashboard</h1>
           <p className="text-sm text-slate-500 mt-1">Resumen general de tu empresa</p>
         </div>
-        <Button className="w-full sm:w-auto justify-center">
-          <Plus className="w-4 h-4 mr-2" />
-          Nueva Venta
-        </Button>
+        <Link href="/dashboard/sales">
+          <Button className="w-full sm:w-auto justify-center">
+            <Plus className="w-4 h-4 mr-2" />
+            Nueva Venta
+          </Button>
+        </Link>
       </div>
 
-      {/* KPI Cards */}
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        {kpis.map((kpi, index) => (
-          <KPICard key={index} {...kpi} />
+        {kpiCards.map((kpi, index) => (
+          <div key={index} className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">{kpi.label}</p>
+                <p className="text-2xl font-bold text-slate-900 mt-1">{loading ? '—' : kpi.value}</p>
+                <p className={`text-xs mt-1 ${kpi.changeType === 'negative' ? 'text-rose-600' : kpi.changeType === 'positive' ? 'text-emerald-600' : 'text-slate-500'}`}>
+                  {loading ? '' : kpi.change}
+                </p>
+              </div>
+              <div className={`w-12 h-12 bg-${kpi.iconColor}-50 rounded-xl flex items-center justify-center`}>
+                <kpi.icon className={`w-6 h-6 text-${kpi.iconColor}-600`} />
+              </div>
+            </div>
+          </div>
         ))}
       </div>
 
-      {/* Main Content Grid */}
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Recent Sales */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Ventas Recientes</CardTitle>
@@ -70,24 +134,24 @@ export default function DashboardPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Nº Orden</TableHead>
-                  <TableHead>Cliente</TableHead>
                   <TableHead>Fecha</TableHead>
                   <TableHead className="text-right">Monto</TableHead>
                   <TableHead>Estado</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {recentSales.map((sale, index) => {
-                  const config = statusConfig[sale.status as keyof typeof statusConfig];
+                {loading ? (
+                  <TableRow><TableCell colSpan={4} className="text-center text-slate-400 py-8">Cargando...</TableCell></TableRow>
+                ) : recentSales.length === 0 ? (
+                  <TableRow><TableCell colSpan={4} className="text-center text-slate-400 py-8">Sin órdenes recientes</TableCell></TableRow>
+                ) : recentSales.map((sale: any) => {
+                  const config = statusConfig[sale.status] || statusConfig.draft;
                   return (
-                    <TableRow key={index}>
-                      <TableCell className="font-mono text-slate-900">{sale.number}</TableCell>
-                      <TableCell>{sale.customer}</TableCell>
-                      <TableCell>{sale.date}</TableCell>
-                      <TableCell className="text-right font-medium">{sale.amount}</TableCell>
-                      <TableCell>
-                        <Badge variant={config.variant}>{config.label}</Badge>
-                      </TableCell>
+                    <TableRow key={sale.id}>
+                      <TableCell className="font-mono text-slate-900">{sale.order_number || sale.number}</TableCell>
+                      <TableCell>{sale.created_at?.split('T')[0] || '—'}</TableCell>
+                      <TableCell className="text-right font-medium">{formatCurrency(sale.total || 0)}</TableCell>
+                      <TableCell><Badge variant={config.variant}>{config.label}</Badge></TableCell>
                     </TableRow>
                   );
                 })}
@@ -97,11 +161,10 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Low Stock Alert */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Stock Bajo</CardTitle>
-            <Link href="/dashboard/inventory?filter=low-stock" className="text-sm text-slate-500 hover:text-slate-700 font-medium">Ver todas</Link>
+            <Link href="/dashboard/inventory" className="text-sm text-slate-500 hover:text-slate-700 font-medium">Ver todo</Link>
           </CardHeader>
           <CardContent className="p-0">
             <div className="overflow-x-auto">
@@ -116,11 +179,15 @@ export default function DashboardPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {lowStockProducts.map((product, index) => (
-                  <TableRow key={index} className={index === 1 ? 'bg-rose-50' : ''}>
+                {loading ? (
+                  <TableRow><TableCell colSpan={5} className="text-center text-slate-400 py-8">Cargando...</TableCell></TableRow>
+                ) : lowStockProducts.length === 0 ? (
+                  <TableRow><TableCell colSpan={5} className="text-center text-slate-400 py-8">Sin productos con stock bajo</TableCell></TableRow>
+                ) : lowStockProducts.map((product: any, index: number) => (
+                  <TableRow key={index} className={product.stock === 0 ? 'bg-rose-50' : ''}>
                     <TableCell className="font-medium">{product.name}</TableCell>
                     <TableCell className="font-mono text-slate-500">{product.sku}</TableCell>
-                    <TableCell className="text-center font-bold text-rose-600">{product.stock}</TableCell>
+                    <TableCell className={`text-center font-bold ${product.stock === 0 ? 'text-rose-600' : 'text-amber-600'}`}>{product.stock}</TableCell>
                     <TableCell className="text-center text-slate-500">{product.minStock}</TableCell>
                     <TableCell>{product.warehouse}</TableCell>
                   </TableRow>
@@ -132,33 +199,32 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* Quick Actions */}
       <Card>
         <CardHeader>
           <CardTitle>Acciones Rápidas</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-            <Link href="/dashboard/sales/new">
-              <Button variant="secondary" className="h-24 flex flex-col gap-2">
+            <Link href="/dashboard/sales">
+              <Button variant="secondary" className="h-24 flex flex-col gap-2 w-full">
                 <ShoppingCart className="w-8 h-8 mx-auto" />
                 <span>Nueva Venta</span>
               </Button>
             </Link>
             <Link href="/dashboard/purchases/new">
-              <Button variant="secondary" className="h-24 flex flex-col gap-2">
+              <Button variant="secondary" className="h-24 flex flex-col gap-2 w-full">
                 <Package className="w-8 h-8 mx-auto" />
                 <span>Nueva Compra</span>
               </Button>
             </Link>
             <Link href="/dashboard/customers/new">
-              <Button variant="secondary" className="h-24 flex flex-col gap-2">
+              <Button variant="secondary" className="h-24 flex flex-col gap-2 w-full">
                 <Users className="w-8 h-8 mx-auto" />
                 <span>Nuevo Cliente</span>
               </Button>
             </Link>
             <Link href="/dashboard/inventory/new">
-              <Button variant="secondary" className="h-24 flex flex-col gap-2">
+              <Button variant="secondary" className="h-24 flex flex-col gap-2 w-full">
                 <Plus className="w-8 h-8 mx-auto" />
                 <span>Nuevo Producto</span>
               </Button>

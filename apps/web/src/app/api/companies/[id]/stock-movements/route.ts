@@ -14,7 +14,9 @@ export async function GET(request: NextRequest) {
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
-    const { page, limit, search, sort, order, offset } = parseSearchParams(request);
+    const { page, limit, search, sort: requestedSort, order, offset } = parseSearchParams(request);
+    const allowedSortColumns = ['created_at', 'type', 'quantity', 'id'];
+    const sort = allowedSortColumns.includes(requestedSort) ? requestedSort : 'created_at';
     const url = new URL(request.url);
     const product = url.searchParams.get('product');
     const warehouse = url.searchParams.get('warehouse');

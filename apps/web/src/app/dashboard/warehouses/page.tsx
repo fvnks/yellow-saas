@@ -32,21 +32,21 @@ export default function WarehousesPage() {
     const api = getApiClient();
     api.getWarehouses().then((res) => {
       const apiData = res.data || [];
-      const mapped = apiData.map((w) => ({
+      const mapped = apiData.map((w: any) => ({
         id: w.id,
         name: w.name || '',
         code: w.code || '',
-        type: 'Principal',
-        address: '',
-        city: '',
-        region: '',
-        manager: '',
-        phone: '',
-        email: '',
-        active: true,
+        type: w.type || 'Principal',
+        address: w.address || '',
+        city: w.city || '',
+        region: w.region || '',
+        manager: w.manager || '',
+        phone: w.phone || '',
+        email: w.email || '',
+        active: w.is_active !== false,
         products: w.total_products || 0,
-        movements: 0,
-        capacity: 0,
+        movements: w.total_movements || 0,
+        capacity: w.capacity || 0,
         utilization: 0,
       }));
       setWarehouses(mapped);

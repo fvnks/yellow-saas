@@ -13,7 +13,9 @@ export async function GET(request: NextRequest) {
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
-    const { page, limit, search, sort, order, offset } = parseSearchParams(request);
+    const { page, limit, search, sort: requestedSort, order, offset } = parseSearchParams(request);
+    const allowedSortColumns = ['created_at', 'name', 'code', 'trade_name', 'tax_id', 'email', 'phone', 'id'];
+    const sort = allowedSortColumns.includes(requestedSort) ? requestedSort : 'created_at';
 
     const params: any[] = [companyId];
     let where = 'WHERE company_id = $1 AND is_active = true';
