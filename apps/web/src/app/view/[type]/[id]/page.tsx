@@ -6,6 +6,7 @@ import { generateBoletaPDF, generateCotizacionPDF, generateOrdenVentaPDF, genera
 
 const DOC_TYPE_LABELS: Record<string, string> = {
   boleta: 'Boleta de Venta',
+  factura: 'Factura de Venta',
   cotizacion: 'Cotización',
   'orden-venta': 'Orden de Venta',
   'orden-compra': 'Orden de Compra',
@@ -48,7 +49,8 @@ export default function PublicDocumentPage({ params }: { params: { type: string;
     if (!doc) return;
     let pdfDoc;
     switch (doc.type) {
-      case 'boleta': pdfDoc = await generateBoletaPDF(doc); break;
+      case 'boleta':
+      case 'factura': pdfDoc = await generateBoletaPDF(doc); break;
       case 'cotizacion': pdfDoc = await generateCotizacionPDF(doc); break;
       case 'orden_venta': pdfDoc = await generateOrdenVentaPDF(doc); break;
       case 'orden_compra': pdfDoc = await generateOrdenCompraPDF(doc); break;

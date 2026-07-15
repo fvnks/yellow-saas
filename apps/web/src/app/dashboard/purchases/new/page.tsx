@@ -1,32 +1,11 @@
 ﻿'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select } from '@yellow-erp/ui';
 import { ArrowLeft, Save, Plus, Trash2, Package } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
-
-const suppliers = [
-  { id: '1', name: 'Logistica Norte SpA', code: 'SUP-001' },
-  { id: '2', name: 'Distribuidora Chile', code: 'SUP-002' },
-  { id: '3', name: 'Mecánica y Repuestos', code: 'SUP-003' },
-  { id: '4', name: 'Almacenes Sur', code: 'SUP-004' },
-];
-
-const warehouses = [
-  { id: '1', name: 'Bodega Central', code: 'BC-01' },
-  { id: '2', name: 'Bodega Norte', code: 'BN-02' },
-  { id: '3', name: 'Bodega Sur', code: 'BS-03' },
-];
-
-const products = [
-  { id: '1', name: 'Laptop HP ProBook 450', sku: 'LP-HP-450', price: 650000 },
-  { id: '2', name: 'Mouse Logitech MX Master 3S', sku: 'MS-LG-MX3', price: 89000 },
-  { id: '3', name: 'Monitor Dell 27" 4K', sku: 'MN-DELL-27', price: 420000 },
-  { id: '4', name: 'Teclado Mecánico Keychron K2', sku: 'KB-KC-K2', price: 95000 },
-  { id: '5', name: 'Disco SSD Samsung 980 PRO 1TB', sku: 'SSD-SAM-980', price: 110000 },
-];
 
 interface OrderItem {
   productId: string;
@@ -38,6 +17,9 @@ export default function NewPurchaseOrderPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [suppliers, setSuppliers] = useState<{ id: string; name: string; code: string }[]>([]);
+  const [warehouses, setWarehouses] = useState<{ id: string; name: string; code: string }[]>([]);
+  const [products, setProducts] = useState<{ id: string; name: string; sku: string; price: number }[]>([]);
   const [formData, setFormData] = useState({
     supplierId: '',
     warehouseId: '',
@@ -49,6 +31,19 @@ export default function NewPurchaseOrderPage() {
   const [items, setItems] = useState<OrderItem[]>([
     { productId: '', quantity: 1, unitPrice: 0 },
   ]);
+
+  useEffect(() => {
+    const api = getApiClient();
+    Promise.all([
+      api.getSuppliers().catch(() => ({ data: [] })),
+      api.getWarehouses().catch(() => ({ data: [] })),
+      api.getProducts().catch(() => ({ data: [] })),
+    ]).then(([suppliersRes, warehousesRes, productsRes]) => {
+      setSuppliers((suppliersRes.data || []).map((s: any) => ({ id: s.id, name: s.name, code: s.code || '' })));
+      setWarehouses((warehousesRes.data || []).map((w: any) => ({ id: w.id, name: w.name, code: w.code || '' })));
+      setProducts((productsRes.data || []).map((p: any) => ({ id: p.id, name: p.name, sku: p.sku || '', price: p.sale_price || p.price || 0 })));
+    });
+  }, []);
 
   const handleFormChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({ ...prev, [field]: e.target.value }));

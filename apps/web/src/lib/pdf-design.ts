@@ -31,7 +31,7 @@ export interface DocumentItem {
 export interface DocumentData {
   id: string;
   number: string;
-  type: 'boleta' | 'cotizacion' | 'orden_venta' | 'orden_compra';
+  type: 'boleta' | 'factura' | 'cotizacion' | 'orden_venta' | 'orden_compra';
   date: string;
   due_date?: string;
   company: CompanyData;
@@ -61,6 +61,7 @@ const COLORS = {
 
 const DOC_TYPE_LABELS: Record<string, string> = {
   boleta: 'BOLETA DE VENTA',
+  factura: 'FACTURA DE VENTA',
   cotizacion: 'COTIZACIÓN',
   orden_venta: 'ORDEN DE VENTA',
   orden_compra: 'ORDEN DE COMPRA',
@@ -425,6 +426,66 @@ export async function generateOrdenCompraPDF(data: DocumentData): Promise<jsPDF>
   const totalsY = buildTotalsBlock(doc, data, tableY);
   buildNotes(doc, data, totalsY);
   buildFooter(doc, data);
+  return doc;
+}
+
+export interface ReturnNoteData {
+  id: string;
+  number: string;
+  date: string;
+  company: CompanyData;
+  customer?: { name: string; tax_id?: string; address?: string };
+  items: DocumentItem[];
+  reason?: string;
+  condition?: string;
+  notes?: string;
+}
+
+export async function generateReturnNotePDF(data: ReturnNoteData): Promise<jsPDF> {
+  const doc = new jsPDF('p', 'mm', 'a4');
+  let y = await buildDocumentHeader(doc, {
+    ...data,
+    type: 'boleta',
+    subtotal: data.items.reduce((sum, item) => sum + item.total, 0),
+    tax_amount: 0,
+    total: data.items.reduce((sum, item) => sum + item.total, 0),
+  });
+
+  // Return-specific info
+  if (data.reason) {
+    y += 2;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...COLORS.textMuted);
+    doc.text(`Motivo: ${data.reason}`, 15, y);
+    y += 4;
+  }
+  if (data.condition) {
+    doc.text(`Condición: ${data.condition}`, 15, y);
+    y += 4;
+  }
+
+  const tableY = buildItemsTable(doc, {
+    ...data,
+    type: 'boleta',
+    subtotal: data.items.reduce((sum, item) => sum + item.total, 0),
+    tax_amount: 0,
+    total: data.items.reduce((sum, item) => sum + item.total, 0),
+  }, y);
+
+  if (data.notes) {
+    y = tableY + 4;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...COLORS.textMuted);
+    doc.text('Notas:', 15, y);
+    y += 4;
+    doc.setFontSize(7);
+    const noteLines = doc.splitTextToSize(data.notes, 180);
+    doc.text(noteLines, 15, y);
+  }
+
+  buildFooter(doc, { ...data, type: 'boleta' });
   return doc;
 }
 

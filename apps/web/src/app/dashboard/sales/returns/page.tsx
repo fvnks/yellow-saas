@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
-import { Plus, Search, Eye, CheckCircle, X, RotateCcw, ArrowLeft } from 'lucide-react';
+import { Plus, Search, Eye, CheckCircle, X, RotateCcw, ArrowLeft, Download } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { generateReturnNotePDF } from '@/lib/pdf-design';
 import Link from 'next/link';
 
 interface CustomerReturn {
@@ -38,6 +39,7 @@ export default function SalesReturnsPage() {
   const [warehouses, setWarehouses] = useState<{ id: string; name: string; code: string }[]>([]);
   const [customers, setCustomers] = useState<{ id: string; name: string; tax_id: string }[]>([]);
   const [loading, setLoading] = useState(true);
+  const [company, setCompany] = useState<any>(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -69,12 +71,14 @@ export default function SalesReturnsPage() {
       api.getProducts({ limit: '500' }),
       api.getWarehouses({ limit: '100' }),
       api.getCustomers({ limit: '500' }),
+      api.getCompany().catch(() => null),
     ])
-      .then(([returnsRes, productsRes, warehousesRes, customersRes]) => {
+      .then(([returnsRes, productsRes, warehousesRes, customersRes, companyRes]) => {
         setReturns(returnsRes.data || []);
         setProducts((productsRes.data || []).map((p: any) => ({ id: p.id, name: p.name, sku: p.sku })));
         setWarehouses((warehousesRes.data || []).map((w: any) => ({ id: w.id, name: w.name, code: w.code })));
         setCustomers((customersRes.data || []).map((c: any) => ({ id: c.id, name: c.name, tax_id: c.tax_id })));
+        if (companyRes) setCompany(companyRes);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -341,6 +345,38 @@ export default function SalesReturnsPage() {
                 className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cerrar
+              </button>
+              <button
+                onClick={async () => {
+                  if (!selectedReturn) return;
+                  const c = company || {};
+                  const doc = await generateReturnNotePDF({
+                    id: selectedReturn.id,
+                    number: selectedReturn.return_number,
+                    date: selectedReturn.created_at?.split('T')[0] || '',
+                    company: {
+                      name: c.name || 'Empresa', tax_id: c.tax_id || undefined, razon_social: c.razon_social || undefined,
+                      giro: c.giro || undefined, address: c.address || undefined, city: c.city || undefined,
+                      region: c.region || undefined, phone: c.phone || undefined, email: c.email || undefined,
+                      logo_url: c.logo_url || undefined,
+                    },
+                    customer: selectedReturn.customer ? { name: selectedReturn.customer.name, tax_id: selectedReturn.customer.tax_id } : undefined,
+                    items: returnItems.map(item => ({
+                      name: item.product_name,
+                      sku: '',
+                      quantity: item.quantity,
+                      unit_price: item.unit_price,
+                      total: item.quantity * item.unit_price,
+                    })),
+                    reason: selectedReturn.reason || undefined,
+                    condition: returnItems[0]?.condition || undefined,
+                  });
+                  doc.save(`${selectedReturn.return_number}.pdf`);
+                }}
+                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+              >
+                <Download className="w-4 h-4" />
+                Descargar PDF
               </button>
               {selectedReturn.status === 'pending' && (
                 <button
