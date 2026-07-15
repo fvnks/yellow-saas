@@ -7,8 +7,6 @@ import { ArrowLeft, Save, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 
-const paymentMethods = ['Efectivo', 'Transferencia', 'Tarjeta', 'Crédito'];
-
 interface InvoiceItem {
   productId: string;
   name: string;
@@ -152,7 +150,13 @@ export default function NewInvoicePage() {
                     label="Método de Pago"
                     value={formData.paymentMethod}
                     onChange={handleFormChange('paymentMethod')}
-                    options={[{ value: '', label: 'Seleccionar método...' }, ...paymentMethods.map(m => ({ value: m, label: m }))]}
+                    options={[
+                      { value: '', label: 'Seleccionar método...' },
+                      { value: 'efectivo', label: 'Efectivo' },
+                      { value: 'transferencia', label: 'Transferencia' },
+                      { value: 'tarjeta', label: 'Tarjeta' },
+                      { value: 'credito', label: 'Crédito' },
+                    ]}
                   />
                 </div>
               </CardContent>
