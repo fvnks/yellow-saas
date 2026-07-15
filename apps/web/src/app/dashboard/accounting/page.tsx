@@ -36,19 +36,32 @@ export default function AccountingPage() {
 
   useEffect(() => {
     const api = getApiClient();
-    api.getJournalEntries().then((entries) => {
-      const mapped: Account[] = (entries.data || []).map((e) => ({
-        id: String(e.id),
-        code: String(e.entry_number || ''),
-        name: String(e.description || ''),
-        type: 'expense',
-        balance: Number(e.total_debit || 0),
-        isActive: true,
-        isSystem: false,
+    Promise.all([
+      api.getAccounts().catch(() => ({ data: [] })),
+      api.getTaxes().catch(() => ({ data: [] })),
+    ]).then(([accountsRes, taxesRes]) => {
+      const mapped: Account[] = (accountsRes.data || []).map((a: any) => ({
+        id: String(a.id),
+        code: String(a.code || ''),
+        name: String(a.name || ''),
+        type: a.type || 'expense',
+        balance: Number(a.balance || 0),
+        isActive: a.is_active !== false,
+        isSystem: a.is_system || false,
       }));
       setAccounts(mapped);
+      setTaxes((taxesRes.data || []).map((t: any) => ({
+        id: t.id,
+        code: t.code || '',
+        name: t.name || '',
+        rate: t.rate || 0,
+        type: t.type || 'IVA',
+        isDefault: t.is_default || false,
+        sriCode: t.sri_code || '',
+        isActive: t.is_active !== false,
+      })));
       setLoading(false);
-    }).catch(() => setLoading(false));
+    });
   }, []);
 
   const filteredAccounts = accounts.filter(a => {
