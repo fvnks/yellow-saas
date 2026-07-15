@@ -153,6 +153,15 @@ export async function POST(request: Request) {
     }
     results.push(`Created ${newTables.length} new tables`);
 
+    // ALTER TABLE migrations
+    const alterStatements = [
+      `DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_attribute WHERE attrelid = 'invoices'::regclass AND attname = 'document_type') THEN ALTER TABLE invoices ADD COLUMN document_type TEXT DEFAULT 'factura' CHECK (document_type IN ('boleta', 'factura')); END IF; END $$`,
+    ];
+    for (const sql of alterStatements) {
+      try { await query(sql); } catch { /* column may already exist */ }
+    }
+    results.push('Applied ALTER TABLE migrations');
+
     const permModules = ['dashboard', 'inventory', 'warehouses', 'sales', 'purchases', 'customers', 'suppliers', 'crm', 'payroll', 'accounting', 'projects', 'pos', 'billing', 'settings', 'audit', 'reports'];
     const permActions = ['create', 'read', 'update', 'delete'];
     for (const mod of permModules) {

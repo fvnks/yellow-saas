@@ -79,18 +79,24 @@ export async function POST(request: NextRequest) {
 
     const {
       customer_id, order_id, invoice_date,
-      due_date, payment_terms, notes, items,
+      due_date, payment_terms, notes, items, document_type,
     } = body;
 
-    if (!customer_id || !items?.length) {
-      return errorResponse('Customer and items are required', 400);
+    if (!items?.length) {
+      return errorResponse('Items are required', 400);
+    }
+
+    const docType = document_type === 'boleta' ? 'boleta' : 'factura';
+    if (docType === 'factura' && !customer_id) {
+      return errorResponse('Customer is required for facturas', 400);
     }
 
     const { rows: countRows } = await query(
-      `SELECT COUNT(*) as count FROM invoices WHERE company_id = $1`,
-      [companyId]
+      `SELECT COUNT(*) as count FROM invoices WHERE company_id = $1 AND document_type = $2`,
+      [companyId, docType]
     );
-    const invoiceNumber = `FE-${String((parseInt(countRows[0]?.count || '0') + 1)).padStart(6, '0')}`;
+    const prefix = docType === 'boleta' ? 'BF' : 'FE';
+    const invoiceNumber = `${prefix}-${String((parseInt(countRows[0]?.count || '0') + 1)).padStart(6, '0')}`;
 
     let subtotal = 0;
     let taxAmount = 0;
@@ -102,11 +108,11 @@ export async function POST(request: NextRequest) {
     }
 
     const { rows: invoiceRows } = await query(
-      `INSERT INTO invoices (company_id, customer_id, order_id, invoice_number, status, invoice_date, due_date, payment_terms, subtotal, tax_amount, total_amount, notes)
-       VALUES ($1, $2, $3, $4, 'pending', $5, $6, $7, $8, $9, $10, $11)
+      `INSERT INTO invoices (company_id, customer_id, order_id, invoice_number, document_type, status, invoice_date, due_date, payment_terms, subtotal, tax_amount, total_amount, notes)
+       VALUES ($1, $2, $3, $4, $5, 'pending', $6, $7, $8, $9, $10, $11, $12)
        RETURNING *`,
       [
-        companyId, customer_id, order_id || null, invoiceNumber,
+        companyId, customer_id || null, order_id || null, invoiceNumber, docType,
         invoice_date || new Date().toISOString(), due_date || null,
         payment_terms || 0, subtotal, taxAmount, subtotal + taxAmount, notes || null,
       ]
