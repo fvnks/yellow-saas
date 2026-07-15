@@ -67,7 +67,7 @@ export class ApiClient {
 
   // Products
   async getProducts(params?: Record<string, string>) {
-    return this.requestWithPagination<{ id: string; name: string; sku: string; price: number; stock: number; warehouse: string; cost_price?: number; stock_levels?: { id?: string; quantity?: number; warehouse?: { id?: string; name?: string; code?: string } | null }[]; cost_center?: { id: string; name: string; code: string } | null; image_url?: string | null }>('/products', params || {});
+    return this.requestWithPagination<{ id: string; name: string; sku: string; price: number; sale_price?: number; stock: number; warehouse: string; cost_price?: number; stock_levels?: { id?: string; quantity?: number; warehouse?: { id?: string; name?: string; code?: string } | null }[]; cost_center?: { id: string; name: string; code: string } | null; image_url?: string | null }>('/products', params || {});
   }
 
   async getProduct(id: string) {

@@ -111,7 +111,7 @@ export default function SalesPage() {
         id: p.id,
         name: p.name || '',
         sku: p.sku || '',
-        price: p.price || 0,
+        price: p.sale_price || p.price || 0,
       }));
       const customersData = (customersRes.data || []).map((c) => ({
         id: c.id,
@@ -773,7 +773,7 @@ const handlePayment = async () => {
                         </div>
                         <p className="text-xs text-slate-500 font-mono">{product.sku}</p>
                         <p className="text-sm font-medium text-slate-900 mt-1 line-clamp-2">{product.name}</p>
-                        <p className="text-lg font-bold text-slate-900 mt-2">${product.price.toLocaleString('es-CL')}</p>
+                        <p className="text-lg font-bold text-slate-900 mt-2">${(product.price || 0).toLocaleString('es-CL')}</p>
                       </button>
                     ))}
                   </div>
@@ -803,7 +803,7 @@ const handlePayment = async () => {
                         <div className="flex items-start justify-between">
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-slate-900 truncate">{item.name}</p>
-                            <p className="text-xs text-slate-500">${item.price.toLocaleString('es-CL')} c/u</p>
+                            <p className="text-xs text-slate-500">${(item.price || 0).toLocaleString('es-CL')} c/u</p>
                           </div>
                           <button onClick={() => removeFromCart(item.id)} className="p-1 text-slate-400 hover:text-rose-600 rounded">
                             <X className="w-4 h-4" />
@@ -815,7 +815,7 @@ const handlePayment = async () => {
                             <span className="text-sm font-medium w-8 text-center">{item.quantity}</span>
                             <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-7 h-7 bg-white border border-slate-200 rounded-md flex items-center justify-center text-slate-600 hover:bg-slate-50">+</button>
                           </div>
-                          <p className="text-sm font-bold text-slate-900">${(item.price * item.quantity).toLocaleString('es-CL')}</p>
+                          <p className="text-sm font-bold text-slate-900">${((item.price || 0) * (item.quantity || 0)).toLocaleString('es-CL')}</p>
                         </div>
                       </div>
                     ))
