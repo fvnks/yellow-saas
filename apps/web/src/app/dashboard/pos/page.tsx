@@ -36,7 +36,7 @@ export default function POSPage() {
         id: p.id,
         name: p.name,
         sku: p.sku,
-        price: p.price,
+        price: p.sale_price || p.price || 0,
       }));
       setProducts(items);
       setLoading(false);
@@ -119,7 +119,7 @@ export default function POSPage() {
                 </div>
                 <p className="text-xs text-slate-500 font-mono">{product.sku}</p>
                 <p className="text-sm font-medium text-slate-900 mt-1 line-clamp-2">{product.name}</p>
-                <p className="text-lg font-bold text-slate-900 mt-2">${product.price.toLocaleString('es-CL')}</p>
+                <p className="text-lg font-bold text-slate-900 mt-2">${(product.price || 0).toLocaleString('es-CL')}</p>
               </button>
             ))}
           </div>
@@ -149,7 +149,7 @@ export default function POSPage() {
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-slate-900 truncate">{item.name}</p>
-                    <p className="text-xs text-slate-500">${item.price.toLocaleString('es-CL')} c/u</p>
+                    <p className="text-xs text-slate-500">${(item.price || 0).toLocaleString('es-CL')} c/u</p>
                   </div>
                   <button onClick={() => removeFromCart(item.id)} className="p-1 text-slate-400 hover:text-rose-600 rounded">
                     <X className="w-4 h-4" />
@@ -171,7 +171,7 @@ export default function POSPage() {
                       +
                     </button>
                   </div>
-                  <p className="text-sm font-bold text-slate-900">${(item.price * item.quantity).toLocaleString('es-CL')}</p>
+                  <p className="text-sm font-bold text-slate-900">${((item.price || 0) * (item.quantity || 0)).toLocaleString('es-CL')}</p>
                 </div>
               </div>
             ))
