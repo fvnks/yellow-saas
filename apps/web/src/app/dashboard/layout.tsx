@@ -40,6 +40,7 @@ import {
   BookOpen,
   Boxes,
   GitBranch,
+  ReceiptText,
 } from 'lucide-react';
 import { cn } from '@yellow-erp/ui';
 import { Button } from '@yellow-erp/ui';
@@ -101,9 +102,20 @@ const MODULES: SidebarModule[] = [
       { name: 'Devoluciones', href: '/dashboard/sales/returns', icon: RotateCcw },
       { name: 'POS', href: '/dashboard/pos', icon: Monitor },
       { name: 'Clientes', href: '/dashboard/customers', icon: Users },
+      { name: 'Registro de Ventas', href: '/dashboard/sales/register', icon: ReceiptText },
     ],
   },
-  { name: 'Compras', href: '/dashboard/purchases', icon: ShoppingBag, permission: 'purchase_orders' },
+  {
+    name: 'Compras',
+    icon: ShoppingBag,
+    permission: 'purchase_orders',
+    href: '/dashboard/purchases',
+    children: [
+      { name: 'Órdenes de Compra', href: '/dashboard/purchases', icon: ShoppingBag },
+      { name: 'Proveedores', href: '/dashboard/suppliers', icon: Truck },
+      { name: 'Registro de Compras', href: '/dashboard/purchases/register', icon: ReceiptText },
+    ],
+  },
   { name: 'CRM', href: '/dashboard/crm', icon: Handshake, permission: 'crm' },
   { name: 'Listas de Precio', href: '/dashboard/price-lists', icon: List, permission: 'price_lists' },
   { name: 'Nomina', href: '/dashboard/payroll', icon: Wallet, permission: 'payroll' },
