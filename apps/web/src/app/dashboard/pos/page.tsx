@@ -117,21 +117,8 @@ export default function POSPage() {
     try {
       const api = getApiClient();
 
-      const orderResult = await api.createSalesOrder({
-        customer_id: selectedCustomer?.id || '',
-        notes: `Venta POS - ${documentType === 'boleta' ? 'Boleta' : 'Factura'} - ${paymentMethod}`,
-        items: cart.map(item => ({
-          product_id: item.id,
-          quantity: item.quantity,
-          unit_price: item.price,
-          discount_percent: 0,
-          tax_rate: 19,
-        })),
-      });
-
       const invoiceResult = await api.createInvoice({
-        order_id: orderResult?.id,
-        customer_id: selectedCustomer?.id || '',
+        customer_id: selectedCustomer?.id || undefined,
         invoice_date: new Date().toISOString().split('T')[0],
         due_date: documentType === 'boleta' ? undefined : new Date().toISOString().split('T')[0],
         payment_method: paymentMethod,

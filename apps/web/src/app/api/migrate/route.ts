@@ -156,6 +156,9 @@ export async function POST(request: Request) {
     // ALTER TABLE migrations
     const alterStatements = [
       `DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_attribute WHERE attrelid = 'invoices'::regclass AND attname = 'document_type') THEN ALTER TABLE invoices ADD COLUMN document_type TEXT DEFAULT 'factura' CHECK (document_type IN ('boleta', 'factura')); END IF; END $$`,
+      `ALTER TABLE invoices ALTER COLUMN customer_id DROP NOT NULL`,
+      `ALTER TABLE sales_orders ALTER COLUMN customer_id DROP NOT NULL`,
+      `ALTER TABLE sales_orders ALTER COLUMN warehouse_id DROP NOT NULL`,
     ];
     for (const sql of alterStatements) {
       try { await query(sql); } catch { /* column may already exist */ }
