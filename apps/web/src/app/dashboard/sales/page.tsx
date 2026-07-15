@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Select, Input } from '@yellow-erp/ui';
-import { Plus, Search, Download, Eye, Edit, Trash2, ShoppingCart, DollarSign, Truck, CreditCard, Package, FileText, ClipboardList, Monitor, Banknote, Receipt, X, Check, Users, RotateCcw } from 'lucide-react';
+import { Plus, Search, Download, Eye, Edit, Trash2, ShoppingCart, DollarSign, Truck, CreditCard, Package, FileText, ClipboardList, Monitor, Banknote, Receipt, X, Check, Users, RotateCcw, User } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 
@@ -69,6 +69,11 @@ export default function SalesPage() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('cash');
   const [amountPaid, setAmountPaid] = useState(0);
+  const [posDocumentType, setPosDocumentType] = useState<'boleta' | 'factura'>('boleta');
+  const [posCustomerSearch, setPosCustomerSearch] = useState('');
+  const [posSelectedCustomer, setPosSelectedCustomer] = useState<any>(null);
+  const [showPosCustomerDropdown, setShowPosCustomerDropdown] = useState(false);
+  const [posProcessing, setPosProcessing] = useState(false);
 
   useEffect(() => {
     const api = getApiClient();
@@ -181,6 +186,11 @@ export default function SalesPage() {
     return matchesSearch;
   });
 
+  const filteredPosCustomers = customers.filter(c =>
+    c.name.toLowerCase().includes(posCustomerSearch.toLowerCase()) ||
+    c.tax_id.toLowerCase().includes(posCustomerSearch.toLowerCase())
+  );
+
   const totalSales = orders.reduce((sum, o) => sum + (o.total || 0), 0);
   const pendingDelivery = deliveryGuides.filter(g => g.status !== 'delivered').length;
   const pendingPayment = invoices.filter(i => i.status === 'pending' || i.status === 'overdue').reduce((sum, i) => sum + ((i.total || 0) - (i.paid || 0)), 0);
@@ -211,16 +221,16 @@ export default function SalesPage() {
   };
 
 const handlePayment = async () => {
+  if (posDocumentType === 'factura' && !posSelectedCustomer) return;
+  if (cart.length === 0) return;
+
+  setPosProcessing(true);
   try {
     const api = getApiClient();
     
-    // Find a customer (use first customer or null)
-    const customerId = customers.length > 0 ? customers[0].id : null;
-    
-    // Create a sales order first
     const orderResult = await api.createSalesOrder({
-      customer_id: customerId || '',
-      notes: `Venta POS - ${paymentMethod}`,
+      customer_id: posSelectedCustomer?.id || '',
+      notes: `Venta POS - ${posDocumentType === 'boleta' ? 'Boleta' : 'Factura'} - ${paymentMethod}`,
       items: cart.map(item => ({
         product_id: item.id,
         quantity: item.quantity,
@@ -230,19 +240,18 @@ const handlePayment = async () => {
       })),
     });
     
-    // Create invoice for the order
     if (orderResult?.id) {
       await api.createInvoice({
         order_id: orderResult.id,
-        customer_id: customerId || '',
+        customer_id: posSelectedCustomer?.id || '',
         invoice_date: new Date().toISOString().split('T')[0],
-        due_date: new Date().toISOString().split('T')[0],
+        due_date: posDocumentType === 'boleta' ? undefined : new Date().toISOString().split('T')[0],
         payment_method: paymentMethod,
+        document_type: posDocumentType,
         items: cart.map(item => ({
           product_id: item.id,
           quantity: item.quantity,
           unit_price: item.price,
-          discount: 0,
           description: item.name,
         })),
       });
@@ -251,14 +260,14 @@ const handlePayment = async () => {
     setCart([]);
     setShowPaymentModal(false);
     setAmountPaid(0);
+    setPosSelectedCustomer(null);
+    setPosCustomerSearch('');
     
-    // Reload data
     const [ordersRes, guidesRes, invoicesRes] = await Promise.all([
       api.getSalesOrders(),
       api.getDeliveryGuides(),
       api.getInvoices(),
     ]);
-    // Update state with fresh data (keep existing products and customers)
     setOrders((ordersRes.data || []).map((o) => ({
       id: o.id,
       number: o.order_number,
@@ -285,8 +294,10 @@ const handlePayment = async () => {
       status: inv.status,
       paid: 0,
     })));
-  } catch (error) {
-    console.error('Error processing payment:', error);
+  } catch (err) {
+    console.error('Payment error:', err);
+  } finally {
+    setPosProcessing(false);
   }
 };
 
@@ -865,7 +876,7 @@ const handlePayment = async () => {
       {/* POS Payment Modal */}
       {showPaymentModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4">
             <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-slate-900">Cobrar Venta</h2>
               <button onClick={() => setShowPaymentModal(false)} className="text-slate-400 hover:text-slate-600">
@@ -873,9 +884,143 @@ const handlePayment = async () => {
               </button>
             </div>
             <div className="p-6 space-y-4">
+              {/* Document Type */}
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-700">Tipo de Documento</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => { setPosDocumentType('boleta'); setPosSelectedCustomer(null); setPosCustomerSearch(''); }}
+                    className={`p-3 rounded-lg border-2 flex flex-col items-center gap-1 transition-colors ${
+                      posDocumentType === 'boleta'
+                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
+                        : 'border-slate-200 text-slate-600 hover:border-slate-300'
+                    }`}
+                  >
+                    <Receipt className="w-5 h-5" />
+                    <span className="text-xs font-medium">Boleta</span>
+                    <span className="text-[9px] text-slate-400">Sin RUT</span>
+                  </button>
+                  <button
+                    onClick={() => setPosDocumentType('factura')}
+                    className={`p-3 rounded-lg border-2 flex flex-col items-center gap-1 transition-colors ${
+                      posDocumentType === 'factura'
+                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
+                        : 'border-slate-200 text-slate-600 hover:border-slate-300'
+                    }`}
+                  >
+                    <FileText className="w-5 h-5" />
+                    <span className="text-xs font-medium">Factura</span>
+                    <span className="text-[9px] text-slate-400">Requiere RUT</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Customer Search */}
+              {posDocumentType === 'factura' ? (
+                <div className="space-y-1 relative">
+                  <label className="block text-xs font-medium text-slate-700">Cliente (Requerido) *</label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input
+                      type="text"
+                      value={posCustomerSearch}
+                      onChange={(e) => { setPosCustomerSearch(e.target.value); setShowPosCustomerDropdown(true); }}
+                      onFocus={() => setShowPosCustomerDropdown(true)}
+                      placeholder="Buscar por nombre o RUT..."
+                      className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    />
+                  </div>
+                  {posSelectedCustomer && (
+                    <div className="flex items-center gap-2 p-2 bg-indigo-50 rounded-lg border border-indigo-200">
+                      <User className="w-4 h-4 text-indigo-600" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-slate-900 truncate">{posSelectedCustomer.name}</p>
+                        <p className="text-[9px] text-slate-500">RUT: {posSelectedCustomer.tax_id}</p>
+                      </div>
+                      <button onClick={() => { setPosSelectedCustomer(null); setPosCustomerSearch(''); }} className="p-1 text-slate-400 hover:text-rose-600">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )}
+                  {showPosCustomerDropdown && !posSelectedCustomer && posCustomerSearch && (
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                      {filteredPosCustomers.length === 0 ? (
+                        <div className="p-3 text-center text-sm text-slate-500">No se encontraron clientes</div>
+                      ) : (
+                        filteredPosCustomers.slice(0, 10).map(c => (
+                          <button
+                            key={c.id}
+                            onClick={() => { setPosSelectedCustomer(c); setPosCustomerSearch(''); setShowPosCustomerDropdown(false); }}
+                            className="w-full text-left px-3 py-2 hover:bg-slate-50 flex items-center gap-2 border-b border-slate-100 last:border-0"
+                          >
+                            <User className="w-4 h-4 text-slate-400" />
+                            <div>
+                              <p className="text-sm font-medium text-slate-900">{c.name}</p>
+                              <p className="text-[9px] text-slate-500">RUT: {c.tax_id}</p>
+                            </div>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-1 relative">
+                  <label className="block text-xs font-medium text-slate-700">Cliente (Opcional)</label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input
+                      type="text"
+                      value={posCustomerSearch}
+                      onChange={(e) => { setPosCustomerSearch(e.target.value); setShowPosCustomerDropdown(true); }}
+                      onFocus={() => setShowPosCustomerDropdown(true)}
+                      placeholder="Consumidor Final (sin cliente)"
+                      className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    />
+                  </div>
+                  {posSelectedCustomer && (
+                    <div className="flex items-center gap-2 p-2 bg-slate-50 rounded-lg border border-slate-200">
+                      <User className="w-4 h-4 text-slate-400" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-slate-900 truncate">{posSelectedCustomer.name}</p>
+                        <p className="text-[9px] text-slate-500">RUT: {posSelectedCustomer.tax_id}</p>
+                      </div>
+                      <button onClick={() => { setPosSelectedCustomer(null); setPosCustomerSearch(''); }} className="p-1 text-slate-400 hover:text-rose-600">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )}
+                  {showPosCustomerDropdown && !posSelectedCustomer && posCustomerSearch && (
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                      {filteredPosCustomers.length === 0 ? (
+                        <div className="p-3 text-center text-sm text-slate-500">No se encontraron clientes</div>
+                      ) : (
+                        filteredPosCustomers.slice(0, 10).map(c => (
+                          <button
+                            key={c.id}
+                            onClick={() => { setPosSelectedCustomer(c); setPosCustomerSearch(''); setShowPosCustomerDropdown(false); }}
+                            className="w-full text-left px-3 py-2 hover:bg-slate-50 flex items-center gap-2 border-b border-slate-100 last:border-0"
+                          >
+                            <User className="w-4 h-4 text-slate-400" />
+                            <div>
+                              <p className="text-sm font-medium text-slate-900">{c.name}</p>
+                              <p className="text-[9px] text-slate-500">RUT: {c.tax_id}</p>
+                            </div>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div className="text-center p-4 bg-slate-50 rounded-lg">
                 <p className="text-sm text-slate-500">Total a cobrar</p>
                 <p className="text-3xl font-bold text-slate-900">${cartTotal.toLocaleString('es-CL')}</p>
+                <p className="text-xs text-slate-400 mt-1">
+                  {posDocumentType === 'boleta' ? 'Boleta' : 'Factura'}
+                  {posSelectedCustomer ? ` - ${posSelectedCustomer.name}` : ' - Consumidor Final'}
+                </p>
               </div>
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-slate-700">Método de Pago</label>
@@ -913,10 +1058,22 @@ const handlePayment = async () => {
               )}
             </div>
             <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
-              <Button variant="secondary" onClick={() => setShowPaymentModal(false)}>Cancelar</Button>
-              <Button onClick={handlePayment} disabled={paymentMethod === 'cash' && amountPaid < cartTotal}>
-                <Check className="w-4 h-4 mr-2" />
-                Confirmar Pago
+              <Button variant="secondary" onClick={() => setShowPaymentModal(false)} disabled={posProcessing}>Cancelar</Button>
+              <Button
+                onClick={handlePayment}
+                disabled={posProcessing || (paymentMethod === 'cash' && amountPaid < cartTotal) || (posDocumentType === 'factura' && !posSelectedCustomer)}
+              >
+                {posProcessing ? (
+                  <span className="flex items-center gap-2">
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Procesando...
+                  </span>
+                ) : (
+                  <>
+                    <Check className="w-4 h-4 mr-2" />
+                    Confirmar Pago
+                  </>
+                )}
               </Button>
             </div>
           </div>
