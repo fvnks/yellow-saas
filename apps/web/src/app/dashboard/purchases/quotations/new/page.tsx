@@ -1,26 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select } from '@yellow-erp/ui';
 import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
-
-const suppliers = [
-  { id: '1', name: 'Logistica Norte SpA', code: 'SUP-001' },
-  { id: '2', name: 'Distribuidora Chile', code: 'SUP-002' },
-  { id: '3', name: 'Mecánica y Repuestos', code: 'SUP-003' },
-  { id: '4', name: 'Almacenes Sur', code: 'SUP-004' },
-];
-
-const products = [
-  { id: '1', name: 'Laptop HP ProBook 450', sku: 'LP-HP-450', price: 650000 },
-  { id: '2', name: 'Mouse Logitech MX Master 3S', sku: 'MS-LG-MX3', price: 89000 },
-  { id: '3', name: 'Monitor Dell 27" 4K', sku: 'MN-DELL-27', price: 420000 },
-  { id: '4', name: 'Teclado Mecánico Keychron K2', sku: 'KB-KC-K2', price: 95000 },
-  { id: '5', name: 'Disco SSD Samsung 980 PRO 1TB', sku: 'SSD-SAM-980', price: 110000 },
-];
 
 interface QuoteItem {
   productId: string;
@@ -32,6 +17,8 @@ export default function NewQuotationPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [suppliers, setSuppliers] = useState<{ id: string; name: string; code: string }[]>([]);
+  const [products, setProducts] = useState<{ id: string; name: string; sku: string; price: number }[]>([]);
   const [formData, setFormData] = useState({
     supplierId: '',
     expiryDate: '',
@@ -40,6 +27,17 @@ export default function NewQuotationPage() {
   const [items, setItems] = useState<QuoteItem[]>([
     { productId: '', quantity: 1, unitPrice: 0 },
   ]);
+
+  useEffect(() => {
+    const api = getApiClient();
+    Promise.all([
+      api.getSuppliers().catch(() => ({ data: [] })),
+      api.getProducts().catch(() => ({ data: [] })),
+    ]).then(([suppliersRes, productsRes]) => {
+      setSuppliers((suppliersRes.data || []).map((s: any) => ({ id: s.id, name: s.name, code: s.code || '' })));
+      setProducts((productsRes.data || []).map((p: any) => ({ id: p.id, name: p.name, sku: p.sku || '', price: p.sale_price || p.price || 0 })));
+    });
+  }, []);
 
   const handleFormChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({ ...prev, [field]: e.target.value }));
@@ -69,9 +67,30 @@ export default function NewQuotationPage() {
     e.preventDefault();
     setLoading(true);
     setError('');
-    // TODO: Add API call when quotations API is available
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    router.push('/dashboard/purchases');
+    try {
+      const api = getApiClient();
+      const validItems = items.filter(i => i.productId);
+      await api.createQuotation({
+        number: `COT-${Date.now()}`,
+        supplier_id: formData.supplierId,
+        quote_date: new Date().toISOString().split('T')[0],
+        expiry_date: formData.expiryDate,
+        total_amount: total,
+        notes: formData.notes,
+        items: validItems.map(i => ({
+          product_id: i.productId,
+          quantity: i.quantity,
+          unit_price: i.unitPrice,
+          discount_percent: 0,
+          tax_rate: 19,
+        })),
+      });
+      router.push('/dashboard/purchases');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error al crear la cotización');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
