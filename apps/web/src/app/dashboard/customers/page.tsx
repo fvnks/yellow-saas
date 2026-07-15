@@ -134,7 +134,7 @@ export default function CustomersPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Cr�dito Pendiente</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">${customers.filter(c => c.currentBalance > 0).reduce((sum, c) => sum + c.currentBalance, 0).toLocaleString('es-CL')}</p>
+                <p className="text-2xl font-bold text-slate-900 mt-1">${(customers.filter(c => c.currentBalance > 0).reduce((sum, c) => sum + c.currentBalance, 0) || 0).toLocaleString('es-CL')}</p>
               </div>
               <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center">
                 <CreditCard className="w-5 h-5 text-rose-600" />
@@ -242,10 +242,10 @@ export default function CustomersPage() {
                       </div>
                       <div className="text-xs text-slate-500">{customer.region}</div>
                     </TableCell>
-                    <TableCell className="text-center font-medium">{customer.paymentTerms} d�as</TableCell>
-                    <TableCell className="text-center font-medium">${customer.creditLimit.toLocaleString('es-CL')}</TableCell>
-                    <TableCell className="text-right font-bold" style={{ color: customer.currentBalance > 0 ? '#e11d48' : '#059669' }}>
-                      ${customer.currentBalance.toLocaleString('es-CL')}
+                    <TableCell className="text-center font-medium">{customer.paymentTerms} días</TableCell>
+                    <TableCell className="text-center font-medium">${(customer.creditLimit || 0).toLocaleString('es-CL')}</TableCell>
+                    <TableCell className="text-right font-bold" style={{ color: (customer.currentBalance || 0) > 0 ? '#e11d48' : '#059669' }}>
+                      ${(customer.currentBalance || 0).toLocaleString('es-CL')}
                     </TableCell>
                     <TableCell>
                       <Badge variant={taxExemptConfig.variant} className="text-[9px]">
