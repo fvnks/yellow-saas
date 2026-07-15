@@ -86,6 +86,11 @@ export async function POST(request: NextRequest) {
       return errorResponse('Items are required', 400);
     }
 
+    // Ensure customer_id allows NULL (for boletas without customer)
+    try { await query('ALTER TABLE invoices ALTER COLUMN customer_id DROP NOT NULL', []); } catch { /* already nullable */ }
+    // Ensure document_type column exists
+    try { await query(`DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_attribute WHERE attrelid = 'invoices'::regclass AND attname = 'document_type') THEN ALTER TABLE invoices ADD COLUMN document_type TEXT DEFAULT 'factura' CHECK (document_type IN ('boleta', 'factura')); END IF; END $$`, []); } catch { /* already exists */ }
+
     const docType = document_type === 'boleta' ? 'boleta' : 'factura';
     if (docType === 'factura' && !customer_id) {
       return errorResponse('Customer is required for facturas', 400);
