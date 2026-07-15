@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Plus, Search, Edit, Trash2, Receipt, Filter } from 'lucide-react';
+import { ArrowLeft, Plus, Search, Edit, Trash2, Receipt } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import SearchableSelect from '@/components/SearchableSelect';
+import { SALES_CONFIG } from '@/lib/erp-config';
 
 interface SalesRegister {
   id: string;
@@ -20,16 +21,33 @@ interface SalesRegister {
   notes: string | null;
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  pagada: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
-  confirming: 'bg-amber-50 text-amber-700 border border-amber-200',
-  factoring: 'bg-blue-50 text-blue-700 border border-blue-200',
+const { statuses, sellers } = SALES_CONFIG;
+
+interface SalesForm {
+  client: string;
+  client_rut: string;
+  invoice_number: string;
+  emission_date: string;
+  status: string;
+  payment_date: string;
+  net_amount: string;
+  total_amount: string;
+  guide_number: string;
+  seller: string;
+  notes: string;
+}
+
+const DEFAULT_FORM: SalesForm = {
+  client: '', client_rut: '', invoice_number: '',
+  emission_date: new Date().toISOString().split('T')[0],
+  status: 'pagada', payment_date: '', net_amount: '', total_amount: '',
+  guide_number: '', seller: 'FELIPE', notes: '',
 };
 
-const SELLER_COLORS: Record<string, string> = {
-  FELIPE: 'bg-indigo-50 text-indigo-700 border border-indigo-200',
-  MACA: 'bg-purple-50 text-purple-700 border border-purple-200',
-};
+const statusColorMap = Object.fromEntries(statuses.map(s => [s.value, s.color]));
+const statusLabelMap = Object.fromEntries(statuses.map(s => [s.value, s.label]));
+const sellerColorMap = Object.fromEntries(sellers.map(s => [s.value, s.color]));
+const sellerLabelMap = Object.fromEntries(sellers.map(s => [s.value, s.label]));
 
 export default function SalesRegisterPage() {
   const router = useRouter();
@@ -41,19 +59,7 @@ export default function SalesRegisterPage() {
   const [customers, setCustomers] = useState<{ id: string; name: string; tax_id: string }[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<SalesRegister | null>(null);
-  const [form, setForm] = useState({
-    client: '',
-    client_rut: '',
-    invoice_number: '',
-    emission_date: new Date().toISOString().split('T')[0],
-    status: 'pagada',
-    payment_date: '',
-    net_amount: '',
-    total_amount: '',
-    guide_number: '',
-    seller: 'FELIPE',
-    notes: '',
-  });
+  const [form, setForm] = useState<SalesForm>(DEFAULT_FORM);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => { fetchRecords(); }, [search, statusFilter, sellerFilter]);
@@ -62,6 +68,13 @@ export default function SalesRegisterPage() {
     const api = getApiClient();
     api.getCustomers({ limit: '500' }).then(d => setCustomers(d.data || [])).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    const net = parseFloat(form.net_amount) || 0;
+    if (net > 0) {
+      setForm(prev => ({ ...prev, total_amount: String(Math.round(net * 1.19)) }));
+    }
+  }, [form.net_amount]);
 
   const fetchRecords = async () => {
     setLoading(true);
@@ -81,8 +94,8 @@ export default function SalesRegisterPage() {
     setEditing(null);
     setForm({
       client: '', client_rut: '', invoice_number: '', emission_date: new Date().toISOString().split('T')[0],
-      status: 'pagada', payment_date: '', net_amount: '', total_amount: '',
-      guide_number: '', seller: 'FELIPE', notes: '',
+      status: statuses[0].value, payment_date: '', net_amount: '', total_amount: '',
+      guide_number: '', seller: sellers[0].value, notes: '',
     });
     setShowModal(true);
   };
@@ -163,15 +176,12 @@ export default function SalesRegisterPage() {
           <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
             className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
             <option value="">Todos los estados</option>
-            <option value="pagada">Pagada</option>
-            <option value="confirming">Confirming</option>
-            <option value="factoring">Factoring</option>
+            {statuses.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
           <select value={sellerFilter} onChange={(e) => setSellerFilter(e.target.value)}
             className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
             <option value="">Todos los vendedores</option>
-            <option value="FELIPE">FELIPE</option>
-            <option value="MACA">MACA</option>
+            {sellers.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
         </div>
       </div>
@@ -211,8 +221,8 @@ export default function SalesRegisterPage() {
                     <td className="px-4 py-3 text-xs text-slate-700 font-mono">{r.invoice_number}</td>
                     <td className="px-4 py-3 text-xs text-slate-700">{r.emission_date?.split('T')[0] || '-'}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${STATUS_COLORS[r.status] || ''}`}>
-                        {r.status}
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${statusColorMap[r.status] || ''}`}>
+                        {statusLabelMap[r.status] || r.status}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-xs text-slate-700">{r.payment_date?.split('T')[0] || '-'}</td>
@@ -220,8 +230,8 @@ export default function SalesRegisterPage() {
                     <td className="px-4 py-3 text-xs text-slate-900 font-medium text-right">{formatMoney(r.total_amount)}</td>
                     <td className="px-4 py-3 text-xs text-slate-700 font-mono">{r.guide_number || '-'}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${SELLER_COLORS[r.seller] || ''}`}>
-                        {r.seller}
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${sellerColorMap[r.seller] || ''}`}>
+                        {sellerLabelMap[r.seller] || r.seller}
                       </span>
                     </td>
                     <td className="px-4 py-3">
@@ -276,9 +286,7 @@ export default function SalesRegisterPage() {
                   <label className="block text-xs font-medium text-slate-700">Estado</label>
                   <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}
                     className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                    <option value="pagada">Pagada</option>
-                    <option value="confirming">Confirming</option>
-                    <option value="factoring">Factoring</option>
+                    {statuses.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                   </select>
                 </div>
                 <div className="space-y-1">
@@ -290,8 +298,7 @@ export default function SalesRegisterPage() {
                   <label className="block text-xs font-medium text-slate-700">Vendedor *</label>
                   <select value={form.seller} onChange={(e) => setForm({ ...form, seller: e.target.value })}
                     className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                    <option value="FELIPE">FELIPE</option>
-                    <option value="MACA">MACA</option>
+                    {sellers.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                   </select>
                 </div>
                 <div className="space-y-1">
@@ -300,9 +307,9 @@ export default function SalesRegisterPage() {
                     className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Monto Total</label>
-                  <input type="number" value={form.total_amount} onChange={(e) => setForm({ ...form, total_amount: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  <label className="block text-xs font-medium text-slate-700">Monto Total (IVA 19%)</label>
+                  <input type="number" value={form.total_amount} readOnly
+                    className="w-full bg-slate-100 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500 cursor-not-allowed" />
                 </div>
                 <div className="space-y-1 col-span-2">
                   <label className="block text-xs font-medium text-slate-700">N° Guía de Despacho</label>

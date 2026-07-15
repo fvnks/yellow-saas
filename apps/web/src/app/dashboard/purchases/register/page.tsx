@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Plus, Search, Edit, Trash2, ShoppingBag } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import SearchableSelect from '@/components/SearchableSelect';
+import { PURCHASE_CONFIG } from '@/lib/erp-config';
 
 interface PurchaseRegister {
   id: string;
@@ -20,29 +21,32 @@ interface PurchaseRegister {
   notes: string | null;
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  pagada: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
-  no_pagada: 'bg-rose-50 text-rose-700 border border-rose-200',
-};
+const { areas, paymentTypes, statuses } = PURCHASE_CONFIG;
 
-const AREA_COLORS: Record<string, string> = {
-  LOGISTICA: 'bg-blue-50 text-blue-700 border border-blue-200',
-  VERTIKAL: 'bg-violet-50 text-violet-700 border border-violet-200',
-  CASA: 'bg-amber-50 text-amber-700 border border-amber-200',
-  BRONCES: 'bg-orange-50 text-orange-700 border border-orange-200',
-};
+const statusColorMap = Object.fromEntries(statuses.map(s => [s.value, s.color]));
+const areaColorMap = Object.fromEntries(areas.map(a => [a.value, a.color]));
+const paymentLabelMap = Object.fromEntries(paymentTypes.map(p => [p.value, p.label]));
+const statusLabelMap = Object.fromEntries(statuses.map(s => [s.value, s.label]));
 
-const PAYMENT_TYPE_LABELS: Record<string, string> = {
-  tarjeta_credito: 'Tarjeta Crédito',
-  tarjeta_debito: 'Tarjeta Débito',
-  transferencia: 'Transferencia',
-  efectivo: 'Efectivo',
-  cheque: 'Cheque',
-  otro: 'Otro',
-};
+interface PurchaseForm {
+  razon_social: string;
+  rut: string;
+  invoice_number: string;
+  emission_date: string;
+  status: string;
+  amount: string;
+  area: string;
+  payment_type: string;
+  payment_date: string;
+  notes: string;
+}
 
-const AREA_OPTIONS = ['LOGISTICA', 'VERTIKAL', 'CASA', 'BRONCES'];
-const PAYMENT_OPTIONS = ['tarjeta_credito', 'tarjeta_debito', 'transferencia', 'efectivo', 'cheque', 'otro'];
+const DEFAULT_FORM: PurchaseForm = {
+  razon_social: '', rut: '', invoice_number: '',
+  emission_date: new Date().toISOString().split('T')[0],
+  status: 'no_pagada', amount: '', area: 'LOGISTICA',
+  payment_type: 'transferencia', payment_date: '', notes: '',
+};
 
 export default function PurchaseRegisterPage() {
   const router = useRouter();
@@ -54,18 +58,7 @@ export default function PurchaseRegisterPage() {
   const [suppliers, setSuppliers] = useState<{ id: string; name: string; tax_id: string }[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<PurchaseRegister | null>(null);
-  const [form, setForm] = useState({
-    razon_social: '',
-    rut: '',
-    invoice_number: '',
-    emission_date: new Date().toISOString().split('T')[0],
-    status: 'no_pagada',
-    amount: '',
-    area: 'LOGISTICA',
-    payment_type: 'transferencia',
-    payment_date: '',
-    notes: '',
-  });
+  const [form, setForm] = useState<PurchaseForm>(DEFAULT_FORM);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => { fetchRecords(); }, [search, statusFilter, areaFilter]);
@@ -94,8 +87,8 @@ export default function PurchaseRegisterPage() {
     setForm({
       razon_social: '', rut: '', invoice_number: '',
       emission_date: new Date().toISOString().split('T')[0],
-      status: 'no_pagada', amount: '', area: 'LOGISTICA',
-      payment_type: 'transferencia', payment_date: '', notes: '',
+      status: statuses[1].value, amount: '', area: areas[0].value,
+      payment_type: paymentTypes[2].value, payment_date: '', notes: '',
     });
     setShowModal(true);
   };
@@ -174,13 +167,12 @@ export default function PurchaseRegisterPage() {
           <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
             className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
             <option value="">Todos los estados</option>
-            <option value="pagada">Pagada</option>
-            <option value="no_pagada">No Pagada</option>
+            {statuses.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
           <select value={areaFilter} onChange={(e) => setAreaFilter(e.target.value)}
             className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
             <option value="">Todas las áreas</option>
-            {AREA_OPTIONS.map(a => <option key={a} value={a}>{a}</option>)}
+            {areas.map(a => <option key={a.value} value={a.value}>{a.label}</option>)}
           </select>
         </div>
       </div>
@@ -221,17 +213,17 @@ export default function PurchaseRegisterPage() {
                     <td className="px-4 py-3 text-xs text-slate-700 font-mono">{r.invoice_number}</td>
                     <td className="px-4 py-3 text-xs text-slate-700">{r.emission_date?.split('T')[0] || '-'}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${STATUS_COLORS[r.status] || ''}`}>
-                        {r.status === 'pagada' ? 'Pagada' : 'No Pagada'}
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${statusColorMap[r.status] || ''}`}>
+                        {statusLabelMap[r.status] || r.status}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-xs text-slate-900 font-medium text-right">{formatMoney(r.amount)}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${AREA_COLORS[r.area] || ''}`}>
-                        {r.area}
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${areaColorMap[r.area] || ''}`}>
+                        {areas.find(a => a.value === r.area)?.label || r.area}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-xs text-slate-700">{PAYMENT_TYPE_LABELS[r.payment_type] || r.payment_type}</td>
+                    <td className="px-4 py-3 text-xs text-slate-700">{paymentLabelMap[r.payment_type] || r.payment_type}</td>
                     <td className="px-4 py-3 text-xs text-slate-700">{r.payment_date?.split('T')[0] || '-'}</td>
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-1">
@@ -285,8 +277,7 @@ export default function PurchaseRegisterPage() {
                   <label className="block text-xs font-medium text-slate-700">Estado</label>
                   <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}
                     className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                    <option value="pagada">Pagada</option>
-                    <option value="no_pagada">No Pagada</option>
+                    {statuses.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                   </select>
                 </div>
                 <div className="space-y-1">
@@ -298,14 +289,14 @@ export default function PurchaseRegisterPage() {
                   <label className="block text-xs font-medium text-slate-700">Área *</label>
                   <select value={form.area} onChange={(e) => setForm({ ...form, area: e.target.value })}
                     className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                    {AREA_OPTIONS.map(a => <option key={a} value={a}>{a}</option>)}
+                    {areas.map(a => <option key={a.value} value={a.value}>{a.label}</option>)}
                   </select>
                 </div>
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-slate-700">Tipo de Pago *</label>
                   <select value={form.payment_type} onChange={(e) => setForm({ ...form, payment_type: e.target.value })}
                     className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                    {PAYMENT_OPTIONS.map(p => <option key={p} value={p}>{PAYMENT_TYPE_LABELS[p]}</option>)}
+                    {paymentTypes.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
                   </select>
                 </div>
                 <div className="space-y-1 col-span-2">

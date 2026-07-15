@@ -629,16 +629,11 @@ export default function PurchasesPage() {
                 </TableHeader>
                 <TableBody>
                   {suppliers.map((supplier) => {
-                    const getContactColor = (contact: string) => {
-                      if (contact === 'Carmen Silva') return 'text-indigo-600 font-medium';
-                      if (contact === 'Luis Morales') return 'text-emerald-600 font-medium';
-                      return 'text-slate-900';
-                    };
                     return (
                       <TableRow key={supplier.id}>
                         <TableCell className="font-medium">{supplier.name}</TableCell>
                         <TableCell className="font-mono text-slate-500">{supplier.code}</TableCell>
-                        <TableCell className={getContactColor(supplier.contact)}>{supplier.contact}</TableCell>
+                        <TableCell className="text-slate-900">{supplier.contact || '-'}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1 text-xs">
                             <Mail className="w-3 h-3 text-slate-400" />
