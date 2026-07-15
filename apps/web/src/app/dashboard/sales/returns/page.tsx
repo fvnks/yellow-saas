@@ -32,12 +32,6 @@ const statusConfig: Record<string, { label: string; bg: string; text: string; bo
   cancelled: { label: 'Cancelada', bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200' },
 };
 
-const conditionOptions = [
-  { value: 'good', label: 'Buen estado' },
-  { value: 'damaged', label: 'Dañado' },
-  { value: 'defective', label: 'Defectuoso' },
-];
-
 export default function SalesReturnsPage() {
   const [returns, setReturns] = useState<CustomerReturn[]>([]);
   const [products, setProducts] = useState<{ id: string; name: string; sku: string }[]>([]);
@@ -480,11 +474,9 @@ export default function SalesReturnsPage() {
                               onChange={(e) => updateReturnItem(index, 'condition', e.target.value)}
                               className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                             >
-                              {conditionOptions.map((opt) => (
-                                <option key={opt.value} value={opt.value}>
-                                  {opt.label}
-                                </option>
-                              ))}
+                              <option value="good">Buen estado</option>
+                              <option value="damaged">Dañado</option>
+                              <option value="defective">Defectuoso</option>
                             </select>
                           </div>
                           <div className="space-y-1">

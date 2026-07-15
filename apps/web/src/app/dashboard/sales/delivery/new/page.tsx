@@ -7,8 +7,6 @@ import { ArrowLeft, AlertTriangle, Truck } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 
-const transportCompanies = ['Chilexpress', 'Starken', 'Correo de Chile'];
-
 interface DispatchItem {
   productId: string;
   name: string;
@@ -125,7 +123,12 @@ export default function NewDeliveryGuidePage() {
                     label="Transportista"
                     value={formData.transportCompany}
                     onChange={handleFormChange('transportCompany')}
-                    options={[{ value: '', label: 'Seleccionar transportista...' }, ...transportCompanies.map(t => ({ value: t, label: t }))]}
+                    options={[
+                      { value: '', label: 'Seleccionar transportista...' },
+                      { value: 'chilexpress', label: 'Chilexpress' },
+                      { value: 'starken', label: 'Starken' },
+                      { value: 'correo', label: 'Correo de Chile' },
+                    ]}
                   />
                   <Input
                     label="Fecha de Despacho"

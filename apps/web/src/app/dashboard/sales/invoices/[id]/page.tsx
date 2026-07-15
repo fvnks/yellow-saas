@@ -69,7 +69,7 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
       number: invoice.invoice_number,
       date: invoice.invoice_date,
       due_date: invoice.due_date,
-      company: { name: 'Yellow Technologies SpA', rut: '76.123.456-7', address: 'Av. Providencia 1234, Oficina 501, Santiago' },
+      company: { name: '', rut: '', address: '' },
       customer: invoice.customer ? { name: invoice.customer.name, rut: invoice.customer.tax_id } : undefined,
       items: (invoice.items || []).map(item => ({
         name: item.product?.name || '',
@@ -150,10 +150,8 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
           <div className="flex items-start justify-between mb-8 pb-6 border-b border-slate-200">
             <div>
               <div className="w-16 h-16 bg-amber-400 rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-3">Y</div>
-              <p className="text-lg font-bold text-slate-900">Yellow Technologies SpA</p>
-              <p className="text-xs text-slate-500">76.123.456-7</p>
-              <p className="text-xs text-slate-500">Av. Providencia 1234, Oficina 501</p>
-              <p className="text-xs text-slate-500">Santiago, Chile</p>
+              <p className="text-lg font-bold text-slate-900">Yellow ERP</p>
+              <p className="text-xs text-slate-500">Configura tu empresa en Configuración</p>
             </div>
             <div className="text-right">
               <h2 className="text-2xl font-bold text-slate-900 mb-1">FACTURA</h2>

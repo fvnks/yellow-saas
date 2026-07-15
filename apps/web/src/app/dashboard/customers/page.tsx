@@ -6,25 +6,8 @@ import { Plus, Search, Filter, Download, Eye, Edit, Trash2, Users, Phone, Mail, 
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 
-const initialCustomers = [
-  { id: '1', code: 'CUST-001', name: 'Empresa ABC SpA', tradeName: 'ABC Industrial', taxId: '76.567.890-3', phone: '+56 2 2345 6789', email: 'contacto@abc.cl', address: 'Av. Providencia 1234', city: 'Santiago', region: 'Metropolitana', paymentTerms: 30, creditLimit: 5000000, currentBalance: 1200000, priceListId: 'pl-1', taxExempt: false, status: 'active' },
-  { id: '2', code: 'CUST-002', name: 'Comercial XYZ Ltda', tradeName: 'XYZ Comercial', taxId: '98.765.432-1', phone: '+56 51 234 5678', email: 'ventas@xyz.cl', address: 'Calle Los Andes 567', city: 'La Serena', region: 'Coquimbo', paymentTerms: 45, creditLimit: 2500000, currentBalance: 0, priceListId: 'pl-2', taxExempt: false, status: 'active' },
-  { id: '3', code: 'CUST-003', name: 'Distribuidora Norte', tradeName: 'Norte SA', taxId: '87.654.321-9', phone: '+56 65 234 5678', email: 'info@norte.cl', address: 'Av. Alemania 890', city: 'Puerto Montt', region: 'Los Lagos', paymentTerms: 60, creditLimit: 3500000, currentBalance: 850000, priceListId: 'pl-1', taxExempt: false, status: 'active' },
-  { id: '4', code: 'CUST-004', name: 'Retail Sur SA', tradeName: 'Retail Sur', taxId: '65.432.109-8', phone: '+56 4 234 5678', email: 'contacto@retail.cl', address: 'Av. La Costa 456', city: 'Valpara�so', region: 'Valpara�so', paymentTerms: 15, creditLimit: 1200000, currentBalance: 200000, priceListId: 'pl-3', taxExempt: false, status: 'active' },
-  { id: '5', code: 'CUST-005', name: 'Importadora Chile', tradeName: 'ImportChile', taxId: '54.321.098-7', phone: '+56 2 345 6780', email: 'ventas@import.cl', address: "O'Higgins 789", city: 'Santiago', region: 'Metropolitana', paymentTerms: 0, creditLimit: 3000000, currentBalance: 0, priceListId: 'pl-1', taxExempt: true, status: 'active' },
-  { id: '6', code: 'CUST-006', name: 'Servicios Omega', tradeName: 'Omega Servicios', taxId: '43.210.987-6', phone: '+56 2 234 5678', email: 'contacto@omega.cl', address: 'Ringuelet 321', city: 'Santiago', region: 'Metropolitana', paymentTerms: 30, creditLimit: 800000, currentBalance: 450000, priceListId: 'pl-2', taxExempt: false, status: 'suspended' },
-  { id: '7', code: 'CUST-007', name: 'Construcciones Beta', tradeName: 'Beta Construcciones', taxId: '32.109.876-5', phone: '+56 32 234 5678', email: 'info@beta.cl', address: '巷 Rua 654', city: 'Antofagasta', region: 'Antofagasta', paymentTerms: 45, creditLimit: 2000000, currentBalance: 0, priceListId: 'pl-1', taxExempt: false, status: 'active' },
-  { id: '8', code: 'CUST-008', name: 'Mec�nica Alfa', tradeName: 'Alfa Mec�nica', taxId: '21.098.765-4', phone: '+56 2 234 5679', email: 'ventas@alfa.cl', address: 'Calle Lira 987', city: 'Santiago', region: 'Metropolitana', paymentTerms: 60, creditLimit: 600000, currentBalance: 600000, priceListId: 'pl-3', taxExempt: false, status: 'active' },
-];
-
-const priceLists = [
-  { id: 'pl-1', name: 'Lista General', currency: 'CLP', adjustmentType: 'fixed', adjustmentValue: 0, isDefault: true },
-  { id: 'pl-2', name: 'Lista Mayorista', currency: 'CLP', adjustmentType: 'percentage', adjustmentValue: 15, isDefault: false },
-  { id: 'pl-3', name: 'Lista Especial', currency: 'CLP', adjustmentType: 'fixed', adjustmentValue: -10, isDefault: false },
-];
-
 export default function CustomersPage() {
-  const [customers, setCustomers] = useState(initialCustomers);
+  const [customers, setCustomers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -34,27 +17,25 @@ export default function CustomersPage() {
     const api = getApiClient();
     api.getCustomers().then(res => {
       const apiData = res.data || [];
-      if (apiData.length > 0) {
-        const mapped = apiData.map((c) => ({
-          id: c.id,
-          code: `CUST-${c.id.slice(0, 6)}`,
-          name: c.name || '',
-          tradeName: c.name || '',
-          taxId: c.tax_id || '',
-          phone: c.phone || '',
-          email: c.email || '',
-          address: '',
-          city: '',
-          region: '',
-          paymentTerms: 30,
-          creditLimit: 0,
-          currentBalance: 0,
-          priceListId: 'pl-1',
-          taxExempt: false,
-          status: 'active',
-        }));
-        setCustomers(mapped);
-      }
+      const mapped = apiData.map((c) => ({
+        id: c.id,
+        code: `CUST-${c.id.slice(0, 6)}`,
+        name: c.name || '',
+        tradeName: c.name || '',
+        taxId: c.tax_id || '',
+        phone: c.phone || '',
+        email: c.email || '',
+        address: c.address || '',
+        city: '',
+        region: '',
+        paymentTerms: 30,
+        creditLimit: 0,
+        currentBalance: 0,
+        priceListId: '',
+        taxExempt: false,
+        status: 'active',
+      }));
+      setCustomers(mapped);
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);
