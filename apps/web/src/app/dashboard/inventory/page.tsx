@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody
 import { Plus, Search, Filter, Download, MoreVertical, Edit, Trash2, Package, Eye, ScanBarcode, Upload, Printer } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
-import { generateBarcodeLabelsPDF } from '../../../lib/pdf';
+import { generateBarcodeLabelsPDF } from '@/lib/pdf-design';
 import BarcodeScanner from '../../../components/barcode/barcode-scanner';
 
 interface Product {

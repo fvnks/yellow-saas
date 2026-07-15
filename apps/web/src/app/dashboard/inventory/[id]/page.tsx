@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, Badge, Button, Select } from 
 import { ArrowLeft, Package, Edit, Tag, BarChart3, MapPin, FileText, ArrowDownCircle, ArrowUpCircle, RefreshCw, ArrowUpDown, Printer, Layers, Hash, Bookmark } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
-import { generateBarcodeLabelsPDF } from '../../../../lib/pdf';
+import { generateBarcodeLabelsPDF } from '@/lib/pdf-design';
 
 interface ProductData {
   id: string;

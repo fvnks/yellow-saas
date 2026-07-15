@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { ArrowLeft, Printer, Download, Truck, User, Calendar, MapPin, Package } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
-import { generateDeliveryGuidePDF } from '../../../../../lib/pdf';
+import { generateDeliveryGuidePDF } from '@/lib/pdf-design';
 
 interface DeliveryGuideItem {
   id: string;
@@ -39,28 +39,39 @@ const STATUS_MAP: Record<string, { label: string; class: string }> = {
 export default function DeliveryGuideDetailPage({ params }: { params: { id: string } }) {
   const { id } = params;
   const [guide, setGuide] = useState<DeliveryGuideDetail | null>(null);
+  const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const api = getApiClient();
-    api.getDeliveryGuide(id)
-      .then((data) => {
-        setGuide(data as unknown as DeliveryGuideDetail);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    Promise.all([
+      api.getDeliveryGuide(id),
+      api.getCompany().catch(() => null),
+    ]).then(([data, companyRes]) => {
+      setGuide(data as unknown as DeliveryGuideDetail);
+      if (companyRes) setCompany(companyRes);
+      setLoading(false);
+    }).catch(() => setLoading(false));
   }, [id]);
 
   const handlePrint = () => {
     window.print();
   };
 
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = async () => {
     if (!guide) return;
-    generateDeliveryGuidePDF({
+    const c = company || {};
+    const doc = await generateDeliveryGuidePDF({
+      id: guide.id,
       number: guide.guide_number,
+      type: 'guia_despacho',
       date: guide.created_at?.split('T')[0] || '',
-      company: { name: '', rut: '', address: '' },
+      company: {
+        name: c.name || 'Empresa', tax_id: c.tax_id || undefined, razon_social: c.razon_social || undefined,
+        giro: c.giro || undefined, address: c.address || undefined, city: c.city || undefined,
+        region: c.region || undefined, phone: c.phone || undefined, email: c.email || undefined,
+        logo_url: c.logo_url || undefined,
+      },
       customer: guide.order?.customer ? { name: guide.order.customer.name, rut: guide.order.customer.tax_id } : undefined,
       items: (guide.items || []).map(item => ({
         name: item.product?.name || '',
@@ -68,14 +79,15 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
         quantity: item.quantity,
         unit_price: 0,
         total: 0,
+        unit: 'Unidad',
+        description: item.observation || '',
       })),
-      subtotal: 0,
-      tax_amount: 0,
-      total: 0,
       transport: guide.transport,
       driver: guide.driver_name,
       plate: guide.vehicle_plate,
+      shipping_date: guide.created_at?.split('T')[0] || '',
     });
+    doc.save(`${guide.guide_number}.pdf`);
   };
 
   if (loading) {
@@ -137,9 +149,17 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
           {/* Company header */}
           <div className="flex items-start justify-between mb-8 pb-6 border-b border-slate-200">
             <div>
-              <div className="w-16 h-16 bg-amber-400 rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-3">Y</div>
-              <p className="text-lg font-bold text-slate-900">Yellow ERP</p>
-              <p className="text-xs text-slate-500">Configura tu empresa en Configuración</p>
+              {company?.logo_url ? (
+                <img src={company.logo_url} alt="Logo" className="h-16 w-auto mb-3" />
+              ) : (
+                <div className="w-16 h-16 bg-amber-400 rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-3">
+                  {(company?.name || 'E')[0]}
+                </div>
+              )}
+              <p className="text-lg font-bold text-slate-900">{company?.name || 'Empresa'}</p>
+              {company?.tax_id && <p className="text-xs text-slate-500">RUT: {company.tax_id}</p>}
+              {company?.address && <p className="text-xs text-slate-500">{company.address}</p>}
+              {company?.phone && <p className="text-xs text-slate-500">Tel: {company.phone}</p>}
             </div>
             <div className="text-right">
               <h2 className="text-2xl font-bold text-slate-900 mb-1">GUÍA DE DESPACHO</h2>

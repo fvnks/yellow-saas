@@ -45,21 +45,24 @@ export default function SalesQuotationDetailPage({ params }: { params: { id: str
   const { id } = params;
   const router = useRouter();
   const [quotation, setQuotation] = useState<QuotationDetail | null>(null);
+  const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     const api = getApiClient();
-    api.getSalesQuotation(id)
-      .then((data) => {
-        setQuotation(data as unknown as QuotationDetail);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('No se pudo cargar la cotización');
-        setLoading(false);
-      });
+    Promise.all([
+      api.getSalesQuotation(id),
+      api.getCompany().catch(() => null),
+    ]).then(([data, companyRes]) => {
+      setQuotation(data as unknown as QuotationDetail);
+      if (companyRes) setCompany(companyRes);
+      setLoading(false);
+    }).catch(() => {
+      setError('No se pudo cargar la cotización');
+      setLoading(false);
+    });
   }, [id]);
 
   const handlePrint = () => {
@@ -68,8 +71,7 @@ export default function SalesQuotationDetailPage({ params }: { params: { id: str
 
   const handleDownloadPDF = async () => {
     if (!quotation) return;
-    const api = getApiClient();
-    const company = await api.getCompany().catch(() => null);
+    const c = company || {};
     const items = quotation.items || [];
     const subtotal = items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0);
     const tax = Math.round(subtotal * 0.19);
@@ -79,12 +81,12 @@ export default function SalesQuotationDetailPage({ params }: { params: { id: str
       type: 'cotizacion',
       date: quotation.created_at?.split('T')[0] || '',
       valid_until: quotation.valid_until,
-      company: company ? {
-        name: company.name, tax_id: company.tax_id || undefined, razon_social: company.razon_social || undefined,
-        giro: company.giro || undefined, address: company.address || undefined, city: company.city || undefined,
-        region: company.region || undefined, phone: company.phone || undefined, email: company.email || undefined,
-        logo_url: company.logo_url || undefined,
-      } : { name: 'Empresa' },
+      company: {
+        name: c.name || 'Empresa', tax_id: c.tax_id || undefined, razon_social: c.razon_social || undefined,
+        giro: c.giro || undefined, address: c.address || undefined, city: c.city || undefined,
+        region: c.region || undefined, phone: c.phone || undefined, email: c.email || undefined,
+        logo_url: c.logo_url || undefined,
+      },
       customer: quotation.customer ? { name: quotation.customer.name, tax_id: quotation.customer.tax_id } : undefined,
       items: items.map(item => ({
         name: item.product?.name || '',
@@ -224,9 +226,17 @@ export default function SalesQuotationDetailPage({ params }: { params: { id: str
           {/* Company header */}
           <div className="flex items-start justify-between mb-8 pb-6 border-b border-slate-200">
             <div>
-              <div className="w-16 h-16 bg-amber-400 rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-3">Y</div>
-              <p className="text-lg font-bold text-slate-900">Yellow ERP</p>
-              <p className="text-xs text-slate-500">Configura tu empresa en Configuración</p>
+              {company?.logo_url ? (
+                <img src={company.logo_url} alt="Logo" className="h-16 w-auto mb-3" />
+              ) : (
+                <div className="w-16 h-16 bg-amber-400 rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-3">
+                  {(company?.name || 'E')[0]}
+                </div>
+              )}
+              <p className="text-lg font-bold text-slate-900">{company?.name || 'Empresa'}</p>
+              {company?.tax_id && <p className="text-xs text-slate-500">RUT: {company.tax_id}</p>}
+              {company?.address && <p className="text-xs text-slate-500">{company.address}</p>}
+              {company?.phone && <p className="text-xs text-slate-500">Tel: {company.phone}</p>}
             </div>
             <div className="text-right">
               <h2 className="text-2xl font-bold text-slate-900 mb-1">COTIZACIÓN</h2>
