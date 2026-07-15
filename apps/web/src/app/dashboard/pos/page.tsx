@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Badge, Input, Select } from '@yellow-erp/ui';
 import { Monitor, ShoppingCart, Plus, Search, CreditCard, Banknote, Receipt, ArrowRight, Package, X, Check, User, FileText, Printer, Download } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
-import { generateInvoicePDF } from '@/lib/pdf';
+import { generatePOSVoucher } from '@/lib/pdf';
 
 interface CartItem {
   id: string;
@@ -46,7 +46,7 @@ export default function POSPage() {
   const [showCustomerDropdown, setShowCustomerDropdown] = useState(false);
 
   const [processing, setProcessing] = useState(false);
-  const [completedInvoice, setCompletedInvoice] = useState<{ id: string; invoice_number: string; total: number } | null>(null);
+  const [completedInvoice, setCompletedInvoice] = useState<{ id: string; invoice_number: string; total: number; document_type: 'boleta' | 'factura'; cart: CartItem[]; customer: Customer | null; paymentMethod: string; amountPaid: number } | null>(null);
 
   useEffect(() => {
     const api = getApiClient();
@@ -135,6 +135,11 @@ export default function POSPage() {
         id: invoiceResult?.id || '',
         invoice_number: invoiceResult?.invoice_number || '',
         total,
+        document_type: documentType,
+        cart: [...cart],
+        customer: selectedCustomer,
+        paymentMethod,
+        amountPaid: paymentMethod === 'cash' ? amountPaid : total,
       });
 
       setCart([]);
@@ -149,38 +154,43 @@ export default function POSPage() {
     }
   };
 
+  const buildVoucherData = () => {
+    if (!completedInvoice) return null;
+    return {
+      invoice_number: completedInvoice.invoice_number,
+      document_type: completedInvoice.document_type,
+      date: new Date().toLocaleDateString('es-CL'),
+      company: { name: 'Yellow ERP SpA', rut: '76.123.456-7', address: 'Santiago, Chile', phone: '+56 9 1234 5678' },
+      customer: completedInvoice.customer ? { name: completedInvoice.customer.name, rut: completedInvoice.customer.tax_id } : undefined,
+      items: completedInvoice.cart.map(item => ({
+        name: item.name,
+        quantity: item.quantity,
+        unit_price: item.price,
+        total: (item.price || 0) * (item.quantity || 0),
+      })),
+      subtotal: Math.round(completedInvoice.total / 1.19),
+      tax_amount: completedInvoice.total - Math.round(completedInvoice.total / 1.19),
+      total: completedInvoice.total,
+      payment_method: completedInvoice.paymentMethod,
+      amount_paid: completedInvoice.amountPaid,
+      change: completedInvoice.paymentMethod === 'cash' ? Math.max(0, completedInvoice.amountPaid - completedInvoice.total) : undefined,
+    };
+  };
+
   const handlePrint = () => {
-    window.print();
+    const voucherData = buildVoucherData();
+    if (!voucherData) return;
+    const doc = generatePOSVoucher(voucherData);
+    const blob = doc.output('blob');
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
   };
 
   const handleDownloadPDF = async () => {
-    if (!completedInvoice) return;
-    try {
-      const api = getApiClient();
-      const invoiceData = await api.getInvoice(completedInvoice.id);
-      generateInvoicePDF({
-        number: invoiceData.invoice_number,
-        date: invoiceData.invoice_date,
-        due_date: invoiceData.due_date || undefined,
-        company: { name: 'Yellow ERP SpA', rut: '76.123.456-7' },
-        customer: invoiceData.customer ? {
-          name: invoiceData.customer.name,
-          rut: invoiceData.customer.tax_id,
-        } : undefined,
-        items: (invoiceData.items || []).map((item: any) => ({
-          name: item.product?.name || item.description || '',
-          sku: item.product?.sku || '',
-          quantity: item.quantity,
-          unit_price: item.unit_price,
-          total: item.line_total || item.quantity * item.unit_price,
-        })),
-        subtotal: invoiceData.subtotal || 0,
-        tax_amount: invoiceData.tax_amount || 0,
-        total: invoiceData.total_amount || 0,
-      });
-    } catch (err) {
-      console.error('PDF error:', err);
-    }
+    const voucherData = buildVoucherData();
+    if (!voucherData) return;
+    const doc = generatePOSVoucher(voucherData);
+    doc.save(`${voucherData.invoice_number}.pdf`);
   };
 
   const resetPOS = () => {

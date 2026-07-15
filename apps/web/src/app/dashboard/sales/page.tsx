@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Select, Input } from '@yellow-erp/ui';
-import { Plus, Search, Download, Eye, Edit, Trash2, ShoppingCart, DollarSign, Truck, CreditCard, Package, FileText, ClipboardList, Monitor, Banknote, Receipt, X, Check, Users, RotateCcw, User } from 'lucide-react';
+import { Plus, Search, Download, Eye, Edit, Trash2, ShoppingCart, DollarSign, Truck, CreditCard, Package, FileText, ClipboardList, Monitor, Banknote, Receipt, X, Check, Users, RotateCcw, User, Printer } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { generatePOSVoucher } from '@/lib/pdf';
 
 const orderStatusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   delivered: { label: 'Entregado', variant: 'success' },
@@ -74,6 +75,30 @@ export default function SalesPage() {
   const [posSelectedCustomer, setPosSelectedCustomer] = useState<any>(null);
   const [showPosCustomerDropdown, setShowPosCustomerDropdown] = useState(false);
   const [posProcessing, setPosProcessing] = useState(false);
+  const [posCompletedInvoice, setPosCompletedInvoice] = useState<{ id: string; invoice_number: string; total: number; document_type: 'boleta' | 'factura'; cart: CartItem[]; customer: any; paymentMethod: string; amountPaid: number } | null>(null);
+
+  const buildPosVoucherData = () => {
+    if (!posCompletedInvoice) return null;
+    return {
+      invoice_number: posCompletedInvoice.invoice_number,
+      document_type: posCompletedInvoice.document_type,
+      date: new Date().toLocaleDateString('es-CL'),
+      company: { name: 'Yellow ERP SpA', rut: '76.123.456-7', address: 'Santiago, Chile', phone: '+56 9 1234 5678' },
+      customer: posCompletedInvoice.customer ? { name: posCompletedInvoice.customer.name, rut: posCompletedInvoice.customer.tax_id } : undefined,
+      items: posCompletedInvoice.cart.map(item => ({
+        name: item.name,
+        quantity: item.quantity,
+        unit_price: item.price,
+        total: (item.price || 0) * (item.quantity || 0),
+      })),
+      subtotal: Math.round(posCompletedInvoice.total / 1.19),
+      tax_amount: posCompletedInvoice.total - Math.round(posCompletedInvoice.total / 1.19),
+      total: posCompletedInvoice.total,
+      payment_method: posCompletedInvoice.paymentMethod,
+      amount_paid: posCompletedInvoice.amountPaid,
+      change: posCompletedInvoice.paymentMethod === 'cash' ? Math.max(0, posCompletedInvoice.amountPaid - posCompletedInvoice.total) : undefined,
+    };
+  };
 
   useEffect(() => {
     const api = getApiClient();
@@ -228,7 +253,7 @@ const handlePayment = async () => {
   try {
     const api = getApiClient();
     
-    await api.createInvoice({
+    const invoiceResult = await api.createInvoice({
       customer_id: posSelectedCustomer?.id || undefined,
       invoice_date: new Date().toISOString().split('T')[0],
       due_date: posDocumentType === 'boleta' ? undefined : new Date().toISOString().split('T')[0],
@@ -240,6 +265,17 @@ const handlePayment = async () => {
         unit_price: item.price,
         description: item.name,
       })),
+    });
+    
+    setPosCompletedInvoice({
+      id: invoiceResult?.id || '',
+      invoice_number: invoiceResult?.invoice_number || '',
+      total: cartTotal,
+      document_type: posDocumentType,
+      cart: [...cart],
+      customer: posSelectedCustomer,
+      paymentMethod,
+      amountPaid: paymentMethod === 'cash' ? amountPaid : cartTotal,
     });
     
     setCart([]);
@@ -732,6 +768,33 @@ const handlePayment = async () => {
         {/* POS Tab */}
         {activeTab === 'pos' && (
           <div className="p-0">
+            {posCompletedInvoice ? (
+              <div className="flex items-center justify-center h-[calc(100vh-22rem)]">
+                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 w-full max-w-md text-center">
+                  <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Check className="w-8 h-8 text-emerald-600" />
+                  </div>
+                  <h2 className="text-xl font-bold text-slate-900 mb-2">Venta Registrada</h2>
+                  <p className="text-sm text-slate-500 mb-4">{posCompletedInvoice.invoice_number}</p>
+                  <p className="text-3xl font-bold text-slate-900 mb-6">${(posCompletedInvoice.total || 0).toLocaleString('es-CL')}</p>
+                  <div className="flex gap-3 mb-4">
+                    <Button variant="secondary" onClick={() => {
+                      const vd = buildPosVoucherData();
+                      if (vd) { const doc = generatePOSVoucher(vd); window.open(doc.output('bloburl'), '_blank'); }
+                    }} className="flex-1">
+                      <Printer className="w-4 h-4 mr-2" />Imprimir
+                    </Button>
+                    <Button variant="secondary" onClick={() => {
+                      const vd = buildPosVoucherData();
+                      if (vd) { const doc = generatePOSVoucher(vd); doc.save(`${vd.invoice_number}.pdf`); }
+                    }} className="flex-1">
+                      <Download className="w-4 h-4 mr-2" />Descargar PDF
+                    </Button>
+                  </div>
+                  <Button onClick={() => setPosCompletedInvoice(null)} className="w-full">Nueva Venta</Button>
+                </div>
+              </div>
+            ) : (
             <div className="flex h-[calc(100vh-22rem)]">
               {/* Products Grid */}
               <div className="flex-1 flex flex-col min-w-0 p-4">
@@ -841,6 +904,7 @@ const handlePayment = async () => {
                 </div>
               </div>
             </div>
+            )}
           </div>
         )}
       </div>
