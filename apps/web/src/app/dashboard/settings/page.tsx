@@ -1,12 +1,60 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
 import { Settings, Building2, Users, CreditCard, Bell, Shield, Globe, Save, Plus, Trash2, Mail, Key, Database, Mailbox, ShieldCheck, Zap, Webhook } from 'lucide-react';
+import { getApiClient } from '@/lib/api-client';
 import RolesTab from './tabs/RolesTab';
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('company');
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [company, setCompany] = useState({
+    name: '',
+    tax_id: '',
+    razon_social: '',
+    giro: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    region: '',
+    logo_url: '',
+  });
+
+  useEffect(() => {
+    const api = getApiClient();
+    api.getCompany().then((data) => {
+      setCompany({
+        name: data.name || '',
+        tax_id: data.tax_id || '',
+        razon_social: data.razon_social || '',
+        giro: data.giro || '',
+        email: data.email || '',
+        phone: data.phone || '',
+        address: data.address || '',
+        city: data.city || '',
+        region: data.region || '',
+        logo_url: data.logo_url || '',
+      });
+    }).catch(() => {});
+  }, []);
+
+  const handleSave = async () => {
+    setSaving(true);
+    setSaved(false);
+    try {
+      const api = getApiClient();
+      await api.updateCompany(company);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch {
+      alert('Error al guardar');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const tabs = [
     { id: 'company', label: 'Empresa', icon: Building2 },
@@ -59,18 +107,34 @@ export default function SettingsPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input label="Nombre de la Empresa" defaultValue="Yellow Tech SpA" />
-                    <Input label="Razón Social" defaultValue="Yellow Technologies SpA" />
-                    <Input label="RUT" defaultValue="76.123.456-7" />
-                    <Input label="Giro" defaultValue="Tecnología y Servicios" />
-                    <Input label="Email Corporativo" type="email" defaultValue="contacto@yellow.cl" />
-                    <Input label="Teléfono" defaultValue="+56 9 1234 5678" />
+                    <Input label="Nombre de la Empresa" value={company.name} onChange={(e) => setCompany(p => ({ ...p, name: e.target.value }))} />
+                    <Input label="Razón Social" value={company.razon_social} onChange={(e) => setCompany(p => ({ ...p, razon_social: e.target.value }))} />
+                    <Input label="RUT" value={company.tax_id} onChange={(e) => setCompany(p => ({ ...p, tax_id: e.target.value }))} />
+                    <Input label="Giro" value={company.giro} onChange={(e) => setCompany(p => ({ ...p, giro: e.target.value }))} />
+                    <Input label="Email Corporativo" type="email" value={company.email} onChange={(e) => setCompany(p => ({ ...p, email: e.target.value }))} />
+                    <Input label="Teléfono" value={company.phone} onChange={(e) => setCompany(p => ({ ...p, phone: e.target.value }))} />
                   </div>
-                  <Input label="Dirección" defaultValue="Av. Providencia 1234, Oficina 501" />
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Input label="Ciudad" defaultValue="Santiago" />
-                    <Select label="Región" defaultValue="13" options={[{ value: '13', label: 'Metropolitana de Santiago' }]} />
-                    <Input label="Código Postal" defaultValue="7500000" />
+                  <Input label="Dirección" value={company.address} onChange={(e) => setCompany(p => ({ ...p, address: e.target.value }))} />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Input label="Ciudad" value={company.city} onChange={(e) => setCompany(p => ({ ...p, city: e.target.value }))} />
+                    <Select label="Región" value={company.region} onChange={(e) => setCompany(p => ({ ...p, region: e.target.value }))} options={[
+                      { value: '', label: 'Seleccionar...' },
+                      { value: '13', label: 'Metropolitana de Santiago' },
+                      { value: '1', label: 'Arica y Parinacota' },
+                      { value: '2', label: 'Tarapacá' },
+                      { value: '3', label: 'Antofagasta' },
+                      { value: '4', label: 'Atacama' },
+                      { value: '5', label: 'Coquimbo' },
+                      { value: '6', label: 'Valparaíso' },
+                      { value: '7', label: 'Región del Libertador' },
+                      { value: '8', label: 'Biobío' },
+                      { value: '9', label: 'La Araucanía' },
+                      { value: '10', label: 'Los Ríos' },
+                      { value: '11', label: 'Los Lagos' },
+                      { value: '12', label: 'Aysén' },
+                      { value: '14', label: 'Magallanes' },
+                      { value: '15', label: 'Ñuble' },
+                    ]} />
                   </div>
                 </CardContent>
               </Card>
@@ -81,19 +145,45 @@ export default function SettingsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-6">
-                    <div className="w-24 h-24 bg-amber-400 rounded-2xl flex items-center justify-center text-white text-4xl font-bold">
-                      Y
-                    </div>
+                    {company.logo_url ? (
+                      <img src={company.logo_url} alt="Logo" className="w-24 h-24 rounded-2xl object-contain border border-slate-200" />
+                    ) : (
+                      <div className="w-24 h-24 bg-amber-400 rounded-2xl flex items-center justify-center text-white text-4xl font-bold">
+                        {company.name ? company.name.charAt(0).toUpperCase() : 'Y'}
+                      </div>
+                    )}
                     <div>
-                      <Button variant="secondary">Cambiar Logo</Button>
+                      <Button variant="secondary" onClick={async () => {
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.accept = 'image/*';
+                        input.onchange = async (e) => {
+                          const file = (e.target as HTMLInputElement).files?.[0];
+                          if (!file) return;
+                          const formData = new FormData();
+                          formData.append('file', file);
+                          try {
+                            const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                            const data = await res.json();
+                            if (data.url) {
+                              setCompany(p => ({ ...p, logo_url: data.url }));
+                            }
+                          } catch { alert('Error al subir logo'); }
+                        };
+                        input.click();
+                      }}>Cambiar Logo</Button>
                       <p className="text-xs text-slate-500 mt-2">PNG o SVG, máximo 2MB</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <div className="flex justify-end">
-                <Button><Save className="w-4 h-4 mr-2" /> Guardar Cambios</Button>
+              <div className="flex items-center justify-end gap-3">
+                {saved && <span className="text-sm text-emerald-600">Guardado correctamente</span>}
+                <Button onClick={handleSave} disabled={saving}>
+                  <Save className="w-4 h-4 mr-2" />
+                  {saving ? 'Guardando...' : 'Guardar Cambios'}
+                </Button>
               </div>
             </>
           )}

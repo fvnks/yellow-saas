@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button } from '@yellow-erp/ui';
-import { ArrowLeft, Printer, Send, Edit, X, Calendar, User, CreditCard, Truck, MapPin } from 'lucide-react';
+import { ArrowLeft, Printer, Send, Edit, X, Calendar, User, CreditCard, Truck, MapPin, Download } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { generateOrdenVentaPDF } from '@/lib/pdf-design';
 
 interface OrderItem {
   product_id: string;
@@ -56,6 +57,44 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
         setLoading(false);
       });
   }, [id]);
+
+  const handleDownloadPDF = async () => {
+    if (!order) return;
+    const api = getApiClient();
+    const company = await api.getCompany().catch(() => null);
+    const items = order.items || [];
+    const subtotal = items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0);
+    const tax = Math.round(subtotal * 0.19);
+    const doc = await generateOrdenVentaPDF({
+      id: order.id,
+      number: order.order_number,
+      type: 'orden_venta',
+      date: order.created_at?.split('T')[0] || '',
+      delivery_date: order.delivery_date,
+      payment_terms: order.payment_terms,
+      company: company ? {
+        name: company.name, tax_id: company.tax_id || undefined, razon_social: company.razon_social || undefined,
+        giro: company.giro || undefined, address: company.address || undefined, city: company.city || undefined,
+        region: company.region || undefined, phone: company.phone || undefined, email: company.email || undefined,
+        logo_url: company.logo_url || undefined,
+      } : { name: 'Empresa' },
+      customer: order.customer ? { name: order.customer.name, tax_id: order.customer.tax_id } : undefined,
+      items: items.map(item => ({
+        name: item.product?.name || 'Producto',
+        sku: item.product?.sku || '',
+        quantity: item.quantity,
+        unit_price: item.unit_price,
+        discount: item.discount_percent,
+        tax_rate: 19,
+        total: item.line_total || item.quantity * item.unit_price,
+      })),
+      subtotal,
+      tax_amount: tax,
+      total: order.total || subtotal + tax,
+      notes: order.notes,
+    });
+    doc.save(`${order.order_number}.pdf`);
+  };
 
   if (loading) {
     return (
@@ -123,6 +162,10 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
           <Button variant="secondary" size="sm" onClick={() => window.print()}>
             <Printer className="w-4 h-4 mr-2" />
             Imprimir
+          </Button>
+          <Button variant="secondary" size="sm" onClick={handleDownloadPDF}>
+            <Download className="w-4 h-4 mr-2" />
+            Descargar PDF
           </Button>
           <Button variant="secondary" size="sm" onClick={() => alert('Función de envío por email próximamente')}>
             <Send className="w-4 h-4 mr-2" />

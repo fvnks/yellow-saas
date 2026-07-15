@@ -448,6 +448,15 @@ export class ApiClient {
     return this.request<{ message: string }>('/settings', { method: 'PUT', body: JSON.stringify(data) });
   }
 
+  // Company
+  async getCompany() {
+    return this.request<{ id: string; name: string; slug: string; logo_url: string | null; tax_id: string | null; razon_social: string | null; giro: string | null; address: string | null; city: string | null; region: string | null; phone: string | null; email: string | null; settings: Record<string, unknown>; plan: string; status: string }>('');
+  }
+
+  async updateCompany(data: { name?: string; tax_id?: string; razon_social?: string; giro?: string; address?: string; city?: string; region?: string; phone?: string; email?: string; logo_url?: string }) {
+    return this.request<{ id: string; name: string }>('', { method: 'PUT', body: JSON.stringify(data) });
+  }
+
   // Dashboard KPIs
   async getDashboardKpis() {
     return this.request<{
