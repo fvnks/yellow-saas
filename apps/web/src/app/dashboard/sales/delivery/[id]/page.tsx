@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ArrowLeft, Printer, Download, Truck, User, Calendar, MapPin, Package } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { generateDeliveryGuidePDF } from '../../../../../lib/pdf';
 
 interface DeliveryGuideItem {
   id: string;
@@ -54,6 +55,29 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
     window.print();
   };
 
+  const handleDownloadPDF = () => {
+    if (!guide) return;
+    generateDeliveryGuidePDF({
+      number: guide.guide_number,
+      date: guide.created_at?.split('T')[0] || '',
+      company: { name: '', rut: '', address: '' },
+      customer: guide.order?.customer ? { name: guide.order.customer.name, rut: guide.order.customer.tax_id } : undefined,
+      items: (guide.items || []).map(item => ({
+        name: item.product?.name || '',
+        sku: item.product?.sku || '',
+        quantity: item.quantity,
+        unit_price: 0,
+        total: 0,
+      })),
+      subtotal: 0,
+      tax_amount: 0,
+      total: 0,
+      transport: guide.transport,
+      driver: guide.driver_name,
+      plate: guide.vehicle_plate,
+    });
+  };
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -101,7 +125,7 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
           <button onClick={handlePrint} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <Printer className="w-4 h-4" /> Imprimir
           </button>
-          <button onClick={handlePrint} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          <button onClick={handleDownloadPDF} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <Download className="w-4 h-4" /> Descargar PDF
           </button>
         </div>
