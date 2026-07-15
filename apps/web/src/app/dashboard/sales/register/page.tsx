@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Plus, Search, Edit, Trash2, Receipt, Filter } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import SearchableSelect from '@/components/SearchableSelect';
 
 interface SalesRegister {
   id: string;
@@ -37,10 +38,12 @@ export default function SalesRegisterPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [sellerFilter, setSellerFilter] = useState('');
+  const [customers, setCustomers] = useState<{ id: string; name: string; tax_id: string }[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<SalesRegister | null>(null);
   const [form, setForm] = useState({
     client: '',
+    client_rut: '',
     invoice_number: '',
     emission_date: new Date().toISOString().split('T')[0],
     status: 'pagada',
@@ -54,6 +57,11 @@ export default function SalesRegisterPage() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => { fetchRecords(); }, [search, statusFilter, sellerFilter]);
+
+  useEffect(() => {
+    const api = getApiClient();
+    api.getCustomers({ limit: '500' }).then(d => setCustomers(d.data || [])).catch(() => {});
+  }, []);
 
   const fetchRecords = async () => {
     setLoading(true);
@@ -72,7 +80,7 @@ export default function SalesRegisterPage() {
   const openNew = () => {
     setEditing(null);
     setForm({
-      client: '', invoice_number: '', emission_date: new Date().toISOString().split('T')[0],
+      client: '', client_rut: '', invoice_number: '', emission_date: new Date().toISOString().split('T')[0],
       status: 'pagada', payment_date: '', net_amount: '', total_amount: '',
       guide_number: '', seller: 'FELIPE', notes: '',
     });
@@ -83,6 +91,7 @@ export default function SalesRegisterPage() {
     setEditing(r);
     setForm({
       client: r.client,
+      client_rut: '',
       invoice_number: r.invoice_number,
       emission_date: r.emission_date?.split('T')[0] || '',
       status: r.status,
@@ -240,8 +249,18 @@ export default function SalesRegisterPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-slate-700">Cliente *</label>
-                  <input type="text" value={form.client} onChange={(e) => setForm({ ...form, client: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  <SearchableSelect
+                    options={customers.map(c => ({ label: c.name, value: c.name, sublabel: c.tax_id || undefined }))}
+                    value={form.client}
+                    onChange={(val, opt) => setForm({ ...form, client: val, client_rut: opt?.sublabel || '' })}
+                    placeholder="Seleccionar cliente..."
+                    searchPlaceholder="Buscar cliente..."
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-slate-700">RUT</label>
+                  <input type="text" value={form.client_rut} readOnly
+                    className="w-full bg-slate-100 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500 cursor-not-allowed" />
                 </div>
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-slate-700">N° Factura *</label>

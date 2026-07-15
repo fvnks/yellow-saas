@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Plus, Search, Edit, Trash2, ShoppingBag } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import SearchableSelect from '@/components/SearchableSelect';
 
 interface PurchaseRegister {
   id: string;
@@ -50,6 +51,7 @@ export default function PurchaseRegisterPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [areaFilter, setAreaFilter] = useState('');
+  const [suppliers, setSuppliers] = useState<{ id: string; name: string; tax_id: string }[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<PurchaseRegister | null>(null);
   const [form, setForm] = useState({
@@ -67,6 +69,11 @@ export default function PurchaseRegisterPage() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => { fetchRecords(); }, [search, statusFilter, areaFilter]);
+
+  useEffect(() => {
+    const api = getApiClient();
+    api.getSuppliers({ limit: '500' }).then(d => setSuppliers(d.data || [])).catch(() => {});
+  }, []);
 
   const fetchRecords = async () => {
     setLoading(true);
@@ -251,13 +258,18 @@ export default function PurchaseRegisterPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-slate-700">Razón Social *</label>
-                  <input type="text" value={form.razon_social} onChange={(e) => setForm({ ...form, razon_social: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  <SearchableSelect
+                    options={suppliers.map(s => ({ label: s.name, value: s.name, sublabel: s.tax_id || undefined }))}
+                    value={form.razon_social}
+                    onChange={(val, opt) => setForm({ ...form, razon_social: val, rut: opt?.sublabel || '' })}
+                    placeholder="Seleccionar proveedor..."
+                    searchPlaceholder="Buscar proveedor..."
+                  />
                 </div>
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-slate-700">RUT</label>
-                  <input type="text" value={form.rut} onChange={(e) => setForm({ ...form, rut: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  <input type="text" value={form.rut} readOnly
+                    className="w-full bg-slate-100 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500 cursor-not-allowed" />
                 </div>
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-slate-700">N° Factura *</label>
