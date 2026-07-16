@@ -8,7 +8,7 @@ FROM base AS builder
 WORKDIR /app
 
 # Copy all workspace package.json files first for better caching
-COPY package.json turbo.json ./
+COPY package.json package-lock.json turbo.json ./
 COPY apps/web/package.json ./apps/web/
 COPY packages/api/package.json ./packages/api/
 COPY packages/auth/package.json ./packages/auth/
@@ -16,7 +16,7 @@ COPY packages/db/package.json ./packages/db/
 COPY packages/ui/package.json ./packages/ui/
 
 # Install all dependencies (workspaces will link automatically)
-RUN npm install
+RUN npm ci
 
 # Copy all source code
 COPY . .
