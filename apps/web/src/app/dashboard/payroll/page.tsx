@@ -82,12 +82,10 @@ export default function PayrollPage() {
           <p className="text-sm text-slate-500 mt-1">Gestión de remuneraciones y beneficios</p>
         </div>
         {activeTab === 'employees' ? (
-          <Link href="/dashboard/payroll/new">
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              Nuevo Empleado
-            </Button>
-          </Link>
+          <Button disabled title="Próximamente" className="opacity-50 cursor-not-allowed">
+            <Plus className="w-4 h-4 mr-2" />
+            Nuevo Empleado
+          </Button>
         ) : (
           <Button>
             <Calculator className="w-4 h-4 mr-2" />

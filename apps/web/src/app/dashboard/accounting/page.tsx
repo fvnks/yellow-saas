@@ -106,12 +106,10 @@ export default function AccountingPage() {
             <Download className="w-4 h-4 mr-2" />
             Exportar Balances
           </Button>
-          <Link href="/dashboard/accounting/journal/new">
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              Nuevo Asiento
-            </Button>
-          </Link>
+          <Button disabled title="Próximamente" className="opacity-50 cursor-not-allowed">
+            <Plus className="w-4 h-4 mr-2" />
+            Nuevo Asiento
+          </Button>
         </div>
       </div>
 
@@ -242,11 +240,9 @@ export default function AccountingPage() {
                         <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Ver">
                           <Eye className="w-4 h-4" />
                         </button>
-                        <Link href={`/dashboard/accounting/accounts/${account.id}/edit`}>
-                          <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Editar">
-                            <Edit className="w-4 h-4" />
-                          </button>
-                        </Link>
+                        <button disabled title="Próximamente" className="p-1.5 text-slate-400 opacity-50 cursor-not-allowed rounded" aria-label="Editar">
+                          <Edit className="w-4 h-4" />
+                        </button>
                         <button className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -265,7 +261,7 @@ export default function AccountingPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Impuestos Configurados</CardTitle>
-          <Link href="/dashboard/accounting/taxes" className="text-sm text-slate-500 hover:text-slate-700 font-medium">
+          <Link href="/dashboard/inventory/taxes" className="text-sm text-slate-500 hover:text-slate-700 font-medium">
             Ver todos
           </Link>
         </CardHeader>

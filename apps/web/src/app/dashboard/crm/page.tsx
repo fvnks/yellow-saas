@@ -82,12 +82,10 @@ export default function CRMPage() {
             <Download className="w-4 h-4 mr-2" />
             Exportar
           </Button>
-          <Link href="/dashboard/crm/new">
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              Nuevo Contacto
-            </Button>
-          </Link>
+          <Button disabled title="Próximamente" className="opacity-50 cursor-not-allowed">
+            <Plus className="w-4 h-4 mr-2" />
+            Nuevo Contacto
+          </Button>
         </div>
       </div>
 
@@ -247,11 +245,9 @@ export default function CRMPage() {
                         <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Ver">
                           <Eye className="w-4 h-4" />
                         </button>
-                        <Link href={`/dashboard/crm/${contact.id}/edit`}>
-                          <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Editar">
-                            <Edit className="w-4 h-4" />
-                          </button>
-                        </Link>
+                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Editar">
+                          <Edit className="w-4 h-4" />
+                        </button>
                         <button className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
                           <Trash2 className="w-4 h-4" />
                         </button>

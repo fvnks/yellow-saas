@@ -61,12 +61,10 @@ export default function ProjectsPage() {
           <h1 className="text-xl font-bold text-slate-900">Proyectos</h1>
           <p className="text-sm text-slate-500 mt-1">Gestión de proyectos y presupuestos</p>
         </div>
-        <Link href="/dashboard/projects/new">
-          <Button>
-            <Plus className="w-4 h-4 mr-2" />
-            Nuevo Proyecto
-          </Button>
-        </Link>
+        <Button disabled title="Próximamente" className="opacity-50 cursor-not-allowed">
+          <Plus className="w-4 h-4 mr-2" />
+          Nuevo Proyecto
+        </Button>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
