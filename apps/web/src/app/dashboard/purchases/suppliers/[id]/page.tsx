@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Badge, Button } from '@yellow-erp/ui';
-import { ArrowLeft, Mail, Phone, MapPin, Edit, Trash2 } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, MapPin, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
@@ -14,6 +14,11 @@ interface Supplier {
   phone: string;
   tax_id: string;
   address: string;
+  is_active: boolean;
+  trade_name: string;
+  city: string;
+  region: string;
+  website: string;
 }
 
 export default function SupplierDetailPage({ params }: { params: { id: string } }) {
@@ -92,17 +97,13 @@ export default function SupplierDetailPage({ params }: { params: { id: string } 
         <div className="flex-1">
           <div className="flex items-center gap-3">
             <h1 className="text-xl font-bold text-slate-900">{supplier.name}</h1>
-            <Badge variant="success">Activo</Badge>
+            <Badge variant={supplier.is_active !== false ? 'success' : 'neutral'}>
+              {supplier.is_active !== false ? 'Activo' : 'Inactivo'}
+            </Badge>
           </div>
           <p className="text-sm text-slate-500 mt-1">{supplier.tax_id}</p>
         </div>
         <div className="flex items-center gap-2">
-          <Link href={`/dashboard/purchases/suppliers/${id}/edit`}>
-            <Button variant="secondary" size="sm">
-              <Edit className="w-4 h-4 mr-2" />
-              Editar
-            </Button>
-          </Link>
           <Button variant="danger" size="sm" onClick={handleDelete} loading={deleting}>
             <Trash2 className="w-4 h-4 mr-2" />
             Eliminar
@@ -163,7 +164,9 @@ export default function SupplierDetailPage({ params }: { params: { id: string } 
             </div>
             <div className="flex items-center justify-between text-sm">
               <span className="text-slate-500">Estado</span>
-              <Badge variant="success">Activo</Badge>
+              <Badge variant={supplier.is_active !== false ? 'success' : 'neutral'}>
+                {supplier.is_active !== false ? 'Activo' : 'Inactivo'}
+              </Badge>
             </div>
           </CardContent>
         </Card>

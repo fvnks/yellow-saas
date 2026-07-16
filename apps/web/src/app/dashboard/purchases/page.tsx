@@ -49,14 +49,18 @@ export default function PurchasesPage() {
     ]).then(([ordersRes, quotationsRes, suppliersRes, customersRes]) => {
       const ordersMapped = (ordersRes.data || []).map((o: any) => ({
         id: o.id,
-        number: o.number,
+        number: o.order_number || o.number || '',
         supplier: o.supplier?.name || o.supplier_id || '',
         supplierId: o.supplier_id,
-        date: o.created_at?.split('T')[0] || '',
-        total: o.total_amount || o.total || 0,
+        supplierCode: o.supplier?.tax_id || '',
+        date: o.order_date?.split('T')[0] || o.created_at?.split('T')[0] || '',
+        expectedDate: o.expected_date?.split('T')[0] || '',
+        total: o.total || o.total_amount || 0,
         status: o.status,
-        items: 0,
-        deliveryDate: '',
+        warehouse: o.warehouse?.name || '',
+        items: Array.isArray(o.items) ? o.items.length : 0,
+        paymentStatus: 'pending',
+        createdBy: '',
       }));
 
       const quotationsMapped = (quotationsRes.data || []).map((q) => ({
@@ -74,10 +78,10 @@ export default function PurchasesPage() {
         id: s.id,
         name: s.name,
         code: s.tax_id || '',
-        contact: s.email || '',
+        contact: s.contact_person || '',
         email: s.email || '',
         phone: s.phone || '',
-        active: true,
+        active: s.is_active !== false,
       }));
 
       const customersMapped = (customersRes.data || []).map((c) => ({
@@ -115,6 +119,12 @@ export default function PurchasesPage() {
       c.email.toLowerCase().includes(search.toLowerCase()) ||
       c.tax_id.toLowerCase().includes(search.toLowerCase());
     return matchesSearch;
+  });
+
+  const filteredSuppliers = suppliers.filter(s => {
+    const matchesSearch = s.name.toLowerCase().includes(search.toLowerCase()) || s.code.toLowerCase().includes(search.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || (statusFilter === 'active' && s.active) || (statusFilter === 'inactive' && !s.active);
+    return matchesSearch && matchesStatus;
   });
 
   const handleDeleteOrder = async (id: string) => {
@@ -347,13 +357,13 @@ export default function PurchasesPage() {
             </div>
           </div>
         </Link>
-        <Link href="/dashboard/purchases/requests/new">
+        <Link href="/dashboard/purchases/register">
           <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 hover:bg-slate-50 transition-colors cursor-pointer">
             <div className="flex flex-col items-center gap-2">
               <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
                 <Plus className="w-5 h-5 text-amber-600" />
               </div>
-              <span className="text-sm font-medium text-slate-700 text-center">Nueva Solicitud</span>
+              <span className="text-sm font-medium text-slate-700 text-center">Registro de Compras</span>
             </div>
           </div>
         </Link>
@@ -579,11 +589,6 @@ export default function PurchasesPage() {
                                 <Eye className="w-4 h-4" />
                               </button>
                             </Link>
-                            <Link href={`/dashboard/purchases/quotations/${quote.id}/edit`}>
-                              <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Editar">
-                                <Edit className="w-4 h-4" />
-                              </button>
-                            </Link>
                             <button onClick={() => handleDeleteQuotation(quote.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -628,7 +633,7 @@ export default function PurchasesPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {suppliers.map((supplier) => {
+                  {filteredSuppliers.map((supplier) => {
                     return (
                       <TableRow key={supplier.id}>
                         <TableCell className="font-medium">{supplier.name}</TableCell>

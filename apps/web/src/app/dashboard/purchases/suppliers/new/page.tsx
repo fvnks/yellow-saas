@@ -23,7 +23,7 @@ const regions = [
   { value: '12', label: 'Aysén' },
   { value: '13', label: 'Magallanes' },
   { value: '14', label: 'Arica y Parinacota' },
-  { value: '16', label: 'Ã‘uble' },
+  { value: '16', label: 'Ñuble' },
 ];
 
 interface Contact {
@@ -76,10 +76,17 @@ export default function NewSupplierPage() {
       const api = getApiClient();
       await api.createSupplier({
         name: formData.name,
+        trade_name: formData.razonSocial,
+        tax_id: formData.rut,
         email: formData.email,
         phone: formData.phone,
-        tax_id: formData.rut,
+        website: formData.website,
         address: formData.address,
+        city: formData.city,
+        region: formData.region,
+        contact_person: contacts[0]?.name || '',
+        contact_phone: contacts[0]?.phone || '',
+        contact_email: contacts[0]?.email || '',
       });
       router.push('/dashboard/purchases');
     } catch (err: unknown) {
