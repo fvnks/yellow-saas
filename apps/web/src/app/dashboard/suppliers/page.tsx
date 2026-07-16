@@ -74,7 +74,7 @@ export default function SuppliersPage() {
             <Download className="w-4 h-4 mr-2" />
             Exportar
           </Button>
-          <Link href="/dashboard/suppliers/new">
+          <Link href="/dashboard/purchases/suppliers/new">
             <Button>
               <Plus className="w-4 h-4 mr-2" />
               Nuevo Proveedor
@@ -249,11 +249,9 @@ export default function SuppliersPage() {
                         <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Ver">
                           <Eye className="w-4 h-4" />
                         </button>
-                        <Link href={`/dashboard/suppliers/${supplier.id}/edit`}>
-                          <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Editar">
-                            <Edit className="w-4 h-4" />
-                          </button>
-                        </Link>
+                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Editar">
+                          <Edit className="w-4 h-4" />
+                        </button>
                         <button className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
                           <Trash2 className="w-4 h-4" />
                         </button>

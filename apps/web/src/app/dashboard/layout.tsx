@@ -332,13 +332,7 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
                   <p className="text-sm font-medium text-slate-900">{user.name}</p>
                   <p className="text-xs text-slate-500">{user.email}</p>
                 </div>
-                <Link
-                  href="/dashboard/profile"
-                  className="flex items-center gap-2 w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50 transition-colors"
-                >
-                  <User className="w-4 h-4" />
-                  Mi perfil
-                </Link>
+
                 <Link
                   href="/dashboard/settings"
                   className="flex items-center gap-2 w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50 transition-colors"
