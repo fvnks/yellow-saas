@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
-import { Plus, Search, Filter, Download, Eye, Edit, Trash2, CreditCard, Calendar, Truck, User, Package, FileText, DollarSign, Building2, ShoppingCart, CheckCircle, AlertCircle, Mail, Users } from 'lucide-react';
+import { Plus, Search, Filter, Download, Eye, Edit, Trash2, CreditCard, Calendar, Truck, User, Package, FileText, DollarSign, Building2, ShoppingCart, CheckCircle, AlertCircle, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 
@@ -31,7 +31,6 @@ export default function PurchasesPage() {
   const [purchaseOrders, setPurchaseOrders] = useState<any[]>([]);
   const [quotations, setQuotations] = useState<Quotation[]>([]);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
-  const [customers, setCustomers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -45,8 +44,7 @@ export default function PurchasesPage() {
       api.getPurchaseOrders().catch(() => ({ data: [] })),
       api.getQuotations().catch(() => ({ data: [] })),
       api.getSuppliers().catch(() => ({ data: [] })),
-      api.getCustomers().catch(() => ({ data: [] })),
-    ]).then(([ordersRes, quotationsRes, suppliersRes, customersRes]) => {
+    ]).then(([ordersRes, quotationsRes, suppliersRes]) => {
       const ordersMapped = (ordersRes.data || []).map((o: any) => ({
         id: o.id,
         number: o.order_number || o.number || '',
@@ -70,7 +68,7 @@ export default function PurchasesPage() {
         date: q.quote_date?.split('T')[0] || '',
         expiryDate: q.expiry_date?.split('T')[0] || '',
         total: q.total_amount,
-        items: 0,
+        items: Array.isArray((q as any).items) ? (q as any).items.length : ((q as any).items_count || 0),
         status: q.status,
       }));
 
@@ -84,20 +82,9 @@ export default function PurchasesPage() {
         active: s.is_active !== false,
       }));
 
-      const customersMapped = (customersRes.data || []).map((c) => ({
-        id: c.id,
-        name: c.name || '',
-        email: c.email || '',
-        phone: c.phone || '',
-        tax_id: c.tax_id || '',
-        address: c.address || '',
-        active: true,
-      }));
-
       setPurchaseOrders(ordersMapped);
       setQuotations(quotationsMapped);
       setSuppliers(suppliersMapped);
-      setCustomers(customersMapped);
       setLoading(false);
     });
   }, []);
@@ -111,13 +98,6 @@ export default function PurchasesPage() {
 
   const filteredQuotations = quotations.filter(q => {
     const matchesSearch = q.number.toLowerCase().includes(search.toLowerCase()) || q.supplier.toLowerCase().includes(search.toLowerCase());
-    return matchesSearch;
-  });
-
-  const filteredCustomers = customers.filter(c => {
-    const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase()) ||
-      c.email.toLowerCase().includes(search.toLowerCase()) ||
-      c.tax_id.toLowerCase().includes(search.toLowerCase());
     return matchesSearch;
   });
 
@@ -154,22 +134,14 @@ export default function PurchasesPage() {
     } catch { alert('Error al eliminar el proveedor'); }
   };
 
-  const handleDeleteCustomer = async (id: string) => {
-    if (!confirm('¿Estás seguro de eliminar este cliente?')) return;
-    try {
-      const api = getApiClient();
-      await api.deleteCustomer(id);
-      setCustomers(prev => prev.filter(c => c.id !== id));
-    } catch { alert('Error al eliminar el cliente'); }
-  };
-
   const getOrderStatusConfig = (status: string) => {
     switch (status) {
+      case 'draft': return { label: 'Borrador', variant: 'neutral' as const };
       case 'pending': return { label: 'Pendiente', variant: 'warning' as const };
-      case 'approved': return { label: 'Aprobado', variant: 'info' as const };
-      case 'processing': return { label: 'Procesando', variant: 'info' as const };
-      case 'delivered': return { label: 'Entregado', variant: 'success' as const };
-      case 'cancelled': return { label: 'Cancelado', variant: 'danger' as const };
+      case 'confirmed': return { label: 'Confirmada', variant: 'info' as const };
+      case 'partial': return { label: 'Parcial', variant: 'info' as const };
+      case 'received': return { label: 'Recibida', variant: 'success' as const };
+      case 'cancelled': return { label: 'Cancelada', variant: 'danger' as const };
       default: return { label: status, variant: 'neutral' as const };
     }
   };
@@ -232,14 +204,6 @@ export default function PurchasesPage() {
               </Button>
             </Link>
           )}
-          {activeTab === 'customers' && (
-            <Link href="/dashboard/customers/new">
-              <Button>
-                <Plus className="w-4 h-4 mr-2" />
-                Nuevo Cliente
-              </Button>
-            </Link>
-          )}
         </div>
       </div>
 
@@ -250,7 +214,7 @@ export default function PurchasesPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Órdenes Pendientes</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">{purchaseOrders.filter(o => o.status === 'pending').length}</p>
+                <p className="text-2xl font-bold text-slate-900 mt-1">{purchaseOrders.filter(o => o.status === 'pending' || o.status === 'draft').length}</p>
               </div>
               <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
                 <CreditCard className="w-5 h-5 text-amber-600" />
@@ -263,7 +227,7 @@ export default function PurchasesPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Aprobadas</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">{purchaseOrders.filter(o => o.status === 'approved').length}</p>
+                <p className="text-2xl font-bold text-slate-900 mt-1">{purchaseOrders.filter(o => o.status === 'confirmed').length}</p>
               </div>
               <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
                 <CheckCircle className="w-5 h-5 text-indigo-600" />
@@ -306,19 +270,6 @@ export default function PurchasesPage() {
               </div>
               <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center">
                 <DollarSign className="w-5 h-5 text-rose-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Clientes</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">{customers.length}</p>
-              </div>
-              <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-                <Users className="w-5 h-5 text-indigo-600" />
               </div>
             </div>
           </CardContent>
@@ -377,7 +328,6 @@ export default function PurchasesPage() {
               { id: 'orders' as const, label: 'Órdenes de Compra', icon: ShoppingCart, count: purchaseOrders.length },
               { id: 'quotations' as const, label: 'Cotizaciones', icon: FileText, count: quotations.length },
               { id: 'suppliers' as const, label: 'Proveedores', icon: Building2, count: suppliers.length },
-              { id: 'customers' as const, label: 'Clientes', icon: Users, count: customers.length },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -417,11 +367,12 @@ export default function PurchasesPage() {
                   onChange={(e) => setStatusFilter(e.target.value)}
                   options={[
                     { value: 'all', label: 'Todos' },
+                    { value: 'draft', label: 'Borrador' },
                     { value: 'pending', label: 'Pendiente' },
-                    { value: 'approved', label: 'Aprobado' },
-                    { value: 'processing', label: 'Procesando' },
-                    { value: 'delivered', label: 'Entregado' },
-                    { value: 'cancelled', label: 'Cancelado' },
+                    { value: 'confirmed', label: 'Confirmada' },
+                    { value: 'partial', label: 'Parcial' },
+                    { value: 'received', label: 'Recibida' },
+                    { value: 'cancelled', label: 'Cancelada' },
                   ]}
                   className="w-full sm:w-40"
                 />
@@ -678,91 +629,6 @@ export default function PurchasesPage() {
           </Card>
         </div>
       )}
-
-      {/* Customers Section */}
-      {activeTab === 'customers' && (
-        <div role="tabpanel" aria-labelledby="customers-tab">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Catálogo de Clientes</CardTitle>
-              <Link href="/dashboard/customers/new">
-                <Button>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Nuevo Cliente
-                </Button>
-              </Link>
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Cliente</TableHead>
-                    <TableHead>RUT</TableHead>
-                    <TableHead>Correo Electrónico</TableHead>
-                    <TableHead>Teléfono</TableHead>
-                    <TableHead>Dirección</TableHead>
-                    <TableHead>Estado</TableHead>
-                    <TableHead className="w-12">Acciones</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredCustomers.map((customer) => (
-                    <TableRow key={customer.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center">
-                            <Users className="w-4 h-4 text-indigo-600" />
-                          </div>
-                          <span className="font-medium text-slate-900">{customer.name}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="font-mono text-slate-500">{customer.tax_id}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1 text-xs">
-                          <Mail className="w-3 h-3 text-slate-400" />
-                          <a href={`mailto:${customer.email}`} className="text-slate-700 hover:text-slate-900">{customer.email}</a>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1 text-xs">
-                          <Truck className="w-3 h-3 text-slate-400" />
-                          <a href={`tel:${customer.phone}`} className="text-slate-700 hover:text-slate-900">{customer.phone}</a>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-xs text-slate-500 max-w-[200px] truncate">{customer.address}</TableCell>
-                      <TableCell>
-                        <Badge variant={customer.active ? 'success' : 'neutral'}>
-                          {customer.active ? 'Activo' : 'Inactivo'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center justify-center gap-1">
-                          <Link href={`/dashboard/customers/${customer.id}`}>
-                            <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Ver">
-                              <Eye className="w-4 h-4" />
-                            </button>
-                          </Link>
-                          <Link href={`/dashboard/customers/${customer.id}/edit`}>
-                            <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Editar">
-                              <Edit className="w-4 h-4" />
-                            </button>
-                          </Link>
-                          <button onClick={() => handleDeleteCustomer(customer.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
     </div>
   );
 }
