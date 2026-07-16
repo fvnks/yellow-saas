@@ -4,7 +4,6 @@ module.exports = {
   content: [
     './src/**/*.{js,ts,jsx,tsx,mdx}',
     '../../packages/ui/src/**/*.{js,ts,jsx,tsx,mdx}',
-    './node_modules/@tremor/react/dist/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
   	container: {
