@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Package, Truck, Warehouse, Calendar, Trash2, CheckCircle, Clock } from 'lucide-react';
+import { ArrowLeft, Package, Truck, Warehouse, Calendar, Trash2, CheckCircle, Clock, Send, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
@@ -61,6 +61,12 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
         setLoading(false);
       });
   }, [id]);
+
+  const handleStatusChange = async (newStatus: string) => {
+    const api = getApiClient();
+    await api.updateGoodsReceipt(id, { status: newStatus });
+    setReceipt(prev => prev ? { ...prev, status: newStatus } : null);
+  };
 
   const handleDelete = async () => {
     if (!confirm('¿Eliminar esta recepción de mercadería?')) return;
@@ -150,6 +156,35 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
             </span>
           </div>
         </div>
+        {receipt.status !== 'cancelled' && receipt.status !== 'completed' && (
+          <div className="flex items-center gap-2">
+            {receipt.status === 'pending' && (
+              <button
+                onClick={() => handleStatusChange('received')}
+                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+              >
+                <CheckCircle className="w-4 h-4" />
+                Marcar Recibido
+              </button>
+            )}
+            {receipt.status === 'received' && (
+              <button
+                onClick={() => handleStatusChange('completed')}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+              >
+                <CheckCircle className="w-4 h-4" />
+                Completar
+              </button>
+            )}
+            <button
+              onClick={() => handleStatusChange('cancelled')}
+              className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+            >
+              <XCircle className="w-4 h-4" />
+              Cancelar
+            </button>
+          </div>
+        )}
         {receipt.status === 'pending' && (
           <button
             onClick={handleDelete}

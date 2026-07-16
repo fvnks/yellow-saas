@@ -44,6 +44,11 @@ export async function PUT(
 
     const body = await request.json();
 
+    const {
+      status, supplier_id, warehouse_id, order_date,
+      expected_date, payment_terms, notes, internal_notes, items,
+    } = body;
+
     const { rows } = await query(
       `UPDATE purchase_orders SET
         status = $1, supplier_id = $2, warehouse_id = $3, order_date = $4,
@@ -52,13 +57,34 @@ export async function PUT(
        WHERE id = $9 AND company_id = $10
        RETURNING *`,
       [
-        body.status, body.supplier_id, body.warehouse_id, body.order_date,
-        body.expected_date, body.payment_terms, body.notes, body.internal_notes,
+        status, supplier_id, warehouse_id, order_date,
+        expected_date, payment_terms, notes, internal_notes,
         params.orderId, companyId,
       ]
     );
 
     if (!rows[0]) return errorResponse('Purchase order not found', 404);
+
+    if (items && Array.isArray(items)) {
+      await query(`DELETE FROM purchase_order_items WHERE order_id = $1`, [params.orderId]);
+
+      for (const item of items) {
+        const quantity = Number(item.quantity) || 0;
+        const unitPrice = Number(item.unit_price) || 0;
+        const discountPercent = Number(item.discount_percent) || 0;
+        const taxRate = Number(item.tax_rate) || 19;
+        const discountAmount = quantity * unitPrice * (discountPercent / 100);
+        const taxAmount = (quantity * unitPrice - discountAmount) * (taxRate / 100);
+        const lineTotal = quantity * unitPrice - discountAmount + taxAmount;
+
+        await query(
+          `INSERT INTO purchase_order_items (order_id, company_id, product_id, quantity, unit_price, discount_percent, discount_amount, tax_rate, tax_amount, line_total)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+          [params.orderId, companyId, item.product_id, quantity, unitPrice,
+           discountPercent, discountAmount, taxRate, taxAmount, lineTotal]
+        );
+      }
+    }
 
     return successResponse(rows[0]);
   } catch {

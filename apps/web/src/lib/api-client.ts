@@ -221,11 +221,11 @@ export class ApiClient {
     return this.request<{ id: string; number: string; supplier_id: string; status: string; total_amount: number; items: any[] }>(`/purchase-orders/${id}`);
   }
 
-  async createPurchaseOrder(data: { number?: string; supplier_id: string; warehouse_id?: string; order_date?: string; expected_date?: string; payment_terms?: number; subtotal?: number; tax_amount?: number; total_amount?: number; notes?: string; items: { product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }) {
+  async createPurchaseOrder(data: { number?: string; supplier_id: string; warehouse_id?: string; order_date?: string; expected_date?: string; payment_terms?: number; subtotal?: number; tax_amount?: number; total_amount?: number; notes?: string; internal_notes?: string; items: { product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }) {
     return this.request<{ id: string }>('/purchase-orders', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async updatePurchaseOrder(id: string, data: Partial<{ supplier_id: string; warehouse_id: string; status: string; expected_date: string; payment_terms: number; notes: string }>) {
+  async updatePurchaseOrder(id: string, data: Partial<{ supplier_id: string; warehouse_id: string; status: string; expected_date: string; payment_terms: number; notes: string; internal_notes: string; items: { product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }>) {
     return this.request<{ id: string }>(`/purchase-orders/${id}`, { method: 'PUT', body: JSON.stringify(data) });
   }
 
@@ -246,7 +246,7 @@ export class ApiClient {
     return this.request<{ id: string; number: string }>('/quotations', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async updateQuotation(id: string, data: Partial<{ supplier_id: string; status: string; quote_date: string; expiry_date: string; total_amount: number; notes: string }>) {
+  async updateQuotation(id: string, data: Partial<{ supplier_id: string; status: string; quote_date: string; expiry_date: string; total_amount: number; notes: string; items: { product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }>) {
     return this.request<{ id: string }>(`/quotations/${id}`, { method: 'PUT', body: JSON.stringify(data) });
   }
 

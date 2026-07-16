@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Badge, Button } from '@yellow-erp/ui';
-import { ArrowLeft, Mail, Phone, MapPin, Trash2 } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, MapPin, Trash2, Pencil, Globe } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
@@ -48,7 +48,7 @@ export default function SupplierDetailPage({ params }: { params: { id: string } 
     try {
       const api = getApiClient();
       await api.deleteSupplier(id);
-      router.push('/dashboard/purchases');
+      router.push('/dashboard/suppliers');
     } catch {
       setError('Error al eliminar el proveedor');
       setDeleting(false);
@@ -104,6 +104,12 @@ export default function SupplierDetailPage({ params }: { params: { id: string } 
           <p className="text-sm text-slate-500 mt-1">{supplier.tax_id}</p>
         </div>
         <div className="flex items-center gap-2">
+          <Link href={`/dashboard/suppliers/${id}/edit`}>
+            <button className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              <Pencil className="w-4 h-4" />
+              Editar
+            </button>
+          </Link>
           <Button variant="danger" size="sm" onClick={handleDelete} loading={deleting}>
             <Trash2 className="w-4 h-4 mr-2" />
             Eliminar
@@ -139,14 +145,36 @@ export default function SupplierDetailPage({ params }: { params: { id: string } 
                 <p className="text-sm font-medium text-slate-900">{supplier.phone || '—'}</p>
               </div>
             </div>
-            {supplier.address && (
+            {supplier.trade_name && (
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <span className="text-[10px] font-bold text-indigo-600">RS</span>
+                </div>
+                <div>
+                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Razón Social</p>
+                  <p className="text-sm font-medium text-slate-900">{supplier.trade_name}</p>
+                </div>
+              </div>
+            )}
+            {(supplier.city || supplier.region) && (
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
                   <MapPin className="w-4 h-4 text-indigo-600" />
                 </div>
                 <div>
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Dirección</p>
-                  <p className="text-sm font-medium text-slate-900">{supplier.address}</p>
+                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Ubicación</p>
+                  <p className="text-sm font-medium text-slate-900">{[supplier.city, supplier.region].filter(Boolean).join(', ')}</p>
+                </div>
+              </div>
+            )}
+            {supplier.website && (
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Globe className="w-4 h-4 text-indigo-600" />
+                </div>
+                <div>
+                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Sitio Web</p>
+                  <a href={supplier.website} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:underline">{supplier.website}</a>
                 </div>
               </div>
             )}
