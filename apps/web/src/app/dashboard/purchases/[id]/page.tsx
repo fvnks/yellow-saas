@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button } from '@yellow-erp/ui';
-import { ArrowLeft, Printer, Calendar, Truck, MapPin, CheckCircle, Download, Send, XCircle } from 'lucide-react';
+import { ArrowLeft, Printer, Calendar, Truck, MapPin, CheckCircle, Download, Send, XCircle, Pencil } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { generateOrdenCompraPDF } from '@/lib/pdf-design';
@@ -167,13 +167,19 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <Link href={`/dashboard/purchases/${id}/edit`}>
+            <button className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              <Pencil className="w-4 h-4" />
+              Editar
+            </button>
+          </Link>
           <Button variant="secondary" size="sm" onClick={() => window.print()}>
             <Printer className="w-4 h-4 mr-2" />
             Imprimir
           </Button>
           <Button variant="secondary" size="sm" onClick={handleDownloadPDF}>
             <Download className="w-4 h-4 mr-2" />
-            Descargar PDF
+            PDF
           </Button>
         </div>
       </div>
