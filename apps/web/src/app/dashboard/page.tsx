@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Card, Title, Text, Metric, BarChart, AreaChart, Badge, Table, TableHead, TableRow, TableHeaderCell, TableBody, TableCell } from '@tremor/react';
-import { Plus, Package, Users, ShoppingCart, CreditCard, TrendingUp } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button } from '@yellow-erp/ui';
+import { Plus, Package, Users, ShoppingCart, CreditCard, TrendingUp, TrendingDown } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 
@@ -10,26 +10,15 @@ function formatCurrency(amount: number): string {
   return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(amount);
 }
 
-const statusColors: Record<string, string> = {
-  delivered: 'emerald',
-  shipped: 'blue',
-  processing: 'yellow',
-  confirmed: 'gray',
-  draft: 'gray',
-  pending: 'yellow',
-  paid: 'emerald',
-  cancelled: 'red',
-};
-
-const statusLabels: Record<string, string> = {
-  delivered: 'Entregado',
-  shipped: 'Enviado',
-  processing: 'Procesando',
-  confirmed: 'Confirmado',
-  draft: 'Borrador',
-  pending: 'Pendiente',
-  paid: 'Pagado',
-  cancelled: 'Cancelado',
+const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
+  delivered: { label: 'Entregado', variant: 'success' },
+  shipped: { label: 'Enviado', variant: 'info' },
+  processing: { label: 'Procesando', variant: 'warning' },
+  confirmed: { label: 'Confirmado', variant: 'neutral' },
+  draft: { label: 'Borrador', variant: 'neutral' },
+  pending: { label: 'Pendiente', variant: 'warning' },
+  paid: { label: 'Pagado', variant: 'success' },
+  cancelled: { label: 'Cancelado', variant: 'danger' },
 };
 
 export default function DashboardPage() {
@@ -44,12 +33,11 @@ export default function DashboardPage() {
   });
   const [recentSales, setRecentSales] = useState<any[]>([]);
   const [lowStockProducts, setLowStockProducts] = useState<any[]>([]);
-  const [salesByMonth, setSalesByMonth] = useState<{ month: string; Ventas: number; Compras: number }[]>([]);
 
   useEffect(() => {
     const api = getApiClient();
     Promise.all([
-      api.getSalesOrders({ limit: '50', sort: 'created_at' }).catch(() => ({ data: [] })),
+      api.getSalesOrders({ limit: '5', sort: 'created_at' }).catch(() => ({ data: [] })),
       api.getProducts({ limit: '500' }).catch(() => ({ data: [] })),
       api.getCustomers({ limit: '500' }).catch(() => ({ data: [] })),
       api.getInvoices({ limit: '500' }).catch(() => ({ data: [] })),
@@ -79,29 +67,6 @@ export default function DashboardPage() {
           warehouse: p.stock_levels?.[0]?.warehouse?.name || '—',
         }));
 
-      // Aggregate sales by month from orders
-      const monthMap: Record<string, { ventas: number; compras: number }> = {};
-      const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-      orders.forEach((o: any) => {
-        const d = new Date(o.created_at);
-        const key = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
-        if (!monthMap[key]) monthMap[key] = { ventas: 0, compras: 0 };
-        monthMap[key].ventas += o.total || 0;
-      });
-      purchases.forEach((p: any) => {
-        const d = new Date(p.created_at);
-        const key = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
-        if (!monthMap[key]) monthMap[key] = { ventas: 0, compras: 0 };
-        monthMap[key].compras += p.total_amount || 0;
-      });
-      const chartData = Object.entries(monthMap)
-        .map(([month, v]) => ({ month, Ventas: v.ventas, Compras: v.compras }))
-        .sort((a, b) => {
-          const ai = monthNames.indexOf(a.month.split(' ')[0]);
-          const bi = monthNames.indexOf(b.month.split(' ')[0]);
-          return ai - bi;
-        });
-
       setKpis({
         totalSalesMonth,
         totalProducts: products.length,
@@ -112,10 +77,16 @@ export default function DashboardPage() {
       });
       setRecentSales(orders.slice(0, 5));
       setLowStockProducts(lowStock);
-      setSalesByMonth(chartData);
       setLoading(false);
     });
   }, []);
+
+  const kpiCards = [
+    { label: 'Ventas del Mes', value: formatCurrency(kpis.totalSalesMonth), icon: ShoppingCart, iconColor: 'indigo', changeType: 'neutral' as const, change: `${recentSales.length} órdenes recientes` },
+    { label: 'Productos', value: String(kpis.totalProducts), icon: Package, iconColor: 'emerald', changeType: kpis.lowStockCount > 0 ? 'negative' as const : 'positive' as const, change: kpis.lowStockCount > 0 ? `${kpis.lowStockCount} con stock bajo` : 'Stock OK' },
+    { label: 'Clientes', value: String(kpis.totalCustomers), icon: Users, iconColor: 'amber', changeType: 'neutral' as const, change: 'Activos' },
+    { label: 'Compras del Mes', value: formatCurrency(kpis.totalPurchasesMonth), icon: CreditCard, iconColor: 'rose', changeType: 'neutral' as const, change: `${kpis.pendingInvoices} facturas pendientes` },
+  ];
 
   return (
     <div className="space-y-6">
@@ -125,200 +96,141 @@ export default function DashboardPage() {
           <p className="text-sm text-slate-500 mt-1">Resumen general de tu empresa</p>
         </div>
         <Link href="/dashboard/sales">
-          <button className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
-            <Plus className="w-4 h-4" />
+          <Button className="w-full sm:w-auto justify-center">
+            <Plus className="w-4 h-4 mr-2" />
             Nueva Venta
-          </button>
+          </Button>
         </Link>
       </div>
 
-      {/* KPI Cards */}
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        <Card decoration="top" decorationColor="indigo">
-          <div className="flex items-center justify-between">
-            <div>
-              <Text>Ventas del Mes</Text>
-              <Metric className="mt-1">{loading ? '—' : formatCurrency(kpis.totalSalesMonth)}</Metric>
-              <Text className="mt-1 text-slate-500">{recentSales.length} órdenes recientes</Text>
-            </div>
-            <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
-              <ShoppingCart className="w-6 h-6 text-indigo-600" />
-            </div>
-          </div>
-        </Card>
-
-        <Card decoration="top" decorationColor="emerald">
-          <div className="flex items-center justify-between">
-            <div>
-              <Text>Productos</Text>
-              <Metric className="mt-1">{loading ? '—' : kpis.totalProducts}</Metric>
-              <Text className={`mt-1 ${kpis.lowStockCount > 0 ? 'text-red-500' : 'text-emerald-500'}`}>
-                {loading ? '' : kpis.lowStockCount > 0 ? `${kpis.lowStockCount} con stock bajo` : 'Stock OK'}
-              </Text>
-            </div>
-            <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">
-              <Package className="w-6 h-6 text-emerald-600" />
+        {kpiCards.map((kpi, index) => (
+          <div key={index} className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">{kpi.label}</p>
+                <p className="text-2xl font-bold text-slate-900 mt-1">{loading ? '—' : kpi.value}</p>
+                <p className={`text-xs mt-1 ${kpi.changeType === 'negative' ? 'text-rose-600' : kpi.changeType === 'positive' ? 'text-emerald-600' : 'text-slate-500'}`}>
+                  {loading ? '' : kpi.change}
+                </p>
+              </div>
+              <div className={`w-12 h-12 bg-${kpi.iconColor}-50 rounded-xl flex items-center justify-center`}>
+                <kpi.icon className={`w-6 h-6 text-${kpi.iconColor}-600`} />
+              </div>
             </div>
           </div>
-        </Card>
-
-        <Card decoration="top" decorationColor="amber">
-          <div className="flex items-center justify-between">
-            <div>
-              <Text>Clientes</Text>
-              <Metric className="mt-1">{loading ? '—' : kpis.totalCustomers}</Metric>
-              <Text className="mt-1 text-slate-500">Activos</Text>
-            </div>
-            <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
-              <Users className="w-6 h-6 text-amber-600" />
-            </div>
-          </div>
-        </Card>
-
-        <Card decoration="top" decorationColor="rose">
-          <div className="flex items-center justify-between">
-            <div>
-              <Text>Compras del Mes</Text>
-              <Metric className="mt-1">{loading ? '—' : formatCurrency(kpis.totalPurchasesMonth)}</Metric>
-              <Text className="mt-1 text-slate-500">{kpis.pendingInvoices} facturas pendientes</Text>
-            </div>
-            <div className="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center">
-              <CreditCard className="w-6 h-6 text-rose-600" />
-            </div>
-          </div>
-        </Card>
+        ))}
       </div>
 
-      {/* Charts */}
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
-          <Title>Ventas vs Compras</Title>
-          <Text className="mb-4">Comparativa mensual</Text>
-          <BarChart
-            data={salesByMonth.length > 0 ? salesByMonth : [{ month: 'Sin datos', Ventas: 0, Compras: 0 }]}
-            index="month"
-            categories={['Ventas', 'Compras']}
-            colors={['indigo', 'rose']}
-            valueFormatter={(v) => formatCurrency(v)}
-            yAxisWidth={100}
-            className="h-64"
-          />
-        </Card>
-
-        <Card>
-          <Title>Tendencia de Ventas</Title>
-          <Text className="mb-4">Evolución mensual</Text>
-          <AreaChart
-            data={salesByMonth.length > 0 ? salesByMonth : [{ month: 'Sin datos', Ventas: 0, Compras: 0 }]}
-            index="month"
-            categories={['Ventas']}
-            colors={['indigo']}
-            valueFormatter={(v) => formatCurrency(v)}
-            className="h-64"
-          />
-        </Card>
-      </div>
-
-      {/* Tables */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
-          <div className="flex items-center justify-between mb-4">
-            <Title>Ventas Recientes</Title>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Ventas Recientes</CardTitle>
             <Link href="/dashboard/sales" className="text-sm text-slate-500 hover:text-slate-700 font-medium">Ver todas</Link>
-          </div>
-          <Table className="mt-2">
-            <TableHead>
-              <TableRow>
-                <TableHeaderCell>Nº Orden</TableHeaderCell>
-                <TableHeaderCell>Fecha</TableHeaderCell>
-                <TableHeaderCell className="text-right">Monto</TableHeaderCell>
-                <TableHeaderCell>Estado</TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {loading ? (
-                <TableRow><TableCell colSpan={4} className="text-center text-slate-400 py-8">Cargando...</TableCell></TableRow>
-              ) : recentSales.length === 0 ? (
-                <TableRow><TableCell colSpan={4} className="text-center text-slate-400 py-8">Sin órdenes recientes</TableCell></TableRow>
-              ) : recentSales.map((sale: any) => (
-                <TableRow key={sale.id}>
-                  <TableCell className="font-mono text-slate-900">{sale.order_number || sale.number}</TableCell>
-                  <TableCell>{sale.created_at?.split('T')[0] || '—'}</TableCell>
-                  <TableCell className="text-right font-medium">{formatCurrency(sale.total || 0)}</TableCell>
-                  <TableCell>
-                    <Badge color={statusColors[sale.status] || 'gray'}>
-                      {statusLabels[sale.status] || sale.status}
-                    </Badge>
-                  </TableCell>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nº Orden</TableHead>
+                  <TableHead>Fecha</TableHead>
+                  <TableHead className="text-right">Monto</TableHead>
+                  <TableHead>Estado</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {loading ? (
+                  <TableRow><TableCell colSpan={4} className="text-center text-slate-400 py-8">Cargando...</TableCell></TableRow>
+                ) : recentSales.length === 0 ? (
+                  <TableRow><TableCell colSpan={4} className="text-center text-slate-400 py-8">Sin órdenes recientes</TableCell></TableRow>
+                ) : recentSales.map((sale: any) => {
+                  const config = statusConfig[sale.status] || statusConfig.draft;
+                  return (
+                    <TableRow key={sale.id}>
+                      <TableCell className="font-mono text-slate-900">{sale.order_number || sale.number}</TableCell>
+                      <TableCell>{sale.created_at?.split('T')[0] || '—'}</TableCell>
+                      <TableCell className="text-right font-medium">{formatCurrency(sale.total || 0)}</TableCell>
+                      <TableCell><Badge variant={config.variant}>{config.label}</Badge></TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+            </div>
+          </CardContent>
         </Card>
 
         <Card>
-          <div className="flex items-center justify-between mb-4">
-            <Title>Stock Bajo</Title>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Stock Bajo</CardTitle>
             <Link href="/dashboard/inventory" className="text-sm text-slate-500 hover:text-slate-700 font-medium">Ver todo</Link>
-          </div>
-          <Table className="mt-2">
-            <TableHead>
-              <TableRow>
-                <TableHeaderCell>Producto</TableHeaderCell>
-                <TableHeaderCell>SKU</TableHeaderCell>
-                <TableHeaderCell className="text-center">Stock</TableHeaderCell>
-                <TableHeaderCell className="text-center">Mínimo</TableHeaderCell>
-                <TableHeaderCell>Bodega</TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {loading ? (
-                <TableRow><TableCell colSpan={5} className="text-center text-slate-400 py-8">Cargando...</TableCell></TableRow>
-              ) : lowStockProducts.length === 0 ? (
-                <TableRow><TableCell colSpan={5} className="text-center text-slate-400 py-8">Sin productos con stock bajo</TableCell></TableRow>
-              ) : lowStockProducts.map((product: any, index: number) => (
-                <TableRow key={index} className={product.stock === 0 ? 'bg-red-50' : ''}>
-                  <TableCell className="font-medium">{product.name}</TableCell>
-                  <TableCell className="font-mono text-slate-500">{product.sku}</TableCell>
-                  <TableCell className={`text-center font-bold ${product.stock === 0 ? 'text-red-600' : 'text-yellow-600'}`}>{product.stock}</TableCell>
-                  <TableCell className="text-center text-slate-500">{product.minStock}</TableCell>
-                  <TableCell>{product.warehouse}</TableCell>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Producto</TableHead>
+                  <TableHead>SKU</TableHead>
+                  <TableHead className="text-center">Stock</TableHead>
+                  <TableHead className="text-center">Mínimo</TableHead>
+                  <TableHead>Bodega</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {loading ? (
+                  <TableRow><TableCell colSpan={5} className="text-center text-slate-400 py-8">Cargando...</TableCell></TableRow>
+                ) : lowStockProducts.length === 0 ? (
+                  <TableRow><TableCell colSpan={5} className="text-center text-slate-400 py-8">Sin productos con stock bajo</TableCell></TableRow>
+                ) : lowStockProducts.map((product: any, index: number) => (
+                  <TableRow key={index} className={product.stock === 0 ? 'bg-rose-50' : ''}>
+                    <TableCell className="font-medium">{product.name}</TableCell>
+                    <TableCell className="font-mono text-slate-500">{product.sku}</TableCell>
+                    <TableCell className={`text-center font-bold ${product.stock === 0 ? 'text-rose-600' : 'text-amber-600'}`}>{product.stock}</TableCell>
+                    <TableCell className="text-center text-slate-500">{product.minStock}</TableCell>
+                    <TableCell>{product.warehouse}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            </div>
+          </CardContent>
         </Card>
       </div>
 
-      {/* Quick Actions */}
       <Card>
-        <Title>Acciones Rápidas</Title>
-        <div className="grid gap-4 grid-cols-2 md:grid-cols-4 mt-4">
-          <Link href="/dashboard/sales">
-            <button className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 h-24 flex flex-col gap-2 w-full rounded-lg text-sm font-medium transition-colors">
-              <ShoppingCart className="w-8 h-8 mx-auto text-indigo-600" />
-              <span>Nueva Venta</span>
-            </button>
-          </Link>
-          <Link href="/dashboard/purchases/new">
-            <button className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 h-24 flex flex-col gap-2 w-full rounded-lg text-sm font-medium transition-colors">
-              <Package className="w-8 h-8 mx-auto text-emerald-600" />
-              <span>Nueva Compra</span>
-            </button>
-          </Link>
-          <Link href="/dashboard/customers/new">
-            <button className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 h-24 flex flex-col gap-2 w-full rounded-lg text-sm font-medium transition-colors">
-              <Users className="w-8 h-8 mx-auto text-amber-600" />
-              <span>Nuevo Cliente</span>
-            </button>
-          </Link>
-          <Link href="/dashboard/inventory/new">
-            <button className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 h-24 flex flex-col gap-2 w-full rounded-lg text-sm font-medium transition-colors">
-              <Plus className="w-8 h-8 mx-auto text-rose-600" />
-              <span>Nuevo Producto</span>
-            </button>
-          </Link>
-        </div>
+        <CardHeader>
+          <CardTitle>Acciones Rápidas</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+            <Link href="/dashboard/sales">
+              <Button variant="secondary" className="h-24 flex flex-col gap-2 w-full">
+                <ShoppingCart className="w-8 h-8 mx-auto" />
+                <span>Nueva Venta</span>
+              </Button>
+            </Link>
+            <Link href="/dashboard/purchases/new">
+              <Button variant="secondary" className="h-24 flex flex-col gap-2 w-full">
+                <Package className="w-8 h-8 mx-auto" />
+                <span>Nueva Compra</span>
+              </Button>
+            </Link>
+            <Link href="/dashboard/customers/new">
+              <Button variant="secondary" className="h-24 flex flex-col gap-2 w-full">
+                <Users className="w-8 h-8 mx-auto" />
+                <span>Nuevo Cliente</span>
+              </Button>
+            </Link>
+            <Link href="/dashboard/inventory/new">
+              <Button variant="secondary" className="h-24 flex flex-col gap-2 w-full">
+                <Plus className="w-8 h-8 mx-auto" />
+                <span>Nuevo Producto</span>
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
       </Card>
     </div>
   );
