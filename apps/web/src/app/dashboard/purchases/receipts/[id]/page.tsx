@@ -51,14 +51,9 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
 
   useEffect(() => {
     const api = getApiClient();
-    const companyId = api['companyId'];
-    fetch(`/api/companies/${companyId}/goods-receipts/${id}`)
-      .then(res => {
-        if (!res.ok) throw new Error('Not found');
-        return res.json();
-      })
-      .then(res => {
-        setReceipt(res.data || res);
+    api.getGoodsReceipt(id)
+      .then((data) => {
+        setReceipt(data as unknown as GoodsReceiptDetail);
         setLoading(false);
       })
       .catch(() => {
@@ -72,14 +67,7 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
     setDeleting(true);
     try {
       const api = getApiClient();
-      const companyId = api['companyId'];
-      const res = await fetch(`/api/companies/${companyId}/goods-receipts/${id}`, { method: 'DELETE' });
-      if (!res.ok) {
-        const err = await res.json();
-        alert(err.error || 'Error al eliminar');
-        setDeleting(false);
-        return;
-      }
+      await api.deleteGoodsReceipt(id);
       router.push('/dashboard/purchases/receipts');
     } catch {
       alert('Error al eliminar');

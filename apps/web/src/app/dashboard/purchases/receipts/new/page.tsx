@@ -48,10 +48,14 @@ export default function NewGoodsReceiptPage() {
 
   useEffect(() => {
     const api = getApiClient();
-    const companyId = api['companyId'];
-    fetch(`/api/companies/${companyId}/purchase-orders?status=confirmed&limit=500`)
-      .then(r => r.json())
-      .then(d => setOrders(d.data || []))
+    api.getPurchaseOrders({ status: 'confirmed', limit: '500' })
+      .then(async (d) => {
+        const basicOrders = d.data || [];
+        const fullOrders = await Promise.all(
+          basicOrders.map((o: any) => api.getPurchaseOrder(o.id).catch(() => o))
+        );
+        setOrders(fullOrders as PurchaseOrderOption[]);
+      })
       .catch(() => {});
   }, []);
 
@@ -104,38 +108,27 @@ export default function NewGoodsReceiptPage() {
     setError('');
     try {
       const api = getApiClient();
-      const companyId = api['companyId'];
-      const res = await fetch(`/api/companies/${companyId}/goods-receipts`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          purchase_order_id: selectedOrder.id,
-          supplier_id: selectedOrder.supplier?.id,
-          warehouse_id: selectedOrder.warehouse?.id,
-          status: 'pending',
-          notes: notes || undefined,
-        }),
+      const receipt = await api.createGoodsReceipt({
+        purchase_order_id: selectedOrder.id,
+        supplier_id: selectedOrder.supplier?.id,
+        warehouse_id: selectedOrder.warehouse?.id,
+        status: 'pending',
+        notes: notes || undefined,
+      }) as any;
+
+      const receiptId = receipt?.id || receipt?.data?.id;
+
+      const itemsToSend = receiveItems.filter(i => i.quantity_to_receive > 0).map(i => {
+        const poItem = selectedOrder.items.find(pi => pi.id === i.purchase_order_item_id);
+        return {
+          purchase_order_item_id: i.purchase_order_item_id,
+          product_id: i.product_id,
+          quantity: i.quantity_to_receive,
+          unit_price: poItem?.unit_price || 0,
+        };
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Error al crear recepción');
 
-      const receiptId = data.data?.id || data.id;
-
-      for (const item of receiveItems.filter(i => i.quantity_to_receive > 0)) {
-        await fetch(`/api/companies/${companyId}/goods-receipts/${receiptId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            items: receiveItems.filter(i => i.quantity_to_receive > 0).map(i => ({
-              purchase_order_item_id: i.purchase_order_item_id,
-              product_id: i.product_id,
-              quantity: i.quantity_to_receive,
-              unit_price: 0,
-            })),
-          }),
-        });
-        break;
-      }
+      await api.updateGoodsReceipt(receiptId, { items: itemsToSend });
 
       router.push('/dashboard/purchases/receipts');
     } catch (err: unknown) {

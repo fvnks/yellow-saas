@@ -1027,29 +1027,29 @@ async deleteAdjustmentReason(id: string) {
     if (params?.status && params.status !== 'all') searchParams.set('status', params.status);
     if (params?.search) searchParams.set('search', params.search);
     const qs = searchParams.toString();
-    return this.request(`/api/companies/${this.companyId}/goods-receipts${qs ? '?' + qs : ''}`);
+    return this.request(`/goods-receipts${qs ? '?' + qs : ''}`);
   }
 
   async getGoodsReceipt(receiptId: string) {
-    return this.request(`/api/companies/${this.companyId}/goods-receipts/${receiptId}`);
+    return this.request(`/goods-receipts/${receiptId}`);
   }
 
   async createGoodsReceipt(data: any) {
-    return this.request(`/api/companies/${this.companyId}/goods-receipts`, {
+    return this.request(`/goods-receipts`, {
       method: 'POST',
       body: JSON.stringify(data),
     });
   }
 
   async updateGoodsReceipt(receiptId: string, data: any) {
-    return this.request(`/api/companies/${this.companyId}/goods-receipts/${receiptId}`, {
+    return this.request(`/goods-receipts/${receiptId}`, {
       method: 'PUT',
       body: JSON.stringify(data),
     });
   }
 
   async deleteGoodsReceipt(receiptId: string) {
-    return this.request(`/api/companies/${this.companyId}/goods-receipts/${receiptId}`, {
+    return this.request(`/goods-receipts/${receiptId}`, {
       method: 'DELETE',
     });
   }

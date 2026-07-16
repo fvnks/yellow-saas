@@ -44,15 +44,13 @@ export default function GoodsReceiptsPage() {
     setLoading(true);
     try {
       const api = getApiClient();
-      const companyId = api['companyId'];
-      const params = new URLSearchParams({ limit: '100' });
-      if (search) params.set('search', search);
-      if (statusFilter) params.set('status', statusFilter);
-      const res = await fetch(`/api/companies/${companyId}/goods-receipts?${params}`);
-      const data = await res.json();
-      const list = data.data || [];
+      const result = await api.getGoodsReceipts({
+        status: statusFilter || undefined,
+        search: search || undefined,
+      }) as any;
+      const list = result.data || [];
       setReceipts(list);
-      setTotal(data.pagination?.total || list.length);
+      setTotal(result.pagination?.total || list.length);
 
       const now = new Date();
       const thisMonth = list.filter((r: GoodsReceipt) => {
@@ -61,7 +59,7 @@ export default function GoodsReceiptsPage() {
       }).length;
 
       setKpis({
-        total: data.pagination?.total || list.length,
+        total: result.pagination?.total || list.length,
         pending: list.filter((r: GoodsReceipt) => r.status === 'pending').length,
         completed: list.filter((r: GoodsReceipt) => r.status === 'completed').length,
         thisMonth,
@@ -74,15 +72,12 @@ export default function GoodsReceiptsPage() {
     if (!confirm('¿Eliminar esta recepción?')) return;
     try {
       const api = getApiClient();
-      const companyId = api['companyId'];
-      const res = await fetch(`/api/companies/${companyId}/goods-receipts/${id}`, { method: 'DELETE' });
-      if (!res.ok) {
-        const err = await res.json();
-        alert(err.error || 'Error al eliminar');
-        return;
-      }
+      await api.deleteGoodsReceipt(id);
       fetchReceipts();
-    } catch (err) { console.error(err); }
+    } catch (err) {
+      console.error(err);
+      alert('Error al eliminar');
+    }
   };
 
   const getStatusBadge = (status: string) => {

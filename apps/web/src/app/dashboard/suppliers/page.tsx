@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
-import { Plus, Search, Filter, Download, Eye, Edit, Trash2, Truck, Phone, Mail, MapPin, CreditCard, Building2, Package } from 'lucide-react';
+import { Plus, Search, Filter, Download, Eye, Trash2, Truck, Phone, Mail, MapPin, CreditCard, Building2, Package } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 
@@ -246,13 +246,25 @@ export default function SuppliersPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-1">
-                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Ver">
-                          <Eye className="w-4 h-4" />
-                        </button>
-                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Editar">
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
+                        <Link href={`/dashboard/purchases/suppliers/${supplier.id}`}>
+                          <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Ver">
+                            <Eye className="w-4 h-4" />
+                          </button>
+                        </Link>
+                        <button
+                          onClick={async () => {
+                            if (!confirm('¿Eliminar este proveedor?')) return;
+                            try {
+                              const api = getApiClient();
+                              await api.deleteSupplier(supplier.id);
+                              setSuppliers(prev => prev.filter(s => s.id !== supplier.id));
+                            } catch (err) {
+                              console.error(err);
+                            }
+                          }}
+                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                          aria-label="Eliminar"
+                        >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>

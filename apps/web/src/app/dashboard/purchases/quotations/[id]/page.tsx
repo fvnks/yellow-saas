@@ -120,7 +120,7 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Link href="/dashboard/purchases?tab=quotations" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+          <Link href="/dashboard/purchases/quotations" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <h1 className="text-xl font-bold text-slate-900">Cotización no encontrada</h1>
@@ -128,7 +128,7 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
         <Card>
           <CardContent className="text-center py-12">
             <p className="text-sm text-slate-500">{error || 'La cotización solicitada no existe.'}</p>
-            <Link href="/dashboard/purchases?tab=quotations">
+            <Link href="/dashboard/purchases/quotations">
               <Button className="mt-4">Volver a Cotizaciones</Button>
             </Link>
           </CardContent>
@@ -148,7 +148,7 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/purchases?tab=quotations" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href="/dashboard/purchases/quotations" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">
