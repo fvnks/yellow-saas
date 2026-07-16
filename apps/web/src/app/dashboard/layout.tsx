@@ -112,6 +112,8 @@ const MODULES: SidebarModule[] = [
     href: '/dashboard/purchases',
     children: [
       { name: 'Órdenes de Compra', href: '/dashboard/purchases', icon: ShoppingBag },
+      { name: 'Recepciones', href: '/dashboard/purchases/receipts', icon: Package },
+      { name: 'Cotizaciones', href: '/dashboard/purchases', icon: ClipboardList },
       { name: 'Proveedores', href: '/dashboard/suppliers', icon: Truck },
       { name: 'Registro de Compras', href: '/dashboard/purchases/register', icon: ReceiptText },
     ],

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button } from '@yellow-erp/ui';
-import { ArrowLeft, Printer, Calendar, Truck, MapPin, CheckCircle, Download } from 'lucide-react';
+import { ArrowLeft, Printer, Calendar, Truck, MapPin, CheckCircle, Download, Send, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { generateOrdenCompraPDF } from '@/lib/pdf-design';
@@ -32,12 +32,12 @@ interface OrderDetail {
 }
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
-  pending: { label: 'Pendiente', variant: 'warning' },
-  approved: { label: 'Aprobado', variant: 'info' },
-  processing: { label: 'Procesando', variant: 'info' },
-  delivered: { label: 'Entregado', variant: 'success' },
-  cancelled: { label: 'Cancelado', variant: 'danger' },
   draft: { label: 'Borrador', variant: 'neutral' },
+  pending: { label: 'Pendiente', variant: 'warning' },
+  confirmed: { label: 'Confirmada', variant: 'info' },
+  partial: { label: 'Parcial', variant: 'info' },
+  received: { label: 'Recibida', variant: 'success' },
+  cancelled: { label: 'Cancelada', variant: 'danger' },
 };
 
 export default function PurchaseDetailPage({ params }: { params: { id: string } }) {
@@ -94,6 +94,12 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
       notes: order.notes,
     });
     doc.save(`${order.number}.pdf`);
+  };
+
+  const handleStatusChange = async (newStatus: string) => {
+    const api = getApiClient();
+    await api.updatePurchaseOrder(id, { status: newStatus });
+    setOrder(prev => prev ? { ...prev, status: newStatus } : null);
   };
 
   if (loading) {
@@ -171,6 +177,48 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
           </Button>
         </div>
       </div>
+
+      {order.status !== 'cancelled' && order.status !== 'received' && (
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-3">Acciones de Estado</p>
+          <div className="flex items-center gap-2 flex-wrap">
+            {order.status === 'draft' && (
+              <button
+                onClick={() => handleStatusChange('pending')}
+                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+              >
+                <Send className="w-4 h-4" />
+                Enviar a Pendiente
+              </button>
+            )}
+            {order.status === 'pending' && (
+              <button
+                onClick={() => handleStatusChange('confirmed')}
+                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+              >
+                <CheckCircle className="w-4 h-4" />
+                Confirmar
+              </button>
+            )}
+            {(order.status === 'confirmed' || order.status === 'partial') && (
+              <button
+                onClick={() => handleStatusChange('received')}
+                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+              >
+                <CheckCircle className="w-4 h-4" />
+                Marcar Recibido
+              </button>
+            )}
+            <button
+              onClick={() => handleStatusChange('cancelled')}
+              className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+            >
+              <XCircle className="w-4 h-4" />
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">

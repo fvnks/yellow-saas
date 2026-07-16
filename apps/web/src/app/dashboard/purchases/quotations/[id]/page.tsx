@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button } from '@yellow-erp/ui';
-import { ArrowLeft, Printer, Calendar, Truck, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Printer, Calendar, Truck, CheckCircle, Clock, AlertTriangle, XCircle, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
 
 interface QuotationItem {
@@ -49,8 +50,37 @@ const statusConfig: Record<string, { label: string; variant: 'success' | 'warnin
 export default function QuotationDetailPage({ params }: { params: { id: string } }) {
   const { id } = params;
   const [quotation, setQuotation] = useState<QuotationDetail | null>(null);
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleStatusChange = async (newStatus: string) => {
+    const api = getApiClient();
+    await api.updateQuotation(id, { status: newStatus });
+    setQuotation(prev => prev ? { ...prev, status: newStatus } : null);
+  };
+
+  const handleConvertToPO = async () => {
+    if (!quotation) return;
+    const api = getApiClient();
+    const po = await api.createPurchaseOrder({
+      supplier_id: (quotation as any).supplier_id,
+      expected_date: undefined,
+      notes: `Convertido desde cotización ${quotation.number}`,
+      items: quotation.items?.map((item: any) => ({
+        product_id: item.product_id,
+        quantity: item.quantity,
+        unit_price: item.unit_price,
+        discount_percent: item.discount_percent || 0,
+        tax_rate: item.tax_rate || 19,
+      })) || [],
+    });
+    router.push(`/dashboard/purchases/${(po as any).id || (po as any).data?.id}`);
+  };
 
   useEffect(() => {
     const api = getApiClient();
@@ -137,10 +167,46 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm" onClick={handlePrint}>
             <Printer className="w-4 h-4 mr-2" />
             Imprimir
           </Button>
+          {quotation.status === 'pending' && (
+            <>
+              <button
+                onClick={() => handleStatusChange('accepted')}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+              >
+                <CheckCircle className="w-4 h-4" />
+                Aceptar
+              </button>
+              <button
+                onClick={() => handleStatusChange('rejected')}
+                className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+              >
+                <XCircle className="w-4 h-4" />
+                Rechazar
+              </button>
+            </>
+          )}
+          {quotation.status === 'accepted' && (
+            <button
+              onClick={handleConvertToPO}
+              className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+            >
+              <ArrowRight className="w-4 h-4" />
+              Convertir a Orden de Compra
+            </button>
+          )}
+          {quotation.status !== 'expired' && quotation.status !== 'cancelled' && quotation.status !== 'pending' && quotation.status !== 'accepted' && (
+            <button
+              onClick={() => handleStatusChange('cancelled')}
+              className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+            >
+              <XCircle className="w-4 h-4" />
+              Cancelar
+            </button>
+          )}
         </div>
       </div>
 
@@ -347,7 +413,7 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
               </div>
 
               <div className="flex flex-col gap-2 pt-4">
-                <Button variant="secondary" className="w-full">
+                <Button variant="secondary" className="w-full" onClick={handlePrint}>
                   <Printer className="w-4 h-4 mr-2" />
                   Imprimir Cotización
                 </Button>

@@ -1020,6 +1020,39 @@ async deleteAdjustmentReason(id: string) {
   async deletePurchaseRegister(id: string) {
     return this.request<any>(`/purchase-registers/${id}`, { method: 'DELETE' });
   }
+
+  // Goods Receipts
+  async getGoodsReceipts(params?: { status?: string; search?: string }) {
+    const searchParams = new URLSearchParams();
+    if (params?.status && params.status !== 'all') searchParams.set('status', params.status);
+    if (params?.search) searchParams.set('search', params.search);
+    const qs = searchParams.toString();
+    return this.request(`/api/companies/${this.companyId}/goods-receipts${qs ? '?' + qs : ''}`);
+  }
+
+  async getGoodsReceipt(receiptId: string) {
+    return this.request(`/api/companies/${this.companyId}/goods-receipts/${receiptId}`);
+  }
+
+  async createGoodsReceipt(data: any) {
+    return this.request(`/api/companies/${this.companyId}/goods-receipts`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateGoodsReceipt(receiptId: string, data: any) {
+    return this.request(`/api/companies/${this.companyId}/goods-receipts/${receiptId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteGoodsReceipt(receiptId: string) {
+    return this.request(`/api/companies/${this.companyId}/goods-receipts/${receiptId}`, {
+      method: 'DELETE',
+    });
+  }
 }
 
 // Singleton with dynamic company_id from JWT
