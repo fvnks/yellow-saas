@@ -5,20 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, Button, Badge, Input, Select,
 import { ScrollText, Search, Filter, Download, Eye, Calendar, User, Activity, AlertTriangle, CheckCircle2, XCircle, Info } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 
-const fallbackLogs = [
-  { id: 1, timestamp: '2026-07-11 14:32:15', user: 'admin@yellow.cl', action: 'create', module: 'Ventas', entity: 'Venta #VT-2026-089', details: 'Creó venta a Empresa Norte por $3.250.000', ip: '192.168.1.100' },
-  { id: 2, timestamp: '2026-07-11 14:28:45', user: 'juan@yellow.cl', action: 'update', module: 'Inventario', entity: 'Producto LP-HP-450', details: 'Actualizó stock de 15 a 12 unidades', ip: '192.168.1.101' },
-  { id: 3, timestamp: '2026-07-11 13:15:22', user: 'admin@yellow.cl', action: 'delete', module: 'Clientes', entity: 'Cliente #CLI-023', details: 'Eliminó cliente "Empresa Test SpA"', ip: '192.168.1.100' },
-  { id: 4, timestamp: '2026-07-11 12:45:10', user: 'maria@yellow.cl', action: 'login', module: 'Auth', entity: '-', details: 'Inicio de sesión exitoso', ip: '10.0.0.55' },
-  { id: 5, timestamp: '2026-07-11 11:30:00', user: 'admin@yellow.cl', action: 'create', module: 'Compras', entity: 'Orden OC-2026-015', details: 'Creó orden de compra a Distribuidora Chile por $1.890.000', ip: '192.168.1.100' },
-  { id: 6, timestamp: '2026-07-11 10:20:33', user: 'juan@yellow.cl', action: 'update', module: 'Facturación', entity: 'Factura FAC-2026-044', details: 'Cambió estado de "Borrador" a "Enviada"', ip: '192.168.1.101' },
-  { id: 7, timestamp: '2026-07-11 09:15:18', user: 'admin@yellow.cl', action: 'config', module: 'Configuración', entity: 'Empresa', details: 'Actualizó datos de la empresa', ip: '192.168.1.100' },
-  { id: 8, timestamp: '2026-07-10 18:45:00', user: 'maria@yellow.cl', action: 'export', module: 'Reportes', entity: 'Reporte Mensual', details: 'Exportó reporte de ventas junio 2026 (PDF)', ip: '10.0.0.55' },
-  { id: 9, timestamp: '2026-07-10 16:22:11', user: 'admin@yellow.cl', action: 'create', module: 'Nómina', entity: 'Nómina NÓM-2026-006', details: 'Generó nómina de junio 2026 para 6 empleados', ip: '192.168.1.100' },
-  { id: 10, timestamp: '2026-07-10 14:10:55', user: 'juan@yellow.cl', action: 'update', module: 'Almacenes', entity: 'Stock BC-01', details: 'Registró movimiento de entrada: +50 unidades SKU-001', ip: '192.168.1.101' },
-  { id: 11, timestamp: '2026-07-10 11:05:30', user: 'admin@yellow.cl', action: 'delete', module: 'Proveedores', entity: 'Proveedor SUP-008', details: 'Eliminó proveedor "Distribuidora Test"', ip: '192.168.1.100' },
-  { id: 12, timestamp: '2026-07-10 09:00:00', user: 'maria@yellow.cl', action: 'login', module: 'Auth', entity: '-', details: 'Inicio de sesión exitoso', ip: '10.0.0.55' },
-];
+const fallbackLogs: any[] = [];
 
 const actionConfig: Record<string, { label: string; icon: typeof CheckCircle2; color: string }> = {
   create: { label: 'Crear', icon: CheckCircle2, color: 'text-emerald-600' },
@@ -98,9 +85,9 @@ useEffect(() => {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <KPICard label="Eventos Hoy" value={auditLogs.filter(l => l.timestamp.startsWith('2026-07-11')).length} icon={Activity} trend="Registrados" trendUp={true} />
-        <KPICard label="Usuarios Activos" value={new Set(auditLogs.map(l => l.user)).size} icon={User} trend="Ãšltimas 24h" trendUp={true} />
-        <KPICard label="Eliminaciones" value={auditLogs.filter(l => l.action === 'delete').length} icon={XCircle} trend="Ãšltima semana" trendUp={false} />
+        <KPICard label="Eventos Hoy" value={auditLogs.filter(l => l.timestamp.startsWith(new Date().toISOString().split('T')[0])).length} icon={Activity} trend="Registrados" trendUp={true} />
+        <KPICard label="Usuarios Activos" value={new Set(auditLogs.map(l => l.user)).size} icon={User} trend="Ñšltimas 24h" trendUp={true} />
+        <KPICard label="Eliminaciones" value={auditLogs.filter(l => l.action === 'delete').length} icon={XCircle} trend="Ñšltima semana" trendUp={false} />
         <KPICard label="Módulos Afectados" value={modules.length} icon={ScrollText} trend="Diferentes módulos" trendUp={true} />
       </div>
 

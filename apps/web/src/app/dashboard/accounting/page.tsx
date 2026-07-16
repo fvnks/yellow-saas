@@ -296,7 +296,7 @@ export default function AccountingPage() {
                     <TableCell className="text-center font-medium">% {tax.rate}</TableCell>
                     <TableCell className="text-center text-slate-500 font-mono text-[9px]">{tax.sriCode}</TableCell>
                     <TableCell className="text-center">
-                      {tax.isDefault ? (<Badge variant="success" className="text-[9px]">S�</Badge>) : (<span className="text-xs text-slate-400">No</span>)}
+                      {tax.isDefault ? (<Badge variant="success" className="text-[9px]">S</Badge>) : (<span className="text-xs text-slate-400">No</span>)}
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-1">

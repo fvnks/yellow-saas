@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Plus, Search, Trash2, Edit, Tag, Percent, Ruler, FlaskConical, Layers, Bookmark, Palette, Hash, Link2, AlertCircle, ExternalLink } from 'lucide-react';
+import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 
 type ConfigTab = 'categories' | 'taxes' | 'uom' | 'batches' | 'variants' | 'reservations' | 'reasons' | 'tags' | 'serials' | 'relations';
@@ -642,9 +643,9 @@ export default function InventoryConfigPage() {
                 <div className="p-8 text-center">
                   <Hash className="w-10 h-10 text-slate-300 mx-auto mb-3" />
                   <p className="text-sm text-slate-500 mb-4">Gestion de numeros de serie por producto</p>
-                  <a href="/dashboard/inventory/serials" className="inline-flex items-center gap-2 text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+                  <Link href="/dashboard/inventory/serials" className="inline-flex items-center gap-2 text-sm text-indigo-600 hover:text-indigo-700 font-medium">
                     Ir a Seriales <ExternalLink className="w-4 h-4" />
-                  </a>
+                  </Link>
                 </div>
               )}
 
@@ -653,9 +654,9 @@ export default function InventoryConfigPage() {
                 <div className="p-8 text-center">
                   <Link2 className="w-10 h-10 text-slate-300 mx-auto mb-3" />
                   <p className="text-sm text-slate-500 mb-4">Conecta productos relacionados entre si</p>
-                  <a href="/dashboard/inventory/relations" className="inline-flex items-center gap-2 text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+                  <Link href="/dashboard/inventory/relations" className="inline-flex items-center gap-2 text-sm text-indigo-600 hover:text-indigo-700 font-medium">
                     Ir a Relaciones <ExternalLink className="w-4 h-4" />
-                  </a>
+                  </Link>
                 </div>
               )}
             </>
