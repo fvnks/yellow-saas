@@ -23,9 +23,11 @@ export default function NewDeliveryGuidePage() {
   const [success, setSuccess] = useState('');
   const [orders, setOrders] = useState<{id: string; order_number: string}[]>([]);
   const [products, setProducts] = useState<{id: string; name: string; sku: string; quantity?: number; stock?: number}[]>([]);
+  const [warehouses, setWarehouses] = useState<{id: string; name: string; code: string}[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [formData, setFormData] = useState({
     orderId: '',
+    warehouseId: '',
     transportCompany: '',
     deliveryDate: '',
     driverName: '',
@@ -40,9 +42,11 @@ export default function NewDeliveryGuidePage() {
     Promise.all([
       api.getSalesOrders(),
       api.getProducts(),
-    ]).then(([ordersRes, productsRes]) => {
+      api.getWarehouses(),
+    ]).then(([ordersRes, productsRes, warehousesRes]) => {
       setOrders((ordersRes.data || []).map((o: any) => ({ id: o.id, order_number: o.order_number })));
       setProducts((productsRes.data || []).map((p: any) => ({ id: p.id, name: p.name, sku: p.sku, quantity: p.quantity || p.stock || 0 })));
+      setWarehouses((warehousesRes.data || []).map((w: any) => ({ id: w.id, name: w.name, code: w.code })));
     }).finally(() => setDataLoading(false));
   }, []);
 
@@ -69,7 +73,7 @@ export default function NewDeliveryGuidePage() {
       const api = getApiClient();
       const result = await api.createDeliveryGuide({
         order_id: formData.orderId,
-        warehouse_id: '',
+        warehouse_id: formData.warehouseId,
         transport: formData.transportCompany,
         driver_name: formData.driverName,
         vehicle_plate: formData.vehiclePlate,
@@ -118,6 +122,13 @@ export default function NewDeliveryGuidePage() {
                     value={formData.orderId}
                     onChange={handleFormChange('orderId')}
                     options={[{ value: '', label: 'Seleccionar orden...' }, ...orders.map(o => ({ value: o.id, label: o.order_number }))]}
+                  />
+                  <Select
+                    label="Almacén de Origen"
+                    value={formData.warehouseId}
+                    onChange={handleFormChange('warehouseId')}
+                    options={[{ value: '', label: 'Seleccionar almacén...' }, ...warehouses.map(w => ({ value: w.id, label: `${w.code} - ${w.name}` }))]}
+                    required
                   />
                   <Select
                     label="Transportista"

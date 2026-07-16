@@ -123,7 +123,8 @@ export default function SalesPage() {
       const ordersData = (ordersRes.data || []).map((o) => ({
         id: o.id,
         number: o.order_number,
-        customer: o.customer_id,
+        customer: o.customer?.name || o.customer_id || '---',
+        items: Array.isArray(o.items) ? o.items.length : (o.items || 0),
         date: o.created_at?.split('T')[0] || '',
         total: o.total,
         status: o.status,

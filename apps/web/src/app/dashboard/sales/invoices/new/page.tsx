@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select } from '@yellow-erp/ui';
-import { ArrowLeft, Save, FileText } from 'lucide-react';
+import { ArrowLeft, Save, FileText, Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 
@@ -56,9 +56,30 @@ export default function NewInvoicePage() {
   const handleItemChange = (index: number, field: keyof InvoiceItem, value: string | number) => {
     setItems(prev => {
       const newItems = [...prev];
-      newItems[index] = { ...newItems[index], [field]: value };
+      if (field === 'productId') {
+        const product = products.find(p => p.id === value);
+        newItems[index] = {
+          ...newItems[index],
+          productId: value as string,
+          name: product?.name || '',
+          sku: product?.sku || '',
+          unitPrice: product?.price || 0,
+        };
+      } else {
+        newItems[index] = { ...newItems[index], [field]: value };
+      }
       return newItems;
     });
+  };
+
+  const addItem = () => {
+    setItems(prev => [...prev, { productId: '', name: '', sku: '', quantity: 1, unitPrice: 0, discount: 0 }]);
+  };
+
+  const removeItem = (index: number) => {
+    if (items.length > 1) {
+      setItems(prev => prev.filter((_, i) => i !== index));
+    }
   };
 
   const getLineTotal = (item: InvoiceItem) => {
@@ -228,8 +249,12 @@ export default function NewInvoicePage() {
             </Card>
 
             <Card>
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Items Facturados</CardTitle>
+                <Button type="button" variant="secondary" size="sm" onClick={addItem}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Agregar Item
+                </Button>
               </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
@@ -238,11 +263,11 @@ export default function NewInvoicePage() {
                     <tr className="border-b border-slate-200">
                       <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-8">#</th>
                       <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">SKU</th>
                       <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-20">Cantidad</th>
                       <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-28">Precio Unit.</th>
                       <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-20">Dto %</th>
                       <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-28">Total</th>
+                      <th className="w-12 px-4 py-3"></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -251,8 +276,18 @@ export default function NewInvoicePage() {
                       return (
                         <tr key={index} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                           <td className="px-4 py-3 text-xs text-slate-500">{index + 1}</td>
-                          <td className="px-4 py-3 text-xs text-slate-700">{item.name}</td>
-                          <td className="px-4 py-3 text-xs text-slate-500">{item.sku}</td>
+                          <td className="px-4 py-3">
+                            <select
+                              value={item.productId}
+                              onChange={(e) => handleItemChange(index, 'productId', e.target.value)}
+                              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                            >
+                              <option value="">Seleccionar producto...</option>
+                              {products.map(p => (
+                                <option key={p.id} value={p.id}>{p.sku} - {p.name}</option>
+                              ))}
+                            </select>
+                          </td>
                           <td className="px-4 py-3">
                             <input
                               type="number"
@@ -284,9 +319,27 @@ export default function NewInvoicePage() {
                           <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">
                             ${lineTotal.toLocaleString('es-CL')}
                           </td>
+                          <td className="px-4 py-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem(index)}
+                              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                              aria-label="Eliminar item"
+                              disabled={items.length <= 1}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </td>
                         </tr>
                       );
                     })}
+                    {items.length === 0 && (
+                      <tr>
+                        <td colSpan={7} className="px-4 py-8 text-center text-sm text-slate-400">
+                          No hay items. Haz clic en &quot;Agregar Item&quot; para comenzar.
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
                 </div>
