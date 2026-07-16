@@ -1,0 +1,318 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select } from '@yellow-erp/ui';
+import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react';
+import Link from 'next/link';
+import { getApiClient } from '@/lib/api-client';
+
+interface OrderItem {
+  product_id: string;
+  quantity: number;
+  unit_price: number;
+  discount_percent: number;
+}
+
+export default function EditPurchaseOrderPage() {
+  const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [suppliers, setSuppliers] = useState<{ id: string; name: string; code: string }[]>([]);
+  const [warehouses, setWarehouses] = useState<{ id: string; name: string; code: string }[]>([]);
+  const [products, setProducts] = useState<{ id: string; name: string; sku: string; price: number }[]>([]);
+  const [formData, setFormData] = useState({
+    supplierId: '',
+    warehouseId: '',
+    expectedDate: '',
+    paymentTerms: '30',
+    notes: '',
+  });
+  const [items, setItems] = useState<OrderItem[]>([]);
+
+  useEffect(() => {
+    const api = getApiClient();
+    Promise.all([
+      api.getPurchaseOrder(id).catch(() => null),
+      api.getSuppliers().catch(() => ({ data: [] })),
+      api.getWarehouses().catch(() => ({ data: [] })),
+      api.getProducts().catch(() => ({ data: [] })),
+    ]).then(([orderRes, suppliersRes, warehousesRes, productsRes]) => {
+      if (orderRes) {
+        const order = orderRes as any;
+        setFormData({
+          supplierId: order.supplier_id || '',
+          warehouseId: order.warehouse_id || '',
+          expectedDate: order.expected_date?.split('T')[0] || '',
+          paymentTerms: String(order.payment_terms || 30),
+          notes: order.notes || '',
+        });
+        setItems(
+          (order.items || []).map((item: any) => ({
+            product_id: item.product_id,
+            quantity: item.quantity,
+            unit_price: item.unit_price,
+            discount_percent: item.discount_percent || 0,
+          }))
+        );
+      }
+      setSuppliers((suppliersRes.data || []).map((s: any) => ({ id: s.id, name: s.name, code: s.code || '' })));
+      setWarehouses((warehousesRes.data || []).map((w: any) => ({ id: w.id, name: w.name, code: w.code || '' })));
+      setProducts((productsRes.data || []).map((p: any) => ({ id: p.id, name: p.name, sku: p.sku || '', price: p.cost_price || p.purchase_price || p.sale_price || p.price || 0 })));
+      setLoading(false);
+    });
+  }, [id]);
+
+  const handleFormChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setFormData(prev => ({ ...prev, [field]: e.target.value }));
+  };
+
+  const handleItemChange = (index: number, field: keyof OrderItem, value: string | number) => {
+    setItems(prev => {
+      const newItems = [...prev];
+      if (field === 'product_id') {
+        const product = products.find(p => p.id === value);
+        newItems[index] = {
+          ...newItems[index],
+          product_id: value as string,
+          unit_price: product?.price || newItems[index].unit_price,
+        };
+      } else {
+        newItems[index] = { ...newItems[index], [field]: value };
+      }
+      return newItems;
+    });
+  };
+
+  const addItem = () => setItems(prev => [...prev, { product_id: '', quantity: 1, unit_price: 0, discount_percent: 0 }]);
+  const removeItem = (index: number) => { if (items.length > 1) setItems(prev => prev.filter((_, i) => i !== index)); };
+
+  const subtotal = items.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0);
+  const taxAmount = Math.round(subtotal * 0.19);
+  const total = subtotal + taxAmount;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    setError('');
+    try {
+      const api = getApiClient();
+      await api.updatePurchaseOrder(id, {
+        supplier_id: formData.supplierId,
+        warehouse_id: formData.warehouseId,
+        expected_date: formData.expectedDate,
+        payment_terms: parseInt(formData.paymentTerms),
+        notes: formData.notes,
+      });
+      router.push(`/dashboard/purchases/${id}`);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error al guardar la orden');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="h-8 w-64 bg-slate-200 rounded animate-pulse" />
+        <div className="h-64 bg-slate-100 rounded-xl animate-pulse" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-4">
+        <Link href={`/dashboard/purchases/${id}`} className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+          <ArrowLeft className="w-5 h-5" />
+        </Link>
+        <div>
+          <h1 className="text-xl font-bold text-slate-900">Editar Orden de Compra</h1>
+          <p className="text-sm text-slate-500 mt-1">Modificar datos de la orden</p>
+        </div>
+      </div>
+
+      {error && <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-sm">{error}</div>}
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2 space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Información General</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Select
+                    label="Proveedor"
+                    value={formData.supplierId}
+                    onChange={handleFormChange('supplierId')}
+                    options={[{ value: '', label: 'Seleccionar proveedor...' }, ...suppliers.map(s => ({ value: s.id, label: `${s.code} - ${s.name}` }))]}
+                    required
+                  />
+                  <Select
+                    label="Almacén de Destino"
+                    value={formData.warehouseId}
+                    onChange={handleFormChange('warehouseId')}
+                    options={[{ value: '', label: 'Seleccionar almacén...' }, ...warehouses.map(w => ({ value: w.id, label: `${w.code} - ${w.name}` }))]}
+                  />
+                  <Input
+                    label="Fecha de Entrega Esperada"
+                    type="date"
+                    value={formData.expectedDate}
+                    onChange={handleFormChange('expectedDate')}
+                  />
+                  <Select
+                    label="Plazo de Pago"
+                    value={formData.paymentTerms}
+                    onChange={handleFormChange('paymentTerms')}
+                    options={[
+                      { value: '0', label: 'Contado' },
+                      { value: '15', label: '15 días' },
+                      { value: '30', label: '30 días' },
+                      { value: '45', label: '45 días' },
+                      { value: '60', label: '60 días' },
+                      { value: '90', label: '90 días' },
+                    ]}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>Items de la Orden</CardTitle>
+                <Button type="button" variant="secondary" size="sm" onClick={addItem}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Agregar Item
+                </Button>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-slate-200">
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-8">#</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
+                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-24">Cantidad</th>
+                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-32">Precio Unit.</th>
+                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-32">Total</th>
+                      <th className="w-12 px-4 py-3"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {items.map((item, index) => (
+                      <tr key={index} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                        <td className="px-4 py-3 text-xs text-slate-500">{index + 1}</td>
+                        <td className="px-4 py-3">
+                          <select
+                            value={item.product_id}
+                            onChange={(e) => handleItemChange(index, 'product_id', e.target.value)}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                          >
+                            <option value="">Seleccionar producto...</option>
+                            {products.map(p => (
+                              <option key={p.id} value={p.id}>{p.sku} - {p.name}</option>
+                            ))}
+                          </select>
+                        </td>
+                        <td className="px-4 py-3">
+                          <input
+                            type="number"
+                            min="1"
+                            value={item.quantity}
+                            onChange={(e) => handleItemChange(index, 'quantity', parseInt(e.target.value) || 1)}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                          />
+                        </td>
+                        <td className="px-4 py-3">
+                          <input
+                            type="number"
+                            min="0"
+                            value={item.unit_price}
+                            onChange={(e) => handleItemChange(index, 'unit_price', parseFloat(e.target.value) || 0)}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 text-right focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                          />
+                        </td>
+                        <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">
+                          ${(item.quantity * item.unit_price).toLocaleString('es-CL')}
+                        </td>
+                        <td className="px-4 py-3">
+                          <button
+                            type="button"
+                            onClick={() => removeItem(index)}
+                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                            disabled={items.length === 1}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Notas</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-slate-700">Notas para el Proveedor</label>
+                  <textarea
+                    value={formData.notes}
+                    onChange={handleFormChange('notes')}
+                    rows={3}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors resize-none"
+                    placeholder="Instrucciones especiales para el proveedor..."
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="space-y-6">
+            <Card className="sticky top-24">
+              <CardHeader>
+                <CardTitle>Resumen</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-500">Subtotal</span>
+                    <span className="font-medium text-slate-900">${subtotal.toLocaleString('es-CL')}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-500">IVA (19%)</span>
+                    <span className="font-medium text-slate-900">${taxAmount.toLocaleString('es-CL')}</span>
+                  </div>
+                  <hr className="border-slate-200" />
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-semibold text-slate-900">Total</span>
+                    <span className="text-xl font-bold text-slate-900">${total.toLocaleString('es-CL')}</span>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2 pt-4">
+                  <Button type="submit" className="w-full" loading={saving}>
+                    <Save className="w-4 h-4 mr-2" />
+                    Guardar Cambios
+                  </Button>
+                  <Link href={`/dashboard/purchases/${id}`} className="w-full">
+                    <Button type="button" variant="secondary" className="w-full">Cancelar</Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+}

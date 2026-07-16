@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button } from '@yellow-erp/ui';
-import { ArrowLeft, Printer, Calendar, Truck, CheckCircle, Clock, AlertTriangle, XCircle, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Printer, Calendar, Truck, CheckCircle, Clock, AlertTriangle, XCircle, ArrowRight, Pencil } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
@@ -167,6 +167,12 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <Link href={`/dashboard/purchases/quotations/${id}/edit`}>
+            <button className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              <Pencil className="w-4 h-4" />
+              Editar
+            </button>
+          </Link>
           <Button variant="secondary" size="sm" onClick={handlePrint}>
             <Printer className="w-4 h-4 mr-2" />
             Imprimir
