@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, Search, Package, CheckCircle, Eye, X, RotateCcw } from 'lucide-react';
+import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 
 interface CustomerReturn { id: string; return_number: string; status: string; reason: string | null; total_amount: number | null; created_at: string; customer: { id: string; name: string } | null; warehouse: { id: string; name: string }; items?: ReturnItem[]; }
@@ -98,9 +99,9 @@ export default function ReturnsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <a href="/dashboard/inventory" className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+          <Link href="/dashboard/inventory" className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
             <ArrowLeft className="w-5 h-5 text-slate-600" />
-          </a>
+          </Link>
           <div>
             <h1 className="text-xl font-bold text-slate-900">Devoluciones</h1>
             <p className="text-sm text-slate-500 mt-1">Gestion de devoluciones de clientes</p>

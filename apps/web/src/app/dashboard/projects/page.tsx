@@ -111,7 +111,7 @@ export default function ProjectsPage() {
                   <h3 className="text-base font-semibold text-slate-900">{project.name}</h3>
                   <Badge variant={statusConfig[project.status]?.variant || 'neutral'}>{statusConfig[project.status]?.label || project.status}</Badge>
                 </div>
-                <p className="text-sm text-slate-500 mt-1">{project.id} Â· {project.client}</p>
+                <p className="text-sm text-slate-500 mt-1">{project.id} · {project.client}</p>
               </div>
               <Button variant="secondary" size="sm">Ver Detalles</Button>
             </div>

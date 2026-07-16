@@ -99,7 +99,7 @@ export default function PayrollPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <KPICard label="Empleados Activos" value={activeEmployees} icon={Users} trend={`${employees.length} total`} trendUp={true} />
         <KPICard label="Nómina Mensual" value={`$${(totalPayroll/1000000).toFixed(1)}M`} icon={Wallet} trend="+3% vs anterior" trendUp={true} />
-        <KPICard label="Ãšltimo Período" value="Jun 2026" icon={Calendar} trend="Pagado" trendUp={true} />
+        <KPICard label="Ñšltimo Período" value="Jun 2026" icon={Calendar} trend="Pagado" trendUp={true} />
         <KPICard label="Provisión" value={`$${(totalPayroll*0.35/1000000).toFixed(1)}M`} icon={DollarSign} trend="35% carga social" trendUp={true} />
       </div>
 

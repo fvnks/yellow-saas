@@ -6,16 +6,7 @@ import { Plus, Search, Filter, Download, Eye, Edit, Trash2, Truck, Phone, Mail, 
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 
-const initialSuppliers = [
-  { id: '1', code: 'SUP-001', name: 'Logistica Norte SpA', tradeName: 'Logistica Norte', taxId: '76.567.890-1', phone: '+56 2 2345 6780', email: 'contacto@norte.cl', address: 'Av. Providencia 2000', city: 'Santiago', region: 'Metropolitana', paymentTerms: 30, creditLimit: 8000000, currentBalance: 2500000, currency: 'CLP', isActive: true, products: 45 },
-  { id: '2', code: 'SUP-002', name: 'Distribuidora Chile', tradeName: 'Distribuidora Chile', taxId: '98.765.432-9', phone: '+56 51 234 5679', email: 'ventas@distribuidora.cl', address: 'Calle Los Andes 567', city: 'La Serena', region: 'Coquimbo', paymentTerms: 45, creditLimit: 5000000, currentBalance: 0, currency: 'CLP', isActive: true, products: 28 },
-  { id: '3', code: 'SUP-003', name: 'Mec�nica y Repuestos', tradeName: 'Mec�nica Alfa', taxId: '87.654.321-7', phone: '+56 65 234 5679', email: 'info@alfa.cl', address: 'Av. Alemania 890', city: 'Puerto Montt', region: 'Los Lagos', paymentTerms: 60, creditLimit: 3500000, currentBalance: 750000, currency: 'CLP', isActive: true, products: 12 },
-  { id: '4', code: 'SUP-004', name: 'Almacenes Sur', tradeName: 'Almacenes Sur', taxId: '65.432.109-7', phone: '+56 4 234 5679', email: 'contacto@sur.cl', address: 'Av. La Costa 456', city: 'Valpara�so', region: 'Valpara�so', paymentTerms: 15, creditLimit: 2000000, currentBalance: 450000, currency: 'CLP', isActive: true, products: 78 },
-  { id: '5', code: 'SUP-005', name: 'Importaciones Globex', tradeName: 'Globex', taxId: '54.321.098-6', phone: '+56 2 345 6781', email: 'ventas@globex.cl', address: "O'Higgins 789", city: 'Santiago', region: 'Metropolitana', paymentTerms: 0, creditLimit: 10000000, currentBalance: 3200000, currency: 'CLP', isActive: false, products: 0 },
-  { id: '6', code: 'SUP-006', name: 'Servicios y Mantenimientos', tradeName: 'Servicios Omega', taxId: '43.210.987-5', phone: '+56 2 234 5679', email: 'contacto@omega.cl', address: 'Ringuelet 321', city: 'Santiago', region: 'Metropolitana', paymentTerms: 30, creditLimit: 1200000, currentBalance: 300000, currency: 'CLP', isActive: true, products: 23 },
-  { id: '7', code: 'SUP-007', name: 'Construcciones Betta', tradeName: 'Betta Construcciones', taxId: '32.109.876-4', phone: '+56 32 234 5679', email: 'info@beta.cl', address: 'Calle Lira 654', city: 'Antofagasta', region: 'Antofagasta', paymentTerms: 45, creditLimit: 2500000, currentBalance: 0, currency: 'CLP', isActive: true, products: 15 },
-  { id: '8', code: 'SUP-008', name: 'Suministros M�dicos Chile', tradeName: 'Suministros m�dicos', taxId: '21.098.765-3', phone: '+56 2 234 5680', email: 'ventas@med.cl', address: 'Calle Lyon 987', city: 'Santiago', region: 'Metropolitana', paymentTerms: 30, creditLimit: 1500000, currentBalance: 850000, currency: 'CLP', isActive: true, products: 35 },
-];
+const initialSuppliers: any[] = [];
 
 export default function SuppliersPage() {
   const [suppliers, setSuppliers] = useState(initialSuppliers);
@@ -76,7 +67,7 @@ export default function SuppliersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Proveedores</h1>
-          <p className="text-sm text-slate-500 mt-1">Gesti�n de proveedores y contacto comercial</p>
+          <p className="text-sm text-slate-500 mt-1">Gestin de proveedores y contacto comercial</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm">
@@ -124,7 +115,7 @@ export default function SuppliersPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Cr�dito Pendiente</p>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Crdito Pendiente</p>
                 <p className="text-2xl font-bold text-slate-900 mt-1">${suppliers.filter(s => s.currentBalance > 0).reduce((sum, s) => sum + s.currentBalance, 0).toLocaleString('es-CL')}</p>
               </div>
               <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center">
@@ -137,7 +128,7 @@ export default function SuppliersPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Productos Prove�dos</p>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Productos Provedos</p>
                 <p className="text-2xl font-bold text-slate-900 mt-1">{suppliers.reduce((sum, s) => sum + s.products, 0).toLocaleString('es-CL')}</p>
               </div>
               <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
@@ -156,7 +147,7 @@ export default function SuppliersPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
                 type="search"
-                placeholder="Buscar por nombre, RUT, raz�n social..."
+                placeholder="Buscar por nombre, RUT, razn social..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
@@ -202,7 +193,7 @@ export default function SuppliersPage() {
                 <TableHead>Contacto</TableHead>
                 <TableHead>Ciudad</TableHead>
                 <TableHead className="text-center">Plazo</TableHead>
-                <TableHead className="text-center">L�mite Cr�dito</TableHead>
+                <TableHead className="text-center">Lmite Crdito</TableHead>
                 <TableHead className="text-right">Saldo Actual</TableHead>
                 <TableHead className="text-center">Productos</TableHead>
                 <TableHead>Estado</TableHead>
@@ -244,7 +235,7 @@ export default function SuppliersPage() {
                       </div>
                       <div className="text-xs text-slate-500">{supplier.region}</div>
                     </TableCell>
-                    <TableCell className="text-center font-medium">{supplier.paymentTerms} d�as</TableCell>
+                    <TableCell className="text-center font-medium">{supplier.paymentTerms} das</TableCell>
                     <TableCell className="text-center font-medium">${supplier.creditLimit.toLocaleString('es-CL')}</TableCell>
                     <TableCell className="text-right font-bold" style={{ color: supplier.currentBalance > 0 ? '#e11d48' : '#059669' }}>
                       ${supplier.currentBalance.toLocaleString('es-CL')}

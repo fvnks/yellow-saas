@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, Trash2, Edit, Tag } from 'lucide-react';
+import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 
 interface ProductTag { id: string; name: string; color: string; is_active: boolean; product_count?: number; }
@@ -61,9 +62,9 @@ export default function TagsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <a href="/dashboard/inventory" className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+          <Link href="/dashboard/inventory" className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
             <ArrowLeft className="w-5 h-5 text-slate-600" />
-          </a>
+          </Link>
           <div>
             <h1 className="text-xl font-bold text-slate-900">Tags de Productos</h1>
             <p className="text-sm text-slate-500 mt-1">Organiza tus productos con etiquetas de color</p>

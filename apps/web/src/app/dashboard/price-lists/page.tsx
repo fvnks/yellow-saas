@@ -5,20 +5,9 @@ import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody
 import { Plus, Edit, Trash2, Copy, Tag, Percent, Star, List } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 
-const fallbackLists = [
-  { id: '1', name: 'Lista General', description: 'Precios est�ndar para todos los clientes', products: 156, status: 'default', createdAt: '2026-01-15' },
-  { id: '2', name: 'Mayoristas', description: 'Descuentos por volumen para distribuidores', products: 89, status: 'active', createdAt: '2026-02-20' },
-  { id: '3', name: 'VIP', description: 'Precios preferenciales para clientes premium', products: 45, status: 'inactive', createdAt: '2026-03-10' },
-];
+const fallbackLists: any[] = [];
 
-const fallbackProducts = [
-  { id: '1', name: 'Laptop HP ProBook 450 G10', sku: 'LP-HP-450', listPrice: 650000, generalPrice: 650000, difference: 0 },
-  { id: '2', name: 'Mouse Logitech MX Master 3S', sku: 'MS-LG-MX3', listPrice: 79000, generalPrice: 89000, difference: -10000 },
-  { id: '3', name: 'Monitor Dell UltraSharp 27"', sku: 'MN-DELL-27', listPrice: 395000, generalPrice: 420000, difference: -25000 },
-  { id: '4', name: 'Teclado Mec�nico Keychron K2', sku: 'KB-KC-K2', listPrice: 85000, generalPrice: 95000, difference: -10000 },
-  { id: '5', name: 'Disco SSD Samsung 980 PRO 1TB', sku: 'SSD-SAM-980', listPrice: 99000, generalPrice: 110000, difference: -11000 },
-  { id: '6', name: 'Impresora HP LaserJet Pro', sku: 'IMP-HP-LJ', listPrice: 265000, generalPrice: 280000, difference: -15000 },
-];
+const fallbackProducts: any[] = [];
 
 export default function PriceListsPage() {
   const [priceLists, setPriceLists] = useState(fallbackLists);
@@ -48,7 +37,7 @@ export default function PriceListsPage() {
 
   const totalLists = priceLists.length;
   const productsWithPrice = priceLists.reduce((sum, list) => sum + list.products, 0);
-  const avgDiscount = 8.5;
+  const avgDiscount = 0;
   const defaultList = priceLists.find(l => l.status === 'default')?.name || 'Lista General';
 
   const getStatusConfig = (status: string) => {
@@ -65,7 +54,7 @@ export default function PriceListsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Listas de Precio</h1>
-          <p className="text-sm text-slate-500 mt-1">Gesti�n de precios y descuentos por cliente</p>
+          <p className="text-sm text-slate-500 mt-1">Gestin de precios y descuentos por cliente</p>
         </div>
         <Button>
           <Plus className="w-4 h-4 mr-2" />
@@ -101,7 +90,7 @@ export default function PriceListsPage() {
         <KPICard
           label="Lista por Defecto"
           value={defaultList}
-          change="Aplicada autom�ticamente"
+          change="Aplicada automticamente"
           changeType="neutral"
           icon={Star}
           iconColor="blue"
@@ -118,7 +107,7 @@ export default function PriceListsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Nombre</TableHead>
-                <TableHead>Descripci�n</TableHead>
+                <TableHead>Descripcin</TableHead>
                 <TableHead>Productos</TableHead>
                 <TableHead>Estado</TableHead>
                 <TableHead>Creada</TableHead>

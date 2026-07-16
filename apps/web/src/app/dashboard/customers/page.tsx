@@ -225,7 +225,7 @@ export default function CustomersPage() {
                 <TableHead>Contacto</TableHead>
                 <TableHead>Ciudad</TableHead>
                 <TableHead className="text-center">Plazo</TableHead>
-                <TableHead className="text-center">L�mite Crédito</TableHead>
+                <TableHead className="text-center">Lmite Crédito</TableHead>
                 <TableHead className="text-right">Saldo Actual</TableHead>
                 <TableHead>IVA</TableHead>
                 <TableHead>Estado</TableHead>
