@@ -53,6 +53,7 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [warehouses, setWarehouses] = useState<{ id: string; name: string }[]>([]);
 
   const handlePrint = () => {
     window.print();
@@ -64,11 +65,20 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
     setQuotation(prev => prev ? { ...prev, status: newStatus } : null);
   };
 
+  const [warehouseId, setWarehouseId] = useState('');
+  const [showWarehouseModal, setShowWarehouseModal] = useState(false);
+
   const handleConvertToPO = async () => {
     if (!quotation) return;
+    setShowWarehouseModal(true);
+  };
+
+  const confirmConvertToPO = async () => {
+    if (!quotation || !warehouseId) return;
     const api = getApiClient();
     const po = await api.createPurchaseOrder({
       supplier_id: (quotation as any).supplier_id,
+      warehouse_id: warehouseId,
       expected_date: undefined,
       notes: `Convertido desde cotización ${quotation.number}`,
       items: quotation.items?.map((item: any) => ({
@@ -84,15 +94,17 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
 
   useEffect(() => {
     const api = getApiClient();
-    api.getQuotation(id)
-      .then((data) => {
-        setQuotation(data as unknown as QuotationDetail);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('No se pudo cargar la cotización');
-        setLoading(false);
-      });
+    Promise.all([
+      api.getQuotation(id),
+      api.getWarehouses().catch(() => ({ data: [] })),
+    ]).then(([quoteRes, warehousesRes]) => {
+      setQuotation(quoteRes as unknown as QuotationDetail);
+      setWarehouses((warehousesRes.data || []).map((w: any) => ({ id: w.id, name: w.name })));
+      setLoading(false);
+    }).catch(() => {
+      setError('No se pudo cargar la cotización');
+      setLoading(false);
+    });
   }, [id]);
 
   if (loading) {
@@ -428,6 +440,44 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
           </Card>
         </div>
       </div>
+
+      {showWarehouseModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+            <div className="px-6 py-4 border-b border-slate-200">
+              <h2 className="text-lg font-semibold text-slate-900">Seleccionar Bodega</h2>
+              <p className="text-sm text-slate-500 mt-1">Elige la bodega de destino para la orden de compra</p>
+            </div>
+            <div className="p-6">
+              <select
+                value={warehouseId}
+                onChange={(e) => setWarehouseId(e.target.value)}
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              >
+                <option value="">Seleccionar bodega...</option>
+                {warehouses.map(w => (
+                  <option key={w.id} value={w.id}>{w.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+              <button
+                onClick={() => { setShowWarehouseModal(false); setWarehouseId(''); }}
+                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={confirmConvertToPO}
+                disabled={!warehouseId}
+                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+              >
+                Convertir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

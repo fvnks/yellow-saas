@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     );
 
     const dataResult = await query(
-      `SELECT gr.*, s.name as supplier_name, w.name as warehouse_name, po.order_number
+       `SELECT gr.*, s.name as supplier_name, w.name as warehouse_name, po.number as order_number
        FROM goods_receipts gr
        LEFT JOIN suppliers s ON s.id = gr.supplier_id
        LEFT JOIN warehouses w ON w.id = gr.warehouse_id

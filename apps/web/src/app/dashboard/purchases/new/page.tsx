@@ -92,6 +92,7 @@ export default function NewPurchaseOrderPage() {
         expected_date: formData.expectedDate,
         payment_terms: parseInt(formData.paymentTerms),
         notes: formData.notes,
+        internal_notes: formData.internalNotes,
         items: items.filter(i => i.productId).map(i => ({
           product_id: i.productId,
           quantity: i.quantity,

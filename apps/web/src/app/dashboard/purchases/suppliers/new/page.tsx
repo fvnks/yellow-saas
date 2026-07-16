@@ -88,7 +88,7 @@ export default function NewSupplierPage() {
         contact_phone: contacts[0]?.phone || '',
         contact_email: contacts[0]?.email || '',
       });
-      router.push('/dashboard/purchases');
+      router.push('/dashboard/suppliers');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error al crear el proveedor');
     } finally {
@@ -99,7 +99,7 @@ export default function NewSupplierPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/purchases" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href="/dashboard/suppliers" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
@@ -226,7 +226,7 @@ export default function NewSupplierPage() {
                     <Save className="w-4 h-4 mr-2" />
                     Guardar Proveedor
                   </Button>
-                  <Link href="/dashboard/purchases" className="w-full">
+                  <Link href="/dashboard/suppliers" className="w-full">
                     <Button type="button" variant="secondary" className="w-full">Cancelar</Button>
                   </Link>
                 </div>

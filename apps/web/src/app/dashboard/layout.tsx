@@ -145,7 +145,7 @@ function DashboardLayoutInner({ children }: DashboardLayoutProps) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [expandedGroups, setExpandedGroups] = useState<string[]>(['Inventario', 'Ventas']);
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(['Inventario', 'Ventas', 'Compras']);
   const { hasAnyPermission } = usePermissions();
 
   const user = { name: 'Admin Yellow', email: 'admin@yellow.cl', role: 'owner' };

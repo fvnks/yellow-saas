@@ -92,6 +92,13 @@ export default function EditQuotationPage() {
         expiry_date: formData.expiryDate,
         total_amount: total,
         notes: formData.notes,
+        items: items.filter(i => i.product_id).map(i => ({
+          product_id: i.product_id,
+          quantity: i.quantity,
+          unit_price: i.unit_price,
+          discount_percent: 0,
+          tax_rate: 19,
+        })),
       });
       router.push(`/dashboard/purchases/quotations/${id}`);
     } catch (err: unknown) {

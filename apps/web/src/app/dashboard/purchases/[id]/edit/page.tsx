@@ -106,6 +106,13 @@ export default function EditPurchaseOrderPage() {
         expected_date: formData.expectedDate,
         payment_terms: parseInt(formData.paymentTerms),
         notes: formData.notes,
+        items: items.filter(i => i.product_id).map(i => ({
+          product_id: i.product_id,
+          quantity: i.quantity,
+          unit_price: i.unit_price,
+          discount_percent: i.discount_percent || 0,
+          tax_rate: 19,
+        })),
       });
       router.push(`/dashboard/purchases/${id}`);
     } catch (err: unknown) {

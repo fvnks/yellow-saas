@@ -35,7 +35,7 @@ export default function NewQuotationPage() {
       api.getProducts().catch(() => ({ data: [] })),
     ]).then(([suppliersRes, productsRes]) => {
       setSuppliers((suppliersRes.data || []).map((s: any) => ({ id: s.id, name: s.name, code: s.code || '' })));
-      setProducts((productsRes.data || []).map((p: any) => ({ id: p.id, name: p.name, sku: p.sku || '', price: p.sale_price || p.price || 0 })));
+      setProducts((productsRes.data || []).map((p: any) => ({ id: p.id, name: p.name, sku: p.sku || '', price: p.cost_price || p.purchase_price || p.sale_price || p.price || 0 })));
     });
   }, []);
 
@@ -85,7 +85,7 @@ export default function NewQuotationPage() {
           tax_rate: 19,
         })),
       });
-      router.push('/dashboard/purchases');
+      router.push('/dashboard/purchases/quotations');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error al crear la cotización');
     } finally {
