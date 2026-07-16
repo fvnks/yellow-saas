@@ -46,6 +46,7 @@ export default function SalesReturnsPage() {
   const [showNewModal, setShowNewModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedReturn, setSelectedReturn] = useState<CustomerReturn | null>(null);
+  const [viewReturnItems, setViewReturnItems] = useState<{ product_id: string; product_name: string; quantity: number; unit_price: number; condition?: string }[]>([]);
   const [returnItems, setReturnItems] = useState<ReturnItem[]>([]);
   const [newReturn, setNewReturn] = useState({
     customer_id: '',
@@ -95,9 +96,26 @@ export default function SalesReturnsPage() {
     return matchesSearch && matchesStatus;
   });
 
-  const handleViewReturn = (ret: CustomerReturn) => {
+  const handleViewReturn = async (ret: CustomerReturn) => {
     setSelectedReturn(ret);
     setShowDetailModal(true);
+    try {
+      const api = getApiClient();
+      const detail = await api.getCustomerReturn(ret.id);
+      if (detail?.items?.length) {
+        setViewReturnItems(detail.items.map((i: any) => ({
+          product_id: i.product_id,
+          product_name: i.product?.name || i.product_name || '---',
+          quantity: i.quantity,
+          unit_price: i.unit_price,
+          condition: i.condition,
+        })));
+      } else {
+        setViewReturnItems([]);
+      }
+    } catch {
+      setViewReturnItems([]);
+    }
   };
 
   const handleCompleteReturn = async (id: string) => {
@@ -338,6 +356,31 @@ export default function SalesReturnsPage() {
                   <p className="text-sm text-slate-700 mt-1">{selectedReturn.reason}</p>
                 </div>
               )}
+              {viewReturnItems.length > 0 && (
+                <div>
+                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-2">Items Devueltos</p>
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-slate-200">
+                        <th className="text-left px-2 py-1 text-[9px] font-semibold text-slate-500 uppercase">Producto</th>
+                        <th className="text-center px-2 py-1 text-[9px] font-semibold text-slate-500 uppercase">Cant.</th>
+                        <th className="text-right px-2 py-1 text-[9px] font-semibold text-slate-500 uppercase">P. Unit.</th>
+                        <th className="text-right px-2 py-1 text-[9px] font-semibold text-slate-500 uppercase">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {viewReturnItems.map((item, i) => (
+                        <tr key={i} className="border-b border-slate-100">
+                          <td className="px-2 py-1 text-slate-700">{item.product_name}</td>
+                          <td className="px-2 py-1 text-center text-slate-700">{item.quantity}</td>
+                          <td className="px-2 py-1 text-right text-slate-700">${item.unit_price.toLocaleString('es-CL')}</td>
+                          <td className="px-2 py-1 text-right text-slate-700 font-medium">${(item.quantity * item.unit_price).toLocaleString('es-CL')}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
             <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
               <button
@@ -361,7 +404,7 @@ export default function SalesReturnsPage() {
                       logo_url: c.logo_url || undefined,
                     },
                     customer: selectedReturn.customer ? { name: selectedReturn.customer.name, tax_id: selectedReturn.customer.tax_id } : undefined,
-                    items: returnItems.map(item => ({
+                    items: viewReturnItems.map(item => ({
                       name: item.product_name,
                       sku: '',
                       quantity: item.quantity,
@@ -369,7 +412,7 @@ export default function SalesReturnsPage() {
                       total: item.quantity * item.unit_price,
                     })),
                     reason: selectedReturn.reason || undefined,
-                    condition: returnItems[0]?.condition || undefined,
+                    condition: viewReturnItems[0]?.condition || undefined,
                   });
                   doc.save(`${selectedReturn.return_number}.pdf`);
                 }}

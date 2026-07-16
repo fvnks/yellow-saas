@@ -151,7 +151,7 @@ export class ApiClient {
 
   // Sales Orders
   async getSalesOrders(params?: Record<string, string>) {
-    return this.requestWithPagination<{ id: string; order_number: string; customer_id: string; status: string; total: number; created_at: string }>('/sales-orders', params || {});
+    return this.requestWithPagination<{ id: string; order_number: string; customer_id: string; customer?: { id: string; name: string; tax_id: string }; warehouse?: { id: string; name: string; code: string }; items?: any[]; status: string; total: number; created_at: string }>('/sales-orders', params || {});
   }
 
   async getSalesOrder(id: string) {
@@ -162,7 +162,7 @@ export class ApiClient {
     return this.request<{ id: string }>('/sales-orders', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async updateSalesOrder(id: string, data: Partial<{ customer_id: string; warehouse_id: string; status: string; delivery_date: string; payment_terms: number; notes: string }>) {
+  async updateSalesOrder(id: string, data: Partial<{ customer_id: string; warehouse_id: string; status: string; delivery_date: string; payment_terms: number; notes: string; items: { product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }>) {
     return this.request<{ id: string }>(`/sales-orders/${id}`, { method: 'PUT', body: JSON.stringify(data) });
   }
 

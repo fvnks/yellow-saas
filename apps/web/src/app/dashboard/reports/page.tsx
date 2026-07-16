@@ -1,41 +1,25 @@
 'use client';
 
-import { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select, KPICard } from '@yellow-erp/ui';
-import { Download, FileText, ShoppingCart, Package, Calculator, TrendingUp, DollarSign, Users, BarChart3, AlertTriangle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Card, Title, Text, Metric, BarChart, AreaChart, DonutChart, Badge, Table, TableHead, TableRow, TableHeaderCell, TableBody, TableCell, Select, SelectItem } from '@tremor/react';
+import { Download, FileText, DollarSign, ShoppingCart, BarChart3, Users, Package, TrendingUp, Calculator, AlertTriangle } from 'lucide-react';
+import { getApiClient } from '@/lib/api-client';
 
-const topProducts = [
-  { id: '1', name: 'Laptop HP ProBook 450 G10', units: 45, total: 29250000, percentage: 28 },
-  { id: '2', name: 'Monitor Dell UltraSharp 27"', units: 32, total: 13440000, percentage: 13 },
-  { id: '3', name: 'Mouse Logitech MX Master 3S', units: 89, total: 7921000, percentage: 8 },
-  { id: '4', name: 'Teclado Mecánico Keychron K2', units: 67, total: 6365000, percentage: 6 },
-  { id: '5', name: 'Disco SSD Samsung 980 PRO 1TB', units: 54, total: 5940000, percentage: 6 },
-  { id: '6', name: 'Impresora HP LaserJet Pro', units: 21, total: 5880000, percentage: 6 },
-  { id: '7', name: 'Webcam Logitech C920', units: 78, total: 5070000, percentage: 5 },
-  { id: '8', name: 'Cable HDMI 2.1 2m', units: 210, total: 2520000, percentage: 2 },
-  { id: '9', name: 'Audífonos Sony WH-1000XM5', units: 15, total: 4500000, percentage: 4 },
-  { id: '10', name: 'Router TP-Link Archer AX73', units: 28, total: 3920000, percentage: 4 },
-];
+function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(amount);
+}
 
-const inventoryProducts = [
-  { id: '1', name: 'Laptop HP ProBook 450 G10', sku: 'LP-HP-450', warehouse: 'Bodega Central', currentStock: 15, minStock: 5, status: 'normal' },
-  { id: '2', name: 'Mouse Logitech MX Master 3S', sku: 'MS-LG-MX3', warehouse: 'Bodega Norte', currentStock: 0, minStock: 10, status: 'sin-stock' },
-  { id: '3', name: 'Monitor Dell UltraSharp 27"', sku: 'MN-DELL-27', warehouse: 'Bodega Central', currentStock: 8, minStock: 3, status: 'normal' },
-  { id: '4', name: 'Teclado Mecánico Keychron K2', sku: 'KB-KC-K2', warehouse: 'Bodega Sur', currentStock: 2, minStock: 5, status: 'bajo' },
-  { id: '5', name: 'Disco SSD Samsung 980 PRO 1TB', sku: 'SSD-SAM-980', warehouse: 'Bodega Central', currentStock: 25, minStock: 10, status: 'normal' },
-  { id: '6', name: 'Impresora HP LaserJet Pro', sku: 'IMP-HP-LJ', warehouse: 'Bodega Norte', currentStock: 0, minStock: 2, status: 'sin-stock' },
-  { id: '7', name: 'Cable HDMI 2.1 2m', sku: 'CB-HDMI-2', warehouse: 'Bodega Central', currentStock: 50, minStock: 20, status: 'normal' },
-  { id: '8', name: 'Webcam Logitech C920', sku: 'WC-LG-C920', warehouse: 'Bodega Sur', currentStock: 3, minStock: 5, status: 'bajo' },
-];
+const statusColors: Record<string, string> = {
+  'sin-stock': 'red',
+  'bajo': 'yellow',
+  'normal': 'emerald',
+};
 
-const monthlyFinancials = [
-  { id: '1', month: 'Enero 2026', income: 18500000, expenses: 12300000, profit: 6200000, iva: 3515000 },
-  { id: '2', month: 'Febrero 2026', income: 21200000, expenses: 14100000, profit: 7100000, iva: 4028000 },
-  { id: '3', month: 'Marzo 2026', income: 19800000, expenses: 13200000, profit: 6600000, iva: 3762000 },
-  { id: '4', month: 'Abril 2026', income: 23400000, expenses: 15600000, profit: 7800000, iva: 4446000 },
-  { id: '5', month: 'Mayo 2026', income: 20100000, expenses: 13400000, profit: 6700000, iva: 3819000 },
-  { id: '6', month: 'Junio 2026', income: 25600000, expenses: 17100000, profit: 8500000, iva: 4864000 },
-];
+const statusLabels: Record<string, string> = {
+  'sin-stock': 'Sin stock',
+  'bajo': 'Bajo',
+  'normal': 'Normal',
+};
 
 export default function ReportsPage() {
   const [activeTab, setActiveTab] = useState('ventas');
@@ -43,13 +27,90 @@ export default function ReportsPage() {
   const [dateTo, setDateTo] = useState('2026-06-30');
   const [warehouseFilter, setWarehouseFilter] = useState('all');
 
+  const [topProducts, setTopProducts] = useState<{ name: string; units: number; total: number }[]>([]);
+  const [inventoryProducts, setInventoryProducts] = useState<{ name: string; sku: string; warehouse: string; currentStock: number; minStock: number; status: string }[]>([]);
+  const [monthlyFinancials, setMonthlyFinancials] = useState<{ month: string; income: number; expenses: number; profit: number; iva: number }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const api = getApiClient();
+    Promise.all([
+      api.getProducts({ limit: '500' }).catch(() => ({ data: [] })),
+      api.getSalesOrders({ limit: '500' }).catch(() => ({ data: [] })),
+      api.getInvoices({ limit: '500' }).catch(() => ({ data: [] })),
+      api.getPurchaseOrders({ limit: '500' }).catch(() => ({ data: [] })),
+    ]).then(([productsRes, ordersRes, invoicesRes, purchasesRes]) => {
+      const products = productsRes.data || [];
+      const orders = ordersRes.data || [];
+      const invoices = invoicesRes.data || [];
+      const purchases = purchasesRes.data || [];
+
+      // Top products from orders (aggregate by product)
+      const productMap: Record<string, { name: string; units: number; total: number }> = {};
+      orders.forEach((o: any) => {
+        if (o.items?.length) {
+          o.items.forEach((item: any) => {
+            const key = item.product_id || item.product?.name || 'unknown';
+            if (!productMap[key]) {
+              productMap[key] = { name: item.product?.name || item.description || key, units: 0, total: 0 };
+            }
+            productMap[key].units += item.quantity || 0;
+            productMap[key].total += (item.quantity || 0) * (item.unit_price || 0);
+          });
+        }
+      });
+      const topProds = Object.values(productMap)
+        .sort((a, b) => b.total - a.total)
+        .slice(0, 10);
+      setTopProducts(topProds);
+
+      // Inventory
+      const invProducts = products.map((p: any) => ({
+        name: p.name,
+        sku: p.sku,
+        warehouse: p.stock_levels?.[0]?.warehouse?.name || '—',
+        currentStock: p.stock_levels?.reduce((sum: number, sl: any) => sum + (sl.quantity || 0), 0) || 0,
+        minStock: p.min_stock || 10,
+        status: (p.stock_levels?.reduce((sum: number, sl: any) => sum + (sl.quantity || 0), 0) || 0) === 0 ? 'sin-stock' :
+                (p.stock_levels?.reduce((sum: number, sl: any) => sum + (sl.quantity || 0), 0) || 0) <= (p.min_stock || 10) ? 'bajo' : 'normal',
+      }));
+      setInventoryProducts(invProducts);
+
+      // Monthly financials from invoices and purchases
+      const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+      const finMap: Record<string, { income: number; expenses: number }> = {};
+      invoices.forEach((inv: any) => {
+        const d = new Date(inv.invoice_date || inv.created_at);
+        const key = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+        if (!finMap[key]) finMap[key] = { income: 0, expenses: 0 };
+        finMap[key].income += inv.total_amount || 0;
+      });
+      purchases.forEach((p: any) => {
+        const d = new Date(p.created_at);
+        const key = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+        if (!finMap[key]) finMap[key] = { income: 0, expenses: 0 };
+        finMap[key].expenses += p.total_amount || 0;
+      });
+      const fins = Object.entries(finMap)
+        .map(([month, v]) => ({
+          month,
+          income: v.income,
+          expenses: v.expenses,
+          profit: v.income - v.expenses,
+          iva: Math.round(v.income * 0.19),
+        }))
+        .sort((a, b) => monthNames.indexOf(a.month.split(' ')[0]) - monthNames.indexOf(b.month.split(' ')[0]));
+      setMonthlyFinancials(fins);
+
+      setLoading(false);
+    });
+  }, []);
+
   const tabs = [
     { id: 'ventas', label: 'Ventas' },
     { id: 'inventario', label: 'Inventario' },
     { id: 'contabilidad', label: 'Contabilidad' },
   ];
-
-  const warehouses = ['Bodega Central', 'Bodega Norte', 'Bodega Sur'];
 
   const filteredInventory = inventoryProducts.filter(p =>
     warehouseFilter === 'all' || p.warehouse === warehouseFilter
@@ -57,8 +118,7 @@ export default function ReportsPage() {
 
   const totalSold = topProducts.reduce((sum, p) => sum + p.total, 0);
   const totalOrders = 342;
-  const avgTicket = Math.round(totalSold / totalOrders);
-  const topClient = 'Empresa Constructora Los Andes';
+  const avgTicket = totalOrders > 0 ? Math.round(totalSold / totalOrders) : 0;
 
   const totalProducts = inventoryProducts.length;
   const inventoryValue = inventoryProducts.reduce((sum, p) => sum + (p.currentStock * 650000), 0);
@@ -70,13 +130,15 @@ export default function ReportsPage() {
   const netProfit = totalIncome - totalExpenses;
   const totalIva = monthlyFinancials.reduce((sum, m) => sum + m.iva, 0);
 
-  const getStockStatus = (status: string) => {
-    switch (status) {
-      case 'sin-stock': return { label: 'Sin stock', variant: 'danger' as const };
-      case 'bajo': return { label: 'Bajo', variant: 'warning' as const };
-      default: return { label: 'Normal', variant: 'success' as const };
-    }
-  };
+  // Chart data for top products
+  const topProductsChart = topProducts.map(p => ({ name: p.name.length > 25 ? p.name.substring(0, 25) + '...' : p.name, 'Unidades vendidas': p.units }));
+
+  // Donut data for stock status
+  const stockStatusData = [
+    { name: 'Normal', value: inventoryProducts.filter(p => p.status === 'normal').length },
+    { name: 'Stock Bajo', value: lowStock },
+    { name: 'Sin Stock', value: outOfStock },
+  ];
 
   return (
     <div className="space-y-6">
@@ -86,17 +148,18 @@ export default function ReportsPage() {
           <p className="text-sm text-slate-500 mt-1">Análisis y estadísticas del negocio</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm">
-            <FileText className="w-4 h-4 mr-2" />
+          <button className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            <FileText className="w-4 h-4" />
             Exportar PDF
-          </Button>
-          <Button variant="secondary" size="sm">
-            <Download className="w-4 h-4 mr-2" />
+          </button>
+          <button className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            <Download className="w-4 h-4" />
             Exportar Excel
-          </Button>
+          </button>
         </div>
       </div>
 
+      {/* Tabs */}
       <div className="flex gap-1 bg-slate-100 p-1 rounded-lg w-fit">
         {tabs.map(tab => (
           <button
@@ -113,285 +176,374 @@ export default function ReportsPage() {
         ))}
       </div>
 
+      {/* VENTAS TAB */}
       {activeTab === 'ventas' && (
         <div className="space-y-6">
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-4">
-                <Input
-                  label="Fecha desde"
-                  type="date"
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
-                  className="w-40"
-                />
-                <Input
-                  label="Fecha hasta"
-                  type="date"
-                  value={dateTo}
-                  onChange={(e) => setDateTo(e.target.value)}
-                  className="w-40"
-                />
+            <div className="flex items-center gap-4">
+              <div className="space-y-1">
+                <Text>Fecha desde</Text>
+                <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)}
+                  className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
               </div>
-            </CardContent>
+              <div className="space-y-1">
+                <Text>Fecha hasta</Text>
+                <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)}
+                  className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+              </div>
+            </div>
           </Card>
 
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-            <KPICard
-              label="Total Vendido"
-              value={`$${totalSold.toLocaleString('es-CL')}`}
-              change="+18% vs mes anterior"
-              changeType="positive"
-              icon={DollarSign}
-              iconColor="emerald"
-            />
-            <KPICard
-              label="Órdenes"
-              value={totalOrders.toString()}
-              change="+12 órdenes"
-              changeType="positive"
-              icon={ShoppingCart}
-              iconColor="blue"
-            />
-            <KPICard
-              label="Ticket Promedio"
-              value={`$${avgTicket.toLocaleString('es-CL')}`}
-              change="+5% vs mes anterior"
-              changeType="positive"
-              icon={BarChart3}
-              iconColor="indigo"
-            />
-            <KPICard
-              label="Top Cliente"
-              value={topClient}
-              change="$12.500.000 en compras"
-              changeType="neutral"
-              icon={Users}
-              iconColor="amber"
-            />
+            <Card decoration="top" decorationColor="emerald">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Text>Total Vendido</Text>
+                  <Metric className="mt-1">{formatCurrency(totalSold)}</Metric>
+                  <Text className="mt-1 text-emerald-500">+18% vs mes anterior</Text>
+                </div>
+                <div className="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center">
+                  <DollarSign className="w-5 h-5 text-emerald-600" />
+                </div>
+              </div>
+            </Card>
+            <Card decoration="top" decorationColor="blue">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Text>Órdenes</Text>
+                  <Metric className="mt-1">{totalOrders}</Metric>
+                  <Text className="mt-1 text-blue-500">+12 órdenes</Text>
+                </div>
+                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <ShoppingCart className="w-5 h-5 text-blue-600" />
+                </div>
+              </div>
+            </Card>
+            <Card decoration="top" decorationColor="indigo">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Text>Ticket Promedio</Text>
+                  <Metric className="mt-1">{formatCurrency(avgTicket)}</Metric>
+                  <Text className="mt-1 text-indigo-500">+5% vs mes anterior</Text>
+                </div>
+                <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center">
+                  <BarChart3 className="w-5 h-5 text-indigo-600" />
+                </div>
+              </div>
+            </Card>
+            <Card decoration="top" decorationColor="amber">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Text>Top Cliente</Text>
+                  <Metric className="mt-1 text-lg">Empresa Constructora Los Andes</Metric>
+                  <Text className="mt-1 text-amber-500">$12.500.000 en compras</Text>
+                </div>
+                <div className="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center">
+                  <Users className="w-5 h-5 text-amber-600" />
+                </div>
+              </div>
+            </Card>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Top 10 Productos Vendidos</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
+          {/* Top Products Chart + Table */}
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Card>
+              <Title>Top Productos por Unidades</Title>
+              <Text className="mb-4">Unidades vendidas por producto</Text>
+              <BarChart
+                data={topProductsChart.length > 0 ? topProductsChart : [{ name: 'Sin datos', 'Unidades vendidas': 0 }]}
+                index="name"
+                categories={['Unidades vendidas']}
+                colors={['indigo']}
+                yAxisWidth={150}
+                className="h-72"
+              />
+            </Card>
+
+            <Card>
+              <Title>Top 10 Productos Vendidos</Title>
+              <Table className="mt-2">
+                <TableHead>
                   <TableRow>
-                    <TableHead>#</TableHead>
-                    <TableHead>Producto</TableHead>
-                    <TableHead>Unidades</TableHead>
-                    <TableHead>Total</TableHead>
-                    <TableHead>% del total</TableHead>
+                    <TableHeaderCell>#</TableHeaderCell>
+                    <TableHeaderCell>Producto</TableHeaderCell>
+                    <TableHeaderCell>Unidades</TableHeaderCell>
+                    <TableHeaderCell className="text-right">Total</TableHeaderCell>
                   </TableRow>
-                </TableHeader>
+                </TableHead>
                 <TableBody>
                   {topProducts.map((product, index) => (
-                    <TableRow key={product.id}>
+                    <TableRow key={index}>
                       <TableCell>{index + 1}</TableCell>
                       <TableCell className="font-medium">{product.name}</TableCell>
                       <TableCell>{product.units}</TableCell>
-                      <TableCell>${product.total.toLocaleString('es-CL')}</TableCell>
-                      <TableCell>{product.percentage}%</TableCell>
+                      <TableCell className="text-right">{formatCurrency(product.total)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-              </div>
-            </CardContent>
-          </Card>
+            </Card>
+          </div>
         </div>
       )}
 
+      {/* INVENTARIO TAB */}
       {activeTab === 'inventario' && (
         <div className="space-y-6">
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-4">
-                <Select
-                  label="Almacén"
-                  value={warehouseFilter}
-                  onChange={(e) => setWarehouseFilter(e.target.value)}
-                  options={[
-                    { value: 'all', label: 'Todos los almacenes' },
-                    ...warehouses.map(w => ({ value: w, label: w })),
-                  ]}
-                  className="w-64"
-                />
+            <div className="flex items-center gap-4">
+              <div className="space-y-1">
+                <Text>Almacén</Text>
+                <select value={warehouseFilter} onChange={(e) => setWarehouseFilter(e.target.value)}
+                  className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-64">
+                  <option value="all">Todos los almacenes</option>
+                  {[...new Set(inventoryProducts.map(p => p.warehouse))].map(w => (
+                    <option key={w} value={w}>{w}</option>
+                  ))}
+                </select>
               </div>
-            </CardContent>
+            </div>
           </Card>
 
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-            <KPICard
-              label="Total Productos"
-              value={totalProducts.toString()}
-              change="En todos los almacenes"
-              changeType="neutral"
-              icon={Package}
-              iconColor="indigo"
-            />
-            <KPICard
-              label="Valor Inventario"
-              value={`$${inventoryValue.toLocaleString('es-CL')}`}
-              change="Costo de reposición"
-              changeType="neutral"
-              icon={DollarSign}
-              iconColor="emerald"
-            />
-            <KPICard
-              label="Stock Bajo"
-              value={lowStock.toString()}
-              change="Requiere reabastecimiento"
-              changeType="negative"
-              icon={AlertTriangle}
-              iconColor="amber"
-            />
-            <KPICard
-              label="Sin Stock"
-              value={outOfStock.toString()}
-              change="Crítico - sin disponibilidad"
-              changeType="negative"
-              icon={AlertTriangle}
-              iconColor="rose"
-            />
+            <Card decoration="top" decorationColor="indigo">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Text>Total Productos</Text>
+                  <Metric className="mt-1">{totalProducts}</Metric>
+                  <Text className="mt-1 text-slate-500">En todos los almacenes</Text>
+                </div>
+                <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center">
+                  <Package className="w-5 h-5 text-indigo-600" />
+                </div>
+              </div>
+            </Card>
+            <Card decoration="top" decorationColor="emerald">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Text>Valor Inventario</Text>
+                  <Metric className="mt-1">{formatCurrency(inventoryValue)}</Metric>
+                  <Text className="mt-1 text-slate-500">Costo de reposición</Text>
+                </div>
+                <div className="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center">
+                  <DollarSign className="w-5 h-5 text-emerald-600" />
+                </div>
+              </div>
+            </Card>
+            <Card decoration="top" decorationColor="yellow">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Text>Stock Bajo</Text>
+                  <Metric className="mt-1">{lowStock}</Metric>
+                  <Text className="mt-1 text-yellow-500">Requiere reabastecimiento</Text>
+                </div>
+                <div className="w-10 h-10 bg-yellow-50 rounded-lg flex items-center justify-center">
+                  <AlertTriangle className="w-5 h-5 text-yellow-600" />
+                </div>
+              </div>
+            </Card>
+            <Card decoration="top" decorationColor="red">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Text>Sin Stock</Text>
+                  <Metric className="mt-1">{outOfStock}</Metric>
+                  <Text className="mt-1 text-red-500">Crítico - sin disponibilidad</Text>
+                </div>
+                <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
+                  <AlertTriangle className="w-5 h-5 text-red-600" />
+                </div>
+              </div>
+            </Card>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Stock por Producto</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
+          <div className="grid gap-6 lg:grid-cols-3">
+            <Card className="lg:col-span-2">
+              <Title>Stock por Producto</Title>
+              <Table className="mt-2">
+                <TableHead>
                   <TableRow>
-                    <TableHead>Producto</TableHead>
-                    <TableHead>SKU</TableHead>
-                    <TableHead>Almacén</TableHead>
-                    <TableHead>Stock Actual</TableHead>
-                    <TableHead>Stock Mínimo</TableHead>
-                    <TableHead>Estado</TableHead>
+                    <TableHeaderCell>Producto</TableHeaderCell>
+                    <TableHeaderCell>SKU</TableHeaderCell>
+                    <TableHeaderCell>Almacén</TableHeaderCell>
+                    <TableHeaderCell className="text-center">Stock</TableHeaderCell>
+                    <TableHeaderCell className="text-center">Mínimo</TableHeaderCell>
+                    <TableHeaderCell>Estado</TableHeaderCell>
                   </TableRow>
-                </TableHeader>
+                </TableHead>
                 <TableBody>
-                  {filteredInventory.map(product => {
-                    const status = getStockStatus(product.status);
-                    return (
-                      <TableRow key={product.id}>
-                        <TableCell className="font-medium">{product.name}</TableCell>
-                        <TableCell>{product.sku}</TableCell>
-                        <TableCell>{product.warehouse}</TableCell>
-                        <TableCell>{product.currentStock}</TableCell>
-                        <TableCell>{product.minStock}</TableCell>
-                        <TableCell>
-                          <Badge variant={status.variant}>{status.label}</Badge>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {activeTab === 'contabilidad' && (
-        <div className="space-y-6">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-4">
-                <Input
-                  label="Fecha desde"
-                  type="date"
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
-                  className="w-40"
-                />
-                <Input
-                  label="Fecha hasta"
-                  type="date"
-                  value={dateTo}
-                  onChange={(e) => setDateTo(e.target.value)}
-                  className="w-40"
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-            <KPICard
-              label="Ingresos"
-              value={`$${totalIncome.toLocaleString('es-CL')}`}
-              change="+15% vs período anterior"
-              changeType="positive"
-              icon={TrendingUp}
-              iconColor="emerald"
-            />
-            <KPICard
-              label="Gastos"
-              value={`$${totalExpenses.toLocaleString('es-CL')}`}
-              change="+10% vs período anterior"
-              changeType="negative"
-              icon={DollarSign}
-              iconColor="rose"
-            />
-            <KPICard
-              label="Utilidad Neta"
-              value={`$${netProfit.toLocaleString('es-CL')}`}
-              change="+22% vs período anterior"
-              changeType="positive"
-              icon={TrendingUp}
-              iconColor="blue"
-            />
-            <KPICard
-              label="IVA Cobrado"
-              value={`$${totalIva.toLocaleString('es-CL')}`}
-              change="Período fiscal 2026"
-              changeType="neutral"
-              icon={Calculator}
-              iconColor="amber"
-            />
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Resumen Mensual</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Mes</TableHead>
-                    <TableHead>Ingresos</TableHead>
-                    <TableHead>Gastos</TableHead>
-                    <TableHead>Utilidad</TableHead>
-                    <TableHead>IVA</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {monthlyFinancials.map(month => (
-                    <TableRow key={month.id}>
-                      <TableCell className="font-medium">{month.month}</TableCell>
-                      <TableCell>${month.income.toLocaleString('es-CL')}</TableCell>
-                      <TableCell>${month.expenses.toLocaleString('es-CL')}</TableCell>
+                  {filteredInventory.map((product, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="font-medium">{product.name}</TableCell>
+                      <TableCell className="font-mono text-slate-500">{product.sku}</TableCell>
+                      <TableCell>{product.warehouse}</TableCell>
+                      <TableCell className="text-center">{product.currentStock}</TableCell>
+                      <TableCell className="text-center">{product.minStock}</TableCell>
                       <TableCell>
-                        <span className={month.profit >= 0 ? 'text-emerald-600' : 'text-rose-600'}>
-                          ${month.profit.toLocaleString('es-CL')}
-                        </span>
+                        <Badge color={statusColors[product.status] || 'gray'}>
+                          {statusLabels[product.status] || product.status}
+                        </Badge>
                       </TableCell>
-                      <TableCell>${month.iva.toLocaleString('es-CL')}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
+            </Card>
+
+            <Card>
+              <Title>Estado del Stock</Title>
+              <Text className="mb-4">Distribución por estado</Text>
+              <DonutChart
+                data={stockStatusData}
+                category="value"
+                index="name"
+                colors={['emerald', 'yellow', 'red']}
+                className="h-64"
+              />
+              <div className="mt-4 space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate-500">Normal</span>
+                  <span className="font-medium text-emerald-600">{stockStatusData[0].value}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate-500">Stock Bajo</span>
+                  <span className="font-medium text-yellow-600">{stockStatusData[1].value}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate-500">Sin Stock</span>
+                  <span className="font-medium text-red-600">{stockStatusData[2].value}</span>
+                </div>
               </div>
-            </CardContent>
+            </Card>
+          </div>
+        </div>
+      )}
+
+      {/* CONTABILIDAD TAB */}
+      {activeTab === 'contabilidad' && (
+        <div className="space-y-6">
+          <Card>
+            <div className="flex items-center gap-4">
+              <div className="space-y-1">
+                <Text>Fecha desde</Text>
+                <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)}
+                  className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+              </div>
+              <div className="space-y-1">
+                <Text>Fecha hasta</Text>
+                <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)}
+                  className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+              </div>
+            </div>
+          </Card>
+
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            <Card decoration="top" decorationColor="emerald">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Text>Ingresos</Text>
+                  <Metric className="mt-1">{formatCurrency(totalIncome)}</Metric>
+                  <Text className="mt-1 text-emerald-500">+15% vs período anterior</Text>
+                </div>
+                <div className="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-emerald-600" />
+                </div>
+              </div>
+            </Card>
+            <Card decoration="top" decorationColor="red">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Text>Gastos</Text>
+                  <Metric className="mt-1">{formatCurrency(totalExpenses)}</Metric>
+                  <Text className="mt-1 text-red-500">+10% vs período anterior</Text>
+                </div>
+                <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
+                  <DollarSign className="w-5 h-5 text-red-600" />
+                </div>
+              </div>
+            </Card>
+            <Card decoration="top" decorationColor="blue">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Text>Utilidad Neta</Text>
+                  <Metric className="mt-1">{formatCurrency(netProfit)}</Metric>
+                  <Text className="mt-1 text-blue-500">+22% vs período anterior</Text>
+                </div>
+                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-blue-600" />
+                </div>
+              </div>
+            </Card>
+            <Card decoration="top" decorationColor="amber">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Text>IVA Cobrado</Text>
+                  <Metric className="mt-1">{formatCurrency(totalIva)}</Metric>
+                  <Text className="mt-1 text-slate-500">Período fiscal 2026</Text>
+                </div>
+                <div className="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center">
+                  <Calculator className="w-5 h-5 text-amber-600" />
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Card>
+              <Title>Ingresos vs Gastos</Title>
+              <Text className="mb-4">Comparativa mensual</Text>
+              <BarChart
+                data={monthlyFinancials.length > 0 ? monthlyFinancials.map(m => ({ month: m.month.split(' ')[0], Ingresos: m.income, Gastos: m.expenses })) : [{ month: 'Sin datos', Ingresos: 0, Gastos: 0 }]}
+                index="month"
+                categories={['Ingresos', 'Gastos']}
+                colors={['emerald', 'red']}
+                valueFormatter={(v) => formatCurrency(v)}
+                yAxisWidth={100}
+                className="h-64"
+              />
+            </Card>
+
+            <Card>
+              <Title>Utilidad Mensual</Title>
+              <Text className="mb-4">Evolución de utilidad neta</Text>
+              <AreaChart
+                data={monthlyFinancials.length > 0 ? monthlyFinancials.map(m => ({ month: m.month.split(' ')[0], Utilidad: m.profit })) : [{ month: 'Sin datos', Utilidad: 0 }]}
+                index="month"
+                categories={['Utilidad']}
+                colors={['blue']}
+                valueFormatter={(v) => formatCurrency(v)}
+                className="h-64"
+              />
+            </Card>
+          </div>
+
+          <Card>
+            <Title>Resumen Mensual</Title>
+            <Table className="mt-2">
+              <TableHead>
+                <TableRow>
+                  <TableHeaderCell>Mes</TableHeaderCell>
+                  <TableHeaderCell className="text-right">Ingresos</TableHeaderCell>
+                  <TableHeaderCell className="text-right">Gastos</TableHeaderCell>
+                  <TableHeaderCell className="text-right">Utilidad</TableHeaderCell>
+                  <TableHeaderCell className="text-right">IVA</TableHeaderCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {monthlyFinancials.map((month, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">{month.month}</TableCell>
+                    <TableCell className="text-right">{formatCurrency(month.income)}</TableCell>
+                    <TableCell className="text-right">{formatCurrency(month.expenses)}</TableCell>
+                    <TableCell className="text-right">
+                      <span className={month.profit >= 0 ? 'text-emerald-600 font-medium' : 'text-red-600 font-medium'}>
+                        {formatCurrency(month.profit)}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-right">{formatCurrency(month.iva)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </Card>
         </div>
       )}
