@@ -8,6 +8,13 @@ import {
   PayrollItem,
 } from '@/lib/payroll';
 
+interface EmployeeExtras {
+  employee_id: string;
+  overtime_hours?: number;
+  bonuses?: { concept: string; amount: number; taxable: boolean }[];
+  deductions?: { concept: string; amount: number }[];
+}
+
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -17,7 +24,7 @@ export async function POST(
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const body = await request.json();
-    const { run_id } = body;
+    const { run_id, extras } = body as { run_id: string; extras?: EmployeeExtras[] };
 
     if (!run_id) return errorResponse('run_id is required', 400);
 
@@ -46,10 +53,23 @@ export async function POST(
       return errorResponse('No hay empleados activos para calcular', 400);
     }
 
-    // Calculate payroll for each employee
-    const results = employeeRows.map((emp: Employee) =>
-      calculateEmployeePayroll(emp, periodStart, periodEnd)
-    );
+    // Build extras lookup
+    const extrasMap = new Map<string, EmployeeExtras>();
+    if (extras && Array.isArray(extras)) {
+      for (const ex of extras) {
+        extrasMap.set(ex.employee_id, ex);
+      }
+    }
+
+    // Calculate payroll for each employee with extras
+    const results = employeeRows.map((emp: Employee) => {
+      const empExtras = extrasMap.get(emp.id);
+      return calculateEmployeePayroll(emp, periodStart, periodEnd, empExtras ? {
+        overtime_hours: empExtras.overtime_hours,
+        bonuses: empExtras.bonuses,
+        deductions: empExtras.deductions,
+      } : undefined);
+    });
 
     const summary = getPayrollSummary(results);
 
@@ -79,6 +99,14 @@ export async function POST(
           ]
         );
       }
+    }
+
+    // Store extras JSON on the run for future reference
+    if (extras && extras.length > 0) {
+      await query(
+        `UPDATE payroll_runs SET notes = COALESCE(notes || E'\n', '') || $1 WHERE id = $2`,
+        [`Extras: ${JSON.stringify(extras)}`, run_id]
+      );
     }
 
     // Update the run with totals

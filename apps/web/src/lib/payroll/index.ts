@@ -3,7 +3,14 @@
  * Based on 2024-2025 labor law rates
  */
 
-export const UF_VALUE_CLP = 38500; // Approximate UF value in CLP (update periodically)
+// ── UF Value (configurable per period) ──
+let _ufValue = 38500;
+export function setUFValue(value: number) { _ufValue = value; }
+export function getUFValue() { return _ufValue; }
+export const UF_VALUE_CLP = 38500; // legacy alias
+
+// ── Imponible Cap (80 UF) ──
+export const IMPONIBLE_CAP_UF = 80;
 
 // ── AFP Rates ──
 export const AFP_FUNDS: Record<string, { si: number; commission: number }> = {
@@ -17,7 +24,7 @@ export const AFP_FUNDS: Record<string, { si: number; commission: number }> = {
 };
 
 // ── FONASA rates ──
-export const FONASA_RATE = 7; // 7% of remuneration imponible
+export const FONASA_RATE = 7;
 
 // ── Mutual de Seguridad ──
 export const MUTUAL_RATES: Record<string, { base: number; overlay: number }> = {
@@ -30,18 +37,18 @@ export const MUTUAL_RATES: Record<string, { base: number; overlay: number }> = {
 };
 
 // ── SIS rate ──
-export const SIS_RATE = 1.53; // 1.53%
+export const SIS_RATE = 1.53;
 
 // ── AFC (Cesantía) ──
-export const AFC_EMPLOYER_INDEFINITE = 0.6;  // 0.6% employer (indefinite)
-export const AFC_EMPLOYEE_INDEFINITE = 0.6;  // 0.6% employee (indefinite)
-export const AFC_EMPLOYER_FIXED = 2.8;       // 2.8% employer (fixed-term)
-export const AFC_EMPLOYEE_FIXED = 3.0;       // 3.0% employee (fixed-term)
+export const AFC_EMPLOYER_INDEFINITE = 0.6;
+export const AFC_EMPLOYEE_INDEFINITE = 0.6;
+export const AFC_EMPLOYER_FIXED = 2.8;
+export const AFC_EMPLOYEE_FIXED = 3.0;
 
 // ── Caja de Compensación ──
-export const CAJA_COMPENSACION_RATE = 0.6; // 0.6%
+export const CAJA_COMPENSACION_RATE = 0.6;
 
-// ── Impuesto Único de Segunda Categoría (2024) ──
+// ── Impuesto Único de Segunda Categoría (2024, monthly UF) ──
 export const TAX_BRACKETS = [
   { min: 0, max: 921.1, rate: 0, deduction: 0 },
   { min: 921.1, max: 2062.5, rate: 4, deduction: 36.84 },
@@ -53,16 +60,16 @@ export const TAX_BRACKETS = [
 ];
 
 // ── Gratificación ──
-export const GRATIFICATION_MONTHLY_UF_CAP = 4.75; // Max 4.75 UF per month
-export const GRATIFICATION_ANNUAL_UF_CAP = 57;    // 4.75 * 12
+export const GRATIFICATION_MONTHLY_UF_CAP = 4.75;
 
 // ── Aguinaldo (Navidad) ──
-export const AGUINALDO_RATE = 0.30; // 30% of December salary
-export const AGUINALDO_UF_CAP = 3;  // Max 3 UF
+export const AGUINALDO_RATE = 0.30;
+export const AGUINALDO_UF_CAP = 3;
 
-// ── Vacation days ──
-export const VACATION_DAYS_AFTER_1_YEAR = 15;
-export const VACATION_DAYS_PER_3_YEARS = 1;
+// ── Horas Extras ──
+export const OVERTIME_FIRST_2_HOURS_RATE = 0.50;  // +50%
+export const OVERTIME_BEYOND_RATE = 1.00;          // +100%
+export const OVERTIME_REST_DAY_RATE = 1.00;        // +100%
 
 export interface Employee {
   id: string;
@@ -100,6 +107,7 @@ export interface PayrollResult {
   employee_name: string;
   base_salary: number;
   imponible_salary: number;
+  taxable_salary: number; // imponible used for contributions (capped at 80 UF)
   items: PayrollItem[];
   total_earnings: number;
   total_deductions: number;
@@ -109,27 +117,30 @@ export interface PayrollResult {
 }
 
 /**
- * Calculate Impuesto Único de Segunda Categoría
- * Uses monthly UF brackets
+ * Apply imponible cap (80 UF) for contribution calculations
  */
-function calculateImpuestoUnico(monthlyImponible: number): number {
+function applyImponibleCap(imponible: number): number {
+  const capClp = IMPONIBLE_CAP_UF * _ufValue;
+  return Math.min(imponible, capClp);
+}
+
+/**
+ * Calculate Impuesto Único de Segunda Categoría
+ * In Chile: applied to monthly taxable remuneration (imponible + taxable additions)
+ * BEFORE deducting AFP/FONASA. The tax is on gross imponible.
+ */
+function calculateImpuestoUnico(monthlyImponibleUF: number): number {
   for (const bracket of TAX_BRACKETS) {
-    if (monthlyImponible > bracket.min && monthlyImponible <= bracket.max) {
-      return Math.max(0, (monthlyImponible * bracket.rate / 100) - bracket.deduction);
+    if (monthlyImponibleUF > bracket.min && monthlyImponibleUF <= bracket.max) {
+      return Math.max(0, (monthlyImponibleUF * bracket.rate / 100) - bracket.deduction);
     }
   }
   return 0;
 }
 
 /**
- * Calculate monthly UF equivalent from annual amount
- */
-function monthlyUF(annualAmount: number): number {
-  return annualAmount / 12;
-}
-
-/**
  * Calculate gratificación monthly (proportional to months worked)
+ * Chilean law: if hired before the 15th, that month counts
  */
 function calculateGratificacion(monthlySalary: number, hireDate: string, periodEnd: Date): { amount: number; monthsWorked: number } {
   const hire = new Date(hireDate);
@@ -140,16 +151,20 @@ function calculateGratificacion(monthlySalary: number, hireDate: string, periodE
   if (hireYear < periodYear) {
     monthsWorked = 12;
   } else if (hireYear === periodYear) {
-    monthsWorked = 12 - hire.getMonth();
+    const hireMonth = hire.getMonth(); // 0-indexed
+    const hireDay = hire.getDate();
+    // If hired before the 15th, that month counts
+    monthsWorked = hireDay <= 15 ? (12 - hireMonth) : (11 - hireMonth);
+    monthsWorked = Math.max(0, monthsWorked);
   } else {
     monthsWorked = 0;
   }
 
   const annualSalary = monthlySalary * 12;
   const gratification = (annualSalary / 12) * monthsWorked;
-  const gratificationUf = gratification / UF_VALUE_CLP;
+  const gratificationUf = gratification / _ufValue;
   const cappedGratificationUf = Math.min(gratificationUf, GRATIFICATION_MONTHLY_UF_CAP * monthsWorked);
-  const amount = cappedGratificationUf * UF_VALUE_CLP;
+  const amount = cappedGratificationUf * _ufValue;
 
   return { amount, monthsWorked };
 }
@@ -160,9 +175,9 @@ function calculateGratificacion(monthlySalary: number, hireDate: string, periodE
  */
 function calculateAguinaldo(monthlySalary: number): number {
   const amount = monthlySalary * AGUINALDO_RATE;
-  const amountUf = amount / UF_VALUE_CLP;
+  const amountUf = amount / _ufValue;
   const cappedUf = Math.min(amountUf, AGUINALDO_UF_CAP);
-  return cappedUf * UF_VALUE_CLP;
+  return cappedUf * _ufValue;
 }
 
 /**
@@ -189,7 +204,13 @@ function calculateProportionalSalary(baseSalary: number, daysWorked: number, per
 export function calculateEmployeePayroll(
   employee: Employee,
   periodStart: Date,
-  periodEnd: Date
+  periodEnd: Date,
+  extras?: {
+    overtime_hours?: number;
+    overtime_rate?: number; // custom rate override
+    bonuses?: { concept: string; amount: number; taxable: boolean }[];
+    deductions?: { concept: string; amount: number }[];
+  }
 ): PayrollResult {
   const items: PayrollItem[] = [];
   const periodDays = Math.ceil((periodEnd.getTime() - periodStart.getTime()) / (1000 * 60 * 60 * 24));
@@ -198,7 +219,6 @@ export function calculateEmployeePayroll(
   // ── Base salary (proportional if started mid-month) ──
   const proportionalSalary = calculateProportionalSalary(employee.base_salary, daysWorked, periodDays);
   const monthlySalary = employee.base_salary;
-  const imponibleSalary = proportionalSalary;
 
   // ═══════════════════════════════════════
   // EARNINGS
@@ -217,17 +237,60 @@ export function calculateEmployeePayroll(
     is_employer: false,
   });
 
-  // Gratificación (only if period includes the month)
+  // Horas extras
+  const overtimeHours = extras?.overtime_hours || 0;
+  if (overtimeHours > 0) {
+    const hourlyRate = monthlySalary / 30 / 8; // daily hours = 8
+    const first2 = Math.min(overtimeHours, 2);
+    const beyond = Math.max(0, overtimeHours - 2);
+    const overtimeRate = extras?.overtime_rate || OVERTIME_FIRST_2_HOURS_RATE;
+
+    const overtimeAmount = (first2 * hourlyRate * (1 + overtimeRate)) +
+                           (beyond > 0 ? beyond * hourlyRate * (1 + OVERTIME_BEYOND_RATE) : 0);
+
+    items.push({
+      code: 'HE',
+      concept: `Horas Extras (${overtimeHours}h)`,
+      type: 'earning',
+      category: 'earning',
+      amount: overtimeAmount,
+      quantity: overtimeHours,
+      unit_value: hourlyRate,
+      is_taxable: true,
+      is_employer: false,
+    });
+  }
+
+  // Bonos / Asignaciones
+  const bonuses = extras?.bonuses || [];
+  for (const bonus of bonuses) {
+    if (bonus.amount > 0) {
+      items.push({
+        code: 'BONO',
+        concept: bonus.concept,
+        type: 'earning',
+        category: 'earning',
+        amount: bonus.amount,
+        quantity: 1,
+        unit_value: bonus.amount,
+        is_taxable: bonus.taxable,
+        is_employer: false,
+      });
+    }
+  }
+
+  // Gratificación (monthly proportional)
   const gratificacion = calculateGratificacion(monthlySalary, employee.hire_date, periodEnd);
   if (gratificacion.amount > 0 && daysWorked >= 25) {
+    const gratMonthly = gratificacion.amount / 12;
     items.push({
       code: 'GRAT',
       concept: 'Gratificación',
       type: 'earning',
       category: 'earning',
-      amount: gratificacion.amount / 12,
+      amount: gratMonthly,
       quantity: 1,
-      unit_value: gratificacion.amount / 12,
+      unit_value: gratMonthly,
       is_taxable: true,
       is_employer: false,
     });
@@ -249,8 +312,13 @@ export function calculateEmployeePayroll(
     });
   }
 
-  // Horas extras (placeholder - to be added via manual input)
-  // Bonos (placeholder - to be added via manual input)
+  // ── Calculate imponible salary (sum of all taxable earnings) ──
+  const imponibleSalary = items
+    .filter(i => i.is_taxable)
+    .reduce((sum, i) => sum + i.amount, 0);
+
+  // ── Apply imponible cap for contributions (80 UF) ──
+  const taxableForContributions = applyImponibleCap(imponibleSalary);
 
   // ═══════════════════════════════════════
   // EMPLOYEE DEDUCTIONS
@@ -260,8 +328,8 @@ export function calculateEmployeePayroll(
   const afpRate = employee.afp_rate || afpFund.si;
   const afpCommission = employee.afp_commission || afpFund.commission;
 
-  // AFP Pensión
-  const afpPension = imponibleSalary * afpRate / 100;
+  // AFP Pensión (on capped imponible)
+  const afpPension = taxableForContributions * afpRate / 100;
   items.push({
     code: 'AFP',
     concept: `AFP Pensión (${afpFund.si}%)`,
@@ -274,9 +342,9 @@ export function calculateEmployeePayroll(
     is_employer: false,
   });
 
-  // AFP Comisión
+  // AFP Comisión (on capped imponible)
   if (afpCommission > 0) {
-    const afpComm = imponibleSalary * afpCommission / 100;
+    const afpComm = taxableForContributions * afpCommission / 100;
     items.push({
       code: 'AFP-COM',
       concept: `AFP Comisión (${afpCommission}%)`,
@@ -290,7 +358,7 @@ export function calculateEmployeePayroll(
     });
   }
 
-  // Salud
+  // Salud (on capped imponible for FONASA, fixed for Isapre)
   if (employee.health_type === 'isapre' && employee.health_amount > 0) {
     items.push({
       code: 'SALUD',
@@ -304,7 +372,7 @@ export function calculateEmployeePayroll(
       is_employer: false,
     });
   } else {
-    const salud = imponibleSalary * FONASA_RATE / 100;
+    const salud = taxableForContributions * FONASA_RATE / 100;
     items.push({
       code: 'SALUD',
       concept: 'FONASA (7%)',
@@ -318,9 +386,9 @@ export function calculateEmployeePayroll(
     });
   }
 
-  // AFC Cesantía (employee)
+  // AFC Cesantía employee (on capped imponible)
   const afcEmployeeRate = employee.contract_type === 'plazo_fijo' ? AFC_EMPLOYEE_FIXED : AFC_EMPLOYEE_INDEFINITE;
-  const afcEmployee = imponibleSalary * afcEmployeeRate / 100;
+  const afcEmployee = taxableForContributions * afcEmployeeRate / 100;
   items.push({
     code: 'AFC-E',
     concept: `AFC Cesantía (${afcEmployeeRate}%)`,
@@ -348,12 +416,28 @@ export function calculateEmployeePayroll(
     });
   }
 
+  // Descuentos manuales
+  const manualDeductions = extras?.deductions || [];
+  for (const ded of manualDeductions) {
+    if (ded.amount > 0) {
+      items.push({
+        code: 'DESC',
+        concept: ded.concept,
+        type: 'deduction',
+        category: 'deduction',
+        amount: ded.amount,
+        quantity: 1,
+        unit_value: ded.amount,
+        is_taxable: false,
+        is_employer: false,
+      });
+    }
+  }
+
   // Impuesto Único de Segunda Categoría
-  const totalDeductionsBeforeTax = items
-    .filter(i => i.type === 'deduction' && i.code !== 'IMP-2C')
-    .reduce((sum, i) => sum + i.amount, 0);
-  const taxableIncome = imponibleSalary - totalDeductionsBeforeTax;
-  const impuestoUnico = calculateImpuestoUnico(taxableIncome / UF_VALUE_CLP) * UF_VALUE_CLP;
+  // In Chile: calculated on gross imponible (before AFP/FONASA deductions)
+  const impuestoUnicoUF = calculateImpuestoUnico(imponibleSalary / _ufValue);
+  const impuestoUnico = impuestoUnicoUF * _ufValue;
 
   if (impuestoUnico > 0) {
     items.push({
@@ -370,11 +454,11 @@ export function calculateEmployeePayroll(
   }
 
   // ═══════════════════════════════════════
-  // EMPLOYER CONTRIBUTIONS
+  // EMPLOYER CONTRIBUTIONS (on capped imponible)
   // ═══════════════════════════════════════
 
   // SIS (Seguro de Invalidez y Sobrevivencia)
-  const sis = imponibleSalary * SIS_RATE / 100;
+  const sis = taxableForContributions * SIS_RATE / 100;
   items.push({
     code: 'SIS',
     concept: `SIS (${SIS_RATE}%)`,
@@ -389,7 +473,7 @@ export function calculateEmployeePayroll(
 
   // Mutual de Seguridad
   const mutualRate = employee.mutual_rate || MUTUAL_RATES[employee.mutual_type]?.base || 0.93;
-  const mutual = imponibleSalary * mutualRate / 100;
+  const mutual = taxableForContributions * mutualRate / 100;
   items.push({
     code: 'MUTUAL',
     concept: `Mutual (${mutualRate}%)`,
@@ -402,9 +486,9 @@ export function calculateEmployeePayroll(
     is_employer: true,
   });
 
-  // AFC Cesantía (employer)
+  // AFC Cesantía employer (on capped imponible)
   const afcEmployerRate = employee.contract_type === 'plazo_fijo' ? AFC_EMPLOYER_FIXED : AFC_EMPLOYER_INDEFINITE;
-  const afcEmployer = imponibleSalary * afcEmployerRate / 100;
+  const afcEmployer = taxableForContributions * afcEmployerRate / 100;
   items.push({
     code: 'AFC-EM',
     concept: `AFC Cesantía Empleador (${afcEmployerRate}%)`,
@@ -418,7 +502,7 @@ export function calculateEmployeePayroll(
   });
 
   // Caja de Compensación
-  const caja = imponibleSalary * CAJA_COMPENSACION_RATE / 100;
+  const caja = taxableForContributions * CAJA_COMPENSACION_RATE / 100;
   items.push({
     code: 'CAJA',
     concept: `Caja Compensación (${CAJA_COMPENSACION_RATE}%)`,
@@ -433,14 +517,15 @@ export function calculateEmployeePayroll(
 
   // Gratificación (employer expense)
   if (gratificacion.amount > 0 && daysWorked >= 25) {
+    const gratMonthly = gratificacion.amount / 12;
     items.push({
       code: 'GRAT-EM',
       concept: 'Gratificación (Empleador)',
       type: 'deduction',
       category: 'employer',
-      amount: gratificacion.amount / 12,
+      amount: gratMonthly,
       quantity: 1,
-      unit_value: gratificacion.amount / 12,
+      unit_value: gratMonthly,
       is_taxable: false,
       is_employer: true,
     });
@@ -458,6 +543,7 @@ export function calculateEmployeePayroll(
     employee_name: `${employee.first_name} ${employee.last_name}`,
     base_salary: monthlySalary,
     imponible_salary: imponibleSalary,
+    taxable_salary: taxableForContributions,
     items,
     total_earnings: totalEarnings,
     total_deductions: totalDeductions,
