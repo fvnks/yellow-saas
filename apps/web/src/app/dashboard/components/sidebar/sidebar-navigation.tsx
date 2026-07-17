@@ -102,7 +102,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                     )}
                   </CollapsibleTrigger>
                   {item.subItems && (
-                    <CollapsibleContent>
+                    <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
                       <SidebarMenuSub>
                         {item.subItems.map((subItem) => (
                           <SidebarMenuSubItem key={subItem.title}>
