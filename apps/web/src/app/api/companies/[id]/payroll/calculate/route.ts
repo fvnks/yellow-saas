@@ -4,6 +4,7 @@ import { NextRequest } from 'next/server';
 import {
   calculateEmployeePayroll,
   getPayrollSummary,
+  setUFValue,
   Employee,
   PayrollItem,
 } from '@/lib/payroll';
@@ -38,6 +39,20 @@ export async function POST(
     const run = runRows[0];
     if (run.status !== 'draft') {
       return errorResponse('Solo se puede calcular nomina en estado borrador', 400);
+    }
+
+    // Fetch UF value from company settings
+    try {
+      const { rows: ufRows } = await query(
+        `SELECT setting_value FROM company_settings
+         WHERE company_id = $1 AND setting_key = 'uf_value'`,
+        [companyId]
+      );
+      if (ufRows[0]) {
+        setUFValue(parseFloat(ufRows[0].setting_value));
+      }
+    } catch {
+      // company_settings may not exist yet, use default
     }
 
     const periodStart = new Date(run.period_start);

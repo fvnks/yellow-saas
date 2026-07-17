@@ -338,6 +338,15 @@ export class ApiClient {
     return this.request<{ message: string }>(`/vacation-requests/${id}`, { method: 'DELETE' });
   }
 
+  // Settings
+  async getUFValue() {
+    return this.request<any>('/settings/uf');
+  }
+
+  async setUFValue(uf_value: number) {
+    return this.request<any>('/settings/uf', { method: 'PUT', body: JSON.stringify({ uf_value }) });
+  }
+
   // Inventory Categories
   async getCategories(params?: Record<string, string>) {
     return this.requestWithPagination<{ id: string; name: string; description: string; color: string; icon: string; sort_order: number; is_active: boolean }>('/inventory-categories', params || {});
