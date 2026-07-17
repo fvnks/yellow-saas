@@ -243,6 +243,7 @@ export const sidebarItems: NavGroup[] = [
         subItems: [
           { title: "Empleados", path: "/dashboard/payroll?tab=employees" },
           { title: "Períodos de Nómina", path: "/dashboard/payroll?tab=periods" },
+          { title: "Vacaciones", path: "/dashboard/payroll?tab=vacation" },
         ],
       },
     ],
