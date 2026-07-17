@@ -885,14 +885,6 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>('/sii-inventory-book', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  // Product ABC Classification
-  async getProductABCClassification(params?: Record<string, string>) {
-    return this.requestWithPagination<any>('/product-abc-classification', params || {});
-  }
-  async calculateABCClassification(data: { period_start: string; period_end: string; warehouse_id?: string; recalculate?: boolean }) {
-    return this.request<any>('/product-abc-classification', { method: 'POST', body: JSON.stringify(data) });
-  }
-
   // Label Templates
   async getLabelTemplates(params?: Record<string, string>) {
     return this.requestWithPagination<any>('/label-templates', params || {});
