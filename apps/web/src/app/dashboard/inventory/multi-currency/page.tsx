@@ -116,7 +116,7 @@ export default function MultiCurrencyValuationPage() {
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
             <Card><CardContent className="p-4"><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Valor Total CLP</p><p className="text-2xl font-bold text-slate-900 mt-1">${totalBase.toLocaleString('es-CL')}</p></CardContent></Card>
             <Card><CardContent className="p-4"><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Valor Total {filters.target_currency !== 'all' ? filters.target_currency : 'USD'}</p><p className="text-2xl font-bold text-emerald-600 mt-1">${totalTarget.toLocaleString('es-CL')}</p></CardContent></Card>
-            <Card><CardContent className="p-4"><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Ganancia/Pérdida FX</p><p className="text-2xl font-bold mt-1 ${totalFx >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${totalFx.toLocaleString('es-CL')}</p></CardContent></Card>
+            <Card><CardContent className="p-4"><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Ganancia/Pérdida FX</p><p className={`text-2xl font-bold mt-1 ${totalFx >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>${totalFx.toLocaleString('es-CL')}</p></CardContent></Card>
             <Card><CardContent className="p-4"><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tasa Actual</p><p className="text-2xl font-bold text-blue-600 mt-1">${currentRate?.toLocaleString('es-CL', { minimumFractionDigits: 6, maximumFractionDigits: 6 }) || '—'}</p></CardContent></Card>
           </div>
 
@@ -156,7 +156,7 @@ export default function MultiCurrencyValuationPage() {
                       <td className="px-4 py-3 text-right text-xs font-bold text-slate-900">${item.base_value.toLocaleString('es-CL')}</td>
                       <td className="px-4 py-3 text-center text-xs font-mono text-blue-600">{item.exchange_rate?.rate?.toLocaleString('es-CL', { minimumFractionDigits: 6, maximumFractionDigits: 6 }) || '—'}</td>
                       <td className="px-4 py-3 text-right text-xs font-bold text-emerald-600">${item.target_value.toLocaleString('es-CL')}</td>
-                      <td className="px-4 py-3 text-right text-xs font-bold ${item.fx_gain_loss >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${item.fx_gain_loss >= 0 ? '+' : ''}${item.fx_gain_loss.toLocaleString('es-CL')}</td>
+                      <td className={`px-4 py-3 text-right text-xs font-bold ${item.fx_gain_loss >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>${item.fx_gain_loss >= 0 ? '+' : ''}${item.fx_gain_loss.toLocaleString('es-CL')}</td>
                       <td className="px-4 py-3 text-xs text-slate-500">{item.exchange_rate?.rate_date ? new Date(item.exchange_rate.rate_date).toLocaleDateString('es-CL') : '—'}</td>
                     </tr>
                   ))}

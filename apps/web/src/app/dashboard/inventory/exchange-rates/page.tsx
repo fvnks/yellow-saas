@@ -47,8 +47,8 @@ export default function ExchangeRatesPage() {
     setError('');
     try {
       const api = getApiClient();
-      if (editingId) await (api as any).updateExchangeRate(editingId, { ...formData, rate: Number(formData.rate) });
-      else await (api as any).createExchangeRate({ ...formData, rate: Number(formData.rate) });
+      if (editingId) await api.updateExchangeRate(editingId, { ...formData, rate: Number(formData.rate) });
+      else await api.createExchangeRate({ ...formData, rate: Number(formData.rate) });
       setShowForm(false);
       setEditingId(null);
       resetForm();
@@ -60,7 +60,7 @@ export default function ExchangeRatesPage() {
     if (!confirm('Eliminar esta tasa de cambio?')) return;
     try {
       const api = getApiClient();
-      await (api as any).deleteExchangeRate(id);
+      await api.deleteExchangeRate(id);
       loadRates();
     } catch (err: any) { setError(err.message || 'Error eliminando'); }
   };
