@@ -6,14 +6,13 @@ import Link from 'next/link';
   import { 
   Package, Warehouse, ClipboardCheck, Truck, AlertTriangle, Upload, 
   Plus, Search, Eye, Play, CheckCircle, ArrowRight, Download, MapPin, Users, Activity, Grid, Edit, Trash2, Settings,
-  Calculator, Ship, Handshake, FileText,
-  BarChart3
+  Calculator, Ship, Handshake, FileText
 } from 'lucide-react';
 import { getApiClient, getCompanyIdFromToken } from '@/lib/api-client';
 import BarcodeScanner from '../../../components/barcode/barcode-scanner';
 import Pagination from '../../../components/ui/pagination';
 
-type Tab = 'products' | 'warehouses' | 'counts' | 'transfers' | 'alerts' | 'valuation' | 'landed-cost' | 'consignment' | 'sii-book' | 'abc' | 'import';
+type Tab = 'products' | 'warehouses' | 'counts' | 'transfers' | 'alerts' | 'valuation' | 'landed-cost' | 'consignment' | 'sii-book' | 'import';
 
 interface Product {
   id: string; name: string; sku: string; stock: number; minStock: number;
@@ -157,7 +156,6 @@ export default function BodegaPage() {
     { id: 'landed-cost', label: 'Costos Aterrizados', icon: Ship, count: 0 },
     { id: 'consignment', label: 'Consignación/VMI', icon: Handshake, count: 0 },
     { id: 'sii-book', label: 'Libro SII', icon: FileText, count: 0 },
-    { id: 'abc', label: 'ABC/XYZ', icon: BarChart3, count: 0 },
     { id: 'import', label: 'Importar', icon: Upload, count: 0 },
   ];
 
@@ -622,19 +620,6 @@ export default function BodegaPage() {
                       <p className="text-sm font-medium text-slate-700">Libro Inventario SII</p>
                       <p className="text-xs text-slate-500 mt-1">Generación formato oficial SII Chile mensual/anual</p>
                     </button>
-                  </div>
-                </div>
-              )}
-
-              {/* ABC/XYZ TAB */}
-              {activeTab === 'abc' && (
-                <div className="p-6">
-                  <div className="max-w-4xl mx-auto">
-                    <Link href="/dashboard/inventory/abc" className="block bg-slate-50 border border-slate-200 rounded-xl p-8 text-center hover:border-indigo-400 hover:bg-indigo-50/50 transition-colors">
-                      <BarChart3 className="w-10 h-10 text-indigo-600 mx-auto mb-3" />
-                      <p className="text-sm font-medium text-slate-700">Análisis ABC/XYZ</p>
-                      <p className="text-xs text-slate-500 mt-1">Clasificación de inventario por valor y variabilidad</p>
-                    </Link>
                   </div>
                 </div>
               )}

@@ -130,7 +130,6 @@ export const sidebarItems: NavGroup[] = [
         subItems: [
           { title: "Todos", path: "/dashboard/inventory", icon: "Package" },
           { title: "Nuevo", path: "/dashboard/inventory/new", icon: "Package" },
-          { title: "A/B/C", path: "/dashboard/inventory/abc", icon: "BarChart3" },
           { title: "Ajustes", path: "/dashboard/inventory/adjustments", icon: "Wrench" },
           { title: "Reporte Stock", path: "/dashboard/inventory/stock-report", icon: "FileBarChart" },
           { title: "Etiquetas", path: "/dashboard/inventory/label-designer", icon: "Tag" },
