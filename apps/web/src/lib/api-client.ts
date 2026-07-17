@@ -49,7 +49,8 @@ export class ApiClient {
 
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.error || 'Error en la solicitud');
+      const msg = typeof data.error === 'object' ? data.error?.message || JSON.stringify(data.error) : data.error;
+      throw new Error(msg || 'Error en la solicitud');
     }
     return data.data || data;
   }
@@ -60,7 +61,8 @@ export class ApiClient {
     const response = await fetch(url);
     const result = await response.json();
     if (!response.ok) {
-      throw new Error(result.error || 'Error en la solicitud');
+      const msg = typeof result.error === 'object' ? result.error?.message || JSON.stringify(result.error) : result.error;
+      throw new Error(msg || 'Error en la solicitud');
     }
     return result;
   }
