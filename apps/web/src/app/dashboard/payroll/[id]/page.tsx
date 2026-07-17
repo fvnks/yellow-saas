@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { Button, Badge } from '@yellow-erp/ui';
-import { ArrowLeft, Download, Check, DollarSign, Users, Calculator, FileText } from 'lucide-react';
+import { ArrowLeft, Download, Check, DollarSign, Users, Calculator, FileText, Printer } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
+import { generatePayslipPDF, PayslipData } from '@/lib/pdf-design';
 
 interface PayrollItem {
   id: string;
@@ -22,6 +23,7 @@ interface PayrollItem {
   first_name: string;
   last_name: string;
   rut: string;
+  position: string;
   base_salary: number;
 }
 
@@ -55,13 +57,89 @@ export default function PayrollRunDetailPage() {
   const [run, setRun] = useState<PayrollRun | null>(null);
   const [loading, setLoading] = useState(true);
   const [expandedEmployee, setExpandedEmployee] = useState<string | null>(null);
+  const [company, setCompany] = useState<any>(null);
 
   useEffect(() => {
     const api = getApiClient();
-    api.getPayrollRun(runId)
-      .then((data) => { setRun(data as unknown as PayrollRun); setLoading(false); })
-      .catch(() => setLoading(false));
+    Promise.all([
+      api.getPayrollRun(runId),
+      (api as any).request?.('/company') || Promise.resolve(null),
+    ]).then(([runData, companyData]) => {
+      setRun(runData as unknown as PayrollRun);
+      setCompany(companyData);
+      setLoading(false);
+    }).catch(() => setLoading(false));
   }, [runId]);
+
+  const generatePayslip = (empId: string) => {
+    if (!run || !company) return;
+
+    const empItems = run.items.filter(i => i.employee_id === empId);
+    if (empItems.length === 0) return;
+
+    const firstItem = empItems[0];
+    const earnings = empItems.filter(i => i.category === 'earning');
+    const deductions = empItems.filter(i => i.category === 'deduction' && !i.is_employer);
+    const employer = empItems.filter(i => i.category === 'employer');
+
+    const gross = earnings.reduce((s, i) => s + i.amount, 0);
+    const totalDeductions = deductions.reduce((s, i) => s + i.amount, 0);
+    const totalEmployer = employer.reduce((s, i) => s + i.amount, 0);
+    const totalTax = deductions.filter(i => i.code === 'IMP-2C').reduce((s, i) => s + i.amount, 0);
+
+    const payslipData: PayslipData = {
+      company: {
+        name: company.name || '',
+        tax_id: company.tax_id,
+        razon_social: company.razon_social,
+        giro: company.giro,
+        address: company.address,
+        city: company.city,
+        region: company.region,
+        logo_url: company.logo_url,
+      },
+      employee: {
+        first_name: firstItem.first_name,
+        last_name: firstItem.last_name,
+        rut: firstItem.rut,
+        position: firstItem.position || '',
+        department: '',
+        contract_type: '',
+        hire_date: '',
+        afp_fund: '',
+        health_type: '',
+      },
+      period: {
+        label: run.period_label,
+        start_date: run.period_start,
+        end_date: run.period_end,
+      },
+      earnings: earnings.map(e => ({
+        concept: e.concept,
+        amount: e.amount,
+        quantity: e.quantity,
+        unit_value: e.unit_value,
+      })),
+      deductions: deductions.map(d => ({
+        concept: d.concept,
+        amount: d.amount,
+      })),
+      employerContributions: employer.map(c => ({
+        concept: c.concept,
+        amount: c.amount,
+      })),
+      totals: { gross, total_deductions: totalDeductions, total_employer: totalEmployer, total_tax: totalTax, net_pay: gross - totalDeductions - totalTax },
+    };
+
+    const doc = generatePayslipPDF(payslipData);
+    doc.save(`boleta-${run.period_label}-${firstItem.first_name}-${firstItem.last_name}.pdf`);
+  };
+
+  const generateAllPayslips = () => {
+    if (!run) return;
+    const empIds = [...new Set(run.items.map(i => i.employee_id))];
+    empIds.forEach(id => generatePayslip(id));
+  };
 
   if (loading) {
     return <div className="space-y-6">{[1, 2, 3].map(i => <div key={i} className="animate-pulse bg-slate-200 h-24 rounded-xl" />)}</div>;
@@ -123,6 +201,10 @@ export default function PayrollRunDetailPage() {
           <Badge variant={statusConfig[run.status]?.variant || 'neutral'}>
             {statusConfig[run.status]?.label || run.status}
           </Badge>
+          <Button onClick={generateAllPayslips} variant="secondary" size="sm">
+            <Printer className="w-4 h-4 mr-2" />
+            Generar Boletas
+          </Button>
         </div>
       </div>
 
@@ -208,12 +290,21 @@ export default function PayrollRunDetailPage() {
                       <td className="px-4 py-3 text-xs text-right text-slate-700">${totals.tax.toLocaleString('es-CL')}</td>
                       <td className="px-4 py-3 text-xs text-right font-bold text-slate-900">${totals.net.toLocaleString('es-CL')}</td>
                       <td className="px-4 py-3 text-center">
-                        <button
-                          onClick={() => setExpandedEmployee(isExpanded ? null : empId)}
-                          className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
-                        >
-                          {isExpanded ? 'Ocultar' : 'Ver'}
-                        </button>
+                        <div className="flex items-center justify-center gap-2">
+                          <button
+                            onClick={() => setExpandedEmployee(isExpanded ? null : empId)}
+                            className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+                          >
+                            {isExpanded ? 'Ocultar' : 'Ver'}
+                          </button>
+                          <button
+                            onClick={() => generatePayslip(empId)}
+                            className="p-1 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"
+                            title="Descargar boleta"
+                          >
+                            <Printer className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                     {isExpanded && (
