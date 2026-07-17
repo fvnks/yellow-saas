@@ -49,6 +49,36 @@ export interface DocumentData {
   payment_method?: string;
 }
 
+export interface PayslipData {
+  company: CompanyData;
+  employee: {
+    first_name: string;
+    last_name: string;
+    rut: string;
+    position: string;
+    department: string;
+    contract_type: string;
+    hire_date: string;
+    afp_fund: string;
+    health_type: string;
+  };
+  period: {
+    label: string;
+    start_date: string;
+    end_date: string;
+  };
+  earnings: { concept: string; amount: number; quantity?: number; unit_value?: number }[];
+  deductions: { concept: string; amount: number }[];
+  employerContributions: { concept: string; amount: number }[];
+  totals: {
+    gross: number;
+    total_deductions: number;
+    total_employer: number;
+    total_tax: number;
+    net_pay: number;
+  };
+}
+
 const COLORS = {
   primary: [30, 30, 30] as [number, number, number],
   accent: [79, 70, 229] as [number, number, number],
@@ -848,6 +878,238 @@ export function generateBarcodeLabelsPDF(labels: BarcodeLabelData[], template: L
 
     x += labelWidth + spacing;
   }
+
+  return doc;
+}
+
+// ══════════════════════════════════════════
+// BOLETA DE PAGO (Payslip) - Chilean Legal Document
+// ══════════════════════════════════════════
+
+export function generatePayslipPDF(data: PayslipData): jsPDF {
+  const doc = new jsPDF('p', 'mm', 'letter');
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 15;
+  const contentWidth = pageWidth - margin * 2;
+
+  let y = margin;
+
+  // ── Header ──
+  // Company logo
+  if (data.company.logo_url) {
+    try {
+      doc.addImage(data.company.logo_url, 'PNG', margin, y, 25, 25);
+    } catch {}
+  }
+
+  // Company info
+  const companyX = data.company.logo_url ? margin + 30 : margin;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(14);
+  doc.setTextColor(...COLORS.primary);
+  doc.text(data.company.razon_social || data.company.name || '', companyX, y + 6);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(...COLORS.textMuted);
+  let infoY = y + 11;
+  if (data.company.tax_id) { doc.text(`RUT: ${data.company.tax_id}`, companyX, infoY); infoY += 4; }
+  if (data.company.giro) { doc.text(`Giro: ${data.company.giro}`, companyX, infoY); infoY += 4; }
+  if (data.company.address) { doc.text(`Dirección: ${data.company.address}`, companyX, infoY); infoY += 4; }
+  if (data.company.city) { doc.text(`${data.company.city}, ${data.company.region || ''}`, companyX, infoY); infoY += 4; }
+
+  // Document title
+  y += 32;
+  doc.setFillColor(...COLORS.accent);
+  doc.roundedRect(margin, y, contentWidth, 10, 2, 2, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(255, 255, 255);
+  doc.text('BOLETA DE PAGO', pageWidth / 2, y + 7, { align: 'center' });
+
+  // Period info
+  y += 15;
+  doc.setTextColor(...COLORS.textDark);
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'bold');
+  doc.text(`Período: ${data.period.label}`, margin, y);
+  doc.text(`${data.period.start_date} al ${data.period.end_date}`, pageWidth - margin, y, { align: 'right' });
+
+  // ── Employee Info ──
+  y += 10;
+  doc.setFillColor(...COLORS.lightBg);
+  doc.roundedRect(margin, y, contentWidth, 28, 2, 2, 'F');
+
+  const col1X = margin + 5;
+  const col2X = margin + contentWidth / 2 + 5;
+  let empY = y + 6;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(...COLORS.textMuted);
+  doc.text('EMPLEADO', col1X, empY);
+  doc.text('DATOS LABORALES', col2X, empY);
+
+  empY += 5;
+  doc.setFontSize(9);
+  doc.setTextColor(...COLORS.textDark);
+  doc.text(`${data.employee.first_name} ${data.employee.last_name}`, col1X, empY);
+  doc.text(`Cargo: ${data.employee.position || '—'}`, col2X, empY);
+
+  empY += 5;
+  doc.setFontSize(8);
+  doc.setTextColor(...COLORS.textMuted);
+  doc.text(`RUT: ${data.employee.rut || '—'}`, col1X, empY);
+  doc.text(`Depto: ${data.employee.department || '—'}`, col2X, empY);
+
+  empY += 5;
+  doc.text(`Contrato: ${data.employee.contract_type || '—'}`, col1X, empY);
+  doc.text(`Ingreso: ${data.employee.hire_date || '—'}`, col2X, empY);
+
+  empY += 5;
+  doc.text(`AFP: ${data.employee.afp_fund || '—'}`, col1X, empY);
+  doc.text(`Salud: ${data.employee.health_type === 'isapre' ? 'Isapre' : 'FONASA'}`, col2X, empY);
+
+  // ── Earnings Table ──
+  y += 35;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(...COLORS.accent);
+  doc.text('HABERES', margin, y);
+  y += 3;
+
+  const earningsRows = data.earnings.map(e => [
+    e.concept,
+    e.quantity ? `${e.quantity}` : '1',
+    e.unit_value ? formatCurrency(e.unit_value) : '—',
+    formatCurrency(e.amount),
+  ]);
+
+  autoTable(doc, {
+    startY: y,
+    margin: { left: margin, right: margin },
+    head: [['Concepto', 'Cantidad', 'Valor Unitario', 'Monto']],
+    body: earningsRows,
+    theme: 'plain',
+    styles: { fontSize: 8, cellPadding: 2, textColor: COLORS.textDark },
+    headStyles: { fillColor: [241, 245, 249], textColor: COLORS.textMuted, fontStyle: 'bold', fontSize: 7 },
+    columnStyles: {
+      0: { cellWidth: contentWidth * 0.45 },
+      1: { cellWidth: contentWidth * 0.15, halign: 'center' },
+      2: { cellWidth: contentWidth * 0.2, halign: 'right' },
+      3: { cellWidth: contentWidth * 0.2, halign: 'right', fontStyle: 'bold' },
+    },
+  });
+
+  y = (doc as any).lastAutoTable.finalY + 5;
+
+  // ── Deductions Table ──
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(220, 38, 38);
+  doc.text('DESCUENTOS', margin, y);
+  y += 3;
+
+  const deductionsRows = data.deductions.map(d => [
+    d.concept,
+    formatCurrency(d.amount),
+  ]);
+
+  autoTable(doc, {
+    startY: y,
+    margin: { left: margin, right: margin },
+    head: [['Concepto', 'Monto']],
+    body: deductionsRows,
+    theme: 'plain',
+    styles: { fontSize: 8, cellPadding: 2, textColor: COLORS.textDark },
+    headStyles: { fillColor: [254, 226, 226], textColor: [153, 27, 27], fontStyle: 'bold', fontSize: 7 },
+    columnStyles: {
+      0: { cellWidth: contentWidth * 0.7 },
+      1: { cellWidth: contentWidth * 0.3, halign: 'right', fontStyle: 'bold' },
+    },
+  });
+
+  y = (doc as any).lastAutoTable.finalY + 5;
+
+  // ── Employer Contributions Table ──
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(...COLORS.accent);
+  doc.text('CARGAS DEL EMPLEADOR', margin, y);
+  y += 3;
+
+  const employerRows = data.employerContributions.map(c => [
+    c.concept,
+    formatCurrency(c.amount),
+  ]);
+
+  autoTable(doc, {
+    startY: y,
+    margin: { left: margin, right: margin },
+    head: [['Concepto', 'Monto']],
+    body: employerRows,
+    theme: 'plain',
+    styles: { fontSize: 8, cellPadding: 2, textColor: COLORS.textDark },
+    headStyles: { fillColor: [238, 242, 255], textColor: [55, 48, 163], fontStyle: 'bold', fontSize: 7 },
+    columnStyles: {
+      0: { cellWidth: contentWidth * 0.7 },
+      1: { cellWidth: contentWidth * 0.3, halign: 'right', fontStyle: 'bold' },
+    },
+  });
+
+  y = (doc as any).lastAutoTable.finalY + 8;
+
+  // ── Totals Summary ──
+  if (y + 40 > pageHeight - margin) {
+    doc.addPage();
+    y = margin;
+  }
+
+  doc.setFillColor(...COLORS.lightBg);
+  doc.roundedRect(margin, y, contentWidth, 35, 2, 2, 'F');
+
+  const totCol1 = margin + 5;
+  const totCol2 = margin + contentWidth / 2 + 5;
+  let totY = y + 7;
+
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...COLORS.textDark);
+
+  doc.text('Total Haberes:', totCol1, totY);
+  doc.text(formatCurrency(data.totals.gross), totCol2, totY, { align: 'right' });
+
+  totY += 7;
+  doc.setTextColor(220, 38, 38);
+  doc.text('Total Descuentos:', totCol1, totY);
+  doc.text(formatCurrency(data.totals.total_deductions + data.totals.total_tax), totCol2, totY, { align: 'right' });
+
+  totY += 7;
+  doc.setTextColor(...COLORS.accent);
+  doc.text('Cargas Empleador:', totCol1, totY);
+  doc.text(formatCurrency(data.totals.total_employer), totCol2, totY, { align: 'right' });
+
+  totY += 8;
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(22, 163, 74);
+  doc.text('LÍQUIDO A PAGAR:', totCol1, totY);
+  doc.text(formatCurrency(data.totals.net_pay), totCol2, totY, { align: 'right' });
+
+  // ── Footer ──
+  y = pageHeight - margin - 15;
+  doc.setDrawColor(...COLORS.border);
+  doc.setLineWidth(0.3);
+  doc.line(margin, y, pageWidth - margin, y);
+
+  y += 5;
+  doc.setFontSize(7);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(...COLORS.textMuted);
+  doc.text('Documento generado por Yellow ERP — Este documento no reemplaza la boleta de honorarios tributaria.', pageWidth / 2, y, { align: 'center' });
+  y += 4;
+  doc.text(`Fecha de emisión: ${new Date().toLocaleDateString('es-CL')}`, pageWidth / 2, y, { align: 'center' });
 
   return doc;
 }
