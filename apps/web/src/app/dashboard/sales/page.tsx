@@ -131,7 +131,7 @@ function SalesPageContent() {
         customer: o.customer?.name || o.customer_id || '---',
         items: Array.isArray(o.items) ? o.items.length : (o.items || 0),
         date: o.created_at?.split('T')[0] || '',
-        total: o.total,
+        total: Number(o.total || 0),
         status: o.status,
         payment: 'pending',
       }));
@@ -148,7 +148,7 @@ function SalesPageContent() {
         number: inv.invoice_number,
         orderId: inv.sales_order?.number || inv.order_id,
         date: inv.created_at?.split('T')[0] || '',
-        total: inv.total_amount || inv.total || 0,
+        total: Number(inv.total_amount || inv.total || 0),
         status: inv.status,
         paid: 0,
       }));
@@ -178,7 +178,7 @@ function SalesPageContent() {
         customer: q.customer?.name || q.customer_id,
         date: q.created_at?.split('T')[0] || '',
         valid_until: q.valid_until || '',
-        total: q.total || 0,
+        total: Number(q.total || 0),
         status: q.status,
       }));
       setQuotations(quotationsData);
@@ -309,7 +309,7 @@ const handlePayment = async () => {
       number: o.order_number,
       customer: o.customer_id,
       date: o.created_at?.split('T')[0] || '',
-      total: o.total,
+      total: Number(o.total || 0),
       status: o.status,
       payment: 'pending',
     })));
@@ -326,7 +326,7 @@ const handlePayment = async () => {
       number: inv.invoice_number,
       orderId: inv.order_id,
       date: inv.created_at?.split('T')[0] || '',
-      total: inv.total_amount || inv.total || 0,
+      total: Number(inv.total_amount || inv.total || 0),
       status: inv.status,
       paid: 0,
     })));
