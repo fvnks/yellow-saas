@@ -105,3 +105,55 @@ export async function POST(request: NextRequest) {
     return errorResponse('Internal server error', 500);
   }
 }
+
+export async function PUT(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+    const { id, rate, source, is_active } = body;
+
+    if (!id) return errorResponse('Exchange rate ID is required', 400);
+
+    const { rows } = await query(
+      `UPDATE exchange_rates SET
+        rate = COALESCE($1, rate),
+        source = COALESCE($2, source),
+        is_active = COALESCE($3, is_active),
+        created_at = NOW()
+       WHERE id = $4 AND company_id = $5
+       RETURNING *`,
+      [rate || null, source || null, is_active !== undefined ? is_active : null, id, companyId]
+    );
+
+    if (!rows[0]) return errorResponse('Exchange rate not found', 404);
+
+    return successResponse(rows[0]);
+  } catch {
+    return errorResponse('Internal server error', 500);
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const url = new URL(request.url);
+    const id = url.searchParams.get('id');
+
+    if (!id) return errorResponse('Exchange rate ID is required', 400);
+
+    const { rows } = await query(
+      `DELETE FROM exchange_rates WHERE id = $1 AND company_id = $2 RETURNING id`,
+      [id, companyId]
+    );
+
+    if (!rows[0]) return errorResponse('Exchange rate not found', 404);
+
+    return successResponse({ message: 'Exchange rate deleted successfully' });
+  } catch {
+    return errorResponse('Internal server error', 500);
+  }
+}

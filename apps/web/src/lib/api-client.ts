@@ -935,6 +935,12 @@ async deleteAdjustmentReason(id: string) {
   async createExchangeRate(data: { from_currency: string; to_currency: string; rate: number; rate_date: string; source?: string }) {
     return this.request<any>('/exchange-rates', { method: 'POST', body: JSON.stringify(data) });
   }
+  async updateExchangeRate(id: string, data: { rate?: number; source?: string; is_active?: boolean }) {
+    return this.request<any>('/exchange-rates', { method: 'PUT', body: JSON.stringify({ id, ...data }) });
+  }
+  async deleteExchangeRate(id: string) {
+    return this.request<any>(`/exchange-rates?id=${id}`, { method: 'DELETE' });
+  }
 
   // Multi-Currency Valuation
   async getValuationMultiCurrency(params?: Record<string, string>) {
