@@ -174,6 +174,11 @@ export const sidebarItems: NavGroup[] = [
           { title: "Registro", path: "/dashboard/sales/register", icon: "ClipboardList" },
         ],
       },
+      {
+        title: "POS",
+        path: "/dashboard/pos",
+        icon: "Monitor",
+      },
     ],
   },
   {
@@ -225,7 +230,11 @@ export const sidebarItems: NavGroup[] = [
         title: "Contabilidad",
         path: "/dashboard/accounting",
         icon: "Calculator",
-        comingSoon: true,
+      },
+      {
+        title: "Facturación",
+        path: "/dashboard/billing",
+        icon: "CreditCard",
       },
       {
         title: "Remuneraciones",
@@ -233,46 +242,36 @@ export const sidebarItems: NavGroup[] = [
         icon: "Wallet",
         comingSoon: true,
       },
-      {
-        title: "Facturación",
-        path: "/dashboard/billing",
-        icon: "CreditCard",
-        comingSoon: true,
-      },
     ],
   },
   {
     id: 7,
-    label: "Otros",
+    label: "Herramientas",
     items: [
-      {
-        title: "CRM",
-        path: "/dashboard/crm",
-        icon: "Handshake",
-        comingSoon: true,
-      },
-      {
-        title: "Proyectos",
-        path: "/dashboard/projects",
-        icon: "FolderKanban",
-        comingSoon: true,
-      },
-      {
-        title: "POS",
-        path: "/dashboard/pos",
-        icon: "Monitor",
-        comingSoon: true,
-      },
       {
         title: "Alertas",
         path: "/dashboard/alerts",
         icon: "Bell",
-        comingSoon: true,
       },
       {
         title: "Reportes",
         path: "/dashboard/reports",
         icon: "FileBarChart",
+      },
+      {
+        title: "CRM",
+        path: "/dashboard/crm",
+        icon: "Handshake",
+      },
+      {
+        title: "Auditoría",
+        path: "/dashboard/audit",
+        icon: "ScrollText",
+      },
+      {
+        title: "Proyectos",
+        path: "/dashboard/projects",
+        icon: "FolderKanban",
         comingSoon: true,
       },
     ],
@@ -289,12 +288,6 @@ export const sidebarItems: NavGroup[] = [
           { title: "General", path: "/dashboard/settings", icon: "Settings" },
           { title: "Webhooks", path: "/dashboard/settings/webhooks", icon: "Webhook", comingSoon: true },
         ],
-      },
-      {
-        title: "Auditoría",
-        path: "/dashboard/audit",
-        icon: "ScrollText",
-        comingSoon: true,
       },
     ],
   },
