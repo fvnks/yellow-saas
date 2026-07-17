@@ -9,6 +9,7 @@ import EmployeeFormModal from './components/EmployeeFormModal';
 import PeriodModal from './components/PeriodModal';
 import VacationTab from './components/VacationTab';
 import LiquidationModal from './components/LiquidationModal';
+import { useToast } from './components/Toast';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   active: { label: 'Activo', variant: 'success' },
@@ -39,6 +40,7 @@ export default function PayrollPageWrapper() {
 function PayrollPage() {
   const searchParams = useSearchParams();
   const initialTab = (searchParams.get('tab') as 'employees' | 'periods') || 'employees';
+  const { toast } = useToast();
   const [employees, setEmployees] = useState<any[]>([]);
   const [runs, setRuns] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,7 +51,11 @@ function PayrollPage() {
   const [showPeriodModal, setShowPeriodModal] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<any>(null);
   const [showLiquidationModal, setShowLiquidationModal] = useState(false);
-  const [calculating, setCalculating] = useState<string | null>(null);
+  const [calculatingRun, setCalculatingRun] = useState<string | null>(null);
+  const [approvingRun, setApprovingRun] = useState<string | null>(null);
+  const [payingRun, setPayingRun] = useState<string | null>(null);
+  const [deletingRun, setDeletingRun] = useState<string | null>(null);
+  const [deletingEmployee, setDeletingEmployee] = useState<string | null>(null);
   const [showUFModal, setShowUFModal] = useState(false);
   const [ufValue, setUFValue] = useState(38500);
   const [ufInput, setUFInput] = useState('');
@@ -68,9 +74,11 @@ function PayrollPage() {
         setUFValue(ufRes.data.uf_value);
         setUFInput(ufRes.data.uf_value.toLocaleString('es-CL'));
       }
-    } catch { }
+    } catch {
+      toast('Error al cargar datos', 'error');
+    }
     setLoading(false);
-  }, []);
+  }, [toast]);
 
   useEffect(() => { loadData(); }, [loadData]);
 
@@ -82,7 +90,10 @@ function PayrollPage() {
       await api.setUFValue(parsed);
       setUFValue(parsed);
       setShowUFModal(false);
-    } catch { }
+      toast('Valor UF actualizado');
+    } catch {
+      toast('Error al guardar valor UF', 'error');
+    }
   };
 
   const departments = [...new Set(employees.map(e => e.department).filter(Boolean))];
@@ -101,46 +112,95 @@ function PayrollPage() {
   const latestRun = runs[0];
 
   const handleDeleteEmployee = async (id: string) => {
-    if (!confirm('¿Eliminar este empleado?')) return;
-    const api = getApiClient();
-    await api.deleteEmployee(id);
-    loadData();
+    if (!confirm('¿Eliminar este empleado? Esta accion no se puede deshacer.')) return;
+    setDeletingEmployee(id);
+    try {
+      const api = getApiClient();
+      await api.deleteEmployee(id);
+      toast('Empleado eliminado');
+      loadData();
+    } catch {
+      toast('Error al eliminar empleado', 'error');
+    }
+    setDeletingEmployee(null);
   };
 
   const handleCalculate = async (runId: string) => {
-    setCalculating(runId);
-    const api = getApiClient();
+    setCalculatingRun(runId);
     try {
+      const api = getApiClient();
       await api.calculatePayroll(runId);
+      toast('Nomina calculada correctamente');
       loadData();
-    } catch { }
-    setCalculating(null);
+    } catch {
+      toast('Error al calcular nomina', 'error');
+    }
+    setCalculatingRun(null);
   };
 
   const handleApprove = async (runId: string) => {
-    const api = getApiClient();
-    await api.updatePayrollRun(runId, { status: 'approved' });
-    loadData();
+    setApprovingRun(runId);
+    try {
+      const api = getApiClient();
+      await api.updatePayrollRun(runId, { status: 'approved' });
+      toast('Nomina aprobada');
+      loadData();
+    } catch {
+      toast('Error al aprobar nomina', 'error');
+    }
+    setApprovingRun(null);
   };
 
   const handlePay = async (runId: string) => {
-    const api = getApiClient();
-    await api.updatePayrollRun(runId, { status: 'paid', paid_at: new Date().toISOString() });
-    loadData();
+    setPayingRun(runId);
+    try {
+      const api = getApiClient();
+      await api.updatePayrollRun(runId, { status: 'paid', paid_at: new Date().toISOString() });
+      toast('Nomina marcada como pagada');
+      loadData();
+    } catch {
+      toast('Error al marcar como pagada', 'error');
+    }
+    setPayingRun(null);
   };
 
   const handleDeleteRun = async (runId: string) => {
-    if (!confirm('¿Eliminar esta nómina? Solo se puede eliminar en estado borrador.')) return;
-    const api = getApiClient();
-    await api.deletePayrollRun(runId);
-    loadData();
+    if (!confirm('¿Eliminar esta nomina? Solo se puede eliminar en estado borrador.')) return;
+    setDeletingRun(runId);
+    try {
+      const api = getApiClient();
+      await api.deletePayrollRun(runId);
+      toast('Nomina eliminada');
+      loadData();
+    } catch {
+      toast('Error al eliminar nomina', 'error');
+    }
+    setDeletingRun(null);
   };
 
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-48 bg-slate-200 rounded animate-pulse" />
-        <div className="grid gap-4 md:grid-cols-4">{[1, 2, 3, 4].map(i => <div key={i} className="h-24 bg-slate-200 rounded-xl animate-pulse" />)}</div>
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <div className="h-8 w-48 bg-slate-200 rounded animate-pulse" />
+            <div className="h-4 w-64 bg-slate-200 rounded animate-pulse" />
+          </div>
+          <div className="h-9 w-32 bg-slate-200 rounded-lg animate-pulse" />
+        </div>
+        <div className="grid gap-4 md:grid-cols-4">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="h-28 bg-slate-200 rounded-xl animate-pulse" />
+          ))}
+        </div>
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+          <div className="space-y-4">
+            <div className="h-10 w-full bg-slate-200 rounded-lg animate-pulse" />
+            {[1, 2, 3].map(i => (
+              <div key={i} className="h-12 w-full bg-slate-100 rounded-lg animate-pulse" />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -150,7 +210,7 @@ function PayrollPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Remuneraciones</h1>
-          <p className="text-sm text-slate-500 mt-1">Gestión de nómina chilena</p>
+          <p className="text-sm text-slate-500 mt-1">Gestion de nomina chilena</p>
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -175,7 +235,7 @@ function PayrollPage() {
           ) : (
             <Button onClick={() => setShowPeriodModal(true)}>
               <Plus className="w-4 h-4 mr-2" />
-              Nuevo Período
+              Nuevo Periodo
             </Button>
           )}
         </div>
@@ -183,8 +243,8 @@ function PayrollPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <KPICard label="Empleados Activos" value={activeEmployees.length} icon={Users} trend={`${employees.length} total`} trendUp={true} />
-        <KPICard label="Nómina Mensual" value={`$${(totalPayroll / 1000000).toFixed(1)}M`} icon={Wallet} trend="+35% carga social" trendUp={true} />
-        <KPICard label="Último Período" value={latestRun?.period_label || '—'} icon={Calendar} trend={latestRun ? statusConfig[latestRun.status]?.label : 'Sin datos'} trendUp={latestRun?.status === 'paid'} />
+        <KPICard label="Nomina Mensual" value={`$${(totalPayroll / 1000000).toFixed(1)}M`} icon={Wallet} trend="+35% carga social" trendUp={true} />
+        <KPICard label="Ultimo Periodo" value={latestRun?.period_label || '—'} icon={Calendar} trend={latestRun ? statusConfig[latestRun.status]?.label : 'Sin datos'} trendUp={latestRun?.status === 'paid'} />
         <KPICard label="Costo Total Empleador" value={`$${((totalPayroll * 1.35) / 1000000).toFixed(1)}M`} icon={DollarSign} trend="Incluye cargas" trendUp={true} />
       </div>
 
@@ -193,7 +253,7 @@ function PayrollPage() {
           <div className="flex">
             {[
               { id: 'employees' as const, label: 'Empleados', icon: Users, count: employees.length },
-              { id: 'periods' as const, label: 'Períodos de Nómina', icon: FileText, count: runs.length },
+              { id: 'periods' as const, label: 'Periodos de Nomina', icon: FileText, count: runs.length },
               { id: 'vacation' as const, label: 'Vacaciones', icon: Calendar, count: null },
             ].map(tab => (
               <button
@@ -205,7 +265,9 @@ function PayrollPage() {
               >
                 <tab.icon className="w-4 h-4" />
                 {tab.label}
-                <span className="ml-1 bg-slate-100 text-slate-600 text-[9px] font-semibold px-1.5 py-0.5 rounded-full">{tab.count}</span>
+                {tab.count !== null && (
+                  <span className="ml-1 bg-slate-100 text-slate-600 text-[9px] font-semibold px-1.5 py-0.5 rounded-full">{tab.count}</span>
+                )}
               </button>
             ))}
           </div>
@@ -236,62 +298,88 @@ function PayrollPage() {
               </div>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-slate-200">
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">RUT</th>
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cargo</th>
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Departamento</th>
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Contrato</th>
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">AFP</th>
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Salud</th>
-                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Sueldo Base</th>
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredEmployees.map(employee => (
-                    <tr key={employee.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                      <td className="px-4 py-3 text-sm font-medium text-slate-900">{employee.first_name} {employee.last_name}</td>
-                      <td className="px-4 py-3 text-xs font-mono text-slate-500">{employee.rut || '—'}</td>
-                      <td className="px-4 py-3 text-xs text-slate-600">{employee.position || '—'}</td>
-                      <td className="px-4 py-3 text-xs text-slate-600">{employee.department || '—'}</td>
-                      <td className="px-4 py-3 text-xs text-slate-600">{contractTypeLabels[employee.contract_type] || employee.contract_type}</td>
-                      <td className="px-4 py-3 text-xs text-slate-600">{employee.afp_fund || '—'}</td>
-                      <td className="px-4 py-3 text-xs text-slate-600">{employee.health_type === 'isapre' ? 'Isapre' : 'FONASA'}</td>
-                      <td className="px-4 py-3 text-xs text-right font-medium text-slate-900">${(employee.base_salary || 0).toLocaleString('es-CL')}</td>
-                      <td className="px-4 py-3">
-                        <Badge variant={statusConfig[employee.status]?.variant || 'neutral'}>
-                          {statusConfig[employee.status]?.label || employee.status}
-                        </Badge>
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <div className="flex items-center justify-end gap-1">
-                          <button
-                            onClick={() => { setEditingEmployee(employee); setShowEmployeeModal(true); }}
-                            className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
-                          >
-                            <Edit className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteEmployee(employee.id)}
-                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {filteredEmployees.length === 0 && (
+              {employees.length === 0 ? (
                 <div className="p-12 text-center">
-                  <Users className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-                  <p className="text-sm text-slate-500">No se encontraron empleados</p>
+                  <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Users className="w-8 h-8 text-slate-400" />
+                  </div>
+                  <h3 className="text-sm font-semibold text-slate-700 mb-1">No hay empleados registrados</h3>
+                  <p className="text-xs text-slate-500 mb-4">Comienza agregando tu primer empleado para calcular remuneraciones.</p>
+                  <Button onClick={() => { setEditingEmployee(null); setShowEmployeeModal(true); }} size="sm">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Nuevo Empleado
+                  </Button>
                 </div>
+              ) : filteredEmployees.length === 0 ? (
+                <div className="p-12 text-center">
+                  <Search className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+                  <p className="text-sm text-slate-500">No se encontraron empleados con esos filtros</p>
+                  <button
+                    onClick={() => { setSearchTerm(''); setDepartmentFilter('all'); }}
+                    className="text-xs text-indigo-600 hover:text-indigo-800 mt-2"
+                  >
+                    Limpiar filtros
+                  </button>
+                </div>
+              ) : (
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-slate-200">
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">RUT</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cargo</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Departamento</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Contrato</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">AFP</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Salud</th>
+                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Sueldo Base</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
+                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredEmployees.map(employee => (
+                      <tr key={employee.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                        <td className="px-4 py-3 text-sm font-medium text-slate-900">{employee.first_name} {employee.last_name}</td>
+                        <td className="px-4 py-3 text-xs font-mono text-slate-500">{employee.rut || '—'}</td>
+                        <td className="px-4 py-3 text-xs text-slate-600">{employee.position || '—'}</td>
+                        <td className="px-4 py-3 text-xs text-slate-600">{employee.department || '—'}</td>
+                        <td className="px-4 py-3 text-xs text-slate-600">{contractTypeLabels[employee.contract_type] || employee.contract_type || '—'}</td>
+                        <td className="px-4 py-3 text-xs text-slate-600">{employee.afp_fund || '—'}</td>
+                        <td className="px-4 py-3 text-xs text-slate-600">{employee.health_type === 'isapre' ? 'Isapre' : 'FONASA'}</td>
+                        <td className="px-4 py-3 text-xs text-right font-medium text-slate-900">${(employee.base_salary || 0).toLocaleString('es-CL')}</td>
+                        <td className="px-4 py-3">
+                          <Badge variant={statusConfig[employee.status]?.variant || 'neutral'}>
+                            {statusConfig[employee.status]?.label || employee.status}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <button
+                              onClick={() => { setEditingEmployee(employee); setShowEmployeeModal(true); }}
+                              className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                              title="Editar"
+                            >
+                              <Edit className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteEmployee(employee.id)}
+                              disabled={deletingEmployee === employee.id}
+                              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors disabled:opacity-50"
+                              title="Eliminar"
+                            >
+                              {deletingEmployee === employee.id ? (
+                                <div className="w-3.5 h-3.5 border-2 border-rose-300 border-t-transparent rounded-full animate-spin" />
+                              ) : (
+                                <Trash2 className="w-3.5 h-3.5" />
+                              )}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               )}
             </div>
           </>
@@ -299,91 +387,117 @@ function PayrollPage() {
 
         {activeTab === 'periods' && (
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Período</th>
-                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Empleados</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Sueldo Imponible</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cargas Empleador</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Retenciones</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Líquido a Pagar</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {runs.map(run => (
-                  <tr key={run.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3 text-sm font-medium text-slate-900">{run.period_label}</td>
-                    <td className="px-4 py-3 text-xs text-center text-slate-700">{run.employee_count || 0}</td>
-                    <td className="px-4 py-3 text-xs text-right text-slate-700">${(run.gross_amount || 0).toLocaleString('es-CL')}</td>
-                    <td className="px-4 py-3 text-xs text-right text-slate-700">${(run.total_employer || 0).toLocaleString('es-CL')}</td>
-                    <td className="px-4 py-3 text-xs text-right text-slate-700">${((run.total_deductions || 0) + (run.total_tax || 0)).toLocaleString('es-CL')}</td>
-                    <td className="px-4 py-3 text-xs text-right font-bold text-slate-900">${(run.net_amount || 0).toLocaleString('es-CL')}</td>
-                    <td className="px-4 py-3">
-                      <Badge variant={statusConfig[run.status]?.variant || 'neutral'}>
-                        {statusConfig[run.status]?.label || run.status}
-                      </Badge>
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <a
-                          href={`/dashboard/payroll/${run.id}`}
-                          className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
-                          title="Ver detalle"
-                        >
-                          <Eye className="w-3.5 h-3.5" />
-                        </a>
-                        {run.status === 'draft' && (
-                          <>
-                            <button
-                              onClick={() => handleCalculate(run.id)}
-                              disabled={calculating === run.id}
-                              className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors disabled:opacity-50"
-                              title="Calcular nómina"
-                            >
-                              <Calculator className="w-3.5 h-3.5" />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteRun(run.id)}
-                              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
-                              title="Eliminar"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </>
-                        )}
-                        {run.status === 'calculated' && (
-                          <button
-                            onClick={() => handleApprove(run.id)}
-                            className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
-                            title="Aprobar"
-                          >
-                            <Check className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                        {run.status === 'approved' && (
-                          <button
-                            onClick={() => handlePay(run.id)}
-                            className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
-                            title="Marcar como pagada"
-                          >
-                            <DollarSign className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {runs.length === 0 && (
+            {runs.length === 0 ? (
               <div className="p-12 text-center">
-                <Calendar className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-                <p className="text-sm text-slate-500">No hay períodos de nómina</p>
-                <p className="text-xs text-slate-400 mt-1">Crea un nuevo período para comenzar a calcular</p>
+                <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <FileText className="w-8 h-8 text-slate-400" />
+                </div>
+                <h3 className="text-sm font-semibold text-slate-700 mb-1">No hay periodos de nomina</h3>
+                <p className="text-xs text-slate-500 mb-4">Crea un periodo para calcular las remuneraciones de tus empleados.</p>
+                <Button onClick={() => setShowPeriodModal(true)} size="sm">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Nuevo Periodo
+                </Button>
               </div>
+            ) : (
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-slate-200">
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Periodo</th>
+                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Empleados</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Sueldo Imponible</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cargas Empleador</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Retenciones</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Liquido a Pagar</th>
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {runs.map(run => (
+                    <tr key={run.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                      <td className="px-4 py-3 text-sm font-medium text-slate-900">{run.period_label}</td>
+                      <td className="px-4 py-3 text-xs text-center text-slate-700">{run.employee_count || 0}</td>
+                      <td className="px-4 py-3 text-xs text-right text-slate-700">${(run.gross_amount || 0).toLocaleString('es-CL')}</td>
+                      <td className="px-4 py-3 text-xs text-right text-slate-700">${(run.total_employer || 0).toLocaleString('es-CL')}</td>
+                      <td className="px-4 py-3 text-xs text-right text-slate-700">${((run.total_deductions || 0) + (run.total_tax || 0)).toLocaleString('es-CL')}</td>
+                      <td className="px-4 py-3 text-xs text-right font-bold text-slate-900">${(run.net_amount || 0).toLocaleString('es-CL')}</td>
+                      <td className="px-4 py-3">
+                        <Badge variant={statusConfig[run.status]?.variant || 'neutral'}>
+                          {statusConfig[run.status]?.label || run.status}
+                        </Badge>
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <a
+                            href={`/dashboard/payroll/${run.id}`}
+                            className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                            title="Ver detalle"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                          </a>
+                          {run.status === 'draft' && (
+                            <>
+                              <button
+                                onClick={() => handleCalculate(run.id)}
+                                disabled={calculatingRun === run.id}
+                                className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors disabled:opacity-50"
+                                title="Calcular nomina"
+                              >
+                                {calculatingRun === run.id ? (
+                                  <div className="w-3.5 h-3.5 border-2 border-indigo-300 border-t-transparent rounded-full animate-spin" />
+                                ) : (
+                                  <Calculator className="w-3.5 h-3.5" />
+                                )}
+                              </button>
+                              <button
+                                onClick={() => handleDeleteRun(run.id)}
+                                disabled={deletingRun === run.id}
+                                className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors disabled:opacity-50"
+                                title="Eliminar"
+                              >
+                                {deletingRun === run.id ? (
+                                  <div className="w-3.5 h-3.5 border-2 border-rose-300 border-t-transparent rounded-full animate-spin" />
+                                ) : (
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                )}
+                              </button>
+                            </>
+                          )}
+                          {run.status === 'calculated' && (
+                            <button
+                              onClick={() => handleApprove(run.id)}
+                              disabled={approvingRun === run.id}
+                              className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                              title="Aprobar"
+                            >
+                              {approvingRun === run.id ? (
+                                <div className="w-3.5 h-3.5 border-2 border-emerald-300 border-t-transparent rounded-full animate-spin" />
+                              ) : (
+                                <Check className="w-3.5 h-3.5" />
+                              )}
+                            </button>
+                          )}
+                          {run.status === 'approved' && (
+                            <button
+                              onClick={() => handlePay(run.id)}
+                              disabled={payingRun === run.id}
+                              className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                              title="Marcar como pagada"
+                            >
+                              {payingRun === run.id ? (
+                                <div className="w-3.5 h-3.5 border-2 border-emerald-300 border-t-transparent rounded-full animate-spin" />
+                              ) : (
+                                <DollarSign className="w-3.5 h-3.5" />
+                              )}
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             )}
           </div>
         )}
@@ -399,14 +513,14 @@ function PayrollPage() {
         <EmployeeFormModal
           employee={editingEmployee}
           onClose={() => { setShowEmployeeModal(false); setEditingEmployee(null); }}
-          onSave={() => { setShowEmployeeModal(false); setEditingEmployee(null); loadData(); }}
+          onSave={() => { setShowEmployeeModal(false); setEditingEmployee(null); toast(editingEmployee ? 'Empleado actualizado' : 'Empleado creado'); loadData(); }}
         />
       )}
 
       {showPeriodModal && (
         <PeriodModal
           onClose={() => setShowPeriodModal(false)}
-          onSave={() => { setShowPeriodModal(false); loadData(); }}
+          onSave={() => { setShowPeriodModal(false); toast('Periodo creado'); loadData(); }}
         />
       )}
 
@@ -418,7 +532,7 @@ function PayrollPage() {
             </div>
             <div className="p-6 space-y-4">
               <p className="text-xs text-slate-500">
-                Se usa para calcular gratificaciones y aguinaldo navideño.
+                Se usa para calcular gratificaciones y aguinaldo navideno.
               </p>
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-slate-700">Valor (CLP)</label>
