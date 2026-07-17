@@ -1,47 +1,44 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select, KPICard } from '@yellow-erp/ui';
-import { Download, FileText, ShoppingCart, Package, Calculator, TrendingUp, DollarSign, Users, BarChart3, AlertTriangle } from 'lucide-react';
+import { Download, FileText, ShoppingCart, Package, Calculator, TrendingUp, DollarSign, Users, BarChart3, AlertTriangle, RefreshCw } from 'lucide-react';
+import { getApiClient } from '@/lib/api-client';
 
-const topProducts = [
-  { id: '1', name: 'Laptop HP ProBook 450 G10', units: 45, total: 29250000, percentage: 28 },
-  { id: '2', name: 'Monitor Dell UltraSharp 27"', units: 32, total: 13440000, percentage: 13 },
-  { id: '3', name: 'Mouse Logitech MX Master 3S', units: 89, total: 7921000, percentage: 8 },
-  { id: '4', name: 'Teclado Mecánico Keychron K2', units: 67, total: 6365000, percentage: 6 },
-  { id: '5', name: 'Disco SSD Samsung 980 PRO 1TB', units: 54, total: 5940000, percentage: 6 },
-  { id: '6', name: 'Impresora HP LaserJet Pro', units: 21, total: 5880000, percentage: 6 },
-  { id: '7', name: 'Webcam Logitech C920', units: 78, total: 5070000, percentage: 5 },
-  { id: '8', name: 'Cable HDMI 2.1 2m', units: 210, total: 2520000, percentage: 2 },
-  { id: '9', name: 'Audífonos Sony WH-1000XM5', units: 15, total: 4500000, percentage: 4 },
-  { id: '10', name: 'Router TP-Link Archer AX73', units: 28, total: 3920000, percentage: 4 },
-];
+interface ReportSales {
+  totalSold: number;
+  orderCount: number;
+  avgTicket: number;
+  topProducts: { id: string; name: string; sku: string; units: number; total: number; percentage: number }[];
+  topCustomers: { id: string; name: string; tax_id: string; total: number; orders: number }[];
+}
 
-const inventoryProducts = [
-  { id: '1', name: 'Laptop HP ProBook 450 G10', sku: 'LP-HP-450', warehouse: 'Bodega Central', currentStock: 15, minStock: 5, status: 'normal' },
-  { id: '2', name: 'Mouse Logitech MX Master 3S', sku: 'MS-LG-MX3', warehouse: 'Bodega Norte', currentStock: 0, minStock: 10, status: 'sin-stock' },
-  { id: '3', name: 'Monitor Dell UltraSharp 27"', sku: 'MN-DELL-27', warehouse: 'Bodega Central', currentStock: 8, minStock: 3, status: 'normal' },
-  { id: '4', name: 'Teclado Mecánico Keychron K2', sku: 'KB-KC-K2', warehouse: 'Bodega Sur', currentStock: 2, minStock: 5, status: 'bajo' },
-  { id: '5', name: 'Disco SSD Samsung 980 PRO 1TB', sku: 'SSD-SAM-980', warehouse: 'Bodega Central', currentStock: 25, minStock: 10, status: 'normal' },
-  { id: '6', name: 'Impresora HP LaserJet Pro', sku: 'IMP-HP-LJ', warehouse: 'Bodega Norte', currentStock: 0, minStock: 2, status: 'sin-stock' },
-  { id: '7', name: 'Cable HDMI 2.1 2m', sku: 'CB-HDMI-2', warehouse: 'Bodega Central', currentStock: 50, minStock: 20, status: 'normal' },
-  { id: '8', name: 'Webcam Logitech C920', sku: 'WC-LG-C920', warehouse: 'Bodega Sur', currentStock: 3, minStock: 5, status: 'bajo' },
-];
+interface ReportInventory {
+  totalProducts: number;
+  totalValue: number;
+  lowStock: number;
+  outOfStock: number;
+  products: { id: string; name: string; sku: string; current_stock: number; min_stock: number; warehouse_name: string; status: string }[];
+}
 
-const monthlyFinancials = [
-  { id: '1', month: 'Enero 2026', income: 18500000, expenses: 12300000, profit: 6200000, iva: 3515000 },
-  { id: '2', month: 'Febrero 2026', income: 21200000, expenses: 14100000, profit: 7100000, iva: 4028000 },
-  { id: '3', month: 'Marzo 2026', income: 19800000, expenses: 13200000, profit: 6600000, iva: 3762000 },
-  { id: '4', month: 'Abril 2026', income: 23400000, expenses: 15600000, profit: 7800000, iva: 4446000 },
-  { id: '5', month: 'Mayo 2026', income: 20100000, expenses: 13400000, profit: 6700000, iva: 3819000 },
-  { id: '6', month: 'Junio 2026', income: 25600000, expenses: 17100000, profit: 8500000, iva: 4864000 },
-];
+interface ReportFinancials {
+  totalIncome: number;
+  totalExpenses: number;
+  netProfit: number;
+  totalIva: number;
+  monthly: { month: string; income: number; expenses: number; profit: number; iva: number }[];
+}
 
 export default function ReportsPage() {
   const [activeTab, setActiveTab] = useState('ventas');
-  const [dateFrom, setDateFrom] = useState('2026-01-01');
-  const [dateTo, setDateTo] = useState('2026-06-30');
+  const [dateFrom, setDateFrom] = useState(new Date(new Date().getFullYear(), 0, 1).toISOString().split('T')[0]);
+  const [dateTo, setDateTo] = useState(new Date().toISOString().split('T')[0]);
   const [warehouseFilter, setWarehouseFilter] = useState('all');
+  const [loading, setLoading] = useState(true);
+  const [warehouses, setWarehouses] = useState<{ value: string; label: string }[]>([]);
+  const [sales, setSales] = useState<ReportSales | null>(null);
+  const [inventory, setInventory] = useState<ReportInventory | null>(null);
+  const [financials, setFinancials] = useState<ReportFinancials | null>(null);
 
   const tabs = [
     { id: 'ventas', label: 'Ventas' },
@@ -49,33 +46,50 @@ export default function ReportsPage() {
     { id: 'contabilidad', label: 'Contabilidad' },
   ];
 
-  const warehouses = ['Bodega Central', 'Bodega Norte', 'Bodega Sur'];
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const api = getApiClient();
+      const [reportRes, warehousesRes] = await Promise.all([
+        api.getReport({
+          report: 'all',
+          date_from: dateFrom,
+          date_to: dateTo,
+          warehouse: warehouseFilter !== 'all' ? warehouseFilter : undefined,
+        }),
+        api.getWarehouses({ limit: '100' }).catch(() => ({ data: [] })),
+      ]);
 
-  const filteredInventory = inventoryProducts.filter(p =>
-    warehouseFilter === 'all' || p.warehouse === warehouseFilter
-  );
-
-  const totalSold = topProducts.reduce((sum, p) => sum + p.total, 0);
-  const totalOrders = 342;
-  const avgTicket = Math.round(totalSold / totalOrders);
-  const topClient = 'Empresa Constructora Los Andes';
-
-  const totalProducts = inventoryProducts.length;
-  const inventoryValue = inventoryProducts.reduce((sum, p) => sum + (p.currentStock * 650000), 0);
-  const lowStock = inventoryProducts.filter(p => p.status === 'bajo').length;
-  const outOfStock = inventoryProducts.filter(p => p.status === 'sin-stock').length;
-
-  const totalIncome = monthlyFinancials.reduce((sum, m) => sum + m.income, 0);
-  const totalExpenses = monthlyFinancials.reduce((sum, m) => sum + m.expenses, 0);
-  const netProfit = totalIncome - totalExpenses;
-  const totalIva = monthlyFinancials.reduce((sum, m) => sum + m.iva, 0);
-
-  const getStockStatus = (status: string) => {
-    switch (status) {
-      case 'sin-stock': return { label: 'Sin stock', variant: 'danger' as const };
-      case 'bajo': return { label: 'Bajo', variant: 'warning' as const };
-      default: return { label: 'Normal', variant: 'success' as const };
+      if (reportRes.sales) setSales(reportRes.sales);
+      if (reportRes.inventory) setInventory(reportRes.inventory);
+      if (reportRes.financials) setFinancials(reportRes.financials);
+      setWarehouses((warehousesRes.data || []).map((w: any) => ({ value: w.id, label: w.name })));
+    } catch (err) {
+      console.error('Failed to load reports:', err);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => { loadData(); }, [dateFrom, dateTo, warehouseFilter]);
+
+  const getStockBadge = (status: string) => {
+    switch (status) {
+      case 'out_of_stock': return <Badge variant="danger">Sin stock</Badge>;
+      case 'low': return <Badge variant="warning">Bajo</Badge>;
+      default: return <Badge variant="success">Normal</Badge>;
+    }
+  };
+
+  const exportCSV = (headers: string[], rows: string[][], filename: string) => {
+    const csv = [headers, ...rows].map(r => r.map(v => `"${(v || '').replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${filename}_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -86,13 +100,9 @@ export default function ReportsPage() {
           <p className="text-sm text-slate-500 mt-1">Análisis y estadísticas del negocio</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm">
-            <FileText className="w-4 h-4 mr-2" />
-            Exportar PDF
-          </Button>
-          <Button variant="secondary" size="sm">
-            <Download className="w-4 h-4 mr-2" />
-            Exportar Excel
+          <Button variant="secondary" size="sm" onClick={loadData} disabled={loading}>
+            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            Actualizar
           </Button>
         </div>
       </div>
@@ -118,20 +128,20 @@ export default function ReportsPage() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-4">
-                <Input
-                  label="Fecha desde"
-                  type="date"
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
-                  className="w-40"
-                />
-                <Input
-                  label="Fecha hasta"
-                  type="date"
-                  value={dateTo}
-                  onChange={(e) => setDateTo(e.target.value)}
-                  className="w-40"
-                />
+                <Input label="Fecha desde" type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="w-40" />
+                <Input label="Fecha hasta" type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="w-40" />
+                <div className="flex-1" />
+                <Button variant="secondary" size="sm" onClick={() => {
+                  if (!sales) return;
+                  exportCSV(
+                    ['#', 'Producto', 'SKU', 'Unidades', 'Total', '% del total'],
+                    sales.topProducts.map((p, i) => [String(i + 1), p.name, p.sku, String(p.units), String(p.total), `${p.percentage}%`]),
+                    'top_productos'
+                  );
+                }}>
+                  <Download className="w-4 h-4 mr-2" />
+                  Exportar
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -139,32 +149,32 @@ export default function ReportsPage() {
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             <KPICard
               label="Total Vendido"
-              value={`$${totalSold.toLocaleString('es-CL')}`}
-              change="+18% vs mes anterior"
-              changeType="positive"
+              value={loading ? '...' : `$${(sales?.totalSold || 0).toLocaleString('es-CL')}`}
+              change={sales?.orderCount ? `${sales.orderCount} órdenes` : 'Sin datos'}
+              changeType="neutral"
               icon={DollarSign}
               iconColor="emerald"
             />
             <KPICard
               label="Órdenes"
-              value={totalOrders.toString()}
-              change="+12 órdenes"
-              changeType="positive"
+              value={loading ? '...' : String(sales?.orderCount || 0)}
+              change={`${sales?.orderCount || 0} en período`}
+              changeType="neutral"
               icon={ShoppingCart}
               iconColor="blue"
             />
             <KPICard
               label="Ticket Promedio"
-              value={`$${avgTicket.toLocaleString('es-CL')}`}
-              change="+5% vs mes anterior"
-              changeType="positive"
+              value={loading ? '...' : `$${(sales?.avgTicket || 0).toLocaleString('es-CL')}`}
+              change="Promedio por orden"
+              changeType="neutral"
               icon={BarChart3}
               iconColor="indigo"
             />
             <KPICard
               label="Top Cliente"
-              value={topClient}
-              change="$12.500.000 en compras"
+              value={loading ? '...' : (sales?.topCustomers?.[0]?.name || 'Sin datos')}
+              change={sales?.topCustomers?.[0] ? `$${sales.topCustomers[0].total.toLocaleString('es-CL')} en compras` : ''}
               changeType="neutral"
               icon={Users}
               iconColor="amber"
@@ -182,26 +192,72 @@ export default function ReportsPage() {
                   <TableRow>
                     <TableHead>#</TableHead>
                     <TableHead>Producto</TableHead>
+                    <TableHead>SKU</TableHead>
                     <TableHead>Unidades</TableHead>
                     <TableHead>Total</TableHead>
                     <TableHead>% del total</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {topProducts.map((product, index) => (
-                    <TableRow key={product.id}>
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell className="font-medium">{product.name}</TableCell>
-                      <TableCell>{product.units}</TableCell>
-                      <TableCell>${product.total.toLocaleString('es-CL')}</TableCell>
-                      <TableCell>{product.percentage}%</TableCell>
-                    </TableRow>
-                  ))}
+                  {loading ? (
+                    Array.from({ length: 5 }).map((_, i) => (
+                      <TableRow key={i}>
+                        <TableCell colSpan={6}><div className="h-4 bg-slate-100 rounded animate-pulse" /></TableCell>
+                      </TableRow>
+                    ))
+                  ) : sales?.topProducts?.length ? (
+                    sales.topProducts.map((product, index) => (
+                      <TableRow key={product.id}>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell className="font-medium">{product.name}</TableCell>
+                        <TableCell className="font-mono text-xs text-slate-500">{product.sku}</TableCell>
+                        <TableCell>{product.units}</TableCell>
+                        <TableCell>${product.total.toLocaleString('es-CL')}</TableCell>
+                        <TableCell>{product.percentage}%</TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow><TableCell colSpan={6} className="py-8 text-center text-xs text-slate-400">No hay datos de ventas en este período</TableCell></TableRow>
+                  )}
                 </TableBody>
               </Table>
               </div>
             </CardContent>
           </Card>
+
+          {sales?.topCustomers?.length ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Top Clientes</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>#</TableHead>
+                      <TableHead>Cliente</TableHead>
+                      <TableHead>RUT</TableHead>
+                      <TableHead>Órdenes</TableHead>
+                      <TableHead>Total</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {sales.topCustomers.map((c, i) => (
+                      <TableRow key={c.id}>
+                        <TableCell>{i + 1}</TableCell>
+                        <TableCell className="font-medium">{c.name || 'Sin nombre'}</TableCell>
+                        <TableCell className="font-mono text-xs">{c.tax_id || '—'}</TableCell>
+                        <TableCell>{c.orders}</TableCell>
+                        <TableCell>${c.total.toLocaleString('es-CL')}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+                </div>
+              </CardContent>
+            </Card>
+          ) : null}
         </div>
       )}
 
@@ -214,12 +270,21 @@ export default function ReportsPage() {
                   label="Almacén"
                   value={warehouseFilter}
                   onChange={(e) => setWarehouseFilter(e.target.value)}
-                  options={[
-                    { value: 'all', label: 'Todos los almacenes' },
-                    ...warehouses.map(w => ({ value: w, label: w })),
-                  ]}
+                  options={[{ value: 'all', label: 'Todos los almacenes' }, ...warehouses]}
                   className="w-64"
                 />
+                <div className="flex-1" />
+                <Button variant="secondary" size="sm" onClick={() => {
+                  if (!inventory) return;
+                  exportCSV(
+                    ['Producto', 'SKU', 'Almacén', 'Stock Actual', 'Stock Mínimo', 'Estado'],
+                    inventory.products.map(p => [p.name, p.sku, p.warehouse_name || '—', String(p.current_stock), String(p.min_stock), p.status]),
+                    'stock_productos'
+                  );
+                }}>
+                  <Download className="w-4 h-4 mr-2" />
+                  Exportar
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -227,15 +292,15 @@ export default function ReportsPage() {
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             <KPICard
               label="Total Productos"
-              value={totalProducts.toString()}
-              change="En todos los almacenes"
+              value={loading ? '...' : String(inventory?.totalProducts || 0)}
+              change="Activos en catálogo"
               changeType="neutral"
               icon={Package}
               iconColor="indigo"
             />
             <KPICard
               label="Valor Inventario"
-              value={`$${inventoryValue.toLocaleString('es-CL')}`}
+              value={loading ? '...' : `$${(inventory?.totalValue || 0).toLocaleString('es-CL')}`}
               change="Costo de reposición"
               changeType="neutral"
               icon={DollarSign}
@@ -243,7 +308,7 @@ export default function ReportsPage() {
             />
             <KPICard
               label="Stock Bajo"
-              value={lowStock.toString()}
+              value={loading ? '...' : String(inventory?.lowStock || 0)}
               change="Requiere reabastecimiento"
               changeType="negative"
               icon={AlertTriangle}
@@ -251,7 +316,7 @@ export default function ReportsPage() {
             />
             <KPICard
               label="Sin Stock"
-              value={outOfStock.toString()}
+              value={loading ? '...' : String(inventory?.outOfStock || 0)}
               change="Crítico - sin disponibilidad"
               changeType="negative"
               icon={AlertTriangle}
@@ -277,21 +342,26 @@ export default function ReportsPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredInventory.map(product => {
-                    const status = getStockStatus(product.status);
-                    return (
+                  {loading ? (
+                    Array.from({ length: 5 }).map((_, i) => (
+                      <TableRow key={i}>
+                        <TableCell colSpan={6}><div className="h-4 bg-slate-100 rounded animate-pulse" /></TableCell>
+                      </TableRow>
+                    ))
+                  ) : inventory?.products?.length ? (
+                    inventory.products.map(product => (
                       <TableRow key={product.id}>
                         <TableCell className="font-medium">{product.name}</TableCell>
-                        <TableCell>{product.sku}</TableCell>
-                        <TableCell>{product.warehouse}</TableCell>
-                        <TableCell>{product.currentStock}</TableCell>
-                        <TableCell>{product.minStock}</TableCell>
-                        <TableCell>
-                          <Badge variant={status.variant}>{status.label}</Badge>
-                        </TableCell>
+                        <TableCell className="font-mono text-xs text-slate-500">{product.sku}</TableCell>
+                        <TableCell>{product.warehouse_name || '—'}</TableCell>
+                        <TableCell className={product.current_stock === 0 ? 'text-rose-600 font-medium' : ''}>{product.current_stock}</TableCell>
+                        <TableCell>{product.min_stock}</TableCell>
+                        <TableCell>{getStockBadge(product.status)}</TableCell>
                       </TableRow>
-                    );
-                  })}
+                    ))
+                  ) : (
+                    <TableRow><TableCell colSpan={6} className="py-8 text-center text-xs text-slate-400">No hay productos en inventario</TableCell></TableRow>
+                  )}
                 </TableBody>
               </Table>
               </div>
@@ -305,20 +375,20 @@ export default function ReportsPage() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-4">
-                <Input
-                  label="Fecha desde"
-                  type="date"
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
-                  className="w-40"
-                />
-                <Input
-                  label="Fecha hasta"
-                  type="date"
-                  value={dateTo}
-                  onChange={(e) => setDateTo(e.target.value)}
-                  className="w-40"
-                />
+                <Input label="Fecha desde" type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="w-40" />
+                <Input label="Fecha hasta" type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="w-40" />
+                <div className="flex-1" />
+                <Button variant="secondary" size="sm" onClick={() => {
+                  if (!financials) return;
+                  exportCSV(
+                    ['Mes', 'Ingresos', 'Gastos', 'Utilidad', 'IVA'],
+                    financials.monthly.map(m => [m.month, String(m.income), String(m.expenses), String(m.profit), String(m.iva)]),
+                    'resumen_financiero'
+                  );
+                }}>
+                  <Download className="w-4 h-4 mr-2" />
+                  Exportar
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -326,32 +396,32 @@ export default function ReportsPage() {
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             <KPICard
               label="Ingresos"
-              value={`$${totalIncome.toLocaleString('es-CL')}`}
-              change="+15% vs período anterior"
+              value={loading ? '...' : `$${(financials?.totalIncome || 0).toLocaleString('es-CL')}`}
+              change={`Facturas emitidas`}
               changeType="positive"
               icon={TrendingUp}
               iconColor="emerald"
             />
             <KPICard
               label="Gastos"
-              value={`$${totalExpenses.toLocaleString('es-CL')}`}
-              change="+10% vs período anterior"
+              value={loading ? '...' : `$${(financials?.totalExpenses || 0).toLocaleString('es-CL')}`}
+              change={`Órdenes de compra`}
               changeType="negative"
               icon={DollarSign}
               iconColor="rose"
             />
             <KPICard
               label="Utilidad Neta"
-              value={`$${netProfit.toLocaleString('es-CL')}`}
-              change="+22% vs período anterior"
-              changeType="positive"
+              value={loading ? '...' : `$${(financials?.netProfit || 0).toLocaleString('es-CL')}`}
+              change={financials?.netProfit && financials.netProfit > 0 ? 'Positivo' : 'Revisar'}
+              changeType={financials?.netProfit && financials.netProfit > 0 ? 'positive' : 'negative'}
               icon={TrendingUp}
               iconColor="blue"
             />
             <KPICard
               label="IVA Cobrado"
-              value={`$${totalIva.toLocaleString('es-CL')}`}
-              change="Período fiscal 2026"
+              value={loading ? '...' : `$${(financials?.totalIva || 0).toLocaleString('es-CL')}`}
+              change="Período fiscal"
               changeType="neutral"
               icon={Calculator}
               iconColor="amber"
@@ -375,19 +445,29 @@ export default function ReportsPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {monthlyFinancials.map(month => (
-                    <TableRow key={month.id}>
-                      <TableCell className="font-medium">{month.month}</TableCell>
-                      <TableCell>${month.income.toLocaleString('es-CL')}</TableCell>
-                      <TableCell>${month.expenses.toLocaleString('es-CL')}</TableCell>
-                      <TableCell>
-                        <span className={month.profit >= 0 ? 'text-emerald-600' : 'text-rose-600'}>
-                          ${month.profit.toLocaleString('es-CL')}
-                        </span>
-                      </TableCell>
-                      <TableCell>${month.iva.toLocaleString('es-CL')}</TableCell>
-                    </TableRow>
-                  ))}
+                  {loading ? (
+                    Array.from({ length: 3 }).map((_, i) => (
+                      <TableRow key={i}>
+                        <TableCell colSpan={5}><div className="h-4 bg-slate-100 rounded animate-pulse" /></TableCell>
+                      </TableRow>
+                    ))
+                  ) : financials?.monthly?.length ? (
+                    financials.monthly.map(month => (
+                      <TableRow key={month.month}>
+                        <TableCell className="font-medium">{month.month}</TableCell>
+                        <TableCell>${month.income.toLocaleString('es-CL')}</TableCell>
+                        <TableCell>${month.expenses.toLocaleString('es-CL')}</TableCell>
+                        <TableCell>
+                          <span className={month.profit >= 0 ? 'text-emerald-600 font-medium' : 'text-rose-600 font-medium'}>
+                            ${month.profit.toLocaleString('es-CL')}
+                          </span>
+                        </TableCell>
+                        <TableCell>${month.iva.toLocaleString('es-CL')}</TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow><TableCell colSpan={5} className="py-8 text-center text-xs text-slate-400">No hay datos financieros en este período</TableCell></TableRow>
+                  )}
                 </TableBody>
               </Table>
               </div>
