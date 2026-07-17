@@ -258,23 +258,54 @@ export class ApiClient {
 
   // Employees
   async getEmployees(params?: Record<string, string>) {
-    return this.requestWithPagination<{ id: string; name: string; position: string; department: string; salary: number; status: string }>('/employees', params || {});
+    return this.requestWithPagination<any>('/employees', params || {});
   }
 
   async getEmployee(id: string) {
-    return this.request<{ id: string; name: string; position: string; department: string; salary: number; status: string }>(`/employees/${id}`);
+    return this.request<any>(`/employees/${id}`);
   }
 
-  async createEmployee(data: { employee_code: string; first_name: string; last_name: string; email?: string; phone?: string; address?: string; birth_date?: string; hire_date: string; department?: string; position?: string; contract_type?: string; base_salary?: number; salary_frequency?: string; bank_account?: string; bank_name?: string; tax_id?: string; afp_id?: string; health_id?: string }) {
-    return this.request<{ id: string }>('/employees', { method: 'POST', body: JSON.stringify(data) });
+  async createEmployee(data: Record<string, any>) {
+    return this.request<any>('/employees', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async updateEmployee(id: string, data: Partial<{ employee_code: string; first_name: string; last_name: string; email: string; phone: string; address: string; birth_date: string; hire_date: string; termination_date: string; department: string; position: string; contract_type: string; base_salary: number; salary_frequency: string; bank_account: string; bank_name: string; tax_id: string; afp_id: string; health_id: string; status: string }>) {
-    return this.request<{ id: string }>(`/employees/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  async updateEmployee(id: string, data: Record<string, any>) {
+    return this.request<any>(`/employees/${id}`, { method: 'PUT', body: JSON.stringify(data) });
   }
 
   async deleteEmployee(id: string) {
     return this.request<{ message: string }>(`/employees/${id}`, { method: 'DELETE' });
+  }
+
+  // Payroll Runs
+  async getPayrollRuns(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/payroll/runs', params || {});
+  }
+
+  async getPayrollRun(id: string) {
+    return this.request<any>(`/payroll/runs/${id}`);
+  }
+
+  async createPayrollRun(data: { period_start: string; period_end: string; notes?: string }) {
+    return this.request<any>('/payroll/runs', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updatePayrollRun(id: string, data: { status?: string; notes?: string; paid_at?: string }) {
+    return this.request<any>(`/payroll/runs/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deletePayrollRun(id: string) {
+    return this.request<{ message: string }>(`/payroll/runs/${id}`, { method: 'DELETE' });
+  }
+
+  // Payroll Calculator
+  async calculatePayroll(runId: string) {
+    return this.request<any>('/payroll/calculate', { method: 'POST', body: JSON.stringify({ run_id: runId }) });
+  }
+
+  // Payroll Schema Migration
+  async migratePayrollSchema() {
+    return this.request<any>('/payroll/migrate', { method: 'POST' });
   }
 
   // Inventory Categories
