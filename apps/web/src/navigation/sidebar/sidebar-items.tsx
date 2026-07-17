@@ -240,7 +240,10 @@ export const sidebarItems: NavGroup[] = [
         title: "Remuneraciones",
         path: "/dashboard/payroll",
         icon: "Wallet",
-        comingSoon: true,
+        subItems: [
+          { title: "Empleados", path: "/dashboard/payroll?tab=employees" },
+          { title: "Períodos de Nómina", path: "/dashboard/payroll?tab=periods" },
+        ],
       },
     ],
   },
