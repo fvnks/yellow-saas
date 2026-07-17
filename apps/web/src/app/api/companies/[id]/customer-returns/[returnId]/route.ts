@@ -48,7 +48,7 @@ export async function PUT(
     const { status, reason, notes } = body;
 
     if (status) {
-      const validStatuses = ['pending', 'approved', 'completed', 'rejected'];
+      const validStatuses = ['pending', 'approved', 'completed', 'rejected', 'cancelled'];
       if (!validStatuses.includes(status)) {
         return errorResponse(`Invalid status. Must be one of: ${validStatuses.join(', ')}`, 400);
       }

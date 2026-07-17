@@ -108,11 +108,12 @@ export async function POST(request: NextRequest) {
         }
 
         await query(
-          `INSERT INTO customer_return_items (company_id, return_id, product_id, quantity, unit_price, restock)
-           VALUES ($1, $2, $3, $4, $5, $6)`,
+          `INSERT INTO customer_return_items (company_id, return_id, product_id, quantity, unit_price, restock, condition, reason)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
           [
             companyId, returnRecord.id, item.product_id, item.quantity,
             item.unit_price || 0, item.restock !== false,
+            item.condition || null, item.reason || null,
           ]
         );
       }

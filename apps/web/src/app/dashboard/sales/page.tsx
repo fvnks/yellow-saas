@@ -130,10 +130,10 @@ export default function SalesPage() {
         status: o.status,
         payment: 'pending',
       }));
-      const guidesData = (guidesRes.data || []).map((g) => ({
+      const guidesData = (guidesRes.data || []).map((g: any) => ({
         id: g.id,
         number: g.guide_number,
-        orderId: g.order_id,
+        orderId: g.sales_order?.order_number || g.order_id,
         date: g.created_at?.split('T')[0] || '',
         transport: g.transport,
         status: g.status,
@@ -141,7 +141,7 @@ export default function SalesPage() {
       const invoicesData = (invoicesRes.data || []).map((inv: any) => ({
         id: inv.id,
         number: inv.invoice_number,
-        orderId: inv.order_id,
+        orderId: inv.sales_order?.number || inv.order_id,
         date: inv.created_at?.split('T')[0] || '',
         total: inv.total_amount || inv.total || 0,
         status: inv.status,

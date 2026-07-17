@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
 
     const {
       customer_id, order_id, invoice_date,
-      due_date, payment_terms, notes, items, document_type, status: requestedStatus,
+      due_date, payment_terms, notes, items, document_type, status: requestedStatus, payment_method,
     } = body;
 
     if (!items?.length) {
@@ -108,21 +108,27 @@ export async function POST(request: NextRequest) {
     let subtotal = 0;
     let taxAmount = 0;
     for (const item of items) {
-      const lineSubtotal = item.quantity * item.unit_price - (item.discount_amount || 0);
-      const lineTax = lineSubtotal * ((item.tax_rate || 0) / 100);
-      subtotal += lineSubtotal;
+      const discountPct = Number(item.discount_percent || item.discount || 0);
+      const lineSubtotal = item.quantity * item.unit_price;
+      const discountAmount = lineSubtotal * (discountPct / 100);
+      const lineTax = (lineSubtotal - discountAmount) * ((item.tax_rate || 0) / 100);
+      subtotal += lineSubtotal - discountAmount;
       taxAmount += lineTax;
     }
 
+    // Ensure payment_method column exists
+    try { await query(`DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_attribute WHERE attrelid = 'invoices'::regclass AND attname = 'payment_method') THEN ALTER TABLE invoices ADD COLUMN payment_method TEXT; END IF; END $$`, []); } catch { /* already exists */ }
+
     const { rows: invoiceRows } = await query(
-      `INSERT INTO invoices (company_id, customer_id, order_id, invoice_number, document_type, status, invoice_date, due_date, payment_terms, subtotal, tax_amount, total_amount, notes)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+      `INSERT INTO invoices (company_id, customer_id, order_id, invoice_number, document_type, status, invoice_date, due_date, payment_terms, subtotal, tax_amount, total_amount, notes, payment_method)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
        RETURNING *`,
       [
         companyId, customer_id || null, order_id || null, invoiceNumber, docType,
         requestedStatus || 'pending',
         invoice_date || new Date().toISOString(), due_date || null,
         payment_terms || 0, subtotal, taxAmount, subtotal + taxAmount, notes || null,
+        payment_method || null,
       ]
     );
 
@@ -132,6 +138,7 @@ export async function POST(request: NextRequest) {
       const taxRate = Number(item.tax_rate) || 0;
       const quantity = Number(item.quantity) || 0;
       const unitPrice = Number(item.unit_price) || 0;
+      const discountPct = Number(item.discount_percent || item.discount || 0);
       return {
         invoice_id: invoice.id,
         company_id: companyId,
@@ -139,7 +146,7 @@ export async function POST(request: NextRequest) {
         description: item.description || '',
         quantity,
         unit_price: unitPrice,
-        discount_percent: item.discount_percent || 0,
+        discount_percent: discountPct,
         tax_rate: taxRate,
       };
     });

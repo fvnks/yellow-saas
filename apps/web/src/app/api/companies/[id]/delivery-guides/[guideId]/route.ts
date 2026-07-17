@@ -13,7 +13,7 @@ export async function GET(
     const { rows } = await query(
       `SELECT dg.*,
         (SELECT json_build_object('id', w.id, 'name', w.name, 'code', w.code) FROM warehouses w WHERE w.id = dg.warehouse_id) as warehouse,
-        (SELECT json_build_object('id', so.id, 'order_number', so.order_number) FROM sales_orders so WHERE so.id = dg.order_id) as sales_order,
+        (SELECT json_build_object('id', so.id, 'order_number', so.order_number, 'customer', (SELECT json_build_object('id', c.id, 'name', c.name, 'tax_id', c.tax_id) FROM customers c WHERE c.id = so.customer_id)) FROM sales_orders so WHERE so.id = dg.order_id) as sales_order,
         (SELECT json_agg(json_build_object(
           'id', dgi.id, 'product_id', dgi.product_id, 'quantity', dgi.quantity, 'observation', dgi.observation,
           'product', (SELECT json_build_object('id', p.id, 'name', p.name, 'sku', p.sku) FROM products p WHERE p.id = dgi.product_id)
@@ -45,12 +45,14 @@ export async function PUT(
       `UPDATE delivery_guides SET
         status = $1, warehouse_id = $2, order_id = $3,
         shipping_date = $4, transport = $5, vehicle_plate = $6,
+        driver_name = $7, shipping_address = $8,
         updated_at = NOW()
-       WHERE id = $7 AND company_id = $8
+       WHERE id = $9 AND company_id = $10
        RETURNING *`,
       [
         body.status, body.warehouse_id, body.order_id,
         body.shipping_date, body.transport, body.vehicle_plate,
+        body.driver_name || null, body.shipping_address || null,
         params.guideId, companyId,
       ]
     );

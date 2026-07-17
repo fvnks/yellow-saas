@@ -179,7 +179,7 @@ export class ApiClient {
     return this.request<{ id: string; guide_number: string; order_id: string; status: string; transport: string; driver_name: string; vehicle_plate: string; shipping_address: string }>(`/delivery-guides/${id}`);
   }
 
-  async createDeliveryGuide(data: { order_id: string; warehouse_id: string; transport: string; driver_name: string; vehicle_plate: string; shipping_address: string; items: { product_id: string; quantity: number; observation?: string }[] }) {
+  async createDeliveryGuide(data: { order_id?: string; warehouse_id: string; shipping_date?: string; transport: string; driver_name?: string; vehicle_plate?: string; shipping_address?: string; items: { product_id: string; quantity: number; observation?: string }[] }) {
     return this.request<{ id: string; guide_number: string }>('/delivery-guides', { method: 'POST', body: JSON.stringify(data) });
   }
 
