@@ -36,7 +36,12 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
     for (const group of sidebarItems) {
       for (const item of group.items) {
         if (item.subItems) {
-          const shouldOpen = item.subItems.some((sub) => path.startsWith(sub.path));
+          const shouldOpen =
+            path.startsWith(item.path) ||
+            item.subItems.some((sub) => {
+              const subPath = sub.path.split("?")[0];
+              return path.startsWith(subPath);
+            });
           updated[item.title] = shouldOpen;
         }
       }
@@ -55,9 +60,12 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
 
   const isActive = (itemPath: string, subItems?: NavMainItem["subItems"]) => {
     if (subItems) {
-      return subItems.some((subItem) => path.startsWith(subItem.path));
+      return subItems.some((subItem) => {
+        const subPath = subItem.path.split("?")[0];
+        return path.startsWith(subPath);
+      });
     }
-    return path === itemPath;
+    return path.startsWith(itemPath);
   };
 
   return (
