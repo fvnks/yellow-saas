@@ -1,9 +1,10 @@
 ﻿'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Card, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Select, Input } from '@yellow-erp/ui';
 import { Plus, Search, Download, Eye, Edit, Trash2, ShoppingCart, DollarSign, Truck, CreditCard, Package, FileText, ClipboardList, Monitor, Banknote, Receipt, X, Check, Users, RotateCcw, User, Printer } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
 import { generatePOSVoucher, generateBoletaPDF } from '@/lib/pdf-design';
 
@@ -51,7 +52,11 @@ interface CartItem extends POSProduct {
   quantity: number;
 }
 
-export default function SalesPage() {
+function SalesPageContent() {
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get('tab');
+  const validTabs = ['orders', 'delivery', 'invoices', 'pos', 'customers', 'quotations', 'returns'] as const;
+  const initialTab = validTabs.includes(tabParam as any) ? (tabParam as any) : 'orders';
   const [orders, setOrders] = useState<any[]>([]);
   const [deliveryGuides, setDeliveryGuides] = useState<any[]>([]);
   const [invoices, setInvoices] = useState<any[]>([]);
@@ -61,7 +66,7 @@ export default function SalesPage() {
   const [returns, setReturns] = useState<any[]>([]);
   const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'orders' | 'delivery' | 'invoices' | 'pos' | 'customers' | 'quotations' | 'returns'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'delivery' | 'invoices' | 'pos' | 'customers' | 'quotations' | 'returns'>(initialTab);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -1194,5 +1199,23 @@ const handlePayment = async () => {
         </div>
       )}
     </div>
+  );
+}
+
+export default function SalesPage() {
+  return (
+    <Suspense fallback={<div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="h-6 w-32 bg-slate-200 rounded animate-pulse" />
+          <div className="h-4 w-48 bg-slate-200 rounded animate-pulse mt-2" />
+        </div>
+      </div>
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+        {[1,2,3,4].map(i => <div key={i} className="h-24 bg-slate-200 rounded-xl animate-pulse" />)}
+      </div>
+    </div>}>
+      <SalesPageContent />
+    </Suspense>
   );
 }
