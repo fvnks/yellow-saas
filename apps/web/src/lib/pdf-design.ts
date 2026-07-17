@@ -79,6 +79,29 @@ export interface PayslipData {
   };
 }
 
+export interface LiquidationData {
+  company: CompanyData;
+  employee_name: string;
+  employee_rut: string;
+  position: string;
+  department: string;
+  contract_type: string;
+  hire_date: string;
+  base_salary: number;
+  termination_type: string;
+  termination_date: string;
+  years_of_service: number;
+  items: { code: string; concept: string; amount: number; taxable: boolean; category: string }[];
+  totals: {
+    earnings: number;
+    severance: number;
+    compensation: number;
+    deductions: number;
+    notice: number;
+    net_total: number;
+  };
+}
+
 const COLORS = {
   primary: [30, 30, 30] as [number, number, number],
   accent: [79, 70, 229] as [number, number, number],
@@ -1110,6 +1133,168 @@ export function generatePayslipPDF(data: PayslipData): jsPDF {
   doc.text('Documento generado por Yellow ERP — Este documento no reemplaza la boleta de honorarios tributaria.', pageWidth / 2, y, { align: 'center' });
   y += 4;
   doc.text(`Fecha de emisión: ${new Date().toLocaleDateString('es-CL')}`, pageWidth / 2, y, { align: 'center' });
+
+  return doc;
+}
+
+const terminationTypeLabels: Record<string, string> = {
+  despido_sin_causa: 'Despido sin Causa',
+  despido_con_causa: 'Despido con Causa',
+  renuncia: 'Renuncia Voluntaria',
+  mutuo_acuerdo: 'Mutuo Acuerdo',
+};
+
+export function generateLiquidationPDF(data: LiquidationData): jsPDF {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  let y = 15;
+
+  // Header
+  doc.setFillColor(15, 23, 42);
+  doc.rect(0, 0, pageWidth, 40, 'F');
+
+  if (data.company.logo_url) {
+    try { doc.addImage(data.company.logo_url, 'JPEG', 15, 8, 20, 20); } catch {}
+  }
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(16);
+  doc.setFont('helvetica', 'bold');
+  doc.text(data.company.razon_social || 'Empresa', 40, 15);
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`RUT: ${data.company.tax_id || ''}`, 40, 21);
+  if (data.company.giro) doc.text(`Giro: ${data.company.giro}`, 40, 26);
+  if (data.company.address) doc.text(data.company.address, 40, 31);
+
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'bold');
+  doc.text('LIQUIDACION DE REMUNERACIONES', pageWidth - 15, 15, { align: 'right' });
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Tipo: ${terminationTypeLabels[data.termination_type] || data.termination_type}`, pageWidth - 15, 22, { align: 'right' });
+  doc.text(`Fecha: ${data.termination_date}`, pageWidth - 15, 28, { align: 'right' });
+
+  y = 50;
+
+  // Employee Info
+  doc.setTextColor(0, 0, 0);
+  doc.setFillColor(248, 250, 252);
+  doc.roundedRect(15, y, pageWidth - 30, 30, 3, 3, 'F');
+
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  y += 8;
+  doc.text('EMPLEADO', 20, y);
+  doc.setFont('helvetica', 'normal');
+  doc.text(data.employee_name, 20, y + 6);
+  doc.text(`RUT: ${data.employee_rut}`, 20, y + 12);
+  doc.text(`Cargo: ${data.position}`, 110, y);
+  doc.text(`Depto: ${data.department}`, 110, y + 6);
+  doc.text(`Contrato: ${data.contract_type}`, 110, y + 12);
+  doc.text(`Ingreso: ${data.hire_date}`, 20, y + 18);
+  doc.text(`Antigüedad: ${data.years_of_service} años`, 110, y + 18);
+  doc.text(`Sueldo Base: $${data.base_salary.toLocaleString('es-CL')}`, 20, y + 24);
+
+  y += 40;
+
+  // Items grouped by category
+  const groups = [
+    { label: 'HABERES', items: data.items.filter(i => i.category === 'earnings'), color: [240, 253, 244] as [number, number, number] },
+    { label: 'INDEMNIZACIONES', items: data.items.filter(i => i.category === 'severance'), color: [238, 242, 255] as [number, number, number] },
+    { label: 'COMPENSACIONES', items: data.items.filter(i => i.category === 'compensation'), color: [255, 251, 235] as [number, number, number] },
+    { label: 'CARGAS POR AVISO', items: data.items.filter(i => i.category === 'notice'), color: [255, 241, 242] as [number, number, number] },
+  ];
+
+  for (const group of groups) {
+    if (group.items.length === 0) continue;
+
+    doc.setFillColor(...group.color);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text(group.label, 15, y + 5);
+    y += 10;
+
+    autoTable(doc, {
+      startY: y,
+      head: [['Codigo', 'Concepto', 'Monto']],
+      body: group.items.map(item => [
+        item.code,
+        item.concept,
+        `$${item.amount.toLocaleString('es-CL')}`,
+      ]),
+      theme: 'plain',
+      styles: { fontSize: 8, cellPadding: 3 },
+      headStyles: { fillColor: [100, 116, 139], textColor: [255, 255, 255], fontStyle: 'bold' },
+      alternateRowStyles: { fillColor: group.color },
+      columnStyles: {
+        0: { cellWidth: 25 },
+        2: { halign: 'right', cellWidth: 35 },
+      },
+      margin: { left: 15, right: 15 },
+    });
+
+    y = (doc as any).lastAutoTable.finalY + 5;
+  }
+
+  // Totals summary
+  y += 5;
+  doc.setFillColor(15, 23, 42);
+  doc.roundedRect(15, y, pageWidth - 30, 42, 3, 3, 'F');
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  y += 8;
+  doc.text('RESUMEN', 20, y);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  y += 7;
+  doc.text('Total Haberes:', 20, y);
+  doc.text(`$${data.totals.earnings.toLocaleString('es-CL')}`, pageWidth - 20, y, { align: 'right' });
+  y += 6;
+  doc.text('Indemnizaciones:', 20, y);
+  doc.text(`$${data.totals.severance.toLocaleString('es-CL')}`, pageWidth - 20, y, { align: 'right' });
+  y += 6;
+  doc.text('Compensaciones:', 20, y);
+  doc.text(`$${data.totals.compensation.toLocaleString('es-CL')}`, pageWidth - 20, y, { align: 'right' });
+  y += 6;
+  doc.text('Cargas Aviso:', 20, y);
+  doc.text(`$${data.totals.notice.toLocaleString('es-CL')}`, pageWidth - 20, y, { align: 'right' });
+  y += 8;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.text('LIQUIDO A PAGAR:', 20, y);
+  doc.text(`$${data.totals.net_total.toLocaleString('es-CL')}`, pageWidth - 20, y, { align: 'right' });
+
+  y += 20;
+
+  // Signatures
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'normal');
+
+  const sigWidth = 60;
+  const sigLeft = pageWidth / 2 - sigWidth - 10;
+  const sigRight = pageWidth / 2 + 10;
+
+  doc.line(sigLeft, y, sigLeft + sigWidth, y);
+  doc.text('Firma Empleado', sigLeft + sigWidth / 2, y + 5, { align: 'center' });
+  doc.text(`RUT: ${data.employee_rut}`, sigLeft + sigWidth / 2, y + 10, { align: 'center' });
+
+  doc.line(sigRight, y, sigRight + sigWidth, y);
+  doc.text('Firma Empleador', sigRight + sigWidth / 2, y + 5, { align: 'center' });
+  doc.text(`RUT: ${data.company.tax_id || ''}`, sigRight + sigWidth / 2, y + 10, { align: 'center' });
+
+  y += 18;
+
+  // Footer
+  doc.setFontSize(7);
+  doc.setTextColor(148, 163, 184);
+  doc.text('Documento generado por Yellow ERP — Liquidacion de remuneraciones segun Codigo del Trabajo chileno.', pageWidth / 2, y, { align: 'center' });
+  y += 3;
+  doc.text(`Fecha de emision: ${new Date().toLocaleDateString('es-CL')}`, pageWidth / 2, y, { align: 'center' });
 
   return doc;
 }
