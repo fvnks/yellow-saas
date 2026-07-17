@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -28,6 +29,24 @@ const IsComingSoon = () => (
 
 export default function SidebarNavigation({ sidebarItems }: SidebarNavigationProps) {
   const path = usePathname();
+  const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    const updated: Record<string, boolean> = {};
+    for (const group of sidebarItems) {
+      for (const item of group.items) {
+        if (item.subItems) {
+          const shouldOpen = item.subItems.some((sub) => path.startsWith(sub.path));
+          updated[item.title] = shouldOpen;
+        }
+      }
+    }
+    setOpenItems((prev) => ({ ...prev, ...updated }));
+  }, [path, sidebarItems]);
+
+  const toggleItem = (title: string) => {
+    setOpenItems((prev) => ({ ...prev, [title]: !prev[title] }));
+  };
 
   const renderIcon = (iconName: keyof typeof ICON_MAP | undefined): React.ReactNode => {
     const Icon = resolveIcon(iconName);
@@ -41,10 +60,6 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
     return path === itemPath;
   };
 
-  const isCollapsibleInitiallyOpen = (item: NavMainItem) => {
-    return item.subItems?.some((subItem) => path.startsWith(subItem.path)) ?? false;
-  };
-
   return (
     <>
       {sidebarItems.map((navGroup) => (
@@ -53,7 +68,8 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
           <SidebarMenu>
             {navGroup.items.map((item) => (
               <Collapsible
-                defaultOpen={isCollapsibleInitiallyOpen(item)}
+                open={openItems[item.title] ?? false}
+                onOpenChange={() => toggleItem(item.title)}
                 key={item.title}
                 asChild
                 className="group/collapsible"
