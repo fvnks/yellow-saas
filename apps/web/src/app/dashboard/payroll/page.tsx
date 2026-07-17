@@ -7,6 +7,7 @@ import { Wallet, Plus, Search, Users, Calculator, FileText, Download, Eye, Calen
 import { getApiClient } from '@/lib/api-client';
 import EmployeeFormModal from './components/EmployeeFormModal';
 import PeriodModal from './components/PeriodModal';
+import VacationTab from './components/VacationTab';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   active: { label: 'Activo', variant: 'success' },
@@ -42,7 +43,7 @@ function PayrollPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('all');
-  const [activeTab, setActiveTab] = useState<'employees' | 'periods'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'employees' | 'periods' | 'vacation'>(initialTab as any);
   const [showEmployeeModal, setShowEmployeeModal] = useState(false);
   const [showPeriodModal, setShowPeriodModal] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<any>(null);
@@ -158,6 +159,7 @@ function PayrollPage() {
             {[
               { id: 'employees' as const, label: 'Empleados', icon: Users, count: employees.length },
               { id: 'periods' as const, label: 'Períodos de Nómina', icon: FileText, count: runs.length },
+              { id: 'vacation' as const, label: 'Vacaciones', icon: Calendar, count: null },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -348,6 +350,12 @@ function PayrollPage() {
                 <p className="text-xs text-slate-400 mt-1">Crea un nuevo período para comenzar a calcular</p>
               </div>
             )}
+          </div>
+        )}
+
+        {activeTab === 'vacation' && (
+          <div className="p-6">
+            <VacationTab />
           </div>
         )}
       </div>

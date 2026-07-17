@@ -1,0 +1,98 @@
+import { query } from '@/api/lib/db';
+import {
+  getCompanyId,
+  successResponse,
+  errorResponse,
+  parseSearchParams,
+  paginatedResponse,
+} from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const url = new URL(request.url);
+    const year = url.searchParams.get('year') || new Date().getFullYear().toString();
+    const employeeId = url.searchParams.get('employee_id');
+
+    const params: any[] = [companyId, parseInt(year)];
+    let where = 'WHERE vb.company_id = $1 AND vb.year = $2';
+    let paramIndex = 3;
+
+    if (employeeId) {
+      where += ` AND vb.employee_id = $${paramIndex}`;
+      params.push(employeeId);
+      paramIndex++;
+    }
+
+    const { rows } = await query(
+      `SELECT vb.*,
+        e.first_name, e.last_name, e.rut, e.position, e.department, e.hire_date, e.base_salary
+       FROM vacation_balances vb
+       JOIN employees e ON e.id = vb.employee_id
+       ${where}
+       ORDER BY e.last_name, e.first_name`,
+      params
+    );
+
+    return successResponse(rows);
+  } catch {
+    return errorResponse('Internal server error', 500);
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+    const { employee_id, year, days_earned, notes } = body;
+
+    if (!employee_id || !year) {
+      return errorResponse('employee_id and year are required', 400);
+    }
+
+    // Check if balance already exists
+    const existing = await query(
+      `SELECT id, days_used, days_pending FROM vacation_balances
+       WHERE company_id = $1 AND employee_id = $2 AND year = $3`,
+      [companyId, employee_id, year]
+    );
+
+    if (existing.rows[0]) {
+      // Update existing balance
+      const old = existing.rows[0];
+      const newEarned = days_earned || old.days_used + old.days_pending;
+      const { rows } = await query(
+        `UPDATE vacation_balances SET
+          days_earned = $1,
+          days_available = $1 - days_used - days_pending,
+          notes = COALESCE($4, notes),
+          updated_at = NOW()
+         WHERE id = $2 AND company_id = $3
+         RETURNING *`,
+        [newEarned || 0, old.id, companyId, notes || null]
+      );
+      return successResponse(rows[0]);
+    }
+
+    // Create new balance
+    const earned = days_earned || 15; // Default 15 days
+    const { rows } = await query(
+      `INSERT INTO vacation_balances (company_id, employee_id, year, days_earned, days_available, notes)
+       VALUES ($1, $2, $3, $4, $4, $5)
+       RETURNING *`,
+      [companyId, employee_id, year, earned, notes || null]
+    );
+
+    return successResponse(rows[0], 201);
+  } catch (e: any) {
+    if (e?.code === '23505') {
+      return errorResponse('Ya existe un saldo de vacaciones para este empleado y año', 409);
+    }
+    return errorResponse('Internal server error', 500);
+  }
+}

@@ -109,6 +109,80 @@ export async function POST(request: NextRequest) {
       try { await query(sql); results.push(`OK: ${sql.match(/POLICY \w+|ENABLE ROW LEVEL/)?.[0] || 'rls'}`); } catch (e: any) { results.push(`SKIP: ${e.message}`); }
     }
 
+    // ══════════════════════════════════════════
+    // VACATION TABLES
+    // ══════════════════════════════════════════
+
+    // ── vacation_balances: one row per employee per year ──
+    try {
+      await query(`
+        CREATE TABLE IF NOT EXISTS vacation_balances (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+          employee_id UUID NOT NULL REFERENCES employees(id) ON DELETE CASCADE,
+          year INTEGER NOT NULL,
+          days_earned DECIMAL(5,1) DEFAULT 0,
+          days_used DECIMAL(5,1) DEFAULT 0,
+          days_pending DECIMAL(5,1) DEFAULT 0,
+          days_available DECIMAL(5,1) DEFAULT 0,
+          notes TEXT,
+          created_at TIMESTAMPTZ DEFAULT now(),
+          updated_at TIMESTAMPTZ DEFAULT now(),
+          UNIQUE (company_id, employee_id, year)
+        )
+      `);
+      results.push('OK: vacation_balances table created');
+    } catch (e: any) { results.push(`SKIP vacation_balances: ${e.message}`); }
+
+    // ── vacation_requests: individual requests ──
+    try {
+      await query(`
+        CREATE TABLE IF NOT EXISTS vacation_requests (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+          employee_id UUID NOT NULL REFERENCES employees(id) ON DELETE CASCADE,
+          start_date DATE NOT NULL,
+          end_date DATE NOT NULL,
+          days DECIMAL(5,1) NOT NULL,
+          reason TEXT,
+          status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'cancelled')),
+          approved_by UUID REFERENCES profiles(id),
+          approved_at TIMESTAMPTZ,
+          rejection_reason TEXT,
+          created_at TIMESTAMPTZ DEFAULT now(),
+          updated_at TIMESTAMPTZ DEFAULT now()
+        )
+      `);
+      results.push('OK: vacation_requests table created');
+    } catch (e: any) { results.push(`SKIP vacation_requests: ${e.message}`); }
+
+    // ── Vacation indexes ──
+    const vacationIndexes = [
+      `CREATE INDEX IF NOT EXISTS idx_vacation_balances_employee ON vacation_balances(employee_id)`,
+      `CREATE INDEX IF NOT EXISTS idx_vacation_balances_company ON vacation_balances(company_id)`,
+      `CREATE INDEX IF NOT EXISTS idx_vacation_requests_employee ON vacation_requests(employee_id)`,
+      `CREATE INDEX IF NOT EXISTS idx_vacation_requests_company ON vacation_requests(company_id)`,
+      `CREATE INDEX IF NOT EXISTS idx_vacation_requests_status ON vacation_requests(company_id, status)`,
+    ];
+
+    for (const sql of vacationIndexes) {
+      try { await query(sql); results.push(`OK: ${sql.match(/idx_\w+/)?.[0] || 'index'}`); } catch (e: any) { results.push(`SKIP: ${e.message}`); }
+    }
+
+    // ── Vacation RLS ──
+    const vacationRls = [
+      `ALTER TABLE vacation_balances ENABLE ROW LEVEL SECURITY`,
+      `ALTER TABLE vacation_requests ENABLE ROW LEVEL SECURITY`,
+      `DROP POLICY IF EXISTS vacation_balances_company_policy ON vacation_balances`,
+      `CREATE POLICY vacation_balances_company_policy ON vacation_balances FOR ALL USING (company_id = current_company_id())`,
+      `DROP POLICY IF EXISTS vacation_requests_company_policy ON vacation_requests`,
+      `CREATE POLICY vacation_requests_company_policy ON vacation_requests FOR ALL USING (company_id = current_company_id())`,
+    ];
+
+    for (const sql of vacationRls) {
+      try { await query(sql); results.push(`OK: ${sql.match(/POLICY \w+|ENABLE ROW LEVEL/)?.[0] || 'rls'}`); } catch (e: any) { results.push(`SKIP: ${e.message}`); }
+    }
+
     return successResponse({ message: 'Payroll schema migration completed', results });
   } catch (e: any) {
     return errorResponse(`Migration failed: ${e.message}`, 500);

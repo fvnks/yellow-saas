@@ -308,6 +308,36 @@ export class ApiClient {
     return this.request<any>('/payroll/migrate', { method: 'POST' });
   }
 
+  // Vacation Balances
+  async getVacationBalances(params?: Record<string, string>) {
+    return this.request<any>('/vacation-balances', params || {});
+  }
+
+  async createVacationBalance(data: { employee_id: string; year: number; days_earned?: number; notes?: string }) {
+    return this.request<any>('/vacation-balances', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  // Vacation Requests
+  async getVacationRequests(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/vacation-requests', params || {});
+  }
+
+  async getVacationRequest(id: string) {
+    return this.request<any>(`/vacation-requests/${id}`);
+  }
+
+  async createVacationRequest(data: { employee_id: string; start_date: string; end_date: string; reason?: string }) {
+    return this.request<any>('/vacation-requests', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateVacationRequest(id: string, data: { status: string; rejection_reason?: string }) {
+    return this.request<any>(`/vacation-requests/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteVacationRequest(id: string) {
+    return this.request<{ message: string }>(`/vacation-requests/${id}`, { method: 'DELETE' });
+  }
+
   // Inventory Categories
   async getCategories(params?: Record<string, string>) {
     return this.requestWithPagination<{ id: string; name: string; description: string; color: string; icon: string; sort_order: number; is_active: boolean }>('/inventory-categories', params || {});
