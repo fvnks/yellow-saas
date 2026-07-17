@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button, Badge, Input, Select, KPICard } from '@yellow-erp/ui';
-import { Wallet, Plus, Search, Users, Calculator, FileText, Download, Eye, Calendar, DollarSign, Edit, Trash2, AlertTriangle } from 'lucide-react';
+import { Wallet, Plus, Search, Users, Calculator, FileText, Download, Eye, Calendar, DollarSign, Edit, Trash2, AlertTriangle, Check } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import EmployeeFormModal from './components/EmployeeFormModal';
 import PeriodModal from './components/PeriodModal';
@@ -291,6 +291,13 @@ function PayrollPage() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
+                        <a
+                          href={`/dashboard/payroll/${run.id}`}
+                          className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                          title="Ver detalle"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                        </a>
                         {run.status === 'draft' && (
                           <>
                             <button
@@ -316,7 +323,7 @@ function PayrollPage() {
                             className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
                             title="Aprobar"
                           >
-                            <Eye className="w-3.5 h-3.5" />
+                            <Check className="w-3.5 h-3.5" />
                           </button>
                         )}
                         {run.status === 'approved' && (
