@@ -8,6 +8,7 @@ import { getApiClient } from '@/lib/api-client';
 import EmployeeFormModal from './components/EmployeeFormModal';
 import PeriodModal from './components/PeriodModal';
 import VacationTab from './components/VacationTab';
+import LiquidationModal from './components/LiquidationModal';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   active: { label: 'Activo', variant: 'success' },
@@ -47,6 +48,7 @@ function PayrollPage() {
   const [showEmployeeModal, setShowEmployeeModal] = useState(false);
   const [showPeriodModal, setShowPeriodModal] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<any>(null);
+  const [showLiquidationModal, setShowLiquidationModal] = useState(false);
   const [calculating, setCalculating] = useState<string | null>(null);
   const [showUFModal, setShowUFModal] = useState(false);
   const [ufValue, setUFValue] = useState(38500);
@@ -160,10 +162,16 @@ function PayrollPage() {
             UF ${ufValue.toLocaleString('es-CL')}
           </button>
           {activeTab === 'employees' ? (
-            <Button onClick={() => { setEditingEmployee(null); setShowEmployeeModal(true); }}>
-              <Plus className="w-4 h-4 mr-2" />
-              Nuevo Empleado
-            </Button>
+            <>
+              <Button onClick={() => setShowLiquidationModal(true)} variant="secondary">
+                <FileText className="w-4 h-4 mr-2" />
+                Liquidacion
+              </Button>
+              <Button onClick={() => { setEditingEmployee(null); setShowEmployeeModal(true); }}>
+                <Plus className="w-4 h-4 mr-2" />
+                Nuevo Empleado
+              </Button>
+            </>
           ) : (
             <Button onClick={() => setShowPeriodModal(true)}>
               <Plus className="w-4 h-4 mr-2" />
@@ -439,6 +447,13 @@ function PayrollPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {showLiquidationModal && (
+        <LiquidationModal
+          employees={employees}
+          onClose={() => setShowLiquidationModal(false)}
+        />
       )}
     </div>
   );
