@@ -671,28 +671,6 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/adjustment-reasons/${id}`, { method: 'DELETE' });
   }
 
-  // Product BOMs
-  async getProductBOMs(params?: Record<string, string>) {
-    return this.requestWithPagination<any>('/product-boms', params || {});
-  }
-  async getProductBOM(id: string) {
-    return this.request<any>(`/product-boms/${id}`);
-  }
-  async createProductBOM(data: { parent_product_id: string; component_product_id: string; quantity?: number; unit_of_measure?: string; scrap_percent?: number; is_optional?: boolean; sort_order?: number }) {
-    return this.request<any>('/product-boms', { method: 'POST', body: JSON.stringify(data) });
-  }
-  async updateProductBOM(id: string, data: { quantity?: number; unit_of_measure?: string; scrap_percent?: number; is_optional?: boolean; sort_order?: number }) {
-    return this.request<any>(`/product-boms/${id}`, { method: 'PUT', body: JSON.stringify(data) });
-  }
-  async deleteProductBOM(id: string) {
-    return this.request<any>(`/product-boms/${id}`, { method: 'DELETE' });
-  }
-
-  // BOM Explosion (recursive)
-  async explodeBOM(productId: string, quantity: number = 1) {
-    return this.request<any>(`/product-boms/explode/${productId}?quantity=${quantity}`);
-  }
-
   // Valuation Methods
   async getValuationMethods(params?: Record<string, string>) {
     return this.requestWithPagination<any>('/inventory-valuation-methods', params || {});
@@ -713,11 +691,6 @@ async deleteAdjustmentReason(id: string) {
   }
   async runValuation(data: { valuation_method_id: string; period_start: string; period_end: string }) {
     return this.request<any>('/inventory-valuation-runs', { method: 'POST', body: JSON.stringify(data) });
-  }
-
-// Reorder Suggestions
-  async getReorderSuggestions(params?: Record<string, string>) {
-    return this.requestWithPagination<any>('/reorder-suggestions', params || {});
   }
 
   // Product Serials
@@ -918,36 +891,6 @@ async deleteAdjustmentReason(id: string) {
   }
   async calculateABCClassification(data: { period_start: string; period_end: string; warehouse_id?: string; recalculate?: boolean }) {
     return this.request<any>('/product-abc-classification', { method: 'POST', body: JSON.stringify(data) });
-  }
-
-  // Demand Forecasts
-  async getDemandForecasts(params?: Record<string, string>) {
-    return this.requestWithPagination<any>('/demand-forecasts', params || {});
-  }
-  async createDemandForecast(data: { product_id: string; warehouse_id?: string; forecast_date: string; horizon_days: number; forecast_qty: number; model_type: string; model_params?: any }) {
-    return this.request<any>('/demand-forecasts', { method: 'POST', body: JSON.stringify(data) });
-  }
-
-  // Exchange Rates
-  async getExchangeRates(params?: Record<string, string>) {
-    return this.requestWithPagination<any>('/exchange-rates', params || {});
-  }
-  async createExchangeRate(data: { from_currency: string; to_currency: string; rate: number; rate_date: string; source?: string }) {
-    return this.request<any>('/exchange-rates', { method: 'POST', body: JSON.stringify(data) });
-  }
-  async updateExchangeRate(id: string, data: { rate?: number; source?: string; is_active?: boolean }) {
-    return this.request<any>('/exchange-rates', { method: 'PUT', body: JSON.stringify({ id, ...data }) });
-  }
-  async deleteExchangeRate(id: string) {
-    return this.request<any>(`/exchange-rates?id=${id}`, { method: 'DELETE' });
-  }
-
-  // Multi-Currency Valuation
-  async getValuationMultiCurrency(params?: Record<string, string>) {
-    return this.requestWithPagination<any>('/valuation-multi-currency', params || {});
-  }
-  async createValuationMultiCurrency(data: { target_currency: string; valuation_date: string; recalculate?: boolean }) {
-    return this.request<any>('/valuation-multi-currency', { method: 'POST', body: JSON.stringify(data) });
   }
 
   // Label Templates
