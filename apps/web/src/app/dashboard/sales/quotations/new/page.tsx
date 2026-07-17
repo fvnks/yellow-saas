@@ -216,7 +216,7 @@ export default function NewQuotationPage() {
                             type="number"
                             min="0"
                             value={item.unitPrice}
-                            onChange={(e) => handleItemChange(index, 'unitPrice', parseInt(e.target.value) || 0)}
+                            onChange={(e) => handleItemChange(index, 'unitPrice', parseFloat(e.target.value) || 0)}
                             className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 text-right focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
                           />
                         </td>
@@ -226,7 +226,7 @@ export default function NewQuotationPage() {
                             min="0"
                             max="100"
                             value={item.discount}
-                            onChange={(e) => handleItemChange(index, 'discount', parseInt(e.target.value) || 0)}
+                            onChange={(e) => handleItemChange(index, 'discount', parseFloat(e.target.value) || 0)}
                             className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
                           />
                         </td>

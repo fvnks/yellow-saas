@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
 
     const {
       warehouse_id, order_id, shipping_date,
-      transport, vehicle_plate, items,
+      transport, vehicle_plate, driver_name, shipping_address, items,
     } = body;
 
     if (!warehouse_id || !items?.length) {
@@ -97,13 +97,18 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Ensure driver_name and shipping_address columns exist
+    try { await query(`DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_attribute WHERE attrelid = 'delivery_guides'::regclass AND attname = 'driver_name') THEN ALTER TABLE delivery_guides ADD COLUMN driver_name TEXT; END IF; END $$`, []); } catch { /* already exists */ }
+    try { await query(`DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_attribute WHERE attrelid = 'delivery_guides'::regclass AND attname = 'shipping_address') THEN ALTER TABLE delivery_guides ADD COLUMN shipping_address TEXT; END IF; END $$`, []); } catch { /* already exists */ }
+
     const { rows: guideRows } = await query(
-      `INSERT INTO delivery_guides (company_id, warehouse_id, order_id, guide_number, status, shipping_date, transport, vehicle_plate)
-       VALUES ($1, $2, $3, $4, 'pending', $5, $6, $7)
+      `INSERT INTO delivery_guides (company_id, warehouse_id, order_id, guide_number, status, shipping_date, transport, vehicle_plate, driver_name, shipping_address)
+       VALUES ($1, $2, $3, $4, 'pending', $5, $6, $7, $8, $9)
        RETURNING *`,
       [
         companyId, warehouse_id, order_id || null, guideNumber,
         shipping_date || new Date().toISOString(), transport || null, vehicle_plate || null,
+        driver_name || null, shipping_address || null,
       ]
     );
 

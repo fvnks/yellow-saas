@@ -23,7 +23,8 @@ interface DeliveryGuideDetail {
   vehicle_plate: string;
   shipping_address: string;
   created_at: string;
-  order?: { id: string; order_number: string; customer?: { id: string; name: string; tax_id: string } };
+  order?: { id: string; order_number: string };
+  sales_order?: { id: string; order_number: string; customer?: { id: string; name: string; tax_id: string } };
   warehouse?: { id: string; name: string; code: string };
   items?: DeliveryGuideItem[];
 }
@@ -72,7 +73,7 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
         region: c.region || undefined, phone: c.phone || undefined, email: c.email || undefined,
         logo_url: c.logo_url || undefined,
       },
-      customer: guide.order?.customer ? { name: guide.order.customer.name, rut: guide.order.customer.tax_id } : undefined,
+      customer: guide.sales_order?.customer ? { name: guide.sales_order.customer.name, rut: guide.sales_order.customer.tax_id } : undefined,
       items: (guide.items || []).map(item => ({
         name: item.product?.name || '',
         sku: item.product?.sku || '',
@@ -173,12 +174,12 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
             <div className="space-y-4">
               <div>
                 <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Cliente</p>
-                <p className="text-sm font-medium text-slate-900">{guide.order?.customer?.name || '—'}</p>
-                <p className="text-xs text-slate-500">RUT: {guide.order?.customer?.tax_id || '—'}</p>
+                <p className="text-sm font-medium text-slate-900">{guide.sales_order?.customer?.name || '—'}</p>
+                <p className="text-xs text-slate-500">RUT: {guide.sales_order?.customer?.tax_id || '—'}</p>
               </div>
               <div>
                 <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Orden de Venta</p>
-                <p className="text-sm font-medium text-indigo-600">{guide.order?.order_number || '—'}</p>
+                <p className="text-sm font-medium text-indigo-600">{guide.sales_order?.order_number || '—'}</p>
               </div>
             </div>
             <div className="space-y-4">

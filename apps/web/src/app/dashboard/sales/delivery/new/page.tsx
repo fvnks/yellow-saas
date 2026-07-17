@@ -74,6 +74,7 @@ export default function NewDeliveryGuidePage() {
       const result = await api.createDeliveryGuide({
         order_id: formData.orderId,
         warehouse_id: formData.warehouseId,
+        shipping_date: formData.deliveryDate || undefined,
         transport: formData.transportCompany,
         driver_name: formData.driverName,
         vehicle_plate: formData.vehiclePlate,
