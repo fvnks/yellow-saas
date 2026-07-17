@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button, Badge, Input, Select, KPICard } from '@yellow-erp/ui';
-import { Wallet, Plus, Search, Users, Calculator, FileText, Download, Eye, Calendar, DollarSign, Edit, Trash2, AlertTriangle, Check } from 'lucide-react';
+import { Wallet, Plus, Search, Users, Calculator, FileText, Download, Eye, Calendar, DollarSign, Edit, Trash2, AlertTriangle, Check, Settings } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import EmployeeFormModal from './components/EmployeeFormModal';
 import PeriodModal from './components/PeriodModal';
@@ -48,21 +48,40 @@ function PayrollPage() {
   const [showPeriodModal, setShowPeriodModal] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<any>(null);
   const [calculating, setCalculating] = useState<string | null>(null);
+  const [showUFModal, setShowUFModal] = useState(false);
+  const [ufValue, setUFValue] = useState(38500);
+  const [ufInput, setUFInput] = useState('');
 
   const loadData = useCallback(async () => {
     const api = getApiClient();
     try {
-      const [empRes, runRes] = await Promise.all([
+      const [empRes, runRes, ufRes] = await Promise.all([
         api.getEmployees({ limit: '200' }),
         api.getPayrollRuns({ limit: '50' }),
+        api.getUFValue().catch(() => ({ data: { uf_value: 38500 } })),
       ]);
       setEmployees(empRes.data || []);
       setRuns(runRes.data || []);
+      if (ufRes.data?.uf_value) {
+        setUFValue(ufRes.data.uf_value);
+        setUFInput(ufRes.data.uf_value.toLocaleString('es-CL'));
+      }
     } catch { }
     setLoading(false);
   }, []);
 
   useEffect(() => { loadData(); }, [loadData]);
+
+  const saveUF = async () => {
+    const parsed = parseInt(ufInput.replace(/\./g, '').replace(/,/g, ''), 10);
+    if (!parsed || parsed <= 0) return;
+    try {
+      const api = getApiClient();
+      await api.setUFValue(parsed);
+      setUFValue(parsed);
+      setShowUFModal(false);
+    } catch { }
+  };
 
   const departments = [...new Set(employees.map(e => e.department).filter(Boolean))];
 
@@ -132,6 +151,14 @@ function PayrollPage() {
           <p className="text-sm text-slate-500 mt-1">Gestión de nómina chilena</p>
         </div>
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => { setUFInput(ufValue.toLocaleString('es-CL')); setShowUFModal(true); }}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-slate-600 bg-slate-50 border border-slate-200 rounded-lg hover:bg-slate-100 transition-colors"
+            title="Configurar valor UF"
+          >
+            <DollarSign className="w-3.5 h-3.5" />
+            UF ${ufValue.toLocaleString('es-CL')}
+          </button>
           {activeTab === 'employees' ? (
             <Button onClick={() => { setEditingEmployee(null); setShowEmployeeModal(true); }}>
               <Plus className="w-4 h-4 mr-2" />
@@ -373,6 +400,45 @@ function PayrollPage() {
           onClose={() => setShowPeriodModal(false)}
           onSave={() => { setShowPeriodModal(false); loadData(); }}
         />
+      )}
+
+      {showUFModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-sm mx-4">
+            <div className="px-6 py-4 border-b border-slate-200">
+              <h2 className="text-sm font-semibold text-slate-900">Valor UF Actual</h2>
+            </div>
+            <div className="p-6 space-y-4">
+              <p className="text-xs text-slate-500">
+                Se usa para calcular gratificaciones y aguinaldo navideño.
+              </p>
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-700">Valor (CLP)</label>
+                <input
+                  type="text"
+                  value={ufInput}
+                  onChange={e => setUFInput(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  placeholder="38500"
+                />
+              </div>
+            </div>
+            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+              <button
+                onClick={() => setShowUFModal(false)}
+                className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={saveUF}
+                className="px-4 py-2 text-sm font-medium text-white bg-slate-900 rounded-lg hover:bg-black"
+              >
+                Guardar
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
