@@ -994,6 +994,17 @@ async deleteAdjustmentReason(id: string) {
       method: 'DELETE',
     });
   }
+
+  // Reports
+  async getReport(params?: { report?: string; date_from?: string; date_to?: string; warehouse?: string }) {
+    const searchParams = new URLSearchParams();
+    if (params?.report) searchParams.set('report', params.report);
+    if (params?.date_from) searchParams.set('date_from', params.date_from);
+    if (params?.date_to) searchParams.set('date_to', params.date_to);
+    if (params?.warehouse) searchParams.set('warehouse', params.warehouse);
+    const qs = searchParams.toString();
+    return this.request<{ sales?: any; inventory?: any; financials?: any }>(`/reports${qs ? `?${qs}` : ''}`);
+  }
 }
 
 // Singleton with dynamic company_id from JWT
