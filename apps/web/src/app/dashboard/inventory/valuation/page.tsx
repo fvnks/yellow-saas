@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ArrowLeft, RefreshCw, Download, Calculator, Layers, Settings, Plus, Edit, Trash2, Play, CheckCircle, X } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { ContinuousTabs } from '@/components/ui/continuous-tabs';
 
 interface ValuationMethod {
   id: string;
@@ -230,24 +231,17 @@ export default function ValuationPage() {
       )}
 
       {/* Tabs */}
-      <div className="flex border-b border-slate-200">
-        {[
-          { id: 'methods', label: 'Métodos', icon: Settings },
-          { id: 'runs', label: 'Ejecuciones', icon: Calculator },
-          { id: 'layers', label: 'Capas / Stock Valorizado', icon: Layers },
-        ].map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id as any)}
-            className={`px-6 py-3 text-sm font-medium transition-colors flex items-center gap-2 ${
-              activeTab === tab.id
-                ? 'text-indigo-600 border-b-2 border-indigo-600'
-                : 'text-slate-500 hover:text-slate-700'
-            }`}
-          >
-            <tab.icon className="w-4 h-4" /> {tab.label}
-          </button>
-        ))}
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <ContinuousTabs
+          tabs={[
+            { id: 'methods', label: 'Metodos' },
+            { id: 'runs', label: 'Ejecuciones' },
+            { id: 'layers', label: 'Capas / Stock' },
+          ]}
+          defaultActiveId={activeTab}
+          onChange={(id) => setActiveTab(id as typeof activeTab)}
+        />
+
       </div>
 
       {/* METHODS TAB */}

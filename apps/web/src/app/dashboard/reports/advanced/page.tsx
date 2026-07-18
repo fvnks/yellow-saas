@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { BarChart3, TrendingUp, Package, Users, DollarSign, Calendar, Download, Filter } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { ContinuousTabs } from '@/components/ui/continuous-tabs';
 
 interface ReportData {
   sales_by_month: { month: string; total: number }[];
@@ -126,26 +127,12 @@ export default function ReportsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
-        <div className="flex border-b border-slate-200 overflow-x-auto">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-3 text-sm font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${
-                  activeTab === tab.id
-                    ? 'text-indigo-600 border-b-2 border-indigo-600'
-                    : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                {tab.label}
-              </button>
-            );
-          })}
-        </div>
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <ContinuousTabs
+          tabs={tabs.map(t => ({ id: t.id, label: t.label }))}
+          defaultActiveId={activeTab}
+          onChange={(id) => setActiveTab(id)}
+        />
 
         <div className="p-6">
           {loading ? (
