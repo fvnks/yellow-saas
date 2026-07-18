@@ -72,6 +72,7 @@ export default function HomePage() {
               <a href="#modulos" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">Modulos</a>
               <a href="#funcionalidades" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">Funcionalidades</a>
               <a href="#precios" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">Precios</a>
+              <Link href="/contact" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">Contacto</Link>
             </div>
 
             <div className="hidden md:flex items-center gap-3">
@@ -114,6 +115,7 @@ export default function HomePage() {
             <a href="#modulos" className="block text-sm text-slate-600">Modulos</a>
             <a href="#funcionalidades" className="block text-sm text-slate-600">Funcionalidades</a>
             <a href="#precios" className="block text-sm text-slate-600">Precios</a>
+            <Link href="/contact" className="block text-sm text-slate-600">Contacto</Link>
             <hr className="border-slate-200" />
             {user ? (
               <>
@@ -366,9 +368,9 @@ export default function HomePage() {
           </div>
           <p className="text-xs text-slate-400">2025 Yellow ERP. Todos los derechos reservados.</p>
           <div className="flex items-center gap-6">
-            <a href="#" className="text-xs text-slate-400 hover:text-slate-600">Terminos</a>
-            <a href="#" className="text-xs text-slate-400 hover:text-slate-600">Privacidad</a>
-            <a href="#" className="text-xs text-slate-400 hover:text-slate-600">Contacto</a>
+            <Link href="/contact" className="text-xs text-slate-400 hover:text-slate-600">Contacto</Link>
+            <Link href="/terms" className="text-xs text-slate-400 hover:text-slate-600">Terminos</Link>
+            <Link href="/privacy" className="text-xs text-slate-400 hover:text-slate-600">Privacidad</Link>
           </div>
         </div>
       </footer>
