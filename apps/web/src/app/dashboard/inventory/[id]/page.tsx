@@ -6,6 +6,7 @@ import { ArrowLeft, Package, Edit, Tag, BarChart3, MapPin, FileText, ArrowDownCi
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { generateBarcodeLabelsPDF } from '@/lib/pdf-design';
+import { ContinuousTabs } from '@/components/ui/continuous-tabs';
 
 interface ProductData {
   id: string;
@@ -229,36 +230,18 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       </div>
 
       {/* Tabs */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
-        <div className="border-b border-slate-200">
-          <div className="flex">
-            {[
-              { id: 'details' as const, label: 'Detalle', icon: FileText },
-              { id: 'kardex' as const, label: 'Kardex', icon: ArrowUpDown },
-              { id: 'variants' as const, label: 'Variantes', icon: Layers, count: variants.length },
-              { id: 'batches' as const, label: 'Lotes', icon: Hash, count: batches.length },
-              { id: 'reservations' as const, label: 'Reservas', icon: Bookmark, count: reservations.length },
-            ].map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-3 text-sm font-medium transition-colors flex items-center gap-2 ${
-                  activeTab === tab.id
-                    ? 'text-indigo-600 border-b-2 border-indigo-600'
-                    : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                <tab.icon className="w-4 h-4" />
-                {tab.label}
-                {'count' in tab && tab.count !== undefined && (
-                  <span className="ml-1 bg-slate-100 text-slate-600 text-[9px] font-semibold px-1.5 py-0.5 rounded-full">
-                    {tab.count}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <ContinuousTabs
+          tabs={[
+            { id: 'details', label: 'Detalle' },
+            { id: 'kardex', label: 'Kardex' },
+            { id: 'variants', label: `Variantes (${variants.length})` },
+            { id: 'batches', label: `Lotes (${batches.length})` },
+            { id: 'reservations', label: `Reservas (${reservations.length})` },
+          ]}
+          defaultActiveId={activeTab}
+          onChange={(id) => setActiveTab(id as typeof activeTab)}
+        />
 
         {activeTab === 'details' && (
           <div className="p-6">

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
 import { generatePOSVoucher, generateBoletaPDF } from '@/lib/pdf-design';
+import { ContinuousTabs } from '@/components/ui/continuous-tabs';
 
 const orderStatusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   delivered: { label: 'Entregado', variant: 'success' },
@@ -465,32 +466,20 @@ const handlePayment = async () => {
       </div>
 
       {/* Tabs */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
-        <div className="border-b border-slate-200">
-          <div className="flex">
-            {[
-              { id: 'orders' as const, label: 'Órdenes de Venta', icon: ShoppingCart, count: orders.length },
-              { id: 'delivery' as const, label: 'Guías de Despacho', icon: Truck, count: deliveryGuides.length },
-              { id: 'invoices' as const, label: 'Facturación', icon: FileText, count: invoices.length },
-              { id: 'customers' as const, label: 'Clientes', icon: Users, count: customers.length },
-              { id: 'quotations' as const, label: 'Cotizaciones', icon: ClipboardList, count: quotations.length },
-              { id: 'returns' as const, label: 'Devoluciones', icon: RotateCcw, count: returns.length },
-              { id: 'pos' as const, label: 'POS', icon: Monitor, count: null },
-            ].map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => { setActiveTab(tab.id); setSearch(''); setStatusFilter('all'); }}
-                className={`px-6 py-3 text-sm font-medium transition-colors flex items-center gap-2 ${
-                  activeTab === tab.id ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                <tab.icon className="w-4 h-4" />
-                {tab.label}
-                {tab.count !== null && <Badge variant="neutral">{tab.count}</Badge>}
-              </button>
-            ))}
-          </div>
-        </div>
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <ContinuousTabs
+          tabs={[
+            { id: 'orders', label: `OV (${orders.length})` },
+            { id: 'delivery', label: `Despacho (${deliveryGuides.length})` },
+            { id: 'invoices', label: `Facturas (${invoices.length})` },
+            { id: 'customers', label: `Clientes (${customers.length})` },
+            { id: 'quotations', label: `Cotizaciones (${quotations.length})` },
+            { id: 'returns', label: `Devoluciones (${returns.length})` },
+            { id: 'pos', label: 'POS' },
+          ]}
+          defaultActiveId={activeTab}
+          onChange={(id) => { setActiveTab(id as typeof activeTab); setSearch(''); setStatusFilter('all'); }}
+        />
 
         {/* Filters - hidden for POS tab */}
         {activeTab !== 'pos' && (

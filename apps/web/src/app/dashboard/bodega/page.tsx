@@ -9,6 +9,7 @@ import Link from 'next/link';
   Calculator, Ship, Handshake, FileText
 } from 'lucide-react';
 import { getApiClient, getCompanyIdFromToken } from '@/lib/api-client';
+import { ContinuousTabs } from '@/components/ui/continuous-tabs';
 import BarcodeScanner from '../../../components/barcode/barcode-scanner';
 import Pagination from '../../../components/ui/pagination';
 
@@ -285,31 +286,12 @@ export default function BodegaPage() {
       </div>
 
       {/* Tabs + Content */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
-        <div className="flex border-b border-slate-200 overflow-x-auto">
-          {tabs.map(tab => {
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => { setActiveTab(tab.id); setSearch(''); setStatusFilter('all'); }}
-                className={`px-5 py-3 text-sm font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${
-                  activeTab === tab.id ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                {tab.label}
-                {tab.count > 0 && (
-                  <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${
-                    activeTab === tab.id ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600'
-                  }`}>
-                    {tab.count}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <ContinuousTabs
+          tabs={tabs.map(t => ({ id: t.id, label: t.count > 0 ? `${t.label} (${t.count})` : t.label }))}
+          defaultActiveId={activeTab}
+          onChange={(id) => { setActiveTab(id as typeof activeTab); setSearch(''); setStatusFilter('all'); }}
+        />
 
         {/* Search bar (except import) */}
         {activeTab !== 'import' && (
