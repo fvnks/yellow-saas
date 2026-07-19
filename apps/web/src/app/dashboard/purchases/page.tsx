@@ -43,6 +43,7 @@ export default function PurchasesPage() {
         total: o.total || o.total_amount || 0,
         status: o.status,
         warehouse: o.warehouse?.name || '',
+        project: o.project?.name || '',
         items: Array.isArray(o.items) ? o.items.length : 0,
       })));
       setSuppliers((suppliersRes.data || []).map((s: any) => ({ id: s.id, name: s.name })));
@@ -203,6 +204,7 @@ export default function PurchasesPage() {
                     <TableHead>Fecha</TableHead>
                     <TableHead>Entrega</TableHead>
                     <TableHead>Almacén</TableHead>
+                    <TableHead>Proyecto</TableHead>
                     <TableHead className="text-center">Items</TableHead>
                     <TableHead className="text-right">Total</TableHead>
                     <TableHead>Estado</TableHead>
@@ -234,6 +236,7 @@ export default function PurchasesPage() {
                           </div>
                         </TableCell>
                         <TableCell className="text-xs">{order.warehouse}</TableCell>
+                        <TableCell className="text-xs">{order.project || <span className="text-slate-300">—</span>}</TableCell>
                         <TableCell className="text-center font-medium">{order.items}</TableCell>
                         <TableCell className="text-right font-medium">${order.total.toLocaleString('es-CL')}</TableCell>
                         <TableCell>

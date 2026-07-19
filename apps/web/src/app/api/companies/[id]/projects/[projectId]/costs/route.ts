@@ -10,7 +10,7 @@ export async function GET(
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
-    const result = await query(
+    const manualCosts = await query(
       `SELECT pc.*,
         SUM(pc.amount) OVER (PARTITION BY pc.source_type) as source_total,
         SUM(pc.amount) OVER () as grand_total
@@ -20,6 +20,63 @@ export async function GET(
       [params.projectId, companyId]
     );
 
+    const purchaseCosts = await query(
+      `SELECT po.id as source_id, po.total_amount as amount,
+        po.expected_date as cost_date, po.number as description,
+        s.name as supplier_name
+       FROM purchase_orders po
+       LEFT JOIN suppliers s ON s.id = po.supplier_id
+       WHERE po.project_id = $1 AND po.company_id = $2
+         AND po.status NOT IN ('cancelled')
+       ORDER BY po.expected_date DESC`,
+      [params.projectId, companyId]
+    );
+
+    const salesCosts = await query(
+      `SELECT so.id as source_id, so.total as amount,
+        so.order_date as cost_date, so.order_number as description,
+        c.name as customer_name
+       FROM sales_orders so
+       LEFT JOIN customers c ON c.id = so.customer_id
+       WHERE so.project_id = $1 AND so.company_id = $2
+         AND so.status NOT IN ('cancelled')
+       ORDER BY so.order_date DESC`,
+      [params.projectId, companyId]
+    );
+
+    const inventoryCosts = await query(
+      `SELECT sm.id as source_id, sm.quantity * COALESCE(p.cost_price, 0) as amount,
+        sm.created_at as cost_date,
+        sm.movement_type || ' - ' || p.name as description
+       FROM stock_movements sm
+       LEFT JOIN products p ON p.id = sm.product_id
+       WHERE sm.project_id = $1 AND sm.company_id = $2
+       ORDER BY sm.created_at DESC`,
+      [params.projectId, companyId]
+    );
+
+    const allCosts = [
+      ...manualCosts.rows.map((c: any) => ({ ...c, source_type: 'manual' })),
+      ...purchaseCosts.rows.map((c: any) => ({
+        id: `po-${c.source_id}`, source_type: 'purchase', source_id: c.source_id,
+        category: 'Purchases', description: `Compra ${c.description} - ${c.supplier_name || ''}`,
+        amount: Number(c.amount), cost_date: c.cost_date, company_id: companyId,
+        project_id: params.projectId,
+      })),
+      ...salesCosts.rows.map((c: any) => ({
+        id: `so-${c.source_id}`, source_type: 'sales', source_id: c.source_id,
+        category: 'Sales', description: `Venta ${c.description} - ${c.customer_name || ''}`,
+        amount: Number(c.amount), cost_date: c.cost_date, company_id: companyId,
+        project_id: params.projectId,
+      })),
+      ...inventoryCosts.rows.map((c: any) => ({
+        id: `sm-${c.source_id}`, source_type: 'inventory', source_id: c.source_id,
+        category: 'Inventory', description: c.description,
+        amount: Number(c.amount), cost_date: c.cost_date, company_id: companyId,
+        project_id: params.projectId,
+      })),
+    ];
+
     const summary = await query(
       `SELECT source_type, SUM(amount) as total, COUNT(*) as count
        FROM project_costs WHERE project_id = $1 AND company_id = $2
@@ -27,7 +84,18 @@ export async function GET(
       [params.projectId, companyId]
     );
 
-    return successResponse({ costs: result.rows, summary: summary.rows });
+    const purchaseTotal = purchaseCosts.rows.reduce((s: number, r: any) => s + Number(r.amount || 0), 0);
+    const salesTotal = salesCosts.rows.reduce((s: number, r: any) => s + Number(r.amount || 0), 0);
+    const inventoryTotal = inventoryCosts.rows.reduce((s: number, r: any) => s + Number(r.amount || 0), 0);
+
+    const autoSummary = [
+      ...summary.rows,
+      ...(purchaseTotal > 0 ? [{ source_type: 'purchase', total: String(purchaseTotal), count: String(purchaseCosts.rows.length) }] : []),
+      ...(salesTotal > 0 ? [{ source_type: 'sales', total: String(salesTotal), count: String(salesCosts.rows.length) }] : []),
+      ...(inventoryTotal > 0 ? [{ source_type: 'inventory', total: String(inventoryTotal), count: String(inventoryCosts.rows.length) }] : []),
+    ];
+
+    return successResponse({ costs: allCosts, summary: autoSummary });
   } catch { return errorResponse('Internal server error', 500); }
 }
 
