@@ -172,6 +172,11 @@ export default function ProjectDetailPage() {
           </div>
           <p className="text-sm text-slate-500 mt-1">{project.code} {project.customer_name ? `· ${project.customer_name}` : ''}</p>
         </div>
+        <Link href={`/dashboard/projects/${projectId}/edit`}>
+          <button className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            <Edit className="w-4 h-4" /> Editar
+          </button>
+        </Link>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
