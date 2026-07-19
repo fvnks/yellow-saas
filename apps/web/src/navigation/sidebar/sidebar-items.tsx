@@ -291,6 +291,17 @@ export const sidebarItems: NavGroup[] = [
   },
   {
     id: 9,
+    label: "Costos",
+    items: [
+      {
+        title: "Centros de Costo",
+        path: "/dashboard/cost-centers",
+        icon: "CircleDollarSign",
+      },
+    ],
+  },
+  {
+    id: 10,
     label: "Sistema",
     items: [
       {
