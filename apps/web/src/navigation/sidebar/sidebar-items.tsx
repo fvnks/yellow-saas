@@ -272,15 +272,25 @@ export const sidebarItems: NavGroup[] = [
         path: "/dashboard/audit",
         icon: "ScrollText",
       },
-  {
-    title: "Proyectos",
-    path: "/dashboard/projects",
-    icon: "FolderKanban",
-  },
     ],
   },
   {
     id: 8,
+    label: "Proyectos",
+    items: [
+      {
+        title: "Proyectos",
+        path: "/dashboard/projects",
+        icon: "FolderKanban",
+        subItems: [
+          { title: "Todos", path: "/dashboard/projects", icon: "FolderKanban" },
+          { title: "Nuevo", path: "/dashboard/projects/new", icon: "FolderKanban" },
+        ],
+      },
+    ],
+  },
+  {
+    id: 9,
     label: "Sistema",
     items: [
       {
