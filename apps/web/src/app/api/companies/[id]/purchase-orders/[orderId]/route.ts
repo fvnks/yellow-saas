@@ -46,20 +46,20 @@ export async function PUT(
 
     const {
       status, supplier_id, warehouse_id, order_date,
-      expected_date, payment_terms, notes, internal_notes, items,
+      expected_date, payment_terms, notes, internal_notes, items, project_id,
     } = body;
 
     const { rows } = await query(
       `UPDATE purchase_orders SET
         status = $1, supplier_id = $2, warehouse_id = $3, order_date = $4,
         expected_date = $5, payment_terms = $6, notes = $7, internal_notes = $8,
-        updated_at = NOW()
-       WHERE id = $9 AND company_id = $10
+        project_id = $9, updated_at = NOW()
+       WHERE id = $10 AND company_id = $11
        RETURNING *`,
       [
         status, supplier_id, warehouse_id, order_date,
         expected_date, payment_terms, notes, internal_notes,
-        params.orderId, companyId,
+        project_id || null, params.orderId, companyId,
       ]
     );
 

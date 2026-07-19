@@ -24,12 +24,14 @@ export default function EditPurchaseOrderPage() {
   const [suppliers, setSuppliers] = useState<{ id: string; name: string; code: string }[]>([]);
   const [warehouses, setWarehouses] = useState<{ id: string; name: string; code: string }[]>([]);
   const [products, setProducts] = useState<{ id: string; name: string; sku: string; price: number }[]>([]);
+  const [projects, setProjects] = useState<{ id: string; name: string; code: string }[]>([]);
   const [formData, setFormData] = useState({
     supplierId: '',
     warehouseId: '',
     expectedDate: '',
     paymentTerms: '30',
     notes: '',
+    projectId: '',
   });
   const [items, setItems] = useState<OrderItem[]>([]);
 
@@ -40,7 +42,8 @@ export default function EditPurchaseOrderPage() {
       api.getSuppliers().catch(() => ({ data: [] })),
       api.getWarehouses().catch(() => ({ data: [] })),
       api.getProducts().catch(() => ({ data: [] })),
-    ]).then(([orderRes, suppliersRes, warehousesRes, productsRes]) => {
+      api.getProjects({ limit: 100 }).catch(() => ({ data: [] })),
+    ]).then(([orderRes, suppliersRes, warehousesRes, productsRes, projectsRes]) => {
       if (orderRes) {
         const order = orderRes as any;
         setFormData({
@@ -49,6 +52,7 @@ export default function EditPurchaseOrderPage() {
           expectedDate: order.expected_date?.split('T')[0] || '',
           paymentTerms: String(order.payment_terms || 30),
           notes: order.notes || '',
+          projectId: order.project_id || '',
         });
         setItems(
           (order.items || []).map((item: any) => ({
@@ -62,6 +66,7 @@ export default function EditPurchaseOrderPage() {
       setSuppliers((suppliersRes.data || []).map((s: any) => ({ id: s.id, name: s.name, code: s.code || '' })));
       setWarehouses((warehousesRes.data || []).map((w: any) => ({ id: w.id, name: w.name, code: w.code || '' })));
       setProducts((productsRes.data || []).map((p: any) => ({ id: p.id, name: p.name, sku: p.sku || '', price: p.cost_price || p.purchase_price || p.sale_price || p.price || 0 })));
+      setProjects((projectsRes.data || []).map((p: any) => ({ id: p.id, name: p.name, code: p.code || '' })));
       setLoading(false);
     });
   }, [id]);
@@ -106,6 +111,7 @@ export default function EditPurchaseOrderPage() {
         expected_date: formData.expectedDate,
         payment_terms: parseInt(formData.paymentTerms),
         notes: formData.notes,
+        project_id: formData.projectId || null,
         items: items.filter(i => i.product_id).map(i => ({
           product_id: i.product_id,
           quantity: i.quantity,
@@ -185,6 +191,12 @@ export default function EditPurchaseOrderPage() {
                       { value: '60', label: '60 días' },
                       { value: '90', label: '90 días' },
                     ]}
+                  />
+                  <Select
+                    label="Proyecto (opcional)"
+                    value={formData.projectId}
+                    onChange={handleFormChange('projectId')}
+                    options={[{ value: '', label: 'Sin proyecto' }, ...projects.map(p => ({ value: p.id, label: `${p.code} - ${p.name}` }))]}
                   />
                 </div>
               </CardContent>
