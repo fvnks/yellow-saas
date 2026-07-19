@@ -1,0 +1,436 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { Button, Badge } from '@yellow-erp/ui';
+import { ArrowLeft, Plus, Calendar, DollarSign, Users, CheckCircle2, Clock, AlertTriangle, Edit, Trash2, MoreVertical, GripVertical, BarChart3 } from 'lucide-react';
+import Link from 'next/link';
+import { getApiClient } from '@/lib/api-client';
+import { ContinuousTabs } from '@/components/ui/continuous-tabs';
+
+const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
+  planning: { label: 'Planificacion', variant: 'info' },
+  active: { label: 'Activo', variant: 'success' },
+  on_hold: { label: 'En Pausa', variant: 'warning' },
+  completed: { label: 'Completado', variant: 'neutral' },
+  cancelled: { label: 'Cancelado', variant: 'danger' },
+};
+
+const taskStatusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
+  todo: { label: 'Por Hacer', variant: 'neutral' },
+  in_progress: { label: 'En Progreso', variant: 'info' },
+  review: { label: 'En Revision', variant: 'warning' },
+  done: { label: 'Completada', variant: 'success' },
+};
+
+const priorityConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
+  low: { label: 'Baja', variant: 'neutral' },
+  medium: { label: 'Media', variant: 'info' },
+  high: { label: 'Alta', variant: 'warning' },
+  urgent: { label: 'Urgente', variant: 'danger' },
+};
+
+export default function ProjectDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const projectId = params.id as string;
+
+  const [project, setProject] = useState<any>(null);
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('tasks');
+  const [showTaskForm, setShowTaskForm] = useState(false);
+  const [editingTask, setEditingTask] = useState<any>(null);
+  const [users, setUsers] = useState<any[]>([]);
+  const [taskForm, setTaskForm] = useState({
+    name: '', description: '', assignee_id: '', status: 'todo', priority: 'medium',
+    start_date: '', due_date: '', estimated_hours: '',
+  });
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    loadData();
+  }, [projectId]);
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const api = getApiClient();
+      const [projectRes, tasksRes, usersRes] = await Promise.all([
+        api.getProject(projectId),
+        api.getProjectTasks(projectId),
+        api.getUsers({ limit: 100 }),
+      ]);
+      setProject(projectRes);
+      setTasks(Array.isArray(tasksRes) ? tasksRes : []);
+      setUsers(usersRes.data || []);
+    } catch (err) {
+      console.error('Failed to load project:', err);
+    }
+    setLoading(false);
+  };
+
+  const handleSaveTask = async () => {
+    if (!taskForm.name) return;
+    setSaving(true);
+    try {
+      const api = getApiClient();
+      const data = {
+        ...taskForm,
+        estimated_hours: taskForm.estimated_hours ? parseFloat(taskForm.estimated_hours) : null,
+        assignee_id: taskForm.assignee_id || null,
+      };
+      if (editingTask) {
+        await api.updateProjectTask(projectId, editingTask.id, data);
+      } else {
+        await api.createProjectTask(projectId, data);
+      }
+      setShowTaskForm(false);
+      setEditingTask(null);
+      setTaskForm({ name: '', description: '', assignee_id: '', status: 'todo', priority: 'medium', start_date: '', due_date: '', estimated_hours: '' });
+      loadData();
+    } catch (err) {
+      console.error('Failed to save task:', err);
+    }
+    setSaving(false);
+  };
+
+  const handleEditTask = (task: any) => {
+    setTaskForm({
+      name: task.name || '',
+      description: task.description || '',
+      assignee_id: task.assignee_id || '',
+      status: task.status || 'todo',
+      priority: task.priority || 'medium',
+      start_date: task.start_date || '',
+      due_date: task.due_date || '',
+      estimated_hours: task.estimated_hours || '',
+    });
+    setEditingTask(task);
+    setShowTaskForm(true);
+  };
+
+  const handleDeleteTask = async (taskId: string) => {
+    if (!confirm('Eliminar esta tarea?')) return;
+    try {
+      const api = getApiClient();
+      await api.deleteProjectTask(projectId, taskId);
+      loadData();
+    } catch (err) {
+      console.error('Failed to delete task:', err);
+    }
+  };
+
+  const handleUpdateTaskStatus = async (task: any, newStatus: string) => {
+    try {
+      const api = getApiClient();
+      await api.updateProjectTask(projectId, task.id, { ...task, status: newStatus });
+      loadData();
+    } catch (err) {
+      console.error('Failed to update task:', err);
+    }
+  };
+
+  const handleUpdateProgress = async (progress: number) => {
+    try {
+      const api = getApiClient();
+      await api.updateProject(projectId, { ...project, progress });
+      setProject({ ...project, progress });
+    } catch (err) {
+      console.error('Failed to update progress:', err);
+    }
+  };
+
+  const totalEstimated = tasks.reduce((sum, t) => sum + (parseFloat(t.estimated_hours) || 0), 0);
+  const totalActual = tasks.reduce((sum, t) => sum + (parseFloat(t.actual_hours) || 0), 0);
+  const completedTasks = tasks.filter(t => t.status === 'done').length;
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-slate-200 rounded w-1/3" />
+          <div className="h-4 bg-slate-200 rounded w-1/2" />
+          <div className="grid grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map(i => <div key={i} className="h-24 bg-slate-200 rounded-xl" />)}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!project) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-sm text-slate-500">Proyecto no encontrado</p>
+        <Link href="/dashboard/projects" className="text-indigo-600 hover:underline text-sm mt-2 inline-block">Volver a Proyectos</Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-4">
+        <button onClick={() => router.back()} className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+          <ArrowLeft className="w-5 h-5 text-slate-600" />
+        </button>
+        <div className="flex-1">
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl font-bold text-slate-900">{project.name}</h1>
+            <Badge variant={statusConfig[project.status]?.variant || 'neutral'}>{statusConfig[project.status]?.label || project.status}</Badge>
+          </div>
+          <p className="text-sm text-slate-500 mt-1">{project.code} {project.customer_name ? `· ${project.customer_name}` : ''}</p>
+        </div>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Presupuesto</p>
+              <p className="text-lg font-bold text-slate-900 mt-1">${(parseFloat(project.budget) / 1000000).toFixed(1)}M</p>
+            </div>
+            <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+              <DollarSign className="w-5 h-5 text-indigo-600" />
+            </div>
+          </div>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tareas</p>
+              <p className="text-lg font-bold text-slate-900 mt-1">{completedTasks}/{tasks.length}</p>
+            </div>
+            <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
+              <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+            </div>
+          </div>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Horas</p>
+              <p className="text-lg font-bold text-slate-900 mt-1">{totalActual.toFixed(1)}/{totalEstimated.toFixed(1)}</p>
+            </div>
+            <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+              <Clock className="w-5 h-5 text-amber-600" />
+            </div>
+          </div>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Progreso</p>
+              <p className="text-lg font-bold text-slate-900 mt-1">{project.progress || 0}%</p>
+            </div>
+            <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+              <BarChart3 className="w-5 h-5 text-blue-600" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm text-slate-500">Progreso del proyecto</span>
+          <span className="text-sm font-medium text-slate-900">{project.progress || 0}%</span>
+        </div>
+        <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+          <div className="h-full bg-indigo-500 rounded-full transition-all duration-300" style={{ width: `${project.progress || 0}%` }} />
+        </div>
+        <div className="flex gap-2 mt-3">
+          {[0, 25, 50, 75, 100].map(p => (
+            <button key={p} onClick={() => handleUpdateProgress(p)}
+              className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${project.progress === p ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
+              {p}%
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <ContinuousTabs
+          tabs={[
+            { id: 'tasks', label: `Tareas (${tasks.length})` },
+            { id: 'info', label: 'Informacion' },
+          ]}
+          defaultActiveId={activeTab}
+          onChange={(id) => setActiveTab(id)}
+        />
+      </div>
+
+      {activeTab === 'tasks' && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-slate-900">Tareas del Proyecto</h2>
+            <button onClick={() => { setShowTaskForm(true); setEditingTask(null); setTaskForm({ name: '', description: '', assignee_id: '', status: 'todo', priority: 'medium', start_date: '', due_date: '', estimated_hours: '' }); }}
+              className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              <Plus className="w-4 h-4" /> Nueva Tarea
+            </button>
+          </div>
+
+          {tasks.length === 0 ? (
+            <div className="text-center py-12 bg-white border border-slate-200 rounded-xl shadow-sm">
+              <CheckCircle2 className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+              <p className="text-sm text-slate-500">No hay tareas creadas</p>
+              <button onClick={() => setShowTaskForm(true)} className="text-indigo-600 hover:underline text-sm mt-2">Crear primera tarea</button>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {tasks.map(task => (
+                <div key={task.id} className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <h3 className="text-sm font-semibold text-slate-900">{task.name}</h3>
+                        <Badge variant={taskStatusConfig[task.status]?.variant || 'neutral'}>{taskStatusConfig[task.status]?.label || task.status}</Badge>
+                        <Badge variant={priorityConfig[task.priority]?.variant || 'neutral'}>{priorityConfig[task.priority]?.label || task.priority}</Badge>
+                      </div>
+                      {task.description && <p className="text-xs text-slate-500 mt-1">{task.description}</p>}
+                      <div className="flex items-center gap-4 mt-2 text-xs text-slate-400">
+                        {task.assignee_name && <span className="flex items-center gap-1"><Users className="w-3 h-3" />{task.assignee_name}</span>}
+                        {task.due_date && <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{task.due_date}</span>}
+                        {task.estimated_hours && <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{task.estimated_hours}h estimadas</span>}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      {task.status !== 'done' && (
+                        <button onClick={() => {
+                          const nextStatus = task.status === 'todo' ? 'in_progress' : task.status === 'in_progress' ? 'review' : 'done';
+                          handleUpdateTaskStatus(task, nextStatus);
+                        }}
+                          className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded text-xs font-medium hover:bg-emerald-100 transition-colors">
+                          {task.status === 'todo' ? 'Iniciar' : task.status === 'in_progress' ? 'Revisar' : 'Completar'}
+                        </button>
+                      )}
+                      <button onClick={() => handleEditTask(task)} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
+                        <Edit className="w-3.5 h-3.5 text-slate-500" />
+                      </button>
+                      <button onClick={() => handleDeleteTask(task.id)} className="p-1.5 hover:bg-red-50 rounded-lg transition-colors">
+                        <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'info' && (
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+          <h2 className="text-sm font-semibold text-slate-900 mb-4">Informacion del Proyecto</h2>
+          <div className="grid grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div>
+                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</p>
+                <p className="text-sm text-slate-900 mt-1">{project.name}</p>
+              </div>
+              <div>
+                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Codigo</p>
+                <p className="text-sm text-slate-900 mt-1">{project.code}</p>
+              </div>
+              <div>
+                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</p>
+                <p className="text-sm text-slate-900 mt-1">{project.customer_name || '—'}</p>
+              </div>
+              <div>
+                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Gerente</p>
+                <p className="text-sm text-slate-900 mt-1">{project.project_manager_name || '—'}</p>
+              </div>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha Inicio</p>
+                <p className="text-sm text-slate-900 mt-1">{project.start_date || '—'}</p>
+              </div>
+              <div>
+                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha Fin</p>
+                <p className="text-sm text-slate-900 mt-1">{project.end_date || '—'}</p>
+              </div>
+              <div>
+                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Presupuesto</p>
+                <p className="text-sm text-slate-900 mt-1">${(parseFloat(project.budget) || 0).toLocaleString('es-CL')} CLP</p>
+              </div>
+              <div>
+                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Descripcion</p>
+                <p className="text-sm text-slate-900 mt-1">{project.description || '—'}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showTaskForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-slate-900">{editingTask ? 'Editar Tarea' : 'Nueva Tarea'}</h2>
+              <button onClick={() => { setShowTaskForm(false); setEditingTask(null); }} className="text-slate-400 hover:text-slate-600">X</button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-700">Nombre *</label>
+                <input type="text" value={taskForm.name} onChange={e => setTaskForm({ ...taskForm, name: e.target.value })}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+              </div>
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-700">Descripcion</label>
+                <textarea value={taskForm.description} onChange={e => setTaskForm({ ...taskForm, description: e.target.value })} rows={2}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-slate-700">Asignado a</label>
+                  <select value={taskForm.assignee_id} onChange={e => setTaskForm({ ...taskForm, assignee_id: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    <option value="">Sin asignar</option>
+                    {users.map(u => <option key={u.id} value={u.id}>{u.full_name || u.email}</option>)}
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-slate-700">Prioridad</label>
+                  <select value={taskForm.priority} onChange={e => setTaskForm({ ...taskForm, priority: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    <option value="low">Baja</option>
+                    <option value="medium">Media</option>
+                    <option value="high">Alta</option>
+                    <option value="urgent">Urgente</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-slate-700">Fecha Inicio</label>
+                  <input type="date" value={taskForm.start_date} onChange={e => setTaskForm({ ...taskForm, start_date: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-slate-700">Fecha Limite</label>
+                  <input type="date" value={taskForm.due_date} onChange={e => setTaskForm({ ...taskForm, due_date: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-slate-700">Horas Est.</label>
+                  <input type="number" step="0.5" value={taskForm.estimated_hours} onChange={e => setTaskForm({ ...taskForm, estimated_hours: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                </div>
+              </div>
+            </div>
+            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+              <button onClick={() => { setShowTaskForm(false); setEditingTask(null); }}
+                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                Cancelar
+              </button>
+              <button onClick={handleSaveTask} disabled={saving || !taskForm.name}
+                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                {saving ? 'Guardando...' : editingTask ? 'Actualizar' : 'Crear Tarea'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
