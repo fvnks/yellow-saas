@@ -1126,6 +1126,79 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects/${projectId}/tasks/${taskId}`, { method: 'DELETE' });
   }
 
+  // Project Milestones
+  async getProjectMilestones(projectId: string) {
+    return this.request<any[]>(`/projects/${projectId}/milestones`);
+  }
+
+  async createProjectMilestone(projectId: string, data: any) {
+    return this.request<any>(`/projects/${projectId}/milestones`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateProjectMilestone(projectId: string, milestoneId: string, data: any) {
+    return this.request<any>(`/projects/${projectId}/milestones/${milestoneId}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteProjectMilestone(projectId: string, milestoneId: string) {
+    return this.request<any>(`/projects/${projectId}/milestones/${milestoneId}`, { method: 'DELETE' });
+  }
+
+  // Project Timesheets
+  async getProjectTimesheets(projectId: string) {
+    return this.request<any[]>(`/projects/${projectId}/timesheets`);
+  }
+
+  async createProjectTimesheet(projectId: string, data: any) {
+    return this.request<any>(`/projects/${projectId}/timesheets`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateProjectTimesheet(projectId: string, timesheetId: string, data: any) {
+    return this.request<any>(`/projects/${projectId}/timesheets/${timesheetId}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteProjectTimesheet(projectId: string, timesheetId: string) {
+    return this.request<any>(`/projects/${projectId}/timesheets/${timesheetId}`, { method: 'DELETE' });
+  }
+
+  // Project Expenses
+  async getProjectExpenses(projectId: string) {
+    return this.request<any[]>(`/projects/${projectId}/expenses`);
+  }
+
+  async createProjectExpense(projectId: string, data: any) {
+    return this.request<any>(`/projects/${projectId}/expenses`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateProjectExpense(projectId: string, expenseId: string, data: any) {
+    return this.request<any>(`/projects/${projectId}/expenses/${expenseId}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteProjectExpense(projectId: string, expenseId: string) {
+    return this.request<any>(`/projects/${projectId}/expenses/${expenseId}`, { method: 'DELETE' });
+  }
+
+  // Project Costs
+  async getProjectCosts(projectId: string) {
+    return this.request<any>(`/projects/${projectId}/costs`);
+  }
+
+  async createProjectCost(projectId: string, data: any) {
+    return this.request<any>(`/projects/${projectId}/costs`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  // Project Documents
+  async getProjectDocuments(projectId: string) {
+    return this.request<any[]>(`/projects/${projectId}/documents`);
+  }
+
+  async createProjectDocument(projectId: string, data: any) {
+    return this.request<any>(`/projects/${projectId}/documents`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async deleteProjectDocument(projectId: string, documentId: string) {
+    return this.request<any>(`/projects/${projectId}/documents/${documentId}`, { method: 'DELETE' });
+  }
+
   async getUsers(params?: { search?: string; limit?: number }) {
     const searchParams = new URLSearchParams();
     if (params?.search) searchParams.set('search', params.search);
