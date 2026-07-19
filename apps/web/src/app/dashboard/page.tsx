@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button } from '@yellow-erp/ui';
-import { Plus, Package, Users, ShoppingCart, CreditCard, TrendingUp, TrendingDown } from 'lucide-react';
+import { Plus, Package, Users, ShoppingCart, CreditCard, TrendingUp, TrendingDown, FolderKanban, Clock, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 
@@ -33,6 +33,8 @@ export default function DashboardPage() {
   });
   const [recentSales, setRecentSales] = useState<any[]>([]);
   const [lowStockProducts, setLowStockProducts] = useState<any[]>([]);
+  const [projects, setProjects] = useState<any[]>([]);
+  const [overdueTasks, setOverdueTasks] = useState<any[]>([]);
 
   useEffect(() => {
     const api = getApiClient();
@@ -42,7 +44,8 @@ export default function DashboardPage() {
       api.getCustomers({ limit: '500' }).catch(() => ({ data: [] })),
       api.getInvoices({ limit: '500' }).catch(() => ({ data: [] })),
       api.getPurchaseOrders({ limit: '500' }).catch(() => ({ data: [] })),
-    ]).then(([ordersRes, productsRes, customersRes, invoicesRes, purchasesRes]) => {
+      api.getProjects({ limit: 100 }).catch(() => ({ data: [] })),
+    ]).then(([ordersRes, productsRes, customersRes, invoicesRes, purchasesRes, projectsRes]) => {
       const orders = ordersRes.data || [];
       const products = productsRes.data || [];
       const customers = customersRes.data || [];
@@ -77,6 +80,13 @@ export default function DashboardPage() {
       });
       setRecentSales(orders.slice(0, 5));
       setLowStockProducts(lowStock);
+      const allProjects = projectsRes.data || [];
+      setProjects(allProjects);
+      const now = new Date();
+      const overdue = allProjects
+        .filter((p: any) => p.status === 'active' && p.end_date && new Date(p.end_date) < now)
+        .slice(0, 5);
+      setOverdueTasks(overdue);
       setLoading(false);
     });
   }, []);
@@ -121,6 +131,75 @@ export default function DashboardPage() {
           </div>
         ))}
       </div>
+
+      {/* Projects Section */}
+      {!loading && projects.length > 0 && (
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center"><FolderKanban className="w-5 h-5 text-indigo-600" /></div>
+                <div>
+                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Proyectos Activos</p>
+                  <p className="text-xl font-bold text-slate-900">{projects.filter((p: any) => p.status === 'active').length}</p>
+                </div>
+              </div>
+              <Link href="/dashboard/projects" className="text-xs text-slate-500 hover:text-slate-700">Ver todos</Link>
+            </div>
+            <div className="space-y-2">
+              {projects.filter((p: any) => p.status === 'active').slice(0, 3).map((p: any) => (
+                <Link key={p.id} href={`/dashboard/projects/${p.id}`} className="block p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-slate-900 truncate">{p.name}</span>
+                    <span className="text-xs text-slate-500">{p.progress || 0}%</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-slate-100 rounded-full mt-1.5 overflow-hidden">
+                    <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${p.progress || 0}%` }} />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center"><TrendingUp className="w-5 h-5 text-emerald-600" /></div>
+              <div>
+                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Presupuesto Total</p>
+                <p className="text-xl font-bold text-slate-900">${(projects.reduce((s: number, p: any) => s + (parseFloat(p.budget) || 0), 0) / 1000000).toFixed(1)}M</p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              {projects.filter((p: any) => p.status === 'active').slice(0, 3).map((p: any) => (
+                <Link key={p.id} href={`/dashboard/projects/${p.id}`} className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                  <span className="text-xs text-slate-600 truncate">{p.code}</span>
+                  <span className="text-xs font-medium text-slate-900">${((parseFloat(p.budget) || 0) / 1000000).toFixed(1)}M</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {overdueTasks.length > 0 && (
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center"><AlertTriangle className="w-5 h-5 text-amber-600" /></div>
+                <div>
+                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Proyectos Atrasados</p>
+                  <p className="text-xl font-bold text-amber-600">{overdueTasks.length}</p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                {overdueTasks.map((p: any) => (
+                  <Link key={p.id} href={`/dashboard/projects/${p.id}`} className="block p-2 rounded-lg hover:bg-amber-50 transition-colors">
+                    <span className="text-sm font-medium text-slate-900">{p.name}</span>
+                    <p className="text-[10px] text-amber-600 mt-0.5">Venció: {p.end_date}</p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
