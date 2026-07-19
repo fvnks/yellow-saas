@@ -126,7 +126,7 @@ function SalesPageContent() {
       api.getCompany().catch(() => null),
     ]).then(([ordersRes, guidesRes, invoicesRes, productsRes, customersRes, quotationsRes, returnsRes, companyRes]) => {
       if (companyRes) setCompany(companyRes);
-      const ordersData = (ordersRes.data || []).map((o) => ({
+      const ordersData = (ordersRes.data || []).map((o: any) => ({
         id: o.id,
         number: o.order_number,
         customer: o.customer?.name || o.customer_id || '---',
@@ -134,6 +134,7 @@ function SalesPageContent() {
         date: o.created_at?.split('T')[0] || '',
         total: Number(o.total || 0),
         status: o.status,
+        project: o.project?.name || '',
         payment: 'pending',
       }));
       const guidesData = (guidesRes.data || []).map((g: any) => ({
@@ -539,6 +540,7 @@ const handlePayment = async () => {
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
                   <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Items</th>
                   <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Proyecto</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
                   <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
                 </tr>
@@ -551,6 +553,7 @@ const handlePayment = async () => {
                     <td className="px-4 py-3 text-xs text-slate-500">{order.date}</td>
                     <td className="px-4 py-3 text-xs text-slate-700 text-center">{order.items}</td>
                     <td className="px-4 py-3 text-xs font-medium text-slate-900 text-right">${(order.total || 0).toLocaleString('es-CL')}</td>
+                    <td className="px-4 py-3 text-xs text-slate-500">{order.project || <span className="text-slate-300">—</span>}</td>
                     <td className="px-4 py-3">
                       <Badge variant={orderStatusConfig[order.status]?.variant || 'neutral'}>
                         {orderStatusConfig[order.status]?.label || order.status}
