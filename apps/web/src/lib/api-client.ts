@@ -1082,6 +1082,57 @@ async deleteAdjustmentReason(id: string) {
     const qs = searchParams.toString();
     return this.request<{ sales?: any; inventory?: any; financials?: any }>(`/reports${qs ? `?${qs}` : ''}`);
   }
+
+  // Projects
+  async getProjects(params?: { search?: string; status?: string; page?: number; limit?: number }) {
+    const searchParams = new URLSearchParams();
+    if (params?.search) searchParams.set('search', params.search);
+    if (params?.status) searchParams.set('status', params.status);
+    if (params?.page) searchParams.set('page', String(params.page));
+    if (params?.limit) searchParams.set('limit', String(params.limit));
+    const qs = searchParams.toString();
+    return this.request<any>(`/projects${qs ? `?${qs}` : ''}`);
+  }
+
+  async getProject(projectId: string) {
+    return this.request<any>(`/projects/${projectId}`);
+  }
+
+  async createProject(data: any) {
+    return this.request<any>('/projects', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateProject(projectId: string, data: any) {
+    return this.request<any>(`/projects/${projectId}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteProject(projectId: string) {
+    return this.request<any>(`/projects/${projectId}`, { method: 'DELETE' });
+  }
+
+  async getProjectTasks(projectId: string) {
+    return this.request<any[]>(`/projects/${projectId}/tasks`);
+  }
+
+  async createProjectTask(projectId: string, data: any) {
+    return this.request<any>(`/projects/${projectId}/tasks`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateProjectTask(projectId: string, taskId: string, data: any) {
+    return this.request<any>(`/projects/${projectId}/tasks/${taskId}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteProjectTask(projectId: string, taskId: string) {
+    return this.request<any>(`/projects/${projectId}/tasks/${taskId}`, { method: 'DELETE' });
+  }
+
+  async getUsers(params?: { search?: string; limit?: number }) {
+    const searchParams = new URLSearchParams();
+    if (params?.search) searchParams.set('search', params.search);
+    if (params?.limit) searchParams.set('limit', String(params.limit));
+    const qs = searchParams.toString();
+    return this.request<any>(`/users${qs ? `?${qs}` : ''}`);
+  }
 }
 
 // Singleton with dynamic company_id from JWT

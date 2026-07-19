@@ -272,12 +272,11 @@ export const sidebarItems: NavGroup[] = [
         path: "/dashboard/audit",
         icon: "ScrollText",
       },
-      {
-        title: "Proyectos",
-        path: "/dashboard/projects",
-        icon: "FolderKanban",
-        comingSoon: true,
-      },
+  {
+    title: "Proyectos",
+    path: "/dashboard/projects",
+    icon: "FolderKanban",
+  },
     ],
   },
   {
