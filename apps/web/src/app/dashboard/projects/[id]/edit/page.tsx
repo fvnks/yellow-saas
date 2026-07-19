@@ -15,9 +15,10 @@ export default function EditProjectPage() {
   const [error, setError] = useState('');
   const [customers, setCustomers] = useState<{ id: string; name: string }[]>([]);
   const [users, setUsers] = useState<{ id: string; full_name: string; email: string }[]>([]);
+  const [costCenters, setCostCenters] = useState<{ id: string; code: string; name: string }[]>([]);
   const [form, setForm] = useState({
     name: '', code: '', description: '', customer_id: '', start_date: '', end_date: '',
-    budget: '', status: 'planning', project_manager_id: '',
+    budget: '', status: 'planning', project_manager_id: '', cost_center_id: '',
   });
 
   useEffect(() => {
@@ -26,7 +27,8 @@ export default function EditProjectPage() {
       api.getProject(id),
       api.getCustomers({ limit: '100' }).catch(() => ({ data: [] })),
       api.getUsers({ limit: 100 }).catch(() => ({ data: [] })),
-    ]).then(([projectRes, customersRes, usersRes]) => {
+      api.getCostCenters({ limit: 200 }).catch(() => ({ data: [] })),
+    ]).then(([projectRes, customersRes, usersRes, ccRes]) => {
       const p = projectRes as any;
       setForm({
         name: p.name || '',
@@ -38,9 +40,11 @@ export default function EditProjectPage() {
         budget: p.budget || '',
         status: p.status || 'planning',
         project_manager_id: p.project_manager_id || '',
+        cost_center_id: p.cost_center_id || '',
       });
       setCustomers((customersRes.data || []).map((c: any) => ({ id: c.id, name: c.name })));
       setUsers((usersRes.data || []).map((u: any) => ({ id: u.id, full_name: u.full_name || u.email, email: u.email })));
+      setCostCenters((ccRes.data || []).map((cc: any) => ({ id: cc.id, code: cc.code, name: cc.name })));
       setLoading(false);
     }).catch(() => {
       setError('No se pudo cargar el proyecto');
@@ -59,6 +63,7 @@ export default function EditProjectPage() {
         budget: form.budget ? parseFloat(form.budget) : 0,
         customer_id: form.customer_id || null,
         project_manager_id: form.project_manager_id || null,
+        cost_center_id: form.cost_center_id || null,
       });
       router.push(`/dashboard/projects/${id}`);
     } catch {
@@ -140,6 +145,17 @@ export default function EditProjectPage() {
                 className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                 <option value="">Sin asignar</option>
                 {users.map(u => <option key={u.id} value={u.id}>{u.full_name}</option>)}
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">Centro de Costo</label>
+              <select value={form.cost_center_id} onChange={e => setForm({ ...form, cost_center_id: e.target.value })}
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                <option value="">Sin centro de costo</option>
+                {costCenters.map(cc => <option key={cc.id} value={cc.id}>{cc.code} - {cc.name}</option>)}
               </select>
             </div>
           </div>

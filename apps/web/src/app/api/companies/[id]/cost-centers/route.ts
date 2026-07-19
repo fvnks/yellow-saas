@@ -26,7 +26,9 @@ export async function GET(request: NextRequest) {
 
     const dataResult = await query(
       `SELECT cc.*,
-        (SELECT COUNT(*) FROM products p WHERE p.cost_center_id = cc.id) as product_count
+        (SELECT COUNT(*) FROM products p WHERE p.cost_center_id = cc.id) as product_count,
+        (SELECT COUNT(*) FROM projects pr WHERE pr.cost_center_id = cc.id) as project_count,
+        (SELECT COUNT(*) FROM stock_movements sm WHERE sm.cost_center_id = cc.id) as movement_count
        FROM cost_centers cc
        ${whereClause}
        ORDER BY cc.${sort || 'name'} ${(order || 'asc').toUpperCase() === 'ASC' ? 'ASC' : 'DESC'}

@@ -71,7 +71,9 @@ export async function GET(request: NextRequest) {
     const { rows } = await query(
       `SELECT sm.*,
         (SELECT json_build_object('id', p.id, 'name', p.name, 'sku', p.sku) FROM products p WHERE p.id = sm.product_id) as product,
-        (SELECT json_build_object('id', w.id, 'name', w.name, 'code', w.code) FROM warehouses w WHERE w.id = sm.warehouse_id) as warehouse
+        (SELECT json_build_object('id', w.id, 'name', w.name, 'code', w.code) FROM warehouses w WHERE w.id = sm.warehouse_id) as warehouse,
+        (SELECT json_build_object('id', cc.id, 'name', cc.name, 'code', cc.code) FROM cost_centers cc WHERE cc.id = sm.cost_center_id) as cost_center,
+        (SELECT json_build_object('id', pj.id, 'name', pj.name, 'code', pj.code) FROM projects pj WHERE pj.id = sm.project_id) as project
        FROM stock_movements sm
        ${where}
        ORDER BY sm.${sort} ${order === 'asc' ? 'ASC' : 'DESC'}
@@ -94,7 +96,7 @@ export async function POST(request: NextRequest) {
 
     const {
       product_id, warehouse_id, type, quantity, unit_cost,
-      batch_number, expiry_date, notes,
+      batch_number, expiry_date, notes, cost_center_id, project_id,
     } = body;
 
     if (!product_id || !warehouse_id || !type || quantity === undefined) {
@@ -109,13 +111,14 @@ export async function POST(request: NextRequest) {
     const finalQuantity = type === 'out' || type === 'transfer_out' ? -Math.abs(quantity) : Math.abs(quantity);
 
     const { rows: movementRows } = await query(
-      `INSERT INTO stock_movements (company_id, product_id, warehouse_id, type, quantity, unit_cost, total_cost, batch_number, expiry_date, notes)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      `INSERT INTO stock_movements (company_id, product_id, warehouse_id, type, quantity, unit_cost, total_cost, batch_number, expiry_date, notes, cost_center_id, project_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
        RETURNING *`,
       [
         companyId, product_id, warehouse_id, type, finalQuantity,
         unit_cost || null, unit_cost ? unit_cost * Math.abs(quantity) : null,
         batch_number || null, expiry_date || null, notes || null,
+        cost_center_id || null, project_id || null,
       ]
     );
 
