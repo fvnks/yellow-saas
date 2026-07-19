@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Badge, KPICard } from '@yellow-erp/ui';
-import { FolderKanban, Plus, Search, Clock, CheckCircle2, DollarSign, Eye, Trash2, Edit, Users } from 'lucide-react';
+import { FolderKanban, Plus, Search, Clock, CheckCircle2, DollarSign, Eye, Trash2, Edit, Users, Bell, AlertTriangle, Calendar } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { ContinuousTabs } from '@/components/ui/continuous-tabs';
@@ -20,6 +20,8 @@ export default function ProjectsPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -29,8 +31,12 @@ export default function ProjectsPage() {
     setLoading(true);
     try {
       const api = getApiClient();
-      const projectsRes = await api.getProjects({ limit: 100 });
+      const [projectsRes, notifRes] = await Promise.all([
+        api.getProjects({ limit: 100 }),
+        api.getProjectNotifications().catch(() => ({ notifications: [] })),
+      ]);
       setProjects(projectsRes.data || []);
+      setNotifications(notifRes.notifications || []);
     } catch (err) {
       console.error('Failed to load projects:', err);
     }
@@ -81,6 +87,39 @@ export default function ProjectsPage() {
           <Plus className="w-4 h-4" /> Nuevo Proyecto
         </Link>
       </div>
+
+      {notifications.length > 0 && (
+        <div className="relative">
+          <button onClick={() => setShowNotifications(!showNotifications)}
+            className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 w-full text-left hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center"><Bell className="w-5 h-5 text-amber-600" /></div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">{notifications.length} notificaciones de proyectos</p>
+                  <p className="text-xs text-slate-500">Tareas atrasadas, hitos vencidos, presupuesto al límite</p>
+                </div>
+              </div>
+              <Badge variant="warning">{notifications.length}</Badge>
+            </div>
+          </button>
+          {showNotifications && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl z-50 max-h-80 overflow-y-auto">
+              {notifications.slice(0, 8).map((n, i) => (
+                <Link key={i} href={`/dashboard/projects/${n.project_id}`} className="block px-4 py-3 hover:bg-slate-50 border-b border-slate-100 last:border-0 transition-colors">
+                  <div className="flex items-start gap-3">
+                    {n.severity === 'danger' ? <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" /> : <Calendar className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />}
+                    <div>
+                      <p className="text-xs font-semibold text-slate-900">{n.title}</p>
+                      <p className="text-[10px] text-slate-500 mt-0.5">{n.description}</p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <KPICard label="Total Proyectos" value={projects.length} icon={FolderKanban} trend={`${activeProjects} activos`} trendUp={true} />

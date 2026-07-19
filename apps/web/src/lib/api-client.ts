@@ -1199,6 +1199,10 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects/${projectId}/documents/${documentId}`, { method: 'DELETE' });
   }
 
+  async getProjectNotifications() {
+    return this.request<any>('/projects/notifications');
+  }
+
   async getUsers(params?: { search?: string; limit?: number }) {
     const searchParams = new URLSearchParams();
     if (params?.search) searchParams.set('search', params.search);
