@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Badge } from '@yellow-erp/ui';
-import { CircleDollarSign, Plus, Search, Edit, Trash2, ArrowLeftRight, Package } from 'lucide-react';
+import { CircleDollarSign, Plus, Search, Edit, Trash2, ArrowLeftRight, Package, FolderKanban } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 
 export default function CostCentersPage() {
@@ -123,6 +123,8 @@ export default function CostCentersPage() {
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Descripcion</th>
                 <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Productos</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Proyectos</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Movimientos</th>
                 <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Subcentros</th>
                 <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
               </tr>
@@ -146,7 +148,17 @@ export default function CostCentersPage() {
                     </td>
                     <td className="px-4 py-3 text-center">
                       <span className="inline-flex items-center gap-1 text-xs text-slate-600">
-                        <ArrowLeftRight className="w-3 h-3" /> {children.length}
+                        <FolderKanban className="w-3 h-3" /> {cc.project_count || 0}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <span className="inline-flex items-center gap-1 text-xs text-slate-600">
+                        <ArrowLeftRight className="w-3 h-3" /> {cc.movement_count || 0}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <span className="inline-flex items-center gap-1 text-xs text-slate-600">
+                        {children.length}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right">

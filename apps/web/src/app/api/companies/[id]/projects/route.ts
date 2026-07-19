@@ -37,11 +37,14 @@ export async function GET(request: NextRequest) {
       `SELECT p.*,
         c.name as customer_name,
         prof.full_name as project_manager_name,
+        cc.name as cost_center_name,
+        cc.code as cost_center_code,
         (SELECT COUNT(*) FROM project_tasks pt WHERE pt.project_id = p.id) as task_count,
         (SELECT COUNT(*) FROM project_tasks pt WHERE pt.project_id = p.id AND pt.status = 'done') as completed_tasks
        FROM projects p
        LEFT JOIN customers c ON p.customer_id = c.id
        LEFT JOIN profiles prof ON p.project_manager_id = prof.id
+       LEFT JOIN cost_centers cc ON p.cost_center_id = cc.id
        ${whereClause}
        ORDER BY p.${sort} ${order === 'asc' ? 'ASC' : 'DESC'}
        LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
@@ -62,7 +65,7 @@ export async function POST(request: NextRequest) {
 
     const {
       name, code, description, customer_id, start_date, end_date,
-      budget, status, project_manager_id,
+      budget, status, project_manager_id, cost_center_id,
     } = body;
 
     if (!name) return errorResponse('Name is required', 400);
@@ -71,12 +74,12 @@ export async function POST(request: NextRequest) {
     const result = await query(
       `INSERT INTO projects (
         company_id, name, code, description, customer_id, start_date, end_date,
-        budget, status, project_manager_id, created_by
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $10)
+        budget, status, project_manager_id, cost_center_id, created_by
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $10)
       RETURNING *`,
       [companyId, name, code, description || null, customer_id || null,
        start_date || null, end_date || null, budget || 0,
-       status || 'planning', project_manager_id || null]
+       status || 'planning', project_manager_id || null, cost_center_id || null]
     );
 
     return successResponse(result.rows[0], 201);
