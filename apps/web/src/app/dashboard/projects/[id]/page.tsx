@@ -124,6 +124,15 @@ export default function ProjectDetailPage() {
     try { const api = getApiClient(); await api.updateProject(projectId, { ...project, progress }); setProject({ ...project, progress }); } catch (err) { console.error(err); }
   };
 
+  const handleAutoProgress = async () => {
+    if (tasks.length === 0) return;
+    const done = tasks.filter(t => t.status === 'done').length;
+    const inProgress = tasks.filter(t => t.status === 'in_progress').length;
+    const review = tasks.filter(t => t.status === 'review').length;
+    const pct = Math.round(((done * 1 + inProgress * 0.5 + review * 0.75) / tasks.length) * 100);
+    await handleUpdateProgress(pct);
+  };
+
   const totalEstimated = tasks.reduce((sum, t) => sum + (parseFloat(t.estimated_hours) || 0), 0);
   const totalActual = tasks.reduce((sum, t) => sum + (parseFloat(t.actual_hours) || 0), 0);
   const completedTasks = tasks.filter(t => t.status === 'done').length;
@@ -219,7 +228,14 @@ export default function ProjectDetailPage() {
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm text-slate-500">Progreso del proyecto</span>
-          <span className="text-sm font-medium text-slate-900">{project.progress || 0}%</span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-medium text-slate-900">{project.progress || 0}%</span>
+            {tasks.length > 0 && (
+              <button onClick={handleAutoProgress} className="text-[10px] font-medium text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2 py-0.5 rounded transition-colors">
+                Auto-calculcar
+              </button>
+            )}
+          </div>
         </div>
         <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
           <div className="h-full bg-indigo-500 rounded-full transition-all duration-300" style={{ width: `${project.progress || 0}%` }} />

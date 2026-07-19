@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Badge } from '@yellow-erp/ui';
-import { Receipt, Plus, Trash2, Check } from 'lucide-react';
+import { Receipt, Plus, Trash2, Edit } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 
 interface Expense {
@@ -28,18 +28,43 @@ const categoryConfig: Record<string, { label: string; variant: 'success' | 'warn
 
 export default function ExpensesTab({ projectId, expenses, onRefresh }: { projectId: string; expenses: Expense[]; onRefresh: () => void }) {
   const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<Expense | null>(null);
   const [form, setForm] = useState({ category: 'materials', description: '', amount: '', expense_date: new Date().toISOString().split('T')[0], invoice_number: '', supplier_name: '' });
   const [saving, setSaving] = useState(false);
 
   const api = getApiClient();
 
-  const handleCreate = async () => {
+  const openCreate = () => {
+    setEditing(null);
+    setForm({ category: 'materials', description: '', amount: '', expense_date: new Date().toISOString().split('T')[0], invoice_number: '', supplier_name: '' });
+    setShowForm(true);
+  };
+
+  const openEdit = (exp: Expense) => {
+    setEditing(exp);
+    setForm({
+      category: exp.category,
+      description: exp.description,
+      amount: String(exp.amount || ''),
+      expense_date: exp.expense_date?.split('T')[0] || '',
+      invoice_number: exp.invoice_number || '',
+      supplier_name: exp.supplier_name || '',
+    });
+    setShowForm(true);
+  };
+
+  const handleSave = async () => {
     if (!form.description || !form.amount || !form.expense_date) return;
     setSaving(true);
     try {
-      await api.createProjectExpense(projectId, { ...form, amount: parseFloat(form.amount) });
+      const data = { ...form, amount: parseFloat(form.amount) };
+      if (editing) {
+        await api.updateProjectExpense(projectId, editing.id, data);
+      } else {
+        await api.createProjectExpense(projectId, data);
+      }
       setShowForm(false);
-      setForm({ category: 'materials', description: '', amount: '', expense_date: new Date().toISOString().split('T')[0], invoice_number: '', supplier_name: '' });
+      setEditing(null);
       onRefresh();
     } catch (err) { console.error(err); }
     setSaving(false);
@@ -61,7 +86,7 @@ export default function ExpensesTab({ projectId, expenses, onRefresh }: { projec
           <h3 className="text-sm font-semibold text-slate-900">Gastos del Proyecto</h3>
           <p className="text-xs text-slate-500 mt-0.5">Total: {formatCurrency(total)}</p>
         </div>
-        <button onClick={() => setShowForm(true)} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+        <button onClick={openCreate} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" /> Nuevo Gasto
         </button>
       </div>
@@ -93,9 +118,14 @@ export default function ExpensesTab({ projectId, expenses, onRefresh }: { projec
                   <td className="px-4 py-3 text-xs text-slate-500">{e.supplier_name || '—'}</td>
                   <td className="px-4 py-3 text-xs font-semibold text-slate-900 text-right">{formatCurrency(Number(e.amount))}</td>
                   <td className="px-4 py-3 text-right">
-                    <button onClick={() => handleDelete(e.id)} className="p-1 hover:bg-red-50 rounded-lg transition-colors">
-                      <Trash2 className="w-3.5 h-3.5 text-red-500" />
-                    </button>
+                    <div className="flex items-center justify-end gap-1">
+                      <button onClick={() => openEdit(e)} className="p-1 hover:bg-slate-100 rounded-lg transition-colors">
+                        <Edit className="w-3.5 h-3.5 text-slate-400" />
+                      </button>
+                      <button onClick={() => handleDelete(e.id)} className="p-1 hover:bg-red-50 rounded-lg transition-colors">
+                        <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -108,8 +138,8 @@ export default function ExpensesTab({ projectId, expenses, onRefresh }: { projec
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
             <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900">Nuevo Gasto</h2>
-              <button onClick={() => setShowForm(false)} className="text-slate-400 hover:text-slate-600">X</button>
+              <h2 className="text-lg font-semibold text-slate-900">{editing ? 'Editar Gasto' : 'Nuevo Gasto'}</h2>
+              <button onClick={() => { setShowForm(false); setEditing(null); }} className="text-slate-400 hover:text-slate-600">X</button>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -155,10 +185,10 @@ export default function ExpensesTab({ projectId, expenses, onRefresh }: { projec
               </div>
             </div>
             <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
-              <button onClick={() => setShowForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
-              <button onClick={handleCreate} disabled={saving || !form.description || !form.amount}
+              <button onClick={() => { setShowForm(false); setEditing(null); }} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={handleSave} disabled={saving || !form.description || !form.amount}
                 className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
-                {saving ? 'Guardando...' : 'Crear Gasto'}
+                {saving ? 'Guardando...' : editing ? 'Actualizar' : 'Crear Gasto'}
               </button>
             </div>
           </div>
