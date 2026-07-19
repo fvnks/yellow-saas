@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Badge } from '@yellow-erp/ui';
-import { Clock, Plus, Trash2, Check, Filter } from 'lucide-react';
+import { Clock, Plus, Trash2, Edit, Filter } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 
 interface Timesheet {
@@ -10,6 +10,8 @@ interface Timesheet {
   date: string;
   hours: number;
   description: string | null;
+  employee_id: string | null;
+  task_id: string | null;
   employee_name: string | null;
   task_name: string | null;
   billable: boolean;
@@ -20,19 +22,44 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
   projectId: string; timesheets: Timesheet[]; tasks: any[]; employees: any[]; onRefresh: () => void;
 }) {
   const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<Timesheet | null>(null);
   const [form, setForm] = useState({ employee_id: '', task_id: '', date: new Date().toISOString().split('T')[0], hours: '', description: '', billable: true });
   const [saving, setSaving] = useState(false);
   const [weekFilter, setWeekFilter] = useState(false);
 
   const api = getApiClient();
 
-  const handleCreate = async () => {
+  const openCreate = () => {
+    setEditing(null);
+    setForm({ employee_id: '', task_id: '', date: new Date().toISOString().split('T')[0], hours: '', description: '', billable: true });
+    setShowForm(true);
+  };
+
+  const openEdit = (ts: Timesheet) => {
+    setEditing(ts);
+    setForm({
+      employee_id: ts.employee_id || '',
+      task_id: ts.task_id || '',
+      date: ts.date?.split('T')[0] || '',
+      hours: String(ts.hours || ''),
+      description: ts.description || '',
+      billable: ts.billable,
+    });
+    setShowForm(true);
+  };
+
+  const handleSave = async () => {
     if (!form.date || !form.hours) return;
     setSaving(true);
     try {
-      await api.createProjectTimesheet(projectId, { ...form, hours: parseFloat(form.hours), employee_id: form.employee_id || null, task_id: form.task_id || null });
+      const data = { ...form, hours: parseFloat(form.hours), employee_id: form.employee_id || null, task_id: form.task_id || null };
+      if (editing) {
+        await api.updateProjectTimesheet(projectId, editing.id, data);
+      } else {
+        await api.createProjectTimesheet(projectId, data);
+      }
       setShowForm(false);
-      setForm({ employee_id: '', task_id: '', date: new Date().toISOString().split('T')[0], hours: '', description: '', billable: true });
+      setEditing(null);
       onRefresh();
     } catch (err) { console.error(err); }
     setSaving(false);
@@ -69,7 +96,7 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${weekFilter ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
             <Filter className="w-3 h-3 mr-1 inline" /> Esta semana
           </button>
-          <button onClick={() => setShowForm(true)} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          <button onClick={openCreate} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <Plus className="w-4 h-4" /> Registrar Horas
           </button>
         </div>
@@ -106,9 +133,14 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
                     <Badge variant={t.billable ? 'success' : 'neutral'}>{t.billable ? 'Facturable' : 'No fact.'}</Badge>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button onClick={() => handleDelete(t.id)} className="p-1 hover:bg-red-50 rounded-lg transition-colors">
-                      <Trash2 className="w-3.5 h-3.5 text-red-500" />
-                    </button>
+                    <div className="flex items-center justify-end gap-1">
+                      <button onClick={() => openEdit(t)} className="p-1 hover:bg-slate-100 rounded-lg transition-colors">
+                        <Edit className="w-3.5 h-3.5 text-slate-400" />
+                      </button>
+                      <button onClick={() => handleDelete(t.id)} className="p-1 hover:bg-red-50 rounded-lg transition-colors">
+                        <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -121,8 +153,8 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
             <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900">Registrar Horas</h2>
-              <button onClick={() => setShowForm(false)} className="text-slate-400 hover:text-slate-600">X</button>
+              <h2 className="text-lg font-semibold text-slate-900">{editing ? 'Editar Horas' : 'Registrar Horas'}</h2>
+              <button onClick={() => { setShowForm(false); setEditing(null); }} className="text-slate-400 hover:text-slate-600">X</button>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -167,10 +199,10 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
               </div>
             </div>
             <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
-              <button onClick={() => setShowForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
-              <button onClick={handleCreate} disabled={saving || !form.date || !form.hours}
+              <button onClick={() => { setShowForm(false); setEditing(null); }} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={handleSave} disabled={saving || !form.date || !form.hours}
                 className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
-                {saving ? 'Guardando...' : 'Registrar'}
+                {saving ? 'Guardando...' : editing ? 'Actualizar' : 'Registrar'}
               </button>
             </div>
           </div>
