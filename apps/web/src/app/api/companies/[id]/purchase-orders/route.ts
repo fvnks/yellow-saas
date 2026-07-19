@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
 
     const {
       supplier_id, warehouse_id, order_date, expected_date,
-      payment_terms, notes, internal_notes, items,
+      payment_terms, notes, internal_notes, items, project_id,
     } = body;
 
     if (!supplier_id || !warehouse_id || !items?.length) {
@@ -102,14 +102,14 @@ export async function POST(request: NextRequest) {
     }
 
     const { rows: orderRows } = await query(
-      `INSERT INTO purchase_orders (company_id, supplier_id, warehouse_id, number, status, order_date, expected_date, payment_terms, subtotal, tax_amount, total_amount, notes, internal_notes)
-       VALUES ($1, $2, $3, $4, 'draft', $5, $6, $7, $8, $9, $10, $11, $12)
+      `INSERT INTO purchase_orders (company_id, supplier_id, warehouse_id, number, status, order_date, expected_date, payment_terms, subtotal, tax_amount, total_amount, notes, internal_notes, project_id)
+       VALUES ($1, $2, $3, $4, 'draft', $5, $6, $7, $8, $9, $10, $11, $12, $13)
        RETURNING *`,
       [
         companyId, supplier_id, warehouse_id, orderNumber,
         order_date || new Date().toISOString(), expected_date || null,
         payment_terms || 0, subtotal, taxAmount, subtotal + taxAmount,
-        notes || null, internal_notes || null,
+        notes || null, internal_notes || null, project_id || null,
       ]
     );
 
