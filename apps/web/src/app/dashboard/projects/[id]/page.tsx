@@ -127,6 +127,10 @@ export default function ProjectDetailPage() {
   const totalEstimated = tasks.reduce((sum, t) => sum + (parseFloat(t.estimated_hours) || 0), 0);
   const totalActual = tasks.reduce((sum, t) => sum + (parseFloat(t.actual_hours) || 0), 0);
   const completedTasks = tasks.filter(t => t.status === 'done').length;
+  const totalExpenses = expenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+  const totalCosts = (costsData.costs || []).reduce((sum: number, c: any) => sum + (parseFloat(c.amount) || 0), 0);
+  const budget = parseFloat(project.budget) || 0;
+  const budgetUsed = budget > 0 ? Math.round(((totalCosts + totalExpenses) / budget) * 100) : 0;
 
   const tabs = [
     { id: 'tasks', label: `Tareas (${tasks.length})` },
@@ -179,11 +183,17 @@ export default function ProjectDetailPage() {
         </Link>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
           <div className="flex items-center justify-between">
-            <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Presupuesto</p><p className="text-lg font-bold text-slate-900 mt-1">${(parseFloat(project.budget) / 1000000).toFixed(1)}M</p></div>
+            <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Presupuesto</p><p className="text-lg font-bold text-slate-900 mt-1">${budget > 0 ? (budget / 1000000).toFixed(1) + 'M' : '—'}</p></div>
             <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center"><DollarSign className="w-5 h-5 text-indigo-600" /></div>
+          </div>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+          <div className="flex items-center justify-between">
+            <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Gastado</p><p className="text-lg font-bold text-slate-900 mt-1">{budgetUsed}%</p><p className="text-[10px] text-slate-500">${((totalCosts + totalExpenses) / 1000000).toFixed(1)}M</p></div>
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${budgetUsed > 90 ? 'bg-red-50' : budgetUsed > 70 ? 'bg-amber-50' : 'bg-emerald-50'}`}><DollarSign className={`w-5 h-5 ${budgetUsed > 90 ? 'text-red-600' : budgetUsed > 70 ? 'text-amber-600' : 'text-emerald-600'}`} /></div>
           </div>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
@@ -297,12 +307,16 @@ export default function ProjectDetailPage() {
               <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Codigo</p><p className="text-sm text-slate-900 mt-1">{project.code}</p></div>
               <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</p><p className="text-sm text-slate-900 mt-1">{project.customer_name || '—'}</p></div>
               <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Gerente</p><p className="text-sm text-slate-900 mt-1">{project.project_manager_name || '—'}</p></div>
+              <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Creado por</p><p className="text-sm text-slate-900 mt-1">{project.created_by_name || '—'}</p></div>
             </div>
             <div className="space-y-4">
               <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha Inicio</p><p className="text-sm text-slate-900 mt-1">{project.start_date || '—'}</p></div>
               <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha Fin</p><p className="text-sm text-slate-900 mt-1">{project.end_date || '—'}</p></div>
               <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Presupuesto</p><p className="text-sm text-slate-900 mt-1">${(parseFloat(project.budget) || 0).toLocaleString('es-CL')} CLP</p></div>
+              <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</p><p className="text-sm text-slate-900 mt-1"><Badge variant={statusConfig[project.status]?.variant || 'neutral'}>{statusConfig[project.status]?.label || project.status}</Badge></p></div>
               <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Descripcion</p><p className="text-sm text-slate-900 mt-1">{project.description || '—'}</p></div>
+              <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Creado</p><p className="text-sm text-slate-900 mt-1">{project.created_at?.split('T')[0] || '—'}</p></div>
+              <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Ultima Actualizacion</p><p className="text-sm text-slate-900 mt-1">{project.updated_at?.split('T')[0] || '—'}</p></div>
             </div>
           </div>
         </div>
