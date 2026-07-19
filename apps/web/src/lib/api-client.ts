@@ -164,7 +164,7 @@ export class ApiClient {
     return this.request<{ id: string }>('/sales-orders', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async updateSalesOrder(id: string, data: Partial<{ customer_id: string; warehouse_id: string; status: string; delivery_date: string; payment_terms: number; notes: string; items: { product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }>) {
+  async updateSalesOrder(id: string, data: Partial<{ customer_id: string; warehouse_id: string; status: string; delivery_date: string; payment_terms: number; notes: string; project_id: string | null; items: { product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }>) {
     return this.request<{ id: string }>(`/sales-orders/${id}`, { method: 'PUT', body: JSON.stringify(data) });
   }
 

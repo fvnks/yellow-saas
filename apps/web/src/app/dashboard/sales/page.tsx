@@ -144,6 +144,7 @@ function SalesPageContent() {
         date: g.created_at?.split('T')[0] || '',
         transport: g.transport,
         status: g.status,
+        project: g.project?.name || '',
       }));
       const invoicesData = (invoicesRes.data || []).map((inv: any) => ({
         id: inv.id,
@@ -152,6 +153,7 @@ function SalesPageContent() {
         date: inv.created_at?.split('T')[0] || '',
         total: Number(inv.total_amount || inv.total || 0),
         status: inv.status,
+        project: inv.project?.name || '',
         paid: 0,
       }));
       const productsData = (productsRes.data || []).map((p) => ({
@@ -586,6 +588,7 @@ const handlePayment = async () => {
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Orden Ref.</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Transporte</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Proyecto</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
                   <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
                 </tr>
@@ -597,6 +600,7 @@ const handlePayment = async () => {
                     <td className="px-4 py-3 text-xs text-indigo-600 font-medium">{guide.orderId}</td>
                     <td className="px-4 py-3 text-xs text-slate-500">{guide.date}</td>
                     <td className="px-4 py-3 text-xs text-slate-600">{guide.transport}</td>
+                    <td className="px-4 py-3 text-xs text-slate-500">{guide.project || <span className="text-slate-300">—</span>}</td>
                     <td className="px-4 py-3">
                       <Badge variant={deliveryStatusConfig[guide.status]?.variant || 'neutral'}>
                         {deliveryStatusConfig[guide.status]?.label || guide.status}
@@ -624,6 +628,7 @@ const handlePayment = async () => {
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Orden Ref.</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
                   <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Proyecto</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
                   <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
                 </tr>
@@ -635,6 +640,7 @@ const handlePayment = async () => {
                     <td className="px-4 py-3 text-xs text-indigo-600 font-medium">{invoice.orderId}</td>
                     <td className="px-4 py-3 text-xs text-slate-500">{invoice.date}</td>
                     <td className="px-4 py-3 text-xs font-medium text-slate-900 text-right">${(invoice.total || 0).toLocaleString('es-CL')}</td>
+                    <td className="px-4 py-3 text-xs text-slate-500">{invoice.project || <span className="text-slate-300">—</span>}</td>
                     <td className="px-4 py-3">
                       <Badge variant={invoiceStatusConfig[invoice.status]?.variant || 'neutral'}>
                         {invoiceStatusConfig[invoice.status]?.label || invoice.status}
