@@ -160,7 +160,7 @@ export class ApiClient {
     return this.request<{ id: string; order_number: string; customer_id: string; status: string; total: number; items: any[] }>(`/sales-orders/${id}`);
   }
 
-  async createSalesOrder(data: { order_number?: string; customer_id: string; warehouse_id?: string; order_date?: string; delivery_date?: string; payment_method?: string; payment_terms?: number; shipping_address?: string; subtotal?: number; tax_amount?: number; total?: number; notes?: string; items: { product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }) {
+  async createSalesOrder(data: { order_number?: string; customer_id: string; warehouse_id?: string; order_date?: string; delivery_date?: string; payment_method?: string; payment_terms?: number; shipping_address?: string; subtotal?: number; tax_amount?: number; total?: number; notes?: string; project_id?: string | null; items: { product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }) {
     return this.request<{ id: string }>('/sales-orders', { method: 'POST', body: JSON.stringify(data) });
   }
 
@@ -223,11 +223,11 @@ export class ApiClient {
     return this.request<{ id: string; number: string; supplier_id: string; status: string; total_amount: number; items: any[] }>(`/purchase-orders/${id}`);
   }
 
-  async createPurchaseOrder(data: { number?: string; supplier_id: string; warehouse_id?: string; order_date?: string; expected_date?: string; payment_terms?: number; subtotal?: number; tax_amount?: number; total_amount?: number; notes?: string; internal_notes?: string; items: { product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }) {
+  async createPurchaseOrder(data: { number?: string; supplier_id: string; warehouse_id?: string; order_date?: string; expected_date?: string; payment_terms?: number; subtotal?: number; tax_amount?: number; total_amount?: number; notes?: string; internal_notes?: string; project_id?: string | null; items: { product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }) {
     return this.request<{ id: string }>('/purchase-orders', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async updatePurchaseOrder(id: string, data: Partial<{ supplier_id: string; warehouse_id: string; status: string; expected_date: string; payment_terms: number; notes: string; internal_notes: string; items: { product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }>) {
+  async updatePurchaseOrder(id: string, data: Partial<{ supplier_id: string; warehouse_id: string; status: string; expected_date: string; payment_terms: number; notes: string; internal_notes: string; project_id: string | null; items: { product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }>) {
     return this.request<{ id: string }>(`/purchase-orders/${id}`, { method: 'PUT', body: JSON.stringify(data) });
   }
 

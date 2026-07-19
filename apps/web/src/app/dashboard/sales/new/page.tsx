@@ -21,6 +21,7 @@ export default function NewSalePage() {
   const [customers, setCustomers] = useState<{id: string; name: string; tax_id: string}[]>([]);
   const [warehouses, setWarehouses] = useState<{id: string; name: string; code: string}[]>([]);
   const [products, setProducts] = useState<{id: string; name: string; sku: string; price: number; stock?: number}[]>([]);
+  const [projects, setProjects] = useState<{id: string; name: string; code: string}[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
 
   useEffect(() => {
@@ -29,10 +30,12 @@ export default function NewSalePage() {
       api.getCustomers(),
       api.getWarehouses(),
       api.getProducts(),
-    ]).then(([customersRes, warehousesRes, productsRes]) => {
+      api.getProjects({ limit: 100 }),
+    ]).then(([customersRes, warehousesRes, productsRes, projectsRes]) => {
       setCustomers((customersRes.data || []).map((c: any) => ({ id: c.id, name: c.name, tax_id: c.tax_id })));
       setWarehouses((warehousesRes.data || []).map((w: any) => ({ id: w.id, name: w.name, code: w.code })));
       setProducts((productsRes.data || []).map((p: any) => ({ id: p.id, name: p.name, sku: p.sku, price: p.price || 0, stock: p.quantity || p.stock || 0 })));
+      setProjects((projectsRes.data || []).map((p: any) => ({ id: p.id, name: p.name, code: p.code || '' })));
     }).finally(() => setDataLoading(false));
   }, []);
   const [formData, setFormData] = useState({
@@ -43,6 +46,7 @@ export default function NewSalePage() {
     paymentTerms: '30',
     shippingAddress: '',
     notes: '',
+    projectId: '',
   });
   const [items, setItems] = useState<OrderItem[]>([
     { productId: '', quantity: 1, unitPrice: 0, discount: 0 },
@@ -102,6 +106,7 @@ export default function NewSalePage() {
         payment_terms: parseInt(formData.paymentTerms),
         shipping_address: formData.shippingAddress,
         notes: formData.notes,
+        project_id: formData.projectId || null,
         items: items.filter(i => i.productId).map(i => ({
           product_id: i.productId,
           quantity: i.quantity,
@@ -193,6 +198,12 @@ export default function NewSalePage() {
                       { value: '60', label: '60 días' },
                       { value: '90', label: '90 días' },
                     ]}
+                  />
+                  <Select
+                    label="Proyecto (opcional)"
+                    value={formData.projectId}
+                    onChange={handleFormChange('projectId')}
+                    options={[{ value: '', label: 'Sin proyecto' }, ...projects.map(p => ({ value: p.id, label: `${p.code} - ${p.name}` }))]}
                   />
                 </div>
                 <Input
