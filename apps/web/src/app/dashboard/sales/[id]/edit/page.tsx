@@ -44,6 +44,7 @@ export default function EditSalePage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [projects, setProjects] = useState<{ id: string; name: string; code: string }[]>([]);
 
   const [orderNumber, setOrderNumber] = useState('');
   const [formData, setFormData] = useState({
@@ -52,6 +53,7 @@ export default function EditSalePage() {
     deliveryDate: '',
     paymentTerms: '30',
     notes: '',
+    projectId: '',
   });
   const [items, setItems] = useState<OrderItem[]>([{ product_id: '', quantity: 1, unit_price: 0, discount_percent: 0 }]);
 
@@ -62,7 +64,8 @@ export default function EditSalePage() {
       api.getCustomers(),
       api.getWarehouses(),
       api.getProducts(),
-    ]).then(([orderRes, customersRes, warehousesRes, productsRes]) => {
+      api.getProjects().catch(() => ({ data: [] })),
+    ]).then(([orderRes, customersRes, warehousesRes, productsRes, projectsRes]) => {
       const order = orderRes as unknown as {
         order_number: string;
         customer_id: string;
@@ -70,6 +73,7 @@ export default function EditSalePage() {
         delivery_date: string;
         payment_terms: number;
         notes: string;
+        project_id: string | null;
         items?: { product_id: string; quantity: number; unit_price: number; discount_percent: number }[];
       };
       setOrderNumber(order.order_number);
@@ -79,6 +83,7 @@ export default function EditSalePage() {
         deliveryDate: order.delivery_date?.split('T')[0] || '',
         paymentTerms: String(order.payment_terms || 30),
         notes: order.notes || '',
+        projectId: order.project_id || '',
       });
       if (order.items?.length) {
         setItems(order.items.map(i => ({
@@ -91,6 +96,7 @@ export default function EditSalePage() {
       setCustomers((customersRes.data || []).map((c) => ({ id: c.id, name: c.name })));
       setWarehouses((warehousesRes.data || []).map((w) => ({ id: w.id, name: w.name, code: w.code })));
       setProducts((productsRes.data || []).map((p) => ({ id: p.id, name: p.name, sku: p.sku, price: p.price, stock: p.stock })));
+      setProjects((projectsRes.data || []).map((p: any) => ({ id: p.id, name: p.name, code: p.code || '' })));
       setLoading(false);
     }).catch(() => {
       setError('No se pudo cargar la orden');
@@ -149,6 +155,7 @@ export default function EditSalePage() {
         delivery_date: formData.deliveryDate || undefined,
         payment_terms: parseInt(formData.paymentTerms),
         notes: formData.notes,
+        project_id: formData.projectId || null,
         items: items.filter(i => i.product_id).map(i => ({
           product_id: i.product_id,
           quantity: i.quantity,
@@ -249,6 +256,12 @@ export default function EditSalePage() {
                       { value: '60', label: '60 días' },
                       { value: '90', label: '90 días' },
                     ]}
+                  />
+                  <Select
+                    label="Proyecto"
+                    value={formData.projectId}
+                    onChange={handleFormChange('projectId')}
+                    options={[{ value: '', label: 'Sin proyecto...' }, ...projects.map(p => ({ value: p.id, label: `${p.code} - ${p.name}` }))]}
                   />
                 </div>
               </CardContent>

@@ -53,6 +53,7 @@ export async function GET(request: NextRequest) {
       `SELECT i.*,
         (SELECT json_build_object('id', c.id, 'name', c.name, 'tax_id', c.tax_id) FROM customers c WHERE c.id = i.customer_id) as customer,
         (SELECT json_build_object('id', so.id, 'number', so.order_number) FROM sales_orders so WHERE so.id = i.order_id) as sales_order,
+        (SELECT json_build_object('id', pj.id, 'name', pj.name, 'code', pj.code) FROM projects pj WHERE pj.id = i.project_id) as project,
         (SELECT json_agg(json_build_object(
           'id', ii.id, 'product_id', ii.product_id, 'description', ii.description, 'quantity', ii.quantity, 'unit_price', ii.unit_price,
           'discount_percent', ii.discount_percent,
