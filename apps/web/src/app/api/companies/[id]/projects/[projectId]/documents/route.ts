@@ -1,0 +1,43 @@
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string; projectId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const result = await query(
+      `SELECT pd.*, p.full_name as uploaded_by_name
+       FROM project_documents pd
+       LEFT JOIN profiles p ON pd.uploaded_by = p.id
+       WHERE pd.project_id = $1 AND pd.company_id = $2
+       ORDER BY pd.created_at DESC`,
+      [params.projectId, companyId]
+    );
+    return successResponse(result.rows);
+  } catch { return errorResponse('Internal server error', 500); }
+}
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { id: string; projectId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+    const body = await request.json();
+    if (!body.name) return errorResponse('Name is required', 400);
+
+    const result = await query(
+      `INSERT INTO project_documents (company_id, project_id, name, file_url, file_type, file_size, category, description, uploaded_by)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+      [companyId, params.projectId, body.name, body.file_url || null, body.file_type || null,
+       body.file_size || null, body.category || 'other', body.description || null, body.uploaded_by || null]
+    );
+    return successResponse(result.rows[0], 201);
+  } catch { return errorResponse('Internal server error', 500); }
+}

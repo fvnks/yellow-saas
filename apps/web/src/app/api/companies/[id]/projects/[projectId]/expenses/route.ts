@@ -1,0 +1,43 @@
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string; projectId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const result = await query(
+      `SELECT pe.*, p.full_name as created_by_name
+       FROM project_expenses pe
+       LEFT JOIN profiles p ON pe.created_by = p.id
+       WHERE pe.project_id = $1 AND pe.company_id = $2
+       ORDER BY pe.expense_date DESC`,
+      [params.projectId, companyId]
+    );
+    return successResponse(result.rows);
+  } catch { return errorResponse('Internal server error', 500); }
+}
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { id: string; projectId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+    const body = await request.json();
+    if (!body.description || !body.amount || !body.expense_date) return errorResponse('Description, amount, and expense_date are required', 400);
+
+    const result = await query(
+      `INSERT INTO project_expenses (company_id, project_id, category, description, amount, currency, expense_date, invoice_number, supplier_name, created_by)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
+      [companyId, params.projectId, body.category || 'other', body.description, body.amount,
+       body.currency || 'CLP', body.expense_date, body.invoice_number || null, body.supplier_name || null, body.created_by || null]
+    );
+    return successResponse(result.rows[0], 201);
+  } catch { return errorResponse('Internal server error', 500); }
+}

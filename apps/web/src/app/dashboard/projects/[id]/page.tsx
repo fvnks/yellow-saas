@@ -2,11 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Button, Badge } from '@yellow-erp/ui';
-import { ArrowLeft, Plus, Calendar, DollarSign, Users, CheckCircle2, Clock, AlertTriangle, Edit, Trash2, MoreVertical, GripVertical, BarChart3 } from 'lucide-react';
+import { Badge } from '@yellow-erp/ui';
+import { ArrowLeft, Plus, Calendar, DollarSign, Users, CheckCircle2, Clock, Edit, Trash2, BarChart3, Flag, Receipt, FileText, TrendingUp, LayoutGrid } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { ContinuousTabs } from '@/components/ui/continuous-tabs';
+import GanttChart from '../components/GanttChart';
+import MilestonesTab from '../components/MilestonesTab';
+import TimesheetsTab from '../components/TimesheetsTab';
+import ExpensesTab from '../components/ExpensesTab';
+import CostsTab from '../components/CostsTab';
+import DocumentsTab from '../components/DocumentsTab';
+import RentabilidadReport from '../components/RentabilidadReport';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -37,36 +44,50 @@ export default function ProjectDetailPage() {
 
   const [project, setProject] = useState<any>(null);
   const [tasks, setTasks] = useState<any[]>([]);
+  const [milestones, setMilestones] = useState<any[]>([]);
+  const [timesheets, setTimesheets] = useState<any[]>([]);
+  const [expenses, setExpenses] = useState<any[]>([]);
+  const [costsData, setCostsData] = useState<any>({ costs: [], summary: [] });
+  const [documents, setDocuments] = useState<any[]>([]);
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('tasks');
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [editingTask, setEditingTask] = useState<any>(null);
-  const [users, setUsers] = useState<any[]>([]);
   const [taskForm, setTaskForm] = useState({
     name: '', description: '', assignee_id: '', status: 'todo', priority: 'medium',
     start_date: '', due_date: '', estimated_hours: '',
   });
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    loadData();
-  }, [projectId]);
+  useEffect(() => { loadData(); }, [projectId]);
 
   const loadData = async () => {
     setLoading(true);
     try {
       const api = getApiClient();
-      const [projectRes, tasksRes, usersRes] = await Promise.all([
+      const [projectRes, tasksRes, milestonesRes, timesheetsRes, expensesRes, costsRes, docsRes, employeesRes, usersRes] = await Promise.all([
         api.getProject(projectId),
         api.getProjectTasks(projectId),
+        api.getProjectMilestones(projectId),
+        api.getProjectTimesheets(projectId),
+        api.getProjectExpenses(projectId),
+        api.getProjectCosts(projectId),
+        api.getProjectDocuments(projectId),
+        api.getEmployees({ limit: '200' }),
         api.getUsers({ limit: 100 }),
       ]);
       setProject(projectRes);
       setTasks(Array.isArray(tasksRes) ? tasksRes : []);
-      setUsers(usersRes.data || []);
-    } catch (err) {
-      console.error('Failed to load project:', err);
-    }
+      setMilestones(Array.isArray(milestonesRes) ? milestonesRes : []);
+      setTimesheets(Array.isArray(timesheetsRes) ? timesheetsRes : []);
+      setExpenses(Array.isArray(expensesRes) ? expensesRes : []);
+      setCostsData(costsRes || { costs: [], summary: [] });
+      setDocuments(Array.isArray(docsRes) ? docsRes : []);
+      setEmployees(Array.isArray(employeesRes?.data) ? employeesRes.data : []);
+      setUsers(usersRes?.data || []);
+    } catch (err) { console.error('Failed to load project:', err); }
     setLoading(false);
   };
 
@@ -75,85 +96,57 @@ export default function ProjectDetailPage() {
     setSaving(true);
     try {
       const api = getApiClient();
-      const data = {
-        ...taskForm,
-        estimated_hours: taskForm.estimated_hours ? parseFloat(taskForm.estimated_hours) : null,
-        assignee_id: taskForm.assignee_id || null,
-      };
-      if (editingTask) {
-        await api.updateProjectTask(projectId, editingTask.id, data);
-      } else {
-        await api.createProjectTask(projectId, data);
-      }
-      setShowTaskForm(false);
-      setEditingTask(null);
+      const data = { ...taskForm, estimated_hours: taskForm.estimated_hours ? parseFloat(taskForm.estimated_hours) : null, assignee_id: taskForm.assignee_id || null };
+      if (editingTask) { await api.updateProjectTask(projectId, editingTask.id, data); }
+      else { await api.createProjectTask(projectId, data); }
+      setShowTaskForm(false); setEditingTask(null);
       setTaskForm({ name: '', description: '', assignee_id: '', status: 'todo', priority: 'medium', start_date: '', due_date: '', estimated_hours: '' });
       loadData();
-    } catch (err) {
-      console.error('Failed to save task:', err);
-    }
+    } catch (err) { console.error(err); }
     setSaving(false);
   };
 
   const handleEditTask = (task: any) => {
-    setTaskForm({
-      name: task.name || '',
-      description: task.description || '',
-      assignee_id: task.assignee_id || '',
-      status: task.status || 'todo',
-      priority: task.priority || 'medium',
-      start_date: task.start_date || '',
-      due_date: task.due_date || '',
-      estimated_hours: task.estimated_hours || '',
-    });
-    setEditingTask(task);
-    setShowTaskForm(true);
+    setTaskForm({ name: task.name || '', description: task.description || '', assignee_id: task.assignee_id || '', status: task.status || 'todo', priority: task.priority || 'medium', start_date: task.start_date || '', due_date: task.due_date || '', estimated_hours: task.estimated_hours || '' });
+    setEditingTask(task); setShowTaskForm(true);
   };
 
   const handleDeleteTask = async (taskId: string) => {
     if (!confirm('Eliminar esta tarea?')) return;
-    try {
-      const api = getApiClient();
-      await api.deleteProjectTask(projectId, taskId);
-      loadData();
-    } catch (err) {
-      console.error('Failed to delete task:', err);
-    }
+    try { const api = getApiClient(); await api.deleteProjectTask(projectId, taskId); loadData(); } catch (err) { console.error(err); }
   };
 
   const handleUpdateTaskStatus = async (task: any, newStatus: string) => {
-    try {
-      const api = getApiClient();
-      await api.updateProjectTask(projectId, task.id, { ...task, status: newStatus });
-      loadData();
-    } catch (err) {
-      console.error('Failed to update task:', err);
-    }
+    try { const api = getApiClient(); await api.updateProjectTask(projectId, task.id, { ...task, status: newStatus }); loadData(); } catch (err) { console.error(err); }
   };
 
   const handleUpdateProgress = async (progress: number) => {
-    try {
-      const api = getApiClient();
-      await api.updateProject(projectId, { ...project, progress });
-      setProject({ ...project, progress });
-    } catch (err) {
-      console.error('Failed to update progress:', err);
-    }
+    try { const api = getApiClient(); await api.updateProject(projectId, { ...project, progress }); setProject({ ...project, progress }); } catch (err) { console.error(err); }
   };
 
   const totalEstimated = tasks.reduce((sum, t) => sum + (parseFloat(t.estimated_hours) || 0), 0);
   const totalActual = tasks.reduce((sum, t) => sum + (parseFloat(t.actual_hours) || 0), 0);
   const completedTasks = tasks.filter(t => t.status === 'done').length;
 
+  const tabs = [
+    { id: 'tasks', label: `Tareas (${tasks.length})` },
+    { id: 'gantt', label: 'Gantt' },
+    { id: 'milestones', label: `Hitos (${milestones.length})` },
+    { id: 'timesheets', label: `Horas (${timesheets.length})` },
+    { id: 'expenses', label: `Gastos (${expenses.length})` },
+    { id: 'costs', label: 'Centro Costos' },
+    { id: 'documents', label: `Docs (${documents.length})` },
+    { id: 'profit', label: 'Rentabilidad' },
+    { id: 'info', label: 'Info' },
+  ];
+
   if (loading) {
     return (
       <div className="space-y-6">
         <div className="animate-pulse space-y-4">
           <div className="h-8 bg-slate-200 rounded w-1/3" />
-          <div className="h-4 bg-slate-200 rounded w-1/2" />
-          <div className="grid grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map(i => <div key={i} className="h-24 bg-slate-200 rounded-xl" />)}
-          </div>
+          <div className="grid grid-cols-4 gap-4">{[1, 2, 3, 4].map(i => <div key={i} className="h-24 bg-slate-200 rounded-xl" />)}</div>
+          <div className="h-12 bg-slate-200 rounded-xl" />
         </div>
       </div>
     );
@@ -171,9 +164,7 @@ export default function ProjectDetailPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <button onClick={() => router.back()} className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-          <ArrowLeft className="w-5 h-5 text-slate-600" />
-        </button>
+        <button onClick={() => router.back()} className="p-2 hover:bg-slate-100 rounded-lg transition-colors"><ArrowLeft className="w-5 h-5 text-slate-600" /></button>
         <div className="flex-1">
           <div className="flex items-center gap-3">
             <h1 className="text-xl font-bold text-slate-900">{project.name}</h1>
@@ -186,46 +177,26 @@ export default function ProjectDetailPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Presupuesto</p>
-              <p className="text-lg font-bold text-slate-900 mt-1">${(parseFloat(project.budget) / 1000000).toFixed(1)}M</p>
-            </div>
-            <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-              <DollarSign className="w-5 h-5 text-indigo-600" />
-            </div>
+            <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Presupuesto</p><p className="text-lg font-bold text-slate-900 mt-1">${(parseFloat(project.budget) / 1000000).toFixed(1)}M</p></div>
+            <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center"><DollarSign className="w-5 h-5 text-indigo-600" /></div>
           </div>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tareas</p>
-              <p className="text-lg font-bold text-slate-900 mt-1">{completedTasks}/{tasks.length}</p>
-            </div>
-            <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
-              <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-            </div>
+            <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tareas</p><p className="text-lg font-bold text-slate-900 mt-1">{completedTasks}/{tasks.length}</p></div>
+            <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center"><CheckCircle2 className="w-5 h-5 text-emerald-600" /></div>
           </div>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Horas</p>
-              <p className="text-lg font-bold text-slate-900 mt-1">{totalActual.toFixed(1)}/{totalEstimated.toFixed(1)}</p>
-            </div>
-            <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
-              <Clock className="w-5 h-5 text-amber-600" />
-            </div>
+            <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Horas</p><p className="text-lg font-bold text-slate-900 mt-1">{totalActual.toFixed(1)}/{totalEstimated.toFixed(1)}</p></div>
+            <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center"><Clock className="w-5 h-5 text-amber-600" /></div>
           </div>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Progreso</p>
-              <p className="text-lg font-bold text-slate-900 mt-1">{project.progress || 0}%</p>
-            </div>
-            <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-blue-600" />
-            </div>
+            <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Progreso</p><p className="text-lg font-bold text-slate-900 mt-1">{project.progress || 0}%</p></div>
+            <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center"><BarChart3 className="w-5 h-5 text-blue-600" /></div>
           </div>
         </div>
       </div>
@@ -249,16 +220,10 @@ export default function ProjectDetailPage() {
       </div>
 
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
-        <ContinuousTabs
-          tabs={[
-            { id: 'tasks', label: `Tareas (${tasks.length})` },
-            { id: 'info', label: 'Informacion' },
-          ]}
-          defaultActiveId={activeTab}
-          onChange={(id) => setActiveTab(id)}
-        />
+        <ContinuousTabs tabs={tabs} defaultActiveId={activeTab} onChange={(id) => setActiveTab(id)} />
       </div>
 
+      {/* TABS CONTENT */}
       {activeTab === 'tasks' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -268,7 +233,6 @@ export default function ProjectDetailPage() {
               <Plus className="w-4 h-4" /> Nueva Tarea
             </button>
           </div>
-
           {tasks.length === 0 ? (
             <div className="text-center py-12 bg-white border border-slate-200 rounded-xl shadow-sm">
               <CheckCircle2 className="w-12 h-12 text-slate-200 mx-auto mb-3" />
@@ -283,32 +247,25 @@ export default function ProjectDetailPage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-3">
                         <h3 className="text-sm font-semibold text-slate-900">{task.name}</h3>
-                        <Badge variant={taskStatusConfig[task.status]?.variant || 'neutral'}>{taskStatusConfig[task.status]?.label || task.status}</Badge>
-                        <Badge variant={priorityConfig[task.priority]?.variant || 'neutral'}>{priorityConfig[task.priority]?.label || task.priority}</Badge>
+                        <Badge variant={taskStatusConfig[task.status]?.variant || 'neutral'}>{taskStatusConfig[task.status]?.label}</Badge>
+                        <Badge variant={priorityConfig[task.priority]?.variant || 'neutral'}>{priorityConfig[task.priority]?.label}</Badge>
                       </div>
                       {task.description && <p className="text-xs text-slate-500 mt-1">{task.description}</p>}
                       <div className="flex items-center gap-4 mt-2 text-xs text-slate-400">
                         {task.assignee_name && <span className="flex items-center gap-1"><Users className="w-3 h-3" />{task.assignee_name}</span>}
                         {task.due_date && <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{task.due_date}</span>}
-                        {task.estimated_hours && <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{task.estimated_hours}h estimadas</span>}
+                        {task.estimated_hours && <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{task.estimated_hours}h</span>}
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
                       {task.status !== 'done' && (
-                        <button onClick={() => {
-                          const nextStatus = task.status === 'todo' ? 'in_progress' : task.status === 'in_progress' ? 'review' : 'done';
-                          handleUpdateTaskStatus(task, nextStatus);
-                        }}
+                        <button onClick={() => { const next = task.status === 'todo' ? 'in_progress' : task.status === 'in_progress' ? 'review' : 'done'; handleUpdateTaskStatus(task, next); }}
                           className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded text-xs font-medium hover:bg-emerald-100 transition-colors">
                           {task.status === 'todo' ? 'Iniciar' : task.status === 'in_progress' ? 'Revisar' : 'Completar'}
                         </button>
                       )}
-                      <button onClick={() => handleEditTask(task)} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
-                        <Edit className="w-3.5 h-3.5 text-slate-500" />
-                      </button>
-                      <button onClick={() => handleDeleteTask(task.id)} className="p-1.5 hover:bg-red-50 rounded-lg transition-colors">
-                        <Trash2 className="w-3.5 h-3.5 text-red-500" />
-                      </button>
+                      <button onClick={() => handleEditTask(task)} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors"><Edit className="w-3.5 h-3.5 text-slate-500" /></button>
+                      <button onClick={() => handleDeleteTask(task.id)} className="p-1.5 hover:bg-red-50 rounded-lg transition-colors"><Trash2 className="w-3.5 h-3.5 text-red-500" /></button>
                     </div>
                   </div>
                 </div>
@@ -318,50 +275,35 @@ export default function ProjectDetailPage() {
         </div>
       )}
 
+      {activeTab === 'gantt' && <GanttChart tasks={tasks} />}
+      {activeTab === 'milestones' && <MilestonesTab projectId={projectId} milestones={milestones} onRefresh={loadData} />}
+      {activeTab === 'timesheets' && <TimesheetsTab projectId={projectId} timesheets={timesheets} tasks={tasks} employees={employees} onRefresh={loadData} />}
+      {activeTab === 'expenses' && <ExpensesTab projectId={projectId} expenses={expenses} onRefresh={loadData} />}
+      {activeTab === 'costs' && <CostsTab costs={costsData.costs || []} budget={project.budget} />}
+      {activeTab === 'documents' && <DocumentsTab projectId={projectId} documents={documents} onRefresh={loadData} />}
+      {activeTab === 'profit' && <RentabilidadReport project={project} costs={costsData.costs || []} expenses={expenses} timesheets={timesheets} />}
+
       {activeTab === 'info' && (
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
           <h2 className="text-sm font-semibold text-slate-900 mb-4">Informacion del Proyecto</h2>
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-4">
-              <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</p>
-                <p className="text-sm text-slate-900 mt-1">{project.name}</p>
-              </div>
-              <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Codigo</p>
-                <p className="text-sm text-slate-900 mt-1">{project.code}</p>
-              </div>
-              <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</p>
-                <p className="text-sm text-slate-900 mt-1">{project.customer_name || '—'}</p>
-              </div>
-              <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Gerente</p>
-                <p className="text-sm text-slate-900 mt-1">{project.project_manager_name || '—'}</p>
-              </div>
+              <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</p><p className="text-sm text-slate-900 mt-1">{project.name}</p></div>
+              <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Codigo</p><p className="text-sm text-slate-900 mt-1">{project.code}</p></div>
+              <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</p><p className="text-sm text-slate-900 mt-1">{project.customer_name || '—'}</p></div>
+              <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Gerente</p><p className="text-sm text-slate-900 mt-1">{project.project_manager_name || '—'}</p></div>
             </div>
             <div className="space-y-4">
-              <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha Inicio</p>
-                <p className="text-sm text-slate-900 mt-1">{project.start_date || '—'}</p>
-              </div>
-              <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha Fin</p>
-                <p className="text-sm text-slate-900 mt-1">{project.end_date || '—'}</p>
-              </div>
-              <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Presupuesto</p>
-                <p className="text-sm text-slate-900 mt-1">${(parseFloat(project.budget) || 0).toLocaleString('es-CL')} CLP</p>
-              </div>
-              <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Descripcion</p>
-                <p className="text-sm text-slate-900 mt-1">{project.description || '—'}</p>
-              </div>
+              <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha Inicio</p><p className="text-sm text-slate-900 mt-1">{project.start_date || '—'}</p></div>
+              <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha Fin</p><p className="text-sm text-slate-900 mt-1">{project.end_date || '—'}</p></div>
+              <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Presupuesto</p><p className="text-sm text-slate-900 mt-1">${(parseFloat(project.budget) || 0).toLocaleString('es-CL')} CLP</p></div>
+              <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Descripcion</p><p className="text-sm text-slate-900 mt-1">{project.description || '—'}</p></div>
             </div>
           </div>
         </div>
       )}
 
+      {/* TASK MODAL */}
       {showTaskForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4">
@@ -393,21 +335,18 @@ export default function ProjectDetailPage() {
                   <label className="block text-xs font-medium text-slate-700">Prioridad</label>
                   <select value={taskForm.priority} onChange={e => setTaskForm({ ...taskForm, priority: e.target.value })}
                     className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                    <option value="low">Baja</option>
-                    <option value="medium">Media</option>
-                    <option value="high">Alta</option>
-                    <option value="urgent">Urgente</option>
+                    <option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="urgent">Urgente</option>
                   </select>
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Fecha Inicio</label>
+                  <label className="block text-xs font-medium text-slate-700">Inicio</label>
                   <input type="date" value={taskForm.start_date} onChange={e => setTaskForm({ ...taskForm, start_date: e.target.value })}
                     className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Fecha Limite</label>
+                  <label className="block text-xs font-medium text-slate-700">Limite</label>
                   <input type="date" value={taskForm.due_date} onChange={e => setTaskForm({ ...taskForm, due_date: e.target.value })}
                     className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
                 </div>
@@ -420,9 +359,7 @@ export default function ProjectDetailPage() {
             </div>
             <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
               <button onClick={() => { setShowTaskForm(false); setEditingTask(null); }}
-                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                Cancelar
-              </button>
+                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSaveTask} disabled={saving || !taskForm.name}
                 className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                 {saving ? 'Guardando...' : editingTask ? 'Actualizar' : 'Crear Tarea'}
