@@ -1,0 +1,108 @@
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function POST(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    let created = 0;
+
+    // 1. Tasks due in next 3 days or overdue
+    const { rows: dueTasks } = await query(
+      `SELECT pt.id, pt.name, pt.due_date, pt.project_id, p.name as project_name
+       FROM project_tasks pt
+       JOIN projects p ON pt.project_id = p.id
+       WHERE p.company_id = $1 AND pt.status != 'done'
+       AND pt.due_date <= CURRENT_DATE + INTERVAL '3 days'
+       AND pt.due_date IS NOT NULL
+       AND NOT EXISTS (
+         SELECT 1 FROM notifications n
+         WHERE n.entity_type = 'task' AND n.entity_id = pt.id
+         AND n.type = 'deadline_warning' AND n.created_at > NOW() - INTERVAL '1 day'
+       )`,
+      [companyId]
+    );
+
+    for (const task of dueTasks) {
+      const isOverdue = new Date(task.due_date) < new Date();
+      await query(
+        `INSERT INTO notifications (company_id, type, title, message, entity_type, entity_id, project_id)
+         VALUES ($1, 'deadline_warning', $2, $3, 'task', $4, $5)`,
+        [
+          companyId,
+          isOverdue ? `Tarea atrasada: ${task.name}` : `Tarea proxima a vencer: ${task.name}`,
+          `La tarea "${task.name}" del proyecto "${task.project_name}" ${isOverdue ? 'esta atrasada desde' : 'vence el'} ${new Date(task.due_date).toLocaleDateString('es-CL')}`,
+          task.id, task.project_id,
+        ]
+      );
+      created++;
+    }
+
+    // 2. Milestones due in next 5 days or overdue
+    const { rows: dueMilestones } = await query(
+      `SELECT pm.id, pm.name, pm.due_date, pm.project_id, p.name as project_name
+       FROM project_milestones pm
+       JOIN projects p ON pm.project_id = p.id
+       WHERE p.company_id = $1 AND pm.status = 'pending'
+       AND pm.due_date <= CURRENT_DATE + INTERVAL '5 days'
+       AND pm.due_date IS NOT NULL
+       AND NOT EXISTS (
+         SELECT 1 FROM notifications n
+         WHERE n.entity_type = 'milestone' AND n.entity_id = pm.id
+         AND n.type = 'deadline_warning' AND n.created_at > NOW() - INTERVAL '1 day'
+       )`,
+      [companyId]
+    );
+
+    for (const ms of dueMilestones) {
+      const isOverdue = new Date(ms.due_date) < new Date();
+      await query(
+        `INSERT INTO notifications (company_id, type, title, message, entity_type, entity_id, project_id)
+         VALUES ($1, 'deadline_warning', $2, $3, 'milestone', $4, $5)`,
+        [
+          companyId,
+          isOverdue ? `Hito atrasado: ${ms.name}` : `Hito proximo a vencer: ${ms.name}`,
+          `El hito "${ms.name}" del proyecto "${ms.project_name}" ${isOverdue ? 'esta atrasado desde' : 'vence el'} ${new Date(ms.due_date).toLocaleDateString('es-CL')}`,
+          ms.id, ms.project_id,
+        ]
+      );
+      created++;
+    }
+
+    // 3. Projects ending in next 7 days
+    const { rows: dueProjects } = await query(
+      `SELECT id, name, end_date
+       FROM projects
+       WHERE company_id = $1 AND status = 'active'
+       AND end_date <= CURRENT_DATE + INTERVAL '7 days'
+       AND end_date IS NOT NULL
+       AND NOT EXISTS (
+         SELECT 1 FROM notifications n
+         WHERE n.entity_type = 'project' AND n.entity_id = projects.id
+         AND n.type = 'deadline_warning' AND n.created_at > NOW() - INTERVAL '2 days'
+       )`,
+      [companyId]
+    );
+
+    for (const proj of dueProjects) {
+      const isOverdue = new Date(proj.end_date) < new Date();
+      await query(
+        `INSERT INTO notifications (company_id, type, title, message, entity_type, entity_id, project_id)
+         VALUES ($1, 'deadline_warning', $2, $3, 'project', $4, $4)`,
+        [
+          companyId,
+          isOverdue ? `Proyecto atrasado: ${proj.name}` : `Proyecto proximo a finalizar: ${proj.name}`,
+          `El proyecto "${proj.name}" ${isOverdue ? 'esta atrasado desde' : 'finaliza el'} ${new Date(proj.end_date).toLocaleDateString('es-CL')}`,
+          proj.id,
+        ]
+      );
+      created++;
+    }
+
+    return successResponse({ message: `Created ${created} notifications`, created });
+  } catch (err: any) {
+    return errorResponse(err.message, 500);
+  }
+}

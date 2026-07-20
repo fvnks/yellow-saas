@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 import SidebarBreadcrumbs from "./components/sidebar/sidebar-breadcrumbs";
+import NotificationsDropdown from "./components/NotificationsDropdown";
 
 interface LayoutProps {
   readonly children: ReactNode;
@@ -23,6 +24,9 @@ export default function DashboardLayout({ children }: LayoutProps) {
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="mr-2 h-4" />
               <SidebarBreadcrumbs />
+            </div>
+            <div className="ml-auto pr-4">
+              <NotificationsDropdown />
             </div>
           </header>
           <div className="p-4 pt-0">{children}</div>

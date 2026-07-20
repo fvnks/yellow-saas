@@ -30,7 +30,7 @@ export default function AlertsPage() {
     const api = getApiClient();
     Promise.all([
       api.getProducts({ limit: '500' }),
-      api.getNotifications({ limit: '50' }),
+      api.getNotifications({ limit: 50 }),
       api.getProductBatches({ status: 'active', limit: '500' }),
     ]).then(([prodRes, notifRes, batchRes]: any[]) => {
       const products = prodRes.data || [];
