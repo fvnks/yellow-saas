@@ -1130,6 +1130,11 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects/${projectId}/change-orders/${changeOrderId}`, { method: 'DELETE' });
   }
 
+  // Project Portal
+  async toggleProjectPortal(projectId: string, data: { enabled?: boolean; show_budget?: boolean; show_costs?: boolean }) {
+    return this.request<any>(`/projects/${projectId}/portal`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
   async getProjectTasks(projectId: string) {
     return this.request<any[]>(`/projects/${projectId}/tasks`);
   }

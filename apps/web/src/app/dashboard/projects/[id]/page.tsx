@@ -17,6 +17,7 @@ import RentabilidadReport from '../components/RentabilidadReport';
 import ActivityLog from '../components/ActivityLog';
 import RisksTab from '../components/RisksTab';
 import ChangeOrdersTab from '../components/ChangeOrdersTab';
+import PortalTab from '../components/PortalTab';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -179,6 +180,7 @@ export default function ProjectDetailPage() {
     { id: 'documents', label: `Docs (${documents.length})` },
     { id: 'profit', label: 'Rentabilidad' },
     { id: 'activity', label: 'Actividad' },
+    { id: 'portal', label: 'Portal' },
     { id: 'info', label: 'Info' },
   ];
 
@@ -380,6 +382,7 @@ export default function ProjectDetailPage() {
       {activeTab === 'documents' && <DocumentsTab projectId={projectId} documents={documents} onRefresh={loadData} />}
       {activeTab === 'profit' && <RentabilidadReport project={project} costs={costsData.costs || []} expenses={expenses} timesheets={timesheets} />}
       {activeTab === 'activity' && <ActivityLog projectId={projectId} />}
+      {activeTab === 'portal' && <PortalTab projectId={projectId} project={project} onRefresh={loadData} />}
 
       {activeTab === 'info' && (
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
