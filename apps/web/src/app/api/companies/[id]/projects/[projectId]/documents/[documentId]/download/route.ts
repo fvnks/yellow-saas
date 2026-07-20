@@ -1,0 +1,37 @@
+import { query } from '@/api/lib/db';
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string; projectId: string; documentId: string } }
+) {
+  try {
+    const { rows } = await query(
+      `SELECT name, file_data, mime_type, file_size FROM project_documents
+       WHERE id = $1 AND project_id = $2 AND company_id = $3`,
+      [params.documentId, params.projectId, params.id]
+    );
+
+    if (rows.length === 0) {
+      return NextResponse.json({ error: 'Document not found' }, { status: 404 });
+    }
+
+    const doc = rows[0];
+
+    if (!doc.file_data) {
+      return NextResponse.json({ error: 'No file data available' }, { status: 404 });
+    }
+
+    const buffer = Buffer.from(doc.file_data, 'base64');
+
+    return new NextResponse(buffer, {
+      headers: {
+        'Content-Type': doc.mime_type || 'application/octet-stream',
+        'Content-Disposition': `inline; filename="${doc.name}"`,
+        'Content-Length': buffer.length.toString(),
+      },
+    });
+  } catch {
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}

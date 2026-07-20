@@ -1147,6 +1147,31 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects/allocation${qs}`);
   }
 
+  // File Upload
+  async uploadProjectDocument(projectId: string, file: File, category?: string, description?: string) {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (category) formData.append('category', category);
+    if (description) formData.append('description', description);
+
+    const url = `${API_BASE}/companies/${this.companyId}/projects/${projectId}/documents/upload`;
+    const token = getTokenFromCookie();
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({ error: 'Upload failed' }));
+      throw new Error(err.error || 'Upload failed');
+    }
+    return response.json();
+  }
+
+  async getDocumentDownloadUrl(projectId: string, documentId: string) {
+    return `${API_BASE}/companies/${this.companyId}/projects/${projectId}/documents/${documentId}/download`;
+  }
+
   async getProjectTasks(projectId: string) {
     return this.request<any[]>(`/projects/${projectId}/tasks`);
   }
