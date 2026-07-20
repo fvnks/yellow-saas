@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Badge } from '@yellow-erp/ui';
-import { Clock, Plus, Trash2, Edit, Filter } from 'lucide-react';
+import { Clock, Plus, Trash2, Edit, Filter, CheckCircle2, XCircle, Check, X } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 
 interface Timesheet {
@@ -16,6 +16,8 @@ interface Timesheet {
   task_name: string | null;
   billable: boolean;
   approved: boolean;
+  approved_by: string | null;
+  approved_at: string | null;
 }
 
 export default function TimesheetsTab({ projectId, timesheets, tasks, employees, onRefresh }: {
@@ -26,6 +28,8 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
   const [form, setForm] = useState({ employee_id: '', task_id: '', date: new Date().toISOString().split('T')[0], hours: '', description: '', billable: true });
   const [saving, setSaving] = useState(false);
   const [weekFilter, setWeekFilter] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
+  const [approving, setApproving] = useState<string | null>(null);
 
   const api = getApiClient();
 
@@ -70,6 +74,15 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
     try { await api.deleteProjectTimesheet(projectId, id); onRefresh(); } catch (err) { console.error(err); }
   };
 
+  const handleApprove = async (id: string, approved: boolean) => {
+    setApproving(id);
+    try {
+      await api.approveProjectTimesheet(projectId, id, approved);
+      onRefresh();
+    } catch (err) { console.error(err); }
+    setApproving(null);
+  };
+
   const now = new Date();
   const weekStart = new Date(now);
   weekStart.setDate(now.getDate() - now.getDay() + 1);
@@ -77,25 +90,51 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
   const weekEnd = new Date(weekStart);
   weekEnd.setDate(weekStart.getDate() + 6);
 
-  const filtered = weekFilter
+  let filtered = weekFilter
     ? timesheets.filter(t => { const d = new Date(t.date); return d >= weekStart && d <= weekEnd; })
     : timesheets;
 
+  if (statusFilter !== 'all') {
+    filtered = filtered.filter(t => {
+      if (statusFilter === 'pending') return !t.approved && !t.approved_at;
+      if (statusFilter === 'approved') return t.approved;
+      return !t.approved && t.approved_at;
+    });
+  }
+
   const totalHours = filtered.reduce((s, t) => s + Number(t.hours), 0);
   const billableHours = filtered.filter(t => t.billable).reduce((s, t) => s + Number(t.hours), 0);
+  const pendingCount = timesheets.filter(t => !t.approved && !t.approved_at).length;
+  const approvedCount = timesheets.filter(t => t.approved).length;
+
+  const getStatusBadge = (t: Timesheet) => {
+    if (t.approved) return <Badge variant="success">Aprobado</Badge>;
+    if (t.approved_at && !t.approved) return <Badge variant="danger">Rechazado</Badge>;
+    return <Badge variant="warning">Pendiente</Badge>;
+  };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-sm font-semibold text-slate-900">Control de Horas</h3>
-          <p className="text-xs text-slate-500 mt-0.5">{totalHours.toFixed(1)}h total · {billableHours.toFixed(1)}h facturables</p>
+          <p className="text-xs text-slate-500 mt-0.5">
+            {totalHours.toFixed(1)}h total · {billableHours.toFixed(1)}h facturables
+            {pendingCount > 0 && <span className="ml-2 text-amber-600">· {pendingCount} pendientes</span>}
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => setWeekFilter(!weekFilter)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${weekFilter ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
             <Filter className="w-3 h-3 mr-1 inline" /> Esta semana
           </button>
+          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value as any)}
+            className="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-500 border-0 focus:ring-2 focus:ring-indigo-500">
+            <option value="all">Todos ({timesheets.length})</option>
+            <option value="pending">Pendientes ({pendingCount})</option>
+            <option value="approved">Aprobados ({approvedCount})</option>
+            <option value="rejected">Rechazados</option>
+          </select>
           <button onClick={openCreate} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <Plus className="w-4 h-4" /> Registrar Horas
           </button>
@@ -116,9 +155,9 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Empleado</th>
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tarea</th>
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Horas</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Descripcion</th>
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tipo</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider"></th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -128,12 +167,24 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
                   <td className="px-4 py-3 text-xs text-slate-700">{t.employee_name || '—'}</td>
                   <td className="px-4 py-3 text-xs text-slate-700">{t.task_name || '—'}</td>
                   <td className="px-4 py-3 text-xs font-semibold text-slate-900">{Number(t.hours).toFixed(1)}h</td>
-                  <td className="px-4 py-3 text-xs text-slate-500 max-w-[200px] truncate">{t.description || '—'}</td>
                   <td className="px-4 py-3">
                     <Badge variant={t.billable ? 'success' : 'neutral'}>{t.billable ? 'Facturable' : 'No fact.'}</Badge>
                   </td>
+                  <td className="px-4 py-3">{getStatusBadge(t)}</td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex items-center justify-end gap-1">
+                      {!t.approved && !t.approved_at && (
+                        <>
+                          <button onClick={() => handleApprove(t.id, true)} disabled={approving === t.id}
+                            className="p-1 hover:bg-emerald-50 rounded-lg transition-colors" title="Aprobar">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                          </button>
+                          <button onClick={() => handleApprove(t.id, false)} disabled={approving === t.id}
+                            className="p-1 hover:bg-red-50 rounded-lg transition-colors" title="Rechazar">
+                            <XCircle className="w-3.5 h-3.5 text-red-500" />
+                          </button>
+                        </>
+                      )}
                       <button onClick={() => openEdit(t)} className="p-1 hover:bg-slate-100 rounded-lg transition-colors">
                         <Edit className="w-3.5 h-3.5 text-slate-400" />
                       </button>

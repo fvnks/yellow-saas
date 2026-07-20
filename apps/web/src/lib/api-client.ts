@@ -1159,6 +1159,12 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects/${projectId}/timesheets/${timesheetId}`, { method: 'DELETE' });
   }
 
+  async approveProjectTimesheet(projectId: string, timesheetId: string, approved: boolean) {
+    return this.request<any>(`/projects/${projectId}/timesheets/${timesheetId}`, {
+      method: 'PUT', body: JSON.stringify({ action: approved ? 'approve' : 'reject' })
+    });
+  }
+
   // Project Expenses
   async getProjectExpenses(projectId: string) {
     return this.request<any[]>(`/projects/${projectId}/expenses`);
