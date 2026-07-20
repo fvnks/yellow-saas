@@ -1135,6 +1135,12 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects/${projectId}/portal`, { method: 'POST', body: JSON.stringify(data) });
   }
 
+  // Project Reports
+  async getProjectReports(projectId?: string) {
+    const qs = projectId ? `?project_id=${projectId}` : '';
+    return this.request<any>(`/reports/projects${qs}`);
+  }
+
   async getProjectTasks(projectId: string) {
     return this.request<any[]>(`/projects/${projectId}/tasks`);
   }
