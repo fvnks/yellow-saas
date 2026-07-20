@@ -1,0 +1,69 @@
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { searchParams } = new URL(request.url);
+    const period = searchParams.get('period') || '30'; // days
+
+    const { rows: allocation } = await query(`
+      SELECT
+        e.id as employee_id,
+        COALESCE(e.first_name || ' ' || e.last_name, 'Sin asignar') as employee_name,
+        p.id as project_id,
+        p.name as project_name,
+        p.code as project_code,
+        COALESCE(SUM(t.hours), 0) as hours,
+        ROUND(COALESCE(SUM(t.hours), 0) * 100.0 /
+          NULLIF(SUM(COALESCE(SUM(t.hours), 0)) OVER (PARTITION BY e.id), 0), 1) as allocation_pct
+      FROM employees e
+      INNER JOIN project_timesheets t ON t.employee_id = e.id
+        AND t.date >= CURRENT_DATE - INTERVAL '1 day' * $2::int
+      INNER JOIN projects p ON t.project_id = p.id
+      WHERE e.company_id = $1
+      GROUP BY e.id, e.first_name, e.last_name, p.id, p.name, p.code
+      ORDER BY employee_name, hours DESC
+    `, [companyId, parseInt(period)]);
+
+    const { rows: employeeTotals } = await query(`
+      SELECT
+        e.id as employee_id,
+        COALESCE(e.first_name || ' ' || e.last_name, 'Sin asignar') as employee_name,
+        COALESCE(SUM(t.hours), 0) as total_hours,
+        COUNT(DISTINCT t.project_id) as project_count,
+        COUNT(DISTINCT t.date) as active_days
+      FROM employees e
+      INNER JOIN project_timesheets t ON t.employee_id = e.id
+        AND t.date >= CURRENT_DATE - INTERVAL '1 day' * $2::int
+      WHERE e.company_id = $1
+      GROUP BY e.id, e.first_name, e.last_name
+      ORDER BY total_hours DESC
+    `, [companyId, parseInt(period)]);
+
+    const { rows: projectTotals } = await query(`
+      SELECT
+        p.id as project_id,
+        p.name as project_name,
+        COALESCE(SUM(t.hours), 0) as total_hours,
+        COUNT(DISTINCT t.employee_id) as employee_count
+      FROM projects p
+      INNER JOIN project_timesheets t ON t.project_id = p.id
+        AND t.date >= CURRENT_DATE - INTERVAL '1 day' * $2::int
+      WHERE p.company_id = $1
+      GROUP BY p.id, p.name
+      ORDER BY total_hours DESC
+    `, [companyId, parseInt(period)]);
+
+    return successResponse({
+      allocation,
+      employees: employeeTotals,
+      projects: projectTotals,
+    });
+  } catch (err: any) {
+    return errorResponse(err.message, 500);
+  }
+}

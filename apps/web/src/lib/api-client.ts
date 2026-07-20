@@ -1141,6 +1141,12 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/reports/projects${qs}`);
   }
 
+  // Resource Allocation
+  async getResourceAllocation(period?: number) {
+    const qs = period ? `?period=${period}` : '';
+    return this.request<any>(`/projects/allocation${qs}`);
+  }
+
   async getProjectTasks(projectId: string) {
     return this.request<any[]>(`/projects/${projectId}/tasks`);
   }
