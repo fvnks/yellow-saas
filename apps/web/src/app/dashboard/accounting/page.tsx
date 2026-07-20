@@ -34,6 +34,9 @@ export default function AccountingPage() {
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [taxFilter, setTaxFilter] = useState('all');
+  const [editingAccount, setEditingAccount] = useState<Account | null>(null);
+  const [editForm, setEditForm] = useState({ name: '', type: '', description: '' });
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     const api = getApiClient();
@@ -72,6 +75,30 @@ export default function AccountingPage() {
     const matchesType = typeFilter === 'all' || a.type === typeFilter;
     return matchesSearch && matchesType;
   });
+
+  const handleEditAccount = (account: Account) => {
+    setEditingAccount(account);
+    setEditForm({ name: account.name, type: account.type, description: '' });
+  };
+
+  const handleSaveAccount = async () => {
+    if (!editingAccount || !editForm.name) return;
+    setSaving(true);
+    try {
+      const api = getApiClient();
+      await api.updateAccount(editingAccount.id, { name: editForm.name, type: editForm.type });
+      setEditingAccount(null);
+      // Reload accounts
+      const res = await api.getAccounts({ limit: '500' });
+      const mapped = (res.data || []).map((a: any) => ({
+        id: String(a.id), code: String(a.code || ''), name: String(a.name || ''),
+        type: a.type || 'expense', balance: Number(a.balance || 0),
+        isActive: a.is_active !== false, isSystem: a.is_system || false,
+      }));
+      setAccounts(mapped);
+    } catch (err) { console.error(err); }
+    setSaving(false);
+  };
 
   const getTypeConfig = (type: string) => {
     switch (type) {
@@ -245,7 +272,7 @@ export default function AccountingPage() {
                         <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Ver">
                           <Eye className="w-4 h-4" />
                         </button>
-                        <button disabled title="Próximamente" className="p-1.5 text-slate-400 opacity-50 cursor-not-allowed rounded" aria-label="Editar">
+                        <button onClick={() => handleEditAccount(account)} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Editar">
                           <Edit className="w-4 h-4" />
                         </button>
                         <button className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
@@ -365,6 +392,48 @@ export default function AccountingPage() {
           </div>
         </CardContent>
       </Card>
+
+      {editingAccount && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-slate-900">Editar Cuenta</h2>
+              <button onClick={() => setEditingAccount(null)} className="text-slate-400 hover:text-slate-600">X</button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-700">Codigo</label>
+                <input type="text" value={editingAccount.code} disabled
+                  className="w-full bg-slate-100 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500" />
+              </div>
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-700">Nombre *</label>
+                <input type="text" value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+              </div>
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-700">Tipo</label>
+                <select value={editForm.type} onChange={e => setEditForm({ ...editForm, type: e.target.value })}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                  <option value="asset">Activo</option>
+                  <option value="liability">Pasivo</option>
+                  <option value="equity">Patrimonio</option>
+                  <option value="income">Ingresos</option>
+                  <option value="expense">Gastos</option>
+                </select>
+              </div>
+            </div>
+            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+              <button onClick={() => setEditingAccount(null)}
+                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={handleSaveAccount} disabled={saving || !editForm.name}
+                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                {saving ? 'Guardando...' : 'Guardar'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

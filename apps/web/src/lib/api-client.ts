@@ -503,6 +503,14 @@ export class ApiClient {
     return this.request<{ id: string }>('/accounts', { method: 'POST', body: JSON.stringify(data) });
   }
 
+  async updateAccount(id: string, data: Partial<{ name: string; type: string; description: string; currency: string; is_active: boolean }>) {
+    return this.request<any>(`/accounts/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteAccount(id: string) {
+    return this.request<any>(`/accounts/${id}`, { method: 'DELETE' });
+  }
+
   // Audit
   async getAuditLogs(params?: Record<string, string>) {
     return this.requestWithPagination<{ id: string; action: string; entity_type: string; entity_id: string; created_at: string; user?: { full_name: string; email: string }; details?: string }>('/audit', params || {});
