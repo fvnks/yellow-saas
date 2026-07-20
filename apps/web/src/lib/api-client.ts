@@ -214,6 +214,36 @@ export class ApiClient {
     return this.request<{ message: string }>(`/invoices/${id}`, { method: 'DELETE' });
   }
 
+  // Leads (CRM)
+  async getLeads(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; name: string; email: string; phone: string; status: string; estimated_value: number }>('/leads', params || {});
+  }
+
+  async getLead(id: string) {
+    return this.request<any>(`/leads/${id}`);
+  }
+
+  async createLead(data: { name: string; email?: string; phone?: string; source?: string; status?: string; assigned_to?: string; estimated_value?: number; notes?: string }) {
+    return this.request<any>('/leads', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateLead(id: string, data: Partial<{ name: string; email: string; phone: string; source: string; status: string; assigned_to: string; estimated_value: number; notes: string }>) {
+    return this.request<any>(`/leads/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteLead(id: string) {
+    return this.request<{ message: string }>(`/leads/${id}`, { method: 'DELETE' });
+  }
+
+  // Activities (CRM)
+  async getActivities(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; type: string; subject: string; status: string; due_date: string }>('/activities', params || {});
+  }
+
+  async createActivity(data: { type: string; subject: string; description?: string; related_type?: string; related_id?: string; assigned_to?: string; due_date?: string }) {
+    return this.request<any>('/activities', { method: 'POST', body: JSON.stringify(data) });
+  }
+
   // Purchase Orders
   async getPurchaseOrders(params?: Record<string, string>) {
     return this.requestWithPagination<{ id: string; number: string; supplier_id: string; status: string; total_amount: number; created_at: string }>('/purchase-orders', params || {});
