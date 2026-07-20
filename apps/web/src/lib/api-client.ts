@@ -1092,6 +1092,10 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects/${projectId}`, { method: 'DELETE' });
   }
 
+  async cloneProject(projectId: string, data: { name?: string; code?: string; start_date?: string; end_date?: string }) {
+    return this.request<any>(`/projects/${projectId}/clone`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
   async getProjectTasks(projectId: string) {
     return this.request<any[]>(`/projects/${projectId}/tasks`);
   }
