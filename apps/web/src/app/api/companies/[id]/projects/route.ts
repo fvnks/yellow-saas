@@ -82,7 +82,16 @@ export async function POST(request: NextRequest) {
        status || 'planning', project_manager_id || null, cost_center_id || null]
     );
 
-    return successResponse(result.rows[0], 201);
+    const project = result.rows[0];
+    try {
+      await query(
+        `INSERT INTO project_activity_log (company_id, project_id, actor_name, action, entity_type, entity_id, entity_name, new_value)
+         VALUES ($1, $2, $3, 'created', 'project', $4, $5, $6)`,
+        [companyId, project.id, body.actor_name || null, project.id, project.name, JSON.stringify({ name, code, status })]
+      );
+    } catch {}
+
+    return successResponse(project, 201);
   } catch (err: any) {
     if (err?.code === '23505') return errorResponse('Project code already exists', 400);
     return errorResponse('Internal server error', 500);

@@ -1204,6 +1204,18 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects/${projectId}/documents/${documentId}`, { method: 'DELETE' });
   }
 
+  // Project Activity Log
+  async getProjectActivityLog(projectId: string, params?: { page?: number; limit?: number }) {
+    const searchParams: Record<string, string> = {};
+    if (params?.page) searchParams.page = params.page.toString();
+    if (params?.limit) searchParams.limit = params.limit.toString();
+    return this.requestWithPagination<any>(`/projects/${projectId}/activity`, searchParams);
+  }
+
+  async logProjectActivity(projectId: string, data: { action: string; entity_type: string; entity_id?: string; entity_name?: string; old_value?: any; new_value?: any; metadata?: any }) {
+    return this.request<any>(`/projects/${projectId}/activity`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
   async getProjectNotifications() {
     return this.request<any>('/projects/notifications');
   }
