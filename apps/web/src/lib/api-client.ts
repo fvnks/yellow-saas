@@ -202,11 +202,11 @@ export class ApiClient {
     return this.request<{ id: string; invoice_number: string; status: string; invoice_date: string; due_date: string; payment_terms: number; subtotal: number; tax_amount: number; total_amount: number; notes: string; customer: { id: string; name: string; tax_id: string }; items: any[] }>(`/invoices/${id}`);
   }
 
-  async createInvoice(data: { order_id?: string; customer_id?: string; invoice_date: string; due_date?: string; payment_method?: string; status?: string; document_type?: 'boleta' | 'factura'; items: { product_id: string; quantity: number; unit_price: number; discount?: number; description?: string }[] }) {
+  async createInvoice(data: { order_id?: string; customer_id?: string; invoice_date: string; due_date?: string; payment_method?: string; payment_terms?: string; notes?: string; status?: string; document_type?: 'boleta' | 'factura'; items: { product_id?: string; quantity: number; unit_price: number; discount?: number; tax_rate?: number; description?: string }[] }) {
     return this.request<{ id: string; invoice_number: string }>('/invoices', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async updateInvoice(id: string, data: Partial<{ status: string; invoice_date: string; due_date: string; payment_terms: number; notes: string }>) {
+  async updateInvoice(id: string, data: Partial<{ status: string; payment_status: string; invoice_date: string; due_date: string; payment_terms: string; notes: string }>) {
     return this.request<{ id: string }>(`/invoices/${id}`, { method: 'PUT', body: JSON.stringify(data) });
   }
 

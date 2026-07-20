@@ -70,10 +70,12 @@ export default function BillingPage() {
           <h1 className="text-xl font-bold text-slate-900">Facturación</h1>
           <p className="text-sm text-slate-500 mt-1">Gestión de facturas y cobranzas</p>
         </div>
-        <Button disabled title="Próximamente" className="opacity-50 cursor-not-allowed">
-          <Plus className="w-4 h-4 mr-2" />
-          Nueva Factura
-        </Button>
+        <Link href="/dashboard/billing/new">
+          <Button>
+            <Plus className="w-4 h-4 mr-2" />
+            Nueva Factura
+          </Button>
+        </Link>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -163,7 +165,9 @@ export default function BillingPage() {
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <Button variant="secondary" size="sm"><Eye className="w-4 h-4" /></Button>
+                      <Link href={`/dashboard/billing/${invoice.id}`}>
+                        <Button variant="secondary" size="sm"><Eye className="w-4 h-4" /></Button>
+                      </Link>
                       <Button variant="secondary" size="sm"><Download className="w-4 h-4" /></Button>
                       {invoice.status === 'draft' && (
                         <Button variant="secondary" size="sm"><Send className="w-4 h-4" /></Button>
