@@ -285,6 +285,7 @@ export const sidebarItems: NavGroup[] = [
         subItems: [
           { title: "Todos", path: "/dashboard/projects", icon: "FolderKanban" },
           { title: "Nuevo", path: "/dashboard/projects/new", icon: "FolderKanban" },
+          { title: "Reportes", path: "/dashboard/projects/reports", icon: "BarChart3" },
         ],
       },
     ],
