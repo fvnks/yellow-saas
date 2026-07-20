@@ -553,12 +553,11 @@ export class ApiClient {
 
   // Cost Centers
   async getCostCenters(params?: { search?: string; page?: number; limit?: number }) {
-    const searchParams = new URLSearchParams();
-    if (params?.search) searchParams.set('search', params.search);
-    if (params?.page) searchParams.set('page', params.page.toString());
-    if (params?.limit) searchParams.set('limit', params.limit.toString());
-    const qs = searchParams.toString();
-    return this.request<{ data: any[]; total: number }>(`/cost-centers${qs ? `?${qs}` : ''}`);
+    const searchParams: Record<string, string> = {};
+    if (params?.search) searchParams.search = params.search;
+    if (params?.page) searchParams.page = params.page.toString();
+    if (params?.limit) searchParams.limit = params.limit.toString();
+    return this.requestWithPagination<any>('/cost-centers', searchParams);
   }
 
   async createCostCenter(data: { code: string; name: string; description?: string; parent_id?: string }) {
