@@ -14,6 +14,7 @@ import ExpensesTab from '../components/ExpensesTab';
 import CostsTab from '../components/CostsTab';
 import DocumentsTab from '../components/DocumentsTab';
 import RentabilidadReport from '../components/RentabilidadReport';
+import ActivityLog from '../components/ActivityLog';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -150,6 +151,7 @@ export default function ProjectDetailPage() {
     { id: 'costs', label: 'Centro Costos' },
     { id: 'documents', label: `Docs (${documents.length})` },
     { id: 'profit', label: 'Rentabilidad' },
+    { id: 'activity', label: 'Actividad' },
     { id: 'info', label: 'Info' },
   ];
 
@@ -342,6 +344,7 @@ export default function ProjectDetailPage() {
       {activeTab === 'costs' && <CostsTab costs={costsData.costs || []} budget={project.budget} />}
       {activeTab === 'documents' && <DocumentsTab projectId={projectId} documents={documents} onRefresh={loadData} />}
       {activeTab === 'profit' && <RentabilidadReport project={project} costs={costsData.costs || []} expenses={expenses} timesheets={timesheets} />}
+      {activeTab === 'activity' && <ActivityLog projectId={projectId} />}
 
       {activeTab === 'info' && (
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
