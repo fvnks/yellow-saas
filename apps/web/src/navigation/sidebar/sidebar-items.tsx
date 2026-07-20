@@ -138,6 +138,17 @@ export const sidebarItems: NavGroup[] = [
         ],
       },
       {
+        title: "Operaciones Bodega",
+        path: "/dashboard/bodega",
+        icon: "Warehouse",
+        subItems: [
+          { title: "Dashboard", path: "/dashboard/bodega", icon: "Warehouse" },
+          { title: "Costos Aterrizados", path: "/dashboard/bodega/landed-cost", icon: "Truck" },
+          { title: "Consignacion", path: "/dashboard/bodega/consignment", icon: "Handshake" },
+          { title: "Libro SII", path: "/dashboard/bodega/sii-book", icon: "FileText" },
+        ],
+      },
+      {
         title: "Bodegas",
         path: "/dashboard/warehouses",
         icon: "Warehouse",
