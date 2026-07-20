@@ -29,6 +29,7 @@ interface Tax {
 export default function AccountingPage() {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [taxes, setTaxes] = useState<Tax[]>([]);
+  const [recentEntries, setRecentEntries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
@@ -37,9 +38,10 @@ export default function AccountingPage() {
   useEffect(() => {
     const api = getApiClient();
     Promise.all([
-      api.getAccounts().catch(() => ({ data: [] })),
+      api.getAccounts({ limit: '500' }).catch(() => ({ data: [] })),
       api.getTaxes().catch(() => ({ data: [] })),
-    ]).then(([accountsRes, taxesRes]) => {
+      api.getJournalEntries({ limit: '5', sort: 'created_at', order: 'desc' }).catch(() => ({ data: [] })),
+    ]).then(([accountsRes, taxesRes, entriesRes]) => {
       const mapped: Account[] = (accountsRes.data || []).map((a: any) => ({
         id: String(a.id),
         code: String(a.code || ''),
@@ -60,6 +62,7 @@ export default function AccountingPage() {
         sriCode: t.sri_code || '',
         isActive: t.is_active !== false,
       })));
+      setRecentEntries(entriesRes.data || []);
       setLoading(false);
     });
   }, []);
@@ -106,10 +109,12 @@ export default function AccountingPage() {
             <Download className="w-4 h-4 mr-2" />
             Exportar Balances
           </Button>
-          <Button disabled title="Próximamente" className="opacity-50 cursor-not-allowed">
-            <Plus className="w-4 h-4 mr-2" />
-            Nuevo Asiento
-          </Button>
+          <Link href="/dashboard/accounting/journal-entries/new">
+            <Button>
+              <Plus className="w-4 h-4 mr-2" />
+              Nuevo Asiento
+            </Button>
+          </Link>
         </div>
       </div>
 
@@ -307,6 +312,54 @@ export default function AccountingPage() {
                   </TableRow>
                 );
               })}
+            </TableBody>
+          </Table>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Recent Journal Entries */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>Ultimos Asientos Contables</CardTitle>
+          <Link href="/dashboard/accounting/journal-entries" className="text-sm text-slate-500 hover:text-slate-700 font-medium">
+            Ver todos
+          </Link>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Numero</TableHead>
+                <TableHead>Fecha</TableHead>
+                <TableHead>Descripcion</TableHead>
+                <TableHead className="text-right">Debe</TableHead>
+                <TableHead className="text-right">Haber</TableHead>
+                <TableHead>Estado</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {recentEntries.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-6 text-sm text-slate-500">
+                    No hay asientos registrados
+                  </TableCell>
+                </TableRow>
+              ) : recentEntries.map((entry: any) => (
+                <TableRow key={entry.id}>
+                  <TableCell className="font-mono font-medium text-xs">{entry.entry_number}</TableCell>
+                  <TableCell className="text-xs">{new Date(entry.date).toLocaleDateString('es-CL')}</TableCell>
+                  <TableCell className="text-xs max-w-xs truncate">{entry.description}</TableCell>
+                  <TableCell className="text-right text-xs font-medium">${Number(entry.total_debit).toLocaleString('es-CL')}</TableCell>
+                  <TableCell className="text-right text-xs font-medium">${Number(entry.total_credit).toLocaleString('es-CL')}</TableCell>
+                  <TableCell>
+                    <Badge variant={entry.status === 'posted' ? 'success' : entry.status === 'reversed' ? 'danger' : 'neutral'} className="text-[9px]">
+                      {entry.status === 'posted' ? 'Publicado' : entry.status === 'reversed' ? 'Revertido' : 'Borrador'}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
           </div>

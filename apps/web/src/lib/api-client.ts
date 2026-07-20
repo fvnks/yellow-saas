@@ -422,18 +422,18 @@ export class ApiClient {
 
   // Journal Entries
   async getJournalEntries(params?: Record<string, string>) {
-    return this.requestWithPagination<{ id: string; entry_number: string; entry_date: string; description: string; total_debit: number; total_credit: number; status: string }>('/journal-entries', params || {});
+    return this.requestWithPagination<{ id: string; entry_number: string; date: string; description: string; total_debit: number; total_credit: number; status: string }>('/journal-entries', params || {});
   }
 
   async getJournalEntry(id: string) {
-    return this.request<{ id: string; entry_number: string; entry_date: string; description: string; total_debit: number; total_credit: number; status: string; lines: any[] }>(`/journal-entries/${id}`);
+    return this.request<{ id: string; entry_number: string; date: string; description: string; total_debit: number; total_credit: number; status: string; lines: any[] }>(`/journal-entries/${id}`);
   }
 
-  async createJournalEntry(data: { entry_number: string; entry_date: string; description: string; reference_type?: string; reference_id?: string; lines: { account_id: string; description?: string; debit: number; credit: number }[] }) {
+  async createJournalEntry(data: { date: string; description: string; reference_type?: string; reference_id?: string; lines: { account_id: string; description?: string; debit: number; credit: number }[] }) {
     return this.request<{ id: string }>('/journal-entries', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async updateJournalEntry(id: string, data: Partial<{ entry_date: string; description: string; lines: { account_id: string; description?: string; debit: number; credit: number }[] }>) {
+  async updateJournalEntry(id: string, data: Partial<{ date: string; description: string; status: string; reference_type: string; reference_id: string; lines: { account_id: string; description?: string; debit: number; credit: number }[] }>) {
     return this.request<{ id: string }>(`/journal-entries/${id}`, { method: 'PUT', body: JSON.stringify(data) });
   }
 
