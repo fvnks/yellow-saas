@@ -6,6 +6,7 @@ import { Badge } from '@yellow-erp/ui';
 import { ArrowLeft, Plus, Calendar, DollarSign, Users, CheckCircle2, Clock, Edit, Trash2, BarChart3, Flag, Receipt, FileText, TrendingUp, LayoutGrid, Copy } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 import { ContinuousTabs } from '@/components/ui/continuous-tabs';
 import GanttChart from '../components/GanttChart';
 import MilestonesTab from '../components/MilestonesTab';
@@ -133,7 +134,7 @@ export default function ProjectDetailPage() {
       });
       router.push(`/dashboard/projects/${res.project.id}`);
     } catch (err: any) {
-      alert(err?.message || 'Error al clonar');
+      toast.error(err?.message || 'Error al clonar');
       setCloning(false);
     }
   };

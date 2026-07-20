@@ -27,6 +27,7 @@ export default function ReturnsPage() {
   const [search, setSearch] = useState('');
   const [productSearch, setProductSearch] = useState('');
   const [form, setForm] = useState({ warehouse_id: '', reason: '', items: [] as ReturnItemForm[] });
+  const [error, setError] = useState('');
 
   useEffect(() => { loadData(); }, [search]);
 
@@ -44,7 +45,7 @@ export default function ReturnsPage() {
       setReturns(rRes.data || []);
       setProducts(pRes.data || []);
       setWarehouses(wRes.data || []);
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error(e); setError('No se pudieron cargar los datos'); }
     setLoading(false);
   };
 
@@ -86,7 +87,7 @@ export default function ReturnsPage() {
     try {
       const detail = await getApiClient().getCustomerReturn(ret.id);
       setDetailReturn(detail);
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error(e); setError('No se pudo cargar el detalle'); }
   };
 
   const completeReturn = async (id: string) => {
@@ -112,6 +113,8 @@ export default function ReturnsPage() {
           <Plus className="w-4 h-4" /> Nueva Devolucion
         </button>
       </div>
+
+      {error && <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm">{error}</div>}
 
       {/* Form */}
       {showForm && (

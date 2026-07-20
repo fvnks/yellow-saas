@@ -23,6 +23,7 @@ export default function VariantsPage() {
   const [form, setForm] = useState({ product_id: '', sku: '', name: '', attributes: {} as Record<string, string>, cost_price: '', sale_price: '', barcode: '' });
   const [attrKey, setAttrKey] = useState('');
   const [attrVal, setAttrVal] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => { loadVariants(); loadProducts(); }, [search]);
 
@@ -34,7 +35,7 @@ export default function VariantsPage() {
       if (search) params.search = search;
       const res = await api.getProductVariants(params);
       setVariants(res.data || []);
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error(e); setError('No se pudieron cargar las variantes'); }
     setLoading(false);
   };
 
@@ -43,7 +44,7 @@ export default function VariantsPage() {
       const api = getApiClient();
       const res = await api.getProducts({ limit: '200' });
       setProducts(res.data || []);
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error(e); setError('No se pudieron cargar los productos'); }
   };
 
   const addAttribute = () => {
@@ -71,12 +72,12 @@ export default function VariantsPage() {
       setShowNew(false);
       setForm({ product_id: '', sku: '', name: '', attributes: {}, cost_price: '', sale_price: '', barcode: '' });
       loadVariants();
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error(e); setError('No se pudo crear la variante'); }
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Eliminar esta variante?')) return;
-    try { await getApiClient().deleteProductVariant(id); loadVariants(); } catch (e) { console.error(e); }
+    try { await getApiClient().deleteProductVariant(id); loadVariants(); } catch (e) { console.error(e); setError('No se pudo eliminar la variante'); }
   };
 
   const filtered = variants.filter(v =>
@@ -99,6 +100,8 @@ export default function VariantsPage() {
           <Plus className="w-4 h-4" /> Nueva Variante
         </button>
       </div>
+
+      {error && <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm">{error}</div>}
 
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
         <div className="relative max-w-md">

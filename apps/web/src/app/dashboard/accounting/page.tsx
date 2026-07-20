@@ -37,6 +37,7 @@ export default function AccountingPage() {
   const [editingAccount, setEditingAccount] = useState<Account | null>(null);
   const [editForm, setEditForm] = useState({ name: '', type: '', description: '' });
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const api = getApiClient();
@@ -96,7 +97,7 @@ export default function AccountingPage() {
         isActive: a.is_active !== false, isSystem: a.is_system || false,
       }));
       setAccounts(mapped);
-    } catch (err) { console.error(err); }
+    } catch (err) { console.error(err); setError('No se pudieron guardar los cambios'); }
     setSaving(false);
   };
 
@@ -144,6 +145,8 @@ export default function AccountingPage() {
           </Link>
         </div>
       </div>
+
+      {error && <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm">{error}</div>}
 
       {/* Financial Summary Cards */}
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">

@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode } from "react";
+import { Toaster } from "sonner";
 
 import { AppSidebar } from "@/app/dashboard/components/sidebar/app-sidebar";
 import { Separator } from "@/components/ui/separator";
@@ -16,6 +17,7 @@ interface LayoutProps {
 export default function DashboardLayout({ children }: LayoutProps) {
   return (
     <main className="bg-slate-50">
+      <Toaster position="top-right" richColors closeButton />
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset className="m-2 mx-auto max-w-screen-2xl md:rounded-xl md:border">

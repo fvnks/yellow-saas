@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Badge } from '@yellow-erp/ui';
 import { CircleDollarSign, Plus, Search, Edit, Trash2, ArrowLeftRight, Package, FolderKanban } from 'lucide-react';
+import { toast } from 'sonner';
 import { getApiClient } from '@/lib/api-client';
 
 export default function CostCentersPage() {
@@ -58,7 +59,7 @@ export default function CostCentersPage() {
       setEditing(null);
       loadData();
     } catch (err: any) {
-      alert(err?.message || 'Error al guardar');
+      toast.error(err?.message || 'Error al guardar');
     }
     setSaving(false);
   };
@@ -70,7 +71,7 @@ export default function CostCentersPage() {
       await api.deleteCostCenter(id);
       loadData();
     } catch (err: any) {
-      alert(err?.message || 'No se puede eliminar — tiene productos asignados');
+      toast.error(err?.message || 'No se puede eliminar — tiene productos asignados');
     }
   };
 

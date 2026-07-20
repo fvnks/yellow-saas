@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody
 import { ArrowLeft, Printer, Send, Edit, X, Calendar, User, CreditCard, Truck, MapPin, Download } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 import { generateOrdenVentaPDF } from '@/lib/pdf-design';
 
 interface OrderItem {
@@ -44,6 +45,7 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [emailSending, setEmailSending] = useState(false);
 
   useEffect(() => {
     const api = getApiClient();
@@ -138,6 +140,18 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
     );
   }
 
+  const handleSendEmail = async () => {
+    setEmailSending(true);
+    try {
+      const api = getApiClient();
+      await (api as any).request(`/sales-orders/${id}/send-email`, { method: 'POST' });
+      toast.success('Email enviado correctamente');
+    } catch {
+      toast.error('Error al enviar email. Intenta nuevamente.');
+    }
+    setEmailSending(false);
+  };
+
   const status = statusConfig[order.status] || { label: order.status, variant: 'neutral' as const };
   const items = order.items || [];
   const subtotal = items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0);
@@ -167,9 +181,9 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
             <Download className="w-4 h-4 mr-2" />
             Descargar PDF
           </Button>
-          <Button variant="secondary" size="sm" onClick={() => alert('Función de envío por email próximamente')}>
+          <Button variant="secondary" size="sm" onClick={handleSendEmail} disabled={emailSending}>
             <Send className="w-4 h-4 mr-2" />
-            Enviar
+            {emailSending ? 'Enviando...' : 'Enviar'}
           </Button>
           <Link href={`/dashboard/sales/${id}/edit`}>
             <Button variant="secondary" size="sm">
@@ -333,9 +347,9 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
                   <Printer className="w-4 h-4 mr-2" />
                   Imprimir
                 </Button>
-                <Button className="w-full" onClick={() => alert('Función de envío por email próximamente')}>
+                <Button className="w-full" onClick={handleSendEmail} disabled={emailSending}>
                   <Send className="w-4 h-4 mr-2" />
-                  Enviar por Email
+                  {emailSending ? 'Enviando...' : 'Enviar por Email'}
                 </Button>
               </div>
             </CardContent>

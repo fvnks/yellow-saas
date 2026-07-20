@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Play, CheckCircle, Search } from 'lucide-react';
+import { toast } from 'sonner';
 import { getApiClient } from '@/lib/api-client';
 
 interface CountDetail {
@@ -74,7 +75,7 @@ export default function InventoryCountDetailPage({ params }: { params: { id: str
   const handleComplete = async () => {
     const uncounted = count?.items.filter(i => i.counted_quantity === null).length || 0;
     if (uncounted > 0) {
-      alert(`Faltan ${uncounted} productos por contar`);
+      toast.warning('Faltan productos por contar');
       return;
     }
     const api = getApiClient();

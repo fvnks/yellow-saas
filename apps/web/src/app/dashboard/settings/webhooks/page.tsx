@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge, Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@yellow-erp/ui';
 import { Plus, RefreshCw, Edit, Trash2, Eye, ExternalLink, Bell, BellOff, Zap, Shield, Loader2, CheckCircle, XCircle, X } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface WebhookEndpoint {
   id: string;
@@ -123,8 +124,12 @@ export default function WebhooksPage() {
     try {
       const api = getApiClient();
       const res = await (api as any).testWebhook(id);
-      alert(res.success ? 'Test exitoso' : `Falló: ${res.message}`);
-    } catch (err: any) { alert(`Error: ${err.message}`); }
+      if (res.success) {
+        toast.success('Test exitoso');
+      } else {
+        toast.error(`Falló: ${res.message}`);
+      }
+    } catch (err: any) { toast.error(`Error: ${err.message}`); }
   };
 
   const viewDeliveries = async (endpointId: string) => {

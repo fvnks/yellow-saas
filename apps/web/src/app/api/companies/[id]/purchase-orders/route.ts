@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
         (SELECT json_build_object('id', w.id, 'name', w.name, 'code', w.code) FROM warehouses w WHERE w.id = po.warehouse_id) as warehouse,
         (SELECT json_build_object('id', pj.id, 'name', pj.name, 'code', pj.code) FROM projects pj WHERE pj.id = po.project_id) as project,
         (SELECT json_agg(json_build_object(
-          'id', poi.id, 'product_id', poi.product_id, 'variant_id', poi.variant_id, 'quantity', poi.quantity,
+          'id', poi.id, 'product_id', poi.product_id, 'quantity', poi.quantity,
           'received_quantity', poi.received_quantity, 'unit_price', poi.unit_price,
           'discount_percent', poi.discount_percent, 'discount_amount', poi.discount_amount,
           'tax_rate', poi.tax_rate, 'tax_amount', poi.tax_amount, 'line_total', poi.line_total, 'notes', poi.notes,
@@ -125,7 +125,6 @@ export async function POST(request: NextRequest) {
         order_id: order.id,
         company_id: companyId,
         product_id: item.product_id,
-        variant_id: item.variant_id || null,
         quantity,
         received_quantity: 0,
         unit_price: unitPrice,
@@ -140,9 +139,9 @@ export async function POST(request: NextRequest) {
 
     for (const oi of orderItems) {
       await query(
-        `INSERT INTO purchase_order_items (order_id, company_id, product_id, variant_id, quantity, received_quantity, unit_price, discount_percent, discount_amount, tax_rate, tax_amount, notes, sort_order)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
-        [oi.order_id, oi.company_id, oi.product_id, oi.variant_id, oi.quantity,
+        `INSERT INTO purchase_order_items (order_id, company_id, product_id, quantity, received_quantity, unit_price, discount_percent, discount_amount, tax_rate, tax_amount, notes, sort_order)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+        [oi.order_id, oi.company_id, oi.product_id, oi.quantity,
          oi.received_quantity, oi.unit_price, oi.discount_percent, oi.discount_amount,
          oi.tax_rate, oi.tax_amount, oi.notes, oi.sort_order]
       );

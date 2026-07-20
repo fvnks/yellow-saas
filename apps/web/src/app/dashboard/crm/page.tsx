@@ -32,6 +32,7 @@ export default function CRMPage() {
   const [editingLead, setEditingLead] = useState<any>(null);
   const [form, setForm] = useState({ name: '', email: '', phone: '', source: 'web', status: 'new', estimated_value: '', notes: '' });
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => { loadLeads(); }, [statusFilter]);
 
@@ -44,7 +45,7 @@ export default function CRMPage() {
       if (search) params.search = search;
       const res = await api.getLeads(params);
       setLeads(res.data || []);
-    } catch (err) { console.error(err); }
+    } catch (err) { console.error(err); setError('No se pudieron cargar los leads'); }
     setLoading(false);
   };
 
@@ -65,7 +66,7 @@ export default function CRMPage() {
       setEditingLead(null);
       setForm({ name: '', email: '', phone: '', source: 'web', status: 'new', estimated_value: '', notes: '' });
       loadLeads();
-    } catch (err) { console.error(err); }
+    } catch (err) { console.error(err); setError('No se pudo guardar el lead'); }
     setSaving(false);
   };
 
@@ -75,7 +76,7 @@ export default function CRMPage() {
       const api = getApiClient();
       await api.deleteLead(id);
       loadLeads();
-    } catch (err) { console.error(err); }
+    } catch (err) { console.error(err); setError('No se pudo eliminar el lead'); }
   };
 
   const handleEdit = (lead: any) => {
@@ -104,6 +105,8 @@ export default function CRMPage() {
           <Plus className="w-4 h-4" /> Nuevo Contacto
         </button>
       </div>
+
+      {error && <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm">{error}</div>}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">

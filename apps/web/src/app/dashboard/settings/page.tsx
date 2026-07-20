@@ -2,41 +2,39 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
-import { Settings, Building2, Users, CreditCard, Bell, Shield, Globe, Save, Plus, Trash2, Mail, Key, Database, Mailbox, ShieldCheck, Zap, Webhook } from 'lucide-react';
+import { Settings, Building2, Users, CreditCard, Bell, Shield, Globe, Save, Plus, Trash2, Mail, Key, Database, ShieldCheck, Zap, Pencil, X, Check } from 'lucide-react';
+import { toast } from 'sonner';
 import { getApiClient } from '@/lib/api-client';
 import RolesTab from './tabs/RolesTab';
+
+interface UserProfile {
+  id: string;
+  email: string;
+  full_name: string;
+  role: string;
+  status: string;
+  last_login_at: string | null;
+  created_at: string;
+}
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('company');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [company, setCompany] = useState({
-    name: '',
-    tax_id: '',
-    razon_social: '',
-    giro: '',
-    email: '',
-    phone: '',
-    address: '',
-    city: '',
-    region: '',
-    logo_url: '',
+    name: '', tax_id: '', razon_social: '', giro: '',
+    email: '', phone: '', address: '', city: '', region: '', logo_url: '',
+    plan: 'free', status: 'active',
   });
 
   useEffect(() => {
     const api = getApiClient();
-    api.getCompany().then((data) => {
+    api.getCompany().then((data: any) => {
       setCompany({
-        name: data.name || '',
-        tax_id: data.tax_id || '',
-        razon_social: data.razon_social || '',
-        giro: data.giro || '',
-        email: data.email || '',
-        phone: data.phone || '',
-        address: data.address || '',
-        city: data.city || '',
-        region: data.region || '',
-        logo_url: data.logo_url || '',
+        name: data.name || '', tax_id: data.tax_id || '', razon_social: data.razon_social || '',
+        giro: data.giro || '', email: data.email || '', phone: data.phone || '',
+        address: data.address || '', city: data.city || '', region: data.region || '',
+        logo_url: data.logo_url || '', plan: data.plan || 'free', status: data.status || 'active',
       });
     }).catch(() => {});
   }, []);
@@ -50,7 +48,7 @@ export default function SettingsPage() {
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch {
-      alert('Error al guardar');
+      toast.error('Error al guardar');
     } finally {
       setSaving(false);
     }
@@ -80,15 +78,10 @@ export default function SettingsPage() {
             <CardContent className="p-2">
               <nav className="space-y-1">
                 {tabs.map(tab => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
+                  <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                      activeTab === tab.id
-                        ? 'bg-indigo-50 text-indigo-700'
-                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                    }`}
-                  >
+                      activeTab === tab.id ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    }`}>
                     <tab.icon className="w-5 h-5" />
                     {tab.label}
                   </button>
@@ -102,9 +95,7 @@ export default function SettingsPage() {
           {activeTab === 'company' && (
             <>
               <Card>
-                <CardHeader>
-                  <CardTitle>Datos de la Empresa</CardTitle>
-                </CardHeader>
+                <CardHeader><CardTitle>Datos de la Empresa</CardTitle></CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input label="Nombre de la Empresa" value={company.name} onChange={(e) => setCompany(p => ({ ...p, name: e.target.value }))} />
@@ -120,69 +111,21 @@ export default function SettingsPage() {
                     <Select label="Región" value={company.region} onChange={(e) => setCompany(p => ({ ...p, region: e.target.value }))} options={[
                       { value: '', label: 'Seleccionar...' },
                       { value: '13', label: 'Metropolitana de Santiago' },
-                      { value: '1', label: 'Arica y Parinacota' },
-                      { value: '2', label: 'Tarapacá' },
-                      { value: '3', label: 'Antofagasta' },
-                      { value: '4', label: 'Atacama' },
-                      { value: '5', label: 'Coquimbo' },
-                      { value: '6', label: 'Valparaíso' },
-                      { value: '7', label: 'Región del Libertador' },
-                      { value: '8', label: 'Biobío' },
-                      { value: '9', label: 'La Araucanía' },
-                      { value: '10', label: 'Los Ríos' },
-                      { value: '11', label: 'Los Lagos' },
-                      { value: '12', label: 'Aysén' },
-                      { value: '14', label: 'Magallanes' },
-                      { value: '15', label: 'Ñuble' },
+                      { value: '1', label: 'Arica y Parinacota' }, { value: '2', label: 'Tarapacá' },
+                      { value: '3', label: 'Antofagasta' }, { value: '4', label: 'Atacama' },
+                      { value: '5', label: 'Coquimbo' }, { value: '6', label: 'Valparaíso' },
+                      { value: '7', label: 'Región del Libertador' }, { value: '8', label: 'Biobío' },
+                      { value: '9', label: 'La Araucanía' }, { value: '10', label: 'Los Ríos' },
+                      { value: '11', label: 'Los Lagos' }, { value: '12', label: 'Aysén' },
+                      { value: '14', label: 'Magallanes' }, { value: '15', label: 'Ñuble' },
                     ]} />
                   </div>
                 </CardContent>
               </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Logo e Identidad</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-6">
-                    {company.logo_url ? (
-                      <img src={company.logo_url} alt="Logo" className="w-24 h-24 rounded-2xl object-contain border border-slate-200" />
-                    ) : (
-                      <div className="w-24 h-24 bg-amber-400 rounded-2xl flex items-center justify-center text-white text-4xl font-bold">
-                        {company.name ? company.name.charAt(0).toUpperCase() : 'Y'}
-                      </div>
-                    )}
-                    <div>
-                      <Button variant="secondary" onClick={async () => {
-                        const input = document.createElement('input');
-                        input.type = 'file';
-                        input.accept = 'image/*';
-                        input.onchange = async (e) => {
-                          const file = (e.target as HTMLInputElement).files?.[0];
-                          if (!file) return;
-                          const formData = new FormData();
-                          formData.append('file', file);
-                          try {
-                            const res = await fetch('/api/upload', { method: 'POST', body: formData });
-                            const data = await res.json();
-                            if (data.url) {
-                              setCompany(p => ({ ...p, logo_url: data.url }));
-                            }
-                          } catch { alert('Error al subir logo'); }
-                        };
-                        input.click();
-                      }}>Cambiar Logo</Button>
-                      <p className="text-xs text-slate-500 mt-2">PNG o SVG, máximo 2MB</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
               <div className="flex items-center justify-end gap-3">
                 {saved && <span className="text-sm text-emerald-600">Guardado correctamente</span>}
                 <Button onClick={handleSave} disabled={saving}>
-                  <Save className="w-4 h-4 mr-2" />
-                  {saving ? 'Guardando...' : 'Guardar Cambios'}
+                  <Save className="w-4 h-4 mr-2" /> {saving ? 'Guardando...' : 'Guardar Cambios'}
                 </Button>
               </div>
             </>
@@ -190,213 +133,17 @@ export default function SettingsPage() {
 
           {activeTab === 'roles' && <RolesTab />}
 
-          {activeTab === 'users' && (
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Usuarios del Sistema</CardTitle>
-                <Button size="sm"><Plus className="w-4 h-4 mr-2" /> Invitar Usuario</Button>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-slate-200">
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Email</th>
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Rol</th>
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[
-                      { name: 'Admin', email: 'admin@yellow.cl', role: 'Admin', status: 'active' },
-                      { name: 'Juan Pérez', email: 'juan@yellow.cl', role: 'Editor', status: 'active' },
-                      { name: 'María López', email: 'maria@yellow.cl', role: 'Viewer', status: 'active' },
-                    ].map((user, i) => (
-                      <tr key={i} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                        <td className="px-4 py-3 text-sm font-medium text-slate-900">{user.name}</td>
-                        <td className="px-4 py-3 text-sm text-slate-600">{user.email}</td>
-                        <td className="px-4 py-3 text-sm text-slate-600">{user.role}</td>
-                        <td className="px-4 py-3">
-                          <Badge variant="success">Activo</Badge>
-                        </td>
-                        <td className="px-4 py-3 text-right">
-                          <Button variant="secondary" size="sm">Editar</Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+          {activeTab === 'users' && <UsersTab />}
 
-          {activeTab === 'billing' && (
-            <>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Plan Actual</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between p-4 bg-indigo-50 rounded-xl border border-indigo-100">
-                    <div>
-                      <p className="text-lg font-bold text-indigo-900">Plan Professional</p>
-                      <p className="text-sm text-indigo-700">$49.900/mes · Hasta 10 usuarios</p>
-                    </div>
-                    <Badge variant="info">Activo</Badge>
-                  </div>
-                  <div className="mt-4 grid grid-cols-3 gap-4 text-center text-sm">
-                    <div className="p-3 bg-slate-50 rounded-lg">
-                      <p className="text-[9px] font-semibold text-slate-500 uppercase">Usuarios</p>
-                      <p className="font-bold text-slate-900 mt-1">3/10</p>
-                    </div>
-                    <div className="p-3 bg-slate-50 rounded-lg">
-                      <p className="text-[9px] font-semibold text-slate-500 uppercase">Almacenamiento</p>
-                      <p className="font-bold text-slate-900 mt-1">2.1 GB/10 GB</p>
-                    </div>
-                    <div className="p-3 bg-slate-50 rounded-lg">
-                      <p className="text-[9px] font-semibold text-slate-500 uppercase">API Calls</p>
-                      <p className="font-bold text-slate-900 mt-1">12.5K/50K</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+          {activeTab === 'billing' && <BillingTab plan={company.plan} status={company.status} />}
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Historial de Pagos</CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                   <div className="overflow-x-auto">
-                   <table className="w-full">
-                     <thead>
-                       <tr className="border-b border-slate-200">
-                         <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Fecha</th>
-                         <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Descripción</th>
-                         <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Monto</th>
-                         <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Estado</th>
-                       </tr>
-                     </thead>
-                     <tbody>
-                       {[
-                         { date: '2026-07-01', desc: 'Plan Professional - Julio 2026', amount: 49900, status: 'paid' },
-                         { date: '2026-06-01', desc: 'Plan Professional - Junio 2026', amount: 49900, status: 'paid' },
-                         { date: '2026-05-01', desc: 'Plan Professional - Mayo 2026', amount: 49900, status: 'paid' },
-                       ].map((payment, i) => (
-                         <tr key={i} className="border-b border-slate-100 hover:bg-slate-50">
-                           <td className="px-4 py-3 text-sm text-slate-600">{payment.date}</td>
-                           <td className="px-4 py-3 text-sm text-slate-900">{payment.desc}</td>
-                           <td className="px-4 py-3 text-sm text-right font-medium">${payment.amount.toLocaleString('es-CL')}</td>
-                           <td className="px-4 py-3"><Badge variant="success">Pagado</Badge></td>
-                         </tr>
-                       ))}
-                     </tbody>
-                   </table>
-                   </div>
-                 </CardContent>
-              </Card>
-            </>
-          )}
+          {activeTab === 'notifications' && <NotificationsTab />}
 
-          {activeTab === 'notifications' && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Preferencias de Notificación</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {[
-                  { label: 'Nuevas ventas', description: 'Recibir alerta cuando se registre una venta', enabled: true },
-                  { label: 'Stock bajo', description: 'Alerta cuando un producto esté por debajo del mínimo', enabled: true },
-                  { label: 'Facturas vencidas', description: 'Notificación de facturas que pasan su fecha de vencimiento', enabled: true },
-                  { label: 'Pagos recibidos', description: 'Confirmación de pagos de clientes', enabled: false },
-                  { label: 'Reportes semanales', description: 'Resumen semanal de actividad del ERP', enabled: false },
-                ].map((notif, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-                    <div>
-                      <p className="text-sm font-medium text-slate-900">{notif.label}</p>
-                      <p className="text-xs text-slate-500">{notif.description}</p>
-                    </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" defaultChecked={notif.enabled} className="sr-only peer" />
-                      <div className="w-11 h-6 bg-slate-200 peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
-                    </label>
-                  </div>
-                ))}
-                <div className="flex justify-end pt-4">
-                  <Button><Save className="w-4 h-4 mr-2" /> Guardar Preferencias</Button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {activeTab === 'security' && (
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Contraseña</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Input label="Contraseña Actual" type="password" placeholder="Ingresa tu contraseña actual" />
-                  <Input label="Nueva Contraseña" type="password" placeholder="Mínimo 8 caracteres" />
-                  <Input label="Confirmar Contraseña" type="password" placeholder="Repite la nueva contraseña" />
-                  <div className="flex justify-end">
-                    <Button><Key className="w-4 h-4 mr-2" /> Cambiar Contraseña</Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Autenticación de Dos Factores</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-                    <div>
-                      <p className="text-sm font-medium text-slate-900">2FA con Authenticator App</p>
-                      <p className="text-xs text-slate-500">Agrega una capa extra de seguridad a tu cuenta</p>
-                    </div>
-                    <Button variant="secondary">Configurar</Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Sesiones Activas</CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                   <div className="overflow-x-auto">
-                   <table className="w-full">
-                     <thead>
-                       <tr className="border-b border-slate-200">
-                         <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Dispositivo</th>
-                         <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">IP</th>
-                         <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Última Actividad</th>
-                         <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Estado</th>
-                       </tr>
-                     </thead>
-                     <tbody>
-                       <tr className="border-b border-slate-100">
-                         <td className="px-4 py-3 text-sm text-slate-900">Chrome · Windows</td>
-                         <td className="px-4 py-3 text-sm text-slate-600">192.168.1.100</td>
-                         <td className="px-4 py-3 text-sm text-slate-600">Ahora</td>
-                         <td className="px-4 py-3"><Badge variant="success">Actual</Badge></td>
-                       </tr>
-                     </tbody>
-                   </table>
-                   </div>
-                 </CardContent>
-              </Card>
-            </div>
-          )}
+          {activeTab === 'security' && <SecurityTab />}
 
           {activeTab === 'integrations' && (
             <Card>
-              <CardHeader>
-                <CardTitle>Integraciones</CardTitle>
-              </CardHeader>
+              <CardHeader><CardTitle>Integraciones</CardTitle></CardHeader>
               <CardContent className="space-y-4">
                 {[
                   { name: 'SII (Servicio de Impuestos Internos)', desc: 'Emisión electrónica de documentos', connected: true, icon: Database },
@@ -433,39 +180,25 @@ export default function SettingsPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Card className="bg-slate-50">
-                    <CardContent className="p-6">
-                      <Zap className="w-8 h-8 text-amber-600 mx-auto mb-2" />
-                      <p className="font-medium text-slate-900">Eventos en Tiempo Real</p>
-                      <p className="text-sm text-slate-500 mt-1">Recibe notificaciones instantáneas de stock, ventas, compras y más</p>
-                    </CardContent>
-                  </Card>
-                  <Card className="bg-slate-50">
-                    <CardContent className="p-6">
-                      <Shield className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
-                      <p className="font-medium text-slate-900">Seguro y Confiable</p>
-                      <p className="text-sm text-slate-500 mt-1">Firma HMAC, reintentos exponenciales y logs de entrega</p>
-                    </CardContent>
-                  </Card>
-                  <Card className="bg-slate-50">
-                    <CardContent className="p-6">
-                      <Globe className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-                      <p className="font-medium text-slate-900">Fácil Integración</p>
-                      <p className="text-sm text-slate-500 mt-1">JSON sobre HTTP/HTTPS, eventos tipados y documentados</p>
-                    </CardContent>
-                  </Card>
+                  <Card className="bg-slate-50"><CardContent className="p-6">
+                    <Zap className="w-8 h-8 text-amber-600 mx-auto mb-2" />
+                    <p className="font-medium text-slate-900 text-center">Eventos en Tiempo Real</p>
+                    <p className="text-sm text-slate-500 mt-1 text-center">Recibe notificaciones instantáneas de stock, ventas, compras y más</p>
+                  </CardContent></Card>
+                  <Card className="bg-slate-50"><CardContent className="p-6">
+                    <Shield className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
+                    <p className="font-medium text-slate-900 text-center">Seguro y Confiable</p>
+                    <p className="text-sm text-slate-500 mt-1 text-center">Firma HMAC, reintentos exponenciales y logs de entrega</p>
+                  </CardContent></Card>
+                  <Card className="bg-slate-50"><CardContent className="p-6">
+                    <Globe className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                    <p className="font-medium text-slate-900 text-center">Fácil Integración</p>
+                    <p className="text-sm text-slate-500 mt-1 text-center">JSON sobre HTTP/HTTPS, eventos tipados y documentados</p>
+                  </CardContent></Card>
                 </div>
                 <div className="pt-4 border-t border-slate-200">
-                  <p className="text-sm text-slate-600 mb-4">Configura endpoints HTTP para recibir eventos como:</p>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-                    {[
-                      'stock.changed', 'stock.low', 'stock.out',
-                      'batch.expiring', 'batch.expired',
-                      'return.created', 'return.approved',
-                      'order.created', 'order.shipped',
-                      'invoice.created', 'invoice.paid', 'invoice.overdue',
-                      'purchase_order.created', 'purchase_order.received',
-                    ].map((event, i) => (
+                    {['stock.changed', 'stock.low', 'stock.out', 'batch.expiring', 'batch.expired', 'return.created', 'return.approved', 'order.created', 'order.shipped', 'invoice.created', 'invoice.paid', 'invoice.overdue', 'purchase_order.created', 'purchase_order.received'].map((event, i) => (
                       <Badge key={i} variant="secondary" className="font-mono">{event}</Badge>
                     ))}
                   </div>
@@ -480,6 +213,397 @@ export default function SettingsPage() {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function UsersTab() {
+  const [users, setUsers] = useState<UserProfile[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showInvite, setShowInvite] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteName, setInviteName] = useState('');
+  const [inviteRole, setInviteRole] = useState('member');
+  const [saving, setSaving] = useState(false);
+  const [editingUser, setEditingUser] = useState<UserProfile | null>(null);
+
+  const loadUsers = async () => {
+    try {
+      const api = getApiClient();
+      const data = await api.getUsers();
+      setUsers(Array.isArray(data) ? data : []);
+    } catch { setUsers([]); }
+    setLoading(false);
+  };
+
+  useEffect(() => { loadUsers(); }, []);
+
+  const handleInvite = async () => {
+    if (!inviteEmail) return;
+    setSaving(true);
+    try {
+      const api = getApiClient();
+      await api.createUser({ email: inviteEmail, full_name: inviteName, role: inviteRole });
+      setInviteEmail(''); setInviteName(''); setInviteRole('member'); setShowInvite(false);
+      loadUsers();
+    } catch { toast.error('Error al crear usuario'); }
+    setSaving(false);
+  };
+
+  const handleUpdate = async () => {
+    if (!editingUser) return;
+    setSaving(true);
+    try {
+      const api = getApiClient();
+      await api.updateUser({ id: editingUser.id, full_name: editingUser.full_name, role: editingUser.role });
+      setEditingUser(null);
+      loadUsers();
+    } catch { toast.error('Error al actualizar usuario'); }
+    setSaving(false);
+  };
+
+  const handleDelete = async (userId: string) => {
+    if (!confirm('¿Eliminar este usuario?')) return;
+    try {
+      const api = getApiClient();
+      await api.deleteUser(userId);
+      loadUsers();
+    } catch { toast.error('Error al eliminar usuario'); }
+  };
+
+  const roleLabels: Record<string, string> = { owner: 'Propietario', admin: 'Administrador', manager: 'Gerente', member: 'Miembro', viewer: 'Observador' };
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle>Usuarios del Sistema</CardTitle>
+        <Button size="sm" onClick={() => setShowInvite(true)}>
+          <Plus className="w-4 h-4 mr-2" /> Invitar Usuario
+        </Button>
+      </CardHeader>
+      <CardContent className="p-0">
+        {showInvite && (
+          <div className="p-4 bg-indigo-50 border-b border-indigo-100 space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <Input label="Email" type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} placeholder="usuario@empresa.cl" />
+              <Input label="Nombre" value={inviteName} onChange={(e) => setInviteName(e.target.value)} placeholder="Nombre completo" />
+              <Select label="Rol" value={inviteRole} onChange={(e) => setInviteRole(e.target.value)}
+                options={[
+                  { value: 'member', label: 'Miembro' },
+                  { value: 'admin', label: 'Administrador' },
+                  { value: 'manager', label: 'Gerente' },
+                  { value: 'viewer', label: 'Observador' },
+                ]} />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="secondary" size="sm" onClick={() => setShowInvite(false)}>Cancelar</Button>
+              <Button size="sm" onClick={handleInvite} disabled={saving || !inviteEmail}>
+                <Check className="w-4 h-4 mr-1" /> {saving ? 'Creando...' : 'Crear Usuario'}
+              </Button>
+            </div>
+          </div>
+        )}
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-slate-200">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Email</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Rol</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Último Acceso</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-500">Cargando...</td></tr>
+              ) : users.length === 0 ? (
+                <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-500">No hay usuarios</td></tr>
+              ) : users.map(user => (
+                <tr key={user.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                  <td className="px-4 py-3 text-sm font-medium text-slate-900">{user.full_name || '—'}</td>
+                  <td className="px-4 py-3 text-sm text-slate-600">{user.email}</td>
+                  <td className="px-4 py-3">
+                    <Badge variant={user.role === 'owner' ? 'info' : user.role === 'admin' ? 'warning' : 'neutral'}>
+                      {roleLabels[user.role] || user.role}
+                    </Badge>
+                  </td>
+                  <td className="px-4 py-3">
+                    <Badge variant={user.status === 'active' ? 'success' : user.status === 'invited' ? 'warning' : 'danger'}>
+                      {user.status === 'active' ? 'Activo' : user.status === 'invited' ? 'Invitado' : 'Suspendido'}
+                    </Badge>
+                  </td>
+                  <td className="px-4 py-3 text-xs text-slate-500">
+                    {user.last_login_at ? new Date(user.last_login_at).toLocaleDateString('es-CL') : 'Nunca'}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <div className="flex items-center justify-end gap-1">
+                      {user.role !== 'owner' && (
+                        <>
+                          <button onClick={() => setEditingUser(user)} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors">
+                            <Pencil className="w-4 h-4" />
+                          </button>
+                          <button onClick={() => handleDelete(user.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {editingUser && (
+          <div className="p-4 bg-slate-50 border-t border-slate-200 space-y-3">
+            <h4 className="text-sm font-medium text-slate-900">Editar Usuario</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <Input label="Nombre" value={editingUser.full_name || ''} onChange={(e) => setEditingUser({ ...editingUser, full_name: e.target.value })} />
+              <Select label="Rol" value={editingUser.role} onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
+                options={[
+                  { value: 'admin', label: 'Administrador' },
+                  { value: 'manager', label: 'Gerente' },
+                  { value: 'member', label: 'Miembro' },
+                  { value: 'viewer', label: 'Observador' },
+                ]} />
+              <Select label="Estado" value={editingUser.status} onChange={(e) => setEditingUser({ ...editingUser, status: e.target.value })}
+                options={[
+                  { value: 'active', label: 'Activo' },
+                  { value: 'suspended', label: 'Suspendido' },
+                ]} />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="secondary" size="sm" onClick={() => setEditingUser(null)}>Cancelar</Button>
+              <Button size="sm" onClick={handleUpdate} disabled={saving}>
+                <Save className="w-4 h-4 mr-1" /> Guardar
+              </Button>
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function BillingTab({ plan, status }: { plan: string; status: string }) {
+  const planConfig: Record<string, { name: string; price: string; users: string; storage: string; api: string }> = {
+    free: { name: 'Plan Free', price: '$0/mes', users: '1/1', storage: '500 MB', api: '1K' },
+    starter: { name: 'Plan Starter', price: '$19.900/mes', users: '5/5', storage: '2 GB', api: '10K' },
+    professional: { name: 'Plan Professional', price: '$49.900/mes', users: '10/10', storage: '10 GB', api: '50K' },
+    enterprise: { name: 'Plan Enterprise', price: '$99.900/mes', users: 'Ilimitados', storage: '100 GB', api: 'Ilimitado' },
+  };
+  const current = planConfig[plan] || planConfig.free;
+
+  return (
+    <>
+      <Card>
+        <CardHeader><CardTitle>Plan Actual</CardTitle></CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between p-4 bg-indigo-50 rounded-xl border border-indigo-100">
+            <div>
+              <p className="text-lg font-bold text-indigo-900">{current.name}</p>
+              <p className="text-sm text-indigo-700">{current.price}</p>
+            </div>
+            <Badge variant={status === 'active' ? 'info' : status === 'trial' ? 'warning' : 'danger'}>
+              {status === 'active' ? 'Activo' : status === 'trial' ? 'Prueba' : status === 'suspended' ? 'Suspendido' : status}
+            </Badge>
+          </div>
+          <div className="mt-4 grid grid-cols-3 gap-4 text-center text-sm">
+            <div className="p-3 bg-slate-50 rounded-lg">
+              <p className="text-[9px] font-semibold text-slate-500 uppercase">Usuarios</p>
+              <p className="font-bold text-slate-900 mt-1">{current.users}</p>
+            </div>
+            <div className="p-3 bg-slate-50 rounded-lg">
+              <p className="text-[9px] font-semibold text-slate-500 uppercase">Almacenamiento</p>
+              <p className="font-bold text-slate-900 mt-1">{current.storage}</p>
+            </div>
+            <div className="p-3 bg-slate-50 rounded-lg">
+              <p className="text-[9px] font-semibold text-slate-500 uppercase">API Calls</p>
+              <p className="font-bold text-slate-900 mt-1">{current.api}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader><CardTitle>Planes Disponibles</CardTitle></CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              { name: 'Starter', price: '$19.900', features: ['5 usuarios', '2 GB storage', '10K API calls'] },
+              { name: 'Professional', price: '$49.900', features: ['10 usuarios', '10 GB storage', '50K API calls'] },
+              { name: 'Enterprise', price: '$99.900', features: ['Usuarios ilimitados', '100 GB storage', 'API ilimitado'] },
+            ].map((p) => (
+              <div key={p.name} className={`p-4 rounded-xl border-2 transition-colors ${
+                plan === p.name.toLowerCase() ? 'border-indigo-500 bg-indigo-50' : 'border-slate-200 hover:border-slate-300'
+              }`}>
+                <p className="font-bold text-slate-900">{p.name}</p>
+                <p className="text-lg font-bold text-indigo-600 mt-1">{p.price}/mes</p>
+                <ul className="mt-3 space-y-1">
+                  {p.features.map((f, i) => (
+                    <li key={i} className="text-xs text-slate-600 flex items-center gap-1">
+                      <Check className="w-3 h-3 text-emerald-500" /> {f}
+                    </li>
+                  ))}
+                </ul>
+                {plan !== p.name.toLowerCase() && (
+                  <Button variant="secondary" size="sm" className="w-full mt-3">Upgrade</Button>
+                )}
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </>
+  );
+}
+
+function NotificationsTab() {
+  const [prefs, setPrefs] = useState({
+    email_enabled: false, email_address: '',
+    task_deadline: true, milestone_deadline: true, project_deadline: true, timesheet_reminders: true,
+  });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    const api = getApiClient();
+    api.getNotificationPreferences().then((data: any) => {
+      setPrefs({
+        email_enabled: data.email_enabled ?? false,
+        email_address: data.email_address || '',
+        task_deadline: data.task_deadline ?? true,
+        milestone_deadline: data.milestone_deadline ?? true,
+        project_deadline: data.project_deadline ?? true,
+        timesheet_reminders: data.timesheet_reminders ?? true,
+      });
+      setLoading(false);
+    }).catch(() => setLoading(false));
+  }, []);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const api = getApiClient();
+      await api.updateNotificationPreferences(prefs);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch { toast.error('Error al guardar preferencias'); }
+    setSaving(false);
+  };
+
+  if (loading) return <Card><CardContent className="p-8 text-center text-sm text-slate-500">Cargando...</CardContent></Card>;
+
+  return (
+    <Card>
+      <CardHeader><CardTitle>Preferencias de Notificación</CardTitle></CardHeader>
+      <CardContent className="space-y-4">
+        <div className="p-4 bg-slate-50 rounded-lg space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-slate-900">Notificaciones por Email</p>
+              <p className="text-xs text-slate-500">Recibe resúmenes y alertas importantes por correo</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" checked={prefs.email_enabled} onChange={(e) => setPrefs(p => ({ ...p, email_enabled: e.target.checked }))} className="sr-only peer" />
+              <div className="w-11 h-6 bg-slate-200 peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+            </label>
+          </div>
+          {prefs.email_enabled && (
+            <Input label="Email para notificaciones" type="email" value={prefs.email_address}
+              onChange={(e) => setPrefs(p => ({ ...p, email_address: e.target.value }))}
+              placeholder="admin@empresa.cl" />
+          )}
+        </div>
+        {[
+          { key: 'task_deadline', label: 'Plazos de tareas', desc: 'Alerta cuando una tarea está por vencer en proyectos' },
+          { key: 'milestone_deadline', label: 'Hitos de proyectos', desc: 'Notificación de hitos próximos a vencer' },
+          { key: 'project_deadline', label: 'Fechas límite de proyectos', desc: 'Alerta cuando un proyecto está por vencer' },
+          { key: 'timesheet_reminders', label: 'Recordatorios de horas', desc: 'Recordatorio para registrar horas trabajadas' },
+        ].map((item) => (
+          <div key={item.key} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+            <div>
+              <p className="text-sm font-medium text-slate-900">{item.label}</p>
+              <p className="text-xs text-slate-500">{item.desc}</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" checked={(prefs as any)[item.key]}
+                onChange={(e) => setPrefs(p => ({ ...p, [item.key]: e.target.checked }))} className="sr-only peer" />
+              <div className="w-11 h-6 bg-slate-200 peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+            </label>
+          </div>
+        ))}
+        <div className="flex justify-end gap-3 pt-4">
+          {saved && <span className="text-sm text-emerald-600">Guardado correctamente</span>}
+          <Button onClick={handleSave} disabled={saving}>
+            <Save className="w-4 h-4 mr-2" /> {saving ? 'Guardando...' : 'Guardar Preferencias'}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function SecurityTab() {
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [changing, setChanging] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const handleChangePassword = async () => {
+    if (!currentPassword || !newPassword) return;
+    if (newPassword !== confirmPassword) { setMessage('Las contraseñas no coinciden'); return; }
+    if (newPassword.length < 8) { setMessage('Mínimo 8 caracteres'); return; }
+    setChanging(true);
+    setMessage('');
+    try {
+      const api = getApiClient();
+      await (api as any).request('/auth/change-password', {
+        method: 'POST',
+        body: JSON.stringify({ currentPassword, newPassword }),
+      });
+      setMessage('Contraseña actualizada correctamente');
+      setCurrentPassword(''); setNewPassword(''); setConfirmPassword('');
+    } catch { setMessage('Error al cambiar contraseña. Verifica la contraseña actual.'); }
+    setChanging(false);
+  };
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader><CardTitle>Contraseña</CardTitle></CardHeader>
+        <CardContent className="space-y-4">
+          <Input label="Contraseña Actual" type="password" value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)} placeholder="Ingresa tu contraseña actual" />
+          <Input label="Nueva Contraseña" type="password" value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)} placeholder="Mínimo 8 caracteres" />
+          <Input label="Confirmar Contraseña" type="password" value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Repite la nueva contraseña" />
+          {message && <p className={`text-sm ${message.includes('Error') ? 'text-rose-600' : 'text-emerald-600'}`}>{message}</p>}
+          <div className="flex justify-end">
+            <Button onClick={handleChangePassword} disabled={changing || !currentPassword || !newPassword}>
+              <Key className="w-4 h-4 mr-2" /> {changing ? 'Cambiando...' : 'Cambiar Contraseña'}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader><CardTitle>Autenticación de Dos Factores</CardTitle></CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+            <div>
+              <p className="text-sm font-medium text-slate-900">2FA con Authenticator App</p>
+              <p className="text-xs text-slate-500">Agrega una capa extra de seguridad a tu cuenta</p>
+            </div>
+            <Badge variant="neutral">Próximamente</Badge>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

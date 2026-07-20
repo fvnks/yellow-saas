@@ -1,197 +1,238 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select, KPICard } from '@yellow-erp/ui';
-import { Plus, Edit, Trash2, Copy, Tag, Percent, Star, List } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardContent, Badge, Button, Input, Select } from '@yellow-erp/ui';
+import { Plus, Edit, Trash2, Copy, Tag, Percent, Star, List, X, Save } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
-const fallbackLists: any[] = [];
-
-const fallbackProducts: any[] = [];
+interface PriceList {
+  id: string;
+  name: string;
+  description: string;
+  is_default: boolean;
+  currency: string;
+  adjustment_type: string;
+  adjustment_value: number;
+  items: any[];
+  items_count?: number;
+  created_at: string;
+}
 
 export default function PriceListsPage() {
-  const [priceLists, setPriceLists] = useState(fallbackLists);
-  const [listProducts, setListProducts] = useState(fallbackProducts);
+  const [priceLists, setPriceLists] = useState<PriceList[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedList, setSelectedList] = useState('1');
+  const [showForm, setShowForm] = useState(false);
+  const [editingList, setEditingList] = useState<PriceList | null>(null);
+  const [formName, setFormName] = useState('');
+  const [formDescription, setFormDescription] = useState('');
+  const [formDefault, setFormDefault] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    const api = getApiClient();
-    api.getPriceLists()
-      .then(res => {
-        if (res.data && res.data.length > 0) {
-          const mapped = res.data.map(list => ({
-            id: list.id,
-            name: list.name,
-            description: '',
-            products: list.items_count,
-            status: list.is_default ? 'default' : 'active',
-            createdAt: new Date().toISOString().split('T')[0],
-          }));
-          setPriceLists(mapped);
-        }
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
-
-  const totalLists = priceLists.length;
-  const productsWithPrice = priceLists.reduce((sum, list) => sum + list.products, 0);
-  const avgDiscount = 0;
-  const defaultList = priceLists.find(l => l.status === 'default')?.name || 'Lista General';
-
-  const getStatusConfig = (status: string) => {
-    switch (status) {
-      case 'default': return { label: 'Por defecto', variant: 'info' as const };
-      case 'active': return { label: 'Activa', variant: 'success' as const };
-      case 'inactive': return { label: 'Inactiva', variant: 'neutral' as const };
-      default: return { label: status, variant: 'neutral' as const };
-    }
+  const loadLists = async () => {
+    try {
+      const api = getApiClient();
+      const res = await api.getPriceLists();
+      const data = res.data || [];
+      setPriceLists(data.map((l: any) => ({
+        ...l,
+        items_count: l.items?.length || 0,
+        created_at: l.created_at || new Date().toISOString(),
+      })));
+    } catch { setPriceLists([]); }
+    setLoading(false);
   };
+
+  useEffect(() => { loadLists(); }, []);
+
+  const openNew = () => {
+    setEditingList(null);
+    setFormName(''); setFormDescription(''); setFormDefault(false);
+    setShowForm(true);
+  };
+
+  const openEdit = (list: PriceList) => {
+    setEditingList(list);
+    setFormName(list.name);
+    setFormDescription(list.description || '');
+    setFormDefault(list.is_default);
+    setShowForm(true);
+  };
+
+  const handleSave = async () => {
+    if (!formName.trim()) return;
+    setSaving(true);
+    try {
+      const api = getApiClient();
+      if (editingList) {
+        await api.updatePriceList(editingList.id, {
+          name: formName, description: formDescription, is_default: formDefault,
+        });
+      } else {
+        await api.createPriceList({
+          name: formName, description: formDescription, is_default: formDefault,
+        });
+      }
+      setShowForm(false);
+      loadLists();
+    } catch { toast.error('Error al guardar lista de precios'); }
+    setSaving(false);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('¿Eliminar esta lista de precios?')) return;
+    try {
+      const api = getApiClient();
+      await api.deletePriceList(id);
+      loadLists();
+    } catch { toast.error('Error al eliminar'); }
+  };
+
+  const handleCopy = async (list: PriceList) => {
+    try {
+      const api = getApiClient();
+      await api.createPriceList({
+        name: `${list.name} (Copia)`,
+        description: list.description,
+        is_default: false,
+      });
+      loadLists();
+    } catch { toast.error('Error al copiar lista'); }
+  };
+
+  const totalProducts = priceLists.reduce((sum, l) => sum + (l.items?.length || 0), 0);
+  const defaultList = priceLists.find(l => l.is_default)?.name || 'Lista General';
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Listas de Precio</h1>
-          <p className="text-sm text-slate-500 mt-1">Gestin de precios y descuentos por cliente</p>
+          <p className="text-sm text-slate-500 mt-1">Gestión de precios y descuentos por cliente</p>
         </div>
-        <Button>
-          <Plus className="w-4 h-4 mr-2" />
-          Nueva Lista
+        <Button onClick={openNew}>
+          <Plus className="w-4 h-4 mr-2" /> Nueva Lista
         </Button>
       </div>
 
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        <KPICard
-          label="Total Listas"
-          value={totalLists.toString()}
-          change="Configuradas"
-          changeType="neutral"
-          icon={List}
-          iconColor="indigo"
-        />
-        <KPICard
-          label="Productos con Precio"
-          value={productsWithPrice.toString()}
-          change="En todas las listas"
-          changeType="neutral"
-          icon={Tag}
-          iconColor="emerald"
-        />
-        <KPICard
-          label="Descuento Promedio"
-          value={`${avgDiscount}%`}
-          change="Sobre precio general"
-          changeType="neutral"
-          icon={Percent}
-          iconColor="amber"
-        />
-        <KPICard
-          label="Lista por Defecto"
-          value={defaultList}
-          change="Aplicada automticamente"
-          changeType="neutral"
-          icon={Star}
-          iconColor="blue"
-        />
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <Card><CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Listas</p>
+              <p className="text-2xl font-bold text-slate-900 mt-1">{priceLists.length}</p>
+            </div>
+            <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+              <List className="w-5 h-5 text-indigo-600" />
+            </div>
+          </div>
+        </CardContent></Card>
+        <Card><CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Productos con Precio</p>
+              <p className="text-2xl font-bold text-slate-900 mt-1">{totalProducts}</p>
+            </div>
+            <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
+              <Tag className="w-5 h-5 text-emerald-600" />
+            </div>
+          </div>
+        </CardContent></Card>
+        <Card><CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Lista por Defecto</p>
+              <p className="text-lg font-bold text-slate-900 mt-1">{defaultList}</p>
+            </div>
+            <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+              <Star className="w-5 h-5 text-amber-600" />
+            </div>
+          </div>
+        </CardContent></Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Listas de Precio</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nombre</TableHead>
-                <TableHead>Descripcin</TableHead>
-                <TableHead>Productos</TableHead>
-                <TableHead>Estado</TableHead>
-                <TableHead>Creada</TableHead>
-                <TableHead>Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {priceLists.map(list => {
-                const status = getStatusConfig(list.status);
-                return (
-                  <TableRow key={list.id}>
-                    <TableCell className="font-medium">{list.name}</TableCell>
-                    <TableCell>{list.description}</TableCell>
-                    <TableCell>{list.products}</TableCell>
-                    <TableCell>
-                      <Badge variant={status.variant}>{status.label}</Badge>
-                    </TableCell>
-                    <TableCell>{new Date(list.createdAt).toLocaleDateString('es-CL')}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Button variant="ghost" size="sm">
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm">
-                          <Copy className="w-4 h-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-          </div>
-        </CardContent>
-      </Card>
+      {showForm && (
+        <Card>
+          <CardHeader className="flex items-center justify-between">
+            <CardTitle>{editingList ? 'Editar Lista' : 'Nueva Lista de Precios'}</CardTitle>
+            <button onClick={() => setShowForm(false)} className="text-slate-400 hover:text-slate-600">
+              <X className="w-5 h-5" />
+            </button>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Input label="Nombre" value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="Ej: Lista Mayorista" required />
+              <Input label="Descripción" value={formDescription} onChange={(e) => setFormDescription(e.target.value)} placeholder="Descripción opcional" />
+            </div>
+            <div className="flex items-center gap-2">
+              <input type="checkbox" id="is_default" checked={formDefault}
+                onChange={(e) => setFormDefault(e.target.checked)}
+                className="w-4 h-4 text-indigo-600 bg-slate-50 border-slate-300 rounded focus:ring-indigo-500" />
+              <label htmlFor="is_default" className="text-sm text-slate-700">Lista por defecto (se aplica automáticamente)</label>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="secondary" onClick={() => setShowForm(false)}>Cancelar</Button>
+              <Button onClick={handleSave} disabled={saving || !formName.trim()}>
+                <Save className="w-4 h-4 mr-2" /> {saving ? 'Guardando...' : 'Guardar'}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Productos en Lista Seleccionada</CardTitle>
-            <Select
-              value={selectedList}
-              onChange={(e) => setSelectedList(e.target.value)}
-              options={priceLists.map(l => ({ value: l.id, label: l.name }))}
-              className="w-48"
-            />
-          </div>
-        </CardHeader>
+        <CardHeader><CardTitle>Listas de Precio</CardTitle></CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Producto</TableHead>
-                <TableHead>SKU</TableHead>
-                <TableHead>Precio Lista</TableHead>
-                <TableHead>Precio General</TableHead>
-                <TableHead>Diferencia</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {listProducts.map(product => (
-                <TableRow key={product.id}>
-                  <TableCell className="font-medium">{product.name}</TableCell>
-                  <TableCell>{product.sku}</TableCell>
-                  <TableCell>${product.listPrice.toLocaleString('es-CL')}</TableCell>
-                  <TableCell>${product.generalPrice.toLocaleString('es-CL')}</TableCell>
-                  <TableCell>
-                    <span className={product.difference < 0 ? 'text-emerald-600' : product.difference > 0 ? 'text-rose-600' : 'text-slate-500'}>
-                      {product.difference === 0 ? '-' : `$${product.difference.toLocaleString('es-CL')}`}
-                    </span>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-slate-200">
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Descripción</th>
+                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Productos</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Creada</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-500">Cargando...</td></tr>
+                ) : priceLists.length === 0 ? (
+                  <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-500">No hay listas de precios. Crea la primera.</td></tr>
+                ) : priceLists.map(list => (
+                  <tr key={list.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                    <td className="px-4 py-3 text-sm font-medium text-slate-900">{list.name}</td>
+                    <td className="px-4 py-3 text-sm text-slate-500">{list.description || '—'}</td>
+                    <td className="px-4 py-3 text-sm text-slate-700 text-center">{list.items?.length || 0}</td>
+                    <td className="px-4 py-3">
+                      <Badge variant={list.is_default ? 'info' : 'success'}>
+                        {list.is_default ? 'Por defecto' : 'Activa'}
+                      </Badge>
+                    </td>
+                    <td className="px-4 py-3 text-xs text-slate-500">
+                      {new Date(list.created_at).toLocaleDateString('es-CL')}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button onClick={() => openEdit(list)} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors">
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => handleCopy(list)} className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors">
+                          <Copy className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => handleDelete(list.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </CardContent>
       </Card>
     </div>
   );
 }
-

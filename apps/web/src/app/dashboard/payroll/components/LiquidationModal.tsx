@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button } from '@yellow-erp/ui';
 import { X, Calculator, Download } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 import { generateLiquidationPDF, LiquidationData } from '@/lib/pdf-design';
 
 interface Props {
@@ -39,7 +40,7 @@ export default function LiquidationModal({ employees, onClose }: Props) {
       });
       setResult(res.data);
     } catch (e: any) {
-      alert(e.message || 'Error calculando liquidacion');
+      toast.error(e.message || 'Error calculando liquidacion');
     }
     setCalculating(false);
   };

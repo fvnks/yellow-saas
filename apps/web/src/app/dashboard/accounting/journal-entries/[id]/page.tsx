@@ -5,6 +5,7 @@ import { ArrowLeft, Trash2, CheckCircle2, Clock, XCircle, FileText } from 'lucid
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
   draft: { label: 'Borrador', color: 'bg-slate-100 text-slate-700', icon: Clock },
@@ -36,7 +37,7 @@ export default function JournalEntryDetailPage() {
       const api = getApiClient();
       await api.updateJournalEntry(entryId, { status: 'posted' });
       loadEntry();
-    } catch (err: any) { alert(err?.message || 'Error'); }
+    } catch (err: any) { toast.error(err?.message || 'Error'); }
   };
 
   const handleReverse = async () => {
@@ -45,7 +46,7 @@ export default function JournalEntryDetailPage() {
       const api = getApiClient();
       await api.updateJournalEntry(entryId, { status: 'reversed' });
       loadEntry();
-    } catch (err: any) { alert(err?.message || 'Error'); }
+    } catch (err: any) { toast.error(err?.message || 'Error'); }
   };
 
   const handleDelete = async () => {
@@ -54,7 +55,7 @@ export default function JournalEntryDetailPage() {
       const api = getApiClient();
       await api.deleteJournalEntry(entryId);
       router.push('/dashboard/accounting/journal-entries');
-    } catch (err: any) { alert(err?.message || 'Error'); }
+    } catch (err: any) { toast.error(err?.message || 'Error'); }
   };
 
   if (loading) return <div className="animate-pulse space-y-4"><div className="h-8 bg-slate-200 rounded w-1/3" /></div>;

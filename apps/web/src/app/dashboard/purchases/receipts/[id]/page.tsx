@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { ArrowLeft, Package, Truck, Warehouse, Calendar, Trash2, CheckCircle, Clock, Send, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { getApiClient } from '@/lib/api-client';
 
 interface ReceiptItem {
@@ -76,7 +77,7 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
       await api.deleteGoodsReceipt(id);
       router.push('/dashboard/purchases/receipts');
     } catch {
-      alert('Error al eliminar');
+      toast.error('Error al eliminar');
       setDeleting(false);
     }
   };
