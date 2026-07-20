@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, Badge, Button } from '@yellow
 import { ArrowLeft, CheckCircle, XCircle, Truck, ArrowRight, Package } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { getApiClient } from '@/lib/api-client';
 
 interface TransferDetail {
@@ -59,7 +60,7 @@ export default function TransferDetailPage({ params }: { params: { id: string } 
       const updated = await api.getStockTransfer(params.id);
       setTransfer(updated as unknown as TransferDetail);
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Error al confirmar');
+      toast.error(err instanceof Error ? err.message : 'Error al confirmar');
     }
     setActionLoading(false);
   };
@@ -73,7 +74,7 @@ export default function TransferDetailPage({ params }: { params: { id: string } 
       const updated = await api.getStockTransfer(params.id);
       setTransfer(updated as unknown as TransferDetail);
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Error al cancelar');
+      toast.error(err instanceof Error ? err.message : 'Error al cancelar');
     }
     setActionLoading(false);
   };

@@ -71,7 +71,7 @@ export default function SupplierDetailPage({ params }: { params: { id: string } 
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Link href="/dashboard/purchases" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+          <Link href="/dashboard/suppliers" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <h1 className="text-xl font-bold text-slate-900">Proveedor no encontrado</h1>
@@ -79,8 +79,8 @@ export default function SupplierDetailPage({ params }: { params: { id: string } 
         <Card>
           <CardContent className="text-center py-12">
             <p className="text-sm text-slate-500">{error || 'El proveedor solicitado no existe.'}</p>
-            <Link href="/dashboard/purchases">
-              <Button className="mt-4">Volver a Compras</Button>
+            <Link href="/dashboard/suppliers">
+              <Button className="mt-4">Volver a Proveedores</Button>
             </Link>
           </CardContent>
         </Card>
@@ -91,7 +91,7 @@ export default function SupplierDetailPage({ params }: { params: { id: string } 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/purchases" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href="/dashboard/suppliers" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">

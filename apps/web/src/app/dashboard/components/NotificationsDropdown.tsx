@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Bell, Check, CheckCheck, Clock, AlertTriangle, FolderKanban } from 'lucide-react';
+import { toast } from 'sonner';
 import { getApiClient } from '@/lib/api-client';
 
 interface Notification {
@@ -28,12 +29,11 @@ export default function NotificationsDropdown() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-
-  const api = getApiClient();
+  const hasNotified = useRef(false);
 
   useEffect(() => {
-    loadNotifications();
-    const interval = setInterval(loadNotifications, 60000);
+    loadNotifications(true);
+    const interval = setInterval(() => loadNotifications(false), 60000);
     return () => clearInterval(interval);
   }, []);
 
@@ -45,16 +45,28 @@ export default function NotificationsDropdown() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const loadNotifications = async () => {
+  const loadNotifications = async (isInitial = false) => {
     try {
+      const api = getApiClient();
       const res = await api.getNotifications({ limit: 20 });
-      setNotifications(res.data || []);
-      setUnreadCount((res.data || []).filter((n: Notification) => !n.read_at).length);
+      const data = res.data || [];
+      const unread = data.filter((n: Notification) => !n.read_at).length;
+      setNotifications(data);
+      setUnreadCount(unread);
+
+      if (isInitial && !hasNotified.current && unread > 2) {
+        hasNotified.current = true;
+        toast.info(`Tienes ${unread} notificaciones pendientes`, {
+          description: 'Revisa tu bandeja de notificaciones para más detalles.',
+          duration: 8000,
+        });
+      }
     } catch {}
   };
 
   const handleMarkRead = async (id: string) => {
     try {
+      const api = getApiClient();
       await api.markNotificationsRead(id);
       loadNotifications();
     } catch {}
@@ -62,6 +74,7 @@ export default function NotificationsDropdown() {
 
   const handleMarkAllRead = async () => {
     try {
+      const api = getApiClient();
       await api.markNotificationsRead();
       loadNotifications();
     } catch {}
@@ -70,6 +83,7 @@ export default function NotificationsDropdown() {
   const handleCheckDeadlines = async () => {
     setLoading(true);
     try {
+      const api = getApiClient();
       await api.checkDeadlines();
       loadNotifications();
     } catch {}

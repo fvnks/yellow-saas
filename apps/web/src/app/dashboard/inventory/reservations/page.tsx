@@ -28,6 +28,7 @@ export default function ReservationsPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [warehouses, setWarehouses] = useState<any[]>([]);
   const [form, setForm] = useState({ product_id: '', warehouse_id: '', quantity: '', reference_type: 'manual', notes: '', expires_at: '' });
+  const [error, setError] = useState('');
 
   useEffect(() => { loadReservations(); loadOptions(); }, [search]);
 
@@ -39,7 +40,7 @@ export default function ReservationsPage() {
       if (search) params.search = search;
       const res = await api.getStockReservations(params);
       setReservations(res.data || []);
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error(e); setError('No se pudieron cargar las reservas'); }
     setLoading(false);
   };
 
@@ -52,7 +53,7 @@ export default function ReservationsPage() {
       ]);
       setProducts(pRes.data || []);
       setWarehouses(wRes.data || []);
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error(e); setError('No se pudieron cargar las opciones'); }
   };
 
   const handleCreate = async () => {
@@ -67,12 +68,12 @@ export default function ReservationsPage() {
       setShowNew(false);
       setForm({ product_id: '', warehouse_id: '', quantity: '', reference_type: 'manual', notes: '', expires_at: '' });
       loadReservations();
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error(e); setError('No se pudo crear la reserva'); }
   };
 
   const handleRelease = async (id: string) => {
     if (!confirm('Liberar esta reserva?')) return;
-    try { await getApiClient().releaseStockReservation(id); loadReservations(); } catch (e) { console.error(e); }
+    try { await getApiClient().releaseStockReservation(id); loadReservations(); } catch (e) { console.error(e); setError('No se pudo liberar la reserva'); }
   };
 
   const filtered = reservations.filter(r =>
@@ -94,6 +95,8 @@ export default function ReservationsPage() {
           <Plus className="w-4 h-4" /> Nueva Reserva
         </button>
       </div>
+
+      {error && <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm">{error}</div>}
 
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
         <div className="relative max-w-md">

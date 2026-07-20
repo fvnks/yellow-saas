@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Plus, Search, Eye, Trash2, PackageCheck } from 'lucide-react';
+import { toast } from 'sonner';
 import { getApiClient } from '@/lib/api-client';
 
 interface GoodsReceipt {
@@ -76,7 +77,7 @@ export default function GoodsReceiptsPage() {
       fetchReceipts();
     } catch (err) {
       console.error(err);
-      alert('Error al eliminar');
+      toast.error('Error al eliminar');
     }
   };
 

@@ -106,7 +106,7 @@ export default function PurchasesPage() {
             </div>
           </div>
         </Link>
-        <Link href="/dashboard/purchases/suppliers/new">
+        <Link href="/dashboard/suppliers/new">
           <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 hover:bg-slate-50 transition-colors cursor-pointer">
             <div className="flex flex-col items-center gap-2">
               <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">

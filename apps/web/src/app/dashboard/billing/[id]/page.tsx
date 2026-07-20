@@ -5,6 +5,7 @@ import { ArrowLeft, Trash2, CheckCircle2, Clock, AlertCircle, Send, FileText } f
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
   draft: { label: 'Borrador', color: 'bg-slate-100 text-slate-700', icon: Clock },
@@ -37,7 +38,7 @@ export default function InvoiceDetailPage() {
       const api = getApiClient();
       await api.updateInvoice(invoiceId, { status });
       loadInvoice();
-    } catch (err: any) { alert(err?.message || 'Error'); }
+    } catch (err: any) { toast.error(err?.message || 'Error'); }
   };
 
   const handleDelete = async () => {
@@ -46,7 +47,7 @@ export default function InvoiceDetailPage() {
       const api = getApiClient();
       await api.deleteInvoice(invoiceId);
       router.push('/dashboard/billing');
-    } catch (err: any) { alert(err?.message || 'Error'); }
+    } catch (err: any) { toast.error(err?.message || 'Error'); }
   };
 
   if (loading) return <div className="animate-pulse space-y-4"><div className="h-8 bg-slate-200 rounded w-1/3" /></div>;

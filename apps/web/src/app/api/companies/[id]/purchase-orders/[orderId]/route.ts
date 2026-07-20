@@ -15,7 +15,7 @@ export async function GET(
         (SELECT json_build_object('id', s.id, 'name', s.name, 'tax_id', s.tax_id) FROM suppliers s WHERE s.id = po.supplier_id) as supplier,
         (SELECT json_build_object('id', w.id, 'name', w.name, 'code', w.code) FROM warehouses w WHERE w.id = po.warehouse_id) as warehouse,
         (SELECT json_agg(json_build_object(
-          'id', poi.id, 'product_id', poi.product_id, 'variant_id', poi.variant_id, 'quantity', poi.quantity,
+          'id', poi.id, 'product_id', poi.product_id, 'quantity', poi.quantity,
           'received_quantity', poi.received_quantity, 'unit_price', poi.unit_price,
           'discount_percent', poi.discount_percent, 'discount_amount', poi.discount_amount,
           'tax_rate', poi.tax_rate, 'tax_amount', poi.tax_amount, 'line_total', poi.line_total, 'notes', poi.notes,

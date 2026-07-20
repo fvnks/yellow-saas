@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, Badge, Button, Select, Table,
 import { ArrowLeft, RefreshCw, Download, Cloud, CloudOff, AlertCircle, CheckCircle, XCircle, Loader2, Filter, Database, Smartphone } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface OfflineAction {
   id: string;
@@ -66,17 +67,17 @@ export default function PWAOfflineQueuePage() {
 
   const syncAll = async () => {
     const pending = items.filter(i => i.status === 'pending' || i.status === 'failed');
-    if (pending.length === 0) return alert('No hay elementos pendientes de sincronizar');
+    if (pending.length === 0) return toast('No hay elementos pendientes de sincronizar');
 
     if (!confirm(`Sincronizar ${pending.length} elementos pendientes?`)) return;
 
     try {
       const api = getApiClient();
       const result = await api.syncOfflineQueue(pending.map(i => i.id));
-      alert(`Sincronizados ${result.synced} elementos, fallaron ${result.failed}`);
+      toast.success(`Sincronizados ${result.synced} elementos, fallaron ${result.failed}`);
       loadData();
     } catch (err: any) {
-      alert(`Error: ${err.message}`);
+      toast.error(`Error: ${err.message}`);
     }
   };
 
@@ -85,7 +86,7 @@ export default function PWAOfflineQueuePage() {
       const api = getApiClient();
       await (api as any).syncOfflineAction(id);
       loadData();
-    } catch (err: any) { alert(`Error: ${err.message}`); }
+    } catch (err: any) { toast.error(`Error: ${err.message}`); }
   };
 
   const exportCSV = () => {

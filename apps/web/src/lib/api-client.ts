@@ -1353,6 +1353,26 @@ async deleteAdjustmentReason(id: string) {
     const qs = searchParams.toString();
     return this.request<any>(`/users${qs ? `?${qs}` : ''}`);
   }
+
+  async createUser(data: { email: string; full_name?: string; role?: string }) {
+    return this.request<any>('/users', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateUser(data: { id: string; full_name?: string; role?: string; status?: string }) {
+    return this.request<any>('/users', { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteUser(userId: string) {
+    return this.request<any>(`/users?userId=${userId}`, { method: 'DELETE' });
+  }
+
+  async getNotificationPreferences() {
+    return this.request<any>('/notification-preferences');
+  }
+
+  async updateNotificationPreferences(data: { email_enabled?: boolean; email_address?: string; task_deadline?: boolean; milestone_deadline?: boolean; project_deadline?: boolean; timesheet_reminders?: boolean }) {
+    return this.request<any>('/notification-preferences', { method: 'PUT', body: JSON.stringify(data) });
+  }
 }
 
 // Singleton with dynamic company_id from JWT

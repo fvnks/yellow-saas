@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody
 import { Plus, Search, Filter, Download, Eye, Edit, Trash2, Users, Phone, Mail, MapPin, CreditCard, Building2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { getApiClient } from '@/lib/api-client';
 
 export default function CustomersPage() {
@@ -89,7 +90,7 @@ export default function CustomersPage() {
       await api.deleteCustomer(id);
       setCustomers(prev => prev.filter(c => c.id !== id));
     } catch {
-      alert('Error al eliminar cliente');
+      toast.error('Error al eliminar cliente');
     }
   }, []);
 

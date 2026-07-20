@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
 import { Plus, Trash2, Save, Download, Upload, Eye, Grid, Layers, ArrowUpDown, Copy, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
+import { toast } from 'sonner';
 import { getApiClient } from '@/lib/api-client';
 
 interface LabelElement {
@@ -111,10 +112,10 @@ export default function LabelDesignerPage() {
         settings: gridSettings,
       };
       await api.updateLabelTemplate(activeTemplate.id, { template_json: templateJson });
-      alert('Plantilla guardada exitosamente');
+      toast.success('Plantilla guardada exitosamente');
     } catch (err) {
       console.error('Error saving template:', err);
-      alert('Error al guardar la plantilla');
+      toast.error('Error al guardar la plantilla');
     } finally {
       setSaving(false);
     }
@@ -144,7 +145,7 @@ export default function LabelDesignerPage() {
       setGridSettings({ size: 5, snap: true, show: true });
     } catch (err) {
       console.error('Error creating template:', err);
-      alert('Error al crear plantilla');
+      toast.error('Error al crear plantilla');
     }
   };
 
@@ -228,7 +229,7 @@ export default function LabelDesignerPage() {
         loadTemplate(newTemplate);
       } catch (err) {
         console.error('Error importing template:', err);
-        alert('Error al importar plantilla');
+        toast.error('Error al importar plantilla');
       }
     };
     reader.readAsText(file);

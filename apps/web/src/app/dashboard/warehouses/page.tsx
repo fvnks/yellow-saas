@@ -230,7 +230,7 @@ export default function WarehousesPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-1">
-                        <Link href={`/dashboard/bodega/${warehouse.id}/layout`}>
+                        <Link href={`/dashboard/bodega/${warehouse.id}/detail`}>
                           <button className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors" aria-label="Layout">
                             <LayoutGrid className="w-4 h-4" />
                           </button>

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, Search, Filter, Eye, Trash2, FileText, CheckCircle2, Clock, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
   draft: { label: 'Borrador', color: 'bg-slate-100 text-slate-700', icon: Clock },
@@ -44,7 +45,7 @@ export default function JournalEntriesPage() {
       await api.deleteJournalEntry(id);
       loadEntries();
     } catch (err: any) {
-      alert(err?.message || 'Error al eliminar');
+      toast.error('Error al eliminar');
     }
   };
 
@@ -55,7 +56,7 @@ export default function JournalEntriesPage() {
       await api.updateJournalEntry(id, { status: 'posted' });
       loadEntries();
     } catch (err: any) {
-      alert(err?.message || 'Error al publicar');
+      toast.error('Error al publicar');
     }
   };
 

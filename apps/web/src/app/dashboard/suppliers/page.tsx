@@ -74,7 +74,7 @@ export default function SuppliersPage() {
             <Download className="w-4 h-4 mr-2" />
             Exportar
           </Button>
-          <Link href="/dashboard/purchases/suppliers/new">
+          <Link href="/dashboard/suppliers/new">
             <Button>
               <Plus className="w-4 h-4 mr-2" />
               Nuevo Proveedor
@@ -246,7 +246,7 @@ export default function SuppliersPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-1">
-                        <Link href={`/dashboard/purchases/suppliers/${supplier.id}`}>
+                        <Link href={`/dashboard/suppliers/${supplier.id}`}>
                           <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Ver">
                             <Eye className="w-4 h-4" />
                           </button>

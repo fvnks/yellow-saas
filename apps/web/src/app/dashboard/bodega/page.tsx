@@ -405,7 +405,7 @@ export default function BodegaPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex justify-end gap-1">
-                              <Link href={`/dashboard/bodega/${w.id}/layout`} className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"><Grid className="w-4 h-4" /></Link>
+                              <Link href={`/dashboard/bodega/${w.id}/detail`} className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"><Grid className="w-4 h-4" /></Link>
                               <Link href={`/dashboard/warehouses/${w.id}/edit`} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"><Edit className="w-4 h-4" /></Link>
                               <button onClick={() => handleDeleteWarehouse(w.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-4 h-4" /></button>
                             </div>
