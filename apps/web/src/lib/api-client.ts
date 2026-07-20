@@ -593,23 +593,6 @@ export class ApiClient {
     return this.request<{ message: string }>(`/stock-transfers/${id}/cancel`, { method: 'POST' });
   }
 
-  // Notifications
-  async getNotifications(params?: Record<string, string>) {
-    return this.requestWithPagination<any>('/notifications', params || {});
-  }
-
-  async getUnreadCount() {
-    return this.request<{ count: number }>('/notifications/unread-count');
-  }
-
-  async markNotificationRead(id: string) {
-    return this.request<{ message: string }>(`/notifications/${id}/read`, { method: 'POST' });
-  }
-
-  async markAllNotificationsRead() {
-    return this.request<{ message: string }>('/notifications/read-all', { method: 'POST' });
-  }
-
   // Inventory Counts
   async getInventoryCounts(params?: Record<string, string>) {
     return this.requestWithPagination<any>('/inventory-counts', params || {});
@@ -1218,6 +1201,30 @@ async deleteAdjustmentReason(id: string) {
 
   async getProjectNotifications() {
     return this.request<any>('/projects/notifications');
+  }
+
+  // Notifications
+  async getNotifications(params?: { unread?: boolean; page?: number; limit?: number }) {
+    const searchParams: Record<string, string> = {};
+    if (params?.unread) searchParams.unread = 'true';
+    if (params?.page) searchParams.page = params.page.toString();
+    if (params?.limit) searchParams.limit = params.limit.toString();
+    return this.requestWithPagination<any>('/notifications', searchParams);
+  }
+
+  async createNotification(data: { type: string; title: string; message: string; entity_type?: string; entity_id?: string; project_id?: string }) {
+    return this.request<any>('/notifications', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async markNotificationsRead(notificationId?: string) {
+    return this.request<any>('/notifications', {
+      method: 'PUT',
+      body: JSON.stringify(notificationId ? { notification_id: notificationId } : { action: 'mark_all_read' })
+    });
+  }
+
+  async checkDeadlines() {
+    return this.request<any>('/notifications/check-deadlines', { method: 'POST' });
   }
 
   async getUsers(params?: { search?: string; limit?: number }) {
