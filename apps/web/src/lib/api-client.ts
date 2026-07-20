@@ -1113,6 +1113,23 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects/${projectId}/risks/${riskId}`, { method: 'DELETE' });
   }
 
+  // Project Change Orders
+  async getProjectChangeOrders(projectId: string) {
+    return this.request<any[]>(`/projects/${projectId}/change-orders`);
+  }
+
+  async createProjectChangeOrder(projectId: string, data: any) {
+    return this.request<any>(`/projects/${projectId}/change-orders`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateProjectChangeOrder(projectId: string, changeOrderId: string, data: any) {
+    return this.request<any>(`/projects/${projectId}/change-orders/${changeOrderId}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteProjectChangeOrder(projectId: string, changeOrderId: string) {
+    return this.request<any>(`/projects/${projectId}/change-orders/${changeOrderId}`, { method: 'DELETE' });
+  }
+
   async getProjectTasks(projectId: string) {
     return this.request<any[]>(`/projects/${projectId}/tasks`);
   }

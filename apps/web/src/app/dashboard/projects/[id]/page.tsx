@@ -16,6 +16,7 @@ import DocumentsTab from '../components/DocumentsTab';
 import RentabilidadReport from '../components/RentabilidadReport';
 import ActivityLog from '../components/ActivityLog';
 import RisksTab from '../components/RisksTab';
+import ChangeOrdersTab from '../components/ChangeOrdersTab';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -52,6 +53,7 @@ export default function ProjectDetailPage() {
   const [costsData, setCostsData] = useState<any>({ costs: [], summary: [] });
   const [documents, setDocuments] = useState<any[]>([]);
   const [risks, setRisks] = useState<any[]>([]);
+  const [changeOrders, setChangeOrders] = useState<any[]>([]);
   const [employees, setEmployees] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -71,7 +73,7 @@ export default function ProjectDetailPage() {
     setLoading(true);
     try {
       const api = getApiClient();
-      const [projectRes, tasksRes, milestonesRes, timesheetsRes, expensesRes, costsRes, docsRes, employeesRes, usersRes, risksRes] = await Promise.all([
+      const [projectRes, tasksRes, milestonesRes, timesheetsRes, expensesRes, costsRes, docsRes, employeesRes, usersRes, risksRes, changeOrdersRes] = await Promise.all([
         api.getProject(projectId),
         api.getProjectTasks(projectId),
         api.getProjectMilestones(projectId),
@@ -82,6 +84,7 @@ export default function ProjectDetailPage() {
         api.getEmployees({ limit: '200' }),
         api.getUsers({ limit: 100 }),
         api.getProjectRisks(projectId),
+        api.getProjectChangeOrders(projectId),
       ]);
       setProject(projectRes);
       setTasks(Array.isArray(tasksRes) ? tasksRes : []);
@@ -93,6 +96,7 @@ export default function ProjectDetailPage() {
       setEmployees(Array.isArray(employeesRes?.data) ? employeesRes.data : []);
       setUsers(usersRes?.data || []);
       setRisks(Array.isArray(risksRes) ? risksRes : []);
+      setChangeOrders(Array.isArray(changeOrdersRes) ? changeOrdersRes : []);
     } catch (err) { console.error('Failed to load project:', err); }
     setLoading(false);
   };
@@ -171,6 +175,7 @@ export default function ProjectDetailPage() {
     { id: 'expenses', label: `Gastos (${expenses.length})` },
     { id: 'costs', label: 'Centro Costos' },
     { id: 'risks', label: `Riesgos (${risks.length})` },
+    { id: 'changes', label: `Cambios (${changeOrders.length})` },
     { id: 'documents', label: `Docs (${documents.length})` },
     { id: 'profit', label: 'Rentabilidad' },
     { id: 'activity', label: 'Actividad' },
@@ -371,6 +376,7 @@ export default function ProjectDetailPage() {
       {activeTab === 'expenses' && <ExpensesTab projectId={projectId} expenses={expenses} onRefresh={loadData} />}
       {activeTab === 'costs' && <CostsTab costs={costsData.costs || []} budget={project.budget} />}
       {activeTab === 'risks' && <RisksTab projectId={projectId} risks={risks} employees={employees} onRefresh={loadData} />}
+      {activeTab === 'changes' && <ChangeOrdersTab projectId={projectId} changeOrders={changeOrders} onRefresh={loadData} />}
       {activeTab === 'documents' && <DocumentsTab projectId={projectId} documents={documents} onRefresh={loadData} />}
       {activeTab === 'profit' && <RentabilidadReport project={project} costs={costsData.costs || []} expenses={expenses} timesheets={timesheets} />}
       {activeTab === 'activity' && <ActivityLog projectId={projectId} />}
