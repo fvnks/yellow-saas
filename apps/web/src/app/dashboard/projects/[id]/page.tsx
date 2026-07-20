@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Badge } from '@yellow-erp/ui';
-import { ArrowLeft, Plus, Calendar, DollarSign, Users, CheckCircle2, Clock, Edit, Trash2, BarChart3, Flag, Receipt, FileText, TrendingUp, LayoutGrid } from 'lucide-react';
+import { ArrowLeft, Plus, Calendar, DollarSign, Users, CheckCircle2, Clock, Edit, Trash2, BarChart3, Flag, Receipt, FileText, TrendingUp, LayoutGrid, Copy } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { ContinuousTabs } from '@/components/ui/continuous-tabs';
@@ -61,6 +61,7 @@ export default function ProjectDetailPage() {
     start_date: '', due_date: '', estimated_hours: '', parent_id: '',
   });
   const [saving, setSaving] = useState(false);
+  const [cloning, setCloning] = useState(false);
 
   useEffect(() => { loadData(); }, [projectId]);
 
@@ -110,6 +111,22 @@ export default function ProjectDetailPage() {
   const handleEditTask = (task: any) => {
     setTaskForm({ name: task.name || '', description: task.description || '', assignee_id: task.assignee_id || '', status: task.status || 'todo', priority: task.priority || 'medium', start_date: task.start_date || '', due_date: task.due_date || '', estimated_hours: task.estimated_hours || '', parent_id: task.parent_id || '' });
     setEditingTask(task); setShowTaskForm(true);
+  };
+
+  const handleClone = async () => {
+    if (!confirm(`Clonar "${project.name}"? Se creara una copia con tareas e hitos.`)) return;
+    setCloning(true);
+    try {
+      const api = getApiClient();
+      const res = await api.cloneProject(projectId, {
+        name: `${project.name} (Copia)`,
+        code: `${project.code}-COPY`,
+      });
+      router.push(`/dashboard/projects/${res.project.id}`);
+    } catch (err: any) {
+      alert(err?.message || 'Error al clonar');
+      setCloning(false);
+    }
   };
 
   const handleDeleteTask = async (taskId: string) => {
@@ -187,11 +204,17 @@ export default function ProjectDetailPage() {
           </div>
           <p className="text-sm text-slate-500 mt-1">{project.code} {project.customer_name ? `· ${project.customer_name}` : ''}</p>
         </div>
-        <Link href={`/dashboard/projects/${projectId}/edit`}>
-          <button className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
-            <Edit className="w-4 h-4" /> Editar
+        <div className="flex items-center gap-2">
+          <button onClick={handleClone} disabled={cloning}
+            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+            <Copy className="w-4 h-4" /> {cloning ? 'Clonando...' : 'Clonar'}
           </button>
-        </Link>
+          <Link href={`/dashboard/projects/${projectId}/edit`}>
+            <button className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              <Edit className="w-4 h-4" /> Editar
+            </button>
+          </Link>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
