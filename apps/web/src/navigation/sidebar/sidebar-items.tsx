@@ -133,7 +133,8 @@ export const sidebarItems: NavGroup[] = [
           { title: "Ajustes", path: "/dashboard/inventory/adjustments", icon: "Wrench" },
           { title: "Reporte Stock", path: "/dashboard/inventory/stock-report", icon: "FileBarChart" },
           { title: "Etiquetas", path: "/dashboard/inventory/label-designer", icon: "Tag" },
-          { title: "Valorización", path: "/dashboard/inventory/valuation", icon: "CircleDollarSign" },
+          { title: "Valorizacion", path: "/dashboard/inventory/valuation", icon: "CircleDollarSign" },
+          { title: "Listas de Precio", path: "/dashboard/price-lists", icon: "Tag" },
         ],
       },
       {
@@ -317,7 +318,7 @@ export const sidebarItems: NavGroup[] = [
         icon: "Settings",
         subItems: [
           { title: "General", path: "/dashboard/settings", icon: "Settings" },
-          { title: "Webhooks", path: "/dashboard/settings/webhooks", icon: "Webhook", comingSoon: true },
+          { title: "Webhooks", path: "/dashboard/settings/webhooks", icon: "Webhook" },
         ],
       },
     ],
