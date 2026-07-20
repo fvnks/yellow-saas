@@ -230,6 +230,11 @@ export const sidebarItems: NavGroup[] = [
         title: "Contabilidad",
         path: "/dashboard/accounting",
         icon: "Calculator",
+        subItems: [
+          { title: "Plan de Cuentas", path: "/dashboard/accounting", icon: "Calculator" },
+          { title: "Asientos Contables", path: "/dashboard/accounting/journal-entries", icon: "FileText" },
+          { title: "Nuevo Asiento", path: "/dashboard/accounting/journal-entries/new", icon: "FileText" },
+        ],
       },
       {
         title: "Facturación",

@@ -1,0 +1,198 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { ArrowLeft, Plus, Trash2, Save, AlertCircle } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { getApiClient } from '@/lib/api-client';
+
+export default function NewJournalEntryPage() {
+  const router = useRouter();
+  const [accounts, setAccounts] = useState<any[]>([]);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+
+  const [form, setForm] = useState({
+    date: new Date().toISOString().split('T')[0],
+    description: '',
+    reference_type: '',
+    reference_id: '',
+  });
+
+  const [lines, setLines] = useState<Array<{
+    account_id: string; description: string; debit: string; credit: string;
+  }>>([
+    { account_id: '', description: '', debit: '', credit: '' },
+    { account_id: '', description: '', debit: '', credit: '' },
+  ]);
+
+  useEffect(() => {
+    const api = getApiClient();
+    api.getAccounts({ limit: '500' }).then(res => {
+      setAccounts(res.data || []);
+    }).catch(() => {});
+  }, []);
+
+  const addLine = () => {
+    setLines([...lines, { account_id: '', description: '', debit: '', credit: '' }]);
+  };
+
+  const removeLine = (index: number) => {
+    if (lines.length <= 2) return;
+    setLines(lines.filter((_, i) => i !== index));
+  };
+
+  const updateLine = (index: number, field: string, value: string) => {
+    const updated = [...lines];
+    (updated[index] as any)[field] = value;
+    setLines(updated);
+  };
+
+  const totalDebit = lines.reduce((sum, l) => sum + (parseFloat(l.debit) || 0), 0);
+  const totalCredit = lines.reduce((sum, l) => sum + (parseFloat(l.credit) || 0), 0);
+  const isBalanced = Math.abs(totalDebit - totalCredit) < 0.01 && totalDebit > 0;
+
+  const handleSubmit = async () => {
+    if (!form.description) { setError('La descripcion es requerida'); return; }
+    if (!isBalanced) { setError('El asiento debe estar balanceado (debe = haber)'); return; }
+    const validLines = lines.filter(l => l.account_id && (parseFloat(l.debit) > 0 || parseFloat(l.credit) > 0));
+    if (validLines.length < 2) { setError('Se requieren al menos 2 lineas contables'); return; }
+
+    setSaving(true);
+    setError('');
+    try {
+      const api = getApiClient();
+      await api.createJournalEntry({
+        date: form.date,
+        description: form.description,
+        reference_type: form.reference_type || undefined,
+        reference_id: form.reference_id || undefined,
+        lines: validLines.map(l => ({
+          account_id: l.account_id,
+          description: l.description || undefined,
+          debit: parseFloat(l.debit) || 0,
+          credit: parseFloat(l.credit) || 0,
+        })),
+      });
+      router.push('/dashboard/accounting/journal-entries');
+    } catch (err: any) {
+      setError(err?.message || 'Error al crear asiento');
+    }
+    setSaving(false);
+  };
+
+  const getAccountLabel = (id: string) => {
+    const a = accounts.find(acc => acc.id === id);
+    return a ? `${a.code} - ${a.name}` : '';
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-4">
+        <Link href="/dashboard/accounting/journal-entries" className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+          <ArrowLeft className="w-5 h-5 text-slate-600" />
+        </Link>
+        <div className="flex-1">
+          <h1 className="text-xl font-bold text-slate-900">Nuevo Asiento Contable</h1>
+          <p className="text-sm text-slate-500 mt-1">Registrar una operacion contable</p>
+        </div>
+      </div>
+
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="space-y-1">
+            <label className="block text-xs font-medium text-slate-700">Fecha *</label>
+            <input type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })}
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+          </div>
+          <div className="col-span-2 space-y-1">
+            <label className="block text-xs font-medium text-slate-700">Descripcion *</label>
+            <input type="text" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
+              placeholder="Descripcion del asiento contable"
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-semibold text-slate-900">Lineas Contables</h3>
+          <button onClick={addLine}
+            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors">
+            <Plus className="w-3.5 h-3.5" /> Agregar Linea
+          </button>
+        </div>
+
+        <div className="space-y-2">
+          <div className="grid grid-cols-12 gap-2 text-[9px] font-semibold text-slate-500 uppercase tracking-wider px-1">
+            <div className="col-span-4">Cuenta</div>
+            <div className="col-span-3">Descripcion</div>
+            <div className="col-span-2 text-right">Debe</div>
+            <div className="col-span-2 text-right">Haber</div>
+            <div className="col-span-1"></div>
+          </div>
+          {lines.map((line, i) => (
+            <div key={i} className="grid grid-cols-12 gap-2 items-center">
+              <div className="col-span-4">
+                <select value={line.account_id} onChange={e => updateLine(i, 'account_id', e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                  <option value="">Seleccionar cuenta...</option>
+                  {accounts.filter(a => a.is_active !== false).map(a => (
+                    <option key={a.id} value={a.id}>{a.code} - {a.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="col-span-3">
+                <input type="text" value={line.description} onChange={e => updateLine(i, 'description', e.target.value)}
+                  placeholder="Detalle..."
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+              </div>
+              <div className="col-span-2">
+                <input type="number" step="0.01" min="0" value={line.debit}
+                  onChange={e => { updateLine(i, 'debit', e.target.value); if (e.target.value) updateLine(i, 'credit', ''); }}
+                  placeholder="0"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 text-right placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+              </div>
+              <div className="col-span-2">
+                <input type="number" step="0.01" min="0" value={line.credit}
+                  onChange={e => { updateLine(i, 'credit', e.target.value); if (e.target.value) updateLine(i, 'debit', ''); }}
+                  placeholder="0"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 text-right placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+              </div>
+              <div className="col-span-1 flex justify-center">
+                <button onClick={() => removeLine(i)} disabled={lines.length <= 2}
+                  className="p-1.5 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                  <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4 flex items-center justify-between border-t border-slate-200 pt-4">
+          <div className="flex items-center gap-4 text-xs">
+            <span className="text-slate-500">Total Debe: <span className="font-semibold text-slate-900">${totalDebit.toLocaleString('es-CL')}</span></span>
+            <span className="text-slate-500">Total Haber: <span className="font-semibold text-slate-900">${totalCredit.toLocaleString('es-CL')}</span></span>
+            {isBalanced ? (
+              <span className="text-emerald-600 font-semibold">Balanceado</span>
+            ) : (
+              <span className="text-red-600 font-semibold">Diferencia: ${Math.abs(totalDebit - totalCredit).toLocaleString('es-CL')}</span>
+            )}
+          </div>
+          <div className="flex items-center gap-3">
+            <Link href="/dashboard/accounting/journal-entries"
+              className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</Link>
+            <button onClick={handleSubmit} disabled={saving || !isBalanced}
+              className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+              <Save className="w-4 h-4" /> {saving ? 'Guardando...' : 'Crear Asiento'}
+            </button>
+          </div>
+        </div>
+
+        {error && (
+          <div className="mt-4 flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">
+            <AlertCircle className="w-4 h-4 flex-shrink-0" /> {error}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
