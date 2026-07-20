@@ -1,0 +1,32 @@
+import { query } from '@/api/lib/db';
+import { successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function POST(request: NextRequest) {
+  try {
+    await query(`DROP TABLE IF EXISTS project_risks CASCADE`);
+    await query(`CREATE TABLE project_risks (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+      project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+      name TEXT NOT NULL,
+      description TEXT,
+      probability TEXT NOT NULL DEFAULT 'medium' CHECK (probability IN ('low', 'medium', 'high')),
+      impact TEXT NOT NULL DEFAULT 'medium' CHECK (impact IN ('low', 'medium', 'high')),
+      status TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'mitigating', 'closed', 'realized')),
+      mitigation_plan TEXT,
+      owner_id UUID REFERENCES profiles(id),
+      identified_date DATE DEFAULT CURRENT_DATE,
+      resolved_date DATE,
+      created_at TIMESTAMPTZ DEFAULT now(),
+      updated_at TIMESTAMPTZ DEFAULT now()
+    )`);
+    await query(`CREATE INDEX idx_project_risks_company ON project_risks(company_id)`);
+    await query(`CREATE INDEX idx_project_risks_project ON project_risks(project_id)`);
+    await query(`ALTER TABLE project_risks ENABLE ROW LEVEL SECURITY`);
+    await query(`CREATE POLICY "risks_company_isolation" ON project_risks USING (company_id = current_setting('app.current_company_id')::uuid)`);
+    return successResponse({ message: 'Risks table created' });
+  } catch (err: any) {
+    return errorResponse(err.message, 500);
+  }
+}
