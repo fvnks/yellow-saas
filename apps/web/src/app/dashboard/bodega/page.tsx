@@ -571,11 +571,11 @@ export default function BodegaPage() {
               {activeTab === 'landed-cost' && (
                 <div className="p-6">
                   <div className="max-w-4xl mx-auto">
-                    <button disabled title="Próximamente" className="block bg-slate-50 border border-slate-200 rounded-xl p-8 text-center opacity-50 cursor-not-allowed w-full">
+                    <Link href="/dashboard/bodega/landed-cost" className="block bg-slate-50 border border-slate-200 rounded-xl p-8 text-center hover:border-indigo-400 hover:bg-indigo-50/50 transition-colors">
                       <Ship className="w-10 h-10 text-blue-600 mx-auto mb-3" />
                       <p className="text-sm font-medium text-slate-700">Costos Aterrizados</p>
-                      <p className="text-xs text-slate-500 mt-1">Fletes, seguros, aranceles, handling分配到产品</p>
-                    </button>
+                      <p className="text-xs text-slate-500 mt-1">Fletes, seguros, aranceles分配到 productos</p>
+                    </Link>
                   </div>
                 </div>
               )}
@@ -584,11 +584,11 @@ export default function BodegaPage() {
               {activeTab === 'consignment' && (
                 <div className="p-6">
                   <div className="max-w-4xl mx-auto">
-                    <button disabled title="Próximamente" className="block bg-slate-50 border border-slate-200 rounded-xl p-8 text-center opacity-50 cursor-not-allowed w-full">
+                    <Link href="/dashboard/bodega/consignment" className="block bg-slate-50 border border-slate-200 rounded-xl p-8 text-center hover:border-indigo-400 hover:bg-indigo-50/50 transition-colors">
                       <Handshake className="w-10 h-10 text-purple-600 mx-auto mb-3" />
-                      <p className="text-sm font-medium text-slate-700">Consignación / VMI</p>
+                      <p className="text-sm font-medium text-slate-700">Consignacion / VMI</p>
                       <p className="text-xs text-slate-500 mt-1">Acuerdos con proveedores, stock consignado, liquidaciones</p>
-                    </button>
+                    </Link>
                   </div>
                 </div>
               )}
@@ -597,11 +597,11 @@ export default function BodegaPage() {
               {activeTab === 'sii-book' && (
                 <div className="p-6">
                   <div className="max-w-4xl mx-auto">
-                    <button disabled title="Próximamente" className="block bg-slate-50 border border-slate-200 rounded-xl p-8 text-center opacity-50 cursor-not-allowed w-full">
+                    <Link href="/dashboard/bodega/sii-book" className="block bg-slate-50 border border-slate-200 rounded-xl p-8 text-center hover:border-indigo-400 hover:bg-indigo-50/50 transition-colors">
                       <FileText className="w-10 h-10 text-red-600 mx-auto mb-3" />
                       <p className="text-sm font-medium text-slate-700">Libro Inventario SII</p>
-                      <p className="text-xs text-slate-500 mt-1">Generación formato oficial SII Chile mensual/anual</p>
-                    </button>
+                      <p className="text-xs text-slate-500 mt-1">Formato oficial SII Chile mensual/anual</p>
+                    </Link>
                   </div>
                 </div>
               )}
