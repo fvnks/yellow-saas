@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Badge } from '@yellow-erp/ui';
-import { ArrowLeft, Plus, Calendar, DollarSign, Users, CheckCircle2, Clock, Edit, Trash2, BarChart3, Flag, Receipt, FileText, TrendingUp, LayoutGrid, Copy, Download } from 'lucide-react';
+import { ArrowLeft, Plus, Calendar, DollarSign, Users, CheckCircle2, Clock, Edit, Trash2, BarChart3, Flag, Receipt, FileText, TrendingUp, LayoutGrid, Copy, Download, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
@@ -24,6 +24,7 @@ import KanbanBoard from '../components/KanbanBoard';
 import TemplatesTab from '../components/TemplatesTab';
 import PhasesTab from '../components/PhasesTab';
 import TimerWidget from '../components/TimerWidget';
+import TaskComments from '../components/TaskComments';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -75,6 +76,7 @@ export default function ProjectDetailPage() {
   });
   const [saving, setSaving] = useState(false);
   const [cloning, setCloning] = useState(false);
+  const [commentTaskId, setCommentTaskId] = useState<string | null>(null);
 
   useEffect(() => { loadData(); }, [projectId]);
 
@@ -422,6 +424,7 @@ export default function ProjectDetailPage() {
                             {task.status === 'todo' ? 'Iniciar' : task.status === 'in_progress' ? 'Revisar' : 'Completar'}
                           </button>
                         )}
+                        <button onClick={() => setCommentTaskId(task.id)} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors"><MessageCircle className="w-3.5 h-3.5 text-slate-500" /></button>
                         <button onClick={() => { setTaskForm({ ...taskForm, parent_id: task.id }); setShowTaskForm(true); }} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors"><Plus className="w-3.5 h-3.5 text-slate-500" /></button>
                         <button onClick={() => handleEditTask(task)} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors"><Edit className="w-3.5 h-3.5 text-slate-500" /></button>
                         <button onClick={() => handleDeleteTask(task.id)} className="p-1.5 hover:bg-red-50 rounded-lg transition-colors"><Trash2 className="w-3.5 h-3.5 text-red-500" /></button>
@@ -581,6 +584,21 @@ export default function ProjectDetailPage() {
                 className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                 {saving ? 'Guardando...' : editingTask ? 'Actualizar' : 'Crear Tarea'}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* COMMENTS MODAL */}
+      {commentTaskId && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-slate-900">Comentarios</h2>
+              <button onClick={() => setCommentTaskId(null)} className="text-slate-400 hover:text-slate-600">X</button>
+            </div>
+            <div className="p-4">
+              <TaskComments projectId={projectId} taskId={commentTaskId} currentUserId={users[0]?.id || ''} />
             </div>
           </div>
         </div>

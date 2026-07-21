@@ -1292,6 +1292,19 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects/${projectId}/timers`, { method: 'PUT', body: JSON.stringify({ timer_id: timerId, action: 'stop' }) });
   }
 
+  // Task Comments
+  async getTaskComments(projectId: string, taskId: string) {
+    return this.request<any[]>(`/projects/${projectId}/tasks/${taskId}/comments`);
+  }
+
+  async createTaskComment(projectId: string, taskId: string, data: { user_id: string; content: string }) {
+    return this.request<any>(`/projects/${projectId}/tasks/${taskId}/comments`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async deleteTaskComment(projectId: string, taskId: string, commentId: string) {
+    return this.request<any>(`/projects/${projectId}/tasks/${taskId}/comments?commentId=${commentId}`, { method: 'DELETE' });
+  }
+
   // Project Milestones
   async getProjectMilestones(projectId: string) {
     return this.request<any[]>(`/projects/${projectId}/milestones`);
