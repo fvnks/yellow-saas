@@ -1328,6 +1328,11 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any[]>(`/projects/resources${qs}`);
   }
 
+  // Budget Forecasting
+  async getProjectForecast(projectId: string) {
+    return this.request<any>(`/projects/${projectId}/forecast`);
+  }
+
   // Project Milestones
   async getProjectMilestones(projectId: string) {
     return this.request<any[]>(`/projects/${projectId}/milestones`);
