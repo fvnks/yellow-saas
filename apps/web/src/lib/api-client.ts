@@ -1278,6 +1278,20 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects/${projectId}/phases/${phaseId}`, { method: 'DELETE' });
   }
 
+  // Project Timers
+  async getProjectTimers(projectId: string, activeOnly = false) {
+    const qs = activeOnly ? '?active=true' : '';
+    return this.request<any[]>(`/projects/${projectId}/timers${qs}`);
+  }
+
+  async startTimer(projectId: string, data: { employee_id: string; task_id?: string; description?: string }) {
+    return this.request<any>(`/projects/${projectId}/timers`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async stopTimer(projectId: string, timerId: string) {
+    return this.request<any>(`/projects/${projectId}/timers`, { method: 'PUT', body: JSON.stringify({ timer_id: timerId, action: 'stop' }) });
+  }
+
   // Project Milestones
   async getProjectMilestones(projectId: string) {
     return this.request<any[]>(`/projects/${projectId}/milestones`);
