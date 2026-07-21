@@ -1381,6 +1381,23 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects/${projectId}/members?userId=${userId}`, { method: 'DELETE' });
   }
 
+  // Resource Allocations
+  async getProjectAllocations(projectId: string) {
+    return this.request<any[]>(`/projects/${projectId}/allocations`);
+  }
+
+  async setProjectAllocation(projectId: string, data: any) {
+    return this.request<any>(`/projects/${projectId}/allocations`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async removeProjectAllocation(projectId: string, allocationId: string) {
+    return this.request<any>(`/projects/${projectId}/allocations?allocationId=${allocationId}`, { method: 'DELETE' });
+  }
+
+  async getAllAllocations() {
+    return this.request<any[]>('/projects/allocations');
+  }
+
   // Project Milestones
   async getProjectMilestones(projectId: string) {
     return this.request<any[]>(`/projects/${projectId}/milestones`);

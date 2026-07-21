@@ -1,0 +1,51 @@
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const result = await query(
+      `SELECT ra.*, e.first_name || ' ' || e.last_name as employee_name, e.position,
+        p.name as project_name, p.code as project_code
+       FROM project_resource_allocations ra
+       JOIN employees e ON e.id = ra.employee_id
+       JOIN projects p ON p.id = ra.project_id
+       WHERE ra.company_id = $1
+         AND (ra.end_date IS NULL OR ra.end_date >= CURRENT_DATE)
+       ORDER BY e.first_name, ra.allocation_percent DESC`,
+      [companyId]
+    );
+
+    const employeeMap = new Map<string, any>();
+    for (const row of result.rows) {
+      if (!employeeMap.has(row.employee_id)) {
+        employeeMap.set(row.employee_id, {
+          employee_id: row.employee_id,
+          employee_name: row.employee_name,
+          position: row.position,
+          total_allocation: 0,
+          projects: [],
+        });
+      }
+      const emp = employeeMap.get(row.employee_id);
+      emp.total_allocation += row.allocation_percent;
+      emp.projects.push({
+        project_id: row.project_id,
+        project_name: row.project_name,
+        project_code: row.project_code,
+        allocation_percent: row.allocation_percent,
+        role_in_project: row.role_in_project,
+      });
+    }
+
+    return successResponse(Array.from(employeeMap.values()));
+  } catch {
+    return errorResponse('Internal server error', 500);
+  }
+}
