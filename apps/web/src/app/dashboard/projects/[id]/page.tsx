@@ -9,6 +9,7 @@ import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
 import { downloadCSV, downloadExcel } from '@/lib/export-utils';
 import { generateProjectReportPDF } from '@/lib/project-report-pdf';
+import { generateProjectCalendarICS, downloadICS } from '@/lib/ical-utils';
 import { ContinuousTabs } from '@/components/ui/continuous-tabs';
 import GanttChart from '../components/GanttChart';
 import MilestonesTab from '../components/MilestonesTab';
@@ -251,6 +252,13 @@ export default function ProjectDetailPage() {
     toast.success('PDF generado');
   };
 
+  const handleExportCalendar = () => {
+    const ics = generateProjectCalendarICS(milestones, tasks, project.name, project.code);
+    downloadICS(ics, `${project?.code || 'proyecto'}_calendario`);
+    setExportOpen(false);
+    toast.success('Calendario exportado (.ics)');
+  };
+
   const totalEstimated = tasks.reduce((sum, t) => sum + (parseFloat(t.estimated_hours) || 0), 0);
   const totalActual = tasks.reduce((sum, t) => sum + (parseFloat(t.actual_hours) || 0), 0);
   const completedTasks = tasks.filter(t => t.status === 'done').length;
@@ -334,6 +342,7 @@ export default function ProjectDetailPage() {
                   { label: 'Hitos (Excel)', action: () => handleExport('excel', 'milestones') },
                   { label: '─────────', action: () => {} },
                   { label: 'Reporte Completo (PDF)', action: handleExportPDF },
+                  { label: 'Calendario (.ics)', action: handleExportCalendar },
                 ].map((item, i) => (
                   <button key={i} onClick={item.action}
                     className={`w-full text-left px-4 py-2 text-xs hover:bg-slate-50 transition-colors ${item.label.startsWith('─') ? 'text-slate-300 cursor-default' : 'text-slate-700'}`}>
