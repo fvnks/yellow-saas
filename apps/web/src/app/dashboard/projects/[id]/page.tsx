@@ -29,6 +29,7 @@ import TaskComments from '../components/TaskComments';
 import NotificationsPanel from '../components/NotificationsPanel';
 import ResourceAllocation from '../components/ResourceAllocation';
 import BudgetForecast from '../components/BudgetForecast';
+import SubtaskProgress from '../components/SubtaskProgress';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -422,9 +423,9 @@ export default function ProjectDetailPage() {
                         <h3 className="text-sm font-semibold text-slate-900">{task.name}</h3>
                         <Badge variant={taskStatusConfig[task.status]?.variant || 'neutral'}>{taskStatusConfig[task.status]?.label}</Badge>
                         <Badge variant={priorityConfig[task.priority]?.variant || 'neutral'}>{priorityConfig[task.priority]?.label}</Badge>
-                        {subtasks.length > 0 && <span className="text-[10px] text-slate-400">{subtasks.filter(s => s.status === 'done').length}/{subtasks.length} subtareas</span>}
                       </div>
                       {task.description && <p className="text-xs text-slate-500 mt-1">{task.description}</p>}
+                      <SubtaskProgress tasks={tasks} parentId={task.id} />
                       <div className="flex items-center gap-4 mt-2 text-xs text-slate-400">
                         {task.assignee_name && <span className="flex items-center gap-1"><Users className="w-3 h-3" />{task.assignee_name}</span>}
                         {task.due_date && <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{task.due_date}</span>}
