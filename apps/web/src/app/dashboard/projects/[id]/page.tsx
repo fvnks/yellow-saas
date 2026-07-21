@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Badge } from '@yellow-erp/ui';
-import { ArrowLeft, Plus, Calendar, DollarSign, Users, CheckCircle2, Clock, Edit, Trash2, BarChart3, Flag, Receipt, FileText, TrendingUp, LayoutGrid, Copy } from 'lucide-react';
+import { ArrowLeft, Plus, Calendar, DollarSign, Users, CheckCircle2, Clock, Edit, Trash2, BarChart3, Flag, Receipt, FileText, TrendingUp, LayoutGrid, Copy, Download } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
+import { downloadCSV, downloadExcel } from '@/lib/export-utils';
 import { ContinuousTabs } from '@/components/ui/continuous-tabs';
 import GanttChart from '../components/GanttChart';
 import MilestonesTab from '../components/MilestonesTab';
@@ -166,6 +167,48 @@ export default function ProjectDetailPage() {
     await handleUpdateProgress(pct);
   };
 
+  const [exportOpen, setExportOpen] = useState(false);
+
+  const handleExport = (type: 'csv' | 'excel', dataset: string) => {
+    let data: any[] = [];
+    let filename = '';
+
+    switch (dataset) {
+      case 'tasks':
+        data = tasks.map(t => ({
+          Nombre: t.name, Descripcion: t.description, Estado: t.status, Prioridad: t.priority,
+          'Fecha Inicio': t.start_date, 'Fecha Fin': t.due_date, 'Horas Estimadas': t.estimated_hours,
+        }));
+        filename = `${project?.code || 'proyecto'}_tareas`;
+        break;
+      case 'timesheets':
+        data = timesheets.map(t => ({
+          Fecha: t.date, Empleado: t.employee_name, Tarea: t.task_name,
+          Horas: t.hours, Descripcion: t.description,
+        }));
+        filename = `${project?.code || 'proyecto'}_horas`;
+        break;
+      case 'expenses':
+        data = expenses.map(e => ({
+          Fecha: e.date, Tipo: e.type, Monto: e.amount, Descripcion: e.description,
+        }));
+        filename = `${project?.code || 'proyecto'}_gastos`;
+        break;
+      case 'milestones':
+        data = milestones.map(m => ({
+          Nombre: m.name, Estado: m.status, 'Fecha Limite': m.due_date,
+        }));
+        filename = `${project?.code || 'proyecto'}_hitos`;
+        break;
+    }
+
+    if (data.length === 0) { toast.warning('No hay datos para exportar'); return; }
+    if (type === 'csv') downloadCSV(data, filename);
+    else downloadExcel(data, filename);
+    setExportOpen(false);
+    toast.success(`Exportado ${data.length} registros`);
+  };
+
   const totalEstimated = tasks.reduce((sum, t) => sum + (parseFloat(t.estimated_hours) || 0), 0);
   const totalActual = tasks.reduce((sum, t) => sum + (parseFloat(t.actual_hours) || 0), 0);
   const completedTasks = tasks.filter(t => t.status === 'done').length;
@@ -225,6 +268,31 @@ export default function ProjectDetailPage() {
           <p className="text-sm text-slate-500 mt-1">{project.code} {project.customer_name ? `· ${project.customer_name}` : ''}</p>
         </div>
         <div className="flex items-center gap-2">
+          <div className="relative">
+            <button onClick={() => setExportOpen(!exportOpen)}
+              className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              <Download className="w-4 h-4" /> Exportar
+            </button>
+            {exportOpen && (
+              <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-slate-200 rounded-xl shadow-xl z-50 py-2">
+                {[
+                  { label: 'Tareas (CSV)', action: () => handleExport('csv', 'tasks') },
+                  { label: 'Tareas (Excel)', action: () => handleExport('excel', 'tasks') },
+                  { label: 'Horas (CSV)', action: () => handleExport('csv', 'timesheets') },
+                  { label: 'Horas (Excel)', action: () => handleExport('excel', 'timesheets') },
+                  { label: 'Gastos (CSV)', action: () => handleExport('csv', 'expenses') },
+                  { label: 'Gastos (Excel)', action: () => handleExport('excel', 'expenses') },
+                  { label: 'Hitos (CSV)', action: () => handleExport('csv', 'milestones') },
+                  { label: 'Hitos (Excel)', action: () => handleExport('excel', 'milestones') },
+                ].map((item, i) => (
+                  <button key={i} onClick={item.action}
+                    className="w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 transition-colors">
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <button onClick={handleClone} disabled={cloning}
             className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
             <Copy className="w-4 h-4" /> {cloning ? 'Clonando...' : 'Clonar'}
