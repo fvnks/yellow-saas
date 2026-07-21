@@ -61,7 +61,7 @@ export default function NotificationsDropdown() {
           duration: 8000,
         });
       }
-    } catch {}
+    } catch { /* silent is ok for polling */ }
   };
 
   const handleMarkRead = async (id: string) => {
@@ -69,7 +69,7 @@ export default function NotificationsDropdown() {
       const api = getApiClient();
       await api.markNotificationsRead(id);
       loadNotifications();
-    } catch {}
+    } catch { toast.error('Error al marcar como leído'); }
   };
 
   const handleMarkAllRead = async () => {
@@ -77,7 +77,7 @@ export default function NotificationsDropdown() {
       const api = getApiClient();
       await api.markNotificationsRead();
       loadNotifications();
-    } catch {}
+    } catch { toast.error('Error al marcar como leído'); }
   };
 
   const handleCheckDeadlines = async () => {
@@ -86,7 +86,7 @@ export default function NotificationsDropdown() {
       const api = getApiClient();
       await api.checkDeadlines();
       loadNotifications();
-    } catch {}
+    } catch { toast.error('Error al verificar plazos'); }
     setLoading(false);
   };
 

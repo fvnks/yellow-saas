@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Save } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface WarehouseItem {
   id: string;
@@ -33,7 +34,7 @@ export default function NewInventoryCountPage() {
       setWarehouses(list);
       if (list.length === 1) setWarehouseId(list[0].id);
     } catch (err) {
-      console.error('Failed to fetch warehouses:', err);
+      toast.error('Error al cargar bodegas');
     } finally {
       setLoading(false);
     }
@@ -52,7 +53,7 @@ export default function NewInventoryCountPage() {
       });
       router.push(`/dashboard/inventory/counts/${count.id}`);
     } catch (err) {
-      console.error('Failed to create count:', err);
+      toast.error('Error al crear conteo');
     } finally {
       setSubmitting(false);
     }

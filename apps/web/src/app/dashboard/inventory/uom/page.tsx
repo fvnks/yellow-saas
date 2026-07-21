@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Plus, Search, Trash2, Edit } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface UOM { id: string; code: string; name: string; type: string; base_unit: string | null; conversion_factor: number; is_active: boolean; }
 
@@ -29,7 +30,7 @@ export default function UOMPage() {
       if (search) params.search = search;
       const res = await api.getUnitsOfMeasure(params);
       setUoms(res.data || []);
-    } catch (e) { console.error(e); }
+    } catch (e) { toast.error('Error al cargar unidades de medida'); }
     setLoading(false);
   };
 
@@ -43,7 +44,7 @@ export default function UOMPage() {
       setShowNew(false); setEditItem(null);
       setForm({ code: '', name: '', type: 'piece', base_unit: '', conversion_factor: '1' });
       loadUOMs();
-    } catch (e) { console.error(e); }
+    } catch (e) { toast.error('Error al guardar unidad de medida'); }
   };
 
   const handleEdit = (u: UOM) => {
@@ -54,7 +55,7 @@ export default function UOMPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Eliminar esta unidad?')) return;
-    try { await getApiClient().deleteUnitOfMeasure(id); loadUOMs(); } catch (e) { console.error(e); }
+    try { await getApiClient().deleteUnitOfMeasure(id); loadUOMs(); } catch (e) { toast.error('Error al eliminar unidad de medida'); }
   };
 
   const filtered = uoms.filter(u => u.name.toLowerCase().includes(search.toLowerCase()) || u.code.toLowerCase().includes(search.toLowerCase()));

@@ -84,7 +84,7 @@ export default function LabelDesignerPage() {
         loadTemplate(defaultTpl);
       }
     } catch (err) {
-      console.error('Error loading templates:', err);
+      toast.error('Error al cargar plantillas');
     } finally {
       setLoading(false);
     }
@@ -168,7 +168,7 @@ export default function LabelDesignerPage() {
       setTemplates([...templates, newTemplate]);
       setActiveTemplate(newTemplate);
     } catch (err) {
-      console.error('Error duplicating template:', err);
+      toast.error('Error al duplicar plantilla');
     }
   };
 
@@ -181,7 +181,7 @@ export default function LabelDesignerPage() {
       setActiveTemplate(null);
       setElements([]);
     } catch (err) {
-      console.error('Error deleting template:', err);
+      toast.error('Error al eliminar plantilla');
     }
   };
 

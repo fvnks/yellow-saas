@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, Search, Hash, Package } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface ProductSerial { id: string; serial_number: string; status: string; notes: string | null; created_at: string; product: { id: string; name: string; sku: string }; warehouse: { id: string; name: string } | null; }
 
@@ -42,7 +43,7 @@ export default function SerialsPage() {
       setSerials(sRes.data || []);
       setProducts(pRes.data || []);
       setWarehouses(wRes.data || []);
-    } catch (e) { console.error(e); }
+    } catch (e) { toast.error('Error al cargar serializaciones'); }
     setLoading(false);
   };
 

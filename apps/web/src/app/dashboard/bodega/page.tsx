@@ -9,6 +9,7 @@ import Link from 'next/link';
   Calculator, Ship, Handshake, FileText
 } from 'lucide-react';
 import { getApiClient, getCompanyIdFromToken } from '@/lib/api-client';
+import { toast } from 'sonner';
 import { ContinuousTabs } from '@/components/ui/continuous-tabs';
 import BarcodeScanner from '../../../components/barcode/barcode-scanner';
 import Pagination from '../../../components/ui/pagination';
@@ -80,10 +81,7 @@ export default function BodegaPage() {
       let api;
       try {
         api = getApiClient();
-      } catch {
-        setLoading(false);
-        return;
-      }
+      } catch { toast.error('Error al cargar bodegas'); setLoading(false); return; }
       const params: Record<string, string> = { page: String(page), limit: String(limit) };
       if (search) params.search = search;
 

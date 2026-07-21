@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Globe, Copy, Check, ExternalLink } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface PortalTabProps {
   projectId: string;
@@ -28,7 +29,7 @@ export default function PortalTab({ projectId, project, onRefresh }: PortalTabPr
       if (res?.portal_url) setPortalUrl(res.portal_url);
       onRefresh();
     } catch (err) {
-      console.error(err);
+      toast.error('Error al configurar portal');
     }
     setSaving(false);
   };

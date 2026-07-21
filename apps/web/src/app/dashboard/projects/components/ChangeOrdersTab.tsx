@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Badge } from '@yellow-erp/ui';
 import { GitPullRequest, Plus, Edit, Trash2, Check, X, DollarSign, Clock } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface ChangeOrder {
   id: string;
@@ -68,20 +69,20 @@ export default function ChangeOrdersTab({ projectId, changeOrders, onRefresh }: 
         await api.createProjectChangeOrder(projectId, data);
       }
       setShowForm(false); setEditing(null); onRefresh();
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al crear orden de cambio'); }
     setSaving(false);
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Eliminar esta orden de cambio?')) return;
-    try { await api.deleteProjectChangeOrder(projectId, id); onRefresh(); } catch (err) { console.error(err); }
+    try { await api.deleteProjectChangeOrder(projectId, id); onRefresh(); } catch (err) { toast.error('Error al eliminar orden de cambio'); }
   };
 
   const handleStatusChange = async (co: ChangeOrder, newStatus: string) => {
     try {
       await api.updateProjectChangeOrder(projectId, co.id, { status: newStatus });
       onRefresh();
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al actualizar estado'); }
   };
 
   const pendingCount = changeOrders.filter(co => co.status === 'pending').length;

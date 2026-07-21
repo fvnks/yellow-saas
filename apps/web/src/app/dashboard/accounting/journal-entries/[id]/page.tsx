@@ -27,7 +27,7 @@ export default function JournalEntryDetailPage() {
       const api = getApiClient();
       const res = await api.getJournalEntry(entryId);
       setEntry(res);
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al cargar asiento contable'); }
     setLoading(false);
   };
 

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, Trash2, Edit, Tag } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface ProductTag { id: string; name: string; color: string; is_active: boolean; product_count?: number; }
 
@@ -34,7 +35,7 @@ export default function TagsPage() {
       if (search) params.search = search;
       const res = await api.getProductTags(params);
       setTags(res.data || []);
-    } catch (e) { console.error(e); }
+    } catch (e) { toast.error('Error al cargar tags'); }
     setLoading(false);
   };
 
