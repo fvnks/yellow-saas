@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Plus, Search, Trash2, Edit, Layers } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { NotificationAlert } from '@/components/ui/notification-alert';
 
 interface Variant {
   id: string; sku: string; name: string | null; attributes: Record<string, string>;
@@ -101,7 +102,7 @@ export default function VariantsPage() {
         </button>
       </div>
 
-      {error && <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm">{error}</div>}
+      {error && <NotificationAlert variant="warning" title={error} dismissible onDismiss={() => setError('')} />}
 
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
         <div className="relative max-w-md">

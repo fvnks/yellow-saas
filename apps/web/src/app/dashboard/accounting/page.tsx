@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody
 import { Plus, Search, Filter, Download, Eye, Edit, Trash2, Calculator, Building2, TrendingUp, DollarSign, FileText, CreditCard } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { NotificationAlert } from '@/components/ui/notification-alert';
 
 interface Account {
   id: string;
@@ -146,7 +147,7 @@ export default function AccountingPage() {
         </div>
       </div>
 
-      {error && <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm">{error}</div>}
+      {error && <NotificationAlert variant="warning" title={error} dismissible onDismiss={() => setError('')} />}
 
       {/* Financial Summary Cards */}
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
