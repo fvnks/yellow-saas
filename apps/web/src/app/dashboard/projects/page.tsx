@@ -34,10 +34,10 @@ export default function ProjectsPage() {
       const api = getApiClient();
       const [projectsRes, notifRes] = await Promise.all([
         api.getProjects({ limit: 100 }),
-        api.getProjectNotifications().catch(() => ({ notifications: [] })),
+        api.getProjectNotifications().catch(() => []),
       ]);
       setProjects(projectsRes.data || []);
-      setNotifications(notifRes.notifications || []);
+      setNotifications(Array.isArray(notifRes) ? notifRes : []);
     } catch (err) {
       console.error('Failed to load projects:', err);
     }
