@@ -13,8 +13,15 @@ interface Task {
   assignee_name?: string;
 }
 
+interface Dependency {
+  task_id: string;
+  depends_on_id: string;
+  dependency_type: string;
+}
+
 interface GanttChartProps {
   tasks: Task[];
+  dependencies?: Dependency[];
   startDate?: string;
   endDate?: string;
 }
@@ -36,7 +43,7 @@ function daysBetween(a: Date, b: Date): number {
   return Math.round((b.getTime() - a.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-export default function GanttChart({ tasks, startDate, endDate }: GanttChartProps) {
+export default function GanttChart({ tasks, dependencies = [], startDate, endDate }: GanttChartProps) {
   const { chartStart, chartEnd, totalDays, tasks: enrichedTasks, months } = useMemo(() => {
     const allDates = tasks.flatMap(t => [parseDate(t.start_date), parseDate(t.due_date)]).filter(Boolean) as Date[];
     if (allDates.length === 0) {
@@ -74,7 +81,7 @@ export default function GanttChart({ tasks, startDate, endDate }: GanttChartProp
     }
 
     return { chartStart: cs, chartEnd: ce, totalDays: td, tasks: enriched, months: ms };
-  }, [tasks, startDate, endDate]);
+  }, [tasks, dependencies, startDate, endDate]);
 
   if (tasks.length === 0) {
     return (
@@ -88,6 +95,8 @@ export default function GanttChart({ tasks, startDate, endDate }: GanttChartProp
   const dayWidth = 28;
   const rowHeight = 40;
   const labelWidth = 220;
+
+  const taskIndexMap = new Map(enrichedTasks.map((t, i) => [t.id, i]));
 
   return (
     <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
@@ -160,6 +169,44 @@ export default function GanttChart({ tasks, startDate, endDate }: GanttChartProp
               </div>
             </div>
           ))}
+
+          {/* Dependency arrows */}
+          {dependencies.length > 0 && (
+            <svg
+              className="absolute pointer-events-none"
+              style={{ top: 0, left: labelWidth, width: totalDays * dayWidth, height: enrichedTasks.length * rowHeight }}
+            >
+              <defs>
+                <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                  <polygon points="0 0, 8 3, 0 6" fill="#6366f1" />
+                </marker>
+              </defs>
+              {dependencies.map((dep, i) => {
+                const fromIdx = taskIndexMap.get(dep.depends_on_id);
+                const toIdx = taskIndexMap.get(dep.task_id);
+                if (fromIdx === undefined || toIdx === undefined) return null;
+                const fromTask = enrichedTasks[fromIdx];
+                const toTask = enrichedTasks[toIdx];
+                const fromX = (fromTask._start + fromTask._width) * dayWidth;
+                const fromY = fromIdx * rowHeight + rowHeight / 2;
+                const toX = toTask._start * dayWidth;
+                const toY = toIdx * rowHeight + rowHeight / 2;
+                const midX = fromX + (toX - fromX) / 2;
+                return (
+                  <path
+                    key={i}
+                    d={`M ${fromX} ${fromY} C ${midX} ${fromY}, ${midX} ${toY}, ${toX} ${toY}`}
+                    fill="none"
+                    stroke="#6366f1"
+                    strokeWidth="1.5"
+                    strokeDasharray="4 2"
+                    markerEnd="url(#arrowhead)"
+                    opacity="0.6"
+                  />
+                );
+              })}
+            </svg>
+          )}
         </div>
       </div>
 
@@ -171,6 +218,12 @@ export default function GanttChart({ tasks, startDate, endDate }: GanttChartProp
             <span className="text-[9px] text-slate-500 capitalize">{status === 'in_progress' ? 'En Progreso' : status === 'todo' ? 'Por Hacer' : status === 'review' ? 'Revision' : 'Hecho'}</span>
           </div>
         ))}
+        {dependencies.length > 0 && (
+          <div className="flex items-center gap-1.5">
+            <svg width="20" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="#6366f1" strokeWidth="1.5" strokeDasharray="4 2" /><polygon points="16,2 20,5 16,8" fill="#6366f1" /></svg>
+            <span className="text-[9px] text-slate-500">Dependencia</span>
+          </div>
+        )}
       </div>
     </div>
   );

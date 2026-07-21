@@ -59,6 +59,7 @@ export default function ProjectDetailPage() {
   const [changeOrders, setChangeOrders] = useState<any[]>([]);
   const [employees, setEmployees] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
+  const [dependencies, setDependencies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('tasks');
   const [showTaskForm, setShowTaskForm] = useState(false);
@@ -76,7 +77,7 @@ export default function ProjectDetailPage() {
     setLoading(true);
     try {
       const api = getApiClient();
-      const [projectRes, tasksRes, milestonesRes, timesheetsRes, expensesRes, costsRes, docsRes, employeesRes, usersRes, risksRes, changeOrdersRes] = await Promise.all([
+      const [projectRes, tasksRes, milestonesRes, timesheetsRes, expensesRes, costsRes, docsRes, employeesRes, usersRes, risksRes, changeOrdersRes, depsRes] = await Promise.all([
         api.getProject(projectId),
         api.getProjectTasks(projectId),
         api.getProjectMilestones(projectId),
@@ -88,6 +89,7 @@ export default function ProjectDetailPage() {
         api.getUsers({ limit: 100 }),
         api.getProjectRisks(projectId),
         api.getProjectChangeOrders(projectId),
+        api.getProjectDependencies(projectId).catch(() => []),
       ]);
       setProject(projectRes);
       setTasks(Array.isArray(tasksRes) ? tasksRes : []);
@@ -100,6 +102,7 @@ export default function ProjectDetailPage() {
       setUsers(usersRes?.data || []);
       setRisks(Array.isArray(risksRes) ? risksRes : []);
       setChangeOrders(Array.isArray(changeOrdersRes) ? changeOrdersRes : []);
+      setDependencies(Array.isArray(depsRes) ? depsRes : []);
     } catch (err) { toast.error('Error al cargar proyecto'); }
     setLoading(false);
   };
@@ -375,7 +378,7 @@ export default function ProjectDetailPage() {
         </div>
       )}
 
-      {activeTab === 'gantt' && <GanttChart tasks={tasks} />}
+      {activeTab === 'gantt' && <GanttChart tasks={tasks} dependencies={dependencies} />}
 
       {activeTab === 'kanban' && (
         <KanbanBoard
