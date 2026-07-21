@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Button, Input, Badge } from '@yellow-erp/ui';
 import { Plus, Trash2, Save, X, Check, Pencil } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface Role {
   id: string;
@@ -72,7 +73,7 @@ export default function RolesTab() {
       setNewRoleDesc('');
       setShowNewRole(false);
       loadRoles();
-    } catch { /* empty */ }
+    } catch { toast.error('Error al crear rol'); }
     setSaving(false);
   };
 
@@ -90,7 +91,7 @@ export default function RolesTab() {
       setEditingRole(null);
       setSelectedPerms([]);
       loadRoles();
-    } catch { /* empty */ }
+    } catch { toast.error('Error al guardar permisos'); }
     setSaving(false);
   };
 

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Plus, Search, Edit, Trash2, Tag } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface Category {
   id: string; name: string; description: string; color: string; icon: string;
@@ -28,7 +29,7 @@ export default function CategoriesPage() {
       const api = getApiClient();
       const data = await api.getCategories({ limit: '100', ...(search ? { search } : {}) });
       setCategories(data.data || []);
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al cargar categorías'); }
     finally { setLoading(false); }
   };
 
@@ -49,7 +50,7 @@ export default function CategoriesPage() {
       }
       setShowModal(false);
       fetchCategories();
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al guardar categoría'); }
     finally { setSaving(false); }
   };
 
@@ -59,7 +60,7 @@ export default function CategoriesPage() {
       const api = getApiClient();
       await api.deleteCategory(id);
       fetchCategories();
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al eliminar categoría'); }
   };
 
   return (

@@ -6,6 +6,7 @@ import { ArrowLeft, Save } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 export default function NewCustomerPage() {
   const router = useRouter();
@@ -39,6 +40,7 @@ export default function NewCustomerPage() {
       router.push(`/dashboard/customers/${result.id}`);
     } catch {
       setError('Error al crear el cliente');
+      toast.error('Error al crear cliente');
       setSaving(false);
     }
   };

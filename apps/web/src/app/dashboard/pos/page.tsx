@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, Button, Badge, Input, Select 
 import { Monitor, ShoppingCart, Plus, Search, CreditCard, Banknote, Receipt, ArrowRight, Package, X, Check, User, FileText, Printer, Download } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import { generatePOSVoucher } from '@/lib/pdf-design';
+import { toast } from 'sonner';
 
 interface CartItem {
   id: string;
@@ -151,7 +152,7 @@ export default function POSPage() {
       setSelectedCustomer(null);
       setCustomerSearch('');
     } catch (err) {
-      console.error('Payment error:', err);
+      toast.error('Error al procesar pago');
     } finally {
       setProcessing(false);
     }

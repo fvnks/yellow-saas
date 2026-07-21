@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Badge } from '@yellow-erp/ui';
 import { AlertTriangle, Plus, Edit, Trash2, Shield, ShieldAlert, ShieldCheck } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface Risk {
   id: string;
@@ -68,7 +69,7 @@ export default function RisksTab({ projectId, risks, employees, onRefresh }: {
         await api.createProjectRisk(projectId, data);
       }
       setShowForm(false); setEditing(null); onRefresh();
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al crear riesgo'); }
     setSaving(false);
   };
 
@@ -77,7 +78,7 @@ export default function RisksTab({ projectId, risks, employees, onRefresh }: {
     try {
       await api.deleteProjectRisk(projectId, id);
       onRefresh();
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al eliminar riesgo'); }
   };
 
   const handleStatusChange = async (risk: Risk, newStatus: string) => {
@@ -86,7 +87,7 @@ export default function RisksTab({ projectId, risks, employees, onRefresh }: {
         status: newStatus, resolved_date: newStatus === 'closed' ? new Date().toISOString().split('T')[0] : null
       });
       onRefresh();
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al actualizar riesgo'); }
   };
 
   const openCount = risks.filter(r => r.status === 'open').length;

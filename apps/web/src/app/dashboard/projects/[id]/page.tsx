@@ -99,7 +99,7 @@ export default function ProjectDetailPage() {
       setUsers(usersRes?.data || []);
       setRisks(Array.isArray(risksRes) ? risksRes : []);
       setChangeOrders(Array.isArray(changeOrdersRes) ? changeOrdersRes : []);
-    } catch (err) { console.error('Failed to load project:', err); }
+    } catch (err) { toast.error('Error al cargar proyecto'); }
     setLoading(false);
   };
 
@@ -114,7 +114,7 @@ export default function ProjectDetailPage() {
       setShowTaskForm(false); setEditingTask(null);
       setTaskForm({ name: '', description: '', assignee_id: '', status: 'todo', priority: 'medium', start_date: '', due_date: '', estimated_hours: '', parent_id: '' });
       loadData();
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al guardar tarea'); }
     setSaving(false);
   };
 
@@ -141,15 +141,15 @@ export default function ProjectDetailPage() {
 
   const handleDeleteTask = async (taskId: string) => {
     if (!confirm('Eliminar esta tarea?')) return;
-    try { const api = getApiClient(); await api.deleteProjectTask(projectId, taskId); loadData(); } catch (err) { console.error(err); }
+    try { const api = getApiClient(); await api.deleteProjectTask(projectId, taskId); loadData(); } catch (err) { toast.error('Error al eliminar tarea'); }
   };
 
   const handleUpdateTaskStatus = async (task: any, newStatus: string) => {
-    try { const api = getApiClient(); await api.updateProjectTask(projectId, task.id, { ...task, status: newStatus }); loadData(); } catch (err) { console.error(err); }
+    try { const api = getApiClient(); await api.updateProjectTask(projectId, task.id, { ...task, status: newStatus }); loadData(); } catch (err) { toast.error('Error al actualizar tarea'); }
   };
 
   const handleUpdateProgress = async (progress: number) => {
-    try { const api = getApiClient(); await api.updateProject(projectId, { ...project, progress }); setProject({ ...project, progress }); } catch (err) { console.error(err); }
+    try { const api = getApiClient(); await api.updateProject(projectId, { ...project, progress }); setProject({ ...project, progress }); } catch (err) { toast.error('Error al actualizar progreso'); }
   };
 
   const handleAutoProgress = async () => {

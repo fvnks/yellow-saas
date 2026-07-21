@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { Badge } from '@yellow-erp/ui';
 import { FileText, Plus, Trash2, Download, Upload, File, Image, FileSpreadsheet } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface Document {
   id: string;
@@ -62,7 +63,7 @@ export default function DocumentsTab({ projectId, documents, onRefresh }: { proj
       setShowForm(false);
       setForm({ name: '', file_url: '', category: 'other', description: '' });
       onRefresh();
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al crear documento'); }
     setSaving(false);
   };
 
@@ -75,13 +76,13 @@ export default function DocumentsTab({ projectId, documents, onRefresh }: { proj
       setSelectedFile(null);
       setForm({ name: '', file_url: '', category: 'other', description: '' });
       onRefresh();
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al subir archivo'); }
     setUploading(false);
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Eliminar este documento?')) return;
-    try { await api.deleteProjectDocument(projectId, id); onRefresh(); } catch (err) { console.error(err); }
+    try { await api.deleteProjectDocument(projectId, id); onRefresh(); } catch (err) { toast.error('Error al eliminar documento'); }
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {

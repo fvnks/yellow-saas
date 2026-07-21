@@ -32,7 +32,7 @@ export default function JournalEntriesPage() {
       const res = await api.getJournalEntries(params);
       setEntries(res.data || []);
       setPagination(res.pagination || { total: 0, totalPages: 0 });
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al cargar asientos contables'); }
     setLoading(false);
   };
 

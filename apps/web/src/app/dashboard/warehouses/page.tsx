@@ -240,7 +240,7 @@ export default function WarehousesPage() {
                             <Edit className="w-4 h-4" />
                           </button>
                         </Link>
-                        <button className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
+                        <button disabled className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Eliminar">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>

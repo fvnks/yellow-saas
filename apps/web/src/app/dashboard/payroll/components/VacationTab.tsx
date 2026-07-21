@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Button, Badge, Input, Select } from '@yellow-erp/ui';
 import { Plus, Calendar, Check, X, Clock, AlertTriangle, Plane, Trash2 } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface VacationBalance {
   id: string;
@@ -72,7 +73,7 @@ export default function VacationTab() {
       setBalances(balRes.data || balRes || []);
       setRequests(reqRes.data || []);
       setEmployees(empRes.data || []);
-    } catch { }
+    } catch { toast.error('Error al cargar datos de vacaciones'); }
     setLoading(false);
   };
 

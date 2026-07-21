@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Badge } from '@yellow-erp/ui';
 import { Flag, Plus, Check, Trash2, Calendar } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface Milestone {
   id: string;
@@ -35,7 +36,7 @@ export default function MilestonesTab({ projectId, milestones, onRefresh }: { pr
       setShowForm(false);
       setForm({ name: '', description: '', due_date: '' });
       onRefresh();
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al crear hito'); }
     setSaving(false);
   };
 
@@ -43,7 +44,7 @@ export default function MilestonesTab({ projectId, milestones, onRefresh }: { pr
     try {
       await api.updateProjectMilestone(projectId, m.id, { ...m, status: 'completed' });
       onRefresh();
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al completar hito'); }
   };
 
   const handleDelete = async (id: string) => {
@@ -51,7 +52,7 @@ export default function MilestonesTab({ projectId, milestones, onRefresh }: { pr
     try {
       await api.deleteProjectMilestone(projectId, id);
       onRefresh();
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al eliminar hito'); }
   };
 
   return (

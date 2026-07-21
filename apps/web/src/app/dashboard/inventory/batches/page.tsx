@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Plus, Search, Trash2, Package } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface Batch {
   id: string; batch_number: string; quantity: number; status: string;
@@ -40,7 +41,7 @@ export default function BatchesPage() {
       if (search) params.search = search;
       const res = await api.getProductBatches(params);
       setBatches(res.data || []);
-    } catch (e) { console.error(e); }
+    } catch (e) { toast.error('Error al cargar lotes'); }
     setLoading(false);
   };
 
@@ -53,7 +54,7 @@ export default function BatchesPage() {
       ]);
       setProducts(pRes.data || []);
       setWarehouses(wRes.data || []);
-    } catch (e) { console.error(e); }
+    } catch (e) { toast.error('Error al cargar opciones'); }
   };
 
   const handleCreate = async () => {
@@ -69,12 +70,12 @@ export default function BatchesPage() {
       setShowNew(false);
       setForm({ product_id: '', warehouse_id: '', batch_number: '', quantity: '0', expiry_date: '', manufacturing_date: '', notes: '' });
       loadBatches();
-    } catch (e) { console.error(e); }
+    } catch (e) { toast.error('Error al crear lote'); }
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Eliminar este lote?')) return;
-    try { await getApiClient().deleteProductBatch(id); loadBatches(); } catch (e) { console.error(e); }
+    try { await getApiClient().deleteProductBatch(id); loadBatches(); } catch (e) { toast.error('Error al eliminar lote'); }
   };
 
   const filtered = batches.filter(b =>

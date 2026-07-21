@@ -5,6 +5,7 @@ import { Card, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui'
 import { Plus, Search, Eye, CheckCircle, X, RotateCcw, ArrowLeft, Download } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import { generateReturnNotePDF } from '@/lib/pdf-design';
+import { toast } from 'sonner';
 import Link from 'next/link';
 
 interface CustomerReturn {
@@ -166,7 +167,7 @@ export default function SalesReturnsPage() {
       setReturnItems([]);
       fetchReturns();
     } catch (err) {
-      console.error('Error creating return:', err);
+      toast.error('Error al crear devolución');
     } finally {
       setSubmitting(false);
     }

@@ -29,7 +29,7 @@ export default function InvoiceDetailPage() {
       const api = getApiClient();
       const res = await api.getInvoice(invoiceId);
       setInvoice(res);
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al cargar factura'); }
     setLoading(false);
   };
 

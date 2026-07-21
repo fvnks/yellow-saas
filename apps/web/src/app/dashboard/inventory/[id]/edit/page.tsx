@@ -6,6 +6,7 @@ import { ArrowLeft, Save, Package, MapPin, Warehouse, Upload, X } from 'lucide-r
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface ProductData {
   id: string;
@@ -373,7 +374,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
                         const api = getApiClient();
                         const res = await api.uploadImage(file);
                         if (res.success) setImageUrl(res.data.url);
-                      } catch { }
+                      } catch { toast.error('Error al subir imagen'); }
                       setUploadingImage(false);
                     }}
                   />

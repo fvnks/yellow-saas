@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ClipboardCheck, Plus, Search, Eye, Play, CheckCircle } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface CountItem {
   id: string;
@@ -48,7 +49,7 @@ export default function InventoryCountsPage() {
       const data = await api.getInventoryCounts(params);
       setCounts(data.data || []);
     } catch (err) {
-      console.error('Failed to fetch counts:', err);
+      toast.error('Error al cargar conteos');
     } finally {
       setLoading(false);
     }

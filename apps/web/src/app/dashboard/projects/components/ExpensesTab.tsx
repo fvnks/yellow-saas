@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Badge } from '@yellow-erp/ui';
 import { Receipt, Plus, Trash2, Edit } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface Expense {
   id: string;
@@ -66,13 +67,13 @@ export default function ExpensesTab({ projectId, expenses, onRefresh }: { projec
       setShowForm(false);
       setEditing(null);
       onRefresh();
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al crear gasto'); }
     setSaving(false);
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Eliminar este gasto?')) return;
-    try { await api.deleteProjectExpense(projectId, id); onRefresh(); } catch (err) { console.error(err); }
+    try { await api.deleteProjectExpense(projectId, id); onRefresh(); } catch (err) { toast.error('Error al eliminar gasto'); }
   };
 
   const total = expenses.reduce((s, e) => s + Number(e.amount), 0);

@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody
 import { Plus, Search, Filter, Download, Eye, Trash2, Truck, Phone, Mail, MapPin, CreditCard, Building2, Package } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 const initialSuppliers: any[] = [];
 
@@ -259,7 +260,7 @@ export default function SuppliersPage() {
                               await api.deleteSupplier(supplier.id);
                               setSuppliers(prev => prev.filter(s => s.id !== supplier.id));
                             } catch (err) {
-                              console.error(err);
+                              toast.error('Error al eliminar proveedor');
                             }
                           }}
                           className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"

@@ -272,13 +272,13 @@ export default function AccountingPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-1">
-                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Ver">
+                        <button disabled className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Ver">
                           <Eye className="w-4 h-4" />
                         </button>
                         <button onClick={() => handleEditAccount(account)} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Editar">
                           <Edit className="w-4 h-4" />
                         </button>
-                        <button className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" aria-label="Eliminar">
+                        <button disabled className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Eliminar">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -331,10 +331,10 @@ export default function AccountingPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-1">
-                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Ver">
+                        <button disabled className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Ver">
                           <Eye className="w-4 h-4" />
                         </button>
-                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Editar">
+                        <button disabled className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Editar">
                           <Edit className="w-4 h-4" />
                         </button>
                       </div>

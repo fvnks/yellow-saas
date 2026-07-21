@@ -44,7 +44,7 @@ export default function InventoryCountDetailPage({ params }: { params: { id: str
       const data = await api.getInventoryCount(countId!);
       setCount(data);
     } catch (err) {
-      console.error('Failed to fetch count:', err);
+      toast.error('Error al cargar conteo');
     } finally {
       setLoading(false);
     }
@@ -60,7 +60,7 @@ export default function InventoryCountDetailPage({ params }: { params: { id: str
       });
       await fetchCount();
     } catch (err) {
-      console.error('Failed to update:', err);
+      toast.error('Error al actualizar cantidad');
     } finally {
       setSavingItem(null);
     }

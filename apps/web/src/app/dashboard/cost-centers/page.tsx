@@ -23,7 +23,7 @@ export default function CostCentersPage() {
     try {
       const res = await api.getCostCenters({ limit: 200 });
       setCostCenters(res.data || []);
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al cargar centros de costo'); }
     setLoading(false);
   };
 

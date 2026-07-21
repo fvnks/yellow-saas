@@ -6,6 +6,7 @@ import { ArrowLeft, Save } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface CustomerData {
   id: string;
@@ -76,6 +77,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
       router.push(`/dashboard/customers/${id}`);
     } catch {
       setError('Error al guardar los cambios');
+      toast.error('Error al actualizar cliente');
       setSaving(false);
     }
   };

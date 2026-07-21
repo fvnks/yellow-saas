@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Badge } from '@yellow-erp/ui';
 import { Clock, Plus, Trash2, Edit, Filter, CheckCircle2, XCircle, Check, X } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface Timesheet {
   id: string;
@@ -65,13 +66,13 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
       setShowForm(false);
       setEditing(null);
       onRefresh();
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al registrar horas'); }
     setSaving(false);
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Eliminar este registro?')) return;
-    try { await api.deleteProjectTimesheet(projectId, id); onRefresh(); } catch (err) { console.error(err); }
+    try { await api.deleteProjectTimesheet(projectId, id); onRefresh(); } catch (err) { toast.error('Error al eliminar registro'); }
   };
 
   const handleApprove = async (id: string, approved: boolean) => {
@@ -79,7 +80,7 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
     try {
       await api.approveProjectTimesheet(projectId, id, approved);
       onRefresh();
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al aprobar registro'); }
     setApproving(null);
   };
 

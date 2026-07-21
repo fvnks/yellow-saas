@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Plus, Search, Edit, Trash2, Percent } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface Tax {
   id: string; name: string; code: string; rate: number; type: string;
@@ -30,7 +31,7 @@ export default function TaxesPage() {
       const api = getApiClient();
       const data = await api.getTaxes({ limit: '100', ...(search ? { search } : {}) });
       setTaxes(data.data || []);
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al cargar impuestos'); }
     finally { setLoading(false); }
   };
 
@@ -51,7 +52,7 @@ export default function TaxesPage() {
       }
       setShowModal(false);
       fetchTaxes();
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al guardar impuesto'); }
     finally { setSaving(false); }
   };
 
@@ -61,7 +62,7 @@ export default function TaxesPage() {
       const api = getApiClient();
       await api.deleteTax(id);
       fetchTaxes();
-    } catch (err) { console.error(err); }
+    } catch (err) { toast.error('Error al eliminar impuesto'); }
   };
 
   return (
