@@ -1350,6 +1350,11 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects/${projectId}/tasks/${taskId}/tags`, { method: 'PUT', body: JSON.stringify({ tag_ids: tagIds }) });
   }
 
+  // Task Recurrence
+  async generateRecurringTasks() {
+    return this.request<any>('/projects/recurrence/generate', { method: 'POST' });
+  }
+
   // Project Milestones
   async getProjectMilestones(projectId: string) {
     return this.request<any[]>(`/projects/${projectId}/milestones`);

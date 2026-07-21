@@ -1,0 +1,70 @@
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const recurringTasks = await query(
+      `SELECT * FROM project_tasks
+       WHERE company_id = $1 AND recurrence_type != 'none' AND recurrence_type IS NOT NULL
+         AND (recurrence_end_date IS NULL OR recurrence_end_date >= CURRENT_DATE)
+         AND (last_generated_at IS NULL OR last_generated_at < CURRENT_DATE)`,
+      [companyId]
+    );
+
+    let generated = 0;
+
+    for (const task of recurringTasks.rows) {
+      const lastDate = task.last_generated_at ? new Date(task.last_generated_at) : new Date(task.created_at);
+      let nextDate = new Date(lastDate);
+
+      switch (task.recurrence_type) {
+        case 'daily':
+          nextDate.setDate(nextDate.getDate() + (task.recurrence_interval || 1));
+          break;
+        case 'weekly':
+          nextDate.setDate(nextDate.getDate() + 7 * (task.recurrence_interval || 1));
+          break;
+        case 'monthly':
+          nextDate.setMonth(nextDate.getMonth() + (task.recurrence_interval || 1));
+          break;
+        case 'yearly':
+          nextDate.setFullYear(nextDate.getFullYear() + (task.recurrence_interval || 1));
+          break;
+      }
+
+      if (nextDate <= new Date()) {
+        const newStart = new Date(nextDate);
+        const newDue = task.due_date && task.start_date
+          ? new Date(newStart.getTime() + (new Date(task.due_date).getTime() - new Date(task.start_date).getTime()))
+          : null;
+
+        await query(
+          `INSERT INTO project_tasks (company_id, project_id, name, description, assignee_id, priority, estimated_hours, start_date, due_date, status, recurrence_parent_id, parent_id)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 'todo', $10, $11)`,
+          [companyId, task.project_id, task.name, task.description, task.assignee_id, task.priority,
+           task.estimated_hours, newStart.toISOString().split('T')[0],
+           newDue ? newDue.toISOString().split('T')[0] : null,
+           task.id, task.parent_id]
+        );
+
+        await query(
+          'UPDATE project_tasks SET last_generated_at = now() WHERE id = $1',
+          [task.id]
+        );
+
+        generated++;
+      }
+    }
+
+    return successResponse({ message: `${generated} recurring tasks generated`, count: generated });
+  } catch {
+    return errorResponse('Internal server error', 500);
+  }
+}
