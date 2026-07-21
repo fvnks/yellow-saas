@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Badge } from '@yellow-erp/ui';
-import { ArrowLeft, Plus, Calendar, DollarSign, Users, CheckCircle2, Clock, Edit, Trash2, BarChart3, Flag, Receipt, FileText, TrendingUp, LayoutGrid, Copy, Download, MessageCircle, CheckSquare, Square } from 'lucide-react';
+import { ArrowLeft, Plus, Calendar, DollarSign, Users, CheckCircle2, Clock, Edit, Trash2, BarChart3, Flag, Receipt, FileText, TrendingUp, LayoutGrid, Copy, Download, MessageCircle, CheckSquare, Square, Archive } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
@@ -181,6 +181,26 @@ export default function ProjectDetailPage() {
     }
   };
 
+  const handleArchive = async () => {
+    const newArchived = !project.archived;
+    const msg = newArchived 
+      ? `Archivar "${project.name}"? El proyecto se ocultara de la lista principal.`
+      : `Restaurar "${project.name}"? El proyecto volvera a aparecer en la lista.`;
+    if (!confirm(msg)) return;
+    try {
+      const companyId = localStorage.getItem('company_id');
+      await fetch(`/api/companies/${companyId}/projects/${projectId}/archive`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ archived: newArchived }),
+      });
+      setProject({ ...project, archived: newArchived });
+      toast.success(newArchived ? 'Proyecto archivado' : 'Proyecto restaurado');
+    } catch (err) {
+      toast.error('Error al archivar/restaurar');
+    }
+  };
+
   const handleDeleteTask = async (taskId: string) => {
     if (!confirm('Eliminar esta tarea?')) return;
     try { const api = getApiClient(); await api.deleteProjectTask(projectId, taskId); loadData(); } catch (err) { toast.error('Error al eliminar tarea'); }
@@ -341,6 +361,12 @@ export default function ProjectDetailPage() {
 
   return (
     <div className="space-y-6">
+      {project.archived && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center gap-3">
+          <Archive className="w-4 h-4 text-amber-600" />
+          <span className="text-sm text-amber-700 font-medium">Este proyecto esta archivado. Haz clic en "Restaurar" para volver a mostrarlo.</span>
+        </div>
+      )}
       <div className="flex items-center gap-4">
         <button onClick={() => router.back()} className="p-2 hover:bg-slate-100 rounded-lg transition-colors"><ArrowLeft className="w-5 h-5 text-slate-600" /></button>
         <div className="flex-1">
@@ -389,6 +415,14 @@ export default function ProjectDetailPage() {
               <Edit className="w-4 h-4" /> Editar
             </button>
           </Link>
+          <button onClick={handleArchive}
+            className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors border ${
+              project.archived 
+                ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+            }`}>
+            <Archive className="w-4 h-4" /> {project.archived ? 'Restaurar' : 'Archivar'}
+          </button>
         </div>
       </div>
 
