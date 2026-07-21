@@ -38,6 +38,7 @@ import ResourceAllocationForm from '../components/ResourceAllocationForm';
 import AutomationManager from '../components/AutomationManager';
 import ProjectCalendar from '../components/ProjectCalendar';
 import TaskFilters from '../components/TaskFilters';
+import BudgetAlerts from '../components/BudgetAlerts';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -434,6 +435,8 @@ export default function ProjectDetailPage() {
           ))}
         </div>
       </div>
+
+      <BudgetAlerts projectId={projectId} budget={budget} costs={costsData.costs || []} expenses={expenses} />
 
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
         <ContinuousTabs tabs={tabs} defaultActiveId={activeTab} onChange={(id) => setActiveTab(id)} />
