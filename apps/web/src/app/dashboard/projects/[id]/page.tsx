@@ -19,6 +19,7 @@ import ActivityLog from '../components/ActivityLog';
 import RisksTab from '../components/RisksTab';
 import ChangeOrdersTab from '../components/ChangeOrdersTab';
 import PortalTab from '../components/PortalTab';
+import KanbanBoard from '../components/KanbanBoard';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -171,6 +172,7 @@ export default function ProjectDetailPage() {
 
   const tabs = [
     { id: 'tasks', label: `Tareas (${tasks.length})` },
+    { id: 'kanban', label: 'Kanban' },
     { id: 'gantt', label: 'Gantt' },
     { id: 'milestones', label: `Hitos (${milestones.length})` },
     { id: 'timesheets', label: `Horas (${timesheets.length})` },
@@ -374,6 +376,19 @@ export default function ProjectDetailPage() {
       )}
 
       {activeTab === 'gantt' && <GanttChart tasks={tasks} />}
+
+      {activeTab === 'kanban' && (
+        <KanbanBoard
+          tasks={tasks}
+          onStatusChange={handleUpdateTaskStatus}
+          onEdit={handleEditTask}
+          onDelete={handleDeleteTask}
+          onAddTask={(status) => {
+            setTaskForm({ name: '', description: '', assignee_id: '', status, priority: 'medium', start_date: '', due_date: '', estimated_hours: '', parent_id: '' });
+            setShowTaskForm(true);
+          }}
+        />
+      )}
       {activeTab === 'milestones' && <MilestonesTab projectId={projectId} milestones={milestones} onRefresh={loadData} />}
       {activeTab === 'timesheets' && <TimesheetsTab projectId={projectId} timesheets={timesheets} tasks={tasks} employees={employees} onRefresh={loadData} />}
       {activeTab === 'expenses' && <ExpensesTab projectId={projectId} expenses={expenses} onRefresh={loadData} />}
