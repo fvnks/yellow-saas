@@ -67,7 +67,7 @@ export default function NotificationsDropdown() {
   const handleMarkRead = async (id: string) => {
     try {
       const api = getApiClient();
-      await api.markNotificationsRead(id);
+      await api.markNotificationsRead({ notification_ids: [id] });
       loadNotifications();
     } catch { toast.error('Error al marcar como leído'); }
   };
@@ -75,7 +75,7 @@ export default function NotificationsDropdown() {
   const handleMarkAllRead = async () => {
     try {
       const api = getApiClient();
-      await api.markNotificationsRead();
+      await api.markNotificationsRead({ mark_all_read: true, userId: '' });
       loadNotifications();
     } catch { toast.error('Error al marcar como leído'); }
   };

@@ -1472,10 +1472,6 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects/${projectId}/activity`, { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async getProjectNotifications() {
-    return this.request<any>('/projects/notifications');
-  }
-
   // Notifications
   async getNotifications(params?: { unread?: boolean; page?: number; limit?: number }) {
     const searchParams: Record<string, string> = {};
@@ -1487,13 +1483,6 @@ async deleteAdjustmentReason(id: string) {
 
   async createNotification(data: { type: string; title: string; message: string; entity_type?: string; entity_id?: string; project_id?: string }) {
     return this.request<any>('/notifications', { method: 'POST', body: JSON.stringify(data) });
-  }
-
-  async markNotificationsRead(notificationId?: string) {
-    return this.request<any>('/notifications', {
-      method: 'PUT',
-      body: JSON.stringify(notificationId ? { notification_id: notificationId } : { action: 'mark_all_read' })
-    });
   }
 
   async checkDeadlines() {

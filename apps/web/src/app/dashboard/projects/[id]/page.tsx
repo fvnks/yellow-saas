@@ -147,7 +147,7 @@ export default function ProjectDetailPage() {
   };
 
   const handleEditTask = (task: any) => {
-    setTaskForm({ name: task.name || '', description: task.description || '', assignee_id: task.assignee_id || '', status: task.status || 'todo', priority: task.priority || 'medium', start_date: task.start_date || '', due_date: task.due_date || '', estimated_hours: task.estimated_hours || '', parent_id: task.parent_id || '' });
+    setTaskForm({ name: task.name || '', description: task.description || '', assignee_id: task.assignee_id || '', status: task.status || 'todo', priority: task.priority || 'medium', start_date: task.start_date || '', due_date: task.due_date || '', estimated_hours: task.estimated_hours || '', parent_id: task.parent_id || '', recurrence_type: task.recurrence_type || 'none', recurrence_interval: task.recurrence_interval || '1', recurrence_end_date: task.recurrence_end_date || '' });
     setEditingTask(task); setShowTaskForm(true);
   };
 
@@ -431,7 +431,7 @@ export default function ProjectDetailPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold text-slate-900">Tareas del Proyecto</h2>
-            <button onClick={() => { setShowTaskForm(true); setEditingTask(null); setTaskForm({ name: '', description: '', assignee_id: '', status: 'todo', priority: 'medium', start_date: '', due_date: '', estimated_hours: '', parent_id: '' }); }}
+            <button onClick={() => { setShowTaskForm(true); setEditingTask(null); setTaskForm({ name: '', description: '', assignee_id: '', status: 'todo', priority: 'medium', start_date: '', due_date: '', estimated_hours: '', parent_id: '', recurrence_type: 'none', recurrence_interval: '1', recurrence_end_date: '' }); }}
               className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
               <Plus className="w-4 h-4" /> Nueva Tarea
             </button>
@@ -523,7 +523,7 @@ export default function ProjectDetailPage() {
           onEdit={handleEditTask}
           onDelete={handleDeleteTask}
           onAddTask={(status) => {
-            setTaskForm({ name: '', description: '', assignee_id: '', status, priority: 'medium', start_date: '', due_date: '', estimated_hours: '', parent_id: '' });
+            setTaskForm({ name: '', description: '', assignee_id: '', status, priority: 'medium', start_date: '', due_date: '', estimated_hours: '', parent_id: '', recurrence_type: 'none', recurrence_interval: '1', recurrence_end_date: '' });
             setShowTaskForm(true);
           }}
         />
