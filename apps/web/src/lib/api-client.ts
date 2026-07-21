@@ -1333,6 +1333,23 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects/${projectId}/forecast`);
   }
 
+  // Project Tags
+  async getProjectTags() {
+    return this.request<any[]>(`/projects/tags`);
+  }
+
+  async createProjectTag(data: { name: string; color?: string }) {
+    return this.request<any>(`/projects/tags`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async deleteProjectTag(tagId: string) {
+    return this.request<any>(`/projects/tags?tagId=${tagId}`, { method: 'DELETE' });
+  }
+
+  async setTaskTags(projectId: string, taskId: string, tagIds: string[]) {
+    return this.request<any>(`/projects/${projectId}/tasks/${taskId}/tags`, { method: 'PUT', body: JSON.stringify({ tag_ids: tagIds }) });
+  }
+
   // Project Milestones
   async getProjectMilestones(projectId: string) {
     return this.request<any[]>(`/projects/${projectId}/milestones`);

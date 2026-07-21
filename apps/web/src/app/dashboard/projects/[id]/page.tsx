@@ -30,6 +30,7 @@ import NotificationsPanel from '../components/NotificationsPanel';
 import ResourceAllocation from '../components/ResourceAllocation';
 import BudgetForecast from '../components/BudgetForecast';
 import SubtaskProgress from '../components/SubtaskProgress';
+import TagsManager, { TaskTagBadges } from '../components/TagsManager';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -127,10 +128,15 @@ export default function ProjectDetailPage() {
     try {
       const api = getApiClient();
       const data = { ...taskForm, estimated_hours: taskForm.estimated_hours ? parseFloat(taskForm.estimated_hours) : null, assignee_id: taskForm.assignee_id || null, parent_id: taskForm.parent_id || null };
-      if (editingTask) { await api.updateProjectTask(projectId, editingTask.id, data); }
-      else { await api.createProjectTask(projectId, data); }
+      let taskId: string;
+      if (editingTask) { await api.updateProjectTask(projectId, editingTask.id, data); taskId = editingTask.id; }
+      else { const res = await api.createProjectTask(projectId, data); taskId = res.id; }
+      if (selectedTaskTags.length > 0) {
+        await api.setTaskTags(projectId, taskId, selectedTaskTags);
+      }
       setShowTaskForm(false); setEditingTask(null);
       setTaskForm({ name: '', description: '', assignee_id: '', status: 'todo', priority: 'medium', start_date: '', due_date: '', estimated_hours: '', parent_id: '' });
+      setSelectedTaskTags([]);
       loadData();
     } catch (err) { toast.error('Error al guardar tarea'); }
     setSaving(false);
@@ -177,6 +183,18 @@ export default function ProjectDetailPage() {
     const review = tasks.filter(t => t.status === 'review').length;
     const pct = Math.round(((done * 1 + inProgress * 0.5 + review * 0.75) / tasks.length) * 100);
     await handleUpdateProgress(pct);
+  };
+
+  const [taskTagsMap, setTaskTagsMap] = useState<Record<string, { name: string; color: string }[]>>({});
+  const [selectedTaskTags, setSelectedTaskTags] = useState<string[]>([]);
+
+  const handleSetTaskTags = async (taskId: string, tagIds: string[]) => {
+    try {
+      const api = getApiClient();
+      const result = await api.setTaskTags(projectId, taskId, tagIds);
+      setTaskTagsMap(prev => ({ ...prev, [taskId]: result || [] }));
+      setSelectedTaskTags([]);
+    } catch { toast.error('Error al guardar tags'); }
   };
 
   const [exportOpen, setExportOpen] = useState(false);
@@ -425,6 +443,7 @@ export default function ProjectDetailPage() {
                         <Badge variant={priorityConfig[task.priority]?.variant || 'neutral'}>{priorityConfig[task.priority]?.label}</Badge>
                       </div>
                       {task.description && <p className="text-xs text-slate-500 mt-1">{task.description}</p>}
+                      <TaskTagBadges tags={taskTagsMap[task.id] || []} />
                       <SubtaskProgress tasks={tasks} parentId={task.id} />
                       <div className="flex items-center gap-4 mt-2 text-xs text-slate-400">
                         {task.assignee_name && <span className="flex items-center gap-1"><Users className="w-3 h-3" />{task.assignee_name}</span>}
@@ -596,6 +615,10 @@ export default function ProjectDetailPage() {
                     <option key={t.id} value={t.id}>{t.name}</option>
                   ))}
                 </select>
+              </div>
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-700">Etiquetas</label>
+                <TagsManager selectedTagIds={selectedTaskTags} onChange={setSelectedTaskTags} />
               </div>
             </div>
             <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
