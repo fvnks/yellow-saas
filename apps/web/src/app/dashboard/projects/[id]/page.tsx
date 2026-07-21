@@ -154,13 +154,18 @@ export default function ProjectDetailPage() {
   };
 
   const handleClone = async () => {
-    if (!confirm(`Clonar "${project.name}"? Se creara una copia con tareas e hitos.`)) return;
+    if (!confirm(`Clonar "${project.name}"? Se creara una copia completa con tareas, hitos, fases, miembros, recursos y automatización.`)) return;
     setCloning(true);
     try {
       const api = getApiClient();
       const res = await api.cloneProject(projectId, {
         name: `${project.name} (Copia)`,
         code: `${project.code}-COPY`,
+        copy_members: true,
+        copy_allocations: true,
+        copy_automation: true,
+        copy_phases: true,
+        adjust_dates: true,
       });
       router.push(`/dashboard/projects/${res.project.id}`);
     } catch (err: any) {

@@ -1135,7 +1135,7 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects/${projectId}`, { method: 'DELETE' });
   }
 
-  async cloneProject(projectId: string, data: { name?: string; code?: string; start_date?: string; end_date?: string }) {
+  async cloneProject(projectId: string, data: { name?: string; code?: string; start_date?: string; end_date?: string; copy_members?: boolean; copy_allocations?: boolean; copy_automation?: boolean; copy_phases?: boolean; adjust_dates?: boolean }) {
     return this.request<any>(`/projects/${projectId}/clone`, { method: 'POST', body: JSON.stringify(data) });
   }
 
