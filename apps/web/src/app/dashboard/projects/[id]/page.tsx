@@ -41,6 +41,7 @@ import TaskFilters from '../components/TaskFilters';
 import BudgetAlerts from '../components/BudgetAlerts';
 import BulkTaskActions from '../components/BulkTaskActions';
 import HoursReport from '../components/HoursReport';
+import ProjectDashboard from '../components/ProjectDashboard';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -85,7 +86,7 @@ export default function ProjectDetailPage() {
   const [dependencies, setDependencies] = useState<any[]>([]);
   const [phases, setPhases] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('tasks');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [editingTask, setEditingTask] = useState<any>(null);
   const [taskForm, setTaskForm] = useState({
@@ -315,6 +316,7 @@ export default function ProjectDetailPage() {
   const budgetUsed = budget > 0 ? Math.round(((totalCosts + totalExpenses) / budget) * 100) : 0;
 
   const tabs = [
+    { id: 'dashboard', label: 'Resumen' },
     { id: 'tasks', label: `Tareas (${tasks.length})` },
     { id: 'kanban', label: 'Kanban' },
     { id: 'calendar', label: 'Calendario' },
@@ -493,6 +495,7 @@ export default function ProjectDetailPage() {
       </div>
 
       {/* TABS CONTENT */}
+      {activeTab === 'dashboard' && <ProjectDashboard project={project} tasks={tasks} milestones={milestones} expenses={expenses} timesheets={timesheets} costs={costsData.costs || []} employees={employees} />}
       {activeTab === 'tasks' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
