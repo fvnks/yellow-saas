@@ -1368,6 +1368,19 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects/${projectId}/audit`, { method: 'POST', body: JSON.stringify(data) });
   }
 
+  // Project Members
+  async getProjectMembers(projectId: string) {
+    return this.request<any[]>(`/projects/${projectId}/members`);
+  }
+
+  async addProjectMember(projectId: string, data: { user_id: string; role?: string }) {
+    return this.request<any>(`/projects/${projectId}/members`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async removeProjectMember(projectId: string, userId: string) {
+    return this.request<any>(`/projects/${projectId}/members?userId=${userId}`, { method: 'DELETE' });
+  }
+
   // Project Milestones
   async getProjectMilestones(projectId: string) {
     return this.request<any[]>(`/projects/${projectId}/milestones`);
