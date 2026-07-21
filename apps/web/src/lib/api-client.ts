@@ -1244,6 +1244,23 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects/${projectId}/dependencies/${dependencyId}`, { method: 'DELETE' });
   }
 
+  // Project Templates
+  async getProjectTemplates() {
+    return this.request<any[]>(`/projects/templates`);
+  }
+
+  async createProjectTemplate(data: any) {
+    return this.request<any>(`/projects/templates`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async deleteProjectTemplate(templateId: string) {
+    return this.request<any>(`/projects/templates/${templateId}`, { method: 'DELETE' });
+  }
+
+  async applyProjectTemplate(templateId: string, projectId: string) {
+    return this.request<any>(`/projects/templates/${templateId}/apply`, { method: 'POST', body: JSON.stringify({ project_id: projectId }) });
+  }
+
   // Project Milestones
   async getProjectMilestones(projectId: string) {
     return this.request<any[]>(`/projects/${projectId}/milestones`);

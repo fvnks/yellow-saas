@@ -20,6 +20,7 @@ import RisksTab from '../components/RisksTab';
 import ChangeOrdersTab from '../components/ChangeOrdersTab';
 import PortalTab from '../components/PortalTab';
 import KanbanBoard from '../components/KanbanBoard';
+import TemplatesTab from '../components/TemplatesTab';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -178,6 +179,7 @@ export default function ProjectDetailPage() {
     { id: 'kanban', label: 'Kanban' },
     { id: 'gantt', label: 'Gantt' },
     { id: 'milestones', label: `Hitos (${milestones.length})` },
+    { id: 'templates', label: 'Plantillas' },
     { id: 'timesheets', label: `Horas (${timesheets.length})` },
     { id: 'expenses', label: `Gastos (${expenses.length})` },
     { id: 'costs', label: 'Centro Costos' },
@@ -393,6 +395,7 @@ export default function ProjectDetailPage() {
         />
       )}
       {activeTab === 'milestones' && <MilestonesTab projectId={projectId} milestones={milestones} onRefresh={loadData} />}
+      {activeTab === 'templates' && <TemplatesTab onApply={loadData} />}
       {activeTab === 'timesheets' && <TimesheetsTab projectId={projectId} timesheets={timesheets} tasks={tasks} employees={employees} onRefresh={loadData} />}
       {activeTab === 'expenses' && <ExpensesTab projectId={projectId} expenses={expenses} onRefresh={loadData} />}
       {activeTab === 'costs' && <CostsTab costs={costsData.costs || []} budget={project.budget} />}
