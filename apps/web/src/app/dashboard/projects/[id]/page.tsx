@@ -40,6 +40,7 @@ import ProjectCalendar from '../components/ProjectCalendar';
 import TaskFilters from '../components/TaskFilters';
 import BudgetAlerts from '../components/BudgetAlerts';
 import BulkTaskActions from '../components/BulkTaskActions';
+import HoursReport from '../components/HoursReport';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -326,6 +327,7 @@ export default function ProjectDetailPage() {
     { id: 'resources', label: 'Recursos' },
     { id: 'forecast', label: 'Forecast' },
     { id: 'timesheets', label: `Horas (${timesheets.length})` },
+    { id: 'hours-report', label: 'Reporte Horas' },
     { id: 'expenses', label: `Gastos (${expenses.length})` },
     { id: 'costs', label: 'Centro Costos' },
     { id: 'risks', label: `Riesgos (${risks.length})` },
@@ -622,6 +624,7 @@ export default function ProjectDetailPage() {
       {activeTab === 'forecast' && <BudgetForecast projectId={projectId} />}
       {activeTab === 'phases' && <PhasesTab projectId={projectId} phases={phases} onRefresh={loadData} />}
       {activeTab === 'timesheets' && <TimesheetsTab projectId={projectId} timesheets={timesheets} tasks={tasks} employees={employees} onRefresh={loadData} />}
+      {activeTab === 'hours-report' && <HoursReport timesheets={timesheets} tasks={tasks} employees={employees} />}
       {activeTab === 'expenses' && <ExpensesTab projectId={projectId} expenses={expenses} onRefresh={loadData} />}
       {activeTab === 'costs' && <CostsTab costs={costsData.costs || []} budget={project.budget} />}
       {activeTab === 'risks' && <RisksTab projectId={projectId} risks={risks} employees={employees} onRefresh={loadData} />}
