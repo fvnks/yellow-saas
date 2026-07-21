@@ -37,6 +37,7 @@ import ProjectMembers from '../components/ProjectMembers';
 import ResourceAllocationForm from '../components/ResourceAllocationForm';
 import AutomationManager from '../components/AutomationManager';
 import ProjectCalendar from '../components/ProjectCalendar';
+import TaskFilters from '../components/TaskFilters';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -67,6 +68,7 @@ export default function ProjectDetailPage() {
 
   const [project, setProject] = useState<any>(null);
   const [tasks, setTasks] = useState<any[]>([]);
+  const [filteredTasks, setFilteredTasks] = useState<any[]>([]);
   const [milestones, setMilestones] = useState<any[]>([]);
   const [timesheets, setTimesheets] = useState<any[]>([]);
   const [expenses, setExpenses] = useState<any[]>([]);
@@ -114,6 +116,7 @@ export default function ProjectDetailPage() {
       ]);
       setProject(projectRes);
       setTasks(Array.isArray(tasksRes) ? tasksRes : []);
+      setFilteredTasks(Array.isArray(tasksRes) ? tasksRes : []);
       setMilestones(Array.isArray(milestonesRes) ? milestonesRes : []);
       setTimesheets(Array.isArray(timesheetsRes) ? timesheetsRes : []);
       setExpenses(Array.isArray(expensesRes) ? expensesRes : []);
@@ -453,9 +456,11 @@ export default function ProjectDetailPage() {
               <button onClick={() => setShowTaskForm(true)} className="text-indigo-600 hover:underline text-sm mt-2">Crear primera tarea</button>
             </div>
           ) : (
-            <div className="space-y-2">
-              {tasks.filter(t => !t.parent_id).map(task => {
-                const subtasks = tasks.filter(t => t.parent_id === task.id);
+            <div className="space-y-4">
+              <TaskFilters tasks={tasks} users={users} onFilter={setFilteredTasks} />
+              <div className="space-y-2">
+                {filteredTasks.filter(t => !t.parent_id).map(task => {
+                const subtasks = filteredTasks.filter(t => t.parent_id === task.id);
                 return (
                 <div key={task.id}>
                 <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow">
