@@ -43,6 +43,7 @@ import BulkTaskActions from '../components/BulkTaskActions';
 import HoursReport from '../components/HoursReport';
 import ProjectDashboard from '../components/ProjectDashboard';
 import CustomFields from '../components/CustomFields';
+import TaskChecklist from '../components/TaskChecklist';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -554,6 +555,7 @@ export default function ProjectDetailPage() {
                       {task.description && <p className="text-xs text-slate-500 mt-1">{task.description}</p>}
                       <TaskTagBadges tags={taskTagsMap[task.id] || []} />
                       <SubtaskProgress tasks={tasks} parentId={task.id} />
+                      <div className="mt-2"><TaskChecklist taskId={task.id} onUpdate={loadData} /></div>
                       <div className="flex items-center gap-4 mt-2 text-xs text-slate-400">
                         {task.assignee_name && <span className="flex items-center gap-1"><Users className="w-3 h-3" />{task.assignee_name}</span>}
                         {task.due_date && <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{task.due_date}</span>}
