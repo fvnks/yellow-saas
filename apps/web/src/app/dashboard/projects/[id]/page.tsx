@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Badge } from '@yellow-erp/ui';
-import { ArrowLeft, Plus, Calendar, DollarSign, Users, CheckCircle2, Clock, Edit, Trash2, BarChart3, Flag, Receipt, FileText, TrendingUp, LayoutGrid, Copy, Download, MessageCircle } from 'lucide-react';
+import { ArrowLeft, Plus, Calendar, DollarSign, Users, CheckCircle2, Clock, Edit, Trash2, BarChart3, Flag, Receipt, FileText, TrendingUp, LayoutGrid, Copy, Download, MessageCircle, CheckSquare, Square } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
@@ -39,6 +39,7 @@ import AutomationManager from '../components/AutomationManager';
 import ProjectCalendar from '../components/ProjectCalendar';
 import TaskFilters from '../components/TaskFilters';
 import BudgetAlerts from '../components/BudgetAlerts';
+import BulkTaskActions from '../components/BulkTaskActions';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -70,6 +71,7 @@ export default function ProjectDetailPage() {
   const [project, setProject] = useState<any>(null);
   const [tasks, setTasks] = useState<any[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<any[]>([]);
+  const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
   const [milestones, setMilestones] = useState<any[]>([]);
   const [timesheets, setTimesheets] = useState<any[]>([]);
   const [expenses, setExpenses] = useState<any[]>([]);
@@ -186,6 +188,18 @@ export default function ProjectDetailPage() {
 
   const handleUpdateTaskStatus = async (task: any, newStatus: string) => {
     try { const api = getApiClient(); await api.updateProjectTask(projectId, task.id, { ...task, status: newStatus }); loadData(); } catch (err) { toast.error('Error al actualizar tarea'); }
+  };
+
+  const toggleSelectTask = (taskId: string) => {
+    setSelectedTasks(prev => prev.includes(taskId) ? prev.filter(id => id !== taskId) : [...prev, taskId]);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedTasks.length === filteredTasks.filter(t => !t.parent_id).length) {
+      setSelectedTasks([]);
+    } else {
+      setSelectedTasks(filteredTasks.filter(t => !t.parent_id).map(t => t.id));
+    }
   };
 
   const handleUpdateProgress = async (progress: number) => {
@@ -461,13 +475,31 @@ export default function ProjectDetailPage() {
           ) : (
             <div className="space-y-4">
               <TaskFilters tasks={tasks} users={users} onFilter={setFilteredTasks} />
+              <BulkTaskActions selectedTasks={selectedTasks} onClearSelection={() => setSelectedTasks([])} onRefresh={loadData} users={users} />
               <div className="space-y-2">
+                <div className="flex items-center gap-2 px-1">
+                  <button onClick={toggleSelectAll} className="p-1 hover:bg-slate-100 rounded transition-colors">
+                    {selectedTasks.length === filteredTasks.filter(t => !t.parent_id).length && filteredTasks.filter(t => !t.parent_id).length > 0 ? (
+                      <CheckSquare className="w-4 h-4 text-indigo-600" />
+                    ) : (
+                      <Square className="w-4 h-4 text-slate-400" />
+                    )}
+                  </button>
+                  <span className="text-[9px] text-slate-500">Seleccionar todo</span>
+                </div>
                 {filteredTasks.filter(t => !t.parent_id).map(task => {
                 const subtasks = filteredTasks.filter(t => t.parent_id === task.id);
                 return (
                 <div key={task.id}>
-                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow">
-                  <div className="flex items-start justify-between">
+                <div className={`bg-white border rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow ${selectedTasks.includes(task.id) ? 'border-indigo-300 bg-indigo-50/30' : 'border-slate-200'}`}>
+                  <div className="flex items-start gap-3">
+                    <button onClick={() => toggleSelectTask(task.id)} className="mt-0.5 p-0.5 hover:bg-slate-100 rounded transition-colors">
+                      {selectedTasks.includes(task.id) ? (
+                        <CheckSquare className="w-4 h-4 text-indigo-600" />
+                      ) : (
+                        <Square className="w-4 h-4 text-slate-400" />
+                      )}
+                    </button>
                     <div className="flex-1">
                       <div className="flex items-center gap-3">
                         <h3 className="text-sm font-semibold text-slate-900">{task.name}</h3>
