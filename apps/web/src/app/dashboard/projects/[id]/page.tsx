@@ -42,6 +42,7 @@ import BudgetAlerts from '../components/BudgetAlerts';
 import BulkTaskActions from '../components/BulkTaskActions';
 import HoursReport from '../components/HoursReport';
 import ProjectDashboard from '../components/ProjectDashboard';
+import CustomFields from '../components/CustomFields';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -74,6 +75,8 @@ export default function ProjectDetailPage() {
   const [tasks, setTasks] = useState<any[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<any[]>([]);
   const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
+  const [customFields, setCustomFields] = useState<any[]>([]);
+  const [customValues, setCustomValues] = useState<Record<string, string>>({});
   const [milestones, setMilestones] = useState<any[]>([]);
   const [timesheets, setTimesheets] = useState<any[]>([]);
   const [expenses, setExpenses] = useState<any[]>([]);
@@ -104,7 +107,7 @@ export default function ProjectDetailPage() {
     setLoading(true);
     try {
       const api = getApiClient();
-      const [projectRes, tasksRes, milestonesRes, timesheetsRes, expensesRes, costsRes, docsRes, employeesRes, usersRes, risksRes, changeOrdersRes, depsRes, phasesRes] = await Promise.all([
+      const [projectRes, tasksRes, milestonesRes, timesheetsRes, expensesRes, costsRes, docsRes, employeesRes, usersRes, risksRes, changeOrdersRes, depsRes, phasesRes, customFieldsRes] = await Promise.all([
         api.getProject(projectId),
         api.getProjectTasks(projectId),
         api.getProjectMilestones(projectId),
@@ -118,6 +121,7 @@ export default function ProjectDetailPage() {
         api.getProjectChangeOrders(projectId),
         api.getProjectDependencies(projectId).catch(() => []),
         api.getProjectPhases(projectId).catch(() => []),
+        fetch(`/api/companies/${localStorage.getItem('company_id')}/projects/${projectId}/custom-fields`).then(r => r.json()).then(j => j.data || []),
       ]);
       setProject(projectRes);
       setTasks(Array.isArray(tasksRes) ? tasksRes : []);
@@ -133,6 +137,7 @@ export default function ProjectDetailPage() {
       setChangeOrders(Array.isArray(changeOrdersRes) ? changeOrdersRes : []);
       setDependencies(Array.isArray(depsRes) ? depsRes : []);
       setPhases(Array.isArray(phasesRes) ? phasesRes : []);
+      setCustomFields(Array.isArray(customFieldsRes) ? customFieldsRes : []);
     } catch (err) { toast.error('Error al cargar proyecto'); }
     setLoading(false);
   };
@@ -339,6 +344,7 @@ export default function ProjectDetailPage() {
     { id: 'activity', label: 'Actividad' },
     { id: 'audit', label: 'Historial' },
     { id: 'portal', label: 'Portal' },
+    { id: 'custom-fields', label: 'Campos' },
     { id: 'info', label: 'Info' },
   ];
 
@@ -638,6 +644,12 @@ export default function ProjectDetailPage() {
       {activeTab === 'audit' && <AuditLog projectId={projectId} />}
       {activeTab === 'portal' && <PortalTab projectId={projectId} project={project} onRefresh={loadData} />}
 
+      {activeTab === 'custom-fields' && (
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+          <h2 className="text-sm font-semibold text-slate-900 mb-4">Campos Personalizados</h2>
+          <CustomFields projectId={projectId} fields={customFields} values={customValues} onChange={(fieldId, value) => setCustomValues({ ...customValues, [fieldId]: value })} onRefresh={loadData} />
+        </div>
+      )}
       {activeTab === 'info' && (
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
           <h2 className="text-sm font-semibold text-slate-900 mb-4">Informacion del Proyecto</h2>
