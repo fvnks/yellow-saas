@@ -1322,6 +1322,12 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>('/projects/notifications/generate', { method: 'POST' });
   }
 
+  // Resource Allocation
+  async getProjectResources(projectId?: string) {
+    const qs = projectId ? `?projectId=${projectId}` : '';
+    return this.request<any[]>(`/projects/resources${qs}`);
+  }
+
   // Project Milestones
   async getProjectMilestones(projectId: string) {
     return this.request<any[]>(`/projects/${projectId}/milestones`);
