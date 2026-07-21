@@ -79,6 +79,7 @@ export default function ProjectDetailPage() {
   const [taskForm, setTaskForm] = useState({
     name: '', description: '', assignee_id: '', status: 'todo', priority: 'medium',
     start_date: '', due_date: '', estimated_hours: '', parent_id: '',
+    recurrence_type: 'none', recurrence_interval: '1', recurrence_end_date: '',
   });
   const [saving, setSaving] = useState(false);
   const [cloning, setCloning] = useState(false);
@@ -135,7 +136,7 @@ export default function ProjectDetailPage() {
         await api.setTaskTags(projectId, taskId, selectedTaskTags);
       }
       setShowTaskForm(false); setEditingTask(null);
-      setTaskForm({ name: '', description: '', assignee_id: '', status: 'todo', priority: 'medium', start_date: '', due_date: '', estimated_hours: '', parent_id: '' });
+      setTaskForm({ name: '', description: '', assignee_id: '', status: 'todo', priority: 'medium', start_date: '', due_date: '', estimated_hours: '', parent_id: '', recurrence_type: 'none', recurrence_interval: '1', recurrence_end_date: '' });
       setSelectedTaskTags([]);
       loadData();
     } catch (err) { toast.error('Error al guardar tarea'); }
@@ -619,6 +620,27 @@ export default function ProjectDetailPage() {
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-slate-700">Etiquetas</label>
                 <TagsManager selectedTagIds={selectedTaskTags} onChange={setSelectedTaskTags} />
+              </div>
+              <div className="border-t border-slate-100 pt-3 mt-1">
+                <label className="block text-xs font-medium text-slate-700 mb-1.5">Recurrencia</label>
+                <div className="grid grid-cols-3 gap-2">
+                  <select value={taskForm.recurrence_type} onChange={e => setTaskForm({ ...taskForm, recurrence_type: e.target.value })}
+                    className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                    <option value="none">Sin recurrencia</option>
+                    <option value="daily">Diario</option>
+                    <option value="weekly">Semanal</option>
+                    <option value="monthly">Mensual</option>
+                    <option value="yearly">Anual</option>
+                  </select>
+                  {taskForm.recurrence_type !== 'none' && (
+                    <>
+                      <input type="number" min="1" value={taskForm.recurrence_interval} onChange={e => setTaskForm({ ...taskForm, recurrence_interval: e.target.value })}
+                        className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="Cada..." />
+                      <input type="date" value={taskForm.recurrence_end_date} onChange={e => setTaskForm({ ...taskForm, recurrence_end_date: e.target.value })}
+                        className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                    </>
+                  )}
+                </div>
               </div>
             </div>
             <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
