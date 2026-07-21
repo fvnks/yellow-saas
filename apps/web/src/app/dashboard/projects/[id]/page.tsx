@@ -25,6 +25,7 @@ import TemplatesTab from '../components/TemplatesTab';
 import PhasesTab from '../components/PhasesTab';
 import TimerWidget from '../components/TimerWidget';
 import TaskComments from '../components/TaskComments';
+import NotificationsPanel from '../components/NotificationsPanel';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -276,6 +277,7 @@ export default function ProjectDetailPage() {
           <p className="text-sm text-slate-500 mt-1">{project.code} {project.customer_name ? `· ${project.customer_name}` : ''}</p>
         </div>
         <div className="flex items-center gap-2">
+          <NotificationsPanel userId={users[0]?.id || ''} />
           <div className="relative">
             <button onClick={() => setExportOpen(!exportOpen)}
               className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">

@@ -1305,6 +1305,23 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects/${projectId}/tasks/${taskId}/comments?commentId=${commentId}`, { method: 'DELETE' });
   }
 
+  // Project Notifications
+  async getProjectNotifications(userId?: string, unreadOnly = false) {
+    const params = new URLSearchParams();
+    if (userId) params.set('userId', userId);
+    if (unreadOnly) params.set('unread', 'true');
+    const qs = params.toString();
+    return this.request<any[]>(`/projects/notifications${qs ? '?' + qs : ''}`);
+  }
+
+  async markNotificationsRead(data: { notification_ids?: string[]; mark_all_read?: boolean; userId?: string }) {
+    return this.request<any>('/projects/notifications', { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async generateProjectNotifications() {
+    return this.request<any>('/projects/notifications/generate', { method: 'POST' });
+  }
+
   // Project Milestones
   async getProjectMilestones(projectId: string) {
     return this.request<any[]>(`/projects/${projectId}/milestones`);
