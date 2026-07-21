@@ -16,7 +16,8 @@ export async function middleware(request: NextRequest) {
   }
 
   const publicPaths = ['/login', '/register', '/auth/callback', '/forgot-password', '/reset-password'];
-  const isPublicPath = publicPaths.some(path => request.nextUrl.pathname.startsWith(path));
+  const pathname = request.nextUrl.pathname;
+  const isPublicPath = pathname === '/' || publicPaths.some(path => pathname.startsWith(path));
   const isApiRoute = request.nextUrl.pathname.startsWith('/api/');
 
   if (isPublicPath || isApiRoute) {
