@@ -1115,6 +1115,10 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/projects${qs ? `?${qs}` : ''}`);
   }
 
+  async getDashboard() {
+    return this.request<any>('/dashboard');
+  }
+
   async getProject(projectId: string) {
     return this.request<any>(`/projects/${projectId}`);
   }
