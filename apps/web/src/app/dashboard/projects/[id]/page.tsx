@@ -36,6 +36,7 @@ import AuditLog from '../components/AuditLog';
 import ProjectMembers from '../components/ProjectMembers';
 import ResourceAllocationForm from '../components/ResourceAllocationForm';
 import AutomationManager from '../components/AutomationManager';
+import ProjectCalendar from '../components/ProjectCalendar';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -277,6 +278,7 @@ export default function ProjectDetailPage() {
   const tabs = [
     { id: 'tasks', label: `Tareas (${tasks.length})` },
     { id: 'kanban', label: 'Kanban' },
+    { id: 'calendar', label: 'Calendario' },
     { id: 'gantt', label: 'Gantt' },
     { id: 'milestones', label: `Hitos (${milestones.length})` },
     { id: 'phases', label: `Fases (${phases.length})` },
@@ -536,6 +538,7 @@ export default function ProjectDetailPage() {
           }}
         />
       )}
+      {activeTab === 'calendar' && <ProjectCalendar tasks={tasks} milestones={milestones} />}
       {activeTab === 'milestones' && <MilestonesTab projectId={projectId} milestones={milestones} onRefresh={loadData} />}
       {activeTab === 'templates' && <TemplatesTab onApply={loadData} />}
       {activeTab === 'automation' && <AutomationManager projectId={projectId} />}
