@@ -1398,6 +1398,27 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any[]>('/projects/allocations');
   }
 
+  // Automation Rules
+  async getAutomationRules(projectId: string) {
+    return this.request<any[]>(`/projects/${projectId}/automation`);
+  }
+
+  async createAutomationRule(projectId: string, data: any) {
+    return this.request<any>(`/projects/${projectId}/automation`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async toggleAutomationRule(projectId: string, ruleId: string, isActive: boolean) {
+    return this.request<any>(`/projects/${projectId}/automation`, { method: 'PUT', body: JSON.stringify({ rule_id: ruleId, is_active: isActive }) });
+  }
+
+  async deleteAutomationRule(projectId: string, ruleId: string) {
+    return this.request<any>(`/projects/${projectId}/automation?ruleId=${ruleId}`, { method: 'DELETE' });
+  }
+
+  async executeAutomation(projectId: string, data: { trigger_type: string; trigger_value?: string; task_id?: string }) {
+    return this.request<any>(`/projects/${projectId}/automation/execute`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
   // Project Milestones
   async getProjectMilestones(projectId: string) {
     return this.request<any[]>(`/projects/${projectId}/milestones`);
