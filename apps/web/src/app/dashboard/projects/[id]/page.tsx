@@ -35,6 +35,7 @@ import TagsManager, { TaskTagBadges } from '../components/TagsManager';
 import AuditLog from '../components/AuditLog';
 import ProjectMembers from '../components/ProjectMembers';
 import ResourceAllocationForm from '../components/ResourceAllocationForm';
+import AutomationManager from '../components/AutomationManager';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -275,6 +276,7 @@ export default function ProjectDetailPage() {
     { id: 'milestones', label: `Hitos (${milestones.length})` },
     { id: 'phases', label: `Fases (${phases.length})` },
     { id: 'templates', label: 'Plantillas' },
+    { id: 'automation', label: 'Automatización' },
     { id: 'team', label: 'Equipo' },
     { id: 'resources', label: 'Recursos' },
     { id: 'forecast', label: 'Forecast' },
@@ -531,6 +533,7 @@ export default function ProjectDetailPage() {
       )}
       {activeTab === 'milestones' && <MilestonesTab projectId={projectId} milestones={milestones} onRefresh={loadData} />}
       {activeTab === 'templates' && <TemplatesTab onApply={loadData} />}
+      {activeTab === 'automation' && <AutomationManager projectId={projectId} />}
       {activeTab === 'team' && <ProjectMembers projectId={projectId} users={users} />}
       {activeTab === 'resources' && <ResourceAllocationForm projectId={projectId} employees={employees} />}
       {activeTab === 'forecast' && <BudgetForecast projectId={projectId} />}
