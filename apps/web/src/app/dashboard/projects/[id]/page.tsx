@@ -22,6 +22,7 @@ import ChangeOrdersTab from '../components/ChangeOrdersTab';
 import PortalTab from '../components/PortalTab';
 import KanbanBoard from '../components/KanbanBoard';
 import TemplatesTab from '../components/TemplatesTab';
+import PhasesTab from '../components/PhasesTab';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -62,6 +63,7 @@ export default function ProjectDetailPage() {
   const [employees, setEmployees] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [dependencies, setDependencies] = useState<any[]>([]);
+  const [phases, setPhases] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('tasks');
   const [showTaskForm, setShowTaskForm] = useState(false);
@@ -79,7 +81,7 @@ export default function ProjectDetailPage() {
     setLoading(true);
     try {
       const api = getApiClient();
-      const [projectRes, tasksRes, milestonesRes, timesheetsRes, expensesRes, costsRes, docsRes, employeesRes, usersRes, risksRes, changeOrdersRes, depsRes] = await Promise.all([
+      const [projectRes, tasksRes, milestonesRes, timesheetsRes, expensesRes, costsRes, docsRes, employeesRes, usersRes, risksRes, changeOrdersRes, depsRes, phasesRes] = await Promise.all([
         api.getProject(projectId),
         api.getProjectTasks(projectId),
         api.getProjectMilestones(projectId),
@@ -92,6 +94,7 @@ export default function ProjectDetailPage() {
         api.getProjectRisks(projectId),
         api.getProjectChangeOrders(projectId),
         api.getProjectDependencies(projectId).catch(() => []),
+        api.getProjectPhases(projectId).catch(() => []),
       ]);
       setProject(projectRes);
       setTasks(Array.isArray(tasksRes) ? tasksRes : []);
@@ -105,6 +108,7 @@ export default function ProjectDetailPage() {
       setRisks(Array.isArray(risksRes) ? risksRes : []);
       setChangeOrders(Array.isArray(changeOrdersRes) ? changeOrdersRes : []);
       setDependencies(Array.isArray(depsRes) ? depsRes : []);
+      setPhases(Array.isArray(phasesRes) ? phasesRes : []);
     } catch (err) { toast.error('Error al cargar proyecto'); }
     setLoading(false);
   };
@@ -222,6 +226,7 @@ export default function ProjectDetailPage() {
     { id: 'kanban', label: 'Kanban' },
     { id: 'gantt', label: 'Gantt' },
     { id: 'milestones', label: `Hitos (${milestones.length})` },
+    { id: 'phases', label: `Fases (${phases.length})` },
     { id: 'templates', label: 'Plantillas' },
     { id: 'timesheets', label: `Horas (${timesheets.length})` },
     { id: 'expenses', label: `Gastos (${expenses.length})` },
@@ -464,6 +469,7 @@ export default function ProjectDetailPage() {
       )}
       {activeTab === 'milestones' && <MilestonesTab projectId={projectId} milestones={milestones} onRefresh={loadData} />}
       {activeTab === 'templates' && <TemplatesTab onApply={loadData} />}
+      {activeTab === 'phases' && <PhasesTab projectId={projectId} phases={phases} onRefresh={loadData} />}
       {activeTab === 'timesheets' && <TimesheetsTab projectId={projectId} timesheets={timesheets} tasks={tasks} employees={employees} onRefresh={loadData} />}
       {activeTab === 'expenses' && <ExpensesTab projectId={projectId} expenses={expenses} onRefresh={loadData} />}
       {activeTab === 'costs' && <CostsTab costs={costsData.costs || []} budget={project.budget} />}
