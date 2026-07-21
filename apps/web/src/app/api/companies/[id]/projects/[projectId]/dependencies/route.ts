@@ -1,0 +1,63 @@
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string; projectId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const result = await query(
+      `SELECT ptd.*,
+        t1.name as task_name,
+        t2.name as depends_on_name
+       FROM project_task_dependencies ptd
+       JOIN project_tasks t1 ON ptd.task_id = t1.id
+       JOIN project_tasks t2 ON ptd.depends_on_id = t2.id
+       WHERE ptd.project_id = $1 AND ptd.company_id = $2
+       ORDER BY ptd.created_at ASC`,
+      [params.projectId, companyId]
+    );
+
+    return successResponse(result.rows);
+  } catch {
+    return errorResponse('Internal server error', 500);
+  }
+}
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { id: string; projectId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+    const { task_id, depends_on_id, dependency_type, lag_days } = body;
+
+    if (!task_id || !depends_on_id) return errorResponse('task_id and depends_on_id are required', 400);
+    if (task_id === depends_on_id) return errorResponse('A task cannot depend on itself', 400);
+
+    const existing = await query(
+      `SELECT id FROM project_task_dependencies
+       WHERE task_id = $1 AND depends_on_id = $2 AND company_id = $3`,
+      [task_id, depends_on_id, companyId]
+    );
+    if (existing.rows.length > 0) return errorResponse('Dependency already exists', 409);
+
+    const result = await query(
+      `INSERT INTO project_task_dependencies (company_id, project_id, task_id, depends_on_id, dependency_type, lag_days)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       RETURNING *`,
+      [companyId, params.projectId, task_id, depends_on_id, dependency_type || 'finish_to_start', lag_days || 0]
+    );
+
+    return successResponse(result.rows[0], 201);
+  } catch {
+    return errorResponse('Internal server error', 500);
+  }
+}
