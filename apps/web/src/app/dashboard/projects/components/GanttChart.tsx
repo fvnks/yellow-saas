@@ -1,7 +1,7 @@
 'use client';
 
-import { useMemo } from 'react';
-import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Calendar, Route } from 'lucide-react';
 
 interface Task {
   id: string;
@@ -43,12 +43,103 @@ function daysBetween(a: Date, b: Date): number {
   return Math.round((b.getTime() - a.getTime()) / (1000 * 60 * 60 * 24));
 }
 
+function calculateCriticalPath(tasks: Task[], dependencies: Dependency[]): Set<string> {
+  const criticalIds = new Set<string>();
+  if (tasks.length === 0) return criticalIds;
+
+  const taskMap = new Map(tasks.map(t => [t.id, t]));
+  const duration = new Map<string, number>();
+  const es = new Map<string, number>();
+  const ef = new Map<string, number>();
+  const ls = new Map<string, number>();
+  const lf = new Map<string, number>();
+
+  const predecessors = new Map<string, string[]>();
+  const successors = new Map<string, string[]>();
+
+  for (const t of tasks) {
+    predecessors.set(t.id, []);
+    successors.set(t.id, []);
+  }
+
+  for (const dep of dependencies) {
+    predecessors.get(dep.task_id)?.push(dep.depends_on_id);
+    successors.get(dep.depends_on_id)?.push(dep.task_id);
+  }
+
+  for (const t of tasks) {
+    const s = parseDate(t.start_date);
+    const e = parseDate(t.due_date);
+    if (s && e) {
+      duration.set(t.id, Math.max(daysBetween(s, e) + 1, 1));
+    } else {
+      duration.set(t.id, 7);
+    }
+  }
+
+  const visited = new Set<string>();
+  const order: string[] = [];
+
+  function topoSort(id: string) {
+    if (visited.has(id)) return;
+    visited.add(id);
+    for (const pred of predecessors.get(id) || []) {
+      topoSort(pred);
+    }
+    order.push(id);
+  }
+
+  for (const t of tasks) topoSort(t.id);
+
+  for (const id of order) {
+    const preds = predecessors.get(id) || [];
+    let maxEf = 0;
+    for (const p of preds) {
+      maxEf = Math.max(maxEf, ef.get(p) || 0);
+    }
+    es.set(id, maxEf);
+    ef.set(id, maxEf + (duration.get(id) || 7));
+  }
+
+  let projectEnd = 0;
+  for (const t of tasks) {
+    projectEnd = Math.max(projectEnd, ef.get(t.id) || 0);
+  }
+
+  const reversedOrder = [...order].reverse();
+
+  for (const id of reversedOrder) {
+    const succs = successors.get(id) || [];
+    if (succs.length === 0) {
+      lf.set(id, projectEnd);
+    } else {
+      let minLs = Infinity;
+      for (const s of succs) {
+        minLs = Math.min(minLs, ls.get(s) || 0);
+      }
+      lf.set(id, minLs);
+    }
+    ls.set(id, (lf.get(id) || 0) - (duration.get(id) || 7));
+  }
+
+  for (const id of order) {
+    const slack = (ls.get(id) || 0) - (es.get(id) || 0);
+    if (Math.abs(slack) < 0.001) {
+      criticalIds.add(id);
+    }
+  }
+
+  return criticalIds;
+}
+
 export default function GanttChart({ tasks, dependencies = [], startDate, endDate }: GanttChartProps) {
-  const { chartStart, chartEnd, totalDays, tasks: enrichedTasks, months } = useMemo(() => {
+  const [showCriticalPath, setShowCriticalPath] = useState(false);
+
+  const { chartStart, chartEnd, totalDays, tasks: enrichedTasks, months, criticalPath } = useMemo(() => {
     const allDates = tasks.flatMap(t => [parseDate(t.start_date), parseDate(t.due_date)]).filter(Boolean) as Date[];
     if (allDates.length === 0) {
       const now = new Date();
-      return { chartStart: now, chartEnd: new Date(now.getTime() + 30 * 86400000), totalDays: 30, tasks: [], months: [] };
+      return { chartStart: now, chartEnd: new Date(now.getTime() + 30 * 86400000), totalDays: 30, tasks: [], months: [], criticalPath: new Set<string>() };
     }
 
     const cs = startDate ? new Date(startDate) : new Date(Math.min(...allDates.map(d => d.getTime())));
@@ -80,7 +171,9 @@ export default function GanttChart({ tasks, dependencies = [], startDate, endDat
       d.setMonth(d.getMonth() + 1);
     }
 
-    return { chartStart: cs, chartEnd: ce, totalDays: td, tasks: enriched, months: ms };
+    const cp = calculateCriticalPath(tasks, dependencies);
+
+    return { chartStart: cs, chartEnd: ce, totalDays: td, tasks: enriched, months: ms, criticalPath: cp };
   }, [tasks, dependencies, startDate, endDate]);
 
   if (tasks.length === 0) {
@@ -102,7 +195,20 @@ export default function GanttChart({ tasks, dependencies = [], startDate, endDat
     <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
       <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-slate-900">Diagrama de Gantt</h3>
-        <span className="text-xs text-slate-500">{chartStart.toLocaleDateString('es-CL')} — {chartEnd.toLocaleDateString('es-CL')}</span>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowCriticalPath(!showCriticalPath)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${
+              showCriticalPath
+                ? 'bg-red-50 text-red-700 border-red-200'
+                : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            <Route className="w-3.5 h-3.5" />
+            Critical Path
+          </button>
+          <span className="text-xs text-slate-500">{chartStart.toLocaleDateString('es-CL')} — {chartEnd.toLocaleDateString('es-CL')}</span>
+        </div>
       </div>
       <div className="overflow-x-auto">
         <div style={{ minWidth: labelWidth + totalDays * dayWidth }}>
@@ -121,54 +227,61 @@ export default function GanttChart({ tasks, dependencies = [], startDate, endDat
           </div>
 
           {/* Task rows */}
-          {enrichedTasks.map((task, idx) => (
-            <div key={task.id} className={`flex border-b border-slate-100 ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`} style={{ height: rowHeight }}>
-              <div style={{ width: labelWidth }} className="px-4 py-2 border-r border-slate-200 flex flex-col justify-center">
-                <span className="text-xs font-medium text-slate-900 truncate">{task.name}</span>
-                {task.assignee_name && <span className="text-[9px] text-slate-400 truncate">{task.assignee_name}</span>}
-              </div>
-              <div className="flex-1 relative">
-                {/* Grid lines */}
-                <div className="absolute inset-0 flex">
-                  {months.map((m, i) => (
-                    <div key={i} style={{ width: m.days * dayWidth }} className="border-r border-slate-100" />
-                  ))}
+          {enrichedTasks.map((task, idx) => {
+            const isCritical = showCriticalPath && criticalPath.has(task.id);
+            return (
+              <div key={task.id} className={`flex border-b border-slate-100 ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'} ${isCritical ? 'bg-red-50/30' : ''}`} style={{ height: rowHeight }}>
+                <div style={{ width: labelWidth }} className={`px-4 py-2 border-r border-slate-200 flex flex-col justify-center ${isCritical ? 'border-l-2 border-l-red-500' : ''}`}>
+                  <span className={`text-xs font-medium truncate ${isCritical ? 'text-red-700' : 'text-slate-900'}`}>{task.name}</span>
+                  {task.assignee_name && <span className="text-[9px] text-slate-400 truncate">{task.assignee_name}</span>}
                 </div>
+                <div className="flex-1 relative">
+                  {/* Grid lines */}
+                  <div className="absolute inset-0 flex">
+                    {months.map((m, i) => (
+                      <div key={i} style={{ width: m.days * dayWidth }} className="border-r border-slate-100" />
+                    ))}
+                  </div>
 
-                {/* Today line */}
-                {(() => {
-                  const today = new Date();
-                  const dayOffset = daysBetween(chartStart, today);
-                  if (dayOffset >= 0 && dayOffset <= totalDays) {
-                    return (
-                      <div className="absolute top-0 bottom-0 w-px bg-red-400 z-10" style={{ left: dayOffset * dayWidth + dayWidth / 2 }} />
-                    );
-                  }
-                  return null;
-                })()}
+                  {/* Today line */}
+                  {(() => {
+                    const today = new Date();
+                    const dayOffset = daysBetween(chartStart, today);
+                    if (dayOffset >= 0 && dayOffset <= totalDays) {
+                      return (
+                        <div className="absolute top-0 bottom-0 w-px bg-red-400 z-10" style={{ left: dayOffset * dayWidth + dayWidth / 2 }} />
+                      );
+                    }
+                    return null;
+                  })()}
 
-                {/* Task bar */}
-                <div
-                  className={`absolute top-2 bottom-2 rounded-md ${statusColors[task.status] || 'bg-slate-300'} shadow-sm flex items-center px-2 transition-all`}
-                  style={{
-                    left: task._start * dayWidth + 2,
-                    width: task._width * dayWidth - 4,
-                    minWidth: 20,
-                  }}
-                >
-                  {task.progress !== undefined && task.progress > 0 && (
-                    <div
-                      className="absolute left-0 top-0 bottom-0 rounded-md opacity-30 bg-white"
-                      style={{ width: `${task.progress}%` }}
-                    />
-                  )}
-                  <span className="text-[9px] font-semibold text-white truncate relative z-10">
-                    {task.progress !== undefined ? `${task.progress}%` : ''}
-                  </span>
+                  {/* Task bar */}
+                  <div
+                    className={`absolute top-2 bottom-2 rounded-md shadow-sm flex items-center px-2 transition-all ${
+                      isCritical
+                        ? 'bg-red-500 ring-2 ring-red-300'
+                        : statusColors[task.status] || 'bg-slate-300'
+                    }`}
+                    style={{
+                      left: task._start * dayWidth + 2,
+                      width: task._width * dayWidth - 4,
+                      minWidth: 20,
+                    }}
+                  >
+                    {task.progress !== undefined && task.progress > 0 && (
+                      <div
+                        className="absolute left-0 top-0 bottom-0 rounded-md opacity-30 bg-white"
+                        style={{ width: `${task.progress}%` }}
+                      />
+                    )}
+                    <span className="text-[9px] font-semibold text-white truncate relative z-10">
+                      {task.progress !== undefined ? `${task.progress}%` : ''}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {/* Dependency arrows */}
           {dependencies.length > 0 && (
@@ -179,6 +292,9 @@ export default function GanttChart({ tasks, dependencies = [], startDate, endDat
               <defs>
                 <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
                   <polygon points="0 0, 8 3, 0 6" fill="#6366f1" />
+                </marker>
+                <marker id="arrowhead-critical" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                  <polygon points="0 0, 8 3, 0 6" fill="#ef4444" />
                 </marker>
               </defs>
               {dependencies.map((dep, i) => {
@@ -192,16 +308,17 @@ export default function GanttChart({ tasks, dependencies = [], startDate, endDat
                 const toX = toTask._start * dayWidth;
                 const toY = toIdx * rowHeight + rowHeight / 2;
                 const midX = fromX + (toX - fromX) / 2;
+                const isCriticalArrow = showCriticalPath && criticalPath.has(dep.depends_on_id) && criticalPath.has(dep.task_id);
                 return (
                   <path
                     key={i}
                     d={`M ${fromX} ${fromY} C ${midX} ${fromY}, ${midX} ${toY}, ${toX} ${toY}`}
                     fill="none"
-                    stroke="#6366f1"
-                    strokeWidth="1.5"
-                    strokeDasharray="4 2"
-                    markerEnd="url(#arrowhead)"
-                    opacity="0.6"
+                    stroke={isCriticalArrow ? '#ef4444' : '#6366f1'}
+                    strokeWidth={isCriticalArrow ? 2.5 : 1.5}
+                    strokeDasharray={isCriticalArrow ? 'none' : '4 2'}
+                    markerEnd={isCriticalArrow ? 'url(#arrowhead-critical)' : 'url(#arrowhead)'}
+                    opacity={showCriticalPath && !isCriticalArrow ? 0.3 : 0.6}
                   />
                 );
               })}
@@ -211,13 +328,19 @@ export default function GanttChart({ tasks, dependencies = [], startDate, endDat
       </div>
 
       {/* Legend */}
-      <div className="px-6 py-3 border-t border-slate-100 flex items-center gap-4">
+      <div className="px-6 py-3 border-t border-slate-100 flex items-center gap-4 flex-wrap">
         {Object.entries(statusColors).map(([status, color]) => (
           <div key={status} className="flex items-center gap-1.5">
             <div className={`w-3 h-3 rounded-sm ${color}`} />
             <span className="text-[9px] text-slate-500 capitalize">{status === 'in_progress' ? 'En Progreso' : status === 'todo' ? 'Por Hacer' : status === 'review' ? 'Revision' : 'Hecho'}</span>
           </div>
         ))}
+        {showCriticalPath && (
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded-sm bg-red-500 ring-1 ring-red-300" />
+            <span className="text-[9px] text-red-600 font-semibold">Ruta Critica</span>
+          </div>
+        )}
         {dependencies.length > 0 && (
           <div className="flex items-center gap-1.5">
             <svg width="20" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="#6366f1" strokeWidth="1.5" strokeDasharray="4 2" /><polygon points="16,2 20,5 16,8" fill="#6366f1" /></svg>
