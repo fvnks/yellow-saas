@@ -6,6 +6,7 @@ import { FolderKanban, Plus, Search, Clock, CheckCircle2, DollarSign, Eye, Trash
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { ContinuousTabs } from '@/components/ui/continuous-tabs';
+import PortfolioDashboard from './components/PortfolioDashboard';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -71,6 +72,7 @@ export default function ProjectsPage() {
     { id: 'active', label: `Activos (${activeProjects})` },
     { id: 'planning', label: 'Planificacion' },
     { id: 'completed', label: `Completados (${completedProjects})` },
+    { id: 'portfolio', label: 'Portfolio' },
   ];
 
   const filteredByTab = statusFilter === 'all' ? filteredProjects : filteredProjects.filter(p => p.status === statusFilter);
@@ -163,6 +165,8 @@ export default function ProjectsPage() {
             </div>
           ))}
         </div>
+      ) : statusFilter === 'portfolio' ? (
+        <PortfolioDashboard />
       ) : (
         <div className="space-y-4">
           {filteredByTab.map(project => (
