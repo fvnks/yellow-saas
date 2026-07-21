@@ -1355,6 +1355,19 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>('/projects/recurrence/generate', { method: 'POST' });
   }
 
+  // Audit Log
+  async getProjectAuditLog(projectId: string, taskId?: string, limit = 50) {
+    const params = new URLSearchParams();
+    if (taskId) params.set('taskId', taskId);
+    params.set('limit', String(limit));
+    const qs = params.toString();
+    return this.request<any[]>(`/projects/${projectId}/audit${qs ? '?' + qs : ''}`);
+  }
+
+  async createAuditLog(projectId: string, data: any) {
+    return this.request<any>(`/projects/${projectId}/audit`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
   // Project Milestones
   async getProjectMilestones(projectId: string) {
     return this.request<any[]>(`/projects/${projectId}/milestones`);
