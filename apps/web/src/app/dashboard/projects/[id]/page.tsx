@@ -31,6 +31,7 @@ import ResourceAllocation from '../components/ResourceAllocation';
 import BudgetForecast from '../components/BudgetForecast';
 import SubtaskProgress from '../components/SubtaskProgress';
 import TagsManager, { TaskTagBadges } from '../components/TagsManager';
+import AuditLog from '../components/AuditLog';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -274,6 +275,7 @@ export default function ProjectDetailPage() {
     { id: 'documents', label: `Docs (${documents.length})` },
     { id: 'profit', label: 'Rentabilidad' },
     { id: 'activity', label: 'Actividad' },
+    { id: 'audit', label: 'Historial' },
     { id: 'portal', label: 'Portal' },
     { id: 'info', label: 'Info' },
   ];
@@ -528,6 +530,7 @@ export default function ProjectDetailPage() {
       {activeTab === 'documents' && <DocumentsTab projectId={projectId} documents={documents} onRefresh={loadData} />}
       {activeTab === 'profit' && <RentabilidadReport project={project} costs={costsData.costs || []} expenses={expenses} timesheets={timesheets} />}
       {activeTab === 'activity' && <ActivityLog projectId={projectId} />}
+      {activeTab === 'audit' && <AuditLog projectId={projectId} />}
       {activeTab === 'portal' && <PortalTab projectId={projectId} project={project} onRefresh={loadData} />}
 
       {activeTab === 'info' && (
