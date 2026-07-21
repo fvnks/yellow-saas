@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Plus, Search, XCircle, Clock } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { NotificationAlert } from '@/components/ui/notification-alert';
 
 interface Reservation {
   id: string; quantity: number; status: string; reference_type: string | null;
@@ -96,7 +97,7 @@ export default function ReservationsPage() {
         </button>
       </div>
 
-      {error && <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm">{error}</div>}
+      {error && <NotificationAlert variant="warning" title={error} dismissible onDismiss={() => setError('')} />}
 
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
         <div className="relative max-w-md">

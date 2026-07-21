@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Users, Plus, Search, Eye, Edit, Trash2, Phone, Mail, Calendar, Star, Filter, X, Save } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { NotificationAlert } from '@/components/ui/notification-alert';
 
 const statusConfig: Record<string, { label: string; color: string }> = {
   new: { label: 'Nuevo', color: 'bg-blue-100 text-blue-700' },
@@ -106,7 +107,7 @@ export default function CRMPage() {
         </button>
       </div>
 
-      {error && <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm">{error}</div>}
+      {error && <NotificationAlert variant="warning" title={error} dismissible onDismiss={() => setError('')} />}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
