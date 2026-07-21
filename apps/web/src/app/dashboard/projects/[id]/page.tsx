@@ -26,6 +26,7 @@ import PhasesTab from '../components/PhasesTab';
 import TimerWidget from '../components/TimerWidget';
 import TaskComments from '../components/TaskComments';
 import NotificationsPanel from '../components/NotificationsPanel';
+import ResourceAllocation from '../components/ResourceAllocation';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -232,6 +233,7 @@ export default function ProjectDetailPage() {
     { id: 'milestones', label: `Hitos (${milestones.length})` },
     { id: 'phases', label: `Fases (${phases.length})` },
     { id: 'templates', label: 'Plantillas' },
+    { id: 'resources', label: 'Recursos' },
     { id: 'timesheets', label: `Horas (${timesheets.length})` },
     { id: 'expenses', label: `Gastos (${expenses.length})` },
     { id: 'costs', label: 'Centro Costos' },
@@ -480,6 +482,7 @@ export default function ProjectDetailPage() {
       )}
       {activeTab === 'milestones' && <MilestonesTab projectId={projectId} milestones={milestones} onRefresh={loadData} />}
       {activeTab === 'templates' && <TemplatesTab onApply={loadData} />}
+      {activeTab === 'resources' && <ResourceAllocation projectId={projectId} />}
       {activeTab === 'phases' && <PhasesTab projectId={projectId} phases={phases} onRefresh={loadData} />}
       {activeTab === 'timesheets' && <TimesheetsTab projectId={projectId} timesheets={timesheets} tasks={tasks} employees={employees} onRefresh={loadData} />}
       {activeTab === 'expenses' && <ExpensesTab projectId={projectId} expenses={expenses} onRefresh={loadData} />}
