@@ -32,6 +32,7 @@ import BudgetForecast from '../components/BudgetForecast';
 import SubtaskProgress from '../components/SubtaskProgress';
 import TagsManager, { TaskTagBadges } from '../components/TagsManager';
 import AuditLog from '../components/AuditLog';
+import ProjectMembers from '../components/ProjectMembers';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -265,6 +266,7 @@ export default function ProjectDetailPage() {
     { id: 'milestones', label: `Hitos (${milestones.length})` },
     { id: 'phases', label: `Fases (${phases.length})` },
     { id: 'templates', label: 'Plantillas' },
+    { id: 'team', label: 'Equipo' },
     { id: 'resources', label: 'Recursos' },
     { id: 'forecast', label: 'Forecast' },
     { id: 'timesheets', label: `Horas (${timesheets.length})` },
@@ -519,6 +521,7 @@ export default function ProjectDetailPage() {
       )}
       {activeTab === 'milestones' && <MilestonesTab projectId={projectId} milestones={milestones} onRefresh={loadData} />}
       {activeTab === 'templates' && <TemplatesTab onApply={loadData} />}
+      {activeTab === 'team' && <ProjectMembers projectId={projectId} users={users} />}
       {activeTab === 'resources' && <ResourceAllocation projectId={projectId} />}
       {activeTab === 'forecast' && <BudgetForecast projectId={projectId} />}
       {activeTab === 'phases' && <PhasesTab projectId={projectId} phases={phases} onRefresh={loadData} />}
