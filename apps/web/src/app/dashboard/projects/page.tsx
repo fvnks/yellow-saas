@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Badge, KPICard } from '@yellow-erp/ui';
-import { FolderKanban, Plus, Search, Clock, CheckCircle2, DollarSign, Eye, Trash2, Edit, Users, Bell, AlertTriangle, Calendar } from 'lucide-react';
+import { FolderKanban, Plus, Search, Clock, CheckCircle2, DollarSign, Eye, Trash2, Edit, Users, Bell, AlertTriangle, Calendar, Archive } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { ContinuousTabs } from '@/components/ui/continuous-tabs';
@@ -52,9 +52,10 @@ export default function ProjectsPage() {
     return matchesSearch && matchesStatus;
   });
 
-  const totalBudget = projects.reduce((sum, p) => sum + (parseFloat(p.budget) || 0), 0);
-  const activeProjects = projects.filter(p => p.status === 'active').length;
-  const completedProjects = projects.filter(p => p.status === 'completed').length;
+  const activeProjects = projects.filter(p => p.status === 'active' && !p.archived).length;
+  const completedProjects = projects.filter(p => p.status === 'completed' && !p.archived).length;
+  const archivedProjects = projects.filter(p => p.archived).length;
+  const totalBudget = projects.filter(p => !p.archived).reduce((sum, p) => sum + (parseFloat(p.budget) || 0), 0);
 
   const handleDelete = async (projectId: string) => {
     if (!confirm('Eliminar este proyecto?')) return;
@@ -68,14 +69,21 @@ export default function ProjectsPage() {
   };
 
   const tabs = [
-    { id: 'all', label: `Todos (${projects.length})` },
-    { id: 'active', label: `Activos (${activeProjects})` },
+    { id: 'all', label: `Activos (${projects.filter(p => !p.archived).length})` },
+    { id: 'active', label: `En Curso (${activeProjects})` },
     { id: 'planning', label: 'Planificacion' },
     { id: 'completed', label: `Completados (${completedProjects})` },
+    { id: 'archived', label: `Archivados (${archivedProjects})` },
     { id: 'portfolio', label: 'Portfolio' },
   ];
 
-  const filteredByTab = statusFilter === 'all' ? filteredProjects : filteredProjects.filter(p => p.status === statusFilter);
+  const filteredByTab = (() => {
+    let list = filteredProjects;
+    if (statusFilter === 'archived') return projects.filter(p => p.archived);
+    list = list.filter(p => !p.archived);
+    if (statusFilter === 'all') return list;
+    return list.filter(p => p.status === statusFilter);
+  })();
 
   return (
     <div className="space-y-6">
@@ -170,12 +178,17 @@ export default function ProjectsPage() {
       ) : (
         <div className="space-y-4">
           {filteredByTab.map(project => (
-            <div key={project.id} className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div key={project.id} className={`bg-white border rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow ${project.archived ? 'border-amber-200 bg-amber-50/30 opacity-75' : 'border-slate-200'}`}>
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <div className="flex items-center gap-3">
                     <h3 className="text-base font-semibold text-slate-900">{project.name}</h3>
                     <Badge variant={statusConfig[project.status]?.variant || 'neutral'}>{statusConfig[project.status]?.label || project.status}</Badge>
+                    {project.archived && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-100 text-amber-700 border border-amber-200">
+                        <Archive className="w-2.5 h-2.5" /> Archivado
+                      </span>
+                    )}
                   </div>
                   <p className="text-sm text-slate-500 mt-1">{project.code} {project.customer_name ? `· ${project.customer_name}` : ''}</p>
                 </div>
