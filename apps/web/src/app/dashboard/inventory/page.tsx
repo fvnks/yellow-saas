@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { generateBarcodeLabelsPDF } from '@/lib/pdf-design';
 import BarcodeScanner from '../../../components/barcode/barcode-scanner';
+import StockAlerts from './components/StockAlerts';
 
 interface Product {
   id: string;
@@ -171,6 +172,8 @@ export default function InventoryPage() {
           </div>
         </CardContent>
       </Card>
+
+      <StockAlerts />
 
       {/* Products Table */}
       <Card>

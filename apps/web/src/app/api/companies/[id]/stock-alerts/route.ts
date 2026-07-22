@@ -1,0 +1,62 @@
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { searchParams } = new URL(req.url);
+    const status = searchParams.get('status'); // active, triggered, all
+
+    let sql = `
+      SELECT sa.*, 
+        p.name as product_name, p.sku, p.min_stock, p.max_stock,
+        w.name as warehouse_name, w.code as warehouse_code,
+        COALESCE(sl.quantity, 0) as current_stock
+      FROM stock_alerts sa
+      JOIN products p ON p.id = sa.product_id
+      JOIN warehouses w ON w.id = sa.warehouse_id
+      LEFT JOIN stock_levels sl ON sl.product_id = sa.product_id AND sl.warehouse_id = sa.warehouse_id
+      WHERE sa.company_id = $1
+    `;
+    const params: any[] = [companyId];
+
+    if (status === 'active') {
+      sql += ' AND sa.is_active = TRUE';
+    } else if (status === 'triggered') {
+      sql += ' AND sa.is_active = TRUE AND ((sa.alert_type = \'min_stock\' AND COALESCE(sl.quantity, 0) <= sa.threshold) OR (sa.alert_type = \'max_stock\' AND COALESCE(sl.quantity, 0) >= sa.threshold) OR (sa.alert_type = \'out_of_stock\' AND COALESCE(sl.quantity, 0) = 0))';
+    }
+
+    sql += ' ORDER BY p.name, w.name';
+
+    const { rows } = await query(sql, params);
+    return successResponse(rows);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
+
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await req.json();
+    const { product_id, warehouse_id, alert_type, threshold } = body;
+
+    if (!product_id || !warehouse_id || !alert_type) {
+      return errorResponse('product_id, warehouse_id, alert_type required', 400);
+    }
+
+    const { rows } = await query(
+      `INSERT INTO stock_alerts (company_id, product_id, warehouse_id, alert_type, threshold)
+       VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [companyId, product_id, warehouse_id, alert_type, threshold || 0]
+    );
+    return successResponse(rows[0], 201);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
