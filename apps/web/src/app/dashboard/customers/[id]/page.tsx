@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardContent, Badge, Button } from '@yellow-erp/ui';
-import { ArrowLeft, Edit, Users, Mail, Phone, MapPin, CreditCard, FileText, ShoppingCart, DollarSign, Building2, Globe, Hash, Tag } from 'lucide-react';
+import { ArrowLeft, Edit, Users, Mail, Phone, MapPin, CreditCard, FileText, ShoppingCart, DollarSign, Building2, Globe, Hash, Tag, BarChart3, Activity } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import CustomerContacts from '../components/CustomerContacts';
 import CustomerAddresses from '../components/CustomerAddresses';
+import CustomerActivities from '../components/CustomerActivities';
+import CustomerAnalytics from '../components/CustomerAnalytics';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   delivered: { label: 'Entregado', variant: 'success' },
@@ -20,7 +22,7 @@ const statusConfig: Record<string, { label: string; variant: 'success' | 'warnin
   overdue: { label: 'Vencida', variant: 'danger' },
 };
 
-type Tab = 'info' | 'contacts' | 'addresses' | 'orders' | 'invoices';
+type Tab = 'info' | 'contacts' | 'addresses' | 'orders' | 'invoices' | 'activities' | 'analytics';
 
 export default function CustomerDetailPage({ params }: { params: { id: string } }) {
   const { id } = params;
@@ -115,6 +117,8 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
     { id: 'addresses', label: 'Direcciones' },
     { id: 'orders', label: 'Órdenes', count: totalOrders },
     { id: 'invoices', label: 'Facturas', count: invoices.length },
+    { id: 'activities', label: 'Actividades' },
+    { id: 'analytics', label: 'Analytics' },
   ];
 
   return (
@@ -342,6 +346,10 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
           </div>
         </div>
       )}
+
+      {activeTab === 'activities' && <CustomerActivities customerId={id} />}
+
+      {activeTab === 'analytics' && <CustomerAnalytics customerId={id} />}
     </div>
   );
 }

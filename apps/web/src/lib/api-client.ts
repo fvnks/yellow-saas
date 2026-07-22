@@ -312,6 +312,18 @@ export class ApiClient {
     return this.request<any>('/activities', { method: 'POST', body: JSON.stringify(data) });
   }
 
+  async updateActivity(id: string, data: Partial<{ type: string; subject: string; description: string; due_date: string; completed_at: string }>) {
+    return this.request<any>(`/activities/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteActivity(id: string) {
+    return this.request<{ message: string }>(`/activities/${id}`, { method: 'DELETE' });
+  }
+
+  async importCustomers(data: { table: string; data: any[] }) {
+    return this.request<{ imported: number; errors: string[] }>('/import', { method: 'POST', body: JSON.stringify(data) });
+  }
+
   // Landed Cost
   async getLandedCostAllocations(params?: Record<string, string>) {
     return this.requestWithPagination<any>('/landed-cost-allocations', params || {});

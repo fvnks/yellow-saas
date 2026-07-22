@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
-    const { page, limit, sort, order, offset } = parseSearchParams(request);
+    const { page, limit, search, sort: requestedSort, order, offset } = parseSearchParams(request);
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');
     const relatedType = searchParams.get('related_type');
@@ -35,8 +35,14 @@ export async function GET(request: NextRequest) {
       paramIndex++;
     }
 
+    if (search) {
+      where += ` AND a.subject ILIKE $${paramIndex}`;
+      params.push(`%${search}%`);
+      paramIndex++;
+    }
+
     const allowedSort = ['due_date', 'created_at', 'type', 'subject'];
-    const sortColumn = allowedSort.includes(sort) ? sort : 'created_at';
+    const sortColumn = allowedSort.includes(requestedSort) ? requestedSort : 'created_at';
 
     const { rows } = await query(`
       SELECT a.*,
@@ -63,15 +69,15 @@ export async function POST(request: NextRequest) {
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const body = await request.json();
-    const { type, subject, description, related_type, related_id, assigned_to, due_date } = body;
+    const { type, subject, description, related_type, related_id, due_date } = body;
 
     if (!type || !subject) return errorResponse('Type and subject are required', 400);
 
     const { rows } = await query(`
-      INSERT INTO activities (company_id, type, subject, description, related_type, related_id, assigned_to, due_date)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      INSERT INTO activities (company_id, type, subject, description, related_type, related_id, due_date)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *
-    `, [companyId, type, subject, description || null, related_type || null, related_id || null, assigned_to || null, due_date || null]);
+    `, [companyId, type, subject, description || null, related_type || null, related_id || null, due_date || null]);
 
     return successResponse(rows[0], 201);
   } catch (err: any) {
