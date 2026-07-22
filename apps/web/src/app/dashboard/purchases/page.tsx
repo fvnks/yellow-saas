@@ -12,6 +12,12 @@ import PurchaseCreditNotes from './components/PurchaseCreditNotes';
 import PurchaseDebitNotes from './components/PurchaseDebitNotes';
 import SupplierStatement from './components/SupplierStatement';
 import SupplierCreditControl from './components/SupplierCreditControl';
+import PurchaseDashboard from './components/PurchaseDashboard';
+import PurchaseReports from './components/PurchaseReports';
+import SupplierPriceHistory from './components/SupplierPriceHistory';
+import SupplierContracts from './components/SupplierContracts';
+import PurchaseBudgets from './components/PurchaseBudgets';
+import PurchaseForecast from './components/PurchaseForecast';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -24,7 +30,7 @@ const orderStatusConfig: Record<string, { label: string; variant: 'success' | 'w
   cancelled: { label: 'Cancelada', variant: 'danger' },
 };
 
-type TabId = 'orders' | 'receipts' | 'quotations' | 'register' | 'invoices' | 'returns' | 'credit-notes' | 'debit-notes' | 'statement' | 'credit-control';
+type TabId = 'orders' | 'receipts' | 'quotations' | 'register' | 'invoices' | 'returns' | 'credit-notes' | 'debit-notes' | 'statement' | 'credit-control' | 'dashboard' | 'reports' | 'price-history' | 'contracts' | 'budgets' | 'forecast';
 
 export default function PurchasesPage() {
   const [purchaseOrders, setPurchaseOrders] = useState<any[]>([]);
@@ -107,6 +113,12 @@ export default function PurchasesPage() {
             { id: 'debit-notes', label: 'ND' },
             { id: 'statement', label: 'Estado Cta.' },
             { id: 'credit-control', label: 'Crédito' },
+            { id: 'dashboard', label: 'Dashboard' },
+            { id: 'reports', label: 'Reportes' },
+            { id: 'price-history', label: 'Hist. Precios' },
+            { id: 'contracts', label: 'Contratos' },
+            { id: 'budgets', label: 'Presupuestos' },
+            { id: 'forecast', label: 'Pronóstico' },
           ]}
           defaultActiveId={activeTab}
           onChange={(id) => { setActiveTab(id as TabId); setSearch(''); setStatusFilter('all'); setPage(1); }}
@@ -273,6 +285,30 @@ export default function PurchasesPage() {
 
         {activeTab === 'credit-control' && (
           <div className="p-6"><SupplierCreditControl /></div>
+        )}
+
+        {activeTab === 'dashboard' && (
+          <div className="p-6"><PurchaseDashboard /></div>
+        )}
+
+        {activeTab === 'reports' && (
+          <div className="p-6"><PurchaseReports /></div>
+        )}
+
+        {activeTab === 'price-history' && (
+          <div className="p-6"><SupplierPriceHistory /></div>
+        )}
+
+        {activeTab === 'contracts' && (
+          <div className="p-6"><SupplierContracts /></div>
+        )}
+
+        {activeTab === 'budgets' && (
+          <div className="p-6"><PurchaseBudgets /></div>
+        )}
+
+        {activeTab === 'forecast' && (
+          <div className="p-6"><PurchaseForecast /></div>
         )}
       </div>
     </div>
