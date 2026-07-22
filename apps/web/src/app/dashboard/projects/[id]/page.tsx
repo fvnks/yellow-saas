@@ -46,6 +46,7 @@ import CustomFields from '../components/CustomFields';
 import TaskChecklist from '../components/TaskChecklist';
 import TaskChangelog from '../components/TaskChangelog';
 import ShortcutsHelp, { useKeyboardShortcuts } from '@/components/ui/keyboard-shortcuts';
+import NotificationSettings from '../components/NotificationSettings';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -389,6 +390,7 @@ export default function ProjectDetailPage() {
     { id: 'audit', label: 'Historial' },
     { id: 'portal', label: 'Portal' },
     { id: 'custom-fields', label: 'Campos' },
+    { id: 'notifications', label: 'Notificaciones' },
     { id: 'info', label: 'Info' },
   ];
 
@@ -691,6 +693,11 @@ export default function ProjectDetailPage() {
       {activeTab === 'audit' && <AuditLog projectId={projectId} />}
       {activeTab === 'portal' && <PortalTab projectId={projectId} project={project} onRefresh={loadData} />}
 
+      {activeTab === 'notifications' && (
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+          <NotificationSettings projectId={projectId} />
+        </div>
+      )}
       {activeTab === 'custom-fields' && (
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
           <h2 className="text-sm font-semibold text-slate-900 mb-4">Campos Personalizados</h2>
