@@ -1,7 +1,8 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { Calendar, Route } from 'lucide-react';
+import { useMemo, useState, useRef } from 'react';
+import { Calendar, Route, Download } from 'lucide-react';
+import html2canvas from 'html2canvas';
 
 interface Task {
   id: string;
@@ -134,6 +135,21 @@ function calculateCriticalPath(tasks: Task[], dependencies: Dependency[]): Set<s
 
 export default function GanttChart({ tasks, dependencies = [], startDate, endDate }: GanttChartProps) {
   const [showCriticalPath, setShowCriticalPath] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const ganttRef = useRef<HTMLDivElement>(null);
+
+  const handleExportImage = async () => {
+    if (!ganttRef.current) return;
+    setExporting(true);
+    try {
+      const canvas = await html2canvas(ganttRef.current, { backgroundColor: '#ffffff', scale: 2 });
+      const link = document.createElement('a');
+      link.download = `gantt_${new Date().toISOString().split('T')[0]}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (e) { console.error('Error exporting:', e); }
+    setExporting(false);
+  };
 
   const { chartStart, chartEnd, totalDays, tasks: enrichedTasks, months, criticalPath } = useMemo(() => {
     const allDates = tasks.flatMap(t => [parseDate(t.start_date), parseDate(t.due_date)]).filter(Boolean) as Date[];
@@ -192,10 +208,15 @@ export default function GanttChart({ tasks, dependencies = [], startDate, endDat
   const taskIndexMap = new Map(enrichedTasks.map((t, i) => [t.id, i]));
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+    <div ref={ganttRef} className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
       <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-slate-900">Diagrama de Gantt</h3>
         <div className="flex items-center gap-3">
+          <button onClick={handleExportImage} disabled={exporting}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border bg-white text-slate-600 border-slate-200 hover:bg-slate-50 disabled:opacity-50">
+            <Download className="w-3.5 h-3.5" />
+            {exporting ? 'Exportando...' : 'PNG'}
+          </button>
           <button
             onClick={() => setShowCriticalPath(!showCriticalPath)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${
