@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Badge } from '@yellow-erp/ui';
-import { ArrowLeft, Plus, Calendar, DollarSign, Users, CheckCircle2, Clock, Edit, Trash2, BarChart3, Flag, Receipt, FileText, TrendingUp, LayoutGrid, Copy, Download, MessageCircle, CheckSquare, Square, Archive } from 'lucide-react';
+import { ArrowLeft, Plus, Calendar, DollarSign, Users, CheckCircle2, Clock, Edit, Trash2, BarChart3, Flag, Receipt, FileText, TrendingUp, LayoutGrid, Copy, Download, MessageCircle, CheckSquare, Square, Archive, Star } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
@@ -44,6 +44,7 @@ import HoursReport from '../components/HoursReport';
 import ProjectDashboard from '../components/ProjectDashboard';
 import CustomFields from '../components/CustomFields';
 import TaskChecklist from '../components/TaskChecklist';
+import TaskChangelog from '../components/TaskChangelog';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -78,6 +79,7 @@ export default function ProjectDetailPage() {
   const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
   const [customFields, setCustomFields] = useState<any[]>([]);
   const [customValues, setCustomValues] = useState<Record<string, string>>({});
+  const [isFavorite, setIsFavorite] = useState(false);
   const [milestones, setMilestones] = useState<any[]>([]);
   const [timesheets, setTimesheets] = useState<any[]>([]);
   const [expenses, setExpenses] = useState<any[]>([]);
@@ -139,6 +141,15 @@ export default function ProjectDetailPage() {
       setDependencies(Array.isArray(depsRes) ? depsRes : []);
       setPhases(Array.isArray(phasesRes) ? phasesRes : []);
       setCustomFields(Array.isArray(customFieldsRes) ? customFieldsRes : []);
+
+      const userId = usersRes?.data?.[0]?.id;
+      if (userId) {
+        const favRes = await fetch(`/api/companies/${localStorage.getItem('company_id')}/projects/${projectId}/favorite?user_id=${userId}`);
+        if (favRes.ok) {
+          const favJson = await favRes.json();
+          setIsFavorite(favJson.data?.is_favorite || false);
+        }
+      }
     } catch (err) { toast.error('Error al cargar proyecto'); }
     setLoading(false);
   };
@@ -206,6 +217,23 @@ export default function ProjectDetailPage() {
       toast.success(newArchived ? 'Proyecto archivado' : 'Proyecto restaurado');
     } catch (err) {
       toast.error('Error al archivar/restaurar');
+    }
+  };
+
+  const toggleFavorite = async () => {
+    try {
+      const companyId = localStorage.getItem('company_id');
+      const userId = users[0]?.id;
+      if (!userId) return;
+      await fetch(`/api/companies/${companyId}/projects/${projectId}/favorite`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userId, is_favorite: !isFavorite }),
+      });
+      setIsFavorite(!isFavorite);
+      toast.success(isFavorite ? 'Removido de favoritos' : 'Agregado a favoritos');
+    } catch (err) {
+      toast.error('Error al actualizar favorito');
     }
   };
 
@@ -556,6 +584,7 @@ export default function ProjectDetailPage() {
                       <TaskTagBadges tags={taskTagsMap[task.id] || []} />
                       <SubtaskProgress tasks={tasks} parentId={task.id} />
                       <div className="mt-2"><TaskChecklist taskId={task.id} onUpdate={loadData} /></div>
+                      <div className="mt-2 pt-2 border-t border-slate-100"><TaskChangelog taskId={task.id} /></div>
                       <div className="flex items-center gap-4 mt-2 text-xs text-slate-400">
                         {task.assignee_name && <span className="flex items-center gap-1"><Users className="w-3 h-3" />{task.assignee_name}</span>}
                         {task.due_date && <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{task.due_date}</span>}
