@@ -40,15 +40,16 @@ export async function PUT(
         phone = $11, email = $12, website = $13, contact_person = $14,
         contact_phone = $15, contact_email = $16, payment_terms = $17,
         credit_limit = $18, price_list_id = $19, tax_exempt = $20, notes = $21,
-        is_active = $22, updated_at = NOW()
-       WHERE id = $23 AND company_id = $24
+        is_active = $22, category_id = $23, segment_id = $24, updated_at = NOW()
+       WHERE id = $25 AND company_id = $26
        RETURNING *`,
       [body.name, body.code, body.trade_name, body.tax_id, body.tax_id_type,
        body.address, body.city, body.region, body.country, body.postal_code,
        body.phone, body.email, body.website, body.contact_person,
        body.contact_phone, body.contact_email, body.payment_terms,
        body.credit_limit, body.price_list_id, body.tax_exempt, body.notes,
-       body.is_active, params.customerId, companyId]
+       body.is_active, body.category_id || null, body.segment_id || null,
+       params.customerId, companyId]
     );
 
     if (result.rows.length === 0) return errorResponse('Customer not found', 404);
