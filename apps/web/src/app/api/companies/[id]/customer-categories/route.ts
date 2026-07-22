@@ -1,0 +1,45 @@
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const result = await query(
+      'SELECT * FROM customer_categories WHERE company_id = $1 ORDER BY name ASC',
+      [companyId]
+    );
+
+    return successResponse(result.rows);
+  } catch {
+    return errorResponse('Internal server error', 500);
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { name, description, color } = body;
+
+    if (!name) {
+      return errorResponse('Name is required', 400);
+    }
+
+    const result = await query(
+      `INSERT INTO customer_categories (company_id, name, description, color)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [companyId, name, description || null, color || null]
+    );
+
+    return successResponse(result.rows[0], 201);
+  } catch {
+    return errorResponse('Internal server error', 500);
+  }
+}

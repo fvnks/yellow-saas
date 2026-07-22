@@ -122,12 +122,80 @@ export class ApiClient {
     return this.request<{ id: string }>('/customers', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async updateCustomer(id: string, data: Partial<{ name: string; code: string; trade_name: string; tax_id: string; tax_id_type: string; address: string; city: string; region: string; country: string; postal_code: string; phone: string; email: string; website: string; contact_person: string; contact_phone: string; contact_email: string; payment_terms: number; credit_limit: number; price_list_id: string; tax_exempt: boolean; notes: string; is_active: boolean }>) {
+  async updateCustomer(id: string, data: Partial<{ name: string; code: string; trade_name: string; tax_id: string; tax_id_type: string; address: string; city: string; region: string; country: string; postal_code: string; phone: string; email: string; website: string; contact_person: string; contact_phone: string; contact_email: string; payment_terms: number; credit_limit: number; price_list_id: string; tax_exempt: boolean; notes: string; is_active: boolean; category_id: string; segment_id: string }>) {
     return this.request<{ id: string }>(`/customers/${id}`, { method: 'PUT', body: JSON.stringify(data) });
   }
 
   async deleteCustomer(id: string) {
     return this.request<{ message: string }>(`/customers/${id}`, { method: 'DELETE' });
+  }
+
+  // Customer Contacts
+  async getCustomerContacts(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; customer_id: string; name: string; role: string; email: string; phone: string; mobile: string; is_primary: boolean; is_active: boolean; notes: string }>('/customer-contacts', params || {});
+  }
+
+  async createCustomerContact(data: { customer_id: string; name: string; role?: string; email?: string; phone?: string; mobile?: string; is_primary?: boolean; notes?: string }) {
+    return this.request<{ id: string }>('/customer-contacts', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateCustomerContact(id: string, data: Partial<{ name: string; role: string; email: string; phone: string; mobile: string; is_primary: boolean; is_active: boolean; notes: string }>) {
+    return this.request<{ id: string }>(`/customer-contacts/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteCustomerContact(id: string) {
+    return this.request<{ message: string }>(`/customer-contacts/${id}`, { method: 'DELETE' });
+  }
+
+  // Customer Addresses
+  async getCustomerAddresses(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; customer_id: string; label: string; address_type: string; street: string; number: string; commune: string; city: string; region: string; country: string; postal_code: string; is_default: boolean; is_active: boolean }>('/customer-addresses', params || {});
+  }
+
+  async createCustomerAddress(data: { customer_id: string; label: string; address_type: string; street: string; number?: string; commune?: string; city?: string; region?: string; country?: string; postal_code?: string; is_default?: boolean }) {
+    return this.request<{ id: string }>('/customer-addresses', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateCustomerAddress(id: string, data: Partial<{ label: string; address_type: string; street: string; number: string; commune: string; city: string; region: string; country: string; postal_code: string; is_default: boolean; is_active: boolean }>) {
+    return this.request<{ id: string }>(`/customer-addresses/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteCustomerAddress(id: string) {
+    return this.request<{ message: string }>(`/customer-addresses/${id}`, { method: 'DELETE' });
+  }
+
+  // Customer Categories
+  async getCustomerCategories(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; name: string; description: string; color: string; is_active: boolean }>('/customer-categories', params || {});
+  }
+
+  async createCustomerCategory(data: { name: string; description?: string; color?: string }) {
+    return this.request<{ id: string }>('/customer-categories', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateCustomerCategory(id: string, data: Partial<{ name: string; description: string; color: string; is_active: boolean }>) {
+    return this.request<{ id: string }>(`/customer-categories/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteCustomerCategory(id: string) {
+    return this.request<{ message: string }>(`/customer-categories/${id}`, { method: 'DELETE' });
+  }
+
+  // Customer Segments
+  async getCustomerSegments(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; name: string; description: string; min_orders: number; min_revenue: number; is_active: boolean }>('/customer-segments', params || {});
+  }
+
+  async createCustomerSegment(data: { name: string; description?: string; min_orders?: number; min_revenue?: number }) {
+    return this.request<{ id: string }>('/customer-segments', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateCustomerSegment(id: string, data: Partial<{ name: string; description: string; min_orders: number; min_revenue: number; is_active: boolean }>) {
+    return this.request<{ id: string }>(`/customer-segments/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteCustomerSegment(id: string) {
+    return this.request<{ message: string }>(`/customer-segments/${id}`, { method: 'DELETE' });
   }
 
   // Suppliers
