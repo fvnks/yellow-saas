@@ -8,6 +8,7 @@ import { getApiClient } from '@/lib/api-client';
 import { generateBarcodeLabelsPDF } from '@/lib/pdf-design';
 import BarcodeScanner from '../../../components/barcode/barcode-scanner';
 import StockAlerts from './components/StockAlerts';
+import StockTransfers from './components/StockTransfers';
 
 interface Product {
   id: string;
@@ -174,6 +175,8 @@ export default function InventoryPage() {
       </Card>
 
       <StockAlerts />
+
+      <StockTransfers />
 
       {/* Products Table */}
       <Card>
