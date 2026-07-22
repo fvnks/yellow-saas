@@ -2,10 +2,11 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { Card, CardContent, Button } from '@yellow-erp/ui';
-import { Plus, Search, Download, Eye, Edit, Trash2, Users, Phone, Mail, MapPin, CreditCard, Building2, Tag, Filter } from 'lucide-react';
+import { Plus, Search, Download, Eye, Edit, Trash2, Users, Phone, Mail, MapPin, CreditCard, Building2, Tag, Filter, Upload } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { getApiClient } from '@/lib/api-client';
+import CustomerImport from './components/CustomerImport';
 
 export default function CustomersPage() {
   const [customers, setCustomers] = useState<any[]>([]);
@@ -17,6 +18,7 @@ export default function CustomersPage() {
   const [segmentFilter, setSegmentFilter] = useState('all');
   const [categories, setCategories] = useState<any[]>([]);
   const [segments, setSegments] = useState<any[]>([]);
+  const [showImport, setShowImport] = useState(false);
 
   useEffect(() => {
     const api = getApiClient();
@@ -78,6 +80,10 @@ export default function CustomersPage() {
           <p className="text-sm text-slate-500 mt-1">Gestión de clientes y contacto comercial</p>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
+            <Upload className="w-4 h-4 mr-2" />
+            Importar
+          </Button>
           <Button variant="secondary" size="sm" onClick={handleExport}>
             <Download className="w-4 h-4 mr-2" />
             Exportar
@@ -304,6 +310,8 @@ export default function CustomersPage() {
       <div className="flex items-center justify-between text-xs text-slate-500">
         <p>Mostrando {filteredCustomers.length} de {customers.length} clientes</p>
       </div>
+
+      {showImport && <CustomerImport open={showImport} onClose={() => setShowImport(false)} onComplete={() => { setShowImport(false); window.location.reload(); }} />}
     </div>
   );
 }
