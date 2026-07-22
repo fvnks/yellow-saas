@@ -16,6 +16,7 @@ import SalesDashboard from './components/SalesDashboard';
 import CreditControl from './components/CreditControl';
 import CustomerStatement from './components/CustomerStatement';
 import SalesTargets from './components/SalesTargets';
+import SalesCommissions from './components/SalesCommissions';
 
 const orderStatusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   delivered: { label: 'Entregado', variant: 'success' },
@@ -53,7 +54,7 @@ const invoiceStatusConfig: Record<string, { label: string; variant: 'success' | 
 function SalesPageContent() {
   const searchParams = useSearchParams();
   const tabParam = searchParams.get('tab');
-  const validTabs = ['orders', 'delivery', 'invoices', 'pos', 'customers', 'quotations', 'returns', 'credit-control', 'statement', 'targets'] as const;
+  const validTabs = ['orders', 'delivery', 'invoices', 'pos', 'customers', 'quotations', 'returns', 'credit-control', 'statement', 'targets', 'commissions'] as const;
   const initialTab = validTabs.includes(tabParam as any) ? (tabParam as any) : 'orders';
   const [orders, setOrders] = useState<any[]>([]);
   const [deliveryGuides, setDeliveryGuides] = useState<any[]>([]);
@@ -63,7 +64,7 @@ function SalesPageContent() {
   const [returns, setReturns] = useState<any[]>([]);
   const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'delivery' | 'invoices' | 'pos' | 'customers' | 'quotations' | 'returns' | 'credit-notes' | 'debit-notes' | 'credit-control' | 'statement' | 'targets'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'delivery' | 'invoices' | 'pos' | 'customers' | 'quotations' | 'returns' | 'credit-notes' | 'debit-notes' | 'credit-control' | 'statement' | 'targets' | 'commissions'>(initialTab);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -319,6 +320,7 @@ function SalesPageContent() {
             { id: 'credit-control', label: 'Crédito' },
             { id: 'statement', label: 'Estado Cta.' },
             { id: 'targets', label: 'Metas' },
+            { id: 'commissions', label: 'Comisiones' },
             { id: 'pos', label: 'POS' },
           ]}
           defaultActiveId={activeTab}
@@ -709,6 +711,12 @@ function SalesPageContent() {
         {activeTab === 'targets' && (
           <div className="p-6">
             <SalesTargets />
+          </div>
+        )}
+
+        {activeTab === 'commissions' && (
+          <div className="p-6">
+            <SalesCommissions />
           </div>
         )}
 
