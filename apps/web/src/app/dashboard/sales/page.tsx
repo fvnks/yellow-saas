@@ -11,6 +11,7 @@ import { generateBoletaPDF } from '@/lib/pdf-design';
 import { ContinuousTabs } from '@/components/ui/continuous-tabs';
 
 import CreditNotes from './components/CreditNotes';
+import DebitNotes from './components/DebitNotes';
 
 const orderStatusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   delivered: { label: 'Entregado', variant: 'success' },
@@ -58,7 +59,7 @@ function SalesPageContent() {
   const [returns, setReturns] = useState<any[]>([]);
   const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'orders' | 'delivery' | 'invoices' | 'pos' | 'customers' | 'quotations' | 'returns' | 'credit-notes'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'orders' | 'delivery' | 'invoices' | 'pos' | 'customers' | 'quotations' | 'returns' | 'credit-notes' | 'debit-notes'>(initialTab);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -309,6 +310,7 @@ function SalesPageContent() {
             { id: 'quotations', label: `Cotizaciones (${quotations.length})` },
             { id: 'returns', label: `Devoluciones (${returns.length})` },
             { id: 'credit-notes', label: 'NC' },
+            { id: 'debit-notes', label: 'ND' },
             { id: 'pos', label: 'POS' },
           ]}
           defaultActiveId={activeTab}
@@ -668,6 +670,12 @@ function SalesPageContent() {
         {activeTab === 'credit-notes' && (
           <div className="p-6">
             <CreditNotes />
+          </div>
+        )}
+
+        {activeTab === 'debit-notes' && (
+          <div className="p-6">
+            <DebitNotes />
           </div>
         )}
 
