@@ -10,6 +10,8 @@ import { toast } from 'sonner';
 import { generateBoletaPDF } from '@/lib/pdf-design';
 import { ContinuousTabs } from '@/components/ui/continuous-tabs';
 
+import CreditNotes from './components/CreditNotes';
+
 const orderStatusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   delivered: { label: 'Entregado', variant: 'success' },
   shipped: { label: 'Enviado', variant: 'info' },
@@ -56,7 +58,7 @@ function SalesPageContent() {
   const [returns, setReturns] = useState<any[]>([]);
   const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'orders' | 'delivery' | 'invoices' | 'pos' | 'customers' | 'quotations' | 'returns'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'orders' | 'delivery' | 'invoices' | 'pos' | 'customers' | 'quotations' | 'returns' | 'credit-notes'>(initialTab);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -306,6 +308,7 @@ function SalesPageContent() {
             { id: 'customers', label: `Clientes (${customers.length})` },
             { id: 'quotations', label: `Cotizaciones (${quotations.length})` },
             { id: 'returns', label: `Devoluciones (${returns.length})` },
+            { id: 'credit-notes', label: 'NC' },
             { id: 'pos', label: 'POS' },
           ]}
           defaultActiveId={activeTab}
@@ -662,6 +665,12 @@ function SalesPageContent() {
         )}
 
         {/* POS Tab - redirects to standalone POS */}
+        {activeTab === 'credit-notes' && (
+          <div className="p-6">
+            <CreditNotes />
+          </div>
+        )}
+
         {activeTab === 'pos' && (
           <div className="p-6">
             <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 text-center">
