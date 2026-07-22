@@ -14,6 +14,7 @@ import InventoryMovementHistory from './components/InventoryMovementHistory';
 import ABCAnalysis from './components/ABCAnalysis';
 import DeadStockReport from './components/DeadStockReport';
 import InventoryValuation from './components/InventoryValuation';
+import StockForecasting from './components/StockForecasting';
 
 interface Product {
   id: string;
@@ -283,6 +284,8 @@ export default function InventoryPage() {
       <DeadStockReport />
 
       <InventoryValuation />
+
+      <StockForecasting />
 
       {showScanner && (
         <BarcodeScanner onScan={handleBarcodeScan} onClose={() => setShowScanner(false)} />
