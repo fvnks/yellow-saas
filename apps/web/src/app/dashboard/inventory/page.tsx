@@ -11,6 +11,7 @@ import StockAlerts from './components/StockAlerts';
 import StockTransfers from './components/StockTransfers';
 import ProductKits from './components/ProductKits';
 import InventoryMovementHistory from './components/InventoryMovementHistory';
+import ABCAnalysis from './components/ABCAnalysis';
 
 interface Product {
   id: string;
@@ -274,6 +275,8 @@ export default function InventoryPage() {
       </div>
 
       <InventoryMovementHistory />
+
+      <ABCAnalysis />
 
       {showScanner && (
         <BarcodeScanner onScan={handleBarcodeScan} onClose={() => setShowScanner(false)} />
