@@ -1,0 +1,71 @@
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string; projectId: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { rows } = await query(
+      'SELECT * FROM project_notification_settings WHERE company_id = $1 AND project_id = $2',
+      [companyId, params.projectId]
+    );
+
+    return successResponse(rows[0] || null);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
+
+export async function POST(req: NextRequest, { params }: { params: { id: string; projectId: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await req.json();
+    const {
+      slack_webhook_url, slack_channel, email_recipients = [],
+      notify_task_created, notify_task_completed, notify_task_overdue,
+      notify_milestone_due, notify_budget_alert, notify_comment_added,
+    } = body;
+
+    const { rows: existing } = await query(
+      'SELECT id FROM project_notification_settings WHERE company_id = $1 AND project_id = $2',
+      [companyId, params.projectId]
+    );
+
+    let result;
+    if (existing.length > 0) {
+      const { rows } = await query(
+        `UPDATE project_notification_settings SET
+          slack_webhook_url = $1, slack_channel = $2, email_recipients = $3,
+          notify_task_created = $4, notify_task_completed = $5, notify_task_overdue = $6,
+          notify_milestone_due = $7, notify_budget_alert = $8, notify_comment_added = $9,
+          updated_at = NOW()
+         WHERE company_id = $10 AND project_id = $11 RETURNING *`,
+        [slack_webhook_url, slack_channel, email_recipients,
+         notify_task_created, notify_task_completed, notify_task_overdue,
+         notify_milestone_due, notify_budget_alert, notify_comment_added,
+         companyId, params.projectId]
+      );
+      result = rows[0];
+    } else {
+      const { rows } = await query(
+        `INSERT INTO project_notification_settings
+          (company_id, project_id, slack_webhook_url, slack_channel, email_recipients,
+           notify_task_created, notify_task_completed, notify_task_overdue,
+           notify_milestone_due, notify_budget_alert, notify_comment_added)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
+        [companyId, params.projectId, slack_webhook_url, slack_channel, email_recipients,
+         notify_task_created, notify_task_completed, notify_task_overdue,
+         notify_milestone_due, notify_budget_alert, notify_comment_added]
+      );
+      result = rows[0];
+    }
+
+    return successResponse(result);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
