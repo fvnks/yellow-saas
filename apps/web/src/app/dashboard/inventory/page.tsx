@@ -22,6 +22,7 @@ import UomConversions from './components/UomConversions';
 import InventorySnapshots from './components/InventorySnapshots';
 import ProductSerialNumbers from './components/ProductSerialNumbers';
 import SupplierCatalogImport from './components/SupplierCatalogImport';
+import InventoryAuditTrail from './components/InventoryAuditTrail';
 
 interface Product {
   id: string;
@@ -307,6 +308,8 @@ export default function InventoryPage() {
       <ProductSerialNumbers />
 
       <SupplierCatalogImport />
+
+      <InventoryAuditTrail />
 
       {showScanner && (
         <BarcodeScanner onScan={handleBarcodeScan} onClose={() => setShowScanner(false)} />
