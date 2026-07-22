@@ -1,0 +1,46 @@
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string; productId: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { rows } = await query(
+      'SELECT * FROM product_images WHERE company_id = $1 AND product_id = $2 ORDER BY sort_order',
+      [companyId, params.productId]
+    );
+    return successResponse(rows);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
+
+export async function POST(req: NextRequest, { params }: { params: { id: string; productId: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await req.json();
+    const { url, alt_text, sort_order = 0, is_primary = false } = body;
+
+    if (!url) return errorResponse('url is required', 400);
+
+    if (is_primary) {
+      await query(
+        'UPDATE product_images SET is_primary = FALSE WHERE company_id = $1 AND product_id = $2',
+        [companyId, params.productId]
+      );
+    }
+
+    const { rows } = await query(
+      `INSERT INTO product_images (company_id, product_id, url, alt_text, sort_order, is_primary)
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [companyId, params.productId, url, alt_text || '', sort_order, is_primary]
+    );
+    return successResponse(rows[0], 201);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
