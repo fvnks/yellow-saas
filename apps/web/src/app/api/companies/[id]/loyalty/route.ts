@@ -1,0 +1,107 @@
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const url = new URL(req.url);
+    const type = url.searchParams.get('type') || 'customers';
+
+    if (type === 'config') {
+      const { rows } = await query(
+        `SELECT * FROM loyalty_config WHERE company_id = $1 LIMIT 1`,
+        [companyId]
+      );
+      return successResponse(rows[0] || { points_per_peso: 1, redeem_rate: 10, min_redeem: 100 });
+    }
+
+    if (type === 'summary') {
+      const { rows } = await query(
+        `SELECT c.id, c.name, c.tax_id,
+          COALESCE(lp.total_earned, 0) as total_earned,
+          COALESCE(lp.total_redeemed, 0) as total_redeemed,
+          COALESCE(lp.total_earned, 0) - COALESCE(lp.total_redeemed, 0) as balance,
+          lp.last_activity
+         FROM customers c
+         LEFT JOIN loyalty_points lp ON lp.customer_id = c.id AND lp.company_id = c.company_id
+         WHERE c.company_id = $1
+         ORDER BY balance DESC`,
+        [companyId]
+      );
+      return successResponse(rows);
+    }
+
+    const { rows: transactions } = await query(
+      `SELECT lt.*, c.name as customer_name
+       FROM loyalty_transactions lt
+       JOIN customers c ON c.id = lt.customer_id
+       WHERE lt.company_id = $1
+       ORDER BY lt.created_at DESC
+       LIMIT 200`,
+      [companyId]
+    );
+
+    return successResponse(transactions);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
+
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await req.json();
+    const { action, customer_id, points, description, reference_type, reference_id } = body;
+
+    if (!action || !customer_id || !points) {
+      return errorResponse('action, customer_id, points son requeridos', 400);
+    }
+
+    if (action === 'earn') {
+      await query(
+        `INSERT INTO loyalty_transactions (company_id, customer_id, points, type, description, reference_type, reference_id)
+         VALUES ($1, $2, $3, 'earned', $4, $5, $6)`,
+        [companyId, customer_id, points, description || 'Compra', reference_type || null, reference_id || null]
+      );
+
+      await query(
+        `INSERT INTO loyalty_points (company_id, customer_id, total_earned, last_activity)
+         VALUES ($1, $2, $3, NOW())
+         ON CONFLICT (company_id, customer_id)
+         DO UPDATE SET total_earned = loyalty_points.total_earned + $3, last_activity = NOW()`,
+        [companyId, customer_id, points]
+      );
+    } else if (action === 'redeem') {
+      const { rows: balance } = await query(
+        `SELECT COALESCE(total_earned, 0) - COALESCE(total_redeemed, 0) as balance
+         FROM loyalty_points WHERE company_id = $1 AND customer_id = $2`,
+        [companyId, customer_id]
+      );
+
+      if (balance.length === 0 || parseInt(balance[0].balance) < points) {
+        return errorResponse('Saldo de puntos insuficiente', 400);
+      }
+
+      await query(
+        `INSERT INTO loyalty_transactions (company_id, customer_id, points, type, description, reference_type, reference_id)
+         VALUES ($1, $2, $3, 'redeemed', $4, $5, $6)`,
+        [companyId, customer_id, points, description || 'Canje', reference_type || null, reference_id || null]
+      );
+
+      await query(
+        `UPDATE loyalty_points SET total_redeemed = total_redeemed + $3, last_activity = NOW()
+         WHERE company_id = $1 AND customer_id = $2`,
+        [companyId, customer_id, points]
+      );
+    }
+
+    return successResponse({ success: true });
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}

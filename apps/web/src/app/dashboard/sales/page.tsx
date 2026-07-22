@@ -21,6 +21,7 @@ import SalesReports from './components/SalesReports';
 import CustomerPriceHistory from './components/CustomerPriceHistory';
 import SalesForecast from './components/SalesForecast';
 import RoutePlanning from './components/RoutePlanning';
+import LoyaltyProgram from './components/LoyaltyProgram';
 
 const orderStatusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   delivered: { label: 'Entregado', variant: 'success' },
@@ -58,7 +59,7 @@ const invoiceStatusConfig: Record<string, { label: string; variant: 'success' | 
 function SalesPageContent() {
   const searchParams = useSearchParams();
   const tabParam = searchParams.get('tab');
-  const validTabs = ['orders', 'delivery', 'invoices', 'pos', 'customers', 'quotations', 'returns', 'credit-control', 'statement', 'targets', 'commissions', 'reports', 'price-history', 'forecast', 'routes'] as const;
+  const validTabs = ['orders', 'delivery', 'invoices', 'pos', 'customers', 'quotations', 'returns', 'credit-control', 'statement', 'targets', 'commissions', 'reports', 'price-history', 'forecast', 'routes', 'loyalty'] as const;
   const initialTab = validTabs.includes(tabParam as any) ? (tabParam as any) : 'orders';
   const [orders, setOrders] = useState<any[]>([]);
   const [deliveryGuides, setDeliveryGuides] = useState<any[]>([]);
@@ -68,7 +69,7 @@ function SalesPageContent() {
   const [returns, setReturns] = useState<any[]>([]);
   const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'delivery' | 'invoices' | 'pos' | 'customers' | 'quotations' | 'returns' | 'credit-notes' | 'debit-notes' | 'credit-control' | 'statement' | 'targets' | 'commissions' | 'reports' | 'price-history' | 'forecast' | 'routes'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'delivery' | 'invoices' | 'pos' | 'customers' | 'quotations' | 'returns' | 'credit-notes' | 'debit-notes' | 'credit-control' | 'statement' | 'targets' | 'commissions' | 'reports' | 'price-history' | 'forecast' | 'routes' | 'loyalty'>(initialTab);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -329,6 +330,7 @@ function SalesPageContent() {
             { id: 'price-history', label: 'Hist. Precios' },
             { id: 'forecast', label: 'Pronóstico' },
             { id: 'routes', label: 'Rutas' },
+            { id: 'loyalty', label: 'Lealtad' },
             { id: 'pos', label: 'POS' },
           ]}
           defaultActiveId={activeTab}
@@ -749,6 +751,12 @@ function SalesPageContent() {
         {activeTab === 'routes' && (
           <div className="p-6">
             <RoutePlanning />
+          </div>
+        )}
+
+        {activeTab === 'loyalty' && (
+          <div className="p-6">
+            <LoyaltyProgram />
           </div>
         )}
 
