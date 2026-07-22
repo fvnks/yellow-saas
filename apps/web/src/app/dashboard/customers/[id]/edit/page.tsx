@@ -40,6 +40,8 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
   const [segmentId, setSegmentId] = useState('');
   const [notes, setNotes] = useState('');
   const [isActive, setIsActive] = useState(true);
+  const [portalEnabled, setPortalEnabled] = useState(false);
+  const [portalToken, setPortalToken] = useState('');
 
   useEffect(() => {
     const api = getApiClient();
@@ -72,6 +74,8 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
       setSegmentId(c.segment_id || '');
       setNotes(c.notes || '');
       setIsActive(c.is_active !== false);
+      setPortalEnabled(c.portal_enabled || false);
+      setPortalToken(c.portal_token || '');
       setPriceLists(pl.data || []);
       setCategories(cat.data || []);
       setSegments(seg.data || []);
@@ -114,6 +118,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
         segment_id: segmentId || undefined,
         notes: notes.trim() || undefined,
         is_active: isActive,
+        portal_enabled: portalEnabled,
       });
       toast.success('Cliente actualizado exitosamente');
       router.push(`/dashboard/customers/${id}`);
@@ -303,6 +308,41 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
                   <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isActive ? 'translate-x-6' : 'translate-x-1'}`} />
                 </button>
               </div>
+            </div>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+            <div className="px-6 py-4 border-b border-slate-100">
+              <h3 className="text-sm font-semibold text-slate-900">Portal Cliente</h3>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium text-slate-700">Habilitar Portal</label>
+                <button onClick={() => setPortalEnabled(!portalEnabled)} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${portalEnabled ? 'bg-indigo-600' : 'bg-slate-200'}`}>
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${portalEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+                </button>
+              </div>
+              {portalEnabled && portalToken && (
+                <div className="space-y-1">
+                  <label className="block text-[9px] font-semibold text-slate-500 uppercase tracking-wider">URL del Portal</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      readOnly
+                      value={`${typeof window !== 'undefined' ? window.location.origin : ''}/portal/customer/${portalToken}`}
+                      className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-700 font-mono"
+                    />
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(`${window.location.origin}/portal/customer/${portalToken}`);
+                        toast.success('URL copiada');
+                      }}
+                      className="px-2 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+                    >
+                      Copiar
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

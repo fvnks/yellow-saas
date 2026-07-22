@@ -122,7 +122,7 @@ export class ApiClient {
     return this.request<{ id: string }>('/customers', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async updateCustomer(id: string, data: Partial<{ name: string; code: string; trade_name: string; tax_id: string; tax_id_type: string; address: string; city: string; region: string; country: string; postal_code: string; phone: string; email: string; website: string; contact_person: string; contact_phone: string; contact_email: string; payment_terms: number; credit_limit: number; price_list_id: string; tax_exempt: boolean; notes: string; is_active: boolean; category_id: string; segment_id: string }>) {
+  async updateCustomer(id: string, data: Partial<{ name: string; code: string; trade_name: string; tax_id: string; tax_id_type: string; address: string; city: string; region: string; country: string; postal_code: string; phone: string; email: string; website: string; contact_person: string; contact_phone: string; contact_email: string; payment_terms: number; credit_limit: number; price_list_id: string; tax_exempt: boolean; notes: string; is_active: boolean; category_id: string; segment_id: string; portal_enabled: boolean }>) {
     return this.request<{ id: string }>(`/customers/${id}`, { method: 'PUT', body: JSON.stringify(data) });
   }
 
