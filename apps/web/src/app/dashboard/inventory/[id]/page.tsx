@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { generateBarcodeLabelsPDF } from '@/lib/pdf-design';
 import { ContinuousTabs } from '@/components/ui/continuous-tabs';
+import ProductImages from '../components/ProductImages';
 
 interface ProductData {
   id: string;
@@ -59,7 +60,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   const { id } = params;
   const [product, setProduct] = useState<ProductData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'details' | 'kardex' | 'variants' | 'batches' | 'reservations'>('details');
+  const [activeTab, setActiveTab] = useState<'details' | 'kardex' | 'variants' | 'batches' | 'reservations' | 'images'>('details');
 
   const [movements, setMovements] = useState<StockMovement[]>([]);
   const [movementsLoading, setMovementsLoading] = useState(false);
@@ -234,6 +235,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         <ContinuousTabs
           tabs={[
             { id: 'details', label: 'Detalle' },
+            { id: 'images', label: 'Imagenes' },
             { id: 'kardex', label: 'Kardex' },
             { id: 'variants', label: `Variantes (${variants.length})` },
             { id: 'batches', label: `Lotes (${batches.length})` },
@@ -309,6 +311,12 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 )}
               </div>
             </div>
+          </div>
+        )}
+
+        {activeTab === 'images' && (
+          <div className="p-6">
+            <ProductImages productId={id} />
           </div>
         )}
 
