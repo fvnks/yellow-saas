@@ -1,172 +1,67 @@
 import { query } from '@/api/lib/db';
-import {
-  getCompanyId,
-  successResponse,
-  errorResponse,
-  parseSearchParams,
-  paginatedResponse,
-  checkAndCreateLowStockNotification,
-} from '@/api/lib/helpers';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
-export async function GET(request: NextRequest) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const companyId = await getCompanyId(request);
+    const companyId = await getCompanyId(req);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
-    const { page, limit, search, sort: requestedSort, order, offset } = parseSearchParams(request);
-    const allowedSortColumns = ['created_at', 'type', 'quantity', 'id'];
-    const sort = allowedSortColumns.includes(requestedSort) ? requestedSort : 'created_at';
-    const url = new URL(request.url);
-    const product = url.searchParams.get('product');
-    const warehouse = url.searchParams.get('warehouse');
-    const type = url.searchParams.get('type');
-    const from = url.searchParams.get('from');
-    const to = url.searchParams.get('to');
+    const { searchParams } = new URL(req.url);
+    const productId = searchParams.get('product_id');
+    const warehouseId = searchParams.get('warehouse_id');
+    const type = searchParams.get('type');
+    const limit = parseInt(searchParams.get('limit') || '100');
+    const offset = parseInt(searchParams.get('offset') || '0');
 
-    const params: any[] = [companyId];
-    let where = 'WHERE sm.company_id = $1';
-    let paramIndex = 2;
+    let sql = `
+      SELECT sm.*,
+        p.name as product_name, p.sku,
+        w.name as warehouse_name, w.code as warehouse_code
+      FROM stock_movements sm
+      JOIN products p ON p.id = sm.product_id
+      JOIN warehouses w ON w.id = sm.warehouse_id
+      WHERE sm.company_id = $1
+    `;
+    const sqlParams: any[] = [companyId];
+    let idx = 2;
 
-    if (search) {
-      where += ` AND sm.notes ILIKE $${paramIndex}`;
-      params.push(`%${search}%`);
-      paramIndex++;
+    if (productId) {
+      sql += ` AND sm.product_id = $${idx}`;
+      sqlParams.push(productId);
+      idx++;
     }
-
-    if (product) {
-      where += ` AND sm.product_id = $${paramIndex}`;
-      params.push(product);
-      paramIndex++;
+    if (warehouseId) {
+      sql += ` AND sm.warehouse_id = $${idx}`;
+      sqlParams.push(warehouseId);
+      idx++;
     }
-
-    if (warehouse) {
-      where += ` AND sm.warehouse_id = $${paramIndex}`;
-      params.push(warehouse);
-      paramIndex++;
-    }
-
     if (type) {
-      where += ` AND sm.type = $${paramIndex}`;
-      params.push(type);
-      paramIndex++;
+      sql += ` AND sm.type = $${idx}`;
+      sqlParams.push(type);
+      idx++;
     }
 
-    if (from) {
-      where += ` AND sm.created_at >= $${paramIndex}`;
-      params.push(from);
-      paramIndex++;
-    }
+    sql += ' ORDER BY sm.created_at DESC';
+    sql += ` LIMIT $${idx} OFFSET $${idx + 1}`;
+    sqlParams.push(limit, offset);
 
-    if (to) {
-      where += ` AND sm.created_at <= $${paramIndex}`;
-      params.push(to);
-      paramIndex++;
-    }
+    const { rows } = await query(sql, sqlParams);
 
-    const countResult = await query(`SELECT COUNT(*) as count FROM stock_movements sm ${where}`, params);
-    const total = parseInt(countResult.rows[0]?.count || '0');
+    let countSql = 'SELECT COUNT(*) FROM stock_movements WHERE company_id = $1';
+    const countParams: any[] = [companyId];
+    let countIdx = 2;
+    if (productId) { countSql += ` AND product_id = $${countIdx}`; countParams.push(productId); countIdx++; }
+    if (warehouseId) { countSql += ` AND warehouse_id = $${countIdx}`; countParams.push(warehouseId); countIdx++; }
+    if (type) { countSql += ` AND type = $${countIdx}`; countParams.push(type); countIdx++; }
 
-    params.push(offset, limit);
-    const { rows } = await query(
-      `SELECT sm.*,
-        (SELECT json_build_object('id', p.id, 'name', p.name, 'sku', p.sku) FROM products p WHERE p.id = sm.product_id) as product,
-        (SELECT json_build_object('id', w.id, 'name', w.name, 'code', w.code) FROM warehouses w WHERE w.id = sm.warehouse_id) as warehouse,
-        (SELECT json_build_object('id', cc.id, 'name', cc.name, 'code', cc.code) FROM cost_centers cc WHERE cc.id = sm.cost_center_id) as cost_center,
-        (SELECT json_build_object('id', pj.id, 'name', pj.name, 'code', pj.code) FROM projects pj WHERE pj.id = sm.project_id) as project
-       FROM stock_movements sm
-       ${where}
-       ORDER BY sm.${sort} ${order === 'asc' ? 'ASC' : 'DESC'}
-       OFFSET $${paramIndex} LIMIT $${paramIndex + 1}`,
-      params
-    );
+    const { rows: countRows } = await query(countSql, countParams);
 
-    return paginatedResponse(rows, total, page, limit);
-  } catch {
-    return errorResponse('Internal server error', 500);
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const {
-      product_id, warehouse_id, type, quantity, unit_cost,
-      batch_number, expiry_date, notes, cost_center_id, project_id,
-    } = body;
-
-    if (!product_id || !warehouse_id || !type || quantity === undefined) {
-      return errorResponse('Product, warehouse, type, and quantity are required', 400);
-    }
-
-    const validTypes = ['in', 'out', 'transfer_in', 'transfer_out', 'adjustment', 'initial'];
-    if (!validTypes.includes(type)) {
-      return errorResponse(`Invalid type. Must be one of: ${validTypes.join(', ')}`, 400);
-    }
-
-    const finalQuantity = type === 'out' || type === 'transfer_out' ? -Math.abs(quantity) : Math.abs(quantity);
-
-    const { rows: movementRows } = await query(
-      `INSERT INTO stock_movements (company_id, product_id, warehouse_id, type, quantity, unit_cost, total_cost, batch_number, expiry_date, notes, cost_center_id, project_id)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-       RETURNING *`,
-      [
-        companyId, product_id, warehouse_id, type, finalQuantity,
-        unit_cost || null, unit_cost ? unit_cost * Math.abs(quantity) : null,
-        batch_number || null, expiry_date || null, notes || null,
-        cost_center_id || null, project_id || null,
-      ]
-    );
-
-    const movement = movementRows[0];
-
-    const { rows: stockRows } = await query(
-      `SELECT id, quantity FROM stock_levels WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`,
-      [companyId, product_id, warehouse_id]
-    );
-
-    if (stockRows[0]) {
-      await query(
-        `UPDATE stock_levels SET quantity = $1, last_movement_at = NOW() WHERE id = $2`,
-        [stockRows[0].quantity + finalQuantity, stockRows[0].id]
-      );
-    } else if (finalQuantity > 0) {
-      await query(
-        `INSERT INTO stock_levels (company_id, product_id, warehouse_id, quantity, last_movement_at)
-         VALUES ($1, $2, $3, $4, NOW())`,
-        [companyId, product_id, warehouse_id, finalQuantity]
-      );
-    }
-
-    if (finalQuantity < 0) {
-      checkAndCreateLowStockNotification(companyId, product_id, warehouse_id);
-
-      const absQty = Math.abs(finalQuantity);
-      const { rows: batches } = await query(
-        `SELECT id, batch_number, quantity FROM product_batches
-         WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3 AND status = 'active'
-         AND (expiry_date IS NULL OR expiry_date >= CURRENT_DATE)
-         ORDER BY COALESCE(manufacturing_date, created_at) ASC`,
-        [companyId, product_id, warehouse_id]
-      );
-      let remaining = absQty;
-      for (const batch of batches) {
-        if (remaining <= 0) break;
-        const deduct = Math.min(remaining, batch.quantity);
-        await query(
-          `UPDATE product_batches SET quantity = quantity - $1, updated_at = NOW(), status = CASE WHEN quantity - $1 <= 0 THEN 'consumed' ELSE status END WHERE id = $2`,
-          [deduct, batch.id]
-        );
-        remaining -= deduct;
-      }
-    }
-
-    return successResponse(movement, 201);
-  } catch {
-    return errorResponse('Internal server error', 500);
+    return successResponse({
+      movements: rows,
+      total: parseInt(countRows[0]?.count || '0'),
+    });
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
   }
 }

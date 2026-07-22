@@ -10,6 +10,7 @@ import BarcodeScanner from '../../../components/barcode/barcode-scanner';
 import StockAlerts from './components/StockAlerts';
 import StockTransfers from './components/StockTransfers';
 import ProductKits from './components/ProductKits';
+import InventoryMovementHistory from './components/InventoryMovementHistory';
 
 interface Product {
   id: string;
@@ -271,6 +272,8 @@ export default function InventoryPage() {
           <Button variant="secondary" size="sm" disabled>Siguiente</Button>
         </div>
       </div>
+
+      <InventoryMovementHistory />
 
       {showScanner && (
         <BarcodeScanner onScan={handleBarcodeScan} onClose={() => setShowScanner(false)} />
