@@ -1,0 +1,61 @@
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string; noteId: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { rows: note } = await query(
+      `SELECT pcn.*, s.name as supplier_name
+       FROM purchase_credit_notes pcn
+       JOIN suppliers s ON s.id = pcn.supplier_id
+       WHERE pcn.id = $1 AND pcn.company_id = $2`,
+      [params.noteId, companyId]
+    );
+    if (note.length === 0) return errorResponse('NC no encontrada', 404);
+
+    const { rows: items } = await query(
+      `SELECT pcni.*, p.name as product_name
+       FROM purchase_credit_note_items pcni
+       LEFT JOIN products p ON p.id = pcni.product_id
+       WHERE pcni.note_id = $1 AND pcni.company_id = $2`,
+      [params.noteId, companyId]
+    );
+
+    return successResponse({ ...note[0], items });
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
+
+export async function PUT(req: NextRequest, { params }: { params: { id: string; noteId: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await req.json();
+    if (body.status) {
+      await query(`UPDATE purchase_credit_notes SET status = $1, updated_at = NOW() WHERE id = $2 AND company_id = $3`, [body.status, params.noteId, companyId]);
+    }
+
+    return successResponse({ success: true });
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
+
+export async function DELETE(req: NextRequest, { params }: { params: { id: string; noteId: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    await query(`DELETE FROM purchase_credit_note_items WHERE note_id = $1 AND company_id = $2`, [params.noteId, companyId]);
+    await query(`DELETE FROM purchase_credit_notes WHERE id = $1 AND company_id = $2`, [params.noteId, companyId]);
+
+    return successResponse({ success: true });
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}

@@ -1,0 +1,66 @@
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string; invoiceId: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { rows: invoice } = await query(
+      `SELECT pi.*, s.name as supplier_name, s.tax_id as supplier_tax_id, s.email as supplier_email
+       FROM purchase_invoices pi
+       JOIN suppliers s ON s.id = pi.supplier_id
+       WHERE pi.id = $1 AND pi.company_id = $2`,
+      [params.invoiceId, companyId]
+    );
+    if (invoice.length === 0) return errorResponse('Factura no encontrada', 404);
+
+    const { rows: items } = await query(
+      `SELECT pii.*, p.name as product_name, p.sku
+       FROM purchase_invoice_items pii
+       LEFT JOIN products p ON p.id = pii.product_id
+       WHERE pii.invoice_id = $1 AND pii.company_id = $2`,
+      [params.invoiceId, companyId]
+    );
+
+    return successResponse({ ...invoice[0], items });
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
+
+export async function PUT(req: NextRequest, { params }: { params: { id: string; invoiceId: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await req.json();
+    const { status, paid_amount, items } = body;
+
+    if (status) {
+      await query(`UPDATE purchase_invoices SET status = $1, updated_at = NOW() WHERE id = $2 AND company_id = $3`, [status, params.invoiceId, companyId]);
+    }
+    if (paid_amount !== undefined) {
+      await query(`UPDATE purchase_invoices SET paid_amount = $1, updated_at = NOW() WHERE id = $2 AND company_id = $3`, [paid_amount, params.invoiceId, companyId]);
+    }
+
+    return successResponse({ success: true });
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
+
+export async function DELETE(req: NextRequest, { params }: { params: { id: string; invoiceId: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    await query(`DELETE FROM purchase_invoice_items WHERE invoice_id = $1 AND company_id = $2`, [params.invoiceId, companyId]);
+    await query(`DELETE FROM purchase_invoices WHERE id = $1 AND company_id = $2`, [params.invoiceId, companyId]);
+
+    return successResponse({ success: true });
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}

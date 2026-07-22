@@ -1,0 +1,66 @@
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const url = new URL(req.url);
+    const supplierId = url.searchParams.get('supplierId');
+    if (!supplierId) return errorResponse('supplierId is required', 400);
+
+    const { rows: supplier } = await query(
+      `SELECT id, name, tax_id, email, phone, address, credit_limit FROM suppliers WHERE id = $1 AND company_id = $2`,
+      [supplierId, companyId]
+    );
+    if (supplier.length === 0) return errorResponse('Proveedor no encontrado', 404);
+
+    const { rows: invoices } = await query(
+      `SELECT id, invoice_number, total_amount, paid_amount, total_amount - paid_amount as balance, invoice_date, due_date, status
+       FROM purchase_invoices WHERE company_id = $1 AND supplier_id = $2 ORDER BY invoice_date DESC`,
+      [companyId, supplierId]
+    );
+
+    const { rows: creditNotes } = await query(
+      `SELECT id, note_number, total_amount, issue_date, status
+       FROM purchase_credit_notes WHERE company_id = $1 AND supplier_id = $2 ORDER BY issue_date DESC`,
+      [companyId, supplierId]
+    );
+
+    const { rows: debitNotes } = await query(
+      `SELECT id, note_number, total_amount, issue_date, status
+       FROM purchase_debit_notes WHERE company_id = $1 AND supplier_id = $2 ORDER BY issue_date DESC`,
+      [companyId, supplierId]
+    );
+
+    const { rows: returns } = await query(
+      `SELECT id, return_number, total_amount, return_date, status
+       FROM purchase_returns WHERE company_id = $1 AND supplier_id = $2 ORDER BY return_date DESC`,
+      [companyId, supplierId]
+    );
+
+    const totalInvoiced = invoices.reduce((s, i) => s + parseFloat(i.total_amount), 0);
+    const totalPaid = invoices.reduce((s, i) => s + parseFloat(i.paid_amount), 0);
+    const totalBalance = totalInvoiced - totalPaid;
+    const totalCreditNotes = creditNotes.reduce((s, cn) => s + parseFloat(cn.total_amount), 0);
+    const totalDebitNotes = debitNotes.reduce((s, dn) => s + parseFloat(dn.total_amount), 0);
+    const totalReturns = returns.reduce((s, r) => s + parseFloat(r.total_amount), 0);
+
+    const transactions = [
+      ...invoices.map(i => ({ type: 'invoice', date: i.invoice_date, reference: i.invoice_number, amount: parseFloat(i.total_amount), paid: parseFloat(i.paid_amount), balance: parseFloat(i.balance), status: i.status })),
+      ...creditNotes.map(cn => ({ type: 'credit_note', date: cn.issue_date, reference: cn.note_number, amount: -parseFloat(cn.total_amount), paid: 0, balance: 0, status: cn.status })),
+      ...debitNotes.map(dn => ({ type: 'debit_note', date: dn.issue_date, reference: dn.note_number, amount: parseFloat(dn.total_amount), paid: 0, balance: 0, status: dn.status })),
+      ...returns.map(r => ({ type: 'return', date: r.return_date, reference: r.return_number, amount: -parseFloat(r.total_amount), paid: 0, balance: 0, status: r.status })),
+    ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    return successResponse({
+      supplier: supplier[0],
+      summary: { totalInvoiced, totalPaid, totalBalance, totalCreditNotes, totalDebitNotes, totalReturns },
+      transactions,
+    });
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
