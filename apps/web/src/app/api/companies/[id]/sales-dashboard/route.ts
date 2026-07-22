@@ -1,0 +1,120 @@
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const now = new Date();
+    const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const thisYear = new Date(now.getFullYear(), 0, 1);
+
+    const { rows: monthlySalesRows } = await query(
+      `SELECT COALESCE(SUM(total_amount), 0) as total, COUNT(*) as count
+       FROM sales_orders WHERE company_id = $1 AND created_at >= $2 AND status != 'cancelled'`,
+      [companyId, thisMonth.toISOString()]
+    );
+    const monthlySales = monthlySalesRows[0];
+
+    const { rows: lastMonthRows } = await query(
+      `SELECT COALESCE(SUM(total_amount), 0) as total
+       FROM sales_orders WHERE company_id = $1 AND created_at >= $2 AND created_at < $3 AND status != 'cancelled'`,
+      [companyId, lastMonth.toISOString(), thisMonth.toISOString()]
+    );
+    const lastMonthSales = lastMonthRows[0];
+
+    const { rows: invoicedRows } = await query(
+      `SELECT COALESCE(SUM(total_amount), 0) as total
+       FROM invoices WHERE company_id = $1 AND created_at >= $2 AND status != 'cancelled'`,
+      [companyId, thisMonth.toISOString()]
+    );
+
+    const { rows: deliveryRows } = await query(
+      `SELECT COUNT(*) as count FROM delivery_guides
+       WHERE company_id = $1 AND status IN ('pending', 'in_transit')`,
+      [companyId]
+    );
+
+    const { rows: overdueRows } = await query(
+      `SELECT COUNT(*) as count, COALESCE(SUM(total_amount - paid_amount), 0) as total
+       FROM invoices WHERE company_id = $1 AND status IN ('pending', 'partial', 'overdue')
+       AND due_date < CURRENT_DATE`,
+      [companyId]
+    );
+
+    const { rows: collectionRows } = await query(
+      `SELECT COALESCE(SUM(total_amount - paid_amount), 0) as total
+       FROM invoices WHERE company_id = $1 AND status IN ('pending', 'partial', 'overdue')`,
+      [companyId]
+    );
+
+    const { rows: yearlyRows } = await query(
+      `SELECT COALESCE(SUM(total_amount), 0) as total
+       FROM sales_orders WHERE company_id = $1 AND created_at >= $2 AND status != 'cancelled'`,
+      [companyId, thisYear.toISOString()]
+    );
+
+    const { rows: topProducts } = await query(
+      `SELECT p.name, p.sku, SUM(soi.quantity) as total_qty, SUM(soi.line_total) as total_value
+       FROM sales_order_items soi
+       JOIN sales_orders so ON so.id = soi.order_id
+       JOIN products p ON p.id = soi.product_id
+       WHERE so.company_id = $1 AND so.created_at >= $2 AND so.status != 'cancelled'
+       GROUP BY p.id, p.name, p.sku
+       ORDER BY total_value DESC LIMIT 10`,
+      [companyId, thisYear.toISOString()]
+    );
+
+    const { rows: topCustomers } = await query(
+      `SELECT c.name, c.tax_id, SUM(so.total_amount) as total_value, COUNT(*) as order_count
+       FROM sales_orders so
+       JOIN customers c ON c.id = so.customer_id
+       WHERE so.company_id = $1 AND so.created_at >= $2 AND so.status != 'cancelled'
+       GROUP BY c.id, c.name, c.tax_id
+       ORDER BY total_value DESC LIMIT 10`,
+      [companyId, thisYear.toISOString()]
+    );
+
+    const { rows: monthlyTrend } = await query(
+      `SELECT DATE_TRUNC('month', created_at) as month, SUM(total_amount) as total, COUNT(*) as count
+       FROM sales_orders WHERE company_id = $1 AND created_at >= $2 AND status != 'cancelled'
+       GROUP BY DATE_TRUNC('month', created_at)
+       ORDER BY month ASC`,
+      [companyId, new Date(now.getFullYear() - 1, now.getMonth(), 1).toISOString()]
+    );
+
+    const { rows: statusBreakdown } = await query(
+      `SELECT status, COUNT(*) as count, SUM(total_amount) as total
+       FROM sales_orders WHERE company_id = $1 AND created_at >= $2
+       GROUP BY status`,
+      [companyId, thisYear.toISOString()]
+    );
+
+    const salesGrowth = parseFloat(lastMonthSales.total) > 0
+      ? ((parseFloat(monthlySales.total) - parseFloat(lastMonthSales.total)) / parseFloat(lastMonthSales.total)) * 100
+      : 0;
+
+    return successResponse({
+      kpis: {
+        monthlySales: parseFloat(monthlySales.total),
+        monthlyOrders: parseInt(monthlySales.count),
+        monthlyInvoiced: parseFloat(invoicedRows[0].total),
+        pendingDeliveries: parseInt(deliveryRows[0].count),
+        overdueInvoices: parseInt(overdueRows[0].count),
+        overdueAmount: parseFloat(overdueRows[0].total),
+        pendingCollections: parseFloat(collectionRows[0].total),
+        yearlySales: parseFloat(yearlyRows[0].total),
+        salesGrowth,
+      },
+      topProducts,
+      topCustomers,
+      monthlyTrend,
+      statusBreakdown,
+    });
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
