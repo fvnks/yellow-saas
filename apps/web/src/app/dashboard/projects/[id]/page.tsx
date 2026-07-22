@@ -45,6 +45,7 @@ import ProjectDashboard from '../components/ProjectDashboard';
 import CustomFields from '../components/CustomFields';
 import TaskChecklist from '../components/TaskChecklist';
 import TaskChangelog from '../components/TaskChangelog';
+import ShortcutsHelp, { useKeyboardShortcuts } from '@/components/ui/keyboard-shortcuts';
 
 const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   planning: { label: 'Planificacion', variant: 'info' },
@@ -153,6 +154,20 @@ export default function ProjectDetailPage() {
     } catch (err) { toast.error('Error al cargar proyecto'); }
     setLoading(false);
   };
+
+  const shortcuts = [
+    { keys: ['n'], label: 'Nueva tarea', action: () => { setTaskForm({ name: '', description: '', assignee_id: '', status: 'todo', priority: 'medium', start_date: '', due_date: '', estimated_hours: '', parent_id: '', recurrence_type: 'none', recurrence_interval: '1', recurrence_end_date: '' }); setEditingTask(null); setShowTaskForm(true); } },
+    { keys: ['1'], label: 'Tab Resumen', action: () => setActiveTab('dashboard') },
+    { keys: ['2'], label: 'Tab Tareas', action: () => setActiveTab('tasks') },
+    { keys: ['3'], label: 'Tab Kanban', action: () => setActiveTab('kanban') },
+    { keys: ['4'], label: 'Tab Calendario', action: () => setActiveTab('calendar') },
+    { keys: ['5'], label: 'Tab Gantt', action: () => setActiveTab('gantt') },
+    { keys: ['6'], label: 'Tab Hitos', action: () => setActiveTab('milestones') },
+    { keys: ['Escape'], label: 'Cerrar modales', action: () => { setShowTaskForm(false); setCommentTaskId(null); } },
+    { keys: ['r'], label: 'Recargar datos', action: () => loadData() },
+  ];
+
+  useKeyboardShortcuts(shortcuts);
 
   const handleSaveTask = async () => {
     if (!taskForm.name) return;
@@ -416,6 +431,7 @@ export default function ProjectDetailPage() {
           <p className="text-sm text-slate-500 mt-1">{project.code} {project.customer_name ? `· ${project.customer_name}` : ''}</p>
         </div>
         <div className="flex items-center gap-2">
+          <ShortcutsHelp shortcuts={shortcuts} />
           <NotificationsPanel userId={users[0]?.id || ''} />
           <div className="relative">
             <button onClick={() => setExportOpen(!exportOpen)}
