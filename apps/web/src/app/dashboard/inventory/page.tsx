@@ -15,6 +15,7 @@ import ABCAnalysis from './components/ABCAnalysis';
 import DeadStockReport from './components/DeadStockReport';
 import InventoryValuation from './components/InventoryValuation';
 import StockForecasting from './components/StockForecasting';
+import PhysicalCountSheets from './components/PhysicalCountSheets';
 
 interface Product {
   id: string;
@@ -286,6 +287,8 @@ export default function InventoryPage() {
       <InventoryValuation />
 
       <StockForecasting />
+
+      <PhysicalCountSheets />
 
       {showScanner && (
         <BarcodeScanner onScan={handleBarcodeScan} onClose={() => setShowScanner(false)} />
