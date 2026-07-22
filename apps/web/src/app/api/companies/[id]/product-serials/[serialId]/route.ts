@@ -2,56 +2,46 @@ import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string; serialId: string } }
-) {
+export async function PATCH(req: NextRequest, { params }: { params: { id: string; serialId: string } }) {
   try {
-    const companyId = await getCompanyId(request);
+    const companyId = await getCompanyId(req);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
-    const body = await request.json();
-    const { status, notes } = body;
+    const body = await req.json();
+    const { status, notes, warehouse_id } = body;
 
-    if (status) {
-      const validStatuses = ['available', 'sold', 'reserved', 'damaged', 'returned'];
-      if (!validStatuses.includes(status)) {
-        return errorResponse(`Invalid status. Must be one of: ${validStatuses.join(', ')}`, 400);
-      }
-    }
+    const fields: string[] = [];
+    const values: any[] = [];
+    let idx = 3;
 
-    const result = await query(
-      `UPDATE product_serials SET
-        status = COALESCE($1, status),
-        notes = COALESCE($2, notes)
-       WHERE id = $3 AND company_id = $4
+    if (status) { fields.push(`status = $${idx}`); values.push(status); idx++; }
+    if (notes !== undefined) { fields.push(`notes = $${idx}`); values.push(notes); idx++; }
+    if (warehouse_id) { fields.push(`warehouse_id = $${idx}`); values.push(warehouse_id); idx++; }
+
+    if (fields.length === 0) return errorResponse('No valid fields', 400);
+
+    const { rows } = await query(
+      `UPDATE product_serials SET ${fields.join(', ')}
+       WHERE id = $1 AND company_id = $2
        RETURNING *`,
-      [status || null, notes || null, params.serialId, companyId]
+      [params.serialId, companyId, ...values]
     );
 
-    if (result.rows.length === 0) return errorResponse('Serial not found', 404);
-    return successResponse(result.rows[0]);
-  } catch {
-    return errorResponse('Internal server error', 500);
+    if (rows.length === 0) return errorResponse('Not found', 404);
+    return successResponse(rows[0]);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string; serialId: string } }
-) {
+export async function DELETE(req: NextRequest, { params }: { params: { id: string; serialId: string } }) {
   try {
-    const companyId = await getCompanyId(request);
+    const companyId = await getCompanyId(req);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
-    const result = await query(
-      `DELETE FROM product_serials WHERE id = $1 AND company_id = $2 RETURNING id`,
-      [params.serialId, companyId]
-    );
-
-    if (result.rows.length === 0) return errorResponse('Serial not found', 404);
-    return successResponse({ message: 'Serial deleted' });
-  } catch {
-    return errorResponse('Internal server error', 500);
+    await query('DELETE FROM product_serials WHERE id = $1 AND company_id = $2', [params.serialId, companyId]);
+    return successResponse({ deleted: true });
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
   }
 }
