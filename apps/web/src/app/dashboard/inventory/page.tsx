@@ -18,6 +18,7 @@ import StockForecasting from './components/StockForecasting';
 import PhysicalCountSheets from './components/PhysicalCountSheets';
 import ProductPriceLists from './components/ProductPriceLists';
 import ProductExpirations from './components/ProductExpirations';
+import UomConversions from './components/UomConversions';
 
 interface Product {
   id: string;
@@ -295,6 +296,8 @@ export default function InventoryPage() {
       <ProductPriceLists />
 
       <ProductExpirations />
+
+      <UomConversions />
 
       {showScanner && (
         <BarcodeScanner onScan={handleBarcodeScan} onClose={() => setShowScanner(false)} />
