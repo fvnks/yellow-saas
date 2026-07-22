@@ -12,6 +12,7 @@ import { ContinuousTabs } from '@/components/ui/continuous-tabs';
 
 import CreditNotes from './components/CreditNotes';
 import DebitNotes from './components/DebitNotes';
+import SalesDashboard from './components/SalesDashboard';
 
 const orderStatusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   delivered: { label: 'Entregado', variant: 'success' },
@@ -59,7 +60,7 @@ function SalesPageContent() {
   const [returns, setReturns] = useState<any[]>([]);
   const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'orders' | 'delivery' | 'invoices' | 'pos' | 'customers' | 'quotations' | 'returns' | 'credit-notes' | 'debit-notes'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'delivery' | 'invoices' | 'pos' | 'customers' | 'quotations' | 'returns' | 'credit-notes' | 'debit-notes'>(initialTab);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -304,6 +305,7 @@ function SalesPageContent() {
         <ContinuousTabs
           tabs={[
             { id: 'orders', label: `OV (${orders.length})` },
+            { id: 'dashboard', label: 'Dashboard' },
             { id: 'delivery', label: `Despacho (${deliveryGuides.length})` },
             { id: 'invoices', label: `Facturas (${invoices.length})` },
             { id: 'customers', label: `Clientes (${customers.length})` },
@@ -361,6 +363,13 @@ function SalesPageContent() {
                 className="w-full sm:w-52"
               />
             </div>
+          </div>
+        )}
+
+        {/* Dashboard */}
+        {activeTab === 'dashboard' && (
+          <div className="p-6">
+            <SalesDashboard />
           </div>
         )}
 
