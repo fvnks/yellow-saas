@@ -1,101 +1,60 @@
 import { query } from '@/api/lib/db';
-import { getCompanyId, successResponse, errorResponse, parseSearchParams, paginatedResponse } from '@/api/lib/helpers';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
-export async function GET(request: NextRequest) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const companyId = await getCompanyId(request);
+    const companyId = await getCompanyId(req);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
-    const { page, limit, search, offset } = parseSearchParams(request);
-    const url = new URL(request.url);
-    const productId = url.searchParams.get('product_id');
-    const warehouseId = url.searchParams.get('warehouse_id');
-    const status = url.searchParams.get('status');
+    const { searchParams } = new URL(req.url);
+    const productId = searchParams.get('product_id');
+    const status = searchParams.get('status');
+    const serial = searchParams.get('serial');
 
-    let whereClause = 'WHERE ps.company_id = $1';
-    const params: any[] = [companyId];
-    let paramIndex = 2;
+    let sql = `
+      SELECT ps.*, p.name as product_name, p.sku, w.name as warehouse_name
+      FROM product_serials ps
+      JOIN products p ON p.id = ps.product_id
+      JOIN warehouses w ON w.id = ps.warehouse_id
+      WHERE ps.company_id = $1
+    `;
+    const sqlParams: any[] = [companyId];
+    let idx = 2;
 
-    if (productId) {
-      whereClause += ` AND ps.product_id = $${paramIndex}`;
-      params.push(productId);
-      paramIndex++;
-    }
+    if (productId) { sql += ` AND ps.product_id = $${idx}`; sqlParams.push(productId); idx++; }
+    if (status) { sql += ` AND ps.status = $${idx}`; sqlParams.push(status); idx++; }
+    if (serial) { sql += ` AND ps.serial_number ILIKE $${idx}`; sqlParams.push(`%${serial}%`); idx++; }
 
-    if (warehouseId) {
-      whereClause += ` AND ps.warehouse_id = $${paramIndex}`;
-      params.push(warehouseId);
-      paramIndex++;
-    }
+    sql += ' ORDER BY ps.created_at DESC LIMIT 200';
 
-    if (status) {
-      whereClause += ` AND ps.status = $${paramIndex}`;
-      params.push(status);
-      paramIndex++;
-    }
-
-    if (search) {
-      whereClause += ` AND (ps.serial_number ILIKE $${paramIndex} OR p.name ILIKE $${paramIndex})`;
-      params.push(`%${search}%`);
-      paramIndex++;
-    }
-
-    const countResult = await query(
-      `SELECT COUNT(*) FROM product_serials ps
-       JOIN products p ON ps.product_id = p.id
-       ${whereClause}`,
-      params
-    );
-
-    const dataResult = await query(
-      `SELECT ps.*,
-        json_build_object('id', p.id, 'name', p.name, 'sku', p.sku) as product,
-        json_build_object('id', w.id, 'name', w.name, 'code', w.code) as warehouse
-       FROM product_serials ps
-       JOIN products p ON ps.product_id = p.id
-       JOIN warehouses w ON ps.warehouse_id = w.id
-       ${whereClause}
-       ORDER BY ps.created_at DESC
-       LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
-      [...params, limit, offset]
-    );
-
-    return paginatedResponse(dataResult.rows, parseInt(countResult.rows[0].count), page, limit);
-  } catch {
-    return errorResponse('Internal server error', 500);
+    const { rows } = await query(sql, sqlParams);
+    return successResponse(rows);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const companyId = await getCompanyId(request);
+    const companyId = await getCompanyId(req);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
-    const body = await request.json();
-    const { product_id, warehouse_id, serial_number, notes } = body;
+    const body = await req.json();
+    const { product_id, warehouse_id, serial_number, batch_number, notes } = body;
 
     if (!product_id || !warehouse_id || !serial_number) {
-      return errorResponse('product_id, warehouse_id, and serial_number are required', 400);
+      return errorResponse('product_id, warehouse_id, serial_number required', 400);
     }
 
-    const existing = await query(
-      `SELECT id FROM product_serials WHERE company_id = $1 AND serial_number = $2`,
-      [companyId, serial_number]
+    const { rows } = await query(
+      `INSERT INTO product_serials (company_id, product_id, warehouse_id, serial_number, batch_number, notes)
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [companyId, product_id, warehouse_id, serial_number, batch_number || '', notes || '']
     );
-    if (existing.rows.length > 0) {
-      return errorResponse('A serial with this number already exists', 400);
-    }
-
-    const result = await query(
-      `INSERT INTO product_serials (company_id, product_id, warehouse_id, serial_number, status, notes)
-       VALUES ($1, $2, $3, $4, 'available', $5)
-       RETURNING *`,
-      [companyId, product_id, warehouse_id, serial_number, notes || null]
-    );
-
-    return successResponse(result.rows[0], 201);
-  } catch {
-    return errorResponse('Internal server error', 500);
+    return successResponse(rows[0], 201);
+  } catch (e: any) {
+    if (e.message?.includes('unique')) return errorResponse('Serial number already exists', 409);
+    return errorResponse(e.message, 500);
   }
 }

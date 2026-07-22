@@ -20,6 +20,7 @@ import ProductPriceLists from './components/ProductPriceLists';
 import ProductExpirations from './components/ProductExpirations';
 import UomConversions from './components/UomConversions';
 import InventorySnapshots from './components/InventorySnapshots';
+import ProductSerialNumbers from './components/ProductSerialNumbers';
 
 interface Product {
   id: string;
@@ -301,6 +302,8 @@ export default function InventoryPage() {
       <UomConversions />
 
       <InventorySnapshots />
+
+      <ProductSerialNumbers />
 
       {showScanner && (
         <BarcodeScanner onScan={handleBarcodeScan} onClose={() => setShowScanner(false)} />
