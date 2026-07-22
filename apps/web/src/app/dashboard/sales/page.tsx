@@ -15,6 +15,7 @@ import DebitNotes from './components/DebitNotes';
 import SalesDashboard from './components/SalesDashboard';
 import CreditControl from './components/CreditControl';
 import CustomerStatement from './components/CustomerStatement';
+import SalesTargets from './components/SalesTargets';
 
 const orderStatusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   delivered: { label: 'Entregado', variant: 'success' },
@@ -52,7 +53,7 @@ const invoiceStatusConfig: Record<string, { label: string; variant: 'success' | 
 function SalesPageContent() {
   const searchParams = useSearchParams();
   const tabParam = searchParams.get('tab');
-  const validTabs = ['orders', 'delivery', 'invoices', 'pos', 'customers', 'quotations', 'returns', 'credit-control', 'statement'] as const;
+  const validTabs = ['orders', 'delivery', 'invoices', 'pos', 'customers', 'quotations', 'returns', 'credit-control', 'statement', 'targets'] as const;
   const initialTab = validTabs.includes(tabParam as any) ? (tabParam as any) : 'orders';
   const [orders, setOrders] = useState<any[]>([]);
   const [deliveryGuides, setDeliveryGuides] = useState<any[]>([]);
@@ -62,7 +63,7 @@ function SalesPageContent() {
   const [returns, setReturns] = useState<any[]>([]);
   const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'delivery' | 'invoices' | 'pos' | 'customers' | 'quotations' | 'returns' | 'credit-notes' | 'debit-notes' | 'credit-control' | 'statement'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'delivery' | 'invoices' | 'pos' | 'customers' | 'quotations' | 'returns' | 'credit-notes' | 'debit-notes' | 'credit-control' | 'statement' | 'targets'>(initialTab);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -317,6 +318,7 @@ function SalesPageContent() {
             { id: 'debit-notes', label: 'ND' },
             { id: 'credit-control', label: 'Crédito' },
             { id: 'statement', label: 'Estado Cta.' },
+            { id: 'targets', label: 'Metas' },
             { id: 'pos', label: 'POS' },
           ]}
           defaultActiveId={activeTab}
@@ -701,6 +703,12 @@ function SalesPageContent() {
         {activeTab === 'statement' && (
           <div className="p-6">
             <CustomerStatement />
+          </div>
+        )}
+
+        {activeTab === 'targets' && (
+          <div className="p-6">
+            <SalesTargets />
           </div>
         )}
 
