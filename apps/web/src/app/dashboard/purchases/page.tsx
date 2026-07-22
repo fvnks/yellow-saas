@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import { useEffect, useState } from 'react';
-import { Plus, Search, Eye, Trash2, Calendar, Truck, ShoppingCart, FileText, Building2, Package, ReceiptText, RotateCcw, FileMinus, AlertTriangle, DollarSign } from 'lucide-react';
+import { Plus, Search, Eye, Trash2, Calendar, Truck, ShoppingCart, FileText, Building2, Package, ReceiptText, RotateCcw, FileMinus, AlertTriangle, DollarSign, TrendingUp, BarChart3, Target, ClipboardList } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { ContinuousTabs } from '@/components/ui/continuous-tabs';
@@ -19,6 +19,28 @@ import SupplierContracts from './components/SupplierContracts';
 import PurchaseBudgets from './components/PurchaseBudgets';
 import PurchaseForecast from './components/PurchaseForecast';
 
+const purchaseModules = [
+  { id: 'compras', label: 'Compras', icon: ShoppingCart, tabs: [
+    { id: 'orders', label: 'OC' }, { id: 'receipts', label: 'Recepciones' }, { id: 'quotations', label: 'Cotizaciones' },
+    { id: 'register', label: 'Registro' }, { id: 'invoices', label: 'Facturas' }, { id: 'returns', label: 'Devoluciones' },
+  ]},
+  { id: 'documentos', label: 'Documentos', icon: FileText, tabs: [
+    { id: 'credit-notes', label: 'NC' }, { id: 'debit-notes', label: 'ND' },
+  ]},
+  { id: 'finanzas', label: 'Finanzas', icon: DollarSign, tabs: [
+    { id: 'credit-control', label: 'Crédito' }, { id: 'statement', label: 'Estado Cta.' },
+  ]},
+  { id: 'analisis', label: 'Análisis', icon: BarChart3, tabs: [
+    { id: 'dashboard', label: 'Dashboard' }, { id: 'reports', label: 'Reportes' },
+    { id: 'price-history', label: 'Hist. Precios' }, { id: 'contracts', label: 'Contratos' },
+    { id: 'budgets', label: 'Presupuestos' }, { id: 'forecast', label: 'Pronóstico' },
+  ]},
+];
+
+type TabId = 'orders' | 'receipts' | 'quotations' | 'register' | 'invoices' | 'returns' | 'credit-notes' | 'debit-notes' | 'statement' | 'credit-control' | 'dashboard' | 'reports' | 'price-history' | 'contracts' | 'budgets' | 'forecast';
+
+const allTabs: TabId[] = ['orders','receipts','quotations','register','invoices','returns','credit-notes','debit-notes','statement','credit-control','dashboard','reports','price-history','contracts','budgets','forecast'];
+
 const ITEMS_PER_PAGE = 10;
 
 const orderStatusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
@@ -30,8 +52,6 @@ const orderStatusConfig: Record<string, { label: string; variant: 'success' | 'w
   cancelled: { label: 'Cancelada', variant: 'danger' },
 };
 
-type TabId = 'orders' | 'receipts' | 'quotations' | 'register' | 'invoices' | 'returns' | 'credit-notes' | 'debit-notes' | 'statement' | 'credit-control' | 'dashboard' | 'reports' | 'price-history' | 'contracts' | 'budgets' | 'forecast';
-
 export default function PurchasesPage() {
   const [purchaseOrders, setPurchaseOrders] = useState<any[]>([]);
   const [suppliers, setSuppliers] = useState<any[]>([]);
@@ -41,6 +61,12 @@ export default function PurchasesPage() {
   const [supplierFilter, setSupplierFilter] = useState('all');
   const [page, setPage] = useState(1);
   const [activeTab, setActiveTab] = useState<TabId>('orders');
+  const [activeModule, setActiveModule] = useState(() => {
+    for (const m of purchaseModules) {
+      if (m.tabs.some(t => t.id === 'orders')) return m.id;
+    }
+    return 'compras';
+  });
 
   useEffect(() => {
     const api = getApiClient();
@@ -99,30 +125,37 @@ export default function PurchasesPage() {
         </Link>
       </div>
 
-      {/* Tabs */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
-        <ContinuousTabs
-          tabs={[
-            { id: 'orders', label: `OC (${purchaseOrders.length})` },
-            { id: 'receipts', label: 'Recepciones' },
-            { id: 'quotations', label: 'Cotizaciones' },
-            { id: 'register', label: 'Registro' },
-            { id: 'invoices', label: 'Facturas' },
-            { id: 'returns', label: 'Devoluciones' },
-            { id: 'credit-notes', label: 'NC' },
-            { id: 'debit-notes', label: 'ND' },
-            { id: 'statement', label: 'Estado Cta.' },
-            { id: 'credit-control', label: 'Crédito' },
-            { id: 'dashboard', label: 'Dashboard' },
-            { id: 'reports', label: 'Reportes' },
-            { id: 'price-history', label: 'Hist. Precios' },
-            { id: 'contracts', label: 'Contratos' },
-            { id: 'budgets', label: 'Presupuestos' },
-            { id: 'forecast', label: 'Pronóstico' },
-          ]}
-          defaultActiveId={activeTab}
-          onChange={(id) => { setActiveTab(id as TabId); setSearch(''); setStatusFilter('all'); setPage(1); }}
-        />
+      {/* Module Navigation */}
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="flex items-center gap-1 flex-wrap">
+          {purchaseModules.map(m => {
+            const isActive = activeModule === m.id;
+            const Icon = m.icon;
+            return (
+              <button key={m.id} onClick={() => {
+                setActiveModule(m.id);
+                const firstTab = m.tabs[0];
+                if (firstTab) { setActiveTab(firstTab.id as TabId); setSearch(''); setStatusFilter('all'); setPage(1); }
+              }}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-50'}`}>
+                <Icon className="w-4 h-4" /> {m.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Sub-tabs for active module */}
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="flex items-center gap-1 flex-wrap">
+          {purchaseModules.find(m => m.id === activeModule)?.tabs.map(t => (
+            <button key={t.id} onClick={() => { setActiveTab(t.id as TabId); setSearch(''); setStatusFilter('all'); setPage(1); }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${activeTab === t.id ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-50 border border-slate-200'}`}>
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
         {/* Tab Content */}
         {activeTab === 'orders' && (
@@ -310,7 +343,6 @@ export default function PurchasesPage() {
         {activeTab === 'forecast' && (
           <div className="p-6"><PurchaseForecast /></div>
         )}
-      </div>
     </div>
   );
 }

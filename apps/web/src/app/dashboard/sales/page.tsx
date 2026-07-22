@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { Card, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Select, Input } from '@yellow-erp/ui';
-import { Plus, Search, Download, Eye, Edit, Trash2, ShoppingCart, DollarSign, Truck, CreditCard, Package, FileText, Monitor, Users, RotateCcw, AlertTriangle } from 'lucide-react';
+import { Plus, Search, Download, Eye, Edit, Trash2, ShoppingCart, DollarSign, Truck, CreditCard, Package, FileText, Monitor, Users, RotateCcw, AlertTriangle, TrendingUp, ReceiptText, Target, BarChart3, MapPin, Star, FileSignature, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
@@ -57,10 +57,33 @@ const invoiceStatusConfig: Record<string, { label: string; variant: 'success' | 
   sent: { label: 'Enviada', variant: 'info' },
 };
 
+const salesModules = [
+  { id: 'ventas', label: 'Ventas', icon: ShoppingCart, tabs: [
+    { id: 'orders', label: 'OV' }, { id: 'dashboard', label: 'Dashboard' }, { id: 'delivery', label: 'Despacho' },
+    { id: 'invoices', label: 'Facturas' }, { id: 'customers', label: 'Clientes' }, { id: 'quotations', label: 'Cotizaciones' }, { id: 'returns', label: 'Devoluciones' },
+  ]},
+  { id: 'documentos', label: 'Documentos', icon: FileText, tabs: [
+    { id: 'credit-notes', label: 'NC' }, { id: 'debit-notes', label: 'ND' },
+  ]},
+  { id: 'finanzas', label: 'Finanzas', icon: DollarSign, tabs: [
+    { id: 'credit-control', label: 'Crédito' }, { id: 'statement', label: 'Estado Cta.' },
+  ]},
+  { id: 'analisis', label: 'Análisis', icon: BarChart3, tabs: [
+    { id: 'targets', label: 'Metas' }, { id: 'commissions', label: 'Comisiones' }, { id: 'reports', label: 'Reportes' },
+    { id: 'price-history', label: 'Hist. Precios' }, { id: 'forecast', label: 'Pronóstico' },
+  ]},
+  { id: 'operaciones', label: 'Operaciones', icon: MapPin, tabs: [
+    { id: 'routes', label: 'Rutas' }, { id: 'loyalty', label: 'Lealtad' }, { id: 'contracts', label: 'Contratos' },
+  ]},
+  { id: 'pos', label: 'POS', icon: Monitor, tabs: [
+    { id: 'pos', label: 'POS' },
+  ]},
+];
+
 function SalesPageContent() {
   const searchParams = useSearchParams();
   const tabParam = searchParams.get('tab');
-  const validTabs = ['orders', 'delivery', 'invoices', 'pos', 'customers', 'quotations', 'returns', 'credit-control', 'statement', 'targets', 'commissions', 'reports', 'price-history', 'forecast', 'routes', 'loyalty', 'contracts'] as const;
+  const validTabs = ['orders', 'delivery', 'invoices', 'pos', 'customers', 'quotations', 'returns', 'credit-control', 'statement', 'targets', 'commissions', 'reports', 'price-history', 'forecast', 'routes', 'loyalty', 'contracts', 'dashboard', 'credit-notes', 'debit-notes'] as const;
   const initialTab = validTabs.includes(tabParam as any) ? (tabParam as any) : 'orders';
   const [orders, setOrders] = useState<any[]>([]);
   const [deliveryGuides, setDeliveryGuides] = useState<any[]>([]);
@@ -70,7 +93,13 @@ function SalesPageContent() {
   const [returns, setReturns] = useState<any[]>([]);
   const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'delivery' | 'invoices' | 'pos' | 'customers' | 'quotations' | 'returns' | 'credit-notes' | 'debit-notes' | 'credit-control' | 'statement' | 'targets' | 'commissions' | 'reports' | 'price-history' | 'forecast' | 'routes' | 'loyalty' | 'contracts'>(initialTab);
+  const [activeTab, setActiveTab] = useState<string>(initialTab);
+  const [activeModule, setActiveModule] = useState(() => {
+    for (const m of salesModules) {
+      if (m.tabs.some(t => t.id === initialTab)) return m.id;
+    }
+    return 'ventas';
+  });
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -310,35 +339,40 @@ function SalesPageContent() {
         </Card>
       </div>
 
-      {/* Tabs */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
-        <ContinuousTabs
-          tabs={[
-            { id: 'orders', label: `OV (${orders.length})` },
-            { id: 'dashboard', label: 'Dashboard' },
-            { id: 'delivery', label: `Despacho (${deliveryGuides.length})` },
-            { id: 'invoices', label: `Facturas (${invoices.length})` },
-            { id: 'customers', label: `Clientes (${customers.length})` },
-            { id: 'quotations', label: `Cotizaciones (${quotations.length})` },
-            { id: 'returns', label: `Devoluciones (${returns.length})` },
-            { id: 'credit-notes', label: 'NC' },
-            { id: 'debit-notes', label: 'ND' },
-            { id: 'credit-control', label: 'Crédito' },
-            { id: 'statement', label: 'Estado Cta.' },
-            { id: 'targets', label: 'Metas' },
-            { id: 'commissions', label: 'Comisiones' },
-            { id: 'reports', label: 'Reportes' },
-            { id: 'price-history', label: 'Hist. Precios' },
-            { id: 'forecast', label: 'Pronóstico' },
-            { id: 'routes', label: 'Rutas' },
-            { id: 'loyalty', label: 'Lealtad' },
-            { id: 'contracts', label: 'Contratos' },
-            { id: 'pos', label: 'POS' },
-          ]}
-          defaultActiveId={activeTab}
-          onChange={(id) => { setActiveTab(id as typeof activeTab); setSearch(''); setStatusFilter('all'); }}
-        />
+      {/* Module Navigation */}
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="flex items-center gap-1 flex-wrap">
+          {salesModules.map(m => {
+            const isActive = activeModule === m.id;
+            const Icon = m.icon;
+            return (
+              <button key={m.id} onClick={() => {
+                setActiveModule(m.id);
+                const firstTab = m.tabs[0];
+                if (firstTab) { setActiveTab(firstTab.id); setSearch(''); setStatusFilter('all'); }
+              }}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-50'}`}>
+                <Icon className="w-4 h-4" /> {m.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
+      {/* Sub-tabs for active module */}
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="flex items-center gap-1 flex-wrap">
+          {salesModules.find(m => m.id === activeModule)?.tabs.map(t => (
+            <button key={t.id} onClick={() => { setActiveTab(t.id); setSearch(''); setStatusFilter('all'); }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${activeTab === t.id ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-50 border border-slate-200'}`}>
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Content area */}
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
         {/* Filters - hidden for POS tab */}
         {activeTab !== 'pos' && (
           <div className="p-4 border-b border-slate-100">
