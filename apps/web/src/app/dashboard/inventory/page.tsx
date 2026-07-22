@@ -9,6 +9,7 @@ import { generateBarcodeLabelsPDF } from '@/lib/pdf-design';
 import BarcodeScanner from '../../../components/barcode/barcode-scanner';
 import StockAlerts from './components/StockAlerts';
 import StockTransfers from './components/StockTransfers';
+import ProductKits from './components/ProductKits';
 
 interface Product {
   id: string;
@@ -177,6 +178,8 @@ export default function InventoryPage() {
       <StockAlerts />
 
       <StockTransfers />
+
+      <ProductKits />
 
       {/* Products Table */}
       <Card>
