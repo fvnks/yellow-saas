@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { Card, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Select, Input } from '@yellow-erp/ui';
-import { Plus, Search, Download, Eye, Edit, Trash2, ShoppingCart, DollarSign, Truck, CreditCard, Package, FileText, Monitor, Users, RotateCcw } from 'lucide-react';
+import { Plus, Search, Download, Eye, Edit, Trash2, ShoppingCart, DollarSign, Truck, CreditCard, Package, FileText, Monitor, Users, RotateCcw, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
@@ -13,6 +13,7 @@ import { ContinuousTabs } from '@/components/ui/continuous-tabs';
 import CreditNotes from './components/CreditNotes';
 import DebitNotes from './components/DebitNotes';
 import SalesDashboard from './components/SalesDashboard';
+import CreditControl from './components/CreditControl';
 
 const orderStatusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   delivered: { label: 'Entregado', variant: 'success' },
@@ -50,7 +51,7 @@ const invoiceStatusConfig: Record<string, { label: string; variant: 'success' | 
 function SalesPageContent() {
   const searchParams = useSearchParams();
   const tabParam = searchParams.get('tab');
-  const validTabs = ['orders', 'delivery', 'invoices', 'pos', 'customers', 'quotations', 'returns'] as const;
+  const validTabs = ['orders', 'delivery', 'invoices', 'pos', 'customers', 'quotations', 'returns', 'credit-control'] as const;
   const initialTab = validTabs.includes(tabParam as any) ? (tabParam as any) : 'orders';
   const [orders, setOrders] = useState<any[]>([]);
   const [deliveryGuides, setDeliveryGuides] = useState<any[]>([]);
@@ -60,7 +61,7 @@ function SalesPageContent() {
   const [returns, setReturns] = useState<any[]>([]);
   const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'delivery' | 'invoices' | 'pos' | 'customers' | 'quotations' | 'returns' | 'credit-notes' | 'debit-notes'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'delivery' | 'invoices' | 'pos' | 'customers' | 'quotations' | 'returns' | 'credit-notes' | 'debit-notes' | 'credit-control'>(initialTab);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -313,6 +314,7 @@ function SalesPageContent() {
             { id: 'returns', label: `Devoluciones (${returns.length})` },
             { id: 'credit-notes', label: 'NC' },
             { id: 'debit-notes', label: 'ND' },
+            { id: 'credit-control', label: 'Crédito' },
             { id: 'pos', label: 'POS' },
           ]}
           defaultActiveId={activeTab}
@@ -685,6 +687,12 @@ function SalesPageContent() {
         {activeTab === 'debit-notes' && (
           <div className="p-6">
             <DebitNotes />
+          </div>
+        )}
+
+        {activeTab === 'credit-control' && (
+          <div className="p-6">
+            <CreditControl />
           </div>
         )}
 
