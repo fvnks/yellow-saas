@@ -1,0 +1,206 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { AlertTriangle, Clock, DollarSign, Users, TrendingDown } from 'lucide-react';
+
+interface AgingEntry {
+  customer_id: string;
+  name: string;
+  tax_id: string;
+  email: string;
+  phone: string;
+  credit_limit: number;
+  invoice_id: string;
+  invoice_number: string;
+  total_amount: number;
+  paid_amount: number;
+  balance: number;
+  invoice_date: string;
+  due_date: string;
+  days_overdue: number;
+  aging_bucket: string;
+}
+
+interface CustomerTotal {
+  id: string;
+  name: string;
+  tax_id: string;
+  credit_limit: number;
+  total_balance: number;
+  overdue_amount: number;
+  overdue_count: number;
+}
+
+interface AgingSummary {
+  current: number;
+  '1-30': number;
+  '31-60': number;
+  '61-90': number;
+  '90+': number;
+  total: number;
+}
+
+const bucketConfig: Record<string, { label: string; color: string; bg: string }> = {
+  current: { label: 'Corriente', color: 'text-emerald-700', bg: 'bg-emerald-50' },
+  '1-30': { label: '1-30 días', color: 'text-amber-700', bg: 'bg-amber-50' },
+  '31-60': { label: '31-60 días', color: 'text-orange-700', bg: 'bg-orange-50' },
+  '61-90': { label: '61-90 días', color: 'text-red-700', bg: 'bg-red-50' },
+  '90+': { label: '90+ días', color: 'text-red-900', bg: 'bg-red-100' },
+};
+
+export default function CreditControl() {
+  const [customerTotals, setCustomerTotals] = useState<CustomerTotal[]>([]);
+  const [summary, setSummary] = useState<AgingSummary | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [expandedCustomer, setExpandedCustomer] = useState<string | null>(null);
+  const [agingDetails, setAgingDetails] = useState<AgingEntry[]>([]);
+
+  useEffect(() => { loadData(); }, []);
+
+  const loadData = async () => {
+    try {
+      const companyId = localStorage.getItem('company_id');
+      const res = await fetch(`/api/companies/${companyId}/credit-control`);
+      if (res.ok) {
+        const json = await res.json();
+        setCustomerTotals(json.data.customerTotals || []);
+        setSummary(json.data.summary || null);
+        setAgingDetails(json.data.aging || []);
+      }
+    } catch (e) { console.error(e); }
+    setLoading(false);
+  };
+
+  const handleExpandCustomer = (customerId: string) => {
+    setExpandedCustomer(expandedCustomer === customerId ? null : customerId);
+  };
+
+  const formatMoney = (val: number) => `$${val.toLocaleString('en-US', { minimumFractionDigits: 0 })}`;
+
+  if (loading) return null;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-2">
+        <AlertTriangle className="w-4 h-4 text-slate-500" />
+        <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Control de Crédito</span>
+      </div>
+
+      {summary && (
+        <div className="grid grid-cols-5 gap-3">
+          {(['current', '1-30', '31-60', '61-90', '90+'] as const).map(bucket => {
+            const cfg = bucketConfig[bucket];
+            return (
+              <div key={bucket} className={`${cfg.bg} border border-slate-200 rounded-xl p-4`}>
+                <p className={`text-[9px] font-semibold ${cfg.color} uppercase`}>{cfg.label}</p>
+                <p className="text-lg font-bold text-slate-900 mt-1">{formatMoney(summary[bucket])}</p>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {summary && (
+        <div className="bg-slate-900 text-white rounded-xl p-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <DollarSign className="w-5 h-5 text-slate-300" />
+            <span className="text-sm font-medium">Total por Cobrar</span>
+          </div>
+          <span className="text-xl font-bold">{formatMoney(summary.total)}</span>
+        </div>
+      )}
+
+      {customerTotals.length === 0 ? (
+        <div className="text-center py-12 bg-slate-50 border border-dashed border-slate-300 rounded-xl">
+          <AlertTriangle className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+          <p className="text-xs text-slate-400">Sin facturas pendientes</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {customerTotals.map(c => {
+            const details = agingDetails.filter(a => a.customer_id === c.id);
+            const isExpanded = expandedCustomer === c.id;
+            const isOverLimit = c.credit_limit > 0 && c.total_balance > c.credit_limit;
+
+            return (
+              <div key={c.id} className={`bg-white border rounded-xl overflow-hidden transition-colors ${isOverLimit ? 'border-red-300' : 'border-slate-200'}`}>
+                <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50"
+                  onClick={() => handleExpandCustomer(c.id)}>
+                  <div className="flex items-center gap-3">
+                    <Users className="w-5 h-5 text-slate-500" />
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium text-slate-900">{c.name}</p>
+                        {isOverLimit && (
+                          <span className="px-1.5 py-0.5 bg-red-100 text-red-700 text-[8px] font-semibold rounded">LÍMITE EXCEDIDO</span>
+                        )}
+                        {c.overdue_count > 0 && (
+                          <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[8px] font-semibold rounded">{c.overdue_count} VENCIDAS</span>
+                        )}
+                      </div>
+                      <p className="text-[9px] text-slate-500">{c.tax_id}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-6">
+                    <div className="text-right">
+                      <p className="text-sm font-bold text-slate-900">{formatMoney(c.total_balance)}</p>
+                      <p className="text-[9px] text-slate-500">Saldo total</p>
+                    </div>
+                    {c.credit_limit > 0 && (
+                      <div className="text-right">
+                        <p className="text-xs text-slate-600">{formatMoney(c.credit_limit)}</p>
+                        <p className="text-[9px] text-slate-500">Límite</p>
+                      </div>
+                    )}
+                    {c.overdue_amount > 0 && (
+                      <div className="text-right">
+                        <p className="text-xs font-bold text-red-600">{formatMoney(c.overdue_amount)}</p>
+                        <p className="text-[9px] text-red-500">Vencido</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {isExpanded && details.length > 0 && (
+                  <div className="border-t border-slate-100 px-4 pb-4">
+                    <table className="w-full mt-2">
+                      <thead>
+                        <tr className="border-b border-slate-200">
+                          <th className="text-left px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Factura</th>
+                          <th className="text-right px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Monto</th>
+                          <th className="text-right px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Pagado</th>
+                          <th className="text-right px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Saldo</th>
+                          <th className="text-right px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Vencimiento</th>
+                          <th className="text-right px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Días</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {details.map(d => {
+                          const cfg = bucketConfig[d.aging_bucket] || bucketConfig.current;
+                          return (
+                            <tr key={d.invoice_id} className="border-b border-slate-50">
+                              <td className="px-3 py-2 text-xs text-slate-900">{d.invoice_number}</td>
+                              <td className="px-3 py-2 text-xs text-right text-slate-600">{formatMoney(d.total_amount)}</td>
+                              <td className="px-3 py-2 text-xs text-right text-emerald-600">{formatMoney(d.paid_amount)}</td>
+                              <td className="px-3 py-2 text-xs text-right font-bold text-slate-900">{formatMoney(d.balance)}</td>
+                              <td className="px-3 py-2 text-xs text-right text-slate-600">{new Date(d.due_date).toLocaleDateString('es-CL')}</td>
+                              <td className="px-3 py-2 text-right">
+                                <span className={`px-2 py-0.5 rounded-full text-[9px] font-semibold ${cfg.bg} ${cfg.color}`}>
+                                  {d.days_overdue > 0 ? `${d.days_overdue}d` : 'OK'}
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}

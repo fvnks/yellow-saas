@@ -1,0 +1,58 @@
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { rows: aging } = await query(
+      `SELECT c.id, c.name, c.tax_id, c.email, c.phone, c.credit_limit,
+        i.id as invoice_id, i.invoice_number, i.total_amount, i.paid_amount,
+        i.total_amount - i.paid_amount as balance,
+        i.invoice_date, i.due_date,
+        CURRENT_DATE - i.due_date::date as days_overdue,
+        CASE
+          WHEN CURRENT_DATE - i.due_date::date <= 0 THEN 'current'
+          WHEN CURRENT_DATE - i.due_date::date <= 30 THEN '1-30'
+          WHEN CURRENT_DATE - i.due_date::date <= 60 THEN '31-60'
+          WHEN CURRENT_DATE - i.due_date::date <= 90 THEN '61-90'
+          ELSE '90+'
+        END as aging_bucket
+      FROM invoices i
+      JOIN customers c ON c.id = i.customer_id
+      WHERE i.company_id = $1
+        AND i.status IN ('pending', 'partial', 'overdue')
+        AND i.total_amount - i.paid_amount > 0
+      ORDER BY c.name, i.due_date`,
+      [companyId]
+    );
+
+    const { rows: customerTotals } = await query(
+      `SELECT c.id, c.name, c.tax_id, c.credit_limit,
+        COALESCE(SUM(i.total_amount - i.paid_amount), 0) as total_balance,
+        COALESCE(SUM(CASE WHEN CURRENT_DATE - i.due_date::date > 0 THEN i.total_amount - i.paid_amount ELSE 0 END), 0) as overdue_amount,
+        COUNT(CASE WHEN CURRENT_DATE - i.due_date::date > 0 THEN 1 END) as overdue_count
+      FROM customers c
+      LEFT JOIN invoices i ON i.customer_id = c.id AND i.status IN ('pending', 'partial', 'overdue') AND i.total_amount - i.paid_amount > 0
+      WHERE c.company_id = $1
+      GROUP BY c.id, c.name, c.tax_id, c.credit_limit
+      HAVING COALESCE(SUM(i.total_amount - i.paid_amount), 0) > 0
+      ORDER BY total_balance DESC`,
+      [companyId]
+    );
+
+    const summary = {
+      current: 0, '1-30': 0, '31-60': 0, '61-90': 0, '90+': 0, total: 0
+    };
+    for (const row of aging) {
+      summary[row.aging_bucket as keyof typeof summary] += parseFloat(row.balance);
+      summary.total += parseFloat(row.balance);
+    }
+
+    return successResponse({ aging, customerTotals, summary });
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
