@@ -8,6 +8,7 @@ import { getApiClient } from '@/lib/api-client';
 import { generateBarcodeLabelsPDF } from '@/lib/pdf-design';
 import { ContinuousTabs } from '@/components/ui/continuous-tabs';
 import ProductImages from '../components/ProductImages';
+import BarcodeDisplay from '../components/BarcodeDisplay';
 
 interface ProductData {
   id: string;
@@ -284,6 +285,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                     <p className="text-sm text-slate-700 mt-1">{product.description}</p>
                   </div>
                 )}
+              </div>
+
+              <div>
+                <h3 className="text-sm font-semibold text-slate-900 mb-4">Codigo de Barras</h3>
+                <BarcodeDisplay value={product.barcode || ''} />
               </div>
 
               <div>
