@@ -57,6 +57,16 @@ export async function POST(request: NextRequest) {
       return errorResponse('Name is required', 400);
     }
 
+    if (tax_id) {
+      const existing = await query(
+        'SELECT id FROM customers WHERE company_id = $1 AND tax_id = $2',
+        [companyId, tax_id]
+      );
+      if (existing.rows.length > 0) {
+        return errorResponse(`Ya existe un cliente con este RUT: ${tax_id}`, 409);
+      }
+    }
+
     const result = await query(
       `INSERT INTO customers (
         company_id, name, code, trade_name, tax_id, tax_id_type, address, city, region,
