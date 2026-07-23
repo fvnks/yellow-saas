@@ -5,6 +5,7 @@ import { ArrowLeft, Printer, Download, Truck, User, Calendar, MapPin, Package } 
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { generateDeliveryGuidePDF } from '@/lib/pdf-design';
+import { usePrintDocument } from '@/components/print/use-print';
 
 interface DeliveryGuideItem {
   id: string;
@@ -43,6 +44,8 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
   const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  const { print } = usePrintDocument();
+
   useEffect(() => {
     const api = getApiClient();
     Promise.all([
@@ -56,7 +59,29 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
   }, [id]);
 
   const handlePrint = () => {
-    window.print();
+    if (!guide) return;
+    const c = company || {};
+    print('delivery-guide', {
+      id: guide.id,
+      number: guide.guide_number,
+      type: 'guía',
+      date: guide.created_at,
+      status: guide.status,
+      company: {
+        name: c.name || 'Empresa', tax_id: c.tax_id, razon_social: c.razon_social,
+        giro: c.giro, address: c.address, city: c.city, region: c.region,
+        phone: c.phone, email: c.email, logo_url: c.logo_url,
+      },
+      customer: guide.sales_order?.customer ? { name: guide.sales_order.customer.name, tax_id: guide.sales_order.customer.tax_id } : undefined,
+      items: (guide.items || []).map(item => ({
+        name: item.product?.name || '', sku: item.product?.sku,
+        quantity: item.quantity, unit_price: 0, total: 0,
+        observation: item.observation,
+      })),
+      subtotal: 0, tax_amount: 0, total: 0,
+      transport: guide.transport, driver_name: guide.driver_name,
+      vehicle_plate: guide.vehicle_plate, shipping_address: guide.shipping_address,
+    });
   };
 
   const handleDownloadPDF = async () => {

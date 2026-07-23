@@ -6,6 +6,7 @@ import { ArrowLeft, Printer, Calendar, Truck, MapPin, CheckCircle, Download, Sen
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { generateOrdenCompraPDF } from '@/lib/pdf-design';
+import { usePrintDocument } from '@/components/print/use-print';
 
 interface OrderItem {
   product_id: string;
@@ -43,20 +44,25 @@ const statusConfig: Record<string, { label: string; variant: 'success' | 'warnin
 export default function PurchaseDetailPage({ params }: { params: { id: string } }) {
   const { id } = params;
   const [order, setOrder] = useState<OrderDetail | null>(null);
+  const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const { print } = usePrintDocument();
+
   useEffect(() => {
     const api = getApiClient();
-    api.getPurchaseOrder(id)
-      .then((data) => {
-        setOrder(data as unknown as OrderDetail);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('No se pudo cargar la orden');
-        setLoading(false);
-      });
+    Promise.all([
+      api.getPurchaseOrder(id),
+      api.getCompany().catch(() => null),
+    ]).then(([data, companyRes]) => {
+      setOrder(data as unknown as OrderDetail);
+      if (companyRes) setCompany(companyRes);
+      setLoading(false);
+    }).catch(() => {
+      setError('No se pudo cargar la orden');
+      setLoading(false);
+    });
   }, [id]);
 
   const handleDownloadPDF = async () => {
@@ -94,6 +100,34 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
       notes: order.notes,
     });
     doc.save(`${order.number}.pdf`);
+  };
+
+  const handlePrint = () => {
+    if (!order) return;
+    const c = company || {};
+    print('purchase-order', {
+      id: order.id,
+      number: order.number,
+      type: 'orden de compra',
+      date: order.created_at,
+      status: order.status,
+      company: {
+        name: c.name || 'Empresa', tax_id: c.tax_id, razon_social: c.razon_social,
+        giro: c.giro, address: c.address, city: c.city, region: c.region,
+        phone: c.phone, email: c.email, logo_url: c.logo_url,
+      },
+      supplier: order.supplier ? { name: order.supplier.name, tax_id: order.supplier.tax_id } : undefined,
+      items: (order.items || []).map(item => ({
+        name: item.product?.name || '', sku: item.product?.sku,
+        quantity: item.quantity, unit_price: item.unit_price,
+        discount: item.discount_percent, total: item.line_total,
+      })),
+      subtotal, tax_amount: tax, total, notes: order.notes,
+      warehouse: order.warehouse?.name,
+      delivery_date: order.expected_date,
+      payment_method: order.payment_method,
+      payment_terms: order.payment_terms,
+    });
   };
 
   const handleStatusChange = async (newStatus: string) => {
@@ -173,7 +207,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
               Editar
             </button>
           </Link>
-          <Button variant="secondary" size="sm" onClick={() => window.print()}>
+          <Button variant="secondary" size="sm" onClick={handlePrint}>
             <Printer className="w-4 h-4 mr-2" />
             Imprimir
           </Button>
@@ -381,7 +415,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
               </div>
 
               <div className="flex flex-col gap-2 pt-4">
-                <Button variant="secondary" className="w-full">
+                <Button variant="secondary" className="w-full" onClick={handlePrint}>
                   <Printer className="w-4 h-4 mr-2" />
                   Imprimir Orden
                 </Button>
