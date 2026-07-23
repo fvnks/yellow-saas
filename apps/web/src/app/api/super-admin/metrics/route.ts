@@ -1,0 +1,33 @@
+import { query } from '@/api/lib/db';
+import { successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+import { verifySuperAdmin } from '@/api/super-admin/lib/auth';
+
+export async function GET(request: NextRequest) {
+  const admin = await verifySuperAdmin(request);
+  if (!admin) return errorResponse('No autorizado', 401);
+
+  try {
+    const [companiesResult, usersResult, trialResult, activeUsersResult, recentResult] = await Promise.all([
+      query('SELECT COUNT(*) as total FROM companies'),
+      query('SELECT COUNT(*) as total FROM profiles'),
+      query("SELECT COUNT(*) as total FROM companies WHERE status = 'trial'"),
+      query("SELECT COUNT(*) as total FROM profiles WHERE status = 'active'"),
+      query("SELECT COUNT(*) as total FROM profiles WHERE created_at > now() - interval '30 days'"),
+    ]);
+
+    const activeCompaniesResult = await query("SELECT COUNT(*) as total FROM companies WHERE status = 'active'");
+
+    return successResponse({
+      totalCompanies: parseInt(companiesResult.rows[0].total),
+      activeCompanies: parseInt(activeCompaniesResult.rows[0].total),
+      trialCompanies: parseInt(trialResult.rows[0].total),
+      totalUsers: parseInt(usersResult.rows[0].total),
+      activeUsers: parseInt(activeUsersResult.rows[0].total),
+      recentSignups: parseInt(recentResult.rows[0].total),
+    });
+  } catch (err) {
+    console.error('Metrics error:', err);
+    return errorResponse('Error al obtener métricas', 500);
+  }
+}

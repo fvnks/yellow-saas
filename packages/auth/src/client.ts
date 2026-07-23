@@ -6,8 +6,9 @@ interface UserPayload {
   id: string;
   email: string;
   name: string;
-  company_id: string;
+  company_id?: string;
   role: string;
+  role_type?: 'company' | 'super_admin';
 }
 
 export function getSessionFromCookie(): UserPayload | null {
@@ -27,6 +28,11 @@ export function getSessionFromCookie(): UserPayload | null {
   }
 }
 
+export function isSuperAdmin(): boolean {
+  const session = getSessionFromCookie();
+  return session?.role_type === 'super_admin';
+}
+
 export async function getCompanyId(): Promise<string | null> {
   const session = getSessionFromCookie();
   return session?.company_id ?? null;
@@ -43,5 +49,10 @@ export async function getUserProfile(): Promise<UserPayload | null> {
 
 export function logout() {
   document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-  window.location.href = '/login';
+  const session = getSessionFromCookie();
+  if (session?.role_type === 'super_admin') {
+    window.location.href = '/super-admin/login';
+  } else {
+    window.location.href = '/login';
+  }
 }
