@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { 
-  ShoppingCart, Users, Package, CreditCard, BarChart3, 
+import {
+  ShoppingCart, Users, Package, CreditCard, BarChart3,
   ArrowUpRight, ArrowDownRight, Minus, AlertTriangle
 } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
-import { 
-  ChartCard, ThemedLineChart, ThemedBarChart, ChartTooltip 
+import {
+  ChartCard, ThemedLineChart, ThemedBarChart, ChartTooltip
 } from '@/components/ui/chart';
 import {
   PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip
@@ -29,15 +29,23 @@ function formatCurrency(amount: number): string {
 }
 
 function ChangeIndicator({ value }: { value: number }) {
-  if (value > 0) return <span className="text-xs text-emerald-600 flex items-center gap-0.5"><ArrowUpRight className="w-3 h-3" />+{value}%</span>;
-  if (value < 0) return <span className="text-xs text-rose-600 flex items-center gap-0.5"><ArrowDownRight className="w-3 h-3" />{value}%</span>;
-  return <span className="text-xs text-slate-400 flex items-center gap-0.5"><Minus className="w-3 h-3" />0%</span>;
+  if (value > 0) return <span className="text-[10px] font-semibold text-emerald-600 flex items-center gap-0.5"><ArrowUpRight className="w-3 h-3" />+{value}%</span>;
+  if (value < 0) return <span className="text-[10px] font-semibold text-rose-600 flex items-center gap-0.5"><ArrowDownRight className="w-3 h-3" />{value}%</span>;
+  return <span className="text-[10px] font-medium text-slate-400 flex items-center gap-0.5"><Minus className="w-3 h-3" />0%</span>;
 }
 
-/* ── Sales/Purchases markers ──────────────────────── */
 const salesMarkers = [
   { date: new Date(2026, 0, 1), icon: '🎯', title: 'Inicio de año', color: '#6366f1' },
   { date: new Date(2026, 5, 1), icon: '📊', title: 'Medio año', color: '#10b981' },
+];
+
+const kpiColors = [
+  { bg: 'bg-indigo-50 dark:bg-indigo-500/10', text: 'text-indigo-600 dark:text-indigo-400', ring: 'ring-indigo-100 dark:ring-indigo-500/20' },
+  { bg: 'bg-emerald-50 dark:bg-emerald-500/10', text: 'text-emerald-600 dark:text-emerald-400', ring: 'ring-emerald-100 dark:ring-emerald-500/20' },
+  { bg: 'bg-amber-50 dark:bg-amber-500/10', text: 'text-amber-600 dark:text-amber-400', ring: 'ring-amber-100 dark:ring-amber-500/20' },
+  { bg: 'bg-rose-50 dark:bg-rose-500/10', text: 'text-rose-600 dark:text-rose-400', ring: 'ring-rose-100 dark:ring-rose-500/20' },
+  { bg: 'bg-violet-50 dark:bg-violet-500/10', text: 'text-violet-600 dark:text-violet-400', ring: 'ring-violet-100 dark:ring-violet-500/20' },
+  { bg: 'bg-amber-50 dark:bg-amber-500/10', text: 'text-amber-600 dark:text-amber-400', ring: 'ring-amber-100 dark:ring-amber-500/20' },
 ];
 
 export default function DashboardPage() {
@@ -54,26 +62,18 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 pt-4">
         <div className="flex items-center justify-between">
           <div>
-            <div className="h-7 w-48 bg-slate-200 rounded animate-pulse" />
+            <div className="h-7 w-48 bg-slate-200 rounded-lg animate-pulse" />
             <div className="h-4 w-64 bg-slate-100 rounded mt-2 animate-pulse" />
           </div>
         </div>
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-white border border-slate-200 rounded-xl shadow-sm p-5">
+            <div key={i} className="border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-5 bg-white dark:bg-slate-900">
               <div className="h-4 w-20 bg-slate-100 rounded animate-pulse mb-3" />
               <div className="h-8 w-28 bg-slate-200 rounded animate-pulse" />
-            </div>
-          ))}
-        </div>
-        <div className="grid gap-6 lg:grid-cols-2">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 h-72">
-              <div className="h-4 w-32 bg-slate-100 rounded animate-pulse mb-4" />
-              <div className="h-56 bg-slate-50 rounded animate-pulse" />
             </div>
           ))}
         </div>
@@ -86,12 +86,12 @@ export default function DashboardPage() {
   const recent = data?.recent || {};
 
   const kpiCards = [
-    { label: 'Ventas del Mes', value: formatCurrency(kpis.sales?.total || 0), sub: `${kpis.sales?.count || 0} órdenes`, change: kpis.sales?.change || 0, icon: ShoppingCart, color: 'indigo' },
-    { label: 'Compras del Mes', value: formatCurrency(kpis.purchases?.total || 0), sub: `${kpis.purchases?.count || 0} órdenes`, change: kpis.purchases?.change || 0, icon: CreditCard, color: 'emerald' },
-    { label: 'Clientes Nuevos', value: String(kpis.customers?.total || 0), sub: 'este mes', change: kpis.customers?.change || 0, icon: Users, color: 'amber' },
-    { label: 'Productos', value: String(kpis.products?.total || 0), sub: `${kpis.products?.lowStock || 0} stock bajo`, change: 0, icon: Package, color: 'rose' },
-    { label: 'Facturas', value: String(kpis.invoices?.pending || 0), sub: `pendientes de ${kpis.invoices?.total || 0}`, change: 0, icon: BarChart3, color: 'violet' },
-    { label: 'Mermas', value: formatCurrency(kpis.mermas?.totalCost || 0), sub: `${kpis.mermas?.count || 0} registros`, change: 0, icon: AlertTriangle, color: 'amber' },
+    { label: 'Ventas del Mes', value: formatCurrency(kpis.sales?.total || 0), sub: `${kpis.sales?.count || 0} órdenes`, change: kpis.sales?.change || 0, icon: ShoppingCart },
+    { label: 'Compras del Mes', value: formatCurrency(kpis.purchases?.total || 0), sub: `${kpis.purchases?.count || 0} órdenes`, change: kpis.purchases?.change || 0, icon: CreditCard },
+    { label: 'Clientes Nuevos', value: String(kpis.customers?.total || 0), sub: 'este mes', change: kpis.customers?.change || 0, icon: Users },
+    { label: 'Productos', value: String(kpis.products?.total || 0), sub: `${kpis.products?.lowStock || 0} stock bajo`, change: 0, icon: Package },
+    { label: 'Facturas', value: String(kpis.invoices?.pending || 0), sub: `pendientes de ${kpis.invoices?.total || 0}`, change: 0, icon: BarChart3 },
+    { label: 'Mermas', value: formatCurrency(kpis.mermas?.totalCost || 0), sub: `${kpis.mermas?.count || 0} registros`, change: 0, icon: AlertTriangle },
   ];
 
   const salesByDay = (charts.salesByDay || []).map((d: any) => ({ name: d.day, Ventas: parseInt(d.count), Monto: parseFloat(d.total) }));
@@ -102,35 +102,38 @@ export default function DashboardPage() {
   const topProducts = charts.topProducts || [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pt-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Dashboard</h1>
-          <p className="text-sm text-slate-500 mt-1">Resumen general de tu empresa</p>
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white">Dashboard</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Resumen general de tu empresa</p>
         </div>
-        <Link href="/dashboard/sales" className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+        <Link href="/dashboard/sales" className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:shadow-md hover:shadow-slate-900/20 active:scale-[0.98] dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100">
           Nueva Venta
         </Link>
       </div>
 
       {/* KPI Cards */}
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-        {kpiCards.map((kpi, i) => (
-          <div key={i} className="bg-white border border-slate-200 rounded-xl shadow-sm p-5">
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">{kpi.label}</p>
-              <div className={`w-8 h-8 bg-${kpi.color}-50 rounded-lg flex items-center justify-center`}>
-                <kpi.icon className={`w-4 h-4 text-${kpi.color}-600`} />
+        {kpiCards.map((kpi, i) => {
+          const colors = kpiColors[i % kpiColors.length];
+          return (
+            <div key={i} className="group border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-5 bg-white dark:bg-slate-900 hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{kpi.label}</p>
+                <div className={`w-9 h-9 ${colors.bg} rounded-xl flex items-center justify-center ring-1 ${colors.ring}`}>
+                  <kpi.icon className={`w-4 h-4 ${colors.text}`} />
+                </div>
+              </div>
+              <p className="text-2xl font-bold text-slate-900 dark:text-white">{kpi.value}</p>
+              <div className="flex items-center justify-between mt-1.5">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">{kpi.sub}</p>
+                <ChangeIndicator value={kpi.change} />
               </div>
             </div>
-            <p className="text-2xl font-bold text-slate-900">{kpi.value}</p>
-            <div className="flex items-center justify-between mt-1">
-              <p className="text-xs text-slate-500">{kpi.sub}</p>
-              <ChangeIndicator value={kpi.change} />
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Charts Row 1 - Sales & Purchases */}
@@ -171,7 +174,6 @@ export default function DashboardPage() {
 
       {/* Charts Row 2 - Status & Customers */}
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Sales Status Pie */}
         <ChartCard title="Estado Ventas">
           <ResponsiveContainer width="100%" height={224}>
             <PieChart>
@@ -186,7 +188,6 @@ export default function DashboardPage() {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Purchases Status Pie */}
         <ChartCard title="Estado Compras">
           <ResponsiveContainer width="100%" height={224}>
             <PieChart>
@@ -201,11 +202,7 @@ export default function DashboardPage() {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Customer Growth */}
-        <ChartCard
-          title="Clientes Nuevos"
-          subtitle="Últimos 6 meses"
-        >
+        <ChartCard title="Clientes Nuevos" subtitle="Últimos 6 meses">
           <ThemedLineChart
             data={customersByMonth}
             lines={[{ dataKey: 'Clientes', color: '#f59e0b' }]}
@@ -216,29 +213,27 @@ export default function DashboardPage() {
 
       {/* Charts Row 3 - Top Products & Recent */}
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Top Products */}
         <ChartCard title="Top Productos" subtitle="Más vendidos este mes">
           {topProducts.length === 0 ? (
             <p className="text-xs text-slate-400 text-center py-8">Sin datos de ventas este mes</p>
           ) : (
             <div className="space-y-3">
               {topProducts.map((p: any, i: number) => (
-                <div key={i} className="flex items-center justify-between">
+                <div key={i} className="flex items-center justify-between group/item">
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className="text-xs font-bold text-slate-400 w-5">{i + 1}</span>
+                    <span className="text-xs font-bold text-slate-300 dark:text-slate-600 w-5 group-hover/item:text-amber-500 transition-colors">{i + 1}</span>
                     <div className="min-w-0">
-                      <p className="text-xs font-medium text-slate-900 truncate">{p.name}</p>
-                      <p className="text-[10px] text-slate-400">{p.sku}</p>
+                      <p className="text-xs font-medium text-slate-900 dark:text-white truncate">{p.name}</p>
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500">{p.sku}</p>
                     </div>
                   </div>
-                  <span className="text-xs font-semibold text-slate-700">{p.total_sold} u.</span>
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{p.total_sold} u.</span>
                 </div>
               ))}
             </div>
           )}
         </ChartCard>
 
-        {/* Recent Sales */}
         <ChartCard
           title="Ventas Recientes"
           action={
@@ -251,18 +246,17 @@ export default function DashboardPage() {
             {(recent.sales || []).length === 0 ? (
               <p className="text-xs text-slate-400 text-center py-4">Sin ventas recientes</p>
             ) : recent.sales.map((s: any) => (
-              <Link key={s.id} href={`/dashboard/sales/${s.id}`} className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 transition-colors">
+              <Link key={s.id} href={`/dashboard/sales/${s.id}`} className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200">
                 <div>
-                  <p className="text-xs font-medium text-slate-900">{s.order_number || s.number}</p>
-                  <p className="text-[10px] text-slate-400">{s.customer?.name || '—'}</p>
+                  <p className="text-xs font-medium text-slate-900 dark:text-white">{s.order_number || s.number}</p>
+                  <p className="text-[10px] text-slate-400 dark:text-slate-500">{s.customer?.name || '—'}</p>
                 </div>
-                <span className="text-xs font-semibold text-slate-700">{formatCurrency(s.total || 0)}</span>
+                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{formatCurrency(s.total || 0)}</span>
               </Link>
             ))}
           </div>
         </ChartCard>
 
-        {/* Recent Purchases */}
         <ChartCard
           title="Compras Recientes"
           action={
@@ -275,12 +269,12 @@ export default function DashboardPage() {
             {(recent.purchases || []).length === 0 ? (
               <p className="text-xs text-slate-400 text-center py-4">Sin compras recientes</p>
             ) : recent.purchases.map((p: any) => (
-              <Link key={p.id} href={`/dashboard/purchases/${p.id || p.number}`} className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 transition-colors">
+              <Link key={p.id} href={`/dashboard/purchases/${p.id || p.number}`} className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200">
                 <div>
-                  <p className="text-xs font-medium text-slate-900">{p.number}</p>
-                  <p className="text-[10px] text-slate-400">{p.supplier?.name || '—'}</p>
+                  <p className="text-xs font-medium text-slate-900 dark:text-white">{p.number}</p>
+                  <p className="text-[10px] text-slate-400 dark:text-slate-500">{p.supplier?.name || '—'}</p>
                 </div>
-                <span className="text-xs font-semibold text-slate-700">{formatCurrency(p.total_amount || 0)}</span>
+                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{formatCurrency(p.total_amount || 0)}</span>
               </Link>
             ))}
           </div>
