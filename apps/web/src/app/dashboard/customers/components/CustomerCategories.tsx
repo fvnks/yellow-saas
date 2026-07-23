@@ -125,7 +125,7 @@ export default function CustomerCategories() {
 
   if (loading) {
     return (
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
         <div className="px-6 py-4 border-b border-slate-100">
           <div className="h-4 w-36 bg-slate-200 rounded animate-pulse" />
         </div>
@@ -139,7 +139,7 @@ export default function CustomerCategories() {
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+    <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
       <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-slate-900">Categorías de Clientes</h3>
         <button
@@ -208,7 +208,7 @@ export default function CustomerCategories() {
 
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900md mx-4">
             <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-slate-900">
                 {editingId ? 'Editar Categoría' : 'Nueva Categoría'}
@@ -268,7 +268,7 @@ export default function CustomerCategories() {
             <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
               <button
                 onClick={handleClose}
-                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>

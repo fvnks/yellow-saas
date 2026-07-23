@@ -231,7 +231,7 @@ export default function ValuationPage() {
       )}
 
       {/* Tabs */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <ContinuousTabs
           tabs={[
             { id: 'methods', label: 'Metodos' },
@@ -247,7 +247,7 @@ export default function ValuationPage() {
       {/* METHODS TAB */}
       {activeTab === 'methods' && (
         <div className="space-y-6">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
               <h3 className="text-sm font-semibold text-slate-900">
                 {editingMethod ? 'Editar Método' : 'Nuevo Método'}
@@ -292,7 +292,7 @@ export default function ValuationPage() {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
               <h3 className="text-sm font-semibold text-slate-900">Métodos de Valoración</h3>
               <button onClick={loadData} className="text-xs text-slate-500 hover:text-slate-700 flex items-center gap-1">
@@ -359,7 +359,7 @@ export default function ValuationPage() {
       {/* RUNS TAB */}
       {activeTab === 'runs' && (
         <div className="space-y-6">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
             <div className="px-6 py-4 border-b border-slate-100">
               <h3 className="text-sm font-semibold text-slate-900">Ejecutar Nueva Valoración</h3>
             </div>
@@ -404,7 +404,7 @@ export default function ValuationPage() {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
               <h3 className="text-sm font-semibold text-slate-900">Historial de Valoraciones</h3>
               <button onClick={loadData} className="text-xs text-slate-500 hover:text-slate-700 flex items-center gap-1">
@@ -456,7 +456,7 @@ export default function ValuationPage() {
         <div className="space-y-6">
           {/* KPIs */}
           <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Valor Total</p>
@@ -467,7 +467,7 @@ export default function ValuationPage() {
                 </div>
               </div>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Unidades Totales</p>
@@ -478,7 +478,7 @@ export default function ValuationPage() {
                 </div>
               </div>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Productos</p>
@@ -489,7 +489,7 @@ export default function ValuationPage() {
                 </div>
               </div>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Bodegas</p>
@@ -503,7 +503,7 @@ export default function ValuationPage() {
           </div>
 
           {/* Layers Table */}
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
             <div className="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <h3 className="text-sm font-semibold text-slate-900">Capas de Valoración (Stock Valorizado)</h3>
               <div className="flex items-center gap-3">
@@ -513,11 +513,11 @@ export default function ValuationPage() {
                     className="w-64 bg-slate-50 border border-slate-200 rounded-lg pl-3 pr-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
                 </div>
                 <button onClick={handleExportCSV}
-                  className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
+                  className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
                   <Download className="w-3.5 h-3.5" /> CSV
                 </button>
                 <button onClick={loadData}
-                  className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
+                  className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
                   <RefreshCw className="w-3.5 h-3.5" /> Refrescar
                 </button>
               </div>

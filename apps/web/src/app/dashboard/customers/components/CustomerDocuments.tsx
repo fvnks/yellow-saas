@@ -146,7 +146,7 @@ export default function CustomerDocuments({ customerId }: CustomerDocumentsProps
             const Icon = getFileIcon(doc.mime_type);
             const cat = categoryConfig[doc.category] || categoryConfig.other;
             return (
-              <div key={doc.id} className="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-sm transition-shadow">
+              <div key={doc.id} className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800 hover:shadow-sm transition-shadow">
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 bg-slate-50 rounded-lg flex items-center justify-center flex-shrink-0">
                     <Icon className="w-5 h-5 text-slate-500" />
@@ -181,7 +181,7 @@ export default function CustomerDocuments({ customerId }: CustomerDocumentsProps
 
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4">
+          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900lg mx-4">
             <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-slate-900">Subir Documento</h2>
               <button onClick={() => { setShowModal(false); setFileData(null); }} className="text-slate-400 hover:text-slate-600">
@@ -237,7 +237,7 @@ export default function CustomerDocuments({ customerId }: CustomerDocumentsProps
             <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
               <button
                 onClick={() => { setShowModal(false); setFileData(null); }}
-                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>
@@ -255,13 +255,13 @@ export default function CustomerDocuments({ customerId }: CustomerDocumentsProps
 
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-sm mx-4 p-6">
+          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900sm mx-4 p-6">
             <h3 className="text-sm font-semibold text-slate-900 mb-2">Eliminar documento</h3>
             <p className="text-xs text-slate-500 mb-4">¿Estás seguro de que deseas eliminar este documento? Esta acción no se puede deshacer.</p>
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowDeleteConfirm(null)}
-                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>

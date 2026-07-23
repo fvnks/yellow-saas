@@ -120,14 +120,14 @@ export default function ReportsPage() {
             <option value="quarter">Ultimo trimestre</option>
             <option value="year">Ultimo año</option>
           </select>
-          <button className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+          <button className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
             <Download className="w-4 h-4" /> Exportar
           </button>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <ContinuousTabs
           tabs={tabs.map(t => ({ id: t.id, label: t.label }))}
           defaultActiveId={activeTab}

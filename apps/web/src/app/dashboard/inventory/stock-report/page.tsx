@@ -129,7 +129,7 @@ export default function StockReportPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Valor Total</p>
@@ -140,22 +140,22 @@ export default function StockReportPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Productos con Stock</p>
           <p className="text-2xl font-bold text-slate-900 mt-1">{productCount}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Unidades Totales</p>
           <p className="text-2xl font-bold text-slate-900 mt-1">{totalQuantity.toLocaleString('es-CL')}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Bodegas</p>
           <p className="text-2xl font-bold text-slate-900 mt-1">{byWarehouse.length}</p>
         </div>
       </div>
 
       {byWarehouse.length > 0 && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <h3 className="text-sm font-semibold text-slate-900 mb-4">Por Bodega</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {byWarehouse.map(w => (

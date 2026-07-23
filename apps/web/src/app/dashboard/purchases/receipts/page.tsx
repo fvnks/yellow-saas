@@ -107,7 +107,7 @@ export default function GoodsReceiptsPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Recepciones</p>
@@ -118,7 +118,7 @@ export default function GoodsReceiptsPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Pendientes</p>
@@ -129,7 +129,7 @@ export default function GoodsReceiptsPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Completadas</p>
@@ -140,7 +140,7 @@ export default function GoodsReceiptsPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Este Mes</p>
@@ -153,7 +153,7 @@ export default function GoodsReceiptsPage() {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <div className="flex items-center gap-4 flex-wrap">
           <div className="relative flex-1 min-w-[200px] max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -173,18 +173,18 @@ export default function GoodsReceiptsPage() {
       </div>
 
       {loading ? (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-3">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 space-y-3">
           {[1, 2, 3].map(i => <div key={i} className="h-12 bg-slate-100 rounded-lg animate-pulse" />)}
         </div>
       ) : receipts.length === 0 ? (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-12 text-center">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-12 dark:bg-slate-900 dark:border-slate-800 text-center">
           <PackageCheck className="w-12 h-12 text-slate-300 mx-auto mb-4" />
           <p className="text-sm text-slate-500">No hay recepciones de mercadería</p>
           <button onClick={() => router.push('/dashboard/purchases/receipts/new')}
             className="mt-4 text-indigo-600 hover:text-indigo-700 text-sm font-medium">Crear primera recepción</button>
         </div>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>

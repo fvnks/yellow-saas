@@ -147,7 +147,7 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
 
       {/* KPI Cards */}
       <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Órdenes</p>
@@ -158,7 +158,7 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Facturado</p>
@@ -169,7 +169,7 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Saldo Pendiente</p>
@@ -180,7 +180,7 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Límite Crédito</p>
@@ -218,7 +218,7 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
       {/* Tab Content */}
       {activeTab === 'info' && (
         <div className="space-y-6">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
             <div className="px-6 py-4 border-b border-slate-100">
               <h3 className="text-sm font-semibold text-slate-900">Información General</h3>
             </div>
@@ -241,7 +241,7 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2">
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
               <div className="px-6 py-4 border-b border-slate-100">
                 <h3 className="text-sm font-semibold text-slate-900">Crédito y Pagos</h3>
               </div>
@@ -255,7 +255,7 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
               <div className="px-6 py-4 border-b border-slate-100">
                 <h3 className="text-sm font-semibold text-slate-900">Clasificación</h3>
               </div>
@@ -280,7 +280,7 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
       {activeTab === 'addresses' && <CustomerAddresses customerId={id} />}
 
       {activeTab === 'orders' && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
           <div className="px-6 py-4 border-b border-slate-100">
             <h3 className="text-sm font-semibold text-slate-900">Órdenes de Venta</h3>
           </div>
@@ -315,7 +315,7 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
       )}
 
       {activeTab === 'invoices' && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
           <div className="px-6 py-4 border-b border-slate-100">
             <h3 className="text-sm font-semibold text-slate-900">Facturas</h3>
           </div>

@@ -94,7 +94,7 @@ export default function ABCAnalysis() {
         </div>
         <div className="flex gap-2">
           <button onClick={() => setShowConfig(!showConfig)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-medium transition-colors">
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium transition-colors">
             <Settings className="w-3.5 h-3.5" /> Configurar
           </button>
           <button onClick={handleRun} disabled={running}
@@ -113,24 +113,24 @@ export default function ABCAnalysis() {
             <div>
               <label className="text-[9px] font-semibold text-slate-500 uppercase">Umbral A (%)</label>
               <input type="number" value={config.a_threshold} onChange={e => setConfig({ ...config, a_threshold: Number(e.target.value) })}
-                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
             </div>
             <div>
               <label className="text-[9px] font-semibold text-slate-500 uppercase">Umbral B (%)</label>
               <input type="number" value={config.b_threshold} onChange={e => setConfig({ ...config, b_threshold: Number(e.target.value) })}
-                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
             </div>
             <div>
               <label className="text-[9px] font-semibold text-slate-500 uppercase">Periodo (meses)</label>
               <input type="number" value={config.period_months} onChange={e => setConfig({ ...config, period_months: Number(e.target.value) })}
-                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
             </div>
           </div>
         </div>
       )}
 
       {activeRule && (
-        <div className="bg-white border border-slate-200 rounded-xl p-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-medium text-slate-700">Resumen por Clasificacion</span>
             {activeRule.last_run_at && (
@@ -160,7 +160,7 @@ export default function ABCAnalysis() {
       )}
 
       {results.length > 0 ? (
-        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>

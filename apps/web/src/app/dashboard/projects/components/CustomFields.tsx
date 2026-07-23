@@ -123,7 +123,7 @@ export default function CustomFields({ projectId, fields, values, onChange, onRe
       )}
 
       {showManager && (
-        <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800 space-y-4">
           <div className="flex items-center justify-between">
             <h4 className="text-xs font-semibold text-slate-700">Campos Personalizados</h4>
             <button onClick={() => setShowManager(false)} className="p-1 hover:bg-slate-100 rounded">

@@ -46,11 +46,11 @@ export default function PurchaseBudgets() {
         </div>
       </div>
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-white border border-slate-200 rounded-xl p-4"><p className="text-[9px] font-semibold text-slate-500 uppercase">Presupuesto Total</p><p className="text-xl font-bold text-slate-900 mt-1">{fmt(totalBudget)}</p></div>
-        <div className="bg-white border border-slate-200 rounded-xl p-4"><p className="text-[9px] font-semibold text-slate-500 uppercase">Ejecutado</p><p className="text-xl font-bold text-blue-600 mt-1">{fmt(totalActual)}</p></div>
-        <div className="bg-white border border-slate-200 rounded-xl p-4"><p className="text-[9px] font-semibold text-slate-500 uppercase">Varianza</p><p className={`text-xl font-bold mt-1 ${totalVariance >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{fmt(Math.abs(totalVariance))}</p></div>
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800"><p className="text-[9px] font-semibold text-slate-500 uppercase">Presupuesto Total</p><p className="text-xl font-bold text-slate-900 mt-1">{fmt(totalBudget)}</p></div>
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800"><p className="text-[9px] font-semibold text-slate-500 uppercase">Ejecutado</p><p className="text-xl font-bold text-blue-600 mt-1">{fmt(totalActual)}</p></div>
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800"><p className="text-[9px] font-semibold text-slate-500 uppercase">Varianza</p><p className={`text-xl font-bold mt-1 ${totalVariance >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{fmt(Math.abs(totalVariance))}</p></div>
       </div>
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
         <table className="w-full">
           <thead><tr className="border-b border-slate-200">
             <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Categoría</th>
@@ -78,7 +78,7 @@ export default function PurchaseBudgets() {
       </div>
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900md mx-4">
             <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between"><h2 className="text-lg font-semibold text-slate-900">Nuevo Presupuesto</h2><button onClick={() => setShowForm(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button></div>
             <div className="p-6 space-y-4">
               <div><label className="block text-xs font-medium text-slate-700 mb-1">Categoría</label><input type="text" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Materia Prima, Logística..." /></div>
@@ -89,7 +89,7 @@ export default function PurchaseBudgets() {
               <div><label className="block text-xs font-medium text-slate-700 mb-1">Monto ($)</label><input type="number" value={form.budget_amount} onChange={e => setForm({ ...form, budget_amount: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="5000000" /></div>
             </div>
             <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
-              <button onClick={() => setShowForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={() => setShowForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={!form.category} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors disabled:opacity-50"><Save className="w-3.5 h-3.5" /> Guardar</button>
             </div>
           </div>

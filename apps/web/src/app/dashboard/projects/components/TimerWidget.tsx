@@ -115,7 +115,7 @@ export default function TimerWidget({ projectId, taskId, employeeId, onTimerUpda
 
   return (
     <button onClick={handleStart} disabled={loading || !employeeId}
-      className="flex items-center gap-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50">
+      className="flex items-center gap-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50">
       <Play className="w-3.5 h-3.5" /> Iniciar
     </button>
   );

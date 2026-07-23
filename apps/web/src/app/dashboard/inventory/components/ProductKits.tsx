@@ -147,17 +147,17 @@ export default function ProductKits({ productId }: ProductKitsProps) {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
               placeholder="Nombre del kit" />
             {!productId && (
               <select value={form.product_id} onChange={e => setForm({ ...form, product_id: e.target.value })}
-                className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                 <option value="">Producto padre...</option>
                 {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
               </select>
             )}
             <input type="text" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
-              className="col-span-2 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="col-span-2 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
               placeholder="Descripcion (opcional)" />
           </div>
 
@@ -166,13 +166,13 @@ export default function ProductKits({ productId }: ProductKitsProps) {
             {form.items.map((item, idx) => (
               <div key={idx} className="flex items-center gap-2">
                 <select value={item.product_id} onChange={e => updateItem(idx, 'product_id', e.target.value)}
-                  className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                  className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                   <option value="">Componente...</option>
                   {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                 </select>
                 <input type="number" value={item.quantity} onChange={e => updateItem(idx, 'quantity', Number(e.target.value))}
                   min={0.01} step={0.01}
-                  className="w-24 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-24 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
                   placeholder="Cant." />
                 <button onClick={() => removeItem(idx)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg">
                   <Trash2 className="w-4 h-4" />
@@ -201,7 +201,7 @@ export default function ProductKits({ productId }: ProductKitsProps) {
           {kits.map(kit => {
             const totalCost = kit.items?.reduce((sum, item) => sum + (item.cost_price * item.quantity), 0) || 0;
             return (
-              <div key={kit.id} className="bg-white border border-slate-200 rounded-xl p-4">
+              <div key={kit.id} className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
                 <div className="flex items-center justify-between mb-2">
                   <div>
                     <p className="text-sm font-medium text-slate-900">{kit.name}</p>

@@ -109,7 +109,7 @@ export default function RoutePlanning() {
       </div>
 
       {route && (
-        <div className="bg-white border border-slate-200 rounded-xl p-6">
+        <div className="bg-white border border-slate-200 rounded-xl p-6 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-lg font-bold text-slate-900">{route.name}</h3>
@@ -183,7 +183,7 @@ export default function RoutePlanning() {
 
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-9002xl mx-4 max-h-[90vh] overflow-y-auto">
             <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-slate-900">Nueva Ruta</h2>
               <button onClick={() => setShowForm(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
@@ -224,17 +224,17 @@ export default function RoutePlanning() {
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         <input type="text" value={stop.customer_name} onChange={e => updateStop(i, 'customer_name', e.target.value)}
-                          className="bg-white border border-slate-200 rounded px-2 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="Cliente" />
+                          className="bg-white border border-slate-200 rounded px-2 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-1 focus:ring-indigo-500" placeholder="Cliente" />
                         <input type="text" value={stop.address} onChange={e => updateStop(i, 'address', e.target.value)}
-                          className="bg-white border border-slate-200 rounded px-2 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="Dirección" />
+                          className="bg-white border border-slate-200 rounded px-2 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-1 focus:ring-indigo-500" placeholder="Dirección" />
                         <input type="text" value={stop.city} onChange={e => updateStop(i, 'city', e.target.value)}
-                          className="bg-white border border-slate-200 rounded px-2 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="Ciudad" />
+                          className="bg-white border border-slate-200 rounded px-2 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-1 focus:ring-indigo-500" placeholder="Ciudad" />
                         <input type="text" value={stop.order_number} onChange={e => updateStop(i, 'order_number', e.target.value)}
-                          className="bg-white border border-slate-200 rounded px-2 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="OV #" />
+                          className="bg-white border border-slate-200 rounded px-2 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-1 focus:ring-indigo-500" placeholder="OV #" />
                         <input type="text" value={stop.estimated_time} onChange={e => updateStop(i, 'estimated_time', e.target.value)}
-                          className="bg-white border border-slate-200 rounded px-2 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="09:00 - 09:30" />
+                          className="bg-white border border-slate-200 rounded px-2 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-1 focus:ring-indigo-500" placeholder="09:00 - 09:30" />
                         <input type="text" value={stop.notes} onChange={e => updateStop(i, 'notes', e.target.value)}
-                          className="bg-white border border-slate-200 rounded px-2 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="Notas" />
+                          className="bg-white border border-slate-200 rounded px-2 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-1 focus:ring-indigo-500" placeholder="Notas" />
                       </div>
                     </div>
                   ))}
@@ -242,7 +242,7 @@ export default function RoutePlanning() {
               </div>
             </div>
             <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
-              <button onClick={() => setShowForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={() => setShowForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={!form.name || !form.employee_id}
                 className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors disabled:opacity-50">
                 <Save className="w-3.5 h-3.5" /> Guardar

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Badge, Input, Select, KPICard } from '@yellow-erp/ui';
@@ -67,8 +67,8 @@ export default function BillingPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Facturación</h1>
-          <p className="text-sm text-slate-500 mt-1">Gestión de facturas y cobranzas</p>
+          <h1 className="text-xl font-bold text-slate-900">Facturaci�n</h1>
+          <p className="text-sm text-slate-500 mt-1">Gesti�n de facturas y cobranzas</p>
         </div>
         <Link href="/dashboard/billing/new">
           <Button>
@@ -82,10 +82,10 @@ export default function BillingPage() {
         <KPICard label="Facturado Total" value={`$${(totalInvoiced/1000000).toFixed(1)}M`} icon={CreditCard} trend={`${invoices.length} facturas`} trendUp={true} />
         <KPICard label="Cobrado" value={`$${(paidInvoices.reduce((s,i)=>s+i.amount,0)/1000000).toFixed(1)}M`} icon={CheckCircle2} trend={`${paidInvoices.length} facturas`} trendUp={true} />
         <KPICard label="Por Cobrar" value={`$${(pendingAmount/1000000).toFixed(1)}M`} icon={Clock} trend="Pendiente" trendUp={false} />
-        <KPICard label="Vencidas" value={overdueInvoices.length} icon={AlertCircle} trend={overdueInvoices.length > 0 ? "Requiere atención" : "Sin vencidas"} trendUp={overdueInvoices.length === 0} />
+        <KPICard label="Vencidas" value={overdueInvoices.length} icon={AlertCircle} trend={overdueInvoices.length > 0 ? "Requiere atenci�n" : "Sin vencidas"} trendUp={overdueInvoices.length === 0} />
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <div className="flex items-center gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -121,14 +121,14 @@ export default function BillingPage() {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate-200">
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">ID Factura</th>
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha Emisión</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha Emisi�n</th>
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha Vencimiento</th>
                 <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Items</th>
                 <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Monto</th>

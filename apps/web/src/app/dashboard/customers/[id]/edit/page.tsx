@@ -297,7 +297,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
 
         {/* Sidebar */}
         <div className="space-y-6">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
             <div className="px-6 py-4 border-b border-slate-100">
               <h3 className="text-sm font-semibold text-slate-900">Estado</h3>
             </div>
@@ -311,7 +311,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
             <div className="px-6 py-4 border-b border-slate-100">
               <h3 className="text-sm font-semibold text-slate-900">Portal Cliente</h3>
             </div>
@@ -346,7 +346,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm sticky top-24">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm sticky dark:bg-slate-900 dark:border-slate-800 top-24">
             <div className="px-6 py-4 border-b border-slate-100">
               <h3 className="text-sm font-semibold text-slate-900">Resumen</h3>
             </div>

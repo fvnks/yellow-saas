@@ -125,7 +125,7 @@ export default function VacationTab() {
     <div className="space-y-6">
       {/* KPIs */}
       <div className="grid gap-4 md:grid-cols-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Días Ganados</p>
@@ -136,7 +136,7 @@ export default function VacationTab() {
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Días Usados</p>
@@ -147,7 +147,7 @@ export default function VacationTab() {
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Disponibles</p>
@@ -158,7 +158,7 @@ export default function VacationTab() {
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Pendientes</p>
@@ -172,7 +172,7 @@ export default function VacationTab() {
       </div>
 
       {/* Sub-tabs */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
         <div className="border-b border-slate-200">
           <div className="flex items-center justify-between px-4">
             <div className="flex">
@@ -428,7 +428,7 @@ function VacationRequestModal({ employees, balances, onClose, onSave }: {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+      <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900md mx-4">
         <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-slate-900">Nueva Solicitud de Vacación</h2>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
@@ -502,7 +502,7 @@ function VacationBalanceModal({ employees, year, onClose, onSave }: {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+      <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900md mx-4">
         <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-slate-900">Asignar Saldo de Vacaciones</h2>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>

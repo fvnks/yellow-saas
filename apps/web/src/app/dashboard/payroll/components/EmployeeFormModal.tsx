@@ -102,8 +102,8 @@ export default function EmployeeFormModal({ employee, onClose, onSave }: Props) 
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto">
-        <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between sticky top-0 bg-white z-10">
+      <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-9003xl mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between sticky top-0 bg-white dark:bg-slate-900 z-10">
           <h2 className="text-lg font-semibold text-slate-900">
             {employee ? 'Editar Empleado' : 'Nuevo Empleado'}
           </h2>
@@ -231,7 +231,7 @@ export default function EmployeeFormModal({ employee, onClose, onSave }: Props) 
           </div>
         </div>
 
-        <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3 sticky bottom-0 bg-white">
+        <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3 sticky dark:bg-slate-900 bottom-0 bg-white">
           <Button variant="secondary" onClick={onClose}>Cancelar</Button>
           <Button onClick={handleSave} disabled={saving}>
             <Save className="w-4 h-4 mr-2" />

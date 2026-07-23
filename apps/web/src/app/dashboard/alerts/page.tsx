@@ -125,7 +125,7 @@ export default function AlertsPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Sin Stock</p>
@@ -136,7 +136,7 @@ export default function AlertsPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Stock Bajo</p>
@@ -147,7 +147,7 @@ export default function AlertsPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Alertas</p>
@@ -158,7 +158,7 @@ export default function AlertsPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Lotes Vencidos</p>

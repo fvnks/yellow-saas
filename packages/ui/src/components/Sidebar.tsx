@@ -33,9 +33,9 @@ export function Sidebar({ companyName = 'Yellow ERP', userName, userRole, onNavi
   const pathname = usePathname();
 
   return (
-    <aside className={cn('w-64 bg-white border-r border-slate-200 h-screen fixed left-0 top-0 z-20 flex flex-col', className)}>
+    <aside className={cn('w-64 bg-white border-r border-slate-200 h-screen fixed left-0 top-0 z-20 flex flex-col dark:bg-slate-900 dark:border-slate-800', className)}>
       <div className="h-16 px-4 flex items-center justify-between border-b border-slate-200">
-        <h1 className="text-xl font-bold text-slate-900 truncate">{companyName}</h1>
+        <h1 className="text-xl font-bold text-slate-900 dark:text-white truncate">{companyName}</h1>
       </div>
 
       <nav className="flex-1 overflow-y-auto p-3 space-y-1" role="navigation" aria-label="Navegación principal">
@@ -50,8 +50,8 @@ export function Sidebar({ companyName = 'Yellow ERP', userName, userRole, onNavi
               className={cn(
                 'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                 isActive
-                  ? 'bg-slate-900 text-white'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                   ? 'bg-slate-900 text-white'
+                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
               )}
               aria-current={isActive ? 'page' : undefined}
             >
@@ -70,7 +70,7 @@ export function Sidebar({ companyName = 'Yellow ERP', userName, userRole, onNavi
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-slate-900 truncate">{userName || 'Usuario'}</p>
+            <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{userName || 'Usuario'}</p>
             <p className="text-[9px] font-medium text-slate-500 uppercase tracking-wider">
               {userRole || 'member'}
             </p>

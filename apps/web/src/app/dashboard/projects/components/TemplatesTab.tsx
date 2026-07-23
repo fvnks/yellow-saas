@@ -93,7 +93,7 @@ export default function TemplatesTab({ onApply }: TemplatesTabProps) {
       </div>
 
       {showCreateForm && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 space-y-3">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 space-y-3">
           <div className="space-y-1">
             <label className="block text-xs font-medium text-slate-700">Nombre</label>
             <input
@@ -128,7 +128,7 @@ export default function TemplatesTab({ onApply }: TemplatesTabProps) {
       )}
 
       {templates.length === 0 ? (
-        <div className="text-center py-8 bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="text-center py-8 bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
           <FileText className="w-10 h-10 text-slate-200 mx-auto mb-2" />
           <p className="text-xs text-slate-500">No hay plantillas creadas</p>
           <p className="text-[10px] text-slate-400 mt-1">Crea una plantilla para reutilizar tareas e hitos</p>
@@ -136,7 +136,7 @@ export default function TemplatesTab({ onApply }: TemplatesTabProps) {
       ) : (
         <div className="space-y-2">
           {templates.map(template => (
-            <div key={template.id} className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow">
+            <div key={template.id} className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
                   <h4 className="text-sm font-semibold text-slate-900">{template.name}</h4>

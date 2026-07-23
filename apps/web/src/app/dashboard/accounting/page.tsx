@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
@@ -131,7 +131,7 @@ export default function AccountingPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Contabilidad</h1>
-          <p className="text-sm text-slate-500 mt-1">Libro mayor, asientos contables y configuración fiscal</p>
+          <p className="text-sm text-slate-500 mt-1">Libro mayor, asientos contables y configuraci�n fiscal</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm">
@@ -248,7 +248,7 @@ export default function AccountingPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Código</TableHead>
+                <TableHead>C�digo</TableHead>
                 <TableHead>Nombre</TableHead>
                 <TableHead>Tipo</TableHead>
                 <TableHead className="text-right">Saldo Actual</TableHead>
@@ -306,7 +306,7 @@ export default function AccountingPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Código</TableHead>
+                <TableHead>C�digo</TableHead>
                 <TableHead>Nombre</TableHead>
                 <TableHead>Tipo</TableHead>
                 <TableHead className="text-center">Tasa</TableHead>
@@ -399,7 +399,7 @@ export default function AccountingPage() {
 
       {editingAccount && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900md mx-4">
             <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-slate-900">Editar Cuenta</h2>
               <button onClick={() => setEditingAccount(null)} className="text-slate-400 hover:text-slate-600">X</button>
@@ -429,7 +429,7 @@ export default function AccountingPage() {
             </div>
             <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
               <button onClick={() => setEditingAccount(null)}
-                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSaveAccount} disabled={saving || !editForm.name}
                 className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                 {saving ? 'Guardando...' : 'Guardar'}

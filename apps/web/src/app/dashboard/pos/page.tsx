@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Badge, Input, Select } from '@yellow-erp/ui';
@@ -210,7 +210,7 @@ export default function POSPage() {
   if (completedInvoice) {
     return (
       <div className="h-[calc(100vh-4rem)] flex items-center justify-center">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 w-full max-w-md text-center">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 dark:bg-slate-900 dark:border-slate-800 w-full max-w-md text-center">
           <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Check className="w-8 h-8 text-emerald-600" />
           </div>
@@ -298,7 +298,7 @@ export default function POSPage() {
           {cart.length === 0 ? (
             <div className="text-center py-12">
               <ShoppingCart className="w-12 h-12 text-slate-200 mx-auto mb-3" />
-              <p className="text-sm text-slate-500">Carrito vacío</p>
+              <p className="text-sm text-slate-500">Carrito vac�o</p>
               <p className="text-xs text-slate-400 mt-1">Selecciona productos para agregar</p>
             </div>
           ) : (
@@ -317,14 +317,14 @@ export default function POSPage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="w-7 h-7 bg-white border border-slate-200 rounded-md flex items-center justify-center text-slate-600 hover:bg-slate-50"
+                      className="w-7 h-7 bg-white border border-slate-200 rounded-md flex items-center justify-center dark:bg-slate-800 dark:border-slate-700 text-slate-600 hover:bg-slate-50"
                     >
                       -
                     </button>
                     <span className="text-sm font-medium w-8 text-center">{item.quantity}</span>
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="w-7 h-7 bg-white border border-slate-200 rounded-md flex items-center justify-center text-slate-600 hover:bg-slate-50"
+                      className="w-7 h-7 bg-white border border-slate-200 rounded-md flex items-center justify-center dark:bg-slate-800 dark:border-slate-700 text-slate-600 hover:bg-slate-50"
                     >
                       +
                     </button>
@@ -366,7 +366,7 @@ export default function POSPage() {
       {/* Payment Modal */}
       {showPaymentModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4">
+          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900lg mx-4">
             <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-slate-900">Cobrar Venta</h2>
               <button onClick={() => setShowPaymentModal(false)} className="text-slate-400 hover:text-slate-600">
@@ -433,7 +433,7 @@ export default function POSPage() {
                     </div>
                   )}
                   {showCustomerDropdown && !selectedCustomer && customerSearch && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max- dark:bg-slate-900 dark:border-slate-800h-48 overflow-y-auto">
                       {filteredCustomers.length === 0 ? (
                         <div className="p-3 text-center text-sm text-slate-500">No se encontraron clientes</div>
                       ) : (
@@ -481,7 +481,7 @@ export default function POSPage() {
                     </div>
                   )}
                   {showCustomerDropdown && !selectedCustomer && customerSearch && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max- dark:bg-slate-900 dark:border-slate-800h-48 overflow-y-auto">
                       {filteredCustomers.length === 0 ? (
                         <div className="p-3 text-center text-sm text-slate-500">No se encontraron clientes</div>
                       ) : (
@@ -514,7 +514,7 @@ export default function POSPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Método de Pago</label>
+                <label className="block text-xs font-medium text-slate-700">M�todo de Pago</label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
                     { id: 'cash', label: 'Efectivo', icon: Banknote },

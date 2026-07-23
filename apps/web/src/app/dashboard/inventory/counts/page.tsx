@@ -84,7 +84,7 @@ export default function InventoryCountsPage() {
         </button>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -110,7 +110,7 @@ export default function InventoryCountsPage() {
       </div>
 
       {loading ? (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
           {[1, 2, 3].map(i => (
             <div key={i} className="p-4 border-b border-slate-100">
               <div className="animate-pulse flex gap-4">
@@ -122,7 +122,7 @@ export default function InventoryCountsPage() {
           ))}
         </div>
       ) : counts.length === 0 ? (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-12 text-center">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-12 dark:bg-slate-900 dark:border-slate-800 text-center">
           <ClipboardCheck className="w-12 h-12 text-slate-300 mx-auto mb-4" />
           <p className="text-slate-500 text-sm">No hay conteos de inventario</p>
           <button
@@ -133,7 +133,7 @@ export default function InventoryCountsPage() {
           </button>
         </div>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>

@@ -67,7 +67,7 @@ export default function StockForecasting() {
         </div>
         <div className="flex items-center gap-2">
           <select value={days} onChange={e => setDays(Number(e.target.value))}
-            className="bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            className="bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500">
             <option value={15}>15 dias</option>
             <option value={30}>30 dias</option>
             <option value={60}>60 dias</option>

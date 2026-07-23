@@ -87,7 +87,7 @@ export default function InvoiceDetailPage() {
           )}
           {invoice.status === 'draft' && (
             <button onClick={handleDelete}
-              className="bg-white border border-slate-200 hover:bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              className="bg-white border border-slate-200 hover:bg-red-50 text-red-600 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-red-500/10 dark:text-red-400 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
               <Trash2 className="w-4 h-4" /> Eliminar
             </button>
           )}
@@ -95,40 +95,40 @@ export default function InvoiceDetailPage() {
       </div>
 
       <div className="grid grid-cols-4 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Subtotal</p>
           <p className="text-sm font-semibold text-slate-900 mt-1">${Number(invoice.subtotal || 0).toLocaleString('es-CL')}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">IVA</p>
           <p className="text-sm font-semibold text-slate-900 mt-1">${Number(invoice.tax_amount || 0).toLocaleString('es-CL')}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Descuento</p>
           <p className="text-sm font-semibold text-slate-900 mt-1">${Number(invoice.discount_amount || 0).toLocaleString('es-CL')}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total</p>
           <p className="text-lg font-bold text-slate-900 mt-1">${Number(invoice.total_amount || 0).toLocaleString('es-CL')}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha Emision</p>
           <p className="text-sm text-slate-900 mt-1">{invoice.invoice_date ? new Date(invoice.invoice_date).toLocaleDateString('es-CL') : '—'}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha Vencimiento</p>
           <p className="text-sm text-slate-900 mt-1">{invoice.due_date ? new Date(invoice.due_date).toLocaleDateString('es-CL') : '—'}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tipo Documento</p>
           <p className="text-sm text-slate-900 mt-1 capitalize">{invoice.document_type || 'factura'}</p>
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
         <div className="px-6 py-4 border-b border-slate-100">
           <h3 className="text-sm font-semibold text-slate-900">Detalle de Items</h3>
         </div>
@@ -175,7 +175,7 @@ export default function InvoiceDetailPage() {
       </div>
 
       {invoice.notes && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
           <h3 className="text-sm font-semibold text-slate-900 mb-2">Notas</h3>
           <p className="text-xs text-slate-600">{invoice.notes}</p>
         </div>

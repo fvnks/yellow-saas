@@ -56,7 +56,7 @@ export default function LandedCostPage() {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>

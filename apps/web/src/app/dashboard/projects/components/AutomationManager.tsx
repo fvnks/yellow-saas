@@ -128,7 +128,7 @@ export default function AutomationManager({ projectId }: AutomationManagerProps)
       </div>
 
       {showCreate && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 space-y-3">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 space-y-3">
           <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
             className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="Nombre de la regla..." />
@@ -174,7 +174,7 @@ export default function AutomationManager({ projectId }: AutomationManagerProps)
       )}
 
       {rules.length === 0 ? (
-        <div className="text-center py-8 bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="text-center py-8 bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
           <Zap className="w-10 h-10 text-slate-200 mx-auto mb-2" />
           <p className="text-xs text-slate-500">Sin reglas de automatización</p>
           <p className="text-[10px] text-slate-400 mt-1">Crea reglas para automatizar flujos de trabajo</p>
@@ -182,7 +182,7 @@ export default function AutomationManager({ projectId }: AutomationManagerProps)
       ) : (
         <div className="space-y-2">
           {rules.map(rule => (
-            <div key={rule.id} className={`bg-white border rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow ${rule.is_active ? 'border-slate-200' : 'border-slate-100 opacity-60'}`}>
+            <div key={rule.id} className={`bg-white border rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 hover:shadow-md dark:bg-slate-900 dark:border-slate-800 transition-shadow ${rule.is_active ? 'border-slate-200' : 'border-slate-100 opacity-60'}`}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${rule.is_active ? 'bg-amber-50' : 'bg-slate-100'}`}>

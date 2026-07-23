@@ -65,17 +65,17 @@ export default function BarcodeDisplay({ value, format = 'CODE128', height = 80,
 
   return (
     <div className="space-y-3">
-      <div className="bg-white border border-slate-200 rounded-xl p-4 flex justify-center">
+      <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800 flex justify-center">
         <svg ref={svgRef} />
       </div>
       {showActions && (
         <div className="flex items-center gap-2">
           <button onClick={handleDownload}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-medium transition-colors">
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium transition-colors">
             <Download className="w-3.5 h-3.5" /> Descargar PNG
           </button>
           <button onClick={handleCopy}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-medium transition-colors">
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium transition-colors">
             <Copy className="w-3.5 h-3.5" /> Copiar Codigo
           </button>
         </div>

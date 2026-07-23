@@ -122,7 +122,7 @@ export default function NewInvoicePage() {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <div className="grid grid-cols-4 gap-4 mb-6">
           <div className="space-y-1">
             <label className="block text-xs font-medium text-slate-700">Tipo Documento *</label>
@@ -166,7 +166,7 @@ export default function NewInvoicePage() {
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-semibold text-slate-900">Items</h3>
           <button onClick={addItem}
-            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors">
+            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors">
             <Plus className="w-3.5 h-3.5" /> Agregar Item
           </button>
         </div>
@@ -242,7 +242,7 @@ export default function NewInvoicePage() {
 
         <div className="mt-4 flex items-center justify-end gap-3">
           <Link href="/dashboard/billing"
-            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</Link>
+            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</Link>
           <button onClick={handleSubmit} disabled={saving}
             className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
             <Save className="w-4 h-4" /> {saving ? 'Guardando...' : 'Crear Factura'}

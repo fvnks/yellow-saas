@@ -33,13 +33,13 @@ export function KPICard({ label, value, change, changeType, trend, trendUp, icon
   };
 
   return (
-    <div className={cn('bg-white border border-slate-200 rounded-xl shadow-sm p-6', className)}>
+    <div className={cn('bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800', className)}>
       <div className="flex items-center justify-between">
         <div>
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">
             {label}
           </p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">
+          <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
             {value}
           </p>
           {resolvedChange && (

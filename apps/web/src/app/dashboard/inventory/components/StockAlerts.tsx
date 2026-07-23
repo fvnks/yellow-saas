@@ -151,23 +151,23 @@ export default function StockAlerts() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <select value={newAlert.product_id} onChange={e => setNewAlert({ ...newAlert, product_id: e.target.value })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500">
               <option value="">Producto...</option>
               {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
             <select value={newAlert.warehouse_id} onChange={e => setNewAlert({ ...newAlert, warehouse_id: e.target.value })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500">
               <option value="">Bodega...</option>
               {warehouses.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}
             </select>
             <select value={newAlert.alert_type} onChange={e => setNewAlert({ ...newAlert, alert_type: e.target.value })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500">
               <option value="min_stock">Stock Minimo</option>
               <option value="max_stock">Stock Maximo</option>
               <option value="out_of_stock">Sin Stock</option>
             </select>
             <input type="number" value={newAlert.threshold} onChange={e => setNewAlert({ ...newAlert, threshold: Number(e.target.value) })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500"
               placeholder="Umbral" />
           </div>
           <button onClick={handleCreate}

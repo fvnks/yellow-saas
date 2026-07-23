@@ -230,7 +230,7 @@ export default function NewCustomerPage() {
 
         {/* Summary Sidebar */}
         <div className="space-y-6">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm sticky top-24">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm sticky dark:bg-slate-900 dark:border-slate-800 top-24">
             <div className="px-6 py-4 border-b border-slate-100">
               <h3 className="text-sm font-semibold text-slate-900">Resumen</h3>
             </div>

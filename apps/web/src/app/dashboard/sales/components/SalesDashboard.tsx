@@ -55,7 +55,7 @@ export default function SalesDashboard() {
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Ventas del Mes</span>
             <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
@@ -71,7 +71,7 @@ export default function SalesDashboard() {
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Órdenes del Mes</span>
             <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
@@ -82,7 +82,7 @@ export default function SalesDashboard() {
           <p className="text-xs text-slate-500 mt-2">{formatMoney(kpis.monthlyInvoiced)} facturados</p>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Despachos Pendientes</span>
             <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
@@ -93,7 +93,7 @@ export default function SalesDashboard() {
           <p className="text-xs text-slate-500 mt-2">en tránsito o pendientes</p>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Facturas Vencidas</span>
             <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center">
@@ -106,7 +106,7 @@ export default function SalesDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
           <div className="px-6 py-4 border-b border-slate-100">
             <h3 className="text-sm font-semibold text-slate-900">Top Productos (Año)</h3>
           </div>
@@ -132,7 +132,7 @@ export default function SalesDashboard() {
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
           <div className="px-6 py-4 border-b border-slate-100">
             <h3 className="text-sm font-semibold text-slate-900">Top Clientes (Año)</h3>
           </div>
@@ -160,7 +160,7 @@ export default function SalesDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
           <div className="px-6 py-4 border-b border-slate-100">
             <h3 className="text-sm font-semibold text-slate-900">Tendencia Mensual (12 meses)</h3>
           </div>
@@ -184,7 +184,7 @@ export default function SalesDashboard() {
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
           <div className="px-6 py-4 border-b border-slate-100">
             <h3 className="text-sm font-semibold text-slate-900">Órdenes por Estado (Año)</h3>
           </div>

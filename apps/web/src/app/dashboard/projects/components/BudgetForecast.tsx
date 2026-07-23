@@ -59,12 +59,12 @@ export default function BudgetForecast({ projectId }: BudgetForecastProps) {
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase">Burn Rate Diario</p>
           <p className="text-lg font-bold text-slate-900 mt-1">${data.burn_rate_daily.toLocaleString()}</p>
           <p className="text-[10px] text-slate-400">promedio gasto/dia</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase">Restante</p>
           <p className="text-lg font-bold text-emerald-600 mt-1">${data.remaining.toLocaleString()}</p>
           <p className="text-[10px] text-slate-400">{100 - data.usage_percent}% del presupuesto</p>
@@ -76,7 +76,7 @@ export default function BudgetForecast({ projectId }: BudgetForecastProps) {
           </p>
           <p className="text-[10px] text-slate-400">proyeccion actual</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase">Fecha Agotamiento</p>
           <p className="text-lg font-bold text-slate-900 mt-1">
             {data.projected_exhaust_date ? new Date(data.projected_exhaust_date).toLocaleDateString('es-CL', { day: '2-digit', month: 'short' }) : '—'}
@@ -99,7 +99,7 @@ export default function BudgetForecast({ projectId }: BudgetForecastProps) {
       )}
 
       {data.weekly_burn.length > 0 && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-xs font-semibold text-slate-700 mb-3">Gasto Semanal</p>
           <div className="flex items-end gap-1 h-32">
             {data.weekly_burn.slice(-12).map((w, i) => (
@@ -117,7 +117,7 @@ export default function BudgetForecast({ projectId }: BudgetForecastProps) {
       )}
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center gap-2 mb-2">
             <Calendar className="w-4 h-4 text-slate-500" />
             <span className="text-xs font-semibold text-slate-700">Cronograma</span>
@@ -127,7 +127,7 @@ export default function BudgetForecast({ projectId }: BudgetForecastProps) {
             <div className="flex justify-between"><span>Fin:</span><span>{data.end_date || '—'}</span></div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center gap-2 mb-2">
             <Clock className="w-4 h-4 text-slate-500" />
             <span className="text-xs font-semibold text-slate-700">Horas</span>

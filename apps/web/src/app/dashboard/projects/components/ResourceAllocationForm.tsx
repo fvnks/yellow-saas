@@ -113,7 +113,7 @@ export default function ResourceAllocationForm({ projectId, employees, onRefresh
       </div>
 
       {showAdd && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 space-y-3">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <select value={form.employee_id} onChange={e => setForm({ ...form, employee_id: e.target.value })}
               className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -145,14 +145,14 @@ export default function ResourceAllocationForm({ projectId, employees, onRefresh
       )}
 
       {allocations.length === 0 ? (
-        <div className="text-center py-8 bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="text-center py-8 bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
           <Users className="w-10 h-10 text-slate-200 mx-auto mb-2" />
           <p className="text-xs text-slate-500">Sin recursos asignados</p>
         </div>
       ) : (
         <div className="space-y-2">
           {allocations.map(alloc => (
-            <div key={alloc.id} className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow">
+            <div key={alloc.id} className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">

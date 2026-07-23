@@ -159,7 +159,7 @@ export default function NewGoodsReceiptPage() {
       )}
 
       {step === 1 ? (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
           <div className="px-6 py-4 border-b border-slate-100">
             <h3 className="text-sm font-semibold text-slate-900">Órdenes de Compra Confirmadas</h3>
             <p className="text-xs text-slate-500 mt-1">Selecciona una orden de compra para recepcionar</p>
@@ -202,7 +202,7 @@ export default function NewGoodsReceiptPage() {
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
             <div className="px-6 py-4 border-b border-slate-100">
               <h3 className="text-sm font-semibold text-slate-900">Items a Recibir</h3>
               <p className="text-xs text-slate-500 mt-1">Ingresa las cantidades a recibir para cada producto</p>
@@ -265,7 +265,7 @@ export default function NewGoodsReceiptPage() {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
             <div className="px-6 py-4 border-b border-slate-100">
               <h3 className="text-sm font-semibold text-slate-900">Observaciones</h3>
             </div>
@@ -280,7 +280,7 @@ export default function NewGoodsReceiptPage() {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <p className="text-sm font-medium text-slate-900">Resumen de Recepción</p>
@@ -293,7 +293,7 @@ export default function NewGoodsReceiptPage() {
             </div>
             <div className="flex gap-3">
               <button onClick={() => setStep(1)}
-                className="flex-1 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                className="flex-1 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                 Volver
               </button>
               <button onClick={handleSubmit} disabled={saving || totalItemsToReceive === 0}

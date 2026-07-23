@@ -94,14 +94,14 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
         </div>
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
               <div className="h-48 bg-slate-100 rounded animate-pulse" />
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
               <div className="h-32 bg-slate-100 rounded animate-pulse" />
             </div>
           </div>
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
             <div className="h-32 bg-slate-100 rounded animate-pulse" />
           </div>
         </div>
@@ -118,11 +118,11 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
           </Link>
           <h1 className="text-xl font-bold text-slate-900">Recepción no encontrada</h1>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-12 text-center">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-12 dark:bg-slate-900 dark:border-slate-800 text-center">
           <Package className="w-12 h-12 text-slate-300 mx-auto mb-4" />
           <p className="text-sm text-slate-500">{error || 'La recepción solicitada no existe.'}</p>
           <Link href="/dashboard/purchases/receipts">
-            <button className="mt-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            <button className="mt-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
               Volver a Recepciones
             </button>
           </Link>
@@ -200,7 +200,7 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
             <div className="px-6 py-4 border-b border-slate-100">
               <h3 className="text-sm font-semibold text-slate-900">Información de la Recepción</h3>
             </div>
@@ -251,7 +251,7 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
             <div className="px-6 py-4 border-b border-slate-100">
               <h3 className="text-sm font-semibold text-slate-900">Items Recibidos</h3>
             </div>
@@ -299,7 +299,7 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
           </div>
 
           {receipt.notes && (
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
               <div className="px-6 py-4 border-b border-slate-100">
                 <h3 className="text-sm font-semibold text-slate-900">Notas</h3>
               </div>
@@ -311,7 +311,7 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm sticky top-24">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm sticky dark:bg-slate-900 dark:border-slate-800 top-24">
             <div className="px-6 py-4 border-b border-slate-100">
               <h3 className="text-sm font-semibold text-slate-900">Resumen</h3>
             </div>

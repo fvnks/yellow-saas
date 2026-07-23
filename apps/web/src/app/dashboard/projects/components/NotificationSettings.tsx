@@ -97,7 +97,7 @@ export default function NotificationSettings({ projectId }: NotificationSettings
       </div>
 
       {/* Slack Configuration */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5">
+      <div className="bg-white border border-slate-200 rounded-xl p-5 dark:bg-slate-900 dark:border-slate-800">
         <div className="flex items-center gap-2 mb-4">
           <Hash className="w-4 h-4 text-purple-600" />
           <h4 className="text-sm font-semibold text-slate-900">Slack</h4>
@@ -119,7 +119,7 @@ export default function NotificationSettings({ projectId }: NotificationSettings
       </div>
 
       {/* Email Configuration */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5">
+      <div className="bg-white border border-slate-200 rounded-xl p-5 dark:bg-slate-900 dark:border-slate-800">
         <div className="flex items-center gap-2 mb-4">
           <Mail className="w-4 h-4 text-blue-600" />
           <h4 className="text-sm font-semibold text-slate-900">Email</h4>
@@ -148,7 +148,7 @@ export default function NotificationSettings({ projectId }: NotificationSettings
       </div>
 
       {/* Event Toggles */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5">
+      <div className="bg-white border border-slate-200 rounded-xl p-5 dark:bg-slate-900 dark:border-slate-800">
         <h4 className="text-sm font-semibold text-slate-900 mb-4">Eventos a Notificar</h4>
         <div className="space-y-3">
           {[

@@ -437,7 +437,7 @@ export default function ProjectDetailPage() {
           <NotificationsPanel userId={users[0]?.id || ''} />
           <div className="relative">
             <button onClick={() => setExportOpen(!exportOpen)}
-              className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
               <Download className="w-4 h-4" /> Exportar
             </button>
             {exportOpen && (
@@ -464,11 +464,11 @@ export default function ProjectDetailPage() {
             )}
           </div>
           <button onClick={handleClone} disabled={cloning}
-            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
             <Copy className="w-4 h-4" /> {cloning ? 'Clonando...' : 'Clonar'}
           </button>
           <Link href={`/dashboard/projects/${projectId}/edit`}>
-            <button className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            <button className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
               <Edit className="w-4 h-4" /> Editar
             </button>
           </Link>
@@ -476,7 +476,7 @@ export default function ProjectDetailPage() {
             className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors border ${
               project.archived 
                 ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
-                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700'
             }`}>
             <Archive className="w-4 h-4" /> {project.archived ? 'Restaurar' : 'Archivar'}
           </button>
@@ -484,31 +484,31 @@ export default function ProjectDetailPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Presupuesto</p><p className="text-lg font-bold text-slate-900 mt-1">${budget > 0 ? (budget / 1000000).toFixed(1) + 'M' : '—'}</p></div>
             <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center"><DollarSign className="w-5 h-5 text-indigo-600" /></div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Gastado</p><p className="text-lg font-bold text-slate-900 mt-1">{budgetUsed}%</p><p className="text-[10px] text-slate-500">${((totalCosts + totalExpenses) / 1000000).toFixed(1)}M</p></div>
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${budgetUsed > 90 ? 'bg-red-50' : budgetUsed > 70 ? 'bg-amber-50' : 'bg-emerald-50'}`}><DollarSign className={`w-5 h-5 ${budgetUsed > 90 ? 'text-red-600' : budgetUsed > 70 ? 'text-amber-600' : 'text-emerald-600'}`} /></div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tareas</p><p className="text-lg font-bold text-slate-900 mt-1">{completedTasks}/{tasks.length}</p></div>
             <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center"><CheckCircle2 className="w-5 h-5 text-emerald-600" /></div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Horas</p><p className="text-lg font-bold text-slate-900 mt-1">{totalActual.toFixed(1)}/{totalEstimated.toFixed(1)}</p></div>
             <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center"><Clock className="w-5 h-5 text-amber-600" /></div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div><p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Progreso</p><p className="text-lg font-bold text-slate-900 mt-1">{project.progress || 0}%</p></div>
             <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center"><BarChart3 className="w-5 h-5 text-blue-600" /></div>
@@ -516,7 +516,7 @@ export default function ProjectDetailPage() {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm text-slate-500">Progreso del proyecto</span>
           <div className="flex items-center gap-3">
@@ -543,7 +543,7 @@ export default function ProjectDetailPage() {
 
       <BudgetAlerts projectId={projectId} budget={budget} costs={costsData.costs || []} expenses={expenses} />
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
         <ContinuousTabs tabs={tabs} defaultActiveId={activeTab} onChange={(id) => setActiveTab(id)} />
       </div>
 
@@ -559,7 +559,7 @@ export default function ProjectDetailPage() {
             </button>
           </div>
           {tasks.length === 0 ? (
-            <div className="text-center py-12 bg-white border border-slate-200 rounded-xl shadow-sm">
+            <div className="text-center py-12 bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
               <CheckCircle2 className="w-12 h-12 text-slate-200 mx-auto mb-3" />
               <p className="text-sm text-slate-500">No hay tareas creadas</p>
               <button onClick={() => setShowTaskForm(true)} className="text-indigo-600 hover:underline text-sm mt-2">Crear primera tarea</button>
@@ -583,7 +583,7 @@ export default function ProjectDetailPage() {
                 const subtasks = filteredTasks.filter(t => t.parent_id === task.id);
                 return (
                 <div key={task.id}>
-                <div className={`bg-white border rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow ${selectedTasks.includes(task.id) ? 'border-indigo-300 bg-indigo-50/30' : 'border-slate-200'}`}>
+                <div className={`bg-white border rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 hover:shadow-md dark:bg-slate-900 dark:border-slate-800 transition-shadow ${selectedTasks.includes(task.id) ? 'border-indigo-300 bg-indigo-50/30' : 'border-slate-200'}`}>
                   <div className="flex items-start gap-3">
                     <button onClick={() => toggleSelectTask(task.id)} className="mt-0.5 p-0.5 hover:bg-slate-100 rounded transition-colors">
                       {selectedTasks.includes(task.id) ? (
@@ -694,18 +694,18 @@ export default function ProjectDetailPage() {
       {activeTab === 'portal' && <PortalTab projectId={projectId} project={project} onRefresh={loadData} />}
 
       {activeTab === 'notifications' && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
           <NotificationSettings projectId={projectId} />
         </div>
       )}
       {activeTab === 'custom-fields' && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
           <h2 className="text-sm font-semibold text-slate-900 mb-4">Campos Personalizados</h2>
           <CustomFields projectId={projectId} fields={customFields} values={customValues} onChange={(fieldId, value) => setCustomValues({ ...customValues, [fieldId]: value })} onRefresh={loadData} />
         </div>
       )}
       {activeTab === 'info' && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
           <h2 className="text-sm font-semibold text-slate-900 mb-4">Informacion del Proyecto</h2>
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-4">
@@ -731,7 +731,7 @@ export default function ProjectDetailPage() {
       {/* TASK MODAL */}
       {showTaskForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w- dark:bg-slate-900lg mx-4">
             <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-slate-900">{editingTask ? 'Editar Tarea' : 'Nueva Tarea'}</h2>
               <button onClick={() => { setShowTaskForm(false); setEditingTask(null); }} className="text-slate-400 hover:text-slate-600">X</button>
@@ -819,7 +819,7 @@ export default function ProjectDetailPage() {
             </div>
             <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
               <button onClick={() => { setShowTaskForm(false); setEditingTask(null); }}
-                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSaveTask} disabled={saving || !taskForm.name}
                 className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                 {saving ? 'Guardando...' : editingTask ? 'Actualizar' : 'Crear Tarea'}
@@ -832,7 +832,7 @@ export default function ProjectDetailPage() {
       {/* COMMENTS MODAL */}
       {commentTaskId && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w- dark:bg-slate-900md mx-4">
             <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
               <h2 className="text-sm font-semibold text-slate-900">Comentarios</h2>
               <button onClick={() => setCommentTaskId(null)} className="text-slate-400 hover:text-slate-600">X</button>

@@ -116,10 +116,10 @@ export default function ProductImages({ productId, onRefresh }: ProductImagesPro
             </button>
           </div>
           <input type="url" value={newUrl} onChange={e => setNewUrl(e.target.value)}
-            className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white dark:placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             placeholder="https://ejemplo.com/imagen.jpg" />
           <input type="text" value={newAlt} onChange={e => setNewAlt(e.target.value)}
-            className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white dark:placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             placeholder="Texto alternativo (opcional)" />
           <button onClick={handleUpload} disabled={uploading || !newUrl}
             className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
