@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
 import { generateCotizacionPDF } from '@/lib/pdf-design';
+import { usePrintDocument } from '@/components/print/use-print';
 
 interface QuotationItem {
   product_id: string;
@@ -50,6 +51,8 @@ export default function SalesQuotationDetailPage({ params }: { params: { id: str
   const [error, setError] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
 
+  const { print } = usePrintDocument();
+
   useEffect(() => {
     const api = getApiClient();
     Promise.all([
@@ -66,7 +69,28 @@ export default function SalesQuotationDetailPage({ params }: { params: { id: str
   }, [id]);
 
   const handlePrint = () => {
-    window.print();
+    if (!quotation) return;
+    const c = company || {};
+    print('quotation', {
+      id: quotation.id,
+      number: quotation.quotation_number,
+      type: 'cotización',
+      date: quotation.created_at,
+      status: quotation.status,
+      company: {
+        name: c.name || 'Empresa', tax_id: c.tax_id, razon_social: c.razon_social,
+        giro: c.giro, address: c.address, city: c.city, region: c.region,
+        phone: c.phone, email: c.email, logo_url: c.logo_url,
+      },
+      customer: quotation.customer ? { name: quotation.customer.name, tax_id: quotation.customer.tax_id } : undefined,
+      items: (quotation.items || []).map(item => ({
+        name: item.product?.name || '', sku: item.product?.sku,
+        quantity: item.quantity, unit_price: item.unit_price,
+        discount: item.discount_percent, tax_rate: item.tax_rate, total: item.line_total,
+      })),
+      subtotal, tax_amount: tax, total, notes: quotation.notes,
+      valid_until: quotation.valid_until,
+    });
   };
 
   const handleDownloadPDF = async () => {

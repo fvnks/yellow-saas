@@ -6,6 +6,7 @@ import { ArrowLeft, Printer, Calendar, Truck, CheckCircle, Clock, AlertTriangle,
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
+import { usePrintDocument } from '@/components/print/use-print';
 
 interface QuotationItem {
   product_id: string;
@@ -54,9 +55,35 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [warehouses, setWarehouses] = useState<{ id: string; name: string }[]>([]);
+  const [company, setCompany] = useState<any>(null);
+
+  const { print } = usePrintDocument();
 
   const handlePrint = () => {
-    window.print();
+    if (!quotation) return;
+    const c = company || {};
+    print('quotation', {
+      id: quotation.id,
+      number: quotation.number,
+      type: 'cotización',
+      date: quotation.quote_date || quotation.created_at,
+      status: quotation.status,
+      company: {
+        name: c.name || 'Empresa', tax_id: c.tax_id, razon_social: c.razon_social,
+        giro: c.giro, address: c.address, city: c.city, region: c.region,
+        phone: c.phone, email: c.email, logo_url: c.logo_url,
+      },
+      supplier: quotation.supplier ? { name: quotation.supplier.name, tax_id: quotation.supplier.tax_id } : undefined,
+      items: (quotation.items || []).map(item => ({
+        name: item.product?.name || '', sku: item.product?.sku,
+        quantity: item.quantity, unit_price: item.unit_price,
+        discount: item.discount_percent, tax_rate: item.tax_rate, total: item.line_total,
+      })),
+      subtotal: quotation.subtotal || subtotal, tax_amount: quotation.tax_amount || tax, total: quotation.total_amount || total,
+      notes: quotation.notes,
+      valid_until: quotation.valid_until || quotation.expiry_date,
+      payment_method: quotation.payment_terms,
+    });
   };
 
   const handleStatusChange = async (newStatus: string) => {
@@ -97,9 +124,11 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
     Promise.all([
       api.getQuotation(id),
       api.getWarehouses().catch(() => ({ data: [] })),
-    ]).then(([quoteRes, warehousesRes]) => {
+      api.getCompany().catch(() => null),
+    ]).then(([quoteRes, warehousesRes, companyRes]) => {
       setQuotation(quoteRes as unknown as QuotationDetail);
       setWarehouses((warehousesRes.data || []).map((w: any) => ({ id: w.id, name: w.name })));
+      if (companyRes) setCompany(companyRes);
       setLoading(false);
     }).catch(() => {
       setError('No se pudo cargar la cotización');

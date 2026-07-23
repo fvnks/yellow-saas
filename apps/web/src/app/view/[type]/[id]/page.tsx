@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { FileText, Download, Printer, ArrowLeft } from 'lucide-react';
 import { generateBoletaPDF, generateCotizacionPDF, generateOrdenVentaPDF, generateOrdenCompraPDF, DocumentData } from '@/lib/pdf-design';
+import { usePrintDocument, type PrintDocumentType } from '@/components/print/use-print';
 
 const DOC_TYPE_LABELS: Record<string, string> = {
   boleta: 'Boleta de Venta',
@@ -30,6 +31,7 @@ export default function PublicDocumentPage({ params }: { params: { type: string;
   const [doc, setDoc] = useState<DocumentData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const { print } = usePrintDocument();
 
   useEffect(() => {
     fetch(`/api/public/${type}/${id}`)
@@ -59,7 +61,32 @@ export default function PublicDocumentPage({ params }: { params: { type: string;
     pdfDoc.save(`${doc.number || 'documento'}.pdf`);
   };
 
-  const handlePrint = () => window.print();
+  const handlePrint = () => {
+    if (!doc) return;
+    const printType: PrintDocumentType = doc.type === 'boleta' ? 'boleta' : doc.type === 'factura' ? 'factura' : doc.type === 'cotizacion' ? 'quotation' : doc.type === 'orden-venta' ? 'sales-order' : 'purchase-order';
+    print(printType, {
+      id: doc.id,
+      number: doc.number,
+      type: doc.type,
+      date: doc.date,
+      due_date: doc.due_date,
+      company: doc.company,
+      customer: doc.customer,
+      supplier: doc.supplier,
+      items: doc.items.map(item => ({
+        name: item.name, sku: item.sku, quantity: item.quantity,
+        unit_price: item.unit_price, discount: item.discount,
+        tax_rate: item.tax_rate, total: item.total,
+      })),
+      subtotal: doc.subtotal,
+      tax_amount: doc.tax_amount,
+      total: doc.total,
+      notes: doc.notes,
+      valid_until: doc.valid_until,
+      delivery_date: doc.delivery_date,
+      warehouse: doc.warehouse,
+    });
+  };
 
   if (loading) {
     return (

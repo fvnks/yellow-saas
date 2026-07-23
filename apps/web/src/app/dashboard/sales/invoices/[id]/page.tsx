@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
 import { generateBoletaPDF } from '@/lib/pdf-design';
+import { usePrintDocument } from '@/components/print/use-print';
 
 interface InvoiceItem {
   id: string;
@@ -50,6 +51,7 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
   const [invoice, setInvoice] = useState<InvoiceDetail | null>(null);
   const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { print } = usePrintDocument();
 
   useEffect(() => {
     const api = getApiClient();
@@ -64,7 +66,29 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
   }, [id]);
 
   const handlePrint = () => {
-    window.print();
+    if (!invoice) return;
+    const c = company || {};
+    print(invoice.document_type as any, {
+      id: invoice.id,
+      number: invoice.invoice_number,
+      type: invoice.document_type || 'factura',
+      date: invoice.invoice_date,
+      due_date: invoice.due_date,
+      status: invoice.status,
+      company: {
+        name: c.name || 'Empresa', tax_id: c.tax_id, razon_social: c.razon_social,
+        giro: c.giro, address: c.address, city: c.city, region: c.region,
+        phone: c.phone, email: c.email, logo_url: c.logo_url,
+      },
+      customer: invoice.customer ? { name: invoice.customer.name, tax_id: invoice.customer.tax_id } : undefined,
+      items: (invoice.items || []).map(item => ({
+        name: item.product?.name || '', sku: item.product?.sku,
+        quantity: item.quantity, unit_price: item.unit_price,
+        discount: item.discount_percent, tax_rate: item.tax_rate, total: item.line_total,
+      })),
+      subtotal, tax_amount: tax, total, notes: invoice.notes,
+      payment_method: invoice.payment_method,
+    });
   };
 
   const handleDownloadPDF = async () => {

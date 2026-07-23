@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Trash2, CheckCircle2, Clock, AlertCircle, Send, FileText } from 'lucide-react';
+import { ArrowLeft, Trash2, CheckCircle2, Clock, AlertCircle, Send, FileText, Printer } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
+import { usePrintDocument } from '@/components/print/use-print';
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
   draft: { label: 'Borrador', color: 'bg-slate-100 text-slate-700', icon: Clock },
@@ -21,6 +22,7 @@ export default function InvoiceDetailPage() {
   const invoiceId = params.id as string;
   const [invoice, setInvoice] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { print } = usePrintDocument();
 
   useEffect(() => { loadInvoice(); }, [invoiceId]);
 
@@ -31,6 +33,30 @@ export default function InvoiceDetailPage() {
       setInvoice(res);
     } catch (err) { toast.error('Error al cargar factura'); }
     setLoading(false);
+  };
+
+  const handlePrint = () => {
+    if (!invoice) return;
+    print(invoice.document_type === 'boleta' ? 'boleta' : 'factura', {
+      id: invoice.id,
+      number: invoice.invoice_number,
+      type: invoice.document_type || 'factura',
+      date: invoice.invoice_date,
+      due_date: invoice.due_date,
+      status: invoice.status,
+      company: { name: 'Empresa' },
+      customer: invoice.customer ? { name: invoice.customer.name, tax_id: invoice.customer.tax_id } : undefined,
+      items: (invoice.items || []).map((item: any) => ({
+        name: item.product?.name || item.description || '',
+        quantity: item.quantity, unit_price: item.unit_price,
+        discount: item.discount, tax_rate: item.tax_rate,
+        total: item.quantity * item.unit_price,
+      })),
+      subtotal: invoice.subtotal || 0,
+      tax_amount: invoice.tax_amount || 0,
+      total: invoice.total_amount || 0,
+      notes: invoice.notes,
+    });
   };
 
   const handleStatus = async (status: string) => {
@@ -73,6 +99,9 @@ export default function InvoiceDetailPage() {
           <p className="text-sm text-slate-500 mt-1">{invoice.customer?.name || 'Sin cliente'}</p>
         </div>
         <div className="flex items-center gap-2">
+          <button onClick={handlePrint} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            <Printer className="w-4 h-4" /> Imprimir
+          </button>
           {invoice.status === 'draft' && (
             <button onClick={() => handleStatus('sent')}
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
