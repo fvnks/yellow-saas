@@ -63,7 +63,7 @@ export default function PublicDocumentPage({ params }: { params: { type: string;
 
   const handlePrint = () => {
     if (!doc) return;
-    const printType: PrintDocumentType = doc.type === 'boleta' ? 'boleta' : doc.type === 'factura' ? 'factura' : doc.type === 'cotizacion' ? 'quotation' : doc.type === 'orden-venta' ? 'sales-order' : 'purchase-order';
+    const printType: PrintDocumentType = doc.type === 'boleta' ? 'boleta' : doc.type === 'factura' ? 'factura' : doc.type === 'cotizacion' ? 'quotation' : doc.type === 'orden_venta' ? 'sales-order' : 'purchase-order';
     print(printType, {
       id: doc.id,
       number: doc.number,

@@ -173,7 +173,8 @@ function buildDocBadge(number: string, type: string, date: string, status?: stri
   `;
 }
 
-function buildParties(customer?: PrintDocumentData['customer'], supplier?: PrintDocumentData['supplier']): string {
+function buildParties(customer?: PrintDocumentData['customer'], supplier?: PrintDocumentData['supplier'], date?: string): string {
+  const dateStr = formatDateShort(date || '');
   if (customer) {
     return `
       <div class="parties">
@@ -189,7 +190,7 @@ function buildParties(customer?: PrintDocumentData['customer'], supplier?: Print
         </div>
         <div class="party-box" style="background:#f0fdf4;border-color:#bbf7d0;">
           <div class="party-label">Datos del Documento</div>
-          <div class="info-row"><span class="info-label">Fecha:</span><span class="info-value">${formatDateShort(date)}</span></div>
+          <div class="info-row"><span class="info-label">Fecha:</span><span class="info-value">${dateStr}</span></div>
         </div>
       </div>
     `;
@@ -208,7 +209,7 @@ function buildParties(customer?: PrintDocumentData['customer'], supplier?: Print
         </div>
         <div class="party-box" style="background:#f0fdf4;border-color:#bbf7d0;">
           <div class="party-label">Datos del Documento</div>
-          <div class="info-row"><span class="info-label">Fecha:</span><span class="info-value">${formatDateShort(date)}</span></div>
+          <div class="info-row"><span class="info-label">Fecha:</span><span class="info-value">${dateStr}</span></div>
         </div>
       </div>
     `;
@@ -345,7 +346,7 @@ export function generateInvoicePrint(data: PrintDocumentData): string {
       ${buildCompanyHeader(data.company)}
       ${buildDocBadge(data.number, docTypeLabel, data.date, data.status)}
     </div>
-    ${buildParties(data.customer)}
+    ${buildParties(data.customer, undefined, data.date)}
     ${buildItemsTable(data.items, true, showTax)}
     ${buildTotals(data.subtotal, data.tax_amount, data.total, showTax)}
     ${buildNotes(data.notes)}
@@ -366,7 +367,7 @@ export function generateDeliveryGuidePrint(data: PrintDocumentData): string {
       ${buildCompanyHeader(data.company)}
       ${buildDocBadge(data.number, 'GUÍA DE DESPACHO', data.date, data.status)}
     </div>
-    ${buildParties(data.customer)}
+      ${buildParties(data.customer, undefined, data.date)}
     ${buildTransportInfo(data.transport, data.driver_name, data.vehicle_plate, data.shipping_address)}
     <table>
       <thead>
@@ -400,7 +401,7 @@ export function generateCreditNotePrint(data: PrintDocumentData): string {
       ${buildCompanyHeader(data.company)}
       ${buildDocBadge(data.number, 'NOTA DE CRÉDITO', data.date, data.status)}
     </div>
-    ${buildParties(data.customer)}
+      ${buildParties(data.customer, undefined, data.date)}
     ${data.reference_invoice ? `
       <div style="margin-bottom:16px;padding:8px 12px;background:#fef2f2;border:1px solid #fecaca;border-radius:6px;">
         <span style="font-size:8px;font-weight:700;color:#991b1b;text-transform:uppercase;">Factura Ref:</span>
@@ -427,7 +428,7 @@ export function generateDebitNotePrint(data: PrintDocumentData): string {
       ${buildCompanyHeader(data.company)}
       ${buildDocBadge(data.number, 'NOTA DE DÉBITO', data.date, data.status)}
     </div>
-    ${buildParties(data.customer)}
+    ${buildParties(data.customer, undefined, data.date)}
     ${data.reference_invoice ? `
       <div style="margin-bottom:16px;padding:8px 12px;background:#fef2f2;border:1px solid #fecaca;border-radius:6px;">
         <span style="font-size:8px;font-weight:700;color:#991b1b;text-transform:uppercase;">Factura Ref:</span>
@@ -454,7 +455,7 @@ export function generatePurchaseOrderPrint(data: PrintDocumentData): string {
       ${buildCompanyHeader(data.company)}
       ${buildDocBadge(data.number, 'ORDEN DE COMPRA', data.date, data.status)}
     </div>
-    ${buildParties(undefined, data.supplier)}
+    ${buildParties(undefined, data.supplier, data.date)}
     <div style="margin-bottom:16px;">
       <div class="two-col">
         <div class="info-row"><span class="info-label">Bodega:</span><span class="info-value">${data.warehouse || '—'}</span></div>
@@ -477,7 +478,7 @@ export function generateQuotationPrint(data: PrintDocumentData): string {
       ${buildCompanyHeader(data.company)}
       ${buildDocBadge(data.number, 'COTIZACIÓN', data.date, data.status)}
     </div>
-    ${buildParties(data.customer)}
+    ${buildParties(data.customer, undefined, data.date)}
     ${data.valid_until ? `
       <div style="margin-bottom:16px;padding:8px 12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;">
         <span style="font-size:8px;font-weight:700;color:#1e40af;text-transform:uppercase;">Válido hasta:</span>
@@ -509,7 +510,7 @@ export function generateSalesOrderPrint(data: PrintDocumentData): string {
       ${buildCompanyHeader(data.company)}
       ${buildDocBadge(data.number, 'ORDEN DE VENTA', data.date, data.status)}
     </div>
-    ${buildParties(data.customer)}
+    ${buildParties(data.customer, undefined, data.date)}
     <div style="margin-bottom:16px;">
       <div class="two-col">
         <div class="info-row"><span class="info-label">Bodega:</span><span class="info-value">${data.warehouse || '—'}</span></div>
@@ -530,7 +531,7 @@ export function generateGoodsReceiptPrint(data: PrintDocumentData): string {
       ${buildCompanyHeader(data.company)}
       ${buildDocBadge(data.number, 'RECEPCIÓN DE MERCANCÍA', data.date, data.status)}
     </div>
-    ${buildParties(undefined, data.supplier)}
+    ${buildParties(undefined, data.supplier, data.date)}
     ${data.order_number ? `
       <div style="margin-bottom:16px;padding:8px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;">
         <span style="font-size:8px;font-weight:700;color:#166534;text-transform:uppercase;">OC Referencia:</span>

@@ -105,6 +105,10 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
   const handlePrint = () => {
     if (!order) return;
     const c = company || {};
+    const items = order.items || [];
+    const subtotal = items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0);
+    const tax = Math.round(subtotal * 0.19);
+    const total = order.total_amount || subtotal + tax;
     print('purchase-order', {
       id: order.id,
       number: order.number,
@@ -117,15 +121,14 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
         phone: c.phone, email: c.email, logo_url: c.logo_url,
       },
       supplier: order.supplier ? { name: order.supplier.name, tax_id: order.supplier.tax_id } : undefined,
-      items: (order.items || []).map(item => ({
+      items: items.map(item => ({
         name: item.product?.name || '', sku: item.product?.sku,
         quantity: item.quantity, unit_price: item.unit_price,
-        discount: item.discount_percent, total: item.line_total,
+        discount: item.discount_percent, tax_rate: 19, total: item.line_total,
       })),
       subtotal, tax_amount: tax, total, notes: order.notes,
       warehouse: order.warehouse?.name,
       delivery_date: order.expected_date,
-      payment_method: order.payment_method,
       payment_terms: order.payment_terms,
     });
   };
