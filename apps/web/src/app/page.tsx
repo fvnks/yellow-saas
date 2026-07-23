@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import {
   Package, ShoppingCart, Users, BarChart3, Shield, Settings,
