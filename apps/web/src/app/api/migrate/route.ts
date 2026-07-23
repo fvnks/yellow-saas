@@ -264,6 +264,18 @@ export async function POST(request: Request) {
     }
     results.push('Seeded default valuation methods');
 
+    const superAdminHash = await bcrypt.hash('SuperAdmin123!', 12);
+    const existingSuperAdmin = await query('SELECT id FROM super_admins WHERE email = $1', ['superadmin@yellow.cl']);
+    if (existingSuperAdmin.rows.length === 0) {
+      await query(
+        `INSERT INTO super_admins (email, name, password_hash, is_active) VALUES ($1, $2, $3, true)`,
+        ['superadmin@yellow.cl', 'Super Administrador', superAdminHash]
+      );
+      results.push('Created super admin: superadmin@yellow.cl / SuperAdmin123!');
+    } else {
+      results.push('Super admin already exists');
+    }
+
     return NextResponse.json({ success: true, results });
   } catch (err) {
     return NextResponse.json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 });
