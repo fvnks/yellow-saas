@@ -43,12 +43,12 @@ export async function GET(request: NextRequest) {
         [companyId, firstDayPrevMonth, lastDayPrevMonth]
       ),
       query(
-        `SELECT COUNT(*) as count, COALESCE(SUM(total_amount), 0) as total 
+        `SELECT COUNT(*) as count, COALESCE(SUM(total), 0) as total 
          FROM purchase_orders WHERE company_id = $1 AND created_at >= $2 AND created_at <= $3`,
         [companyId, firstDayMonth, lastDayMonth]
       ),
       query(
-        `SELECT COUNT(*) as count, COALESCE(SUM(total_amount), 0) as total 
+        `SELECT COUNT(*) as count, COALESCE(SUM(total), 0) as total 
          FROM purchase_orders WHERE company_id = $1 AND created_at >= $2 AND created_at <= $3`,
         [companyId, firstDayPrevMonth, lastDayPrevMonth]
       ),
@@ -65,32 +65,30 @@ export async function GET(request: NextRequest) {
           SUM(CASE WHEN is_active = true THEN 1 ELSE 0 END) as active,
           (SELECT COUNT(*) FROM stock_levels sl 
            JOIN products p ON p.id = sl.product_id 
-           WHERE p.company_id = $1 AND sl.quantity <= COALESCE(p.min_stock, 10)) as low_stock`,
+           WHERE p.company_id = $1 AND sl.quantity <= COALESCE(p.min_stock, 10)) as low_stock
+         FROM products WHERE company_id = $1`,
         [companyId]
       ),
       query(
         `SELECT COUNT(*) as total,
-          SUM(CASE WHEN payment_status = 'paid' THEN 1 ELSE 0 END) as paid,
-          SUM(CASE WHEN payment_status != 'paid' OR payment_status IS NULL THEN 1 ELSE 0 END) as pending,
+          SUM(CASE WHEN status = 'paid' THEN 1 ELSE 0 END) as paid,
+          SUM(CASE WHEN status != 'paid' OR status IS NULL THEN 1 ELSE 0 END) as pending,
           COALESCE(SUM(total_amount), 0) as total_amount,
-          COALESCE(SUM(CASE WHEN payment_status = 'paid' THEN total_amount ELSE 0 END), 0) as paid_amount
+          COALESCE(SUM(CASE WHEN status = 'paid' THEN total_amount ELSE 0 END), 0) as paid_amount
          FROM invoices WHERE company_id = $1`,
         [companyId]
       ),
       query(
-        `SELECT COUNT(*) as count, COALESCE(SUM(smi.quantity * COALESCE(p.cost_price, 0)), 0) as total_cost
+        `SELECT COUNT(*) as count, 0 as total_cost
          FROM stock_movements sm
-         JOIN stock_movement_items smi ON smi.movement_id = sm.id
-         JOIN products p ON p.id = smi.product_id
          WHERE sm.company_id = $1 AND sm.type IN ('loss', 'adjustment', 'merma')`,
         [companyId]
       ),
       query(
-        `SELECT p.name, p.sku, COALESCE(SUM(smi.quantity), 0) as total_sold
-         FROM sales_order_items soi
-         JOIN sales_orders so ON so.id = soi.order_id
-         JOIN products p ON p.id = soi.product_id
-         WHERE so.company_id = $1 AND so.created_at >= $2
+        `SELECT p.name, p.sku, COALESCE(SUM(ABS(sm.quantity)), 0) as total_sold
+         FROM stock_movements sm
+         JOIN products p ON p.id = sm.product_id
+         WHERE sm.company_id = $1 AND sm.type = 'out' AND sm.created_at >= $2
          GROUP BY p.id, p.name, p.sku
          ORDER BY total_sold DESC
          LIMIT 5`,
@@ -107,7 +105,7 @@ export async function GET(request: NextRequest) {
       ),
       query(
         `SELECT TO_CHAR(created_at::date, 'DD') as day,
-          COUNT(*) as count, COALESCE(SUM(total_amount), 0) as total
+          COUNT(*) as count, COALESCE(SUM(total), 0) as total
          FROM purchase_orders
          WHERE company_id = $1 AND created_at >= $2 AND created_at <= $3
          GROUP BY created_at::date

@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { rows: orderRows } = await query(
-      `INSERT INTO purchase_orders (company_id, supplier_id, warehouse_id, number, status, order_date, expected_date, payment_terms, subtotal, tax_amount, total_amount, notes, internal_notes, project_id)
+      `INSERT INTO purchase_orders (company_id, supplier_id, warehouse_id, number, status, order_date, expected_date, payment_terms, subtotal, tax_amount, total, notes, internal_notes, project_id)
        VALUES ($1, $2, $3, $4, 'draft', $5, $6, $7, $8, $9, $10, $11, $12, $13)
        RETURNING *`,
       [
