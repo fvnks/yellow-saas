@@ -1,7 +1,6 @@
 "use client";
 
-import { LogOut, Settings, User, ChevronsUpDown } from "lucide-react";
-
+import { LogOut, Settings, User, ChevronsUpDown, Building2 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -29,20 +28,24 @@ export default function SidebarFooterMenu({ user }: SidebarFooterMenuProps) {
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex w-full items-center gap-3 rounded-xl p-2.5 text-left text-sm hover:bg-sidebar-accent/60 transition-all duration-200 group/user">
-              <Avatar className="h-9 w-9 ring-2 ring-slate-200 group-hover/user:ring-indigo-200 transition-all">
-                <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-indigo-600 text-white text-xs font-bold">
+            <button className="flex w-full items-center gap-3 rounded-xl p-2.5 text-left text-sm hover:bg-sidebar-accent/50 transition-all duration-200 group/user">
+              <Avatar className="h-9 w-9 ring-2 ring-amber-200/50 group-hover/user:ring-amber-300 transition-all dark:ring-amber-500/30 dark:group-hover/user:ring-amber-400/50">
+                <AvatarFallback className="bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-500 text-white text-xs font-bold">
                   {user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)}
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-1 flex-col group-data-[collapsible=icon]:hidden min-w-0">
-                <span className="font-semibold text-slate-900 text-sm truncate">{user.name}</span>
-                <span className="text-[11px] text-slate-400 truncate">{user.email}</span>
+                <span className="font-semibold text-slate-900 text-sm truncate dark:text-white">{user.name}</span>
+                <span className="text-[11px] text-slate-400 truncate dark:text-slate-500">{user.email}</span>
               </div>
               <ChevronsUpDown className="h-4 w-4 text-slate-400 group-data-[collapsible=icon]:hidden flex-shrink-0" />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent side="top" align="start" className="w-56">
+            <DropdownMenuItem className="cursor-pointer">
+              <Building2 className="mr-2 h-4 w-4" />
+              <span>Mi Empresa</span>
+            </DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer">
               <User className="mr-2 h-4 w-4" />
               <span>Mi Cuenta</span>
@@ -52,7 +55,7 @@ export default function SidebarFooterMenu({ user }: SidebarFooterMenuProps) {
               <span>Configuración</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-rose-600 cursor-pointer focus:text-rose-600 focus:bg-rose-50">
+            <DropdownMenuItem className="text-rose-600 cursor-pointer focus:text-rose-600 focus:bg-rose-50 dark:text-rose-400 dark:focus:text-rose-400 dark:focus:bg-rose-500/10">
               <LogOut className="mr-2 h-4 w-4" />
               <span>Cerrar Sesión</span>
             </DropdownMenuItem>

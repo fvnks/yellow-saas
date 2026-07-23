@@ -3,9 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
 import { ChevronRight, ChevronDown } from "lucide-react";
-
+import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   SidebarGroup,
@@ -23,7 +22,9 @@ interface SidebarNavigationProps {
 }
 
 const IsComingSoon = () => (
-  <span className="ml-auto rounded-md bg-amber-100 px-2 py-0.5 text-[9px] font-semibold text-amber-700">Próximamente</span>
+  <span className="ml-auto rounded-md bg-amber-100 px-2 py-0.5 text-[9px] font-semibold text-amber-700 dark:bg-amber-500/10 dark:text-amber-400">
+    Próximamente
+  </span>
 );
 
 export default function SidebarNavigation({ sidebarItems }: SidebarNavigationProps) {
@@ -106,100 +107,117 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
             onOpenChange={() => toggleGroup(navGroup.id)}
             className="group/collapsible-group"
           >
-            <div className={`
-              rounded-lg transition-all duration-200
-              ${groupOpen ? 'bg-sidebar-accent/40' : ''}
-            `}>
+            <div className={cn(
+              "rounded-xl transition-all duration-200",
+              groupOpen && "bg-sidebar-accent/30"
+            )}>
               {navGroup.label && (
                 <CollapsibleTrigger asChild>
-                  <button className={`
-                    flex w-full items-center gap-2 px-2.5 py-2 rounded-lg
-                    text-[11px] font-semibold uppercase tracking-wider
-                    transition-all duration-200 cursor-pointer
-                    ${groupActive
-                      ? 'text-sidebar-foreground'
-                      : 'text-sidebar-foreground/50 hover:text-sidebar-foreground/80'
-                    }
-                    hover:bg-sidebar-accent/60
-                  `}>
-                    <ChevronDown className={`
-                      h-3.5 w-3.5 flex-shrink-0 transition-transform duration-200
-                      ${!groupOpen ? '-rotate-90' : ''}
-                    `} />
+                  <button className={cn(
+                    "flex w-full items-center gap-2 px-3 py-2 rounded-xl",
+                    "text-[10px] font-bold uppercase tracking-widest",
+                    "transition-all duration-200 cursor-pointer",
+                    groupActive
+                      ? "text-sidebar-foreground"
+                      : "text-sidebar-foreground/40 hover:text-sidebar-foreground/70",
+                    "hover:bg-sidebar-accent/50"
+                  )}>
+                    <ChevronDown className={cn(
+                      "h-3 w-3 flex-shrink-0 transition-transform duration-200",
+                      !groupOpen && "-rotate-90"
+                    )} />
                     <span className="truncate">{navGroup.label}</span>
                     {groupActive && !groupOpen && (
-                      <div className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-500 flex-shrink-0" />
+                      <div className="ml-auto w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0 animate-pulse" />
                     )}
                   </button>
                 </CollapsibleTrigger>
               )}
 
               <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
-                <div className="pb-1">
+                <div className="pb-1.5">
                   <SidebarMenu>
-                    {navGroup.items.map((item) => (
-                      <Collapsible
-                        open={openItems[item.title] ?? false}
-                        onOpenChange={() => toggleItem(item.title)}
-                        key={item.title}
-                        asChild
-                        className="group/collapsible"
-                      >
-                        <SidebarMenuItem>
-                          <CollapsibleTrigger asChild>
-                            {item.subItems ? (
-                              <SidebarMenuButton
-                                isActive={isActive(item.path, item.subItems)}
-                                tooltip={item.title}
-                                className="whitespace-nowrap"
-                              >
-                                {renderIcon(item.icon)}
-                                <span>{item.title}</span>
-                                {item.comingSoon && <IsComingSoon />}
-                                <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                              </SidebarMenuButton>
-                            ) : (
-                              <Link href={item.path}>
+                    {navGroup.items.map((item) => {
+                      const itemActive = isActive(item.path, item.subItems);
+                      return (
+                        <Collapsible
+                          open={openItems[item.title] ?? false}
+                          onOpenChange={() => toggleItem(item.title)}
+                          key={item.title}
+                          asChild
+                          className="group/collapsible"
+                        >
+                          <SidebarMenuItem>
+                            <CollapsibleTrigger asChild>
+                              {item.subItems ? (
                                 <SidebarMenuButton
-                                  disabled={item.comingSoon}
-                                  isActive={isActive(item.path)}
+                                  isActive={itemActive}
                                   tooltip={item.title}
+                                  className={cn(
+                                    "whitespace-nowrap rounded-xl transition-all duration-200",
+                                    itemActive && "bg-sidebar-accent/60 font-medium"
+                                  )}
                                 >
                                   {renderIcon(item.icon)}
                                   <span>{item.title}</span>
                                   {item.comingSoon && <IsComingSoon />}
+                                  <ChevronRight className={cn(
+                                    "ml-auto transition-transform duration-200",
+                                    "group-data-[state=open]/collapsible:rotate-90"
+                                  )} />
                                 </SidebarMenuButton>
-                              </Link>
+                              ) : (
+                                <Link href={item.path}>
+                                  <SidebarMenuButton
+                                    disabled={item.comingSoon}
+                                    isActive={itemActive}
+                                    tooltip={item.title}
+                                    className={cn(
+                                      "rounded-xl transition-all duration-200",
+                                      itemActive && "bg-sidebar-accent/60 font-medium"
+                                    )}
+                                  >
+                                    {renderIcon(item.icon)}
+                                    <span>{item.title}</span>
+                                    {item.comingSoon && <IsComingSoon />}
+                                  </SidebarMenuButton>
+                                </Link>
+                              )}
+                            </CollapsibleTrigger>
+                            {item.subItems && (
+                              <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+                                <SidebarMenuSub>
+                                  {item.subItems.map((subItem) => (
+                                    <SidebarMenuSubItem key={subItem.title}>
+                                      <SidebarMenuSubButton
+                                        aria-disabled={subItem.comingSoon}
+                                        isActive={isActive(subItem.path)}
+                                        asChild
+                                        className="rounded-lg"
+                                      >
+                                        <a href={subItem.path}>
+                                          {renderIcon(subItem.icon)}
+                                          <span>{subItem.title}</span>
+                                          {subItem.comingSoon && <IsComingSoon />}
+                                        </a>
+                                      </SidebarMenuSubButton>
+                                    </SidebarMenuSubItem>
+                                  ))}
+                                </SidebarMenuSub>
+                              </CollapsibleContent>
                             )}
-                          </CollapsibleTrigger>
-                          {item.subItems && (
-                            <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
-                              <SidebarMenuSub>
-                                {item.subItems.map((subItem) => (
-                                  <SidebarMenuSubItem key={subItem.title}>
-                                    <SidebarMenuSubButton
-                                      aria-disabled={subItem.comingSoon}
-                                      isActive={isActive(subItem.path)}
-                                      asChild
-                                    >
-                                      <a href={subItem.path}>
-                                        {renderIcon(subItem.icon)}
-                                        <span>{subItem.title}</span>
-                                        {subItem.comingSoon && <IsComingSoon />}
-                                      </a>
-                                    </SidebarMenuSubButton>
-                                  </SidebarMenuSubItem>
-                                ))}
-                              </SidebarMenuSub>
-                            </CollapsibleContent>
-                          )}
-                        </SidebarMenuItem>
-                      </Collapsible>
-                    ))}
+                          </SidebarMenuItem>
+                        </Collapsible>
+                      );
+                    })}
                   </SidebarMenu>
                 </div>
               </CollapsibleContent>
             </div>
+
+            {groupIndex < sidebarItems.length - 1 && (
+              <div className="my-1.5 mx-3 h-px bg-sidebar-border/50" />
+            )}
           </Collapsible>
         );
       })}
