@@ -96,7 +96,7 @@ export async function POST(request: Request) {
     ];
 
     for (const sql of tables) {
-      await query(sql);
+      try { await query(sql); } catch (e: any) { results.push(`WARN: ${e.message?.substring(0, 80)}`); }
     }
     results.push(`Created ${tables.length} tables`);
 
@@ -181,7 +181,7 @@ export async function POST(request: Request) {
       `CREATE TABLE IF NOT EXISTS goods_receipt_items (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, receipt_id UUID NOT NULL REFERENCES goods_receipts(id) ON DELETE CASCADE, purchase_order_item_id UUID NOT NULL REFERENCES purchase_order_items(id), product_id UUID NOT NULL REFERENCES products(id), quantity_ordered DECIMAL(14,4) NOT NULL, quantity_received DECIMAL(14,4) NOT NULL, batch_number TEXT, notes TEXT, created_at TIMESTAMPTZ DEFAULT now())`,
     ];
     for (const sql of newTables) {
-      await query(sql);
+      try { await query(sql); } catch (e: any) { results.push(`WARN newTables: ${e.message?.substring(0, 100)}`); }
     }
     results.push(`Created ${newTables.length} new tables`);
 
@@ -191,6 +191,12 @@ export async function POST(request: Request) {
       `ALTER TABLE invoices ALTER COLUMN customer_id DROP NOT NULL`,
       `ALTER TABLE sales_orders ALTER COLUMN customer_id DROP NOT NULL`,
       `ALTER TABLE sales_orders ALTER COLUMN warehouse_id DROP NOT NULL`,
+      `DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'stock_transfers') THEN IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'stock_transfers' AND column_name = 'product_id') THEN ALTER TABLE stock_transfers ADD COLUMN product_id UUID REFERENCES products(id); END IF; END IF; END $$`,
+      `DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'stock_transfers') THEN IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'stock_transfers' AND column_name = 'from_warehouse_id') THEN ALTER TABLE stock_transfers ADD COLUMN from_warehouse_id UUID REFERENCES warehouses(id); END IF; END IF; END $$`,
+      `DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'stock_transfers') THEN IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'stock_transfers' AND column_name = 'to_warehouse_id') THEN ALTER TABLE stock_transfers ADD COLUMN to_warehouse_id UUID REFERENCES warehouses(id); END IF; END IF; END $$`,
+      `DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'stock_transfers') THEN IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'stock_transfers' AND column_name = 'quantity') THEN ALTER TABLE stock_transfers ADD COLUMN quantity NUMERIC(12,2); END IF; END IF; END $$`,
+      `DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'product_serials') THEN IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'product_serials' AND column_name = 'batch_number') THEN ALTER TABLE product_serials ADD COLUMN batch_number TEXT; END IF; END IF; END $$`,
+      `DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'product_serials') THEN IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'product_serials' AND column_name = 'updated_at') THEN ALTER TABLE product_serials ADD COLUMN updated_at TIMESTAMPTZ DEFAULT now(); END IF; END IF; END $$`,
     ];
     for (const sql of alterStatements) {
       try { await query(sql); } catch { /* column may already exist */ }
