@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight, ChevronDown } from "lucide-react";
@@ -15,7 +15,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { NavGroup, NavMainItem, resolveIcon, ICON_MAP } from "@/navigation/sidebar/sidebar-items";
+import { NavGroup, NavMainItem, NavSubItem, resolveIcon, ICON_MAP } from "@/navigation/sidebar/sidebar-items";
+import { usePermissions } from "@/lib/permissions";
 
 interface SidebarNavigationProps {
   sidebarItems: NavGroup[];
@@ -28,15 +29,39 @@ const IsComingSoon = () => (
 );
 
 export default function SidebarNavigation({ sidebarItems }: SidebarNavigationProps) {
+  const { hasPermission } = usePermissions();
   const path = usePathname();
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
+
+  // Filter sidebar items based on permissions
+  const filteredItems = useMemo(() => {
+    return sidebarItems.map(group => ({
+      ...group,
+      items: group.items.filter(item => {
+        // Check item-level permission
+        if (item.requiredPermission && !hasPermission(item.requiredPermission.module, item.requiredPermission.action)) {
+          return false;
+        }
+        // Filter sub-items by permission
+        if (item.subItems) {
+          item.subItems = item.subItems.filter(sub => {
+            if (sub.requiredPermission && !hasPermission(sub.requiredPermission.module, sub.requiredPermission.action)) {
+              return false;
+            }
+            return true;
+          });
+        }
+        return true;
+      })
+    })).filter(group => group.items.length > 0);
+  }, [sidebarItems, hasPermission]);
 
   useEffect(() => {
     const updatedGroups: Record<string, boolean> = {};
     const updatedItems: Record<string, boolean> = {};
 
-    for (const group of sidebarItems) {
+    for (const group of filteredItems) {
       for (const item of group.items) {
         const itemHasSubs = !!item.subItems;
         const isItemActive = path.startsWith(item.path) ||
@@ -57,7 +82,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
 
     setOpenGroups((prev) => ({ ...prev, ...updatedGroups }));
     setOpenItems((prev) => ({ ...prev, ...updatedItems }));
-  }, [path, sidebarItems]);
+  }, [path, filteredItems]);
 
   const toggleGroup = (groupId: string | number) => {
     setOpenGroups((prev) => ({ ...prev, [groupId]: !prev[groupId] }));
@@ -96,7 +121,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
 
   return (
     <div className="flex flex-col gap-1 px-2">
-      {sidebarItems.map((navGroup, groupIndex) => {
+      {filteredItems.map((navGroup, groupIndex) => {
         const groupActive = isGroupActive(navGroup);
         const groupOpen = openGroups[navGroup.id] ?? false;
 
