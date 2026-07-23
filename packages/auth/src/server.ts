@@ -11,6 +11,7 @@ export interface User {
   name: string;
   company_id: string;
   role: string;
+  role_type?: 'company' | 'super_admin';
 }
 
 export interface SuperAdmin {
