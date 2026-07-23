@@ -12,13 +12,11 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
     let sql = `
       SELECT st.*,
-        p.name as product_name, p.sku,
-        fw.name as from_warehouse_name, fw.code as from_warehouse_code,
-        tw.name as to_warehouse_name, tw.code as to_warehouse_code
+        sw.name as from_warehouse_name, sw.code as from_warehouse_code,
+        dw.name as to_warehouse_name, dw.code as to_warehouse_code
       FROM stock_transfers st
-      JOIN products p ON p.id = st.product_id
-      JOIN warehouses fw ON fw.id = st.from_warehouse_id
-      JOIN warehouses tw ON tw.id = st.to_warehouse_id
+      LEFT JOIN warehouses sw ON sw.id = st.source_warehouse_id
+      LEFT JOIN warehouses dw ON dw.id = st.destination_warehouse_id
       WHERE st.company_id = $1
     `;
     const sqlParams: any[] = [companyId];
@@ -45,23 +43,28 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     const body = await req.json();
     const { product_id, from_warehouse_id, to_warehouse_id, quantity, notes } = body;
 
-    if (!product_id || !from_warehouse_id || !to_warehouse_id || !quantity) {
-      return errorResponse('product_id, from_warehouse_id, to_warehouse_id, quantity required', 400);
+    if (!from_warehouse_id || !to_warehouse_id) {
+      return errorResponse('from_warehouse_id, to_warehouse_id required', 400);
     }
 
     if (from_warehouse_id === to_warehouse_id) {
       return errorResponse('Cannot transfer to same warehouse', 400);
     }
 
-    if (quantity <= 0) {
-      return errorResponse('Quantity must be positive', 400);
-    }
-
+    const transferNumber = `TRF-${Date.now()}`;
     const { rows } = await query(
-      `INSERT INTO stock_transfers (company_id, product_id, from_warehouse_id, to_warehouse_id, quantity, notes)
-       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [companyId, product_id, from_warehouse_id, to_warehouse_id, quantity, notes || '']
+      `INSERT INTO stock_transfers (company_id, transfer_number, source_warehouse_id, destination_warehouse_id, notes)
+       VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [companyId, transferNumber, from_warehouse_id, to_warehouse_id, notes || '']
     );
+
+    if (product_id && quantity) {
+      await query(
+        `INSERT INTO stock_transfer_items (company_id, transfer_id, product_id, quantity)
+         VALUES ($1, $2, $3, $4)`,
+        [companyId, rows[0].id, product_id, quantity]
+      );
+    }
     return successResponse(rows[0], 201);
   } catch (e: any) {
     return errorResponse(e.message, 500);

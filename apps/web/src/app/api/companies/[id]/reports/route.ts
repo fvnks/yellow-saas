@@ -132,7 +132,7 @@ export async function GET(request: NextRequest) {
 
       const [incomeRes, purchasesRes, monthlyIncomeRes, monthlyPurchasesRes] = await Promise.all([
         query(`SELECT COALESCE(SUM(total_amount), 0) as total FROM invoices i ${invoicesWhere}`, financialParams),
-        query(`SELECT COALESCE(SUM(total_amount), 0) as total FROM purchase_orders po ${purchasesWhere}`, financialParams),
+        query(`SELECT COALESCE(SUM(total), 0) as total FROM purchase_orders po ${purchasesWhere}`, financialParams),
         query(`
           SELECT TO_CHAR(i.created_at, 'YYYY-MM') as month, SUM(total_amount) as income
           FROM invoices i ${invoicesWhere}
@@ -140,7 +140,7 @@ export async function GET(request: NextRequest) {
           ORDER BY month ASC
         `, financialParams),
         query(`
-          SELECT TO_CHAR(po.created_at, 'YYYY-MM') as month, SUM(total_amount) as expenses
+          SELECT TO_CHAR(po.created_at, 'YYYY-MM') as month, SUM(total) as expenses
           FROM purchase_orders po ${purchasesWhere}
           GROUP BY TO_CHAR(po.created_at, 'YYYY-MM')
           ORDER BY month ASC
