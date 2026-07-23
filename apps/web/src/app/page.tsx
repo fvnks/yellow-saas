@@ -141,7 +141,7 @@ export default function HomePage() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
             <Link
-              href="/auth/signup"
+              href="/register"
               className="group relative overflow-hidden rounded-xl bg-slate-900 px-8 py-4 text-base font-semibold text-white transition-all duration-300 hover:bg-black hover:shadow-lg hover:shadow-slate-900/25 active:scale-[0.98] dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100"
             >
               Empezar Gratis — 14 días
@@ -344,7 +344,7 @@ export default function HomePage() {
                   ))}
                 </ul>
                 <Link
-                  href="/auth/signup"
+                  href="/register"
                   className={`block w-full text-center rounded-xl py-3 text-sm font-semibold transition-all duration-300 ${
                     plan.popular
                       ? 'bg-slate-900 text-white hover:bg-black dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100'
@@ -389,7 +389,7 @@ export default function HomePage() {
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link
-                  href="/auth/signup"
+                  href="/register"
                   className="group rounded-xl bg-gradient-to-r from-yellow-400 to-amber-500 px-8 py-4 text-base font-bold text-slate-900 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/25 active:scale-[0.98]"
                 >
                   Empezar Gratis

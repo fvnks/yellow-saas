@@ -43,13 +43,13 @@ export function Navbar() {
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-3">
           <Link
-            href="/auth/login"
+            href="/login"
             className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors dark:text-slate-400 dark:hover:text-white px-4 py-2"
           >
             Iniciar Sesión
           </Link>
           <Link
-            href="/auth/signup"
+            href="/register"
             className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:bg-black active:scale-[0.98] dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100"
           >
             Empezar Gratis
@@ -84,10 +84,10 @@ export function Navbar() {
             </a>
           ))}
           <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
-            <Link href="/auth/login" className="block text-sm font-medium text-slate-600 dark:text-slate-400" onClick={() => setMobileOpen(false)}>
+            <Link href="/login" className="block text-sm font-medium text-slate-600 dark:text-slate-400" onClick={() => setMobileOpen(false)}>
               Iniciar Sesión
             </Link>
-            <Link href="/auth/signup" className="block rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white text-center dark:bg-white dark:text-slate-900" onClick={() => setMobileOpen(false)}>
+            <Link href="/register" className="block rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white text-center dark:bg-white dark:text-slate-900" onClick={() => setMobileOpen(false)}>
               Empezar Gratis
             </Link>
           </div>
