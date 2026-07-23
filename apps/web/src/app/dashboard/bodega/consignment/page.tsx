@@ -47,7 +47,7 @@ export default function ConsignmentPage() {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-1 flex items-center gap-1">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-1 flex dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 items-center gap-1">
         <button onClick={() => setTab('agreements')}
           className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === 'agreements' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-50'}`}>
           Acuerdos ({agreements.length})
@@ -59,7 +59,7 @@ export default function ConsignmentPage() {
       </div>
 
       {tab === 'agreements' && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -103,7 +103,7 @@ export default function ConsignmentPage() {
       )}
 
       {tab === 'stock' && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>

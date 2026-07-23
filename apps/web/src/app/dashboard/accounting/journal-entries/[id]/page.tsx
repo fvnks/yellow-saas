@@ -87,14 +87,14 @@ export default function JournalEntryDetailPage() {
                 <CheckCircle2 className="w-4 h-4" /> Publicar
               </button>
               <button onClick={handleDelete}
-                className="bg-white border border-slate-200 hover:bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+                className="bg-white border border-slate-200 hover:bg-red-50 text-red-600 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-red-500/10 dark:text-red-400 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
                 <Trash2 className="w-4 h-4" /> Eliminar
               </button>
             </>
           )}
           {entry.status === 'posted' && (
             <button onClick={handleReverse}
-              className="bg-white border border-slate-200 hover:bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+              className="bg-white border border-slate-200 hover:bg-red-50 text-red-600 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-red-500/10 dark:text-red-400 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
               Revertir
             </button>
           )}
@@ -102,25 +102,25 @@ export default function JournalEntryDetailPage() {
       </div>
 
       <div className="grid grid-cols-4 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</p>
           <p className="text-sm font-semibold text-slate-900 mt-1">{new Date(entry.date).toLocaleDateString('es-CL')}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Debe</p>
           <p className="text-sm font-semibold text-slate-900 mt-1">${Number(entry.total_debit).toLocaleString('es-CL')}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Haber</p>
           <p className="text-sm font-semibold text-slate-900 mt-1">${Number(entry.total_credit).toLocaleString('es-CL')}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Lineas</p>
           <p className="text-sm font-semibold text-slate-900 mt-1">{entry.lines?.length || 0}</p>
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
         <div className="px-6 py-4 border-b border-slate-100">
           <h3 className="text-sm font-semibold text-slate-900">Detalle de Lineas</h3>
         </div>

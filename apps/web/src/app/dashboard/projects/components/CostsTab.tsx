@@ -47,7 +47,7 @@ export default function CostsTab({ costs, budget }: CostsTabProps) {
         <h3 className="text-sm font-semibold text-slate-900 mb-4">Centro de Costos</h3>
 
         {/* Budget vs Actual */}
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Presupuesto vs Real</p>
@@ -84,7 +84,7 @@ export default function CostsTab({ costs, budget }: CostsTabProps) {
           const amount = summary.bySource[key] || 0;
           const Icon = config.icon;
           return (
-            <div key={key} className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+            <div key={key} className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
               <div className="flex items-center justify-between mb-3">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${config.color}`}>
                   <Icon className="w-5 h-5" />
@@ -99,7 +99,7 @@ export default function CostsTab({ costs, budget }: CostsTabProps) {
 
       {/* Cost Details */}
       {costs.length > 0 && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="px-6 py-4 border-b border-slate-100">
             <h4 className="text-sm font-semibold text-slate-900">Detalle de Costos</h4>
           </div>
@@ -131,7 +131,7 @@ export default function CostsTab({ costs, budget }: CostsTabProps) {
       )}
 
       {costs.length === 0 && (
-        <div className="text-center py-12 bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="text-center py-12 bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <DollarSign className="w-12 h-12 text-slate-200 mx-auto mb-3" />
           <p className="text-sm text-slate-500">No hay costos registrados</p>
           <p className="text-xs text-slate-400 mt-1">Los costos se agregan desde compras, inventario y nomina</p>

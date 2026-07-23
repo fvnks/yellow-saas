@@ -94,7 +94,7 @@ export default function BudgetAlerts({ projectId, budget, costs, expenses }: Bud
   return (
     <div className="space-y-3">
       {/* Budget Progress Bar */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-slate-500" />
@@ -139,7 +139,7 @@ export default function BudgetAlerts({ projectId, budget, costs, expenses }: Bud
 
       {/* Alert Config Panel */}
       {showConfig && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between mb-3">
             <h4 className="text-xs font-semibold text-slate-700">Configurar Alertas</h4>
             <button onClick={() => setShowConfig(false)} className="p-1 hover:bg-slate-100 rounded">

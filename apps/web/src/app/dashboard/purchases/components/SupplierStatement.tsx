@@ -40,7 +40,7 @@ export default function SupplierStatement() {
         <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado de Cuenta Proveedor</span>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl p-4">
+      <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
         <div className="flex items-center gap-4">
           <input type="text" placeholder="Buscar proveedor..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
             className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
@@ -63,7 +63,7 @@ export default function SupplierStatement() {
 
       {!loading && statement && (
         <>
-          <div className="bg-white border border-slate-200 rounded-xl p-6">
+          <div className="bg-white border border-slate-200 rounded-xl p-6 dark:bg-slate-900 dark:border-slate-800">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-lg font-bold text-slate-900">{statement.supplier.name}</h3>
@@ -82,7 +82,7 @@ export default function SupplierStatement() {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl">
+          <div className="bg-white border border-slate-200 rounded-xl dark:bg-slate-900 dark:border-slate-800">
             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
               <h3 className="text-sm font-semibold text-slate-900">Movimientos</h3>
               <span className="text-[9px] font-semibold text-slate-500">{statement.transactions.length} registros</span>

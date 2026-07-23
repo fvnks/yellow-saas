@@ -79,7 +79,7 @@ export default function TagsPage() {
 
       {/* Form */}
       {showForm && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-semibold text-slate-900">{editingTag ? 'Editar Tag' : 'Nuevo Tag'}</h3>
             <button onClick={() => { setShowForm(false); setEditingTag(null); }} className="text-slate-400 hover:text-slate-600 text-sm">Cancelar</button>
@@ -102,7 +102,7 @@ export default function TagsPage() {
       )}
 
       {/* Search */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <div className="relative max-w-md">
           <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input type="text" placeholder="Buscar tags..." value={search} onChange={e => setSearch(e.target.value)}
@@ -111,7 +111,7 @@ export default function TagsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
         {loading ? (
           <div className="p-6 space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-12 bg-slate-100 rounded-lg animate-pulse" />)}</div>
         ) : (

@@ -93,7 +93,7 @@ export default function PhasesTab({ projectId, phases, onRefresh }: PhasesTabPro
       </div>
 
       {phases.length > 0 && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-medium text-slate-700">Resumen Presupuesto</span>
             <span className="text-xs text-slate-500">{phases.length} fases</span>
@@ -110,7 +110,7 @@ export default function PhasesTab({ projectId, phases, onRefresh }: PhasesTabPro
       )}
 
       {showForm && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 space-y-3">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 space-y-3">
           <div className="space-y-1">
             <label className="block text-xs font-medium text-slate-700">Nombre</label>
             <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -152,7 +152,7 @@ export default function PhasesTab({ projectId, phases, onRefresh }: PhasesTabPro
       )}
 
       {phases.length === 0 ? (
-        <div className="text-center py-8 bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="text-center py-8 bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
           <DollarSign className="w-10 h-10 text-slate-200 mx-auto mb-2" />
           <p className="text-xs text-slate-500">No hay fases definidas</p>
           <p className="text-[10px] text-slate-400 mt-1">Divide el proyecto en fases para mejor control presupuestario</p>
@@ -162,7 +162,7 @@ export default function PhasesTab({ projectId, phases, onRefresh }: PhasesTabPro
           {phases.map(phase => {
             const usage = phase.budget > 0 ? Math.round((phase.spent / phase.budget) * 100) : 0;
             return (
-              <div key={phase.id} className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow">
+              <div key={phase.id} className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 hover:shadow-md transition-shadow">
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">

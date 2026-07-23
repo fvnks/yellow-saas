@@ -96,7 +96,7 @@ export default function InventoryCountDetailPage({ params }: { params: { id: str
     return (
       <div className="space-y-6">
         <div className="h-8 bg-slate-200 rounded w-48 animate-pulse" />
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
           <div className="space-y-4 animate-pulse">
             {[1, 2, 3].map(i => <div key={i} className="h-12 bg-slate-100 rounded" />)}
           </div>
@@ -143,14 +143,14 @@ export default function InventoryCountDetailPage({ params }: { params: { id: str
           { label: 'Diferencias', value: itemsWithDiff },
           { label: 'Progreso', value: `${totalItems ? Math.round((itemsCounted / totalItems) * 100) : 0}%` },
         ].map((stat) => (
-          <div key={stat.label} className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+          <div key={stat.label} className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
             <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">{stat.label}</p>
             <p className="text-xl font-bold text-slate-900 mt-1">{stat.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
         <div className="p-4 border-b border-slate-100">
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />

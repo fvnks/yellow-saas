@@ -65,7 +65,7 @@ export default function SupplierCreditControl() {
           const details = agingDetails.filter(a => a.id === s.id);
           const isExpanded = expandedSupplier === s.id;
           return (
-            <div key={s.id} className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+            <div key={s.id} className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
               <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50" onClick={() => setExpandedSupplier(isExpanded ? null : s.id)}>
                 <div className="flex items-center gap-3">
                   <Users className="w-5 h-5 text-slate-500" />

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -113,7 +113,7 @@ function PayrollPage() {
   const latestRun = runs[0];
 
   const handleDeleteEmployee = async (id: string) => {
-    if (!confirm('¿Eliminar este empleado? Esta accion no se puede deshacer.')) return;
+    if (!confirm('�Eliminar este empleado? Esta accion no se puede deshacer.')) return;
     setDeletingEmployee(id);
     try {
       const api = getApiClient();
@@ -166,7 +166,7 @@ function PayrollPage() {
   };
 
   const handleDeleteRun = async (runId: string) => {
-    if (!confirm('¿Eliminar esta nomina? Solo se puede eliminar en estado borrador.')) return;
+    if (!confirm('�Eliminar esta nomina? Solo se puede eliminar en estado borrador.')) return;
     setDeletingRun(runId);
     try {
       const api = getApiClient();
@@ -194,7 +194,7 @@ function PayrollPage() {
             <div key={i} className="h-28 bg-slate-200 rounded-xl animate-pulse" />
           ))}
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="space-y-4">
             <div className="h-10 w-full bg-slate-200 rounded-lg animate-pulse" />
             {[1, 2, 3].map(i => (
@@ -245,11 +245,11 @@ function PayrollPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <KPICard label="Empleados Activos" value={activeEmployees.length} icon={Users} trend={`${employees.length} total`} trendUp={true} />
         <KPICard label="Nomina Mensual" value={`$${(totalPayroll / 1000000).toFixed(1)}M`} icon={Wallet} trend="+35% carga social" trendUp={true} />
-        <KPICard label="Ultimo Periodo" value={latestRun?.period_label || '—'} icon={Calendar} trend={latestRun ? statusConfig[latestRun.status]?.label : 'Sin datos'} trendUp={latestRun?.status === 'paid'} />
+        <KPICard label="Ultimo Periodo" value={latestRun?.period_label || '�'} icon={Calendar} trend={latestRun ? statusConfig[latestRun.status]?.label : 'Sin datos'} trendUp={latestRun?.status === 'paid'} />
         <KPICard label="Costo Total Empleador" value={`$${((totalPayroll * 1.35) / 1000000).toFixed(1)}M`} icon={DollarSign} trend="Incluye cargas" trendUp={true} />
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <ContinuousTabs
           tabs={[
             { id: 'employees', label: `Empleados (${employees.length})` },
@@ -328,11 +328,11 @@ function PayrollPage() {
                     {filteredEmployees.map(employee => (
                       <tr key={employee.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                         <td className="px-4 py-3 text-sm font-medium text-slate-900">{employee.first_name} {employee.last_name}</td>
-                        <td className="px-4 py-3 text-xs font-mono text-slate-500">{employee.rut || '—'}</td>
-                        <td className="px-4 py-3 text-xs text-slate-600">{employee.position || '—'}</td>
-                        <td className="px-4 py-3 text-xs text-slate-600">{employee.department || '—'}</td>
-                        <td className="px-4 py-3 text-xs text-slate-600">{contractTypeLabels[employee.contract_type] || employee.contract_type || '—'}</td>
-                        <td className="px-4 py-3 text-xs text-slate-600">{employee.afp_fund || '—'}</td>
+                        <td className="px-4 py-3 text-xs font-mono text-slate-500">{employee.rut || '�'}</td>
+                        <td className="px-4 py-3 text-xs text-slate-600">{employee.position || '�'}</td>
+                        <td className="px-4 py-3 text-xs text-slate-600">{employee.department || '�'}</td>
+                        <td className="px-4 py-3 text-xs text-slate-600">{contractTypeLabels[employee.contract_type] || employee.contract_type || '�'}</td>
+                        <td className="px-4 py-3 text-xs text-slate-600">{employee.afp_fund || '�'}</td>
                         <td className="px-4 py-3 text-xs text-slate-600">{employee.health_type === 'isapre' ? 'Isapre' : 'FONASA'}</td>
                         <td className="px-4 py-3 text-xs text-right font-medium text-slate-900">${(employee.base_salary || 0).toLocaleString('es-CL')}</td>
                         <td className="px-4 py-3">
@@ -513,7 +513,7 @@ function PayrollPage() {
 
       {showUFModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-sm mx-4">
+          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900sm mx-4">
             <div className="px-6 py-4 border-b border-slate-200">
               <h2 className="text-sm font-semibold text-slate-900">Valor UF Actual</h2>
             </div>

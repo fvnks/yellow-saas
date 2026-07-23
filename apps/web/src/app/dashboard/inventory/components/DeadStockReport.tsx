@@ -67,7 +67,7 @@ export default function DeadStockReport() {
         </div>
         <div className="flex items-center gap-2">
           <select value={days} onChange={e => setDays(Number(e.target.value))}
-            className="bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            className="bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500">
             <option value={30}>30 dias</option>
             <option value={60}>60 dias</option>
             <option value={90}>90 dias</option>
@@ -76,7 +76,7 @@ export default function DeadStockReport() {
           </select>
           {report && report.products.length > 0 && (
             <button onClick={handleExport}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-medium transition-colors">
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium transition-colors">
               <Download className="w-3.5 h-3.5" /> Exportar
             </button>
           )}
@@ -124,7 +124,7 @@ export default function DeadStockReport() {
           <p className="text-xs text-slate-400">Sin stock muerto en los ultimos {days} dias</p>
         </div>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>

@@ -43,7 +43,7 @@ export default function SIIBookPage() {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <div className="flex items-center gap-4">
           <div className="space-y-1">
             <label className="block text-xs font-medium text-slate-700">Periodo Inicio</label>
@@ -63,25 +63,25 @@ export default function SIIBookPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Saldo Inicial</p>
           <p className="text-lg font-bold text-slate-900 mt-1">${totalOpeningValue.toLocaleString('es-CL')}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Entradas</p>
           <p className="text-lg font-bold text-emerald-600 mt-1">${totalEntriesValue.toLocaleString('es-CL')}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Salidas</p>
           <p className="text-lg font-bold text-rose-600 mt-1">${totalExitsValue.toLocaleString('es-CL')}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Saldo Final</p>
           <p className="text-lg font-bold text-slate-900 mt-1">${totalClosingValue.toLocaleString('es-CL')}</p>
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>

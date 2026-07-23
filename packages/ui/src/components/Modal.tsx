@@ -26,7 +26,7 @@ export function Modal({ isOpen, onClose, title, children, footer, size = 'md', c
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in">
       <div
         className={cn(
-          'bg-white rounded-xl shadow-xl w-full animate-slide-up',
+          'bg-white rounded-xl shadow-xl w-full animate-slide-up dark:bg-slate-900',
           sizes[size],
           className
         )}
@@ -35,7 +35,7 @@ export function Modal({ isOpen, onClose, title, children, footer, size = 'md', c
         aria-labelledby="modal-title"
       >
         <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-          <h2 id="modal-title" className="text-lg font-semibold text-slate-900">
+          <h2 id="modal-title" className="text-lg font-semibold text-slate-900 dark:text-white">
             {title}
           </h2>
           <button

@@ -73,7 +73,7 @@ export default function SalesCommissions() {
 
       {summary && (
         <div className="grid grid-cols-3 gap-3">
-          <div className="bg-white border border-slate-200 rounded-xl p-4">
+          <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-semibold text-slate-500 uppercase">Ventas Totales</p>
@@ -85,7 +85,7 @@ export default function SalesCommissions() {
               </div>
             </div>
           </div>
-          <div className="bg-white border border-slate-200 rounded-xl p-4">
+          <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-semibold text-slate-500 uppercase">Comisiones Totales</p>
@@ -97,7 +97,7 @@ export default function SalesCommissions() {
               </div>
             </div>
           </div>
-          <div className="bg-white border border-slate-200 rounded-xl p-4">
+          <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-semibold text-slate-500 uppercase">Vendedores Activos</p>
@@ -111,7 +111,7 @@ export default function SalesCommissions() {
         </div>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>

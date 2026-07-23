@@ -28,11 +28,11 @@ export default function PurchaseForecast() {
     <div className="space-y-4">
       <div className="flex items-center gap-2"><TrendingUp className="w-4 h-4 text-slate-500" /><span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Pronóstico de Compras</span></div>
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-white border border-slate-200 rounded-xl p-4"><p className="text-[9px] font-semibold text-slate-500 uppercase">Promedio Mensual</p><p className="text-xl font-bold text-slate-900 mt-1">{fmt(avgMonthly)}</p></div>
-        <div className="bg-white border border-slate-200 rounded-xl p-4"><p className="text-[9px] font-semibold text-slate-500 uppercase">Próximo Mes</p><p className="text-xl font-bold text-emerald-600 mt-1">{fmt(forecast[0]?.predicted_total || 0)}</p></div>
-        <div className="bg-white border border-slate-200 rounded-xl p-4"><p className="text-[9px] font-semibold text-slate-500 uppercase">Rango</p><p className="text-xs text-slate-600 mt-2">{fmt(forecast[0]?.confidence_low || 0)} — {fmt(forecast[0]?.confidence_high || 0)}</p></div>
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800"><p className="text-[9px] font-semibold text-slate-500 uppercase">Promedio Mensual</p><p className="text-xl font-bold text-slate-900 mt-1">{fmt(avgMonthly)}</p></div>
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800"><p className="text-[9px] font-semibold text-slate-500 uppercase">Próximo Mes</p><p className="text-xl font-bold text-emerald-600 mt-1">{fmt(forecast[0]?.predicted_total || 0)}</p></div>
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800"><p className="text-[9px] font-semibold text-slate-500 uppercase">Rango</p><p className="text-xs text-slate-600 mt-2">{fmt(forecast[0]?.confidence_low || 0)} — {fmt(forecast[0]?.confidence_high || 0)}</p></div>
       </div>
-      <div className="bg-white border border-slate-200 rounded-xl p-4">
+      <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
         <h3 className="text-xs font-semibold text-slate-900 mb-4">Histórico + Pronóstico</h3>
         <div className="flex items-end gap-1 h-40">
           {last12.map((m, i) => (
@@ -49,7 +49,7 @@ export default function PurchaseForecast() {
           ))}
         </div>
       </div>
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
         <div className="px-6 py-4 border-b border-slate-100"><h3 className="text-xs font-semibold text-slate-900">Pronóstico 3 Meses</h3></div>
         <table className="w-full">
           <thead><tr className="border-b border-slate-200">

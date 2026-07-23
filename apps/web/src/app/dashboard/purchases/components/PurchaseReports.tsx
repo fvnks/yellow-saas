@@ -50,25 +50,25 @@ export default function PurchaseReports() {
       {!loading && reportType === 'summary' && data && (
         <div className="space-y-4">
           <div className="grid grid-cols-4 gap-3">
-            <div className="bg-white border border-slate-200 rounded-xl p-4">
+            <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
               <p className="text-[9px] font-semibold text-slate-500 uppercase">Total Compras {selectedYear}</p>
               <p className="text-xl font-bold text-slate-900 mt-1">{fmt(parseFloat(data.summary?.total || 0))}</p>
               <p className="text-xs text-slate-500 mt-1">{data.summary?.count || 0} órdenes</p>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-4">
+            <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
               <p className="text-[9px] font-semibold text-slate-500 uppercase">Ticket Promedio</p>
               <p className="text-xl font-bold text-slate-900 mt-1">{fmt(parseFloat(data.summary?.avg_order || 0))}</p>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-4">
+            <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
               <p className="text-[9px] font-semibold text-slate-500 uppercase">Facturado</p>
               <p className="text-xl font-bold text-emerald-600 mt-1">{fmt(parseFloat(data.invoicing?.total || 0))}</p>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-4">
+            <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
               <p className="text-[9px] font-semibold text-slate-500 uppercase">Por Pagar</p>
               <p className="text-xl font-bold text-red-600 mt-1">{fmt((parseFloat(data.invoicing?.total || 0)) - (parseFloat(data.invoicing?.paid || 0)))}</p>
             </div>
           </div>
-          <div className="bg-white border border-slate-200 rounded-xl p-4">
+          <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
             <h3 className="text-xs font-semibold text-slate-900 mb-3">Top Proveedores</h3>
             <div className="space-y-2">
               {(data.topSuppliers || []).map((s: any, i: number) => (
@@ -83,7 +83,7 @@ export default function PurchaseReports() {
       )}
 
       {!loading && (reportType === 'monthly' || reportType === 'by-supplier' || reportType === 'by-product') && data && (
-        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
           <table className="w-full">
             <thead><tr className="border-b border-slate-200">
               <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">{reportType === 'monthly' ? 'Mes' : reportType === 'by-supplier' ? 'Proveedor' : 'Producto'}</th>

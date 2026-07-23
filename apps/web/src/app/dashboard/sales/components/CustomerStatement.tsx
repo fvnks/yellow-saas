@@ -94,7 +94,7 @@ export default function CustomerStatement() {
         <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado de Cuenta</span>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl p-4">
+      <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
         <div className="flex items-center gap-4">
           <div className="relative flex-1">
             <input
@@ -127,7 +127,7 @@ export default function CustomerStatement() {
 
       {statement && (
         <>
-          <div className="bg-white border border-slate-200 rounded-xl p-6">
+          <div className="bg-white border border-slate-200 rounded-xl p-6 dark:bg-slate-900 dark:border-slate-800">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-lg font-bold text-slate-900">{statement.customer.name}</h3>
@@ -160,7 +160,7 @@ export default function CustomerStatement() {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl">
+          <div className="bg-white border border-slate-200 rounded-xl dark:bg-slate-900 dark:border-slate-800">
             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
               <h3 className="text-sm font-semibold text-slate-900">Movimientos</h3>
               <span className="text-[9px] font-semibold text-slate-500">{statement.transactions.length} registros</span>

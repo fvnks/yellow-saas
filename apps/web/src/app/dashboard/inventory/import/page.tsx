@@ -147,7 +147,7 @@ export default function ImportProductsPage() {
       </div>
 
       {/* Upload area */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <input
           ref={fileInputRef}
           type="file"

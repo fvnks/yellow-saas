@@ -86,7 +86,7 @@ export default function TaskFilters({ tasks, users, onFilter }: TaskFiltersProps
           className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors border ${
             showAdvanced || activeFilterCount > 0
               ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
-              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700'
           }`}>
           <Filter className="w-3.5 h-3.5" />
           Filtros {activeFilterCount > 0 && `(${activeFilterCount})`}
@@ -99,7 +99,7 @@ export default function TaskFilters({ tasks, users, onFilter }: TaskFiltersProps
       </div>
 
       {showAdvanced && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-3">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-3 dark:bg-slate-900 dark:border-slate-800">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
             <select value={filters.status} onChange={e => applyFilters({ ...filters, status: e.target.value })}
               className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500">

@@ -156,7 +156,7 @@ export default function PayrollRunDetailPage() {
             <div key={i} className="h-28 bg-slate-200 rounded-xl animate-pulse" />
           ))}
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-6 dark:bg-slate-900 dark:border-slate-800 space-y-4">
           <div className="h-6 w-40 bg-slate-200 rounded animate-pulse" />
           {[1, 2, 3].map(i => (
             <div key={i} className="h-12 w-full bg-slate-100 rounded-lg animate-pulse" />
@@ -172,7 +172,7 @@ export default function PayrollRunDetailPage() {
         <Link href="/dashboard/payroll?tab=periods" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700">
           <ArrowLeft className="w-4 h-4" /> Volver
         </Link>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-12 text-center">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-12 dark:bg-slate-900 dark:border-slate-800 text-center">
           <p className="text-sm text-slate-500">Nómina no encontrada</p>
         </div>
       </div>
@@ -231,7 +231,7 @@ export default function PayrollRunDetailPage() {
 
       {/* Summary Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Empleados</p>
@@ -242,7 +242,7 @@ export default function PayrollRunDetailPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Sueldo Imponible</p>
@@ -253,7 +253,7 @@ export default function PayrollRunDetailPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Retenciones</p>
@@ -264,7 +264,7 @@ export default function PayrollRunDetailPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Líquido a Pagar</p>
@@ -278,7 +278,7 @@ export default function PayrollRunDetailPage() {
       </div>
 
       {/* Employee breakdown */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
         <div className="px-6 py-4 border-b border-slate-100">
           <h3 className="text-sm font-semibold text-slate-900">Detalle por Empleado</h3>
         </div>

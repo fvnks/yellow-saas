@@ -77,28 +77,28 @@ export default function SalesReports() {
       {!loading && reportType === 'summary' && data && (
         <div className="space-y-4">
           <div className="grid grid-cols-4 gap-3">
-            <div className="bg-white border border-slate-200 rounded-xl p-4">
+            <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
               <p className="text-[9px] font-semibold text-slate-500 uppercase">Total Ventas {selectedYear}</p>
               <p className="text-xl font-bold text-slate-900 mt-1">{formatMoney(parseFloat(data.summary?.total || 0))}</p>
               <p className="text-xs text-slate-500 mt-1">{data.summary?.count || 0} órdenes</p>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-4">
+            <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
               <p className="text-[9px] font-semibold text-slate-500uppercase">Ticket Promedio</p>
               <p className="text-xl font-bold text-slate-900 mt-1">{formatMoney(parseFloat(data.summary?.avg_order || 0))}</p>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-4">
+            <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
               <p className="text-[9px] font-semibold text-slate-500 uppercase">Facturado</p>
               <p className="text-xl font-bold text-emerald-600 mt-1">{formatMoney(parseFloat(data.invoicing?.total || 0))}</p>
               <p className="text-xs text-emerald-500 mt-1">Cobrado: {formatMoney(parseFloat(data.invoicing?.paid || 0))}</p>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-4">
+            <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
               <p className="text-[9px] font-semibold text-slate-500 uppercase">Por Cobrar</p>
               <p className="text-xl font-bold text-red-600 mt-1">{formatMoney((parseFloat(data.invoicing?.total || 0)) - (parseFloat(data.invoicing?.paid || 0)))}</p>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white border border-slate-200 rounded-xl p-4">
+            <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
               <h3 className="text-xs font-semibold text-slate-900 mb-3">Top Productos</h3>
               <div className="space-y-2">
                 {(data.topProducts || []).map((p: any, i: number) => (
@@ -109,7 +109,7 @@ export default function SalesReports() {
                 ))}
               </div>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-4">
+            <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
               <h3 className="text-xs font-semibold text-slate-900 mb-3">Top Clientes</h3>
               <div className="space-y-2">
                 {(data.topCustomers || []).map((c: any, i: number) => (
@@ -123,7 +123,7 @@ export default function SalesReports() {
           </div>
 
           {data.statusBreakdown && data.statusBreakdown.length > 0 && (
-            <div className="bg-white border border-slate-200 rounded-xl p-4">
+            <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
               <h3 className="text-xs font-semibold text-slate-900 mb-3">Por Estado</h3>
               <div className="flex gap-3 flex-wrap">
                 {data.statusBreakdown.map((s: any, i: number) => (
@@ -139,7 +139,7 @@ export default function SalesReports() {
       )}
 
       {!loading && reportType === 'monthly' && data && (
-        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate-200">
@@ -164,7 +164,7 @@ export default function SalesReports() {
       )}
 
       {!loading && (reportType === 'by-customer' || reportType === 'by-product' || reportType === 'by-employee') && data && (
-        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate-200">

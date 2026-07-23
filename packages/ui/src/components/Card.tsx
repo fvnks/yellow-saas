@@ -9,7 +9,7 @@ interface CardProps {
 
 export function Card({ children, className, header, footer }: CardProps) {
   return (
-    <div className={cn('bg-white border border-slate-200 rounded-xl shadow-sm', className)}>
+    <div className={cn('bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800', className)}>
       {header && (
         <div className="px-6 py-4 border-b border-slate-100">
           {header}
@@ -32,7 +32,7 @@ export function CardHeader({ children, className }: { children: React.ReactNode;
 }
 
 export function CardTitle({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <h3 className={cn('text-sm font-semibold text-slate-900', className)}>{children}</h3>;
+  return <h3 className={cn('text-sm font-semibold text-slate-900 dark:text-white', className)}>{children}</h3>;
 }
 
 export function CardDescription({ children, className }: { children: React.ReactNode; className?: string }) {
@@ -44,5 +44,5 @@ export function CardContent({ children, className }: { children: React.ReactNode
 }
 
 export function CardFooter({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className={cn('px-6 py-4 border-t border-slate-100 bg-slate-50 rounded-b-xl', className)}>{children}</div>;
+  return <div className={cn('px-6 py-4 border-t border-slate-100 bg-slate-50 rounded-b-xl dark:bg-slate-800 dark:border-slate-800', className)}>{children}</div>;
 }

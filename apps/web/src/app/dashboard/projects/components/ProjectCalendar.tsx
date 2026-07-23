@@ -117,7 +117,7 @@ export default function ProjectCalendar({ tasks, milestones }: ProjectCalendarPr
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         {viewMode === 'month' ? (
           <div className="grid grid-cols-7">
             {DAYS.map(day => (

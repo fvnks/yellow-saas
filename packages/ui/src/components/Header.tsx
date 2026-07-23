@@ -24,7 +24,7 @@ export function Header({ title, onMenuClick, user, onNavigate }: HeaderProps) {
   }, []);
 
   return (
-    <header className="h-16 bg-white border-b border-slate-200 fixed top-0 right-0 left-64 z-10 flex items-center justify-between px-6">
+    <header className="h-16 bg-white border-b border-slate-200 fixed top-0 right-0 left-64 z-10 flex items-center justify-between px-6 dark:bg-slate-900 dark:border-slate-800">
       <div className="flex items-center gap-4">
         {onMenuClick && (
           <button
@@ -35,7 +35,7 @@ export function Header({ title, onMenuClick, user, onNavigate }: HeaderProps) {
             <Menu className="w-5 h-5" />
           </button>
         )}
-        <h1 className="text-xl font-bold text-slate-900 truncate max-w-xs lg:max-w-md">
+        <h1 className="text-xl font-bold text-slate-900 dark:text-white truncate max-w-xs lg:max-w-md">
           {title}
         </h1>
       </div>
@@ -46,7 +46,7 @@ export function Header({ title, onMenuClick, user, onNavigate }: HeaderProps) {
           <input
             type="search"
             placeholder="Buscar..."
-            className="w-64 pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+            className="w-64 pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors dark:bg-slate-800 dark:border-slate-700 dark:text-white dark:placeholder-slate-400"
             aria-label="Buscar"
           />
         </div>
@@ -73,16 +73,16 @@ export function Header({ title, onMenuClick, user, onNavigate }: HeaderProps) {
               )}
             </div>
             <div className="hidden md:block text-left">
-              <p className="text-sm font-medium text-slate-900">{user?.name || 'Usuario'}</p>
+              <p className="text-sm font-medium text-slate-900 dark:text-white">{user?.name || 'Usuario'}</p>
               <p className="text-[9px] text-slate-500">{user?.email}</p>
             </div>
             <ChevronDown className="w-4 h-4 text-slate-400" />
           </button>
 
           {showUserMenu && (
-            <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-50 animate-in fade-in-0 zoom-in-95">
+            <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-50 animate-in fade-in-0 zoom-in-95 dark:bg-slate-900 dark:border-slate-800">
               <div className="px-4 py-3 border-b border-slate-100">
-                <p className="text-sm font-medium text-slate-900">{user?.name}</p>
+                <p className="text-sm font-medium text-slate-900 dark:text-white">{user?.name}</p>
                 <p className="text-xs text-slate-500">{user?.email}</p>
               </div>
               <button

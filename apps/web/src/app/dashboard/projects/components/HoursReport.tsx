@@ -105,23 +105,23 @@ export default function HoursReport({ timesheets, tasks, employees }: HoursRepor
 
       {/* Summary KPIs */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl p-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Horas</p>
           <p className="text-xl font-bold text-slate-900 mt-1">{totalHours.toFixed(1)}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Horas Facturables</p>
           <p className="text-xl font-bold text-emerald-600 mt-1">{totalBillable.toFixed(1)}</p>
           <p className="text-[10px] text-slate-400">{totalHours > 0 ? Math.round((totalBillable / totalHours) * 100) : 0}% del total</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Empleados</p>
           <p className="text-xl font-bold text-slate-900 mt-1">{employeeStats.length}</p>
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>

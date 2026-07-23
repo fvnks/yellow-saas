@@ -185,7 +185,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
       </div>
 
       {order.status !== 'cancelled' && order.status !== 'received' && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-3">Acciones de Estado</p>
           <div className="flex items-center gap-2 flex-wrap">
             {order.status === 'draft' && (

@@ -130,7 +130,7 @@ export default function RolesTab() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
         <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
           <h3 className="text-sm font-semibold text-slate-900">Roles Personalizados</h3>
           <button
@@ -192,7 +192,7 @@ export default function RolesTab() {
 
       {editingRole && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-in fade-in-0">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto animate-in zoom-in-95 fade-in-0">
+          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-9003xl max-h-[90vh] overflow-y-auto animate-in zoom-in-95 fade-in-0">
             <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
               <h3 className="text-lg font-semibold text-slate-900">Permisos para: {editingRole.name}</h3>
               <button onClick={() => { setEditingRole(null); setSelectedPerms([]); }} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded"><X className="w-5 h-5" /></button>
@@ -235,7 +235,7 @@ export default function RolesTab() {
 
       {showNewRole && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-in fade-in-0">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md animate-in zoom-in-95 fade-in-0">
+          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900md animate-in zoom-in-95 fade-in-0">
             <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
               <h3 className="text-lg font-semibold text-slate-900">Nuevo Rol</h3>
               <button onClick={() => setShowNewRole(false)} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded"><X className="w-5 h-5" /></button>

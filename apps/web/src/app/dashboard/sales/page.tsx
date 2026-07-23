@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { Suspense, useEffect, useState } from 'react';
 import { Card, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Select, Input } from '@yellow-erp/ui';
@@ -43,7 +43,7 @@ const paymentStatusConfig: Record<string, { label: string; variant: 'success' | 
 
 const deliveryStatusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
   delivered: { label: 'Entregado', variant: 'success' },
-  in_transit: { label: 'En Tránsito', variant: 'info' },
+  in_transit: { label: 'En Tr�nsito', variant: 'info' },
   pending: { label: 'Pendiente', variant: 'warning' },
   cancelled: { label: 'Cancelado', variant: 'danger' },
 };
@@ -66,11 +66,11 @@ const salesModules = [
     { id: 'credit-notes', label: 'NC' }, { id: 'debit-notes', label: 'ND' },
   ]},
   { id: 'finanzas', label: 'Finanzas', icon: DollarSign, tabs: [
-    { id: 'credit-control', label: 'Crédito' }, { id: 'statement', label: 'Estado Cta.' },
+    { id: 'credit-control', label: 'Cr�dito' }, { id: 'statement', label: 'Estado Cta.' },
   ]},
-  { id: 'analisis', label: 'Análisis', icon: BarChart3, tabs: [
+  { id: 'analisis', label: 'An�lisis', icon: BarChart3, tabs: [
     { id: 'targets', label: 'Metas' }, { id: 'commissions', label: 'Comisiones' }, { id: 'reports', label: 'Reportes' },
-    { id: 'price-history', label: 'Hist. Precios' }, { id: 'forecast', label: 'Pronóstico' },
+    { id: 'price-history', label: 'Hist. Precios' }, { id: 'forecast', label: 'Pron�stico' },
   ]},
   { id: 'operaciones', label: 'Operaciones', icon: MapPin, tabs: [
     { id: 'routes', label: 'Rutas' }, { id: 'loyalty', label: 'Lealtad' }, { id: 'contracts', label: 'Contratos' },
@@ -171,8 +171,8 @@ function SalesPageContent() {
       const returnsData = (returnsRes.data || []).map((r) => ({
         id: r.id,
         number: r.return_number,
-        customer: r.customer?.name || '—',
-        warehouse: r.warehouse?.name || '—',
+        customer: r.customer?.name || '�',
+        warehouse: r.warehouse?.name || '�',
         date: r.created_at?.split('T')[0] || '',
         items: r.item_count || 0,
         status: r.status,
@@ -216,13 +216,13 @@ function SalesPageContent() {
     let headers: string[];
     let rows: string[][];
     if (activeTab === 'orders') {
-      headers = ['Nº Orden', 'Cliente', 'Fecha', 'Total', 'Estado'];
+      headers = ['N� Orden', 'Cliente', 'Fecha', 'Total', 'Estado'];
       rows = filteredOrders.map(o => [o.number, o.customer || '', o.date, String(o.total || 0), o.status]);
     } else if (activeTab === 'delivery') {
-      headers = ['Nº Guía', 'Orden Ref.', 'Fecha', 'Transporte', 'Estado'];
+      headers = ['N� Gu�a', 'Orden Ref.', 'Fecha', 'Transporte', 'Estado'];
       rows = filteredGuides.map(g => [g.number, g.orderId || '', g.date, g.transport || '', g.status]);
     } else if (activeTab === 'invoices') {
-      headers = ['Nº Factura', 'Orden Ref.', 'Fecha', 'Total', 'Estado'];
+      headers = ['N� Factura', 'Orden Ref.', 'Fecha', 'Total', 'Estado'];
       rows = filteredInvoices.map(i => [i.number, i.orderId || '', i.date, String(i.total || 0), i.status]);
     } else {
       return;
@@ -243,7 +243,7 @@ function SalesPageContent() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Ventas</h1>
-          <p className="text-sm text-slate-500 mt-1">Órdenes, guías de despacho, facturación y POS</p>
+          <p className="text-sm text-slate-500 mt-1">�rdenes, gu�as de despacho, facturaci�n y POS</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm" onClick={handleExport}>
@@ -257,7 +257,7 @@ function SalesPageContent() {
           )}
           {activeTab === 'delivery' && (
             <Link href="/dashboard/sales/delivery/new">
-              <Button><Plus className="w-4 h-4 mr-2" /> Nueva Guía</Button>
+              <Button><Plus className="w-4 h-4 mr-2" /> Nueva Gu�a</Button>
             </Link>
           )}
           {activeTab === 'invoices' && (
@@ -272,12 +272,12 @@ function SalesPageContent() {
           )}
           {activeTab === 'quotations' && (
             <Link href="/dashboard/sales/quotations/new">
-              <Button><Plus className="w-4 h-4 mr-2" /> Nueva Cotización</Button>
+              <Button><Plus className="w-4 h-4 mr-2" /> Nueva Cotizaci�n</Button>
             </Link>
           )}
           {activeTab === 'returns' && (
             <Link href="/dashboard/sales/returns">
-              <Button><Plus className="w-4 h-4 mr-2" /> Nueva Devolución</Button>
+              <Button><Plus className="w-4 h-4 mr-2" /> Nueva Devoluci�n</Button>
             </Link>
           )}
         </div>
@@ -340,7 +340,7 @@ function SalesPageContent() {
       </div>
 
       {/* Module Navigation */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <div className="flex items-center gap-1 flex-wrap">
           {salesModules.map(m => {
             const isActive = activeModule === m.id;
@@ -360,7 +360,7 @@ function SalesPageContent() {
       </div>
 
       {/* Sub-tabs for active module */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <div className="flex items-center gap-1 flex-wrap">
           {salesModules.find(m => m.id === activeModule)?.tabs.map(t => (
             <button key={t.id} onClick={() => { setActiveTab(t.id); setSearch(''); setStatusFilter('all'); }}
@@ -372,7 +372,7 @@ function SalesPageContent() {
       </div>
 
       {/* Content area */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         {/* Filters - hidden for POS tab */}
         {activeTab !== 'pos' && (
           <div className="p-4 border-b border-slate-100">
@@ -381,7 +381,7 @@ function SalesPageContent() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="search"
-                  placeholder="Buscar por número, cliente..."
+                  placeholder="Buscar por n�mero, cliente..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
@@ -402,7 +402,7 @@ function SalesPageContent() {
                   ] : activeTab === 'delivery' ? [
                     { value: 'all', label: 'Todos los estados' },
                     { value: 'pending', label: 'Pendientes' },
-                    { value: 'in_transit', label: 'En Tránsito' },
+                    { value: 'in_transit', label: 'En Tr�nsito' },
                     { value: 'delivered', label: 'Entregados' },
                     { value: 'cancelled', label: 'Cancelados' },
                   ] : [
@@ -433,7 +433,7 @@ function SalesPageContent() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nº Orden</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">N� Orden</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
                   <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Items</th>
@@ -451,7 +451,7 @@ function SalesPageContent() {
                     <td className="px-4 py-3 text-xs text-slate-500">{order.date}</td>
                     <td className="px-4 py-3 text-xs text-slate-700 text-center">{order.items}</td>
                     <td className="px-4 py-3 text-xs font-medium text-slate-900 text-right">${(order.total || 0).toLocaleString('es-CL')}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{order.project || <span className="text-slate-300">—</span>}</td>
+                    <td className="px-4 py-3 text-xs text-slate-500">{order.project || <span className="text-slate-300">�</span>}</td>
                     <td className="px-4 py-3">
                       <Badge variant={orderStatusConfig[order.status]?.variant || 'neutral'}>
                         {orderStatusConfig[order.status]?.label || order.status}
@@ -480,7 +480,7 @@ function SalesPageContent() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nº Guía</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">N� Gu�a</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Orden Ref.</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Transporte</th>
@@ -496,7 +496,7 @@ function SalesPageContent() {
                     <td className="px-4 py-3 text-xs text-indigo-600 font-medium">{guide.orderId}</td>
                     <td className="px-4 py-3 text-xs text-slate-500">{guide.date}</td>
                     <td className="px-4 py-3 text-xs text-slate-600">{guide.transport}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{guide.project || <span className="text-slate-300">—</span>}</td>
+                    <td className="px-4 py-3 text-xs text-slate-500">{guide.project || <span className="text-slate-300">�</span>}</td>
                     <td className="px-4 py-3">
                       <Badge variant={deliveryStatusConfig[guide.status]?.variant || 'neutral'}>
                         {deliveryStatusConfig[guide.status]?.label || guide.status}
@@ -520,7 +520,7 @@ function SalesPageContent() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nº Factura</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">N� Factura</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Orden Ref.</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
                   <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total</th>
@@ -536,7 +536,7 @@ function SalesPageContent() {
                     <td className="px-4 py-3 text-xs text-indigo-600 font-medium">{invoice.orderId}</td>
                     <td className="px-4 py-3 text-xs text-slate-500">{invoice.date}</td>
                     <td className="px-4 py-3 text-xs font-medium text-slate-900 text-right">${(invoice.total || 0).toLocaleString('es-CL')}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{invoice.project || <span className="text-slate-300">—</span>}</td>
+                    <td className="px-4 py-3 text-xs text-slate-500">{invoice.project || <span className="text-slate-300">�</span>}</td>
                     <td className="px-4 py-3">
                       <Badge variant={invoiceStatusConfig[invoice.status]?.variant || 'neutral'}>
                         {invoiceStatusConfig[invoice.status]?.label || invoice.status}
@@ -598,8 +598,8 @@ function SalesPageContent() {
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">RUT</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Email</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Teléfono</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Dirección</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tel�fono</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Direcci�n</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
                   <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
                 </tr>
@@ -647,10 +647,10 @@ function SalesPageContent() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nº Cotización</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">N� Cotizaci�n</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Válido Hasta</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">V�lido Hasta</th>
                   <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
                   <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
@@ -666,7 +666,7 @@ function SalesPageContent() {
                     <td className="px-4 py-3 text-xs font-mono font-medium text-slate-900">{q.number}</td>
                     <td className="px-4 py-3 text-xs text-slate-700">{q.customer}</td>
                     <td className="px-4 py-3 text-xs text-slate-500">{q.date}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{q.valid_until || '—'}</td>
+                    <td className="px-4 py-3 text-xs text-slate-500">{q.valid_until || '�'}</td>
                     <td className="px-4 py-3 text-xs font-medium text-slate-900 text-right">${(q.total || 0).toLocaleString('es-CL')}</td>
                     <td className="px-4 py-3">
                       <Badge variant={q.status === 'accepted' ? 'success' : q.status === 'rejected' ? 'danger' : q.status === 'sent' ? 'info' : 'neutral'}>
@@ -691,7 +691,7 @@ function SalesPageContent() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nº Devolución</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">N� Devoluci�n</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</th>
                   <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Bodega</th>
                   <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Items</th>
@@ -804,7 +804,7 @@ function SalesPageContent() {
 
         {activeTab === 'pos' && (
           <div className="p-6">
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 text-center">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 dark:bg-slate-900 dark:border-slate-800 text-center">
               <Monitor className="w-12 h-12 text-indigo-500 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-slate-900 mb-2">Punto de Venta</h3>
               <p className="text-sm text-slate-500 mb-4">Utiliza el POS dedicado para una mejor experiencia</p>

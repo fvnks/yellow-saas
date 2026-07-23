@@ -91,12 +91,12 @@ export default function InventoryAuditTrail() {
           <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Auditoria de Inventario</span>
         </div>
         <button onClick={loadEntries}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-medium transition-colors">
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium transition-colors">
           <RefreshCw className="w-3.5 h-3.5" /> Actualizar
         </button>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl p-3">
+      <div className="bg-white border border-slate-200 rounded-xl p-3 dark:bg-slate-900 dark:border-slate-800">
         <div className="flex items-center gap-2">
           <Filter className="w-3.5 h-3.5 text-slate-400" />
           <select value={entityFilter} onChange={e => setEntityFilter(e.target.value)}
@@ -124,7 +124,7 @@ export default function InventoryAuditTrail() {
             const isExpanded = expandedId === entry.id;
 
             return (
-              <div key={entry.id} className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+              <div key={entry.id} className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
                 <div className="flex items-center justify-between p-3 cursor-pointer hover:bg-slate-50 transition-colors"
                   onClick={() => setExpandedId(isExpanded ? null : entry.id)}>
                   <div className="flex items-center gap-3">

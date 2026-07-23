@@ -67,7 +67,7 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
     <div className="space-y-6">
       {/* KPIs Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl p-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Progreso</p>
@@ -83,7 +83,7 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Presupuesto</p>
@@ -96,7 +96,7 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Horas</p>
@@ -109,7 +109,7 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Alertas</p>
@@ -125,7 +125,7 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Task Status Breakdown */}
-        <div className="bg-white border border-slate-200 rounded-xl p-5">
+        <div className="bg-white border border-slate-200 rounded-xl p-5 dark:bg-slate-900 dark:border-slate-800">
           <h3 className="text-sm font-semibold text-slate-900 mb-4">Estado de Tareas</h3>
           <div className="flex gap-1 h-6 rounded-full overflow-hidden mb-4">
             {Object.entries(stats.taskStatusBreakdown).map(([status, count]) => (
@@ -151,7 +151,7 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
         </div>
 
         {/* Upcoming Milestones */}
-        <div className="bg-white border border-slate-200 rounded-xl p-5">
+        <div className="bg-white border border-slate-200 rounded-xl p-5 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-semibold text-slate-900">Proximos Hitos</h3>
             <span className="text-[9px] text-slate-500">{stats.completedMilestones}/{stats.totalMilestones} completados</span>
@@ -181,7 +181,7 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-white border border-slate-200 rounded-xl p-5">
+        <div className="bg-white border border-slate-200 rounded-xl p-5 dark:bg-slate-900 dark:border-slate-800">
           <h3 className="text-sm font-semibold text-slate-900 mb-4">Actividad Reciente</h3>
           {stats.recentTimesheets.length === 0 ? (
             <p className="text-xs text-slate-400 text-center py-4">No hay actividad reciente</p>
@@ -212,7 +212,7 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
         </div>
 
         {/* Hours Estimation */}
-        <div className="bg-white border border-slate-200 rounded-xl p-5">
+        <div className="bg-white border border-slate-200 rounded-xl p-5 dark:bg-slate-900 dark:border-slate-800">
           <h3 className="text-sm font-semibold text-slate-900 mb-4">Estimacion de Horas</h3>
           <div className="space-y-4">
             <div>

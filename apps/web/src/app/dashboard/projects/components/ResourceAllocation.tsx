@@ -69,7 +69,7 @@ export default function ResourceAllocation({ projectId }: ResourceAllocationProp
       </div>
 
       {resources.length === 0 ? (
-        <div className="text-center py-8 bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="text-center py-8 bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
           <Users className="w-10 h-10 text-slate-200 mx-auto mb-2" />
           <p className="text-xs text-slate-500">No hay empleados asignados</p>
         </div>

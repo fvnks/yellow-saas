@@ -166,7 +166,7 @@ export default function SalesQuotationDetailPage({ params }: { params: { id: str
           </Link>
           <h1 className="text-xl font-bold text-slate-900">Cotización no encontrada</h1>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-12 text-center">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-12 dark:bg-slate-900 dark:border-slate-800 text-center">
           <p className="text-sm text-slate-500">{error || 'La cotización solicitada no existe.'}</p>
           <Link href="/dashboard/sales">
             <button className="mt-4 bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Volver a Ventas</button>
@@ -199,7 +199,7 @@ export default function SalesQuotationDetailPage({ params }: { params: { id: str
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={handlePrint} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          <button onClick={handlePrint} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <Printer className="w-4 h-4" /> Imprimir
           </button>
           <button onClick={handleDownloadPDF} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
@@ -221,7 +221,7 @@ export default function SalesQuotationDetailPage({ params }: { params: { id: str
       {error && <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-sm print:hidden">{error}</div>}
 
       {/* Document */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm print:shadow-none print:border-0 print:rounded-none" id="print-area">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800 print:shadow-none print:border-0 print:rounded-none" id="print-area">
         <div className="p-8 print:p-4">
           {/* Company header */}
           <div className="flex items-start justify-between mb-8 pb-6 border-b border-slate-200">

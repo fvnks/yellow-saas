@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Badge, KPICard } from '@yellow-erp/ui';
@@ -101,13 +101,13 @@ export default function ProjectsPage() {
       {notifications.length > 0 && (
         <div className="relative">
           <button onClick={() => setShowNotifications(!showNotifications)}
-            className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 w-full text-left hover:shadow-md transition-shadow">
+            className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 w-full text-left hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center"><Bell className="w-5 h-5 text-amber-600" /></div>
                 <div>
                   <p className="text-sm font-semibold text-slate-900">{notifications.length} notificaciones de proyectos</p>
-                  <p className="text-xs text-slate-500">Tareas atrasadas, hitos vencidos, presupuesto al límite</p>
+                  <p className="text-xs text-slate-500">Tareas atrasadas, hitos vencidos, presupuesto al l�mite</p>
                 </div>
               </div>
               <Badge variant="warning">{notifications.length}</Badge>
@@ -138,7 +138,7 @@ export default function ProjectsPage() {
         <KPICard label="Completados" value={completedProjects} icon={CheckCircle2} trend={`${projects.length > 0 ? Math.round(completedProjects / projects.length * 100) : 0}% del total`} trendUp={true} />
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <ContinuousTabs
           tabs={tabs}
           defaultActiveId={statusFilter}
@@ -146,7 +146,7 @@ export default function ProjectsPage() {
         />
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <div className="flex items-center gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -164,7 +164,7 @@ export default function ProjectsPage() {
       {loading ? (
         <div className="space-y-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+            <div key={i} className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
               <div className="animate-pulse space-y-4">
                 <div className="h-4 bg-slate-200 rounded w-1/3" />
                 <div className="h-3 bg-slate-200 rounded w-2/3" />
@@ -190,7 +190,7 @@ export default function ProjectsPage() {
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-slate-500 mt-1">{project.code} {project.customer_name ? `· ${project.customer_name}` : ''}</p>
+                  <p className="text-sm text-slate-500 mt-1">{project.code} {project.customer_name ? `� ${project.customer_name}` : ''}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <Link href={`/dashboard/projects/${project.id}`}>
@@ -212,11 +212,11 @@ export default function ProjectsPage() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 <div className="text-center p-3 bg-slate-50 rounded-lg">
                   <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Inicio</p>
-                  <p className="text-sm font-medium text-slate-900 mt-1">{project.start_date || '—'}</p>
+                  <p className="text-sm font-medium text-slate-900 mt-1">{project.start_date || '�'}</p>
                 </div>
                 <div className="text-center p-3 bg-slate-50 rounded-lg">
                   <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fin</p>
-                  <p className="text-sm font-medium text-slate-900 mt-1">{project.end_date || '—'}</p>
+                  <p className="text-sm font-medium text-slate-900 mt-1">{project.end_date || '�'}</p>
                 </div>
                 <div className="text-center p-3 bg-slate-50 rounded-lg">
                   <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Presupuesto</p>

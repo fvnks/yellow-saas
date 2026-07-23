@@ -282,7 +282,7 @@ export default function NewProductPage() {
                   <button
                     type="button"
                     onClick={() => setImageUrl('')}
-                    className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-sm border border-slate-200 hover:bg-slate-50"
+                    className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-sm border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700"
                   >
                     <X className="w-4 h-4 text-slate-500" />
                   </button>

@@ -91,7 +91,7 @@ export default function ActivityLog({ projectId }: { projectId: string }) {
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="bg-white border border-slate-200 rounded-xl p-4">
+            <div key={i} className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
               <div className="animate-pulse flex items-center gap-3">
                 <div className="w-8 h-8 bg-slate-200 rounded-full" />
                 <div className="flex-1 space-y-2">
@@ -103,12 +103,12 @@ export default function ActivityLog({ projectId }: { projectId: string }) {
           ))}
         </div>
       ) : activities.length === 0 ? (
-        <div className="text-center py-8 bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="text-center py-8 bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
           <Clock className="w-10 h-10 text-slate-200 mx-auto mb-2" />
           <p className="text-sm text-slate-500">No hay actividad registrada</p>
         </div>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="divide-y divide-slate-100">
             {activities.map(a => (
               <div key={a.id} className="px-4 py-3 hover:bg-slate-50 transition-colors">

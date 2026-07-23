@@ -119,7 +119,7 @@ export default function CustomerAnalytics({ customerId }: Props) {
 
   if (loading) {
     return (
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
         <div className="px-6 py-4 border-b border-slate-100">
           <div className="h-4 w-36 bg-slate-200 rounded animate-pulse" />
         </div>
@@ -136,7 +136,7 @@ export default function CustomerAnalytics({ customerId }: Props) {
 
   if (!metrics) {
     return (
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
         <div className="px-6 py-4 border-b border-slate-100">
           <h3 className="text-sm font-semibold text-slate-900">Analytics</h3>
         </div>
@@ -157,14 +157,14 @@ export default function CustomerAnalytics({ customerId }: Props) {
   const maxRevenue = Math.max(...monthlyEntries.map(([, v]) => v), 1);
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+    <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
       <div className="px-6 py-4 border-b border-slate-100">
         <h3 className="text-sm font-semibold text-slate-900">Analytics</h3>
       </div>
 
       <div className="p-6 space-y-6">
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Valor de Vida (LTV)</p>
@@ -176,7 +176,7 @@ export default function CustomerAnalytics({ customerId }: Props) {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Ticket Promedio</p>
@@ -188,7 +188,7 @@ export default function CustomerAnalytics({ customerId }: Props) {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Frecuencia de Compra</p>
@@ -200,7 +200,7 @@ export default function CustomerAnalytics({ customerId }: Props) {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Pedidos Totales</p>
@@ -212,7 +212,7 @@ export default function CustomerAnalytics({ customerId }: Props) {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Primera Compra</p>
@@ -224,7 +224,7 @@ export default function CustomerAnalytics({ customerId }: Props) {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Última Compra</p>
@@ -236,7 +236,7 @@ export default function CustomerAnalytics({ customerId }: Props) {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Facturas Pagadas</p>
@@ -248,7 +248,7 @@ export default function CustomerAnalytics({ customerId }: Props) {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Facturas Pendientes</p>
@@ -262,7 +262,7 @@ export default function CustomerAnalytics({ customerId }: Props) {
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
           <div className="px-6 py-4 border-b border-slate-100">
             <h4 className="text-sm font-semibold text-slate-900">Ingresos Mensuales (Últimos 12 meses)</h4>
           </div>

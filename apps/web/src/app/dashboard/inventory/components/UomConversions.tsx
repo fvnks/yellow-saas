@@ -107,22 +107,22 @@ export default function UomConversions() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <select value={form.product_id} onChange={e => setForm({ ...form, product_id: e.target.value })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
               <option value="">Producto...</option>
               {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
             <div className="flex items-center gap-2">
               <input type="text" value={form.from_uom} onChange={e => setForm({ ...form, from_uom: e.target.value })}
-                className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
                 placeholder="Desde (ej: Caja)" />
               <ArrowRightLeft className="w-4 h-4 text-slate-400" />
               <input type="text" value={form.to_uom} onChange={e => setForm({ ...form, to_uom: e.target.value })}
-                className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
                 placeholder="Hasta (ej: Unidad)" />
             </div>
             <input type="number" value={form.conversion_factor} onChange={e => setForm({ ...form, conversion_factor: Number(e.target.value) })}
               min={0.001} step={0.001}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
               placeholder="Factor de conversion" />
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" checked={form.is_base} onChange={e => setForm({ ...form, is_base: e.target.checked })}
@@ -145,7 +145,7 @@ export default function UomConversions() {
       ) : (
         <div className="space-y-4">
           {Object.entries(grouped).map(([productId, items]) => (
-            <div key={productId} className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+            <div key={productId} className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
               <div className="px-4 py-3 border-b border-slate-100 bg-slate-50">
                 <p className="text-sm font-medium text-slate-900">{items[0].product_name}</p>
                 <p className="text-[9px] text-slate-500">{items[0].sku}</p>
@@ -154,9 +154,9 @@ export default function UomConversions() {
                 {items.map(c => (
                   <div key={c.id} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
                     <div className="flex items-center gap-2">
-                      <span className="px-2 py-1 bg-white border border-slate-200 rounded text-xs font-medium text-slate-700">{c.from_uom}</span>
+                      <span className="px-2 py-1 bg-white border border-slate-200 rounded text-xs dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 font-medium text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300">{c.from_uom}</span>
                       <ArrowRightLeft className="w-3.5 h-3.5 text-slate-400" />
-                      <span className="px-2 py-1 bg-white border border-slate-200 rounded text-xs font-medium text-slate-700">{c.to_uom}</span>
+                      <span className="px-2 py-1 bg-white border border-slate-200 rounded text-xs dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 font-medium text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300">{c.to_uom}</span>
                       <span className="text-xs text-slate-500">= {c.conversion_factor}</span>
                       {c.is_base && (
                         <span className="px-1.5 py-0.5 bg-indigo-100 text-indigo-700 text-[8px] font-semibold rounded">BASE</span>

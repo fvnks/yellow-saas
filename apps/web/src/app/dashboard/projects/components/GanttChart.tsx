@@ -194,7 +194,7 @@ export default function GanttChart({ tasks, dependencies = [], startDate, endDat
 
   if (tasks.length === 0) {
     return (
-      <div className="text-center py-12 bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="text-center py-12 bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <Calendar className="w-12 h-12 text-slate-200 mx-auto mb-3" />
         <p className="text-sm text-slate-500">No hay tareas con fechas para mostrar en el Gantt</p>
       </div>
@@ -208,7 +208,7 @@ export default function GanttChart({ tasks, dependencies = [], startDate, endDat
   const taskIndexMap = new Map(enrichedTasks.map((t, i) => [t.id, i]));
 
   return (
-    <div ref={ganttRef} className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+    <div ref={ganttRef} className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
       <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-slate-900">Diagrama de Gantt</h3>
         <div className="flex items-center gap-3">
@@ -234,7 +234,7 @@ export default function GanttChart({ tasks, dependencies = [], startDate, endDat
       <div className="overflow-x-auto">
         <div style={{ minWidth: labelWidth + totalDays * dayWidth }}>
           {/* Month headers */}
-          <div className="flex border-b border-slate-200 sticky top-0 bg-white z-10">
+          <div className="flex border-b border-slate-200 sticky top-0 bg-white dark:bg-slate-900 z-10">
             <div style={{ width: labelWidth }} className="px-4 py-2 text-[9px] font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">
               Tarea
             </div>

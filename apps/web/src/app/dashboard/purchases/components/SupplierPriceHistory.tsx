@@ -33,7 +33,7 @@ export default function SupplierPriceHistory() {
         <DollarSign className="w-4 h-4 text-slate-500" />
         <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Hist. Precios Proveedor</span>
       </div>
-      <div className="bg-white border border-slate-200 rounded-xl p-4">
+      <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
         <div className="flex items-center gap-4">
           <input type="text" placeholder="Buscar proveedor..." value={search} onChange={e => setSearch(e.target.value)}
             className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
@@ -56,7 +56,7 @@ export default function SupplierPriceHistory() {
           {productPrices.map((pp: any, idx: number) => {
             const isExpanded = expanded === `${idx}`;
             return (
-              <div key={idx} className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+              <div key={idx} className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
                 <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setExpanded(isExpanded ? null : `${idx}`)}>
                   <div className="flex items-center gap-3">
                     <DollarSign className="w-4 h-4 text-slate-500" />

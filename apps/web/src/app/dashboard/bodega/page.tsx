@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
@@ -151,9 +151,9 @@ export default function BodegaPage() {
     { id: 'counts', label: 'Conteos', icon: ClipboardCheck, count: counts.length },
     { id: 'transfers', label: 'Transferencias', icon: Truck, count: transfers.length },
     { id: 'alerts', label: 'Alertas', icon: AlertTriangle, count: alerts.length },
-    { id: 'valuation', label: 'Valoración', icon: Calculator, count: 0 },
+    { id: 'valuation', label: 'Valoraci�n', icon: Calculator, count: 0 },
     { id: 'landed-cost', label: 'Costos Aterrizados', icon: Ship, count: 0 },
-    { id: 'consignment', label: 'Consignación/VMI', icon: Handshake, count: 0 },
+    { id: 'consignment', label: 'Consignaci�n/VMI', icon: Handshake, count: 0 },
     { id: 'sii-book', label: 'Libro SII', icon: FileText, count: 0 },
     { id: 'import', label: 'Importar', icon: Upload, count: 0 },
   ];
@@ -204,15 +204,15 @@ export default function BodegaPage() {
           <p className="text-sm text-slate-500 mt-1">Gestion completa de inventario</p>
         </div>
         <div className="flex items-center gap-2">
-          <Link href="/dashboard/inventory/stock-report" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
-            <Package className="w-4 h-4" /> Valorización
+          <Link href="/dashboard/inventory/stock-report" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+            <Package className="w-4 h-4" /> Valorizaci�n
           </Link>
-          <Link href="/dashboard/inventory/config" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+          <Link href="/dashboard/inventory/config" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
             <Settings className="w-4 h-4" /> Configurar
           </Link>
           {activeTab === 'products' && (
             <>
-              <button onClick={() => setShowScanner(true)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+              <button onClick={() => setShowScanner(true)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
                 <Search className="w-4 h-4" /> Escanear
               </button>
               <Link href="/dashboard/inventory/new" className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
@@ -236,7 +236,7 @@ export default function BodegaPage() {
             </Link>
           )}
           {activeTab === 'alerts' && (
-            <button onClick={loadAll} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            <button onClick={loadAll} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
               <Download className="w-4 h-4" /> Actualizar
             </button>
           )}
@@ -245,7 +245,7 @@ export default function BodegaPage() {
 
       {/* KPIs */}
       <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Productos</p>
@@ -254,7 +254,7 @@ export default function BodegaPage() {
             <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center"><Package className="w-5 h-5 text-indigo-600" /></div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Bodegas</p>
@@ -263,7 +263,7 @@ export default function BodegaPage() {
             <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center"><Warehouse className="w-5 h-5 text-emerald-600" /></div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Conteos</p>
@@ -272,7 +272,7 @@ export default function BodegaPage() {
             <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center"><ClipboardCheck className="w-5 h-5 text-amber-600" /></div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Alertas</p>
@@ -284,7 +284,7 @@ export default function BodegaPage() {
       </div>
 
       {/* Tabs + Content */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <ContinuousTabs
           tabs={tabs.map(t => ({ id: t.id, label: t.count > 0 ? `${t.label} (${t.count})` : t.label }))}
           defaultActiveId={activeTab}
@@ -558,8 +558,8 @@ export default function BodegaPage() {
                   <div className="max-w-4xl mx-auto">
                     <Link href="/dashboard/inventory/valuation" className="block bg-slate-50 border border-slate-200 rounded-xl p-8 text-center hover:border-indigo-400 hover:bg-indigo-50/50 transition-colors">
                       <Calculator className="w-10 h-10 text-emerald-600 mx-auto mb-3" />
-                      <p className="text-sm font-medium text-slate-700">Valoración de Inventario</p>
-                      <p className="text-xs text-slate-500 mt-1">Métodos FIFO/LIFO/WAC, capas de stock valorizado</p>
+                      <p className="text-sm font-medium text-slate-700">Valoraci�n de Inventario</p>
+                      <p className="text-xs text-slate-500 mt-1">M�todos FIFO/LIFO/WAC, capas de stock valorizado</p>
                     </Link>
                   </div>
                 </div>
@@ -572,7 +572,7 @@ export default function BodegaPage() {
                     <Link href="/dashboard/bodega/landed-cost" className="block bg-slate-50 border border-slate-200 rounded-xl p-8 text-center hover:border-indigo-400 hover:bg-indigo-50/50 transition-colors">
                       <Ship className="w-10 h-10 text-blue-600 mx-auto mb-3" />
                       <p className="text-sm font-medium text-slate-700">Costos Aterrizados</p>
-                      <p className="text-xs text-slate-500 mt-1">Fletes, seguros, aranceles分配到 productos</p>
+                      <p className="text-xs text-slate-500 mt-1">Fletes, seguros, aranceles??? productos</p>
                     </Link>
                   </div>
                 </div>

@@ -174,22 +174,22 @@ export default function CreditNotes() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <select value={form.customer_id} onChange={e => { setForm({ ...form, customer_id: e.target.value }); loadInvoices(e.target.value); }}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
               <option value="">Cliente...</option>
               {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
             <select value={form.invoice_id} onChange={e => setForm({ ...form, invoice_id: e.target.value })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
               <option value="">Factura referenciada (opcional)</option>
               {invoices.map(i => <option key={i.id} value={i.id}>{i.invoice_number} - ${i.total_amount}</option>)}
             </select>
             <input type="text" value={form.reason} onChange={e => setForm({ ...form, reason: e.target.value })}
-              className="col-span-2 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="col-span-2 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
               placeholder="Motivo de la nota de credito" />
             <input type="date" value={form.credit_date} onChange={e => setForm({ ...form, credit_date: e.target.value })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
             <input type="text" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
               placeholder="Notas" />
           </div>
 
@@ -201,14 +201,14 @@ export default function CreditNotes() {
                   const prod = products.find(p => p.id === e.target.value);
                   updateItem(idx, 'product_id', e.target.value);
                   if (prod) { updateItem(idx, 'unit_price', prod.sale_price || 0); updateItem(idx, 'description', prod.name); }
-                }} className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                }} className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500">
                   <option value="">Producto...</option>
                   {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                 </select>
                 <input type="number" value={item.quantity} onChange={e => updateItem(idx, 'quantity', Number(e.target.value))} min={0.01}
-                  className="w-16 bg-white border border-slate-200 rounded-lg px-2 py-2 text-xs text-right focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                  className="w-16 bg-white border border-slate-200 rounded-lg px-2 py-2 text-xs text-right focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500" />
                 <input type="number" value={item.unit_price} onChange={e => updateItem(idx, 'unit_price', Number(e.target.value))}
-                  className="w-24 bg-white border border-slate-200 rounded-lg px-2 py-2 text-xs text-right focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                  className="w-24 bg-white border border-slate-200 rounded-lg px-2 py-2 text-xs text-right focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500" />
                 <button onClick={() => removeItem(idx)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-3.5 h-3.5" /></button>
               </div>
             ))}
@@ -234,7 +234,7 @@ export default function CreditNotes() {
           <p className="text-xs text-slate-400">Sin notas de credito</p>
         </div>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate-200">

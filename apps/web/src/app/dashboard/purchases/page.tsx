@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { Plus, Search, Eye, Trash2, Calendar, Truck, ShoppingCart, FileText, Building2, Package, ReceiptText, RotateCcw, FileMinus, AlertTriangle, DollarSign, TrendingUp, BarChart3, Target, ClipboardList } from 'lucide-react';
@@ -28,12 +28,12 @@ const purchaseModules = [
     { id: 'credit-notes', label: 'NC' }, { id: 'debit-notes', label: 'ND' },
   ]},
   { id: 'finanzas', label: 'Finanzas', icon: DollarSign, tabs: [
-    { id: 'credit-control', label: 'Crédito' }, { id: 'statement', label: 'Estado Cta.' },
+    { id: 'credit-control', label: 'Cr�dito' }, { id: 'statement', label: 'Estado Cta.' },
   ]},
-  { id: 'analisis', label: 'Análisis', icon: BarChart3, tabs: [
+  { id: 'analisis', label: 'An�lisis', icon: BarChart3, tabs: [
     { id: 'dashboard', label: 'Dashboard' }, { id: 'reports', label: 'Reportes' },
     { id: 'price-history', label: 'Hist. Precios' }, { id: 'contracts', label: 'Contratos' },
-    { id: 'budgets', label: 'Presupuestos' }, { id: 'forecast', label: 'Pronóstico' },
+    { id: 'budgets', label: 'Presupuestos' }, { id: 'forecast', label: 'Pron�stico' },
   ]},
 ];
 
@@ -104,7 +104,7 @@ export default function PurchasesPage() {
   const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
   const handleDelete = async (id: string) => {
-    if (!confirm('¿Eliminar esta orden de compra?')) return;
+    if (!confirm('�Eliminar esta orden de compra?')) return;
     const api = getApiClient();
     await api.deletePurchaseOrder(id);
     setPurchaseOrders(prev => prev.filter(o => o.id !== id));
@@ -116,7 +116,7 @@ export default function PurchasesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Compras</h1>
-          <p className="text-sm text-slate-500 mt-1">Gestión de compras, facturas y proveedores</p>
+          <p className="text-sm text-slate-500 mt-1">Gesti�n de compras, facturas y proveedores</p>
         </div>
         <Link href="/dashboard/purchases/new">
           <button className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
@@ -126,7 +126,7 @@ export default function PurchasesPage() {
       </div>
 
       {/* Module Navigation */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <div className="flex items-center gap-1 flex-wrap">
           {purchaseModules.map(m => {
             const isActive = activeModule === m.id;
@@ -146,7 +146,7 @@ export default function PurchasesPage() {
       </div>
 
       {/* Sub-tabs for active module */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <div className="flex items-center gap-1 flex-wrap">
           {purchaseModules.find(m => m.id === activeModule)?.tabs.map(t => (
             <button key={t.id} onClick={() => { setActiveTab(t.id as TabId); setSearch(''); setStatusFilter('all'); setPage(1); }}
@@ -163,7 +163,7 @@ export default function PurchasesPage() {
             {/* Quick Actions */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
               <Link href="/dashboard/purchases/new">
-                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 hover:bg-slate-50 transition-colors cursor-pointer">
+                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 hover:bg-slate-50 transition-colors cursor-pointer">
                   <div className="flex flex-col items-center gap-2">
                     <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center"><ShoppingCart className="w-5 h-5 text-emerald-600" /></div>
                     <span className="text-sm font-medium text-slate-700 text-center">Nueva Orden</span>
@@ -171,15 +171,15 @@ export default function PurchasesPage() {
                 </div>
               </Link>
               <Link href="/dashboard/purchases/quotations/new">
-                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 hover:bg-slate-50 transition-colors cursor-pointer">
+                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 hover:bg-slate-50 transition-colors cursor-pointer">
                   <div className="flex flex-col items-center gap-2">
                     <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center"><FileText className="w-5 h-5 text-indigo-600" /></div>
-                    <span className="text-sm font-medium text-slate-700 text-center">Nueva Cotización</span>
+                    <span className="text-sm font-medium text-slate-700 text-center">Nueva Cotizaci�n</span>
                   </div>
                 </div>
               </Link>
               <Link href="/dashboard/suppliers/new">
-                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 hover:bg-slate-50 transition-colors cursor-pointer">
+                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 hover:bg-slate-50 transition-colors cursor-pointer">
                   <div className="flex flex-col items-center gap-2">
                     <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center"><Building2 className="w-5 h-5 text-blue-600" /></div>
                     <span className="text-sm font-medium text-slate-700 text-center">Nuevo Proveedor</span>
@@ -187,21 +187,21 @@ export default function PurchasesPage() {
                 </div>
               </Link>
               <Link href="/dashboard/purchases/receipts/new">
-                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 hover:bg-slate-50 transition-colors cursor-pointer">
+                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 hover:bg-slate-50 transition-colors cursor-pointer">
                   <div className="flex flex-col items-center gap-2">
                     <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center"><Package className="w-5 h-5 text-amber-600" /></div>
-                    <span className="text-sm font-medium text-slate-700 text-center">Recepción</span>
+                    <span className="text-sm font-medium text-slate-700 text-center">Recepci�n</span>
                   </div>
                 </div>
               </Link>
             </div>
 
             {/* Filters */}
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="relative flex-1 max-w-md">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                  <input type="search" placeholder="Buscar por N° orden, proveedor..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                  <input type="search" placeholder="Buscar por N� orden, proveedor..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }}
                     className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors" />
                 </div>
                 <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
@@ -220,21 +220,21 @@ export default function PurchasesPage() {
 
             {/* Table */}
             {loading ? (
-              <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8">
+              <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 dark:bg-slate-900 dark:border-slate-800">
                 <div className="space-y-3">{[1, 2, 3, 4, 5].map(i => <div key={i} className="h-12 bg-slate-100 rounded animate-pulse" />)}</div>
               </div>
             ) : filtered.length === 0 ? (
-              <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-12 text-center">
+              <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-12 dark:bg-slate-900 dark:border-slate-800 text-center">
                 <ShoppingCart className="w-12 h-12 text-slate-200 mx-auto mb-3" />
-                <p className="text-sm text-slate-500">No hay órdenes de compra</p>
+                <p className="text-sm text-slate-500">No hay �rdenes de compra</p>
               </div>
             ) : (
               <>
-                <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+                <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead><tr className="border-b border-slate-200">
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">N° Orden</th>
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">N� Orden</th>
                         <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Proveedor</th>
                         <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Fecha</th>
                         <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Entrega</th>
@@ -266,11 +266,11 @@ export default function PurchasesPage() {
                 <div className="flex items-center justify-between text-xs text-slate-500 mt-4">
                   <p>Mostrando {(page - 1) * ITEMS_PER_PAGE + 1} a {Math.min(page * ITEMS_PER_PAGE, filtered.length)} de {filtered.length}</p>
                   <div className="flex items-center gap-2">
-                    <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 transition-colors">Anterior</button>
+                    <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 hover:bg-slate-50 disabled:opacity-50 transition-colors">Anterior</button>
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
                       <button key={p} onClick={() => setPage(p)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${p === page ? 'bg-slate-900 text-white' : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'}`}>{p}</button>
                     ))}
-                    <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 transition-colors">Siguiente</button>
+                    <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 hover:bg-slate-50 disabled:opacity-50 transition-colors">Siguiente</button>
                   </div>
                 </div>
               </>

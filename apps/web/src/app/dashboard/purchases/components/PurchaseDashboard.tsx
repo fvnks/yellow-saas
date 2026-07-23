@@ -29,7 +29,7 @@ export default function PurchaseDashboard() {
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-white border border-slate-200 rounded-xl p-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase">Gasto Mensual</p>
@@ -39,7 +39,7 @@ export default function PurchaseDashboard() {
             <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center"><ShoppingCart className="w-5 h-5 text-blue-600" /></div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase">Órdenes Abiertas</p>
@@ -48,7 +48,7 @@ export default function PurchaseDashboard() {
             <div className="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center"><Clock className="w-5 h-5 text-amber-600" /></div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase">Recepciones Pendientes</p>
@@ -60,7 +60,7 @@ export default function PurchaseDashboard() {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-white border border-slate-200 rounded-xl p-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase">Por Pagar</p>
@@ -70,7 +70,7 @@ export default function PurchaseDashboard() {
             <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center"><DollarSign className="w-5 h-5 text-red-600" /></div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-slate-500 uppercase">Gasto Anual</p>
@@ -82,7 +82,7 @@ export default function PurchaseDashboard() {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl p-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
           <h3 className="text-xs font-semibold text-slate-900 mb-3">Tendencia Mensual</h3>
           <div className="flex items-end gap-1 h-32">
             {(data?.monthlyTrend || []).slice(-12).map((t: any, i: number) => (
@@ -93,7 +93,7 @@ export default function PurchaseDashboard() {
             ))}
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
           <h3 className="text-xs font-semibold text-slate-900 mb-3">Top Proveedores</h3>
           <div className="space-y-2">
             {(data?.topSuppliers || []).slice(0, 5).map((s: any, i: number) => (

@@ -138,27 +138,27 @@ export default function RentabilidadReport({ project, costs, expenses, timesheet
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-slate-900">Reporte de Rentabilidad</h3>
-        <button onClick={handleExportPDF} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+        <button onClick={handleExportPDF} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Download className="w-4 h-4" /> Exportar PDF
         </button>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Presupuesto</p>
           <p className="text-xl font-bold text-slate-900 mt-1">{formatCurrency(data.budget)}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Costo Total</p>
           <p className="text-xl font-bold text-rose-600 mt-1">{formatCurrency(data.totalCost)}</p>
           <p className="text-[9px] text-slate-400 mt-0.5">{data.totalCosts > 0 ? `Compras/Inv: ${formatCurrency(data.totalCosts)}` : ''} {data.totalExpenses > 0 ? `Gastos: ${formatCurrency(data.totalExpenses)}` : ''}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Margen</p>
           <p className={`text-xl font-bold mt-1 ${data.margin >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{formatCurrency(data.margin)}</p>
           <p className="text-[9px] text-slate-400 mt-0.5">{data.marginPercent}% del presupuesto</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Costo/Hora</p>
           <p className="text-xl font-bold text-slate-900 mt-1">{formatCurrency(data.costPerHour)}</p>
           <p className="text-[9px] text-slate-400 mt-0.5">{data.billableHours}h facturables</p>
@@ -166,7 +166,7 @@ export default function RentabilidadReport({ project, costs, expenses, timesheet
       </div>
 
       {/* Margin bar */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             {data.margin >= 0 ? <TrendingUp className="w-5 h-5 text-emerald-600" /> : <TrendingDown className="w-5 h-5 text-red-600" />}
@@ -191,7 +191,7 @@ export default function RentabilidadReport({ project, costs, expenses, timesheet
       </div>
 
       {/* Breakdown */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <h4 className="text-sm font-semibold text-slate-900 mb-4">Desglose de Costos</h4>
         <div className="space-y-3">
           {[

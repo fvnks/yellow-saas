@@ -425,7 +425,7 @@ export default function WarehouseLayoutPage({ params }: { params: { id: string }
             if (productsToShow.length === 0) return null;
 
             return (
-              <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+              <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
                 <div className="px-4 sm:px-6 py-3 border-b border-slate-100 flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: zone.color }} />
                   <span className="text-sm font-semibold text-slate-900 truncate">{label}</span>
@@ -433,7 +433,7 @@ export default function WarehouseLayoutPage({ params }: { params: { id: string }
                 </div>
                 <div className="max-h-64 overflow-y-auto">
                   <table className="w-full">
-                    <thead className="sticky top-0 bg-white">
+                    <thead className="sticky top-0 bg-white dark:bg-slate-900">
                       <tr className="border-b border-slate-200">
                         <th className="text-left px-6 py-2.5 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Posicion</th>
                         <th className="text-left px-6 py-2.5 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>

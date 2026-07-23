@@ -60,7 +60,7 @@ export default function CustomerPriceHistory() {
         <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Historial de Precios por Cliente</span>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl p-4">
+      <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
         <div className="flex items-center gap-4">
           <input type="text" placeholder="Buscar cliente..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
             className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
@@ -96,7 +96,7 @@ export default function CustomerPriceHistory() {
             const priceVariationPct = pp.minPrice > 0 ? (priceVariation / pp.minPrice) * 100 : 0;
 
             return (
-              <div key={idx} className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+              <div key={idx} className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
                 <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50 transition-colors"
                   onClick={() => setExpandedProduct(isExpanded ? null : `${idx}`)}>
                   <div className="flex items-center gap-3">

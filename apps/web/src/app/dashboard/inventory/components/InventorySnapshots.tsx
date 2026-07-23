@@ -85,7 +85,7 @@ export default function InventorySnapshots() {
         <div className="flex items-center gap-2">
           {snapshots.length > 0 && (
             <button onClick={handleExport}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-medium transition-colors">
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium transition-colors">
               <Download className="w-3.5 h-3.5" /> Exportar
             </button>
           )}
@@ -97,7 +97,7 @@ export default function InventorySnapshots() {
       </div>
 
       {dates.length > 0 && (
-        <div className="bg-white border border-slate-200 rounded-xl p-3">
+        <div className="bg-white border border-slate-200 rounded-xl p-3 dark:bg-slate-900 dark:border-slate-800">
           <div className="flex items-center gap-2 flex-wrap">
             <Calendar className="w-3.5 h-3.5 text-slate-400" />
             <button onClick={() => setSelectedDate('')}
@@ -136,7 +136,7 @@ export default function InventorySnapshots() {
           <p className="text-xs text-slate-400">Sin snapshots. Tome uno para guardar el estado actual del inventario.</p>
         </div>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>

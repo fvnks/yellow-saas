@@ -235,7 +235,7 @@ export default function InventoryConfigPage() {
       </div>
 
       {/* Tabs */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
         <ContinuousTabs
           tabs={tabs.map(t => ({ id: t.id, label: t.count > 0 ? `${t.label} (${t.count})` : t.label }))}
           defaultActiveId={activeTab}
@@ -264,12 +264,12 @@ export default function InventoryConfigPage() {
                   {showCatForm && (
                     <div className="p-4 border-b border-slate-100 bg-slate-50">
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <input type="text" value={catForm.name} onChange={e => setCatForm({...catForm, name: e.target.value})} placeholder="Nombre categoria" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        <input type="text" value={catForm.description} onChange={e => setCatForm({...catForm, description: e.target.value})} placeholder="Descripcion" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        <input type="text" value={catForm.name} onChange={e => setCatForm({...catForm, name: e.target.value})} placeholder="Nombre categoria" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="text" value={catForm.description} onChange={e => setCatForm({...catForm, description: e.target.value})} placeholder="Descripcion" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                         <div className="flex gap-2">
                           <input type="color" value={catForm.color} onChange={e => setCatForm({...catForm, color: e.target.value})} className="w-10 h-10 rounded border border-slate-200 cursor-pointer" />
                           <button onClick={saveCat} className="bg-slate-900 hover:bg-black text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
-                          <button onClick={() => setShowCatForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
+                          <button onClick={() => setShowCatForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
                     </div>
@@ -304,15 +304,15 @@ export default function InventoryConfigPage() {
                   {showTaxForm && (
                     <div className="p-4 border-b border-slate-100 bg-slate-50">
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                        <input type="text" value={taxForm.code} onChange={e => setTaxForm({...taxForm, code: e.target.value})} placeholder="Codigo (IVA-19)" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        <input type="text" value={taxForm.name} onChange={e => setTaxForm({...taxForm, name: e.target.value})} placeholder="Nombre" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        <input type="number" value={taxForm.rate} onChange={e => setTaxForm({...taxForm, rate: e.target.value})} placeholder="Tasa %" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        <input type="text" value={taxForm.code} onChange={e => setTaxForm({...taxForm, code: e.target.value})} placeholder="Codigo (IVA-19)" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="text" value={taxForm.name} onChange={e => setTaxForm({...taxForm, name: e.target.value})} placeholder="Nombre" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="number" value={taxForm.rate} onChange={e => setTaxForm({...taxForm, rate: e.target.value})} placeholder="Tasa %" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                         <div className="flex gap-2">
-                          <select value={taxForm.type} onChange={e => setTaxForm({...taxForm, type: e.target.value})} className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                          <select value={taxForm.type} onChange={e => setTaxForm({...taxForm, type: e.target.value})} className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                             <option value="iva">IVA</option><option value="exento">Exento</option><option value="otro">Otro</option>
                           </select>
                           <button onClick={saveTax} className="bg-slate-900 hover:bg-black text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
-                          <button onClick={() => setShowTaxForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
+                          <button onClick={() => setShowTaxForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
                     </div>
@@ -349,15 +349,15 @@ export default function InventoryConfigPage() {
                   {showUomForm && (
                     <div className="p-4 border-b border-slate-100 bg-slate-50">
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                        <input type="text" value={uomForm.code} onChange={e => setUomForm({...uomForm, code: e.target.value})} placeholder="Codigo (kg)" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        <input type="text" value={uomForm.name} onChange={e => setUomForm({...uomForm, name: e.target.value})} placeholder="Nombre" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        <select value={uomForm.type} onChange={e => setUomForm({...uomForm, type: e.target.value})} className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <input type="text" value={uomForm.code} onChange={e => setUomForm({...uomForm, code: e.target.value})} placeholder="Codigo (kg)" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="text" value={uomForm.name} onChange={e => setUomForm({...uomForm, name: e.target.value})} placeholder="Nombre" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <select value={uomForm.type} onChange={e => setUomForm({...uomForm, type: e.target.value})} className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                           {Object.entries(typeLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                         </select>
                         <div className="flex gap-2">
-                          <input type="number" step="0.000001" value={uomForm.conversion_factor} onChange={e => setUomForm({...uomForm, conversion_factor: e.target.value})} placeholder="Factor" className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                          <input type="number" step="0.000001" value={uomForm.conversion_factor} onChange={e => setUomForm({...uomForm, conversion_factor: e.target.value})} placeholder="Factor" className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                           <button onClick={saveUom} className="bg-slate-900 hover:bg-black text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
-                          <button onClick={() => setShowUomForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
+                          <button onClick={() => setShowUomForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
                     </div>
@@ -394,18 +394,18 @@ export default function InventoryConfigPage() {
                   {showBatchForm && (
                     <div className="p-4 border-b border-slate-100 bg-slate-50">
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                        <select value={batchForm.product_id} onChange={e => setBatchForm({...batchForm, product_id: e.target.value})} className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <select value={batchForm.product_id} onChange={e => setBatchForm({...batchForm, product_id: e.target.value})} className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                           <option value="">Producto...</option>{products.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
                         </select>
-                        <select value={batchForm.warehouse_id} onChange={e => setBatchForm({...batchForm, warehouse_id: e.target.value})} className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <select value={batchForm.warehouse_id} onChange={e => setBatchForm({...batchForm, warehouse_id: e.target.value})} className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                           <option value="">Bodega...</option>{warehouses.map((w: any) => <option key={w.id} value={w.id}>{w.name}</option>)}
                         </select>
-                        <input type="text" value={batchForm.batch_number} onChange={e => setBatchForm({...batchForm, batch_number: e.target.value})} placeholder="Lote..." className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        <input type="number" value={batchForm.quantity} onChange={e => setBatchForm({...batchForm, quantity: e.target.value})} placeholder="Cantidad" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        <input type="date" value={batchForm.expiry_date} onChange={e => setBatchForm({...batchForm, expiry_date: e.target.value})} className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        <input type="text" value={batchForm.batch_number} onChange={e => setBatchForm({...batchForm, batch_number: e.target.value})} placeholder="Lote..." className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="number" value={batchForm.quantity} onChange={e => setBatchForm({...batchForm, quantity: e.target.value})} placeholder="Cantidad" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="date" value={batchForm.expiry_date} onChange={e => setBatchForm({...batchForm, expiry_date: e.target.value})} className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                         <div className="flex gap-2">
                           <button onClick={saveBatch} className="bg-slate-900 hover:bg-black text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
-                          <button onClick={() => setShowBatchForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
+                          <button onClick={() => setShowBatchForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
                     </div>
@@ -444,22 +444,22 @@ export default function InventoryConfigPage() {
                   {showVariantForm && (
                     <div className="p-4 border-b border-slate-100 bg-slate-50">
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
-                        <select value={variantForm.product_id} onChange={e => setVariantForm({...variantForm, product_id: e.target.value})} className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <select value={variantForm.product_id} onChange={e => setVariantForm({...variantForm, product_id: e.target.value})} className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                           <option value="">Producto...</option>{products.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
                         </select>
-                        <input type="text" value={variantForm.sku} onChange={e => setVariantForm({...variantForm, sku: e.target.value})} placeholder="SKU variante" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        <input type="text" value={variantForm.name} onChange={e => setVariantForm({...variantForm, name: e.target.value})} placeholder="Nombre (Rojo L)" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        <input type="number" value={variantForm.cost_price} onChange={e => setVariantForm({...variantForm, cost_price: e.target.value})} placeholder="Costo" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        <input type="number" value={variantForm.sale_price} onChange={e => setVariantForm({...variantForm, sale_price: e.target.value})} placeholder="Precio" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        <input type="text" value={variantForm.sku} onChange={e => setVariantForm({...variantForm, sku: e.target.value})} placeholder="SKU variante" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="text" value={variantForm.name} onChange={e => setVariantForm({...variantForm, name: e.target.value})} placeholder="Nombre (Rojo L)" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="number" value={variantForm.cost_price} onChange={e => setVariantForm({...variantForm, cost_price: e.target.value})} placeholder="Costo" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="number" value={variantForm.sale_price} onChange={e => setVariantForm({...variantForm, sale_price: e.target.value})} placeholder="Precio" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                         <div className="flex gap-2">
                           <button onClick={saveVariant} className="bg-slate-900 hover:bg-black text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
-                          <button onClick={() => setShowVariantForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
+                          <button onClick={() => setShowVariantForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <input type="text" value={attrKey} onChange={e => setAttrKey(e.target.value)} placeholder="Atributo (color)" className="w-32 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        <input type="text" value={attrVal} onChange={e => setAttrVal(e.target.value)} placeholder="Valor (Rojo)" className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        <button onClick={addAttr} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors">+ Atributo</button>
+                        <input type="text" value={attrKey} onChange={e => setAttrKey(e.target.value)} placeholder="Atributo (color)" className="w-32 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="text" value={attrVal} onChange={e => setAttrVal(e.target.value)} placeholder="Valor (Rojo)" className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <button onClick={addAttr} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">+ Atributo</button>
                       </div>
                       {Object.keys(variantForm.attributes).length > 0 && (
                         <div className="flex flex-wrap gap-1.5 mt-2">
@@ -540,11 +540,11 @@ export default function InventoryConfigPage() {
                   {showReasonForm && (
                     <div className="p-4 border-b border-slate-100 bg-slate-50">
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <input type="text" value={reasonForm.name} onChange={e => setReasonForm({...reasonForm, name: e.target.value})} placeholder="Nombre del motivo" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        <input type="text" value={reasonForm.description} onChange={e => setReasonForm({...reasonForm, description: e.target.value})} placeholder="Descripcion (opcional)" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        <input type="text" value={reasonForm.name} onChange={e => setReasonForm({...reasonForm, name: e.target.value})} placeholder="Nombre del motivo" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="text" value={reasonForm.description} onChange={e => setReasonForm({...reasonForm, description: e.target.value})} placeholder="Descripcion (opcional)" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                         <div className="flex gap-2">
                           <button onClick={saveReason} className="bg-slate-900 hover:bg-black text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">{editingReason ? 'Actualizar' : 'Guardar'}</button>
-                          <button onClick={() => { setShowReasonForm(false); setEditingReason(null); }} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
+                          <button onClick={() => { setShowReasonForm(false); setEditingReason(null); }} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
                     </div>
@@ -586,7 +586,7 @@ export default function InventoryConfigPage() {
                   {showTagForm && (
                     <div className="p-4 border-b border-slate-100 bg-slate-50">
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <input type="text" value={tagForm.name} onChange={e => setTagForm({...tagForm, name: e.target.value})} placeholder="Nombre del tag" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        <input type="text" value={tagForm.name} onChange={e => setTagForm({...tagForm, name: e.target.value})} placeholder="Nombre del tag" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                         <div className="flex gap-2 items-center">
                           {TAG_COLORS.map(c => (
                             <button key={c.name} onClick={() => setTagForm({...tagForm, color: c.value})}
@@ -596,7 +596,7 @@ export default function InventoryConfigPage() {
                         </div>
                         <div className="flex gap-2">
                           <button onClick={saveTag} className="bg-slate-900 hover:bg-black text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">{editingTag ? 'Actualizar' : 'Guardar'}</button>
-                          <button onClick={() => { setShowTagForm(false); setEditingTag(null); }} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
+                          <button onClick={() => { setShowTagForm(false); setEditingTag(null); }} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
                     </div>

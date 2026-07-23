@@ -129,10 +129,10 @@ export default function SupplierCatalogImport() {
       <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
         <div className="grid grid-cols-2 gap-3">
           <input type="text" value={catalogName} onChange={e => setCatalogName(e.target.value)}
-            className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
             placeholder="Nombre del catalogo" />
           <select value={selectedSupplier} onChange={e => setSelectedSupplier(e.target.value)}
-            className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
             <option value="">Proveedor (opcional)</option>
             {suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
           </select>
@@ -165,7 +165,7 @@ export default function SupplierCatalogImport() {
           {catalogs.map(c => {
             const cfg = statusConfig[c.status] || statusConfig.pending;
             return (
-              <div key={c.id} className="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-xl">
+              <div key={c.id} className="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-xl dark:bg-slate-900 dark:border-slate-800">
                 <div className="flex items-center gap-3">
                   <FileText className="w-5 h-5 text-slate-500" />
                   <div>

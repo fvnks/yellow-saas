@@ -106,7 +106,7 @@ export default function SalesContracts() {
             const cfg = statusConfig[c.status] || statusConfig.draft;
             const Icon = cfg.icon;
             return (
-              <div key={c.id} className="bg-white border border-slate-200 rounded-xl p-4 hover:bg-slate-50 transition-colors">
+              <div key={c.id} className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800 hover:bg-slate-50 transition-colors">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center">
@@ -147,7 +147,7 @@ export default function SalesContracts() {
 
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-9002xl mx-4 max-h-[90vh] overflow-y-auto">
             <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-slate-900">Nuevo Contrato</h2>
               <button onClick={() => setShowForm(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
@@ -204,11 +204,11 @@ export default function SalesContracts() {
                   {form.items.map((item, i) => (
                     <div key={i} className="flex items-center gap-2 bg-slate-50 rounded-lg p-2">
                       <input type="text" value={item.description} onChange={e => updateItem(i, 'description', e.target.value)}
-                        className="flex-1 bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="Descripción" />
+                        className="flex-1 bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-900 dark:bg-slate-800 dark:border-slate-700 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="Descripción" />
                       <input type="number" value={item.quantity} onChange={e => updateItem(i, 'quantity', e.target.value)}
-                        className="w-16 bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-900 text-center focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                        className="w-16 bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-900 dark:bg-slate-800 dark:border-slate-700 dark:text-white text-center focus:outline-none focus:ring-1 focus:ring-indigo-500" />
                       <input type="number" value={item.unit_price} onChange={e => updateItem(i, 'unit_price', e.target.value)}
-                        className="w-24 bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-900 text-right focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="$0" />
+                        className="w-24 bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-900 dark:bg-slate-800 dark:border-slate-700 dark:text-white text-right focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="$0" />
                       {form.items.length > 1 && <button onClick={() => removeItem(i)} className="text-red-400 hover:text-red-600"><X className="w-3.5 h-3.5" /></button>}
                     </div>
                   ))}
@@ -216,7 +216,7 @@ export default function SalesContracts() {
               </div>
             </div>
             <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
-              <button onClick={() => setShowForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={() => setShowForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={!form.customer_id || !form.title}
                 className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors disabled:opacity-50">
                 <Save className="w-3.5 h-3.5" /> Guardar

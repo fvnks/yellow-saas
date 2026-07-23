@@ -74,7 +74,7 @@ function TaskCard({ task, onEdit, onDelete, onDragStart }: {
           {showMenu && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
-              <div className="absolute right-0 top-7 bg-white border border-slate-200 rounded-lg shadow-lg z-20 py-1 min-w-[120px]">
+              <div className="absolute right-0 top-7 bg-white border border-slate-200 rounded-lg shadow-lg z-20 dark:bg-slate-900 dark:border-slate-800 py-1 min-w-[120px]">
                 <button onClick={(e) => { e.stopPropagation(); onEdit(); setShowMenu(false); }}
                   className="w-full px-3 py-1.5 text-left text-xs text-slate-700 hover:bg-slate-50 flex items-center gap-2">
                   <Edit className="w-3 h-3" /> Editar
