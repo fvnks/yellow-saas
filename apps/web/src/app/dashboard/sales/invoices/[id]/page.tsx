@@ -68,7 +68,12 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
   const handlePrint = () => {
     if (!invoice) return;
     const c = company || {};
-    print(invoice.document_type as any, {
+    const items = invoice.items || [];
+    const subtotal = invoice.subtotal || items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0);
+    const tax = invoice.tax_amount || Math.round(subtotal * 0.19);
+    const total = invoice.total_amount || subtotal + tax;
+    const docType = invoice.document_type === 'boleta' ? 'boleta' : 'factura';
+    print(docType, {
       id: invoice.id,
       number: invoice.invoice_number,
       type: invoice.document_type || 'factura',
@@ -81,13 +86,12 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
         phone: c.phone, email: c.email, logo_url: c.logo_url,
       },
       customer: invoice.customer ? { name: invoice.customer.name, tax_id: invoice.customer.tax_id } : undefined,
-      items: (invoice.items || []).map(item => ({
+      items: items.map(item => ({
         name: item.product?.name || '', sku: item.product?.sku,
         quantity: item.quantity, unit_price: item.unit_price,
-        discount: item.discount_percent, tax_rate: item.tax_rate, total: item.line_total,
+        discount: item.discount_percent, tax_rate: item.tax_rate || 19, total: item.line_total,
       })),
       subtotal, tax_amount: tax, total, notes: invoice.notes,
-      payment_method: invoice.payment_method,
     });
   };
 

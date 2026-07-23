@@ -62,11 +62,15 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
   const handlePrint = () => {
     if (!quotation) return;
     const c = company || {};
+    const items = quotation.items || [];
+    const subtotal = quotation.subtotal || items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0);
+    const tax = quotation.tax_amount || Math.round(subtotal * 0.19);
+    const total = quotation.total_amount || subtotal + tax;
     print('quotation', {
       id: quotation.id,
       number: quotation.number,
       type: 'cotización',
-      date: quotation.quote_date || quotation.created_at,
+      date: quotation.quote_date,
       status: quotation.status,
       company: {
         name: c.name || 'Empresa', tax_id: c.tax_id, razon_social: c.razon_social,
@@ -74,12 +78,12 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
         phone: c.phone, email: c.email, logo_url: c.logo_url,
       },
       supplier: quotation.supplier ? { name: quotation.supplier.name, tax_id: quotation.supplier.tax_id } : undefined,
-      items: (quotation.items || []).map(item => ({
+      items: items.map(item => ({
         name: item.product?.name || '', sku: item.product?.sku,
         quantity: item.quantity, unit_price: item.unit_price,
-        discount: item.discount_percent, tax_rate: item.tax_rate, total: item.line_total,
+        discount: item.discount_percent, tax_rate: item.tax_rate || 19, total: item.line_total,
       })),
-      subtotal: quotation.subtotal || subtotal, tax_amount: quotation.tax_amount || tax, total: quotation.total_amount || total,
+      subtotal, tax_amount: tax, total,
       notes: quotation.notes,
       valid_until: quotation.valid_until || quotation.expiry_date,
       payment_method: quotation.payment_terms,
