@@ -6,6 +6,7 @@ import { Settings, Building2, Users, CreditCard, Bell, Shield, Globe, Save, Plus
 import { toast } from 'sonner';
 import { getApiClient } from '@/lib/api-client';
 import RolesTab from './tabs/RolesTab';
+import SupportAccessTab from './tabs/SupportAccessTab';
 
 interface UserProfile {
   id: string;
@@ -22,19 +23,35 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [company, setCompany] = useState({
-    name: '', tax_id: '', razon_social: '', giro: '',
+    id: '', name: '', tax_id: '', razon_social: '', giro: '',
     email: '', phone: '', address: '', city: '', region: '', logo_url: '',
-    plan: 'free', status: 'active',
+    plan: 'free', status: 'active', userRole: 'member',
   });
 
   useEffect(() => {
+    // Get user role from JWT
+    const cookies = document.cookie.split(';');
+    const authCookie = cookies.find(c => c.trim().startsWith('auth-token='));
+    let userRole = 'member';
+    let companyId = '';
+    if (authCookie) {
+      try {
+        const token = authCookie.split('=')[1];
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        userRole = payload.role || 'member';
+        companyId = payload.company_id || '';
+      } catch {}
+    }
+
     const api = getApiClient();
     api.getCompany().then((data: any) => {
       setCompany({
+        id: companyId || data.id || '',
         name: data.name || '', tax_id: data.tax_id || '', razon_social: data.razon_social || '',
         giro: data.giro || '', email: data.email || '', phone: data.phone || '',
         address: data.address || '', city: data.city || '', region: data.region || '',
         logo_url: data.logo_url || '', plan: data.plan || 'free', status: data.status || 'active',
+        userRole,
       });
     }).catch(() => {});
   }, []);
@@ -61,6 +78,7 @@ export default function SettingsPage() {
     { id: 'billing', label: 'Suscripción', icon: CreditCard },
     { id: 'notifications', label: 'Notificaciones', icon: Bell },
     { id: 'security', label: 'Seguridad', icon: Shield },
+    { id: 'support-access', label: 'Acceso de Soporte', icon: Key },
     { id: 'integrations', label: 'Integraciones', icon: Globe },
     { id: 'webhooks', label: 'Webhooks', icon: Zap },
   ];
@@ -140,6 +158,10 @@ export default function SettingsPage() {
           {activeTab === 'notifications' && <NotificationsTab />}
 
           {activeTab === 'security' && <SecurityTab />}
+
+          {activeTab === 'support-access' && (
+            <SupportAccessTab companyId={company.id || ''} userRole={company.userRole || 'member'} />
+          )}
 
           {activeTab === 'integrations' && (
             <Card>

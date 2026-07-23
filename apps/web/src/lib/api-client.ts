@@ -1634,6 +1634,19 @@ async deleteAdjustmentReason(id: string) {
   async updateNotificationPreferences(data: { email_enabled?: boolean; email_address?: string; task_deadline?: boolean; milestone_deadline?: boolean; project_deadline?: boolean; timesheet_reminders?: boolean }) {
     return this.request<any>('/notification-preferences', { method: 'PUT', body: JSON.stringify(data) });
   }
+
+  // Company Access Grants
+  async getCompanyGrants(companyId: string) {
+    return this.request<any[]>(`/companies/${companyId}/grants`);
+  }
+
+  async createCompanyGrant(companyId: string, data: { super_admin_email: string; access_level?: string; reason?: string; expires_at?: string }) {
+    return this.request<any>(`/companies/${companyId}/grants`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async revokeCompanyGrant(companyId: string, grantId: string) {
+    return this.request<any>(`/companies/${companyId}/grants/${grantId}`, { method: 'DELETE' });
+  }
 }
 
 // Singleton with dynamic company_id from JWT

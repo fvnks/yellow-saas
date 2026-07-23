@@ -16,6 +16,7 @@ interface PermissionsContextType {
   hasPermission: (module: string, action: string) => boolean;
   hasAnyPermission: (module: string) => boolean;
   refresh: () => void;
+  isOwner: boolean;
 }
 
 const PermissionsContext = createContext<PermissionsContextType>({
@@ -24,11 +25,28 @@ const PermissionsContext = createContext<PermissionsContextType>({
   hasPermission: () => true,
   hasAnyPermission: () => true,
   refresh: () => {},
+  isOwner: false,
 });
+
+function getUserRole(): string {
+  if (typeof window === 'undefined') return 'member';
+  const cookies = document.cookie.split(';');
+  const authCookie = cookies.find(c => c.trim().startsWith('auth-token='));
+  if (!authCookie) return 'member';
+  try {
+    const token = authCookie.split('=')[1];
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.role || 'member';
+  } catch {
+    return 'member';
+  }
+}
 
 export function PermissionsProvider({ children }: { children: ReactNode }) {
   const [permissions, setPermissions] = useState<Permission[]>([]);
   const [loading, setLoading] = useState(true);
+  const userRole = getUserRole();
+  const isOwner = userRole === 'owner' || userRole === 'admin';
 
   const load = useCallback(() => {
     const api = getApiClient();
@@ -46,22 +64,26 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
 
   const hasPermission = useCallback(
     (module: string, action: string) => {
-      if (permissions.length === 0) return true;
+      // Owner and admin see everything
+      if (isOwner) return true;
+      // If no permissions loaded, deny access (closed by default)
+      if (permissions.length === 0) return false;
       return permissions.some((p) => p.module === module && p.action === action);
     },
-    [permissions]
+    [permissions, isOwner]
   );
 
   const hasAnyPermission = useCallback(
     (module: string) => {
-      if (permissions.length === 0) return true;
+      if (isOwner) return true;
+      if (permissions.length === 0) return false;
       return permissions.some((p) => p.module === module);
     },
-    [permissions]
+    [permissions, isOwner]
   );
 
   return (
-    <PermissionsContext.Provider value={{ permissions, loading, hasPermission, hasAnyPermission, refresh: load }}>
+    <PermissionsContext.Provider value={{ permissions, loading, hasPermission, hasAnyPermission, refresh: load, isOwner }}>
       {children}
     </PermissionsContext.Provider>
   );
