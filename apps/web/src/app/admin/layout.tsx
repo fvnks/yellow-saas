@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { Toaster } from 'sonner';
 import {
   Shield, Building2, Users, KeyRound, Settings, LogOut,
-  LayoutDashboard, Menu, X, UserCog
+  LayoutDashboard, Menu, X, UserCog, Headphones, Bell, CreditCard, ScrollText
 } from 'lucide-react';
 
 function getClientSession(): { role_type?: string; name?: string; email?: string } | null {
@@ -31,7 +31,13 @@ const sidebarItems = [
     { title: 'Usuarios', path: '/admin/users', icon: Users },
     { title: 'Accesos', path: '/admin/grants', icon: KeyRound },
   ]},
-  { label: 'Herramientas', items: [
+  { label: 'Operaciones', items: [
+    { title: 'Soporte', path: '/admin/support', icon: Headphones },
+    { title: 'Notificaciones', path: '/admin/notifications', icon: Bell },
+    { title: 'Billing', path: '/admin/billing', icon: CreditCard },
+  ]},
+  { label: 'Sistema', items: [
+    { title: 'Audit Log', path: '/admin/audit', icon: ScrollText },
     { title: 'Configuración', path: '/admin/settings', icon: Settings },
   ]},
 ];
