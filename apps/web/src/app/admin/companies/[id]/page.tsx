@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Building2, Users, Calendar, Shield, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import { ArrowLeft, Building2, Users, Calendar, Shield, AlertTriangle, CheckCircle, Clock, LogIn, Download } from 'lucide-react';
 
 interface CompanyDetail {
   id: string;
@@ -62,6 +62,49 @@ export default function AdminCompanyDetailPage() {
     }
   };
 
+  const handleLoginAs = async (userId: string) => {
+    if (!confirm('¿Ingresar como este usuario? Serás redirigido al dashboard de la empresa.')) return;
+    try {
+      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+      const res = await fetch('/api/super-admin/login-as', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ company_id: id, user_id: userId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        document.cookie = `auth-token=${data.data.token}; path=/; max-age=${4 * 60 * 60}`;
+        window.location.href = '/dashboard';
+      }
+    } catch (err) {
+      console.error('Failed to login as user:', err);
+    }
+  };
+
+  const handleExport = async () => {
+    try {
+      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+      const res = await fetch('/api/super-admin/export?type=companies', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.success) {
+        const csv = [
+          Object.keys(data.data.data[0] || {}).join(','),
+          ...data.data.data.map((row: Record<string, unknown>) => Object.values(row).join(','))
+        ].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `empresas_${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+      }
+    } catch (err) {
+      console.error('Failed to export:', err);
+    }
+  };
+
   if (loading) {
     return (
       <div className="space-y-4">
@@ -107,6 +150,13 @@ export default function AdminCompanyDetailPage() {
           </div>
           <p className="text-sm text-slate-400 mt-1">ID: {company.id}</p>
         </div>
+        <button
+          onClick={handleExport}
+          className="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm font-medium text-white transition-colors flex items-center gap-2"
+        >
+          <Download className="w-4 h-4" />
+          Exportar
+        </button>
         <button
           onClick={handleSuspend}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
@@ -168,6 +218,7 @@ export default function AdminCompanyDetailPage() {
               <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Rol</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Estado</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Creado</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -194,6 +245,15 @@ export default function AdminCompanyDetailPage() {
                 </td>
                 <td className="px-6 py-4 text-xs text-slate-400">
                   {new Date(user.created_at).toLocaleDateString('es-CL')}
+                </td>
+                <td className="px-6 py-4">
+                  <button
+                    onClick={() => handleLoginAs(user.id)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 rounded-lg text-xs font-medium text-indigo-400 transition-colors"
+                  >
+                    <LogIn className="w-3.5 h-3.5" />
+                    Ingresar
+                  </button>
                 </td>
               </tr>
             ))}
