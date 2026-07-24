@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { KeyRound, Search, Building2, Shield, CheckCircle, XCircle, Clock, AlertTriangle } from 'lucide-react';
+import { KeyRound, Search, Building2, Shield, CheckCircle, XCircle, Clock, AlertTriangle, Plus, X } from 'lucide-react';
 
 interface Grant {
   id: string;
@@ -17,20 +17,33 @@ interface Grant {
   granted_by_name: string;
 }
 
+interface Company {
+  id: string;
+  name: string;
+  slug: string;
+}
+
 export default function AdminGrantsPage() {
   const [grants, setGrants] = useState<Grant[]>([]);
+  const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
+  const [showCreate, setShowCreate] = useState(false);
+  const [form, setForm] = useState({ company_id: '', access_level: 'read', reason: '', expires_at: '' });
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState({ type: '', text: '' });
 
   useEffect(() => {
     fetchGrants();
+    fetchCompanies();
   }, []);
+
+  const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
 
   const fetchGrants = async () => {
     try {
-      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
       const res = await fetch('/api/super-admin/grants', {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${getToken()}` },
       });
       const data = await res.json();
       if (data.success) setGrants(data.data);
@@ -41,13 +54,57 @@ export default function AdminGrantsPage() {
     }
   };
 
+  const fetchCompanies = async () => {
+    try {
+      const res = await fetch('/api/super-admin/companies', {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      const data = await res.json();
+      if (data.success) setCompanies(data.data);
+    } catch (err) {
+      console.error('Failed to load companies:', err);
+    }
+  };
+
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    setMessage({ type: '', text: '' });
+
+    try {
+      const res = await fetch('/api/super-admin/grants', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          company_id: form.company_id,
+          access_level: form.access_level,
+          reason: form.reason || undefined,
+          expires_at: form.expires_at || undefined,
+        }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setMessage({ type: 'success', text: 'Acceso creado correctamente' });
+        setForm({ company_id: '', access_level: 'read', reason: '', expires_at: '' });
+        setShowCreate(false);
+        fetchGrants();
+      } else {
+        setMessage({ type: 'error', text: data.error?.message || 'Error al crear' });
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'Error de conexión' });
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleRevoke = async (grantId: string) => {
     if (!confirm('¿Revocar este acceso?')) return;
     try {
-      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
       await fetch(`/api/super-admin/grants/${grantId}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${getToken()}` },
       });
       fetchGrants();
     } catch (err) {
@@ -64,10 +121,80 @@ export default function AdminGrantsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-white">Accesos</h1>
-        <p className="text-sm text-slate-400 mt-1">Gestiona los accesos de super admin a empresas</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Accesos</h1>
+          <p className="text-sm text-slate-400 mt-1">Gestiona los accesos de super admin a empresas</p>
+        </div>
+        <button
+          onClick={() => { setShowCreate(!showCreate); setMessage({ type: '', text: '' }); }}
+          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm font-medium text-white transition-colors"
+        >
+          <Plus className="w-4 h-4" />
+          {showCreate ? 'Cancelar' : 'Nuevo Acceso'}
+        </button>
       </div>
+
+      {/* Create Form */}
+      {showCreate && (
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+          <h3 className="text-sm font-semibold text-white mb-4">Crear Acceso</h3>
+          {message.text && (
+            <div className={`mb-4 flex items-center gap-2 p-3 rounded-lg text-sm ${
+              message.type === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+            }`}>
+              {message.type === 'success' ? <CheckCircle className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
+              {message.text}
+            </div>
+          )}
+          <form onSubmit={handleCreate} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-400">Empresa</label>
+              <select
+                value={form.company_id}
+                onChange={(e) => setForm({ ...form, company_id: e.target.value })}
+                required
+                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              >
+                <option value="">Seleccionar empresa...</option>
+                {companies.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-400">Nivel de Acceso</label>
+              <select
+                value={form.access_level}
+                onChange={(e) => setForm({ ...form, access_level: e.target.value })}
+                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              >
+                <option value="read">Lectura</option>
+                <option value="full">Completo</option>
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-400">Motivo</label>
+              <input
+                type="text"
+                value={form.reason}
+                onChange={(e) => setForm({ ...form, reason: e.target.value })}
+                placeholder="Ej: Soporte técnico"
+                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              />
+            </div>
+            <div className="flex items-end">
+              <button
+                type="submit"
+                disabled={saving}
+                className="w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
+              >
+                {saving ? 'Creando...' : 'Crear Acceso'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-4">

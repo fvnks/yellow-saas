@@ -176,13 +176,7 @@ export default function SuperAdminLoginPage() {
             </Link>
           </div>
 
-          <div className="mt-6 p-4 bg-slate-800/50 rounded-lg border border-slate-700/50">
-            <p className="text-xs text-slate-500 text-center mb-2">Credenciales de prueba:</p>
-            <div className="text-xs text-slate-400 font-mono space-y-1 text-center">
-              <p>Email: superadmin@yellow.cl</p>
-              <p>Pass: SuperAdmin123!</p>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>
