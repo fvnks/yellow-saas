@@ -16,16 +16,13 @@ export async function GET(request: NextRequest) {
       ORDER BY c.created_at DESC
     `);
 
-    const plans = [
-      { name: 'free', label: 'Free', max_users: 2, price_monthly: 0 },
-      { name: 'starter', label: 'Starter', max_users: 5, price_monthly: 19990 },
-      { name: 'professional', label: 'Professional', max_users: 15, price_monthly: 49990 },
-      { name: 'enterprise', label: 'Enterprise', max_users: -1, price_monthly: 99990 },
-    ];
+    const plansResult = await query(
+      'SELECT id, name, label, max_users, price_monthly, price_yearly, features, is_active, sort_order FROM platform_plans ORDER BY sort_order ASC'
+    );
 
     return successResponse({
       companies: companiesResult.rows,
-      plans,
+      plans: plansResult.rows,
     });
   } catch (err) {
     console.error('Billing error:', err);
