@@ -10,12 +10,13 @@ interface Metrics {
   totalUsers: number;
   activeUsers: number;
   recentSignups: number;
+  superAdmins: number;
 }
 
 export default function AdminDashboard() {
   const [metrics, setMetrics] = useState<Metrics>({
     totalCompanies: 0, activeCompanies: 0, trialCompanies: 0,
-    totalUsers: 0, activeUsers: 0, recentSignups: 0,
+    totalUsers: 0, activeUsers: 0, recentSignups: 0, superAdmins: 0,
   });
   const [loading, setLoading] = useState(true);
 
@@ -112,14 +113,16 @@ export default function AdminDashboard() {
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-400">Modo Demo</span>
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                Desactivado
-              </span>
+              <span className="text-sm text-slate-400">Super Admins</span>
+              <span className="text-sm font-medium text-white">{loading ? '—' : metrics.superAdmins}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-400">Super Admins</span>
-              <span className="text-sm font-medium text-white">1</span>
+              <span className="text-sm text-slate-400">Empresas Totales</span>
+              <span className="text-sm font-medium text-white">{loading ? '—' : metrics.totalCompanies}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-slate-400">Usuarios Totales</span>
+              <span className="text-sm font-medium text-white">{loading ? '—' : metrics.totalUsers}</span>
             </div>
           </div>
         </div>

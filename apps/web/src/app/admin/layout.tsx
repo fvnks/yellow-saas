@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { Toaster } from 'sonner';
 import {
   Shield, Building2, Users, KeyRound, Settings, LogOut,
-  LayoutDashboard, Menu, X
+  LayoutDashboard, Menu, X, UserCog
 } from 'lucide-react';
 
 function getClientSession(): { role_type?: string; name?: string; email?: string } | null {

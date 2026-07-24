@@ -8,12 +8,13 @@ export async function GET(request: NextRequest) {
   if (!admin) return errorResponse('No autorizado', 401);
 
   try {
-    const [companiesResult, usersResult, trialResult, activeUsersResult, recentResult] = await Promise.all([
+    const [companiesResult, usersResult, trialResult, activeUsersResult, recentResult, superAdminsResult] = await Promise.all([
       query('SELECT COUNT(*) as total FROM companies'),
       query('SELECT COUNT(*) as total FROM profiles'),
       query("SELECT COUNT(*) as total FROM companies WHERE status = 'trial'"),
       query("SELECT COUNT(*) as total FROM profiles WHERE status = 'active'"),
       query("SELECT COUNT(*) as total FROM profiles WHERE created_at > now() - interval '30 days'"),
+      query('SELECT COUNT(*) as total FROM super_admins WHERE is_active = true'),
     ]);
 
     const activeCompaniesResult = await query("SELECT COUNT(*) as total FROM companies WHERE status = 'active'");
@@ -25,6 +26,7 @@ export async function GET(request: NextRequest) {
       totalUsers: parseInt(usersResult.rows[0].total),
       activeUsers: parseInt(activeUsersResult.rows[0].total),
       recentSignups: parseInt(recentResult.rows[0].total),
+      superAdmins: parseInt(superAdminsResult.rows[0].total),
     });
   } catch (err) {
     console.error('Metrics error:', err);
