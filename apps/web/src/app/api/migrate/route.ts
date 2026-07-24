@@ -204,6 +204,7 @@ export async function POST(request: Request) {
       `CREATE TABLE IF NOT EXISTS platform_notifications (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID REFERENCES companies(id) ON DELETE CASCADE, title TEXT NOT NULL, message TEXT NOT NULL, type TEXT DEFAULT 'info' CHECK (type IN ('info', 'warning', 'success', 'error')), is_read BOOLEAN DEFAULT false, created_by UUID REFERENCES super_admins(id), created_at TIMESTAMPTZ DEFAULT now())`,
       `CREATE TABLE IF NOT EXISTS support_tickets (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, subject TEXT NOT NULL, status TEXT DEFAULT 'open' CHECK (status IN ('open', 'in_progress', 'resolved', 'closed')), priority TEXT DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high', 'urgent')), created_by UUID REFERENCES profiles(id), assigned_to UUID REFERENCES super_admins(id), created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now())`,
       `CREATE TABLE IF NOT EXISTS ticket_messages (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), ticket_id UUID NOT NULL REFERENCES support_tickets(id) ON DELETE CASCADE, sender_type TEXT NOT NULL CHECK (sender_type IN ('company', 'super_admin')), sender_id UUID NOT NULL, message TEXT NOT NULL, created_at TIMESTAMPTZ DEFAULT now())`,
+      `CREATE TABLE IF NOT EXISTS platform_plans (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), name TEXT UNIQUE NOT NULL, label TEXT NOT NULL, max_users INTEGER DEFAULT -1, price_monthly INTEGER DEFAULT 0, price_yearly INTEGER, features JSONB DEFAULT '[]', is_active BOOLEAN DEFAULT true, sort_order INTEGER DEFAULT 0, created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now())`,
     ];
     for (const sql of alterStatements) {
       try { await query(sql); } catch { /* column may already exist */ }
@@ -282,6 +283,20 @@ export async function POST(request: Request) {
     } else {
       results.push('Super admin already exists');
     }
+
+    const defaultPlans = [
+      { name: 'free', label: 'Free', max_users: 2, price_monthly: 0, price_yearly: 0, sort_order: 1, features: JSON.stringify(['Inventario basico', 'Facturacion limitada', 'Soporte por email']) },
+      { name: 'starter', label: 'Starter', max_users: 5, price_monthly: 19990, price_yearly: 199900, sort_order: 2, features: JSON.stringify(['Inventario completo', 'Facturacion ilimitada', 'Reportes basicos', 'Soporte prioritario']) },
+      { name: 'professional', label: 'Professional', max_users: 15, price_monthly: 49990, price_yearly: 499900, sort_order: 3, features: JSON.stringify(['Todo en Starter', 'Multi-warehouse', 'CRM', 'Payroll', 'Soporte 24/7']) },
+      { name: 'enterprise', label: 'Enterprise', max_users: -1, price_monthly: 99990, price_yearly: 999900, sort_order: 4, features: JSON.stringify(['Todo en Professional', 'API access', 'Custom integrations', 'Dedicated support', 'SLA garantizado']) },
+    ];
+    for (const plan of defaultPlans) {
+      await query(
+        `INSERT INTO platform_plans (name, label, max_users, price_monthly, price_yearly, sort_order, features, is_active) VALUES ($1, $2, $3, $4, $5, $6, $7, true) ON CONFLICT (name) DO UPDATE SET label = $2, max_users = $3, price_monthly = $4, price_yearly = $5, sort_order = $6, features = $7`,
+        [plan.name, plan.label, plan.max_users, plan.price_monthly, plan.price_yearly, plan.sort_order, plan.features]
+      );
+    }
+    results.push('Seeded platform plans');
 
     return NextResponse.json({ success: true, results });
   } catch (err) {
