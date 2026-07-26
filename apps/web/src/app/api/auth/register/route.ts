@@ -41,9 +41,9 @@ export async function POST(request: NextRequest) {
     const passwordHash = await bcrypt.hash(password, 12);
 
     const userResult = await query(
-      `INSERT INTO profiles (id, company_id, email, name, password_hash, role, status)
+      `INSERT INTO profiles (id, company_id, email, full_name, password_hash, role, status)
        VALUES (gen_random_uuid(), $1, $2, $3, $4, 'owner', 'active')
-       RETURNING id, email, name`,
+       RETURNING id, email, full_name as name`,
       [company.id, email, fullName || email.split('@')[0], passwordHash]
     );
 
