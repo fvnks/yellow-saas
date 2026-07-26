@@ -216,15 +216,6 @@ function LoginForm() {
             <div className="flex-1 h-px bg-slate-200" />
           </motion.div>
 
-          {/* Demo credentials hint */}
-          <motion.div variants={itemVariants} className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-100">
-            <p className="text-xs text-slate-500 text-center mb-2">Credenciales de prueba:</p>
-            <div className="text-xs text-slate-600 font-mono space-y-1 text-center">
-              <p>Email: admin@yellow-erp.cl</p>
-              <p>Pass: admin123</p>
-            </div>
-          </motion.div>
-
           {/* Footer */}
           <motion.div variants={itemVariants} className="mt-8 text-center text-[14px] text-slate-500">
             ¿No tienes cuenta?{' '}
