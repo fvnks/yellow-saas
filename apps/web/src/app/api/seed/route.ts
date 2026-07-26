@@ -24,18 +24,27 @@ export async function POST(request: NextRequest) {
     }
 
     // Warehouse
-    const whResult = await query(
-      `INSERT INTO warehouses (company_id, name, code, address, city, is_active) VALUES ($1, 'Bodega Central', 'BC-01', 'Av. Industrial 1234', 'Santiago', true) RETURNING id`,
-      [company_id]
-    );
-    const whId = whResult.rows[0].id;
+    let whResult = await query(`SELECT id FROM warehouses WHERE company_id = $1 LIMIT 1`, [company_id]);
+    let whId: string;
+    if (whResult.rows.length > 0) {
+      whId = whResult.rows[0].id;
+    } else {
+      whResult = await query(
+        `INSERT INTO warehouses (company_id, name, code, address, city, is_active) VALUES ($1, 'Bodega Central', 'BC-01', 'Av. Industrial 1234', 'Santiago', true) RETURNING id`,
+        [company_id]
+      );
+      whId = whResult.rows[0].id;
+    }
     results.push('Warehouse');
 
     // Categories
     const cats = ['Electrónica', 'Alimentos', 'Bebidas', 'Limpieza', 'Oficina'];
     const catIds: string[] = [];
     for (const cat of cats) {
-      const r = await query(`INSERT INTO inventory_categories (company_id, name) VALUES ($1, $2) RETURNING id`, [company_id, cat]);
+      let r = await query(`SELECT id FROM inventory_categories WHERE company_id = $1 AND name = $2`, [company_id, cat]);
+      if (r.rows.length === 0) {
+        r = await query(`INSERT INTO inventory_categories (company_id, name) VALUES ($1, $2) RETURNING id`, [company_id, cat]);
+      }
       catIds.push(r.rows[0].id);
     }
     results.push('Categories');
@@ -61,11 +70,13 @@ export async function POST(request: NextRequest) {
 
     const productIds: string[] = [];
     for (const p of products) {
-      const r = await query(
-        `INSERT INTO products (company_id, name, sku, category_id, cost_price, sale_price, stock_quantity, min_stock, unit, is_active)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, 10, 'unit', true) RETURNING id`,
-        [company_id, p.name, p.sku, catIds[p.cat], p.cost, p.sale, p.stock]
-      );
+      let r = await query(`SELECT id FROM products WHERE company_id = $1 AND sku = $2`, [company_id, p.sku]);
+      if (r.rows.length === 0) {
+        r = await query(
+          `INSERT INTO products (company_id, name, sku, category_id, cost_price, sale_price, stock_quantity, min_stock, unit, is_active) VALUES ($1, $2, $3, $4, $5, $6, $7, 10, 'unit', true) RETURNING id`,
+          [company_id, p.name, p.sku, catIds[p.cat], p.cost, p.sale, p.stock]
+        );
+      }
       productIds.push(r.rows[0].id);
     }
     results.push('15 products');
@@ -83,10 +94,13 @@ export async function POST(request: NextRequest) {
     ];
     const customerIds: string[] = [];
     for (const c of customers) {
-      const r = await query(
-        `INSERT INTO customers (company_id, name, rut, email, phone, address, city, is_active) VALUES ($1, $2, $3, $4, $5, 'Av. ' || $2, 'Santiago', true) RETURNING id`,
-        [company_id, c.name, c.rut, c.email, c.phone]
-      );
+      let r = await query(`SELECT id FROM customers WHERE company_id = $1 AND rut = $2`, [company_id, c.rut]);
+      if (r.rows.length === 0) {
+        r = await query(
+          `INSERT INTO customers (company_id, name, rut, email, phone, address, city, is_active) VALUES ($1, $2, $3, $4, $5, 'Av. ' || $2, 'Santiago', true) RETURNING id`,
+          [company_id, c.name, c.rut, c.email, c.phone]
+        );
+      }
       customerIds.push(r.rows[0].id);
     }
     results.push('8 customers');
@@ -99,10 +113,13 @@ export async function POST(request: NextRequest) {
     ];
     const supplierIds: string[] = [];
     for (const s of suppliers) {
-      const r = await query(
-        `INSERT INTO suppliers (company_id, name, rut, email, phone, address, city, is_active) VALUES ($1, $2, $3, $4, '+56900000000', 'Av. ' || $2, 'Santiago', true) RETURNING id`,
-        [company_id, s.name, s.rut, s.email]
-      );
+      let r = await query(`SELECT id FROM suppliers WHERE company_id = $1 AND rut = $2`, [company_id, s.rut]);
+      if (r.rows.length === 0) {
+        r = await query(
+          `INSERT INTO suppliers (company_id, name, rut, email, phone, address, city, is_active) VALUES ($1, $2, $3, $4, '+56900000000', 'Av. ' || $2, 'Santiago', true) RETURNING id`,
+          [company_id, s.name, s.rut, s.email]
+        );
+      }
       supplierIds.push(r.rows[0].id);
     }
     results.push('3 suppliers');
