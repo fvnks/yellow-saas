@@ -99,10 +99,10 @@ export async function POST(request: NextRequest) {
     ];
     const customerIds: string[] = [];
     for (const c of customers) {
-      let r = await query(`SELECT id FROM customers WHERE company_id = $1 AND rut = $2`, [company_id, c.rut]);
+      let r = await query(`SELECT id FROM customers WHERE company_id = $1 AND tax_id = $2`, [company_id, c.rut]);
       if (r.rows.length === 0) {
         r = await query(
-          `INSERT INTO customers (company_id, name, rut, email, phone, address, city, is_active) VALUES ($1, $2, $3, $4, $5, 'Av. ' || $2, 'Santiago', true) RETURNING id`,
+          `INSERT INTO customers (company_id, name, tax_id, email, phone, address, city, is_active) VALUES ($1, $2, $3, $4, $5, 'Av. ' || $2, 'Santiago', true) RETURNING id`,
           [company_id, c.name, c.rut, c.email, c.phone]
         );
       }
@@ -118,10 +118,10 @@ export async function POST(request: NextRequest) {
     ];
     const supplierIds: string[] = [];
     for (const s of suppliers) {
-      let r = await query(`SELECT id FROM suppliers WHERE company_id = $1 AND rut = $2`, [company_id, s.rut]);
+      let r = await query(`SELECT id FROM suppliers WHERE company_id = $1 AND tax_id = $2`, [company_id, s.rut]);
       if (r.rows.length === 0) {
         r = await query(
-          `INSERT INTO suppliers (company_id, name, rut, email, phone, address, city, is_active) VALUES ($1, $2, $3, $4, '+56900000000', 'Av. ' || $2, 'Santiago', true) RETURNING id`,
+          `INSERT INTO suppliers (company_id, name, tax_id, email, phone, address, city, is_active) VALUES ($1, $2, $3, $4, '+56900000000', 'Av. ' || $2, 'Santiago', true) RETURNING id`,
           [company_id, s.name, s.rut, s.email]
         );
       }
