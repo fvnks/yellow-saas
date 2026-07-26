@@ -29,8 +29,44 @@ export async function middleware(request: NextRequest) {
   // Static assets and internal Next.js paths
   if (pathname.startsWith('/_next') || pathname.startsWith('/favicon') || pathname.includes('.')) return response;
 
-  // API routes - pass through (auth checked at route level)
-  if (pathname.startsWith('/api/')) return response;
+  // API routes - verify auth for company data routes
+  if (pathname.startsWith('/api/')) {
+    // Public API routes - no auth required
+    const publicApiPaths = ['/api/health', '/api/upload', '/api/migrate', '/api/migrate-fix', '/api/payroll/migrate'];
+    if (publicApiPaths.some(p => pathname.startsWith(p))) return response;
+
+    // Public dynamic routes
+    if (pathname.startsWith('/api/public/') || pathname.startsWith('/api/portal/')) return response;
+
+    // Super admin API routes - handled by verifySuperAdmin in each route
+    if (pathname.startsWith('/api/super-admin/') || pathname.startsWith('/api/auth/super-admin/')) return response;
+
+    // Auth routes - no token verification needed
+    if (pathname.startsWith('/api/auth/login') || pathname.startsWith('/api/auth/register')) return response;
+
+    // Company data routes - MUST verify JWT and company_id match
+    if (pathname.startsWith('/api/companies/')) {
+      const token = request.cookies.get('auth-token')?.value;
+      if (!token) {
+        return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
+      }
+      const payload = await verifyToken(token);
+      if (!payload) {
+        return NextResponse.json({ error: 'Token invalido' }, { status: 401 });
+      }
+      // Extract company_id from URL: /api/companies/{id}/...
+      const urlParts = pathname.split('/');
+      const urlCompanyId = urlParts[3]; // /api/companies/{id}
+      const tokenCompanyId = payload.company_id as string | undefined;
+      if (tokenCompanyId && urlCompanyId && tokenCompanyId !== urlCompanyId) {
+        return NextResponse.json({ error: 'No autorizado para esta empresa' }, { status: 403 });
+      }
+      return response;
+    }
+
+    // All other API routes - pass through
+    return response;
+  }
 
   const token = request.cookies.get('auth-token')?.value;
 
