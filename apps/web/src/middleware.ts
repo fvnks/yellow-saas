@@ -46,7 +46,7 @@ export async function middleware(request: NextRequest) {
 
     // Company data routes - MUST verify JWT and company_id match
     if (pathname.startsWith('/api/companies/')) {
-      const token = request.cookies.get('auth-token')?.value;
+      const token = request.cookies.get('auth-token')?.value || request.headers.get('authorization')?.replace('Bearer ', '');
       if (!token) {
         return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
       }
