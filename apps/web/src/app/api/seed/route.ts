@@ -73,11 +73,16 @@ export async function POST(request: NextRequest) {
       let r = await query(`SELECT id FROM products WHERE company_id = $1 AND sku = $2`, [company_id, p.sku]);
       if (r.rows.length === 0) {
         r = await query(
-          `INSERT INTO products (company_id, name, sku, category_id, cost_price, sale_price, stock_quantity, min_stock, unit, is_active) VALUES ($1, $2, $3, $4, $5, $6, $7, 10, 'unit', true) RETURNING id`,
-          [company_id, p.name, p.sku, catIds[p.cat], p.cost, p.sale, p.stock]
+          `INSERT INTO products (company_id, name, sku, category_id, cost_price, sale_price, min_stock, unit_of_measure, is_active) VALUES ($1, $2, $3, $4, $5, $6, 10, 'UN', true) RETURNING id`,
+          [company_id, p.name, p.sku, catIds[p.cat], p.cost, p.sale]
         );
       }
       productIds.push(r.rows[0].id);
+      // Create stock level
+      await safeInsert(
+        `INSERT INTO stock_levels (company_id, product_id, warehouse_id, quantity) VALUES ($1, $2, $3, $4)`,
+        [company_id, r.rows[0].id, whId, p.stock]
+      );
     }
     results.push('15 products');
 
@@ -146,7 +151,7 @@ export async function POST(request: NextRequest) {
         const price = prices[prodIdx % prices.length];
         const lineTotal = qty * price;
         subtotal += lineTotal;
-        await query(`INSERT INTO sales_order_items (company_id, order_id, product_id, quantity, unit_price, total_price) VALUES ($1, $2, $3, $4, $5, $6)`, [company_id, orderId, productIds[prodIdx], qty, price, lineTotal]);
+        await query(`INSERT INTO sales_order_items (company_id, order_id, product_id, quantity, unit_price) VALUES ($1, $2, $3, $4, $5)`, [company_id, orderId, productIds[prodIdx], qty, price]);
       }
       const tax = Math.round(subtotal * 0.19);
       await query(`UPDATE sales_orders SET subtotal = $1, tax_amount = $2, total = $3 WHERE id = $4`, [subtotal, tax, subtotal + tax, orderId]);
@@ -174,7 +179,7 @@ export async function POST(request: NextRequest) {
         const cost = costs[prodIdx % costs.length];
         const lineTotal = qty * cost;
         subtotal += lineTotal;
-        await query(`INSERT INTO purchase_order_items (company_id, order_id, product_id, quantity, unit_price, total_price) VALUES ($1, $2, $3, $4, $5, $6)`, [company_id, orderId, productIds[prodIdx], qty, cost, lineTotal]);
+        await query(`INSERT INTO purchase_order_items (company_id, order_id, product_id, quantity, unit_price) VALUES ($1, $2, $3, $4, $5)`, [company_id, orderId, productIds[prodIdx], qty, cost]);
       }
       const tax = Math.round(subtotal * 0.19);
       await query(`UPDATE purchase_orders SET subtotal = $1, tax_amount = $2, total = $3 WHERE id = $4`, [subtotal, tax, subtotal + tax, orderId]);
