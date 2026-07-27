@@ -17,6 +17,7 @@ import {
   AlertTriangle,
   LucideIcon,
   FileText,
+  Plus,
   Receipt,
   BarChart3,
   MapPin,
@@ -89,6 +90,7 @@ export const ICON_MAP = {
   GraduationCap,
   UserPlus,
   Upload,
+  Plus,
 };
 
 export const resolveIcon = (iconName: keyof typeof ICON_MAP | undefined): LucideIcon => {
@@ -233,6 +235,7 @@ export const sidebarItems: NavGroup[] = [
         requiredPermission: { module: "internal_orders", action: "read" },
         subItems: [
           { title: "Listado de Documentos", path: "/dashboard/sales/pedidos", icon: "ClipboardList", requiredPermission: { module: "internal_orders", action: "read" } },
+          { title: "Nuevo Pedido", path: "/dashboard/sales/pedidos/new", icon: "Plus", requiredPermission: { module: "internal_orders", action: "create" } },
           { title: "Importar Pedidos", path: "/dashboard/sales/pedidos/import", icon: "Upload", requiredPermission: { module: "internal_orders", action: "create" } },
           { title: "Informe de Pedidos", path: "/dashboard/sales/pedidos/reports", icon: "BarChart3", requiredPermission: { module: "internal_orders", action: "read" } },
         ],
