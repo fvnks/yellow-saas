@@ -196,6 +196,25 @@ export const sidebarItems: NavGroup[] = [
     label: "Ventas",
     items: [
       {
+        title: "Clientes",
+        path: "/dashboard/customers",
+        icon: "Users",
+        requiredPermission: { module: "customers", action: "read" },
+        subItems: [
+          { title: "Listado de Clientes", path: "/dashboard/customers", icon: "Users", requiredPermission: { module: "customers", action: "read" } },
+        ],
+      },
+      {
+        title: "Productos",
+        path: "/dashboard/inventory",
+        icon: "Package",
+        requiredPermission: { module: "inventory", action: "read" },
+        subItems: [
+          { title: "Artículos", path: "/dashboard/inventory", icon: "Package", requiredPermission: { module: "inventory", action: "read" } },
+          { title: "Servicios", path: "/dashboard/inventory?type=service", icon: "Wrench", requiredPermission: { module: "inventory", action: "read" } },
+        ],
+      },
+      {
         title: "Ventas",
         path: "/dashboard/sales",
         icon: "ShoppingCart",
@@ -245,22 +264,6 @@ export const sidebarItems: NavGroup[] = [
           { title: "Listado de Proveedores", path: "/dashboard/suppliers", icon: "Truck", requiredPermission: { module: "suppliers", action: "read" } },
           { title: "Listado de Productos", path: "/dashboard/inventory", icon: "Package", requiredPermission: { module: "inventory", action: "read" } },
           { title: "Informe de Libro", path: "/dashboard/purchases/purchase-book", icon: "BarChart3", requiredPermission: { module: "purchase_orders", action: "read" } },
-        ],
-      },
-    ],
-  },
-  {
-    id: 5,
-    label: "Personas",
-    items: [
-      {
-        title: "Clientes",
-        path: "/dashboard/customers",
-        icon: "Users",
-        requiredPermission: { module: "customers", action: "read" },
-        subItems: [
-          { title: "Todos", path: "/dashboard/customers", icon: "Users", requiredPermission: { module: "customers", action: "read" } },
-          { title: "Nuevo", path: "/dashboard/customers/new", icon: "Users", requiredPermission: { module: "customers", action: "create" } },
         ],
       },
     ],
