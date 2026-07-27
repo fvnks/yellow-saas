@@ -84,6 +84,7 @@ const segmentTranslations: Record<string, string> = {
   "journal-entry": "Asiento Contable",
   alerts: "Alertas",
   webhooks: "Webhooks",
+  orderid: "Detalle del Pedido",
 };
 
 const isUUID = (str: string) =>
