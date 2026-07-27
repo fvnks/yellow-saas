@@ -118,8 +118,8 @@ export default function SelectPage() {
       <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-3.5">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-slate-900 rounded-xl flex items-center justify-center shadow-lg shadow-slate-900/20 overflow-hidden">
-              <Image src="/logo/yellow-cube.svg" alt="Yellow" width={24} height={24} />
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center overflow-hidden">
+              <Image src="/logo/yellow-cube.svg" alt="Yellow" width={32} height={32} />
             </div>
             <div>
               <h1 className="text-base font-bold text-slate-900">{company?.name || 'Yellow ERP'}</h1>
