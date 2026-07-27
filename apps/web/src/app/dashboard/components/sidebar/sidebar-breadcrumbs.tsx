@@ -53,6 +53,7 @@ const segmentTranslations: Record<string, string> = {
   projects: "Proyectos",
   tags: "Etiquetas",
   tag: "Etiqueta",
+  pedidos: "Pedidos",
   taxes: "Impuestos",
   tax: "Impuesto",
   categories: "Categorias",

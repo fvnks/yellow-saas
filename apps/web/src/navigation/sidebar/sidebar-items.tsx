@@ -42,6 +42,7 @@ import {
   ClipboardCheck,
   GraduationCap,
   UserPlus,
+  Upload,
 } from "lucide-react";
 
 export const ICON_MAP = {
@@ -87,6 +88,7 @@ export const ICON_MAP = {
   ClipboardCheck,
   GraduationCap,
   UserPlus,
+  Upload,
 };
 
 export const resolveIcon = (iconName: keyof typeof ICON_MAP | undefined): LucideIcon => {
@@ -222,6 +224,17 @@ export const sidebarItems: NavGroup[] = [
         subItems: [
           { title: "Listado de Documentos", path: "/dashboard/sales/quotations", icon: "FileText", requiredPermission: { module: "quotations", action: "read" } },
           { title: "Informes de Cotizaciones", path: "/dashboard/sales/quotations/reports", icon: "BarChart3", requiredPermission: { module: "quotations", action: "read" } },
+        ],
+      },
+      {
+        title: "Pedidos",
+        path: "/dashboard/sales/pedidos",
+        icon: "ClipboardList",
+        requiredPermission: { module: "internal_orders", action: "read" },
+        subItems: [
+          { title: "Listado de Documentos", path: "/dashboard/sales/pedidos", icon: "ClipboardList", requiredPermission: { module: "internal_orders", action: "read" } },
+          { title: "Importar Pedidos", path: "/dashboard/sales/pedidos/import", icon: "Upload", requiredPermission: { module: "internal_orders", action: "create" } },
+          { title: "Informe de Pedidos", path: "/dashboard/sales/pedidos/reports", icon: "BarChart3", requiredPermission: { module: "internal_orders", action: "read" } },
         ],
       },
       {
