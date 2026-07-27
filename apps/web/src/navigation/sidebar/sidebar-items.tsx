@@ -236,6 +236,17 @@ export const sidebarItems: NavGroup[] = [
           { title: "Informes", path: "/dashboard/purchases/reports", icon: "BarChart3", requiredPermission: { module: "purchase_orders", action: "read" } },
         ],
       },
+      {
+        title: "Libro de Compras",
+        path: "/dashboard/purchases/purchase-book",
+        icon: "BookOpen",
+        requiredPermission: { module: "purchase_orders", action: "read" },
+        subItems: [
+          { title: "Listado de Proveedores", path: "/dashboard/suppliers", icon: "Truck", requiredPermission: { module: "suppliers", action: "read" } },
+          { title: "Listado de Productos", path: "/dashboard/inventory", icon: "Package", requiredPermission: { module: "inventory", action: "read" } },
+          { title: "Informe de Libro", path: "/dashboard/purchases/purchase-book", icon: "BarChart3", requiredPermission: { module: "purchase_orders", action: "read" } },
+        ],
+      },
     ],
   },
   {
