@@ -46,6 +46,7 @@ import {
   Upload,
   Clock,
   List,
+  Lock,
 } from "lucide-react";
 
 export const ICON_MAP = {
@@ -95,6 +96,7 @@ export const ICON_MAP = {
   Plus,
   Clock,
   List,
+  Lock,
 };
 
 export const resolveIcon = (iconName: keyof typeof ICON_MAP | undefined): LucideIcon => {
@@ -142,27 +144,59 @@ export const sidebarItems: NavGroup[] = [
     label: "Inventario",
     items: [
       {
-        title: "Productos",
+        title: "Artículos",
         path: "/dashboard/inventory",
         icon: "Package",
         requiredPermission: { module: "inventory", action: "read" },
         subItems: [
-          { title: "Todos", path: "/dashboard/inventory", icon: "Package", requiredPermission: { module: "inventory", action: "read" } },
-          { title: "Nuevo", path: "/dashboard/inventory/new", icon: "Package", requiredPermission: { module: "inventory", action: "create" } },
-          { title: "Ajustes", path: "/dashboard/inventory/adjustments", icon: "Wrench", requiredPermission: { module: "inventory", action: "update" } },
-          { title: "Reporte Stock", path: "/dashboard/inventory/stock-report", icon: "FileBarChart", requiredPermission: { module: "inventory", action: "read" } },
-          { title: "Etiquetas", path: "/dashboard/inventory/label-designer", icon: "Tag", requiredPermission: { module: "inventory", action: "read" } },
-          { title: "Valorizacion", path: "/dashboard/inventory/valuation", icon: "CircleDollarSign", requiredPermission: { module: "inventory", action: "read" } },
-          { title: "Serialización", path: "/dashboard/inventory/serials", icon: "ClipboardList", requiredPermission: { module: "inventory", action: "read" } },
-          { title: "Lotes", path: "/dashboard/inventory/batches", icon: "Boxes", requiredPermission: { module: "inventory", action: "read" } },
-          { title: "Devoluciones", path: "/dashboard/inventory/returns", icon: "ArrowLeftRight", requiredPermission: { module: "inventory", action: "read" } },
-          { title: "Importar", path: "/dashboard/inventory/import", icon: "ClipboardList", requiredPermission: { module: "inventory", action: "create" } },
+          { title: "Listado de Productos", path: "/dashboard/inventory", icon: "Package", requiredPermission: { module: "inventory", action: "read" } },
+          { title: "Nuevo Producto", path: "/dashboard/inventory/new", icon: "Plus", requiredPermission: { module: "inventory", action: "create" } },
           { title: "Categorías", path: "/dashboard/inventory/categories", icon: "Tag", requiredPermission: { module: "inventory", action: "read" } },
           { title: "Variantes", path: "/dashboard/inventory/variants", icon: "Package", requiredPermission: { module: "inventory", action: "read" } },
           { title: "UdM", path: "/dashboard/inventory/uom", icon: "Package", requiredPermission: { module: "inventory", action: "read" } },
           { title: "Tags", path: "/dashboard/inventory/tags", icon: "Tag", requiredPermission: { module: "inventory", action: "read" } },
+          { title: "Serialización", path: "/dashboard/inventory/serials", icon: "ClipboardList", requiredPermission: { module: "inventory", action: "read" } },
+          { title: "Lotes", path: "/dashboard/inventory/batches", icon: "Boxes", requiredPermission: { module: "inventory", action: "read" } },
+          { title: "Etiquetas", path: "/dashboard/inventory/label-designer", icon: "Tag", requiredPermission: { module: "inventory", action: "read" } },
+          { title: "Importar", path: "/dashboard/inventory/import", icon: "Upload", requiredPermission: { module: "inventory", action: "create" } },
+        ],
+      },
+      {
+        title: "Listado de Documentos",
+        path: "/dashboard/inventory/adjustments",
+        icon: "FileText",
+        requiredPermission: { module: "inventory", action: "read" },
+        subItems: [
+          { title: "Ajustes de Stock", path: "/dashboard/inventory/adjustments", icon: "Wrench", requiredPermission: { module: "inventory", action: "update" } },
+          { title: "Nuevo Ajuste", path: "/dashboard/inventory/adjustments/new", icon: "Plus", requiredPermission: { module: "inventory", action: "create" } },
+          { title: "Devoluciones", path: "/dashboard/inventory/returns", icon: "ArrowLeftRight", requiredPermission: { module: "inventory", action: "read" } },
+          { title: "Conteos Físicos", path: "/dashboard/inventory/counts", icon: "ClipboardCheck", requiredPermission: { module: "inventory", action: "read" } },
+          { title: "Nuevo Conteo", path: "/dashboard/inventory/counts/new", icon: "Plus", requiredPermission: { module: "inventory", action: "create" } },
           { title: "Reservas", path: "/dashboard/inventory/reservations", icon: "ClipboardList", requiredPermission: { module: "inventory", action: "read" } },
-          { title: "Listas de Precio", path: "/dashboard/price-lists", icon: "Tag", requiredPermission: { module: "price_lists", action: "read" } },
+        ],
+      },
+      {
+        title: "Corrección Monetaria",
+        path: "/dashboard/inventory/monetary-correction",
+        icon: "CircleDollarSign",
+        requiredPermission: { module: "inventory", action: "read" },
+      },
+      {
+        title: "Cierres",
+        path: "/dashboard/inventory/closings",
+        icon: "Lock",
+        requiredPermission: { module: "inventory", action: "read" },
+      },
+      {
+        title: "Informes de Inventario",
+        path: "/dashboard/inventory/stock-report",
+        icon: "BarChart3",
+        requiredPermission: { module: "inventory", action: "read" },
+        subItems: [
+          { title: "Reporte de Stock", path: "/dashboard/inventory/stock-report", icon: "FileBarChart", requiredPermission: { module: "inventory", action: "read" } },
+          { title: "Valorización", path: "/dashboard/inventory/valuation", icon: "CircleDollarSign", requiredPermission: { module: "inventory", action: "read" } },
+          { title: "Stock Muerto", path: "/dashboard/inventory/dead-stock", icon: "AlertTriangle", requiredPermission: { module: "inventory", action: "read" } },
+          { title: "Pronóstico", path: "/dashboard/inventory/forecasting", icon: "TrendingUp", requiredPermission: { module: "inventory", action: "read" } },
         ],
       },
       {
