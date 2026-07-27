@@ -161,6 +161,11 @@ const entityResolvers: Record<string, (id: string) => Promise<string>> = {
       .getCustomerReturn(id)
       .then((d: any) => d?.data?.return_number || d?.return_number || id)
       .catch(() => id),
+  pedidos: (id) =>
+    fetch(`/api/companies/${typeof window !== 'undefined' ? localStorage.getItem('company_id') : ''}/internal-orders/${id}`)
+      .then((r) => r.json())
+      .then((d: any) => d?.data?.order_number || id)
+      .catch(() => id),
   purchases: (id) =>
     getApiClient()
       .getPurchaseOrder(id)
