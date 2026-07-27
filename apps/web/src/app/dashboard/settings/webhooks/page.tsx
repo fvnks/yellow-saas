@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge,
 import { Plus, RefreshCw, Edit, Trash2, Eye, ExternalLink, Bell, BellOff, Zap, Shield, Loader2, CheckCircle, XCircle, X } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
+import { WEBHOOK_EVENTS } from '@/lib/constants';
 
 interface WebhookEndpoint {
   id: string;
@@ -36,21 +37,7 @@ interface WebhookDelivery {
   delivered_at: string | null;
 }
 
-const VALID_EVENTS = [
-  'stock.changed', 'stock.low', 'stock.out',
-  'batch.expiring', 'batch.expired',
-  'return.created', 'return.approved', 'return.rejected', 'return.completed',
-  'purchase_order.created', 'purchase_order.received',
-  'sales_order.created', 'sales_order.shipped',
-  'delivery_guide.created', 'delivery_guide.delivered',
-  'invoice.created', 'invoice.paid', 'invoice.overdue',
-  'purchase_order.created', 'purchase_order.received',
-  'picking.wave.created', 'picking.wave.completed',
-  'picking.task.completed',
-  'cycle_count.started', 'cycle_count.completed',
-  'transfer.created', 'transfer.in_transit', 'transfer.delivered',
-  'adjustment.created',
-];
+const VALID_EVENTS = WEBHOOK_EVENTS;
 
 export default function WebhooksPage() {
   const [endpoints, setEndpoints] = useState<WebhookEndpoint[]>([]);

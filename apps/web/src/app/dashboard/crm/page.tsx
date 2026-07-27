@@ -4,25 +4,13 @@ import { useState, useEffect } from 'react';
 import { Users, Plus, Search, Eye, Edit, Trash2, Phone, Mail, Calendar, Star, Filter, X, Save } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import { NotificationAlert } from '@/components/ui/notification-alert';
+import { CRM_STATUSES, CRM_SOURCES } from '@/lib/constants';
 
-const statusConfig: Record<string, { label: string; color: string }> = {
-  new: { label: 'Nuevo', color: 'bg-blue-100 text-blue-700' },
-  contacted: { label: 'Contactado', color: 'bg-indigo-100 text-indigo-700' },
-  qualified: { label: 'Calificado', color: 'bg-amber-100 text-amber-700' },
-  proposal: { label: 'Propuesta', color: 'bg-purple-100 text-purple-700' },
-  negotiation: { label: 'Negociacion', color: 'bg-orange-100 text-orange-700' },
-  won: { label: 'Ganado', color: 'bg-emerald-100 text-emerald-700' },
-  lost: { label: 'Perdido', color: 'bg-red-100 text-red-700' },
-};
+const statusConfig: Record<string, { label: string; color: string }> = Object.fromEntries(
+  CRM_STATUSES.map(s => [s.value, { label: s.label, color: s.color }])
+);
 
-const sourceOptions = [
-  { value: 'web', label: 'Sitio Web' },
-  { value: 'referral', label: 'Referido' },
-  { value: 'phone', label: 'Telefono' },
-  { value: 'email', label: 'Email' },
-  { value: 'social', label: 'Redes Sociales' },
-  { value: 'other', label: 'Otro' },
-];
+const sourceOptions = CRM_SOURCES.map(s => ({ value: s.value, label: s.label }));
 
 export default function CRMPage() {
   const [leads, setLeads] = useState<any[]>([]);

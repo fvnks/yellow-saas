@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { ArrowLeft, Save } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { PROJECT_STATUSES } from '@/lib/constants';
 
 export default function EditProjectPage() {
   const router = useRouter();
@@ -180,11 +181,9 @@ export default function EditProjectPage() {
               <label className="block text-xs font-medium text-slate-700">Estado</label>
               <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}
                 className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                <option value="planning">Planificacion</option>
-                <option value="active">Activo</option>
-                <option value="on_hold">En Pausa</option>
-                <option value="completed">Completado</option>
-                <option value="cancelled">Cancelado</option>
+                {PROJECT_STATUSES.map(s => (
+                  <option key={s.value} value={s.value}>{s.label}</option>
+                ))}
               </select>
             </div>
           </div>
