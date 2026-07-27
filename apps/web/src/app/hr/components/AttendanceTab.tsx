@@ -109,7 +109,10 @@ export default function AttendanceTab() {
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Input placeholder="Buscar empleado..." value={search} onChange={e => setSearch(e.target.value)} className="w-64" icon={Search} />
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Input placeholder="Buscar empleado..." value={search} onChange={e => setSearch(e.target.value)} className="w-64 pl-9" />
+          </div>
           <Input type="date" value={dateFilter} onChange={e => setDateFilter(e.target.value)} className="w-40" />
         </div>
         <Button onClick={() => setShowForm(true)}>

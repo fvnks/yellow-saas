@@ -1,0 +1,57 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+import { ChevronRight, Home } from "lucide-react";
+
+const hrSegmentTranslations: Record<string, string> = {
+  hr: "Recursos Humanos",
+  contracts: "Contratos",
+  attendance: "Asistencia",
+  evaluations: "Evaluaciones",
+  training: "Capacitación",
+  onboarding: "Onboarding",
+};
+
+function translateSegment(segment: string): string {
+  return hrSegmentTranslations[segment] || segment;
+}
+
+export default function HRSidebarBreadcrumbs() {
+  const pathname = usePathname();
+  const segments = pathname.split("/").filter(Boolean);
+
+  const segmentPath = (segments: string[], index: number) => {
+    return "/" + segments.slice(0, index + 1).join("/");
+  };
+
+  return (
+    <nav className="flex items-center gap-1 text-sm overflow-x-auto">
+      <a
+        href="/select"
+        className="flex items-center gap-1 text-slate-500 hover:text-slate-700 transition-colors shrink-0"
+      >
+        <Home className="h-4 w-4" />
+      </a>
+      {segments.map((segment, index) => {
+        const isLast = index === segments.length - 1;
+        const label = translateSegment(segment);
+
+        return (
+          <span key={`${segment}-${index}`} className="flex items-center gap-1 shrink-0">
+            <ChevronRight className="h-3 w-3 text-slate-400" />
+            {isLast ? (
+              <span className="font-medium text-slate-900">{label}</span>
+            ) : (
+              <a
+                href={segmentPath(segments, index)}
+                className="text-slate-500 hover:text-slate-700 transition-colors whitespace-nowrap"
+              >
+                {label}
+              </a>
+            )}
+          </span>
+        );
+      })}
+    </nav>
+  );
+}

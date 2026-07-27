@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Button, Badge, Input, Select } from '@yellow-erp/ui';
+import { useState, useEffect, useCallback } from 'react';
+import { Button, Badge, Input, Select, Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@yellow-erp/ui';
 import { Plus, Search, Eye, Edit, Trash2, FileText, Calendar } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
@@ -102,7 +102,10 @@ export default function ContractsTab() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Input placeholder="Buscar contrato..." value={search} onChange={e => setSearch(e.target.value)} className="w-64" icon={Search} />
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Input placeholder="Buscar contrato..." value={search} onChange={e => setSearch(e.target.value)} className="w-64 pl-9" />
+          </div>
         </div>
         <Button onClick={() => { setShowForm(true); setEditingId(null); setForm({ employee_id: '', contract_type: 'indefinido', position: '', department: '', start_date: '', end_date: '', base_salary: '', status: 'active' }); }}>
           <Plus className="w-4 h-4 mr-2" /> Nuevo Contrato
