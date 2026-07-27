@@ -8,10 +8,10 @@ import ProjectSidebarBrandHeader from "./project-sidebar-header";
 import ProjectSidebarNavigation from "./project-sidebar-navigation";
 
 function getUserFromCookie() {
-  if (typeof window === 'undefined') return { name: 'Usuario', email: '', avatar: '' };
+  if (typeof window === 'undefined') return { name: 'Usuario', email: '', avatar: '', role: 'member' };
   const cookies = document.cookie.split(';');
   const authCookie = cookies.find(c => c.trim().startsWith('auth-token='));
-  if (!authCookie) return { name: 'Usuario', email: '', avatar: '' };
+  if (!authCookie) return { name: 'Usuario', email: '', avatar: '', role: 'member' };
   try {
     const token = authCookie.split('=')[1];
     const payload = JSON.parse(atob(token.split('.')[1]));
@@ -19,14 +19,15 @@ function getUserFromCookie() {
       name: payload.name || 'Usuario',
       email: payload.email || '',
       avatar: '',
+      role: payload.role || 'member',
     };
   } catch {
-    return { name: 'Usuario', email: '', avatar: '' };
+    return { name: 'Usuario', email: '', avatar: '', role: 'member' };
   }
 }
 
 export function ProjectSidebar(props: React.ComponentProps<typeof Sidebar>) {
-  const [user, setUser] = useState({ name: 'Usuario', email: '', avatar: '' });
+  const [user, setUser] = useState({ name: 'Usuario', email: '', avatar: '', role: 'member' });
 
   useEffect(() => {
     setUser(getUserFromCookie());
