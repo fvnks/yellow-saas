@@ -211,7 +211,7 @@ export async function POST(request: Request) {
     }
     results.push('Applied ALTER TABLE migrations');
 
-    const permModules = ['dashboard', 'inventory', 'warehouses', 'sales', 'purchases', 'customers', 'suppliers', 'crm', 'payroll', 'accounting', 'projects', 'pos', 'billing', 'settings', 'audit', 'reports', 'hr'];
+    const permModules = ['dashboard', 'inventory', 'warehouses', 'sales', 'purchases', 'customers', 'suppliers', 'crm', 'payroll', 'accounting', 'projects', 'pos', 'billing', 'settings', 'audit', 'reports', 'hr', 'internal_orders'];
     const permActions = ['create', 'read', 'update', 'delete'];
     for (const mod of permModules) {
       for (const act of permActions) {
@@ -383,6 +383,46 @@ export async function POST(request: Request) {
       }
     }
     results.push('HR tables ensured');
+
+    const internalOrderTables = [
+      `CREATE TABLE IF NOT EXISTS internal_orders (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        order_number TEXT NOT NULL,
+        warehouse_id UUID NOT NULL REFERENCES warehouses(id),
+        requested_by UUID REFERENCES profiles(id),
+        status TEXT DEFAULT 'draft' CHECK (status IN ('draft', 'pending', 'approved', 'picking', 'completed', 'cancelled')),
+        priority TEXT DEFAULT 'normal' CHECK (priority IN ('low', 'normal', 'high', 'urgent')),
+        notes TEXT,
+        approved_by UUID REFERENCES profiles(id),
+        approved_at TIMESTAMPTZ,
+        completed_at TIMESTAMPTZ,
+        created_at TIMESTAMPTZ DEFAULT now(),
+        updated_at TIMESTAMPTZ DEFAULT now(),
+        UNIQUE (company_id, order_number)
+      )`,
+      `CREATE TABLE IF NOT EXISTS internal_order_items (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        order_id UUID NOT NULL REFERENCES internal_orders(id) ON DELETE CASCADE,
+        product_id UUID NOT NULL REFERENCES products(id),
+        quantity DECIMAL(14,4) NOT NULL,
+        fulfilled_quantity DECIMAL(14,4) DEFAULT 0,
+        notes TEXT,
+        created_at TIMESTAMPTZ DEFAULT now()
+      )`,
+    ];
+
+    for (const sql of internalOrderTables) {
+      try {
+        await query(sql);
+      } catch (e: any) {
+        if (!e.message?.includes('already exists')) {
+          results.push(`Internal Orders table warning: ${e.message}`);
+        }
+      }
+    }
+    results.push('Internal Orders tables ensured');
 
     return NextResponse.json({ success: true, results });
   } catch (err) {

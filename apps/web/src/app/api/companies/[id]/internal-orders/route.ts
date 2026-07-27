@@ -1,0 +1,96 @@
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  const companyId = await getCompanyId(request);
+  if (!companyId) return errorResponse('Company ID not found', 400);
+
+  const { searchParams } = new URL(request.url);
+  const search = searchParams.get('search') || '';
+  const status = searchParams.get('status') || '';
+  const page = parseInt(searchParams.get('page') || '1');
+  const limit = parseInt(searchParams.get('limit') || '50');
+  const offset = (page - 1) * limit;
+
+  try {
+    let where = 'WHERE io.company_id = $1';
+    const params: any[] = [companyId];
+    let paramIndex = 2;
+
+    if (search) {
+      where += ` AND (io.order_number ILIKE $${paramIndex} OR p.full_name ILIKE $${paramIndex})`;
+      params.push(`%${search}%`);
+      paramIndex++;
+    }
+    if (status) {
+      where += ` AND io.status = $${paramIndex}`;
+      params.push(status);
+      paramIndex++;
+    }
+
+    const countResult = await query(
+      `SELECT COUNT(*) FROM internal_orders io LEFT JOIN profiles p ON p.id = io.requested_by ${where}`,
+      params
+    );
+    const total = parseInt(countResult.rows[0].count);
+
+    const result = await query(
+      `SELECT io.*, 
+              p.full_name as requested_by_name,
+              w.name as warehouse_name,
+              (SELECT COUNT(*) FROM internal_order_items ioi WHERE ioi.order_id = io.id) as item_count
+       FROM internal_orders io
+       LEFT JOIN profiles p ON p.id = io.requested_by
+       LEFT JOIN warehouses w ON w.id = io.warehouse_id
+       ${where}
+       ORDER BY io.created_at DESC
+       LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
+      [...params, limit, offset]
+    );
+
+    return successResponse({ data: result.rows, pagination: { total, page, limit, totalPages: Math.ceil(total / limit) } });
+  } catch (err: any) {
+    return errorResponse(err.message, 500);
+  }
+}
+
+export async function POST(request: NextRequest) {
+  const companyId = await getCompanyId(request);
+  if (!companyId) return errorResponse('Company ID not found', 400);
+
+  const body = await request.json();
+  const { warehouse_id, priority, notes, items } = body;
+
+  if (!warehouse_id || !items || items.length === 0) {
+    return errorResponse('warehouse_id y items son requeridos', 400);
+  }
+
+  try {
+    const numberResult = await query(
+      `SELECT COUNT(*) + 1 as next FROM internal_orders WHERE company_id = $1`,
+      [companyId]
+    );
+    const orderNumber = `PED-${String(numberResult.rows[0].next).padStart(5, '0')}`;
+
+    const orderResult = await query(
+      `INSERT INTO internal_orders (company_id, order_number, warehouse_id, requested_by, status, priority, notes)
+       VALUES ($1, $2, $3, $4, 'pending', $5, $6) RETURNING *`,
+      [companyId, orderNumber, warehouse_id, body.requested_by || null, priority || 'normal', notes || null]
+    );
+
+    const order = orderResult.rows[0];
+
+    for (const item of items) {
+      await query(
+        `INSERT INTO internal_order_items (company_id, order_id, product_id, quantity, notes)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [companyId, order.id, item.product_id, item.quantity, item.notes || null]
+      );
+    }
+
+    return successResponse(order);
+  } catch (err: any) {
+    return errorResponse(err.message, 500);
+  }
+}
