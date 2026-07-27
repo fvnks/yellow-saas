@@ -81,7 +81,10 @@ export default function TrainingTab() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <Input placeholder="Buscar capacitación..." value={search} onChange={e => setSearch(e.target.value)} className="w-64" icon={Search} />
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Input placeholder="Buscar capacitación..." value={search} onChange={e => setSearch(e.target.value)} className="w-64 pl-9" />
+        </div>
         <Button onClick={() => setShowForm(true)}>
           <Plus className="w-4 h-4 mr-2" /> Nueva Capacitación
         </Button>

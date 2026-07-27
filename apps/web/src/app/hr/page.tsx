@@ -1,10 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { Card, CardHeader, CardTitle, CardContent, Badge, Button, Input, Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@yellow-erp/ui';
-import { UsersRound, Plus, Search, FileText, ClipboardCheck, BarChart3, GraduationCap, UserPlus, Eye, Edit, Trash2, Calendar, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
-import { getApiClient } from '@/lib/api-client';
-import { toast } from 'sonner';
+import { Suspense, useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { FileText, ClipboardCheck, BarChart3, GraduationCap, UserPlus } from 'lucide-react';
 import { ContinuousTabs } from '@/components/ui/continuous-tabs';
 import ContractsTab from './components/ContractsTab';
 import AttendanceTab from './components/AttendanceTab';
@@ -13,15 +11,23 @@ import TrainingTab from './components/TrainingTab';
 import OnboardingTab from './components/OnboardingTab';
 
 const tabs = [
-  { id: 'contracts', label: 'Contratos', icon: FileText },
-  { id: 'attendance', label: 'Asistencia', icon: ClipboardCheck },
-  { id: 'evaluations', label: 'Evaluaciones', icon: BarChart3 },
-  { id: 'training', label: 'Capacitación', icon: GraduationCap },
-  { id: 'onboarding', label: 'Onboarding', icon: UserPlus },
+  { id: 'contracts', label: 'Contratos' },
+  { id: 'attendance', label: 'Asistencia' },
+  { id: 'evaluations', label: 'Evaluaciones' },
+  { id: 'training', label: 'Capacitación' },
+  { id: 'onboarding', label: 'Onboarding' },
 ];
 
-export default function HRPage() {
-  const [activeTab, setActiveTab] = useState('contracts');
+function HRPageInner() {
+  const searchParams = useSearchParams();
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'contracts');
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab && tabs.some(t => t.id === tab)) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
 
   return (
     <div className="space-y-6">
@@ -35,8 +41,8 @@ export default function HRPage() {
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
         <ContinuousTabs
           tabs={tabs}
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
+          defaultActiveId={activeTab}
+          onChange={setActiveTab}
         />
         <div className="p-6">
           {activeTab === 'contracts' && <ContractsTab />}
@@ -47,5 +53,13 @@ export default function HRPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function HRPage() {
+  return (
+    <Suspense fallback={<div className="animate-pulse text-sm text-slate-400 p-6">Cargando...</div>}>
+      <HRPageInner />
+    </Suspense>
   );
 }
