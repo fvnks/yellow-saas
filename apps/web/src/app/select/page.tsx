@@ -118,7 +118,7 @@ export default function SelectPage() {
       <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-3.5">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20 overflow-hidden">
+            <div className="w-9 h-9 bg-slate-900 rounded-xl flex items-center justify-center shadow-lg shadow-slate-900/20 overflow-hidden">
               <Image src="/logo/yellow-cube.svg" alt="Yellow" width={24} height={24} />
             </div>
             <div>
