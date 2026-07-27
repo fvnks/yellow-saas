@@ -231,6 +231,7 @@ export const sidebarItems: NavGroup[] = [
           { title: "Órdenes de Compra", path: "/dashboard/purchases", icon: "ShoppingBag", requiredPermission: { module: "purchase_orders", action: "read" } },
           { title: "Proveedores", path: "/dashboard/suppliers", icon: "Truck", requiredPermission: { module: "suppliers", action: "read" } },
           { title: "Artículos", path: "/dashboard/inventory", icon: "Package", requiredPermission: { module: "inventory", action: "read" } },
+          { title: "Recepción de Artículos", path: "/dashboard/purchases/receipts", icon: "Boxes", requiredPermission: { module: "purchase_orders", action: "read" } },
           { title: "Documentos", path: "/dashboard/purchases/documents", icon: "FileText", requiredPermission: { module: "purchase_orders", action: "read" } },
           { title: "Informes", path: "/dashboard/purchases/reports", icon: "BarChart3", requiredPermission: { module: "purchase_orders", action: "read" } },
         ],
