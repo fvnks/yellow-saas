@@ -44,6 +44,8 @@ import {
   GraduationCap,
   UserPlus,
   Upload,
+  Clock,
+  List,
 } from "lucide-react";
 
 export const ICON_MAP = {
@@ -91,6 +93,8 @@ export const ICON_MAP = {
   UserPlus,
   Upload,
   Plus,
+  Clock,
+  List,
 };
 
 export const resolveIcon = (iconName: keyof typeof ICON_MAP | undefined): LucideIcon => {
@@ -259,6 +263,25 @@ export const sidebarItems: NavGroup[] = [
         subItems: [
           { title: "Listado de Documentos", path: "/dashboard/sales/delivery-guides", icon: "FileText", requiredPermission: { module: "delivery_guides", action: "read" } },
           { title: "Nueva Guía", path: "/dashboard/sales/delivery-guides/new", icon: "Plus", requiredPermission: { module: "delivery_guides", action: "create" } },
+        ],
+      },
+      {
+        title: "Lista de Precios",
+        path: "/dashboard/sales/price-lists",
+        icon: "Tag",
+        requiredPermission: { module: "sales_orders", action: "read" },
+        subItems: [
+          { title: "Listado de Listas", path: "/dashboard/sales/price-lists", icon: "List", requiredPermission: { module: "sales_orders", action: "read" } },
+        ],
+      },
+      {
+        title: "Cobranza",
+        path: "/dashboard/sales/cobranza",
+        icon: "DollarSign",
+        requiredPermission: { module: "invoices", action: "read" },
+        subItems: [
+          { title: "Cuenta Corriente", path: "/dashboard/sales/cobranza", icon: "Clock", requiredPermission: { module: "invoices", action: "read" } },
+          { title: "Notas de Crédito", path: "/dashboard/sales/cobranza/credit-notes", icon: "FileText", requiredPermission: { module: "invoices", action: "read" } },
         ],
       },
       {
