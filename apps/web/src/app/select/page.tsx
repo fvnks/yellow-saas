@@ -140,7 +140,7 @@ export default function SelectPage() {
             transition={{ duration: 0.4 }}
             className="text-center mb-8"
           >
-            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">¿Qué deseas hacer hoy?</h2>
+            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Hola {user?.name || 'Usuario'}, ¿qué deseas hacer hoy?</h2>
             <p className="text-sm text-slate-400 mt-1.5">Selecciona un módulo para comenzar</p>
           </motion.div>
 
