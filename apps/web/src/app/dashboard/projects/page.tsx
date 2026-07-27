@@ -7,14 +7,9 @@ import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { ContinuousTabs } from '@/components/ui/continuous-tabs';
 import PortfolioDashboard from './components/PortfolioDashboard';
+import { PROJECT_STATUS_CONFIG } from '@/lib/constants';
 
-const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
-  planning: { label: 'Planificacion', variant: 'info' },
-  active: { label: 'Activo', variant: 'success' },
-  on_hold: { label: 'En Pausa', variant: 'warning' },
-  completed: { label: 'Completado', variant: 'neutral' },
-  cancelled: { label: 'Cancelado', variant: 'danger' },
-};
+const statusConfig = PROJECT_STATUS_CONFIG;
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<any[]>([]);
