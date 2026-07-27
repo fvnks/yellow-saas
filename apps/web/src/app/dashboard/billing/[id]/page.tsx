@@ -21,10 +21,18 @@ export default function InvoiceDetailPage() {
   const router = useRouter();
   const invoiceId = params.id as string;
   const [invoice, setInvoice] = useState<any>(null);
+  const [companyName, setCompanyName] = useState('Empresa');
   const [loading, setLoading] = useState(true);
   const { print } = usePrintDocument();
 
   useEffect(() => { loadInvoice(); }, [invoiceId]);
+
+  useEffect(() => {
+    const api = getApiClient();
+    api.getCompany().then((res: any) => {
+      if (res?.name) setCompanyName(res.name);
+    }).catch(() => {});
+  }, []);
 
   const loadInvoice = async () => {
     try {
@@ -44,7 +52,7 @@ export default function InvoiceDetailPage() {
       date: invoice.invoice_date,
       due_date: invoice.due_date,
       status: invoice.status,
-      company: { name: 'Empresa' },
+      company: { name: companyName },
       customer: invoice.customer ? { name: invoice.customer.name, tax_id: invoice.customer.tax_id } : undefined,
       items: (invoice.items || []).map((item: any) => ({
         name: item.product?.name || item.description || '',

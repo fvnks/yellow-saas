@@ -167,27 +167,7 @@ export default function SettingsPage() {
             <Card>
               <CardHeader><CardTitle>Integraciones</CardTitle></CardHeader>
               <CardContent className="space-y-4">
-                {[
-                  { name: 'SII (Servicio de Impuestos Internos)', desc: 'Emisión electrónica de documentos', connected: true, icon: Database },
-                  { name: 'Transbank', desc: 'Pasarela de pagos con tarjetas', connected: false, icon: CreditCard },
-                  { name: 'Correo Electrónico', desc: 'Envío de notificaciones por email', connected: true, icon: Mail },
-                  { name: 'Google Workspace', desc: 'Sincronización de calendarios y contactos', connected: false, icon: Globe },
-                ].map((integration, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 bg-white rounded-lg border border-slate-200 flex items-center justify-center">
-                        <integration.icon className="w-5 h-5 text-slate-600" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-slate-900">{integration.name}</p>
-                        <p className="text-xs text-slate-500">{integration.desc}</p>
-                      </div>
-                    </div>
-                    <Badge variant={integration.connected ? 'success' : 'neutral'}>
-                      {integration.connected ? 'Conectado' : 'No conectado'}
-                    </Badge>
-                  </div>
-                ))}
+                <p className="text-sm text-slate-500">Las integraciones estarán disponibles próximamente.</p>
               </CardContent>
             </Card>
           )}
@@ -241,6 +221,7 @@ export default function SettingsPage() {
 
 function UsersTab() {
   const [users, setUsers] = useState<UserProfile[]>([]);
+  const [roles, setRoles] = useState<{ name: string; label: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [showInvite, setShowInvite] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
@@ -258,7 +239,14 @@ function UsersTab() {
     setLoading(false);
   };
 
-  useEffect(() => { loadUsers(); }, []);
+  useEffect(() => {
+    loadUsers();
+    const api = getApiClient();
+    api.getRoles().then((res: any) => {
+      const rolesData = Array.isArray(res) ? res : (res?.data || []);
+      setRoles(rolesData.map((r: any) => ({ name: r.name, label: r.label || r.name })));
+    }).catch(() => {});
+  }, []);
 
   const handleInvite = async () => {
     if (!inviteEmail) return;
@@ -310,12 +298,15 @@ function UsersTab() {
               <Input label="Email" type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} placeholder="usuario@empresa.cl" />
               <Input label="Nombre" value={inviteName} onChange={(e) => setInviteName(e.target.value)} placeholder="Nombre completo" />
               <Select label="Rol" value={inviteRole} onChange={(e) => setInviteRole(e.target.value)}
-                options={[
-                  { value: 'member', label: 'Miembro' },
-                  { value: 'admin', label: 'Administrador' },
-                  { value: 'manager', label: 'Gerente' },
-                  { value: 'viewer', label: 'Observador' },
-                ]} />
+                options={roles.length > 0
+                  ? roles.filter(r => r.name !== 'owner').map(r => ({ value: r.name, label: r.label }))
+                  : [
+                      { value: 'member', label: 'Miembro' },
+                      { value: 'admin', label: 'Administrador' },
+                      { value: 'manager', label: 'Gerente' },
+                      { value: 'viewer', label: 'Observador' },
+                    ]
+                } />
             </div>
             <div className="flex justify-end gap-2">
               <Button variant="secondary" size="sm" onClick={() => setShowInvite(false)}>Cancelar</Button>
@@ -385,12 +376,15 @@ function UsersTab() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <Input label="Nombre" value={editingUser.full_name || ''} onChange={(e) => setEditingUser({ ...editingUser, full_name: e.target.value })} />
               <Select label="Rol" value={editingUser.role} onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
-                options={[
-                  { value: 'admin', label: 'Administrador' },
-                  { value: 'manager', label: 'Gerente' },
-                  { value: 'member', label: 'Miembro' },
-                  { value: 'viewer', label: 'Observador' },
-                ]} />
+                options={roles.length > 0
+                  ? roles.map(r => ({ value: r.name, label: r.label }))
+                  : [
+                      { value: 'admin', label: 'Administrador' },
+                      { value: 'manager', label: 'Gerente' },
+                      { value: 'member', label: 'Miembro' },
+                      { value: 'viewer', label: 'Observador' },
+                    ]
+                } />
               <Select label="Estado" value={editingUser.status} onChange={(e) => setEditingUser({ ...editingUser, status: e.target.value })}
                 options={[
                   { value: 'active', label: 'Activo' },
@@ -411,71 +405,100 @@ function UsersTab() {
 }
 
 function BillingTab({ plan, status }: { plan: string; status: string }) {
-  const planConfig: Record<string, { name: string; price: string; users: string; storage: string; api: string }> = {
-    free: { name: 'Plan Free', price: '$0/mes', users: '1/1', storage: '500 MB', api: '1K' },
-    starter: { name: 'Plan Starter', price: '$19.900/mes', users: '5/5', storage: '2 GB', api: '10K' },
-    professional: { name: 'Plan Professional', price: '$49.900/mes', users: '10/10', storage: '10 GB', api: '50K' },
-    enterprise: { name: 'Plan Enterprise', price: '$99.900/mes', users: 'Ilimitados', storage: '100 GB', api: 'Ilimitado' },
-  };
-  const current = planConfig[plan] || planConfig.free;
+  const [plans, setPlans] = useState<{ name: string; label: string; max_users: number; price_monthly: number; price_yearly: number; features: string[] }[]>([]);
+  const [loadingPlans, setLoadingPlans] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/plans')
+      .then(r => r.json())
+      .then(res => { if (res.success) setPlans(res.data || []); })
+      .catch(() => {})
+      .finally(() => setLoadingPlans(false));
+  }, []);
+
+  const current = plans.find(p => p.name === plan) || plans.find(p => p.name === 'free') || null;
+  const otherPlans = plans.filter(p => p.name !== plan && p.name !== 'free');
+
+  function formatPrice(cents: number): string {
+    if (cents === 0) return 'Gratis';
+    return `$${(cents / 100).toLocaleString('es-CL')}`;
+  }
+
+  function featuresList(p: { max_users: number; features: string[] }): string[] {
+    const f: string[] = [];
+    if (p.max_users > 0) f.push(`${p.max_users} usuarios`);
+    else if (p.max_users === -1) f.push('Usuarios ilimitados');
+    (p.features || []).forEach(feature => f.push(feature));
+    return f;
+  }
 
   return (
     <>
       <Card>
         <CardHeader><CardTitle>Plan Actual</CardTitle></CardHeader>
         <CardContent>
-          <div className="flex items-center justify-between p-4 bg-indigo-50 rounded-xl border border-indigo-100">
-            <div>
-              <p className="text-lg font-bold text-indigo-900">{current.name}</p>
-              <p className="text-sm text-indigo-700">{current.price}</p>
-            </div>
-            <Badge variant={status === 'active' ? 'info' : status === 'trial' ? 'warning' : 'danger'}>
-              {status === 'active' ? 'Activo' : status === 'trial' ? 'Prueba' : status === 'suspended' ? 'Suspendido' : status}
-            </Badge>
-          </div>
-          <div className="mt-4 grid grid-cols-3 gap-4 text-center text-sm">
-            <div className="p-3 bg-slate-50 rounded-lg">
-              <p className="text-[9px] font-semibold text-slate-500 uppercase">Usuarios</p>
-              <p className="font-bold text-slate-900 mt-1">{current.users}</p>
-            </div>
-            <div className="p-3 bg-slate-50 rounded-lg">
-              <p className="text-[9px] font-semibold text-slate-500 uppercase">Almacenamiento</p>
-              <p className="font-bold text-slate-900 mt-1">{current.storage}</p>
-            </div>
-            <div className="p-3 bg-slate-50 rounded-lg">
-              <p className="text-[9px] font-semibold text-slate-500 uppercase">API Calls</p>
-              <p className="font-bold text-slate-900 mt-1">{current.api}</p>
-            </div>
-          </div>
+          {loadingPlans ? (
+            <div className="p-4 text-sm text-slate-400">Cargando planes...</div>
+          ) : current ? (
+            <>
+              <div className="flex items-center justify-between p-4 bg-indigo-50 rounded-xl border border-indigo-100">
+                <div>
+                  <p className="text-lg font-bold text-indigo-900">{current.label}</p>
+                  <p className="text-sm text-indigo-700">{formatPrice(current.price_monthly)}/mes</p>
+                </div>
+                <Badge variant={status === 'active' ? 'info' : status === 'trial' ? 'warning' : 'danger'}>
+                  {status === 'active' ? 'Activo' : status === 'trial' ? 'Prueba' : status === 'suspended' ? 'Suspendido' : status}
+                </Badge>
+              </div>
+              <div className="mt-4 grid grid-cols-3 gap-4 text-center text-sm">
+                <div className="p-3 bg-slate-50 rounded-lg">
+                  <p className="text-[9px] font-semibold text-slate-500 uppercase">Usuarios</p>
+                  <p className="font-bold text-slate-900 mt-1">{current.max_users === -1 ? 'Ilimitados' : current.max_users}</p>
+                </div>
+                <div className="p-3 bg-slate-50 rounded-lg">
+                  <p className="text-[9px] font-semibold text-slate-500 uppercase">Precio Mensual</p>
+                  <p className="font-bold text-slate-900 mt-1">{formatPrice(current.price_monthly)}</p>
+                </div>
+                <div className="p-3 bg-slate-50 rounded-lg">
+                  <p className="text-[9px] font-semibold text-slate-500 uppercase">Precio Anual</p>
+                  <p className="font-bold text-slate-900 mt-1">{current.price_yearly ? formatPrice(current.price_yearly) + '/año' : '—'}</p>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="p-4 text-sm text-slate-400">No se pudo cargar la información del plan</div>
+          )}
         </CardContent>
       </Card>
       <Card>
         <CardHeader><CardTitle>Planes Disponibles</CardTitle></CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              { name: 'Starter', price: '$19.900', features: ['5 usuarios', '2 GB storage', '10K API calls'] },
-              { name: 'Professional', price: '$49.900', features: ['10 usuarios', '10 GB storage', '50K API calls'] },
-              { name: 'Enterprise', price: '$99.900', features: ['Usuarios ilimitados', '100 GB storage', 'API ilimitado'] },
-            ].map((p) => (
-              <div key={p.name} className={`p-4 rounded-xl border-2 transition-colors ${
-                plan === p.name.toLowerCase() ? 'border-indigo-500 bg-indigo-50' : 'border-slate-200 hover:border-slate-300'
-              }`}>
-                <p className="font-bold text-slate-900">{p.name}</p>
-                <p className="text-lg font-bold text-indigo-600 mt-1">{p.price}/mes</p>
-                <ul className="mt-3 space-y-1">
-                  {p.features.map((f, i) => (
-                    <li key={i} className="text-xs text-slate-600 flex items-center gap-1">
-                      <Check className="w-3 h-3 text-emerald-500" /> {f}
-                    </li>
-                  ))}
-                </ul>
-                {plan !== p.name.toLowerCase() && (
-                  <Button variant="secondary" size="sm" className="w-full mt-3">Upgrade</Button>
-                )}
-              </div>
-            ))}
-          </div>
+          {loadingPlans ? (
+            <div className="p-4 text-sm text-slate-400">Cargando planes...</div>
+          ) : otherPlans.length === 0 ? (
+            <div className="p-4 text-sm text-slate-400">No hay otros planes disponibles</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {otherPlans.map((p) => (
+                <div key={p.name} className={`p-4 rounded-xl border-2 transition-colors ${
+                  plan === p.name ? 'border-indigo-500 bg-indigo-50' : 'border-slate-200 hover:border-slate-300'
+                }`}>
+                  <p className="font-bold text-slate-900">{p.label}</p>
+                  <p className="text-lg font-bold text-indigo-600 mt-1">{formatPrice(p.price_monthly)}/mes</p>
+                  <ul className="mt-3 space-y-1">
+                    {featuresList(p).map((f, i) => (
+                      <li key={i} className="text-xs text-slate-600 flex items-center gap-1">
+                        <Check className="w-3 h-3 text-emerald-500" /> {f}
+                      </li>
+                    ))}
+                  </ul>
+                  {plan !== p.name && (
+                    <Button variant="secondary" size="sm" className="w-full mt-3">Upgrade</Button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </>
