@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
-import { Package, UsersRound, Settings, ArrowRight, Building2 } from 'lucide-react';
+import { Package, UsersRound, FolderKanban, Settings, ArrowRight, Building2 } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 
 interface ModuleOption {
@@ -43,6 +43,18 @@ const modules: ModuleOption[] = [
     borderColor: 'border-emerald-200 hover:border-emerald-400',
     href: '/hr',
     requiredModules: ['hr'],
+  },
+  {
+    id: 'projects',
+    title: 'Proyectos',
+    subtitle: 'Gestión de Proyectos',
+    description: ['Tableros y Cronogramas', 'Gestión de Tareas', 'Control de Tiempo', 'Plantillas', 'Reportes'],
+    icon: FolderKanban,
+    color: 'text-indigo-600',
+    bgColor: 'bg-indigo-50',
+    borderColor: 'border-indigo-200 hover:border-indigo-400',
+    href: '/projects',
+    requiredModules: ['projects'],
   },
 ];
 
@@ -132,7 +144,7 @@ export default function SelectPage() {
             <p className="text-slate-500 mt-2">Elige el módulo al que deseas acceder</p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {availableModules.map((mod, i) => {
               const Icon = mod.icon;
               return (
