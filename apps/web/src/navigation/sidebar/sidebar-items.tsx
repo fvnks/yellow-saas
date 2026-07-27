@@ -229,9 +229,10 @@ export const sidebarItems: NavGroup[] = [
         requiredPermission: { module: "purchase_orders", action: "read" },
         subItems: [
           { title: "Órdenes de Compra", path: "/dashboard/purchases", icon: "ShoppingBag", requiredPermission: { module: "purchase_orders", action: "read" } },
-          { title: "Recepciones", path: "/dashboard/purchases/receipts", icon: "Boxes", requiredPermission: { module: "purchase_orders", action: "read" } },
-          { title: "Cotizaciones", path: "/dashboard/purchases/quotations", icon: "FileText", requiredPermission: { module: "purchase_orders", action: "read" } },
-          { title: "Registro", path: "/dashboard/purchases/register", icon: "ClipboardList", requiredPermission: { module: "purchase_orders", action: "read" } },
+          { title: "Proveedores", path: "/dashboard/suppliers", icon: "Truck", requiredPermission: { module: "suppliers", action: "read" } },
+          { title: "Artículos", path: "/dashboard/inventory", icon: "Package", requiredPermission: { module: "inventory", action: "read" } },
+          { title: "Documentos", path: "/dashboard/purchases/documents", icon: "FileText", requiredPermission: { module: "purchase_orders", action: "read" } },
+          { title: "Informes", path: "/dashboard/purchases/reports", icon: "BarChart3", requiredPermission: { module: "purchase_orders", action: "read" } },
         ],
       },
     ],
@@ -248,16 +249,6 @@ export const sidebarItems: NavGroup[] = [
         subItems: [
           { title: "Todos", path: "/dashboard/customers", icon: "Users", requiredPermission: { module: "customers", action: "read" } },
           { title: "Nuevo", path: "/dashboard/customers/new", icon: "Users", requiredPermission: { module: "customers", action: "create" } },
-        ],
-      },
-      {
-        title: "Proveedores",
-        path: "/dashboard/suppliers",
-        icon: "Truck",
-        requiredPermission: { module: "suppliers", action: "read" },
-        subItems: [
-          { title: "Todos", path: "/dashboard/suppliers", icon: "Truck", requiredPermission: { module: "suppliers", action: "read" } },
-          { title: "Nuevo", path: "/dashboard/suppliers/new", icon: "Truck", requiredPermission: { module: "suppliers", action: "create" } },
         ],
       },
     ],
