@@ -248,10 +248,19 @@ export const sidebarItems: NavGroup[] = [
         subItems: [
           { title: "Órdenes", path: "/dashboard/sales?tab=orders", icon: "ShoppingCart", requiredPermission: { module: "sales_orders", action: "read" } },
           { title: "Nueva Orden", path: "/dashboard/sales/new", icon: "ShoppingCart", requiredPermission: { module: "sales_orders", action: "create" } },
-          { title: "Guias de Despacho", path: "/dashboard/sales?tab=delivery", icon: "Truck", requiredPermission: { module: "delivery_guides", action: "read" } },
           { title: "Facturas", path: "/dashboard/sales?tab=invoices", icon: "Receipt", requiredPermission: { module: "invoices", action: "read" } },
           { title: "Devoluciones", path: "/dashboard/sales?tab=returns", icon: "ArrowLeftRight", requiredPermission: { module: "sales_orders", action: "read" } },
           { title: "Registro", path: "/dashboard/sales/register", icon: "ClipboardList", requiredPermission: { module: "sales_orders", action: "read" } },
+        ],
+      },
+      {
+        title: "Guías de Despacho",
+        path: "/dashboard/sales/delivery-guides",
+        icon: "Truck",
+        requiredPermission: { module: "delivery_guides", action: "read" },
+        subItems: [
+          { title: "Listado de Documentos", path: "/dashboard/sales/delivery-guides", icon: "FileText", requiredPermission: { module: "delivery_guides", action: "read" } },
+          { title: "Nueva Guía", path: "/dashboard/sales/delivery-guides/new", icon: "Plus", requiredPermission: { module: "delivery_guides", action: "create" } },
         ],
       },
       {
