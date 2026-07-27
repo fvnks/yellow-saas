@@ -1,26 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
   <defs>
-    <linearGradient id="topFace" x1="60" y1="30" x2="140" y2="90" gradientUnits="userSpaceOnUse">
+    <linearGradient id="topFace" x1="70" y1="25" x2="130" y2="75" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#FFD54F"/>
       <stop offset="100%" stop-color="#FFC107"/>
     </linearGradient>
-    <linearGradient id="leftFace" x1="30" y1="70" x2="100" y2="140" gradientUnits="userSpaceOnUse">
+    <linearGradient id="leftFace" x1="35" y1="65" x2="95" y2="135" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#FFC107"/>
       <stop offset="100%" stop-color="#FFA000"/>
     </linearGradient>
-    <linearGradient id="rightFace" x1="100" y1="70" x2="170" y2="140" gradientUnits="userSpaceOnUse">
+    <linearGradient id="rightFace" x1="105" y1="65" x2="165" y2="135" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#FFA000"/>
       <stop offset="100%" stop-color="#FF8F00"/>
     </linearGradient>
   </defs>
   <!-- Top face -->
-  <polygon points="100,20 160,55 100,90 40,55" fill="url(#topFace)"/>
+  <polygon points="100,24 152,52 100,80 48,52" fill="url(#topFace)"/>
   <!-- Left face -->
-  <polygon points="40,55 100,90 100,155 40,120" fill="url(#leftFace)"/>
+  <polygon points="48,60 100,88 100,152 48,124" fill="url(#leftFace)"/>
   <!-- Right face -->
-  <polygon points="160,55 100,90 100,155 160,120" fill="url(#rightFace)"/>
-  <!-- Edges -->
-  <polygon points="100,20 160,55 100,90 40,55" fill="none" stroke="#E65100" stroke-width="1.5" stroke-linejoin="round"/>
-  <polygon points="40,55 100,90 100,155 40,120" fill="none" stroke="#E65100" stroke-width="1.5" stroke-linejoin="round"/>
-  <polygon points="160,55 100,90 100,155 160,120" fill="none" stroke="#E65100" stroke-width="1.5" stroke-linejoin="round"/>
+  <polygon points="152,60 100,88 100,152 152,124" fill="url(#rightFace)"/>
 </svg>
