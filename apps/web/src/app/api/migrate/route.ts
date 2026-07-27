@@ -211,7 +211,7 @@ export async function POST(request: Request) {
     }
     results.push('Applied ALTER TABLE migrations');
 
-    const permModules = ['dashboard', 'inventory', 'warehouses', 'sales', 'purchases', 'customers', 'suppliers', 'crm', 'payroll', 'accounting', 'projects', 'pos', 'billing', 'settings', 'audit', 'reports'];
+    const permModules = ['dashboard', 'inventory', 'warehouses', 'sales', 'purchases', 'customers', 'suppliers', 'crm', 'payroll', 'accounting', 'projects', 'pos', 'billing', 'settings', 'audit', 'reports', 'hr'];
     const permActions = ['create', 'read', 'update', 'delete'];
     for (const mod of permModules) {
       for (const act of permActions) {
@@ -297,6 +297,92 @@ export async function POST(request: Request) {
       );
     }
     results.push('Seeded platform plans');
+
+    const hrTables = [
+      `CREATE TABLE IF NOT EXISTS hr_contracts (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        employee_id UUID NOT NULL REFERENCES employees(id) ON DELETE CASCADE,
+        contract_type TEXT DEFAULT 'indefinido' CHECK (contract_type IN ('indefinido', 'plazo_fijo', 'part_time', 'temporada', 'boleta_7a')),
+        position TEXT,
+        department TEXT,
+        start_date DATE NOT NULL,
+        end_date DATE,
+        base_salary DECIMAL(14,2) DEFAULT 0,
+        status TEXT DEFAULT 'active' CHECK (status IN ('active', 'pending', 'terminated', 'expired')),
+        created_at TIMESTAMPTZ DEFAULT now(),
+        updated_at TIMESTAMPTZ DEFAULT now()
+      )`,
+      `CREATE TABLE IF NOT EXISTS hr_attendance (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        employee_id UUID NOT NULL REFERENCES employees(id) ON DELETE CASCADE,
+        date DATE NOT NULL,
+        check_in TIME,
+        check_out TIME,
+        status TEXT DEFAULT 'present' CHECK (status IN ('present', 'absent', 'late', 'partial', 'vacation', 'sick_leave')),
+        hours_worked DECIMAL(5,2) DEFAULT 0,
+        overtime_hours DECIMAL(5,2) DEFAULT 0,
+        notes TEXT,
+        created_at TIMESTAMPTZ DEFAULT now(),
+        UNIQUE (company_id, employee_id, date)
+      )`,
+      `CREATE TABLE IF NOT EXISTS hr_evaluations (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        employee_id UUID NOT NULL REFERENCES employees(id) ON DELETE CASCADE,
+        evaluator_id UUID REFERENCES profiles(id),
+        period TEXT NOT NULL,
+        overall_score DECIMAL(3,2) DEFAULT 0,
+        competencies_score DECIMAL(3,2) DEFAULT 0,
+        goals_score DECIMAL(3,2) DEFAULT 0,
+        comments TEXT,
+        status TEXT DEFAULT 'draft' CHECK (status IN ('draft', 'completed', 'pending')),
+        created_at TIMESTAMPTZ DEFAULT now(),
+        updated_at TIMESTAMPTZ DEFAULT now()
+      )`,
+      `CREATE TABLE IF NOT EXISTS hr_training (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        title TEXT NOT NULL,
+        description TEXT,
+        trainer TEXT,
+        start_date DATE NOT NULL,
+        end_date DATE,
+        max_participants INTEGER DEFAULT 20,
+        current_participants INTEGER DEFAULT 0,
+        type TEXT DEFAULT 'technical' CHECK (type IN ('technical', 'soft_skills', 'compliance', 'safety', 'onboarding')),
+        status TEXT DEFAULT 'scheduled' CHECK (status IN ('scheduled', 'in_progress', 'completed', 'cancelled')),
+        created_at TIMESTAMPTZ DEFAULT now(),
+        updated_at TIMESTAMPTZ DEFAULT now()
+      )`,
+      `CREATE TABLE IF NOT EXISTS hr_onboarding (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        employee_id UUID NOT NULL REFERENCES employees(id) ON DELETE CASCADE,
+        start_date DATE NOT NULL,
+        end_date DATE,
+        mentor_name TEXT,
+        notes TEXT,
+        status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'in_progress', 'completed', 'dropped')),
+        progress INTEGER DEFAULT 0 CHECK (progress >= 0 AND progress <= 100),
+        tasks_total INTEGER DEFAULT 10,
+        tasks_completed INTEGER DEFAULT 0,
+        created_at TIMESTAMPTZ DEFAULT now(),
+        updated_at TIMESTAMPTZ DEFAULT now()
+      )`,
+    ];
+
+    for (const sql of hrTables) {
+      try {
+        await query(sql);
+      } catch (e: any) {
+        if (!e.message?.includes('already exists')) {
+          results.push(`HR table warning: ${e.message}`);
+        }
+      }
+    }
+    results.push('HR tables ensured');
 
     return NextResponse.json({ success: true, results });
   } catch (err) {

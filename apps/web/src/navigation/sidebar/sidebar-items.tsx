@@ -38,6 +38,10 @@ import {
   TruckIcon,
   CircleDollarSign,
   Building2,
+  UsersRound,
+  ClipboardCheck,
+  GraduationCap,
+  UserPlus,
 } from "lucide-react";
 
 export const ICON_MAP = {
@@ -79,6 +83,10 @@ export const ICON_MAP = {
   TruckIcon,
   CircleDollarSign,
   Building2,
+  UsersRound,
+  ClipboardCheck,
+  GraduationCap,
+  UserPlus,
 };
 
 export const resolveIcon = (iconName: keyof typeof ICON_MAP | undefined): LucideIcon => {
@@ -256,6 +264,25 @@ export const sidebarItems: NavGroup[] = [
   },
   {
     id: 6,
+    label: "Talento",
+    items: [
+      {
+        title: "Recursos Humanos",
+        path: "/dashboard/hr",
+        icon: "UsersRound",
+        requiredPermission: { module: "hr", action: "read" },
+        subItems: [
+          { title: "Contratos", path: "/dashboard/hr?tab=contracts", icon: "FileText", requiredPermission: { module: "hr", action: "read" } },
+          { title: "Asistencia", path: "/dashboard/hr?tab=attendance", icon: "ClipboardCheck", requiredPermission: { module: "hr", action: "read" } },
+          { title: "Evaluaciones", path: "/dashboard/hr?tab=evaluations", icon: "BarChart3", requiredPermission: { module: "hr", action: "read" } },
+          { title: "Capacitación", path: "/dashboard/hr?tab=training", icon: "GraduationCap", requiredPermission: { module: "hr", action: "read" } },
+          { title: "Onboarding", path: "/dashboard/hr?tab=onboarding", icon: "UserPlus", requiredPermission: { module: "hr", action: "read" } },
+        ],
+      },
+    ],
+  },
+  {
+    id: 7,
     label: "Finanzas",
     items: [
       {
@@ -289,7 +316,7 @@ export const sidebarItems: NavGroup[] = [
     ],
   },
   {
-    id: 7,
+    id: 8,
     label: "Herramientas",
     items: [
       {
@@ -318,7 +345,7 @@ export const sidebarItems: NavGroup[] = [
     ],
   },
   {
-    id: 8,
+    id: 9,
     label: "Proyectos",
     items: [
       {
@@ -336,7 +363,7 @@ export const sidebarItems: NavGroup[] = [
     ],
   },
   {
-    id: 9,
+    id: 10,
     label: "Costos",
     items: [
       {
@@ -348,7 +375,7 @@ export const sidebarItems: NavGroup[] = [
     ],
   },
   {
-    id: 10,
+    id: 11,
     label: "Sistema",
     items: [
       {
