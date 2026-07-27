@@ -215,6 +215,16 @@ export const sidebarItems: NavGroup[] = [
         ],
       },
       {
+        title: "Cotizaciones",
+        path: "/dashboard/sales/quotations",
+        icon: "FileText",
+        requiredPermission: { module: "quotations", action: "read" },
+        subItems: [
+          { title: "Listado de Documentos", path: "/dashboard/sales/quotations", icon: "FileText", requiredPermission: { module: "quotations", action: "read" } },
+          { title: "Informes de Cotizaciones", path: "/dashboard/sales/quotations/reports", icon: "BarChart3", requiredPermission: { module: "quotations", action: "read" } },
+        ],
+      },
+      {
         title: "Ventas",
         path: "/dashboard/sales",
         icon: "ShoppingCart",
@@ -222,7 +232,6 @@ export const sidebarItems: NavGroup[] = [
         subItems: [
           { title: "Órdenes", path: "/dashboard/sales?tab=orders", icon: "ShoppingCart", requiredPermission: { module: "sales_orders", action: "read" } },
           { title: "Nueva Orden", path: "/dashboard/sales/new", icon: "ShoppingCart", requiredPermission: { module: "sales_orders", action: "create" } },
-          { title: "Cotizaciones", path: "/dashboard/sales?tab=quotations", icon: "FileText", requiredPermission: { module: "quotations", action: "read" } },
           { title: "Guias de Despacho", path: "/dashboard/sales?tab=delivery", icon: "Truck", requiredPermission: { module: "delivery_guides", action: "read" } },
           { title: "Facturas", path: "/dashboard/sales?tab=invoices", icon: "Receipt", requiredPermission: { module: "invoices", action: "read" } },
           { title: "Devoluciones", path: "/dashboard/sales?tab=returns", icon: "ArrowLeftRight", requiredPermission: { module: "sales_orders", action: "read" } },
