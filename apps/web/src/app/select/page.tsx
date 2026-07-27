@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
-import { Package, UsersRound, FolderKanban, Settings, ArrowRight, Building2, ChevronRight } from 'lucide-react';
+import Image from 'next/image';
+import { Package, UsersRound, FolderKanban, Settings, ChevronRight } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 
 interface ModuleOption {
@@ -117,8 +118,8 @@ export default function SelectPage() {
       <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-3.5">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-gradient-to-br from-slate-800 to-slate-950 rounded-xl flex items-center justify-center shadow-lg shadow-slate-900/20">
-              <Building2 className="w-4.5 h-4.5 text-white" />
+            <div className="w-9 h-9 bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20 overflow-hidden">
+              <Image src="/logo/yellow-cube.svg" alt="Yellow" width={24} height={24} />
             </div>
             <div>
               <h1 className="text-base font-bold text-slate-900">{company?.name || 'Yellow ERP'}</h1>
