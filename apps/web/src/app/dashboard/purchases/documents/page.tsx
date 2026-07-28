@@ -1,18 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { FileText, ReceiptText, RotateCcw, FileMinus, ClipboardList } from 'lucide-react';
 import { ContinuousTabs } from '@/components/ui/continuous-tabs';
 import PurchaseInvoices from '../components/PurchaseInvoices';
 import PurchaseCreditNotes from '../components/PurchaseCreditNotes';
 import PurchaseDebitNotes from '../components/PurchaseDebitNotes';
-import PurchaseReturns from '../components/PurchaseReturns';
+import PurchaseDeliveryGuides from '../components/PurchaseDeliveryGuides';
 
 const tabs = [
   { id: 'invoices', label: 'Facturas de Compra' },
   { id: 'credit-notes', label: 'Notas de Crédito' },
   { id: 'debit-notes', label: 'Notas de Débito' },
-  { id: 'returns', label: 'Devoluciones' },
+  { id: 'delivery-guides', label: 'Guías de Despacho' },
 ];
 
 export default function PurchaseDocumentsPage() {
@@ -23,7 +22,7 @@ export default function PurchaseDocumentsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Documentos de Compra</h1>
-          <p className="text-sm text-slate-500 mt-1">Facturas, notas de crédito, notas de débito y devoluciones</p>
+          <p className="text-sm text-slate-500 mt-1">Documentos recibidos de proveedores desde el SII</p>
         </div>
       </div>
 
@@ -37,7 +36,7 @@ export default function PurchaseDocumentsPage() {
           {activeTab === 'invoices' && <PurchaseInvoices />}
           {activeTab === 'credit-notes' && <PurchaseCreditNotes />}
           {activeTab === 'debit-notes' && <PurchaseDebitNotes />}
-          {activeTab === 'returns' && <PurchaseReturns />}
+          {activeTab === 'delivery-guides' && <PurchaseDeliveryGuides />}
         </div>
       </div>
     </div>
