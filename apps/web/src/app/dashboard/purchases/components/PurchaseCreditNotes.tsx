@@ -1,151 +1,97 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Plus, Search, X, Save, ReceiptText } from 'lucide-react';
+import { useState } from 'react';
+import { Search, ReceiptText, Zap } from 'lucide-react';
+
+const MOCK_NC = [
+  { id: '1', note_number: 'NC-4501', supplier: 'Distribuidora Central SpA', rut: '76.123.456-7', issue_date: '2025-06-16', reason: 'Devolución parcial pedido #1234', amount: 350000, status: 'accepted' },
+  { id: '2', note_number: 'NC-4502', supplier: 'Insumos Industriales Ltda', rut: '76.987.654-3', issue_date: '2025-06-19', reason: 'Descuento por volumen', amount: 125000, status: 'accepted' },
+  { id: '3', note_number: 'NC-4503', supplier: 'Comercial Andes SpA', rut: '76.555.123-8', issue_date: '2025-06-21', reason: 'Error en facturación', amount: 890000, status: 'accepted' },
+  { id: '4', note_number: 'NC-4504', supplier: 'Proveedores del Sur Ltda', rut: '76.789.012-4', issue_date: '2025-06-26', reason: 'Devolución producto defectuoso', amount: 210000, status: 'accepted' },
+  { id: '5', note_number: 'NC-4505', supplier: 'Tecnología Total SpA', rut: '76.321.654-9', issue_date: '2025-06-29', reason: 'Ajuste por diferencia de precio', amount: 56000, status: 'accepted' },
+];
+
+const STATUS_CFG: Record<string, { label: string; color: string; bg: string; border: string }> = {
+  accepted: { label: 'Aceptado', color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200' },
+  pending: { label: 'Pendiente', color: 'text-amber-700', bg: 'bg-amber-50', border: 'border-amber-200' },
+};
 
 export default function PurchaseCreditNotes() {
-  const [notes, setNotes] = useState<any[]>([]);
-  const [suppliers, setSuppliers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({
-    supplier_id: '', note_number: '', issue_date: new Date().toISOString().split('T')[0], reason: '', notes: '',
-    items: [{ description: '', quantity: '1', unit_price: '' }] as any[],
-  });
 
-  useEffect(() => { loadData(); }, []);
+  const filtered = MOCK_NC.filter(n =>
+    n.note_number.toLowerCase().includes(search.toLowerCase()) ||
+    n.supplier.toLowerCase().includes(search.toLowerCase()) ||
+    n.rut.includes(search)
+  );
 
-  const loadData = async () => {
-    const companyId = localStorage.getItem('company_id');
-    const [nRes, sRes] = await Promise.all([
-      fetch(`/api/companies/${companyId}/purchase-credit-notes`),
-      fetch(`/api/companies/${companyId}/suppliers`).catch(() => ({ ok: false, json: () => ({ data: [] }) })),
-    ]);
-    if (nRes.ok) { const j = await nRes.json(); setNotes(j.data || []); }
-    if (sRes.ok) { const j = await sRes.json(); setSuppliers(j.data || []); }
-    setLoading(false);
-  };
-
-  const handleSave = async () => {
-    const companyId = localStorage.getItem('company_id');
-    const res = await fetch(`/api/companies/${companyId}/purchase-credit-notes`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
-    if (res.ok) { setShowForm(false); loadData(); }
-  };
-
-  const addItem = () => setForm({ ...form, items: [...form.items, { description: '', quantity: '1', unit_price: '' }] });
-  const removeItem = (i: number) => setForm({ ...form, items: form.items.filter((_, idx) => idx !== i) });
-  const updateItem = (i: number, k: string, v: string) => { const n = [...form.items]; (n[i] as any)[k] = v; setForm({ ...form, items: n }); };
-
-  const fmt = (v: number) => `$${v.toLocaleString('en-US', { minimumFractionDigits: 0 })}`;
-  const statusCfg: Record<string, { label: string; color: string; bg: string }> = {
-    pending: { label: 'Pendiente', color: 'text-amber-700', bg: 'bg-amber-50' },
-    applied: { label: 'Aplicada', color: 'text-emerald-700', bg: 'bg-emerald-50' },
-    cancelled: { label: 'Cancelada', color: 'text-red-700', bg: 'bg-red-50' },
-  };
-
-  const filtered = notes.filter(n => n.note_number?.toLowerCase().includes(search.toLowerCase()) || n.supplier_name?.toLowerCase().includes(search.toLowerCase()));
+  const total = filtered.reduce((acc, n) => acc + n.amount, 0);
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <ReceiptText className="w-4 h-4 text-slate-500" />
-          <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">NC Proveedor</span>
+          <ReceiptText className="w-4 h-4 text-emerald-500" />
+          <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Notas de Crédito Recibidas</span>
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+            <Zap className="w-2.5 h-2.5" /> SII
+          </span>
         </div>
-        <button onClick={() => setShowForm(true)} className="bg-slate-900 hover:bg-black text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
-          <Plus className="w-3.5 h-3.5" /> Nueva NC
-        </button>
+        <div className="text-right">
+          <p className="text-[9px] font-semibold text-slate-500 uppercase">Total NC</p>
+          <p className="text-sm font-bold text-emerald-600">${total.toLocaleString('es-CL')}</p>
+        </div>
       </div>
 
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-        <input type="search" placeholder="Buscar..." value={search} onChange={e => setSearch(e.target.value)}
+        <input type="search" placeholder="Buscar por N° NC, proveedor o RUT..." value={search} onChange={e => setSearch(e.target.value)}
           className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
         <table className="w-full">
-          <thead><tr className="border-b border-slate-200">
-            <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">N° NC</th>
-            <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Proveedor</th>
-            <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Fecha</th>
-            <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Monto</th>
-            <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Estado</th>
-          </tr></thead>
+          <thead>
+            <tr className="border-b border-slate-200">
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">N° NC</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Proveedor</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">RUT</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Motivo</th>
+              <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Monto</th>
+              <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado SII</th>
+            </tr>
+          </thead>
           <tbody>
             {filtered.map(n => {
-              const cfg = statusCfg[n.status] || statusCfg.pending;
+              const st = STATUS_CFG[n.status] || STATUS_CFG.pending;
               return (
-                <tr key={n.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3 text-xs font-medium text-slate-900">{n.note_number}</td>
-                  <td className="px-4 py-3 text-xs text-slate-700">{n.supplier_name}</td>
-                  <td className="px-4 py-3 text-xs text-slate-600">{n.issue_date?.split('T')[0]}</td>
-                  <td className="px-4 py-3 text-xs text-right font-medium text-emerald-600">{fmt(parseFloat(n.total_amount))}</td>
-                  <td className="px-4 py-3 text-center"><span className={`inline-flex px-2 py-0.5 rounded-full text-[9px] font-semibold ${cfg.bg} ${cfg.color}`}>{cfg.label}</span></td>
+                <tr key={n.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                  <td className="px-4 py-3 text-xs font-medium text-slate-900 font-mono">{n.note_number}</td>
+                  <td className="px-4 py-3 text-xs text-slate-700">{n.supplier}</td>
+                  <td className="px-4 py-3 text-xs text-slate-500 font-mono">{n.rut}</td>
+                  <td className="px-4 py-3 text-xs text-slate-600">{n.issue_date}</td>
+                  <td className="px-4 py-3 text-xs text-slate-600 max-w-xs truncate">{n.reason}</td>
+                  <td className="px-4 py-3 text-xs text-right font-medium text-emerald-600 font-mono">${n.amount.toLocaleString('es-CL')}</td>
+                  <td className="px-4 py-3 text-center">
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${st.bg} ${st.color} border ${st.border}`}>{st.label}</span>
+                  </td>
                 </tr>
               );
             })}
-            {filtered.length === 0 && <tr><td colSpan={5} className="text-center py-8 text-xs text-slate-400">Sin NC</td></tr>}
+            {filtered.length === 0 && (
+              <tr><td colSpan={7} className="text-center py-8 text-xs text-slate-400">No se encontraron notas de crédito</td></tr>
+            )}
           </tbody>
         </table>
       </div>
 
-      {showForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-9002xl mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900">Nueva NC Proveedor</h2>
-              <button onClick={() => setShowForm(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
-            </div>
-            <div className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                <div><label className="block text-xs font-medium text-slate-700 mb-1">Proveedor</label>
-                  <select value={form.supplier_id} onChange={e => setForm({ ...form, supplier_id: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                    <option value="">Seleccionar...</option>
-                    {suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-                  </select></div>
-                <div><label className="block text-xs font-medium text-slate-700 mb-1">N° NC</label>
-                  <input type="text" value={form.note_number} onChange={e => setForm({ ...form, note_number: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" /></div>
-              </div>
-              <div><label className="block text-xs font-medium text-slate-700 mb-1">Fecha</label>
-                <input type="date" value={form.issue_date} onChange={e => setForm({ ...form, issue_date: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" /></div>
-              <div><label className="block text-xs font-medium text-slate-700 mb-1">Motivo</label>
-                <input type="text" value={form.reason} onChange={e => setForm({ ...form, reason: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" /></div>
-              <div>
-                <div className="flex items-center justify-between mb-2"><label className="text-xs font-medium text-slate-700">Items</label>
-                  <button onClick={addItem} className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"><Plus className="w-3 h-3 inline" /> Agregar</button></div>
-                <div className="space-y-2">
-                  {form.items.map((item, i) => (
-                    <div key={i} className="flex items-center gap-2 bg-slate-50 rounded-lg p-2">
-                      <input type="text" value={item.description} onChange={e => updateItem(i, 'description', e.target.value)} placeholder="Descripción"
-                        className="flex-1 bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-900 dark:bg-slate-800 dark:border-slate-700 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
-                      <input type="number" value={item.quantity} onChange={e => updateItem(i, 'quantity', e.target.value)} placeholder="Cant."
-                        className="w-16 bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-900 dark:bg-slate-800 dark:border-slate-700 dark:text-white text-center focus:outline-none focus:ring-1 focus:ring-indigo-500" />
-                      <input type="number" value={item.unit_price} onChange={e => updateItem(i, 'unit_price', e.target.value)} placeholder="$0"
-                        className="w-24 bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-900 dark:bg-slate-800 dark:border-slate-700 dark:text-white text-right focus:outline-none focus:ring-1 focus:ring-indigo-500" />
-                      {form.items.length > 1 && <button onClick={() => removeItem(i)} className="text-red-400 hover:text-red-600"><X className="w-3.5 h-3.5" /></button>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
-              <button onClick={() => setShowForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
-              <button onClick={handleSave} disabled={!form.supplier_id}
-                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors disabled:opacity-50">
-                <Save className="w-3.5 h-3.5" /> Guardar</button>
-            </div>
-          </div>
-        </div>
-      )}
+      <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center gap-3">
+        <Zap className="w-4 h-4 text-amber-500 flex-shrink-0" />
+        <p className="text-xs text-amber-700">
+          <span className="font-semibold">Modo Demo SII</span> — Estos documentos son una simulación de datos recibidos del Servicio de Impuestos Internos. La integración real requiere certificado digital y API del SII.
+        </p>
+      </div>
     </div>
   );
 }
