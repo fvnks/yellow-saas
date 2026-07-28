@@ -1,5 +1,5 @@
 import { query } from '@/api/lib/db';
-import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { getCompanyId, paginatedResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
 const ALL_PERMISSIONS = [
@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
       `SELECT * FROM permissions ORDER BY module, action`
     );
 
-    return successResponse(rows || []);
+    return paginatedResponse(rows || [], rows.length, 1, 100);
   } catch {
     return errorResponse('Internal server error', 500);
   }
