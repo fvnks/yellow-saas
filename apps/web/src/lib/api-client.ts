@@ -1140,6 +1140,22 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/purchase-registers/${id}`, { method: 'DELETE' });
   }
 
+  // Purchase Credit Notes
+  async getPurchaseCreditNotes(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; supplier_id: string; supplier_name: string; supplier_tax_id: string; note_number: string; issue_date: string; total_amount: number; reason: string | null; notes: string | null; created_at: string }>('/purchase-credit-notes', params || {});
+  }
+  async createPurchaseCreditNote(data: { supplier_id: string; note_number?: string; issue_date?: string; reason?: string; purchase_invoice_id?: string; notes?: string; items?: any[] }) {
+    return this.request<any>('/purchase-credit-notes', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  // Purchase Debit Notes
+  async getPurchaseDebitNotes(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; supplier_id: string; supplier_name: string; supplier_tax_id: string; note_number: string; issue_date: string; total_amount: number; reason: string | null; notes: string | null; created_at: string }>('/purchase-debit-notes', params || {});
+  }
+  async createPurchaseDebitNote(data: { supplier_id: string; note_number?: string; issue_date?: string; reason?: string; purchase_invoice_id?: string; notes?: string; items?: any[] }) {
+    return this.request<any>('/purchase-debit-notes', { method: 'POST', body: JSON.stringify(data) });
+  }
+
   // Goods Receipts
   async getGoodsReceipts(params?: { status?: string; search?: string }) {
     const searchParams = new URLSearchParams();
