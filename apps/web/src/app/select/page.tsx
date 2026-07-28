@@ -158,7 +158,7 @@ export default function SelectPage() {
             <p className="text-sm text-slate-400 mt-1.5">Selecciona un módulo para comenzar</p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {modules.map((mod, i) => {
               const Icon = mod.icon;
               return (

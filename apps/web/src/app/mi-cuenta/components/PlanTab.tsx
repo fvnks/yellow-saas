@@ -96,7 +96,7 @@ export default function PlanTab() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {plans.map((plan) => {
           const isCurrent = plan.name === currentPlan;
           const price = billingPeriod === 'yearly' ? plan.price_yearly : plan.price_monthly;
