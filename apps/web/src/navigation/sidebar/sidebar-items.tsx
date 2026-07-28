@@ -421,24 +421,6 @@ export const sidebarItems: NavGroup[] = [
     ],
   },
   {
-    id: 9,
-    label: "Proyectos",
-    items: [
-      {
-        title: "Proyectos",
-        path: "/dashboard/projects",
-        icon: "FolderKanban",
-        requiredPermission: { module: "projects", action: "read" },
-        subItems: [
-          { title: "Todos", path: "/dashboard/projects", icon: "FolderKanban", requiredPermission: { module: "projects", action: "read" } },
-          { title: "Nuevo", path: "/dashboard/projects/new", icon: "FolderKanban", requiredPermission: { module: "projects", action: "create" } },
-          { title: "Reportes", path: "/dashboard/projects/reports", icon: "BarChart3", requiredPermission: { module: "projects", action: "read" } },
-          { title: "Asignacion", path: "/dashboard/projects/allocation", icon: "Users", requiredPermission: { module: "projects", action: "read" } },
-        ],
-      },
-    ],
-  },
-  {
     id: 10,
     label: "Costos",
     items: [
