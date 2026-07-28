@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
 import Image from 'next/image';
-import { Package, UsersRound, FolderKanban, Settings, ChevronRight } from 'lucide-react';
+import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 
 interface ModuleOption {
@@ -60,6 +60,19 @@ const modules: ModuleOption[] = [
     hoverBorder: 'hover:border-amber-300 hover:shadow-amber-100',
     href: '/projects',
     requiredModules: ['projects'],
+  },
+  {
+    id: 'mi-cuenta',
+    title: 'Mi Cuenta',
+    subtitle: 'Facturación y Configuración',
+    description: ['Mi Plan', 'Facturación', 'Módulos', 'Activaciones'],
+    icon: CreditCard,
+    gradient: 'from-violet-500 to-purple-600',
+    iconBg: 'bg-violet-500/10',
+    iconColor: 'text-violet-600',
+    hoverBorder: 'hover:border-violet-300 hover:shadow-violet-100',
+    href: '/mi-cuenta',
+    requiredModules: [],
   },
 ];
 
@@ -145,7 +158,7 @@ export default function SelectPage() {
             <p className="text-sm text-slate-400 mt-1.5">Selecciona un módulo para comenzar</p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {modules.map((mod, i) => {
               const Icon = mod.icon;
               return (
