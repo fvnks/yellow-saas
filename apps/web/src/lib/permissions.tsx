@@ -64,22 +64,22 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
 
   const hasPermission = useCallback(
     (module: string, action: string) => {
+      // While loading, allow everything so server/client initial render matches
+      if (loading) return true;
       // Owner and admin see everything
       if (isOwner) return true;
-      // If no permissions loaded, deny access (closed by default)
-      if (permissions.length === 0) return false;
       return permissions.some((p) => p.module === module && p.action === action);
     },
-    [permissions, isOwner]
+    [permissions, isOwner, loading]
   );
 
   const hasAnyPermission = useCallback(
     (module: string) => {
+      if (loading) return true;
       if (isOwner) return true;
-      if (permissions.length === 0) return false;
       return permissions.some((p) => p.module === module);
     },
-    [permissions, isOwner]
+    [permissions, isOwner, loading]
   );
 
   return (
