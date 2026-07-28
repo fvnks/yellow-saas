@@ -47,6 +47,8 @@ import {
   Clock,
   List,
   Lock,
+  FlaskConical,
+  Play,
 } from "lucide-react";
 
 export const ICON_MAP = {
@@ -97,6 +99,8 @@ export const ICON_MAP = {
   Clock,
   List,
   Lock,
+  FlaskConical,
+  Play,
 };
 
 export const resolveIcon = (iconName: keyof typeof ICON_MAP | undefined): LucideIcon => {
@@ -340,7 +344,6 @@ export const sidebarItems: NavGroup[] = [
           { title: "Proveedores", path: "/dashboard/suppliers", icon: "Truck", requiredPermission: { module: "suppliers", action: "read" } },
           { title: "Artículos", path: "/dashboard/inventory", icon: "Package", requiredPermission: { module: "inventory", action: "read" } },
           { title: "Recepción de Artículos", path: "/dashboard/purchases/receipts", icon: "Boxes", requiredPermission: { module: "purchase_orders", action: "read" } },
-          { title: "Documentos", path: "/dashboard/purchases/documents", icon: "FileText", requiredPermission: { module: "purchase_orders", action: "read" } },
           { title: "Informes", path: "/dashboard/purchases/reports", icon: "BarChart3", requiredPermission: { module: "purchase_orders", action: "read" } },
         ],
       },
@@ -420,6 +423,22 @@ export const sidebarItems: NavGroup[] = [
         path: "/dashboard/audit",
         icon: "ScrollText",
         requiredPermission: { module: "audit", action: "read" },
+      },
+    ],
+  },
+  {
+    id: 9,
+    label: "Recetas",
+    items: [
+      {
+        title: "Recetas",
+        path: "/recetas",
+        icon: "FlaskConical",
+        subItems: [
+          { title: "Listado", path: "/recetas", icon: "FlaskConical" },
+          { title: "Nueva Receta", path: "/recetas/new", icon: "Plus" },
+          { title: "Producir", path: "/recetas/produce", icon: "Play" },
+        ],
       },
     ],
   },

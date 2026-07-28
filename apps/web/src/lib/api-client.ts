@@ -88,6 +88,15 @@ export class ApiClient {
     return this.request<{ message: string }>(`/products/${id}`, { method: 'DELETE' });
   }
 
+  // Recipe Products (Ingredientes de Recetas - aislados del inventario)
+  async getRecipeProducts(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; name: string; sku: string; unit_of_measure: string; cost_price: number; sale_price: number; is_active: boolean }>('/recipe-products', params || {});
+  }
+
+  async createRecipeProduct(data: { name: string; sku: string; unit_of_measure?: string; cost_price?: number; sale_price?: number; description?: string }) {
+    return this.request<{ id: string }>('/recipe-products', { method: 'POST', body: JSON.stringify(data) });
+  }
+
   // Warehouses
   async getWarehouses(params?: Record<string, string>) {
     return this.requestWithPagination<{ id: string; name: string; code: string; total_products: number; total_stock: number; is_default: boolean }>('/warehouses', params || {});
@@ -1649,6 +1658,37 @@ async deleteAdjustmentReason(id: string) {
 
   async updateNotificationPreferences(data: { email_enabled?: boolean; email_address?: string; task_deadline?: boolean; milestone_deadline?: boolean; project_deadline?: boolean; timesheet_reminders?: boolean }) {
     return this.request<any>('/notification-preferences', { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  // Formulas (Recetas)
+  async getFormulas(params?: { search?: string; active?: boolean; page?: number; limit?: number }) {
+    const searchParams = new URLSearchParams();
+    if (params?.search) searchParams.set('search', params.search);
+    if (params?.active !== undefined) searchParams.set('active', String(params.active));
+    if (params?.page) searchParams.set('page', String(params.page));
+    if (params?.limit) searchParams.set('limit', String(params.limit));
+    const qs = searchParams.toString();
+    return this.requestWithPagination<any>(`/formulas${qs ? `?${qs}` : ''}`);
+  }
+
+  async getFormula(formulaId: string) {
+    return this.request<any>(`/formulas/${formulaId}`);
+  }
+
+  async createFormula(data: { name: string; description?: string; output_product_id?: string; yield_quantity?: number; yield_unit?: string; ingredients: { product_id: string; quantity: number; unit?: string }[] }) {
+    return this.request<any>('/formulas', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateFormula(formulaId: string, data: { name?: string; description?: string; output_product_id?: string; yield_quantity?: number; yield_unit?: string; is_active?: boolean; ingredients?: { product_id: string; quantity: number; unit?: string }[] }) {
+    return this.request<any>(`/formulas/${formulaId}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteFormula(formulaId: string) {
+    return this.request<any>(`/formulas/${formulaId}`, { method: 'DELETE' });
+  }
+
+  async produceFormula(formulaId: string, data: { quantity: number; warehouse_id?: string; notes?: string }) {
+    return this.request<any>(`/formulas/${formulaId}/produce`, { method: 'POST', body: JSON.stringify(data) });
   }
 
   // Company Access Grants

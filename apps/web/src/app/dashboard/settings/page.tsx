@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { getApiClient } from '@/lib/api-client';
 import RolesTab from './tabs/RolesTab';
 import SupportAccessTab from './tabs/SupportAccessTab';
+import IntegrationsTab from './tabs/IntegrationsTab';
 
 interface UserProfile {
   id: string;
@@ -163,14 +164,7 @@ export default function SettingsPage() {
             <SupportAccessTab companyId={company.id || ''} userRole={company.userRole || 'member'} />
           )}
 
-          {activeTab === 'integrations' && (
-            <Card>
-              <CardHeader><CardTitle>Integraciones</CardTitle></CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-sm text-slate-500">Las integraciones estarán disponibles próximamente.</p>
-              </CardContent>
-            </Card>
-          )}
+          {activeTab === 'integrations' && <IntegrationsTab />}
 
           {activeTab === 'webhooks' && (
             <Card>
