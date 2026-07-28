@@ -53,9 +53,11 @@ export default function RolesTab() {
   const loadRoles = useCallback(() => {
     const api = getApiClient();
     Promise.all([api.getRoles(), api.getPermissions()])
-      .then(([r, p]) => {
-        setRoles(Array.isArray(r?.data) ? r.data : Array.isArray(r) ? r : []);
-        setAllPermissions(Array.isArray(p) ? p : []);
+      .then(([r, p]: [any, any]) => {
+        const rolesData = r?.data || (Array.isArray(r) ? r : []);
+        const permsData = p?.data || (Array.isArray(p) ? p : []);
+        setRoles(Array.isArray(rolesData) ? rolesData : []);
+        setAllPermissions(Array.isArray(permsData) ? permsData : []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
