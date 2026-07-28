@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Truck, Zap } from 'lucide-react';
+import { Search, Truck, Zap, MoreVertical, Download, Printer } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const MOCK_GUIDES = [
   { id: '1', guide_number: 'GD-9001', supplier: 'Distribuidora Central SpA', rut: '76.123.456-7', issue_date: '2025-06-15', dispatch_type: 'Venta', origin: 'Santiago', destination: 'Providencia', amount: 2975000, status: 'accepted' },
@@ -22,6 +23,58 @@ const STATUS_CFG: Record<string, { label: string; color: string; bg: string; bor
   accepted: { label: 'Aceptado', color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200' },
   pending: { label: 'Pendiente', color: 'text-amber-700', bg: 'bg-amber-50', border: 'border-amber-200' },
 };
+
+function generateGuideXml(g: typeof MOCK_GUIDES[0]): string {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+  <Documento>
+    <Encabezado>
+      <IdDoc>
+        <TipoDTE>52</TipoDTE>
+        <Folio>${g.guide_number}</Folio>
+        <FechaEmision>${g.issue_date}</FechaEmision>
+      </IdDoc>
+      <Emisor>
+        <RUTEmisor>${g.rut}</RUTEmisor>
+        <RazonSocial>${g.supplier}</RazonSocial>
+      </Emisor>
+    </Encabezado>
+    <Despacho>
+      <TipoDespacho>${g.dispatch_type}</TipoDespacho>
+      <DireccionOrigen>${g.origin}</DireccionOrigen>
+      <DireccionDestino>${g.destination}</DireccionDestino>
+    </Despacho>
+    <Totales>
+      <MontoTotal>${g.amount}</MontoTotal>
+    </Totales>
+  </Documento>
+</DTE>`;
+}
+
+function openPdfPreview(g: typeof MOCK_GUIDES[0]) {
+  const html = `<!DOCTYPE html><html><head><title>GD ${g.guide_number}</title>
+  <style>body{font-family:Arial,sans-serif;padding:40px;max-width:800px;margin:0 auto}
+  h1{font-size:20px;border-bottom:2px solid #333;padding-bottom:8px}
+  .row{display:flex;justify-content:space-between;margin:4px 0}
+  .total{text-align:right;font-size:14px;font-weight:bold;margin-top:16px}
+  @media print{body{padding:20px}}</style></head><body>
+  <h1>GUÍA DE DESPACHO N° ${g.guide_number}</h1>
+  <div class="row"><span><b>Proveedor:</b> ${g.supplier}</span><span><b>RUT:</b> ${g.rut}</span></div>
+  <div class="row"><span><b>Fecha:</b> ${g.issue_date}</span><span><b>Tipo:</b> ${g.dispatch_type}</span></div>
+  <div class="row"><span><b>Origen:</b> ${g.origin}</span><span><b>Destino:</b> ${g.destination}</span></div>
+  <div class="total" style="margin-top:24px;font-size:18px;border-top:2px solid #333;padding-top:8px">MONTO: $${g.amount.toLocaleString('es-CL')}</div>
+  <script>window.onload=function(){window.print()}</script></body></html>`;
+  const w = window.open('', '_blank');
+  if (w) { w.document.write(html); w.document.close(); }
+}
+
+function downloadXml(filename: string, xml: string) {
+  const blob = new Blob([xml], { type: 'application/xml' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
 
 export default function PurchaseDeliveryGuides() {
   const [search, setSearch] = useState('');
@@ -76,11 +129,11 @@ export default function PurchaseDeliveryGuides() {
               <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Proveedor</th>
               <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">RUT</th>
               <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tipo Despacho</th>
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Origen</th>
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Destino</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tipo</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Origen → Destino</th>
               <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Monto</th>
-              <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado SII</th>
+              <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
+              <th className="w-12 px-4 py-3"></th>
             </tr>
           </thead>
           <tbody>
@@ -94,11 +147,29 @@ export default function PurchaseDeliveryGuides() {
                   <td className="px-4 py-3 text-xs text-slate-500 font-mono">{g.rut}</td>
                   <td className="px-4 py-3 text-xs text-slate-600">{g.issue_date}</td>
                   <td className="px-4 py-3"><span className={`inline-flex items-center px-2 py-0.5 rounded text-[9px] font-semibold ${dt.bg} ${dt.color} border ${dt.border}`}>{dt.label}</span></td>
-                  <td className="px-4 py-3 text-xs text-slate-600">{g.origin}</td>
-                  <td className="px-4 py-3 text-xs text-slate-600">{g.destination}</td>
+                  <td className="px-4 py-3 text-xs text-slate-600">{g.origin} → {g.destination}</td>
                   <td className="px-4 py-3 text-xs text-right font-medium text-slate-900 font-mono">${g.amount.toLocaleString('es-CL')}</td>
                   <td className="px-4 py-3 text-center">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${st.bg} ${st.color} border ${st.border}`}>{st.label}</span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                          <MoreVertical className="w-4 h-4" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-44">
+                        <DropdownMenuItem onClick={() => openPdfPreview(g)}>
+                          <Printer className="w-4 h-4 mr-2 text-slate-500" />
+                          Vista previa PDF
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => downloadXml(`${g.guide_number}.xml`, generateGuideXml(g))}>
+                          <Download className="w-4 h-4 mr-2 text-slate-500" />
+                          Descargar XML
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </td>
                 </tr>
               );
@@ -113,7 +184,7 @@ export default function PurchaseDeliveryGuides() {
       <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center gap-3">
         <Zap className="w-4 h-4 text-amber-500 flex-shrink-0" />
         <p className="text-xs text-amber-700">
-          <span className="font-semibold">Modo Demo SII</span> — Estos documentos son una simulación de datos recibidos del Servicio de Impuestos Internos. La integración real requiere certificado digital y API del SII.
+          <span className="font-semibold">Modo Demo SII</span> — Estos documentos son una simulación de datos recibidos del Servicio de Impuestos Internos.
         </p>
       </div>
     </div>

@@ -1,0 +1,166 @@
+'use client';
+
+import { Calendar, Clock, DollarSign, CheckCircle2, Users, FolderKanban, AlertTriangle, TrendingUp } from 'lucide-react';
+import { PROJECT_STATUS_CONFIG } from '@/lib/constants';
+
+interface Project {
+  id: string;
+  name: string;
+  code: string;
+  description?: string;
+  status: string;
+  progress: number;
+  budget: number;
+  start_date?: string;
+  end_date?: string;
+  project_manager_name?: string;
+  customer_name?: string;
+  task_count?: number;
+  completed_tasks?: number;
+  cost_center_id?: string;
+}
+
+interface SummaryTabProps {
+  project: Project;
+  tasks: any[];
+  members: any[];
+  expenses: any[];
+  costs: any[];
+}
+
+export default function SummaryTab({ project, tasks, members, expenses, costs }: SummaryTabProps) {
+  const statusCfg = PROJECT_STATUS_CONFIG[project.status] || { label: project.status, variant: 'neutral' };
+  const variantColors: Record<string, string> = {
+    success: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    warning: 'bg-amber-50 text-amber-700 border-amber-200',
+    danger: 'bg-rose-50 text-rose-700 border-rose-200',
+    info: 'bg-blue-50 text-blue-700 border-blue-200',
+    neutral: 'bg-slate-100 text-slate-600 border-slate-200',
+  };
+
+  const taskStats = {
+    total: tasks.length,
+    todo: tasks.filter(t => t.status === 'todo').length,
+    in_progress: tasks.filter(t => t.status === 'in_progress').length,
+    review: tasks.filter(t => t.status === 'review').length,
+    done: tasks.filter(t => t.status === 'done').length,
+  };
+
+  const totalExpenses = expenses.reduce((sum: number, e: any) => sum + (parseFloat(e.amount) || 0), 0);
+  const totalCosts = costs.reduce((sum: number, c: any) => sum + (parseFloat(c.amount) || 0), 0);
+  const budgetUsed = totalExpenses + totalCosts;
+  const budgetPct = project.budget > 0 ? Math.round((budgetUsed / project.budget) * 100) : 0;
+
+  const daysLeft = project.end_date
+    ? Math.max(0, Math.ceil((new Date(project.end_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+    : null;
+
+  const fmt = (v: number) => `$${v.toLocaleString('es-CL')}`;
+
+  return (
+    <div className="space-y-6">
+      {/* KPIs */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-5">
+          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Progreso</p>
+          <p className="text-2xl font-bold text-slate-900 mt-1">{project.progress || 0}%</p>
+          <div className="w-full h-2 bg-slate-100 rounded-full mt-2 overflow-hidden">
+            <div className="h-full bg-indigo-500 rounded-full transition-all" style={{ width: `${project.progress || 0}%` }} />
+          </div>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-xl p-5">
+          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tareas</p>
+          <p className="text-2xl font-bold text-slate-900 mt-1">{taskStats.done}/{taskStats.total}</p>
+          <p className="text-xs text-emerald-600 mt-1">{taskStats.in_progress} en progreso</p>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-xl p-5">
+          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Presupuesto</p>
+          <p className="text-2xl font-bold text-slate-900 mt-1">{budgetPct}%</p>
+          <p className="text-xs text-slate-500 mt-1">{fmt(budgetUsed)} / {fmt(project.budget)}</p>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-xl p-5">
+          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Días Restantes</p>
+          <p className="text-2xl font-bold text-slate-900 mt-1">{daysLeft !== null ? daysLeft : '—'}</p>
+          <p className="text-xs text-slate-500 mt-1">{project.end_date || 'Sin fecha fin'}</p>
+        </div>
+      </div>
+
+      {/* Info del proyecto */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4">
+          <h3 className="text-sm font-semibold text-slate-900">Información del Proyecto</h3>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-slate-500">Estado</span>
+              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border ${variantColors[statusCfg.variant]}`}>{statusCfg.label}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-slate-500">Código</span>
+              <span className="text-xs font-medium text-slate-900 font-mono">{project.code}</span>
+            </div>
+            {project.customer_name && (
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-slate-500">Cliente</span>
+                <span className="text-xs font-medium text-slate-900">{project.customer_name}</span>
+              </div>
+            )}
+            {project.project_manager_name && (
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-slate-500">Gerente</span>
+                <span className="text-xs font-medium text-slate-900">{project.project_manager_name}</span>
+              </div>
+            )}
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-slate-500">Inicio</span>
+              <span className="text-xs font-medium text-slate-900">{project.start_date || '—'}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-slate-500">Fin</span>
+              <span className="text-xs font-medium text-slate-900">{project.end_date || '—'}</span>
+            </div>
+          </div>
+          {project.description && (
+            <div className="pt-3 border-t border-slate-100">
+              <p className="text-[9px] font-semibold text-slate-500 uppercase mb-1">Descripción</p>
+              <p className="text-xs text-slate-700">{project.description}</p>
+            </div>
+          )}
+        </div>
+
+        <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4">
+          <h3 className="text-sm font-semibold text-slate-900">Distribución de Tareas</h3>
+          <div className="space-y-3">
+            {[
+              { label: 'Por Hacer', count: taskStats.todo, color: 'bg-slate-400' },
+              { label: 'En Progreso', count: taskStats.in_progress, color: 'bg-blue-500' },
+              { label: 'En Revisión', count: taskStats.review, color: 'bg-amber-500' },
+              { label: 'Completadas', count: taskStats.done, color: 'bg-emerald-500' },
+            ].map(item => (
+              <div key={item.label} className="flex items-center gap-3">
+                <div className={`w-3 h-3 rounded-full ${item.color}`} />
+                <span className="text-xs text-slate-700 flex-1">{item.label}</span>
+                <span className="text-xs font-semibold text-slate-900">{item.count}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="pt-3 border-t border-slate-100">
+            <h4 className="text-xs font-semibold text-slate-700 mb-2">Miembros ({members.length})</h4>
+            <div className="flex flex-wrap gap-1.5">
+              {members.slice(0, 8).map((m: any, i: number) => (
+                <span key={i} className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-medium bg-slate-100 text-slate-600">
+                  {m.user_name || m.email || 'Usuario'}
+                </span>
+              ))}
+              {members.length > 8 && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-medium bg-slate-200 text-slate-500">
+                  +{members.length - 8}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

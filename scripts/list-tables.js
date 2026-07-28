@@ -16,13 +16,8 @@ if (fs.existsSync(envPath)) {
 const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
 
 async function main() {
-  const tables = ['payment_methods', 'purchase_invoices', 'purchase_invoice_items', 'delivery_guides'];
-  for (const t of tables) {
-    const { rows } = await pool.query(`SELECT column_name, data_type FROM information_schema.columns WHERE table_name='${t}' ORDER BY ordinal_position`);
-    console.log(`\n=== ${t} ===`);
-    if (rows.length === 0) { console.log('  DOES NOT EXIST'); }
-    else { rows.forEach(r => console.log(`  ${r.column_name}: ${r.data_type}`)); }
-  }
+  const { rows } = await pool.query(`SELECT tablename FROM pg_tables WHERE schemaname='public' ORDER BY tablename`);
+  console.log(rows.map(r => r.tablename).join('\n'));
   await pool.end();
 }
 

@@ -16,7 +16,7 @@ if (fs.existsSync(envPath)) {
 const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
 
 async function main() {
-  const tables = ['payment_methods', 'purchase_invoices', 'purchase_invoice_items', 'delivery_guides'];
+  const tables = ['purchase_credit_notes', 'purchase_debit_notes', 'purchase_returns', 'purchase_categories'];
   for (const t of tables) {
     const { rows } = await pool.query(`SELECT column_name, data_type FROM information_schema.columns WHERE table_name='${t}' ORDER BY ordinal_position`);
     console.log(`\n=== ${t} ===`);

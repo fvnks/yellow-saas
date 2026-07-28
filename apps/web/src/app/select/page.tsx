@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
-import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight, X, Lock, Zap } from 'lucide-react';
+import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight, X, Lock, Zap, FlaskConical } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 
 interface ModuleOption {
@@ -64,6 +64,20 @@ const modules: ModuleOption[] = [
     href: '/projects',
     requiredModules: ['projects'],
     moduleName: 'projects',
+  },
+  {
+    id: 'formulas',
+    title: 'Recetas',
+    subtitle: 'Recetas y Producción',
+    description: ['Recetas con ingredientes', 'Producción por lotes', 'Control de stock decimal'],
+    icon: FlaskConical,
+    gradient: 'from-amber-500 to-yellow-600',
+    iconBg: 'bg-amber-500/10',
+    iconColor: 'text-amber-600',
+    hoverBorder: 'hover:border-amber-300 hover:shadow-amber-100',
+    href: '/recetas',
+    requiredModules: [],
+    moduleName: 'formulas',
   },
   {
     id: 'mi-cuenta',
