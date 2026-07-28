@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { BookOpen, Search, Filter, Download, Calendar, DollarSign, FileText } from 'lucide-react';
+import { BookOpen, Search, Download, Calendar, DollarSign, FileText, Send, Eye, CheckCircle2, XCircle, Clock, AlertTriangle, Zap, RefreshCw } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 interface PurchaseRegister {
   id: string;
@@ -18,30 +19,43 @@ interface PurchaseRegister {
   notes: string | null;
 }
 
+const SII_DOC_TYPES = [
+  { code: '30', label: 'Factura de Compra', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
+  { code: '34', label: 'Factura Exenta', color: 'bg-violet-50 text-violet-700 border-violet-200' },
+  { code: '45', label: 'Nota de Crédito', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  { code: '55', label: 'Nota de Débito', color: 'bg-amber-50 text-amber-700 border-amber-200' },
+  { code: '61', label: 'Factura de Compra (Exenta)', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+];
+
+const SII_STATUSES = [
+  { key: 'draft', label: 'Borrador', icon: FileText, color: 'text-slate-500', bg: 'bg-slate-100' },
+  { key: 'generated', label: 'XML Generado', icon: Eye, color: 'text-blue-500', bg: 'bg-blue-100' },
+  { key: 'submitted', label: 'Enviado al SII', icon: Send, color: 'text-amber-500', bg: 'bg-amber-100' },
+  { key: 'accepted', label: 'Aceptado', icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-100' },
+  { key: 'rejected', label: 'Rechazado', icon: XCircle, color: 'text-rose-500', bg: 'bg-rose-100' },
+];
+
 const statusLabels: Record<string, { label: string; color: string }> = {
   pagada: { label: 'Pagada', color: 'bg-emerald-50 text-emerald-700 border border-emerald-200' },
   no_pagada: { label: 'No Pagada', color: 'bg-amber-50 text-amber-700 border border-amber-200' },
-  parcial: { label: 'Parcial', color: 'bg-blue-50 text-blue-700 border border-blue-200' },
-  anulada: { label: 'Anulada', color: 'bg-rose-50 text-rose-700 border border-rose-200' },
-};
-
-const areaLabels: Record<string, string> = {
-  LOGISTICA: 'Logística',
-  ADMINISTRACION: 'Administración',
-  VENTAS: 'Ventas',
-  OPERACIONES: 'Operaciones',
-  OTRO: 'Otro',
 };
 
 export default function PurchaseBookPage() {
   const [records, setRecords] = useState<PurchaseRegister[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
+  const [siiStatus, setSiiStatus] = useState('draft');
+  const [showXmlPreview, setShowXmlPreview] = useState(false);
+  const [docTypes, setDocTypes] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [selectedPeriod, setSelectedPeriod] = useState(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  });
 
-  useEffect(() => { fetchRecords(); }, [search, statusFilter, dateFrom, dateTo]);
+  useEffect(() => { fetchRecords(); }, [search, dateFrom, dateTo]);
 
   const fetchRecords = async () => {
     setLoading(true);
@@ -49,7 +63,6 @@ export default function PurchaseBookPage() {
       const api = getApiClient();
       const params: Record<string, string> = { limit: '500' };
       if (search) params.search = search;
-      if (statusFilter) params.status = statusFilter;
       const data = await api.getPurchaseRegisters(params);
       let filtered = data.data || [];
       if (dateFrom) filtered = filtered.filter((r: PurchaseRegister) => r.emission_date >= dateFrom);
@@ -59,54 +72,158 @@ export default function PurchaseBookPage() {
     setLoading(false);
   };
 
-  const totalAmount = records.reduce((sum, r) => sum + (Number(r.amount) || 0), 0);
-  const paidAmount = records.filter(r => r.status === 'pagada').reduce((sum, r) => sum + (Number(r.amount) || 0), 0);
-  const pendingAmount = records.filter(r => r.status === 'no_pagada').reduce((sum, r) => sum + (Number(r.amount) || 0), 0);
+  const assignDocType = (recordId: string, docType: string) => {
+    setDocTypes(prev => ({ ...prev, [recordId]: docType }));
+  };
+
+  const calculateIVA = (amount: number, docType: string) => {
+    if (docType === '34' || docType === '61') return { neto: amount, iva: 0, total: amount };
+    const neto = Math.round(amount / 1.19);
+    const iva = amount - neto;
+    return { neto, iva, total: amount };
+  };
+
+  const totals = records.reduce((acc, r) => {
+    const docType = docTypes[r.id] || '30';
+    const { neto, iva, total } = calculateIVA(Number(r.amount) || 0, docType);
+    return { neto: acc.neto + neto, iva: acc.iva + iva, total: acc.total + total };
+  }, { neto: 0, iva: 0, total: 0 });
+
+  const generateXml = () => {
+    const items = records.map(r => {
+      const docType = docTypes[r.id] || '30';
+      const { neto, iva } = calculateIVA(Number(r.amount) || 0, docType);
+      return `
+      <DTE>
+        <TipoDTE>${docType}</TipoDTE>
+        <Folio>${r.invoice_number}</Folio>
+        <FechaDocto>${r.emission_date}</FechaDocto>
+        <RUTProveedor>${r.rut || '00000000-0'}</RUTProveedor>
+        <RazonSocialProveedor>${r.razon_social}</RazonSocialProveedor>
+        <MontoNeto>${neto}</MontoNeto>
+        <IVA>${iva}</IVA>
+        <MontoTotal>${Number(r.amount)}</MontoTotal>
+        <Estado>${r.status === 'pagada' ? 'P' : 'O'}</Estado>
+      </DTE>`;
+    }).join('');
+
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<LibroCompras xmlns="http://www.sii.cl/SiiDte" version="1.0">
+  <Caratula>
+    <RutEmisor>${company?.tax_id || '76.000.000-0'}</RutEmisor>
+    <Periodo>${selectedPeriod}</Periodo>
+    <FechaGeneracion>${new Date().toISOString().split('T')[0]}</FechaGeneracion>
+    <CantidadDocumentos>${records.length}</CantidadDocumentos>
+    <MontoNeto>${totals.neto}</MontoNeto>
+    <IVA>${totals.iva}</IVA>
+    <MontoTotal>${totals.total}</MontoTotal>
+  </Caratula>
+  <Documentos>${items}
+  </Documentos>
+</LibroCompras>`;
+  };
+
+  const handleGenerateXml = () => {
+    setSiiStatus('generated');
+    toast.success('XML generado correctamente (demo)');
+  };
+
+  const handleSubmitToSii = async () => {
+    setSubmitting(true);
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    setSiiStatus('submitted');
+    toast.info('Enviado al SII (simulación demo)');
+    setTimeout(() => {
+      setSiiStatus('accepted');
+      toast.success('Documento aceptado por el SII (demo)');
+    }, 3000);
+    setSubmitting(false);
+  };
+
+  const handleReset = () => {
+    setSiiStatus('draft');
+    setDocTypes({});
+  };
+
+  const [company, setCompany] = useState<any>(null);
+  useEffect(() => {
+    const api = getApiClient();
+    api.getCompany().then(setCompany).catch(() => {});
+  }, []);
+
+  const currentStatus = SII_STATUSES.find(s => s.key === siiStatus) || SII_STATUSES[0];
+  const StatusIcon = currentStatus.icon;
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Libro de Compras</h1>
-          <p className="text-sm text-slate-500 mt-1">Registro de documentos de compra del período</p>
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl font-bold text-slate-900">Libro de Compras</h1>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+              <Zap className="w-3 h-3" /> MODO DEMO SII
+            </span>
+          </div>
+          <p className="text-sm text-slate-500 mt-1">Registro de documentos de compra para declaración al SII</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <select value={selectedPeriod} onChange={e => setSelectedPeriod(e.target.value)}
+            className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            {Array.from({ length: 12 }, (_, i) => {
+              const d = new Date();
+              d.setMonth(d.getMonth() - i);
+              const val = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+              return <option key={val} value={val}>{d.toLocaleDateString('es-CL', { month: 'long', year: 'numeric' })}</option>;
+            })}
+          </select>
         </div>
       </div>
 
-      {/* KPIs */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl p-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Compras</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">${totalAmount.toLocaleString('es-CL')}</p>
-              <p className="text-xs text-slate-500 mt-1">{records.length} documentos</p>
-            </div>
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
-              <FileText className="w-6 h-6 text-slate-600" />
-            </div>
+      {/* SII Status Bar */}
+      <div className="bg-white border border-slate-200 rounded-xl p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-semibold text-slate-900">Estado de Declaración SII</h3>
+          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg ${currentStatus.bg}`}>
+            <StatusIcon className={`w-4 h-4 ${currentStatus.color}`} />
+            <span className={`text-xs font-semibold ${currentStatus.color}`}>{currentStatus.label}</span>
           </div>
         </div>
+        <div className="flex items-center gap-2">
+          {SII_STATUSES.map((status, i) => {
+            const Icon = status.icon;
+            const isActive = SII_STATUSES.findIndex(s => s.key === siiStatus) >= i;
+            return (
+              <div key={status.key} className="flex items-center gap-2 flex-1">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isActive ? status.bg : 'bg-slate-100'} transition-colors`}>
+                  <Icon className={`w-4 h-4 ${isActive ? status.color : 'text-slate-400'}`} />
+                </div>
+                <span className={`text-[10px] font-medium ${isActive ? 'text-slate-700' : 'text-slate-400'}`}>{status.label}</span>
+                {i < SII_STATUSES.length - 1 && <div className={`h-0.5 flex-1 rounded ${isActive ? 'bg-indigo-200' : 'bg-slate-200'}`} />}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* KPIs with IVA */}
+      <div className="grid grid-cols-4 gap-4">
         <div className="bg-white border border-slate-200 rounded-xl p-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Pagadas</p>
-              <p className="text-2xl font-bold text-emerald-600 mt-1">${paidAmount.toLocaleString('es-CL')}</p>
-            </div>
-            <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">
-              <DollarSign className="w-6 h-6 text-emerald-600" />
-            </div>
-          </div>
+          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Monto Neto</p>
+          <p className="text-2xl font-bold text-slate-900 mt-1">${totals.neto.toLocaleString('es-CL')}</p>
+          <p className="text-xs text-slate-500 mt-1">{records.length} documentos</p>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl p-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Pendientes</p>
-              <p className="text-2xl font-bold text-amber-600 mt-1">${pendingAmount.toLocaleString('es-CL')}</p>
-            </div>
-            <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-amber-600" />
-            </div>
-          </div>
+          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">IVA (19%)</p>
+          <p className="text-2xl font-bold text-indigo-600 mt-1">${totals.iva.toLocaleString('es-CL')}</p>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-xl p-5">
+          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Compras</p>
+          <p className="text-2xl font-bold text-slate-900 mt-1">${totals.total.toLocaleString('es-CL')}</p>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-xl p-5">
+          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Período</p>
+          <p className="text-lg font-bold text-slate-900 mt-2">{selectedPeriod}</p>
         </div>
       </div>
 
@@ -126,19 +243,15 @@ export default function PurchaseBookPage() {
             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)}
               className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
           </div>
-          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-            <option value="">Todos los estados</option>
-            <option value="pagada">Pagada</option>
-            <option value="no_pagada">No Pagada</option>
-            <option value="parcial">Parcial</option>
-            <option value="anulada">Anulada</option>
-          </select>
         </div>
       </div>
 
-      {/* Table */}
+      {/* Table with SII columns */}
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-slate-900">Documentos del Período</h3>
+          <p className="text-xs text-slate-500">Asigna el tipo de documento SII a cada registro</p>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -147,17 +260,22 @@ export default function PurchaseBookPage() {
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Proveedor</th>
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">RUT</th>
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">N° Documento</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Área</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tipo SII</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Neto</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">IVA</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total</th>
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Monto</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={7} className="px-4 py-12 text-center text-sm text-slate-400">Cargando...</td></tr>
+                <tr><td colSpan={9} className="px-4 py-12 text-center text-sm text-slate-400">Cargando...</td></tr>
               ) : records.length === 0 ? (
-                <tr><td colSpan={7} className="px-4 py-12 text-center text-sm text-slate-400">No hay registros en el libro de compras</td></tr>
+                <tr><td colSpan={9} className="px-4 py-12 text-center text-sm text-slate-400">No hay registros en el libro de compras</td></tr>
               ) : records.map(r => {
+                const docType = docTypes[r.id] || '30';
+                const siiDoc = SII_DOC_TYPES.find(d => d.code === docType);
+                const { neto, iva, total } = calculateIVA(Number(r.amount) || 0, docType);
                 const st = statusLabels[r.status] || { label: r.status, color: 'bg-slate-100 text-slate-600 border border-slate-200' };
                 return (
                   <tr key={r.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
@@ -165,11 +283,20 @@ export default function PurchaseBookPage() {
                     <td className="px-4 py-3 text-xs font-medium text-slate-900">{r.razon_social}</td>
                     <td className="px-4 py-3 text-xs text-slate-500 font-mono">{r.rut || '—'}</td>
                     <td className="px-4 py-3 text-xs text-slate-700 font-mono">{r.invoice_number}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{areaLabels[r.area] || r.area}</td>
+                    <td className="px-4 py-3">
+                      <select value={docType} onChange={e => assignDocType(r.id, e.target.value)}
+                        className="bg-slate-50 border border-slate-200 rounded px-2 py-1 text-[10px] font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        {SII_DOC_TYPES.map(d => (
+                          <option key={d.code} value={d.code}>{d.code} - {d.label}</option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="px-4 py-3 text-xs text-slate-600 text-right font-mono">${neto.toLocaleString('es-CL')}</td>
+                    <td className="px-4 py-3 text-xs text-indigo-600 text-right font-mono">${iva.toLocaleString('es-CL')}</td>
+                    <td className="px-4 py-3 text-xs font-semibold text-slate-900 text-right font-mono">${total.toLocaleString('es-CL')}</td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${st.color}`}>{st.label}</span>
                     </td>
-                    <td className="px-4 py-3 text-xs text-slate-900 text-right font-medium">${Number(r.amount || 0).toLocaleString('es-CL')}</td>
                   </tr>
                 );
               })}
@@ -177,12 +304,86 @@ export default function PurchaseBookPage() {
             {records.length > 0 && (
               <tfoot>
                 <tr className="border-t-2 border-slate-300 bg-slate-50">
-                  <td colSpan={6} className="px-4 py-3 text-xs font-semibold text-slate-900">Total</td>
-                  <td className="px-4 py-3 text-xs font-bold text-slate-900 text-right">${totalAmount.toLocaleString('es-CL')}</td>
+                  <td colSpan={5} className="px-4 py-3 text-xs font-semibold text-slate-900">Totales</td>
+                  <td className="px-4 py-3 text-xs font-bold text-slate-900 text-right font-mono">${totals.neto.toLocaleString('es-CL')}</td>
+                  <td className="px-4 py-3 text-xs font-bold text-indigo-600 text-right font-mono">${totals.iva.toLocaleString('es-CL')}</td>
+                  <td className="px-4 py-3 text-xs font-bold text-slate-900 text-right font-mono">${totals.total.toLocaleString('es-CL')}</td>
+                  <td></td>
                 </tr>
               </tfoot>
             )}
           </table>
+        </div>
+      </div>
+
+      {/* Action buttons */}
+      <div className="flex items-center justify-between">
+        <button onClick={handleReset} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          <RefreshCw className="w-4 h-4" /> Reiniciar
+        </button>
+        <div className="flex items-center gap-3">
+          <button onClick={() => setShowXmlPreview(true)} disabled={records.length === 0}
+            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+            <Eye className="w-4 h-4" /> Ver XML
+          </button>
+          {siiStatus === 'draft' && (
+            <button onClick={handleGenerateXml} disabled={records.length === 0}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+              <FileText className="w-4 h-4" /> Generar XML
+            </button>
+          )}
+          {siiStatus === 'generated' && (
+            <button onClick={handleSubmitToSii} disabled={submitting}
+              className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+              <Send className="w-4 h-4" /> {submitting ? 'Enviando...' : 'Enviar al SII'}
+            </button>
+          )}
+          {(siiStatus === 'accepted' || siiStatus === 'rejected') && (
+            <button onClick={handleReset}
+              className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              <RefreshCw className="w-4 h-4" /> Nuevo Período
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* XML Preview Modal */}
+      {showXmlPreview && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowXmlPreview(false)}>
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[80vh] flex flex-col" onClick={e => e.stopPropagation()}>
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-slate-900">Vista Previa XML - Libro de Compras</h2>
+              <button onClick={() => setShowXmlPreview(false)} className="text-slate-400 hover:text-slate-600">
+                <XCircle className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 overflow-auto flex-1">
+              <pre className="bg-slate-900 text-emerald-400 rounded-lg p-4 text-xs font-mono overflow-x-auto whitespace-pre-wrap">
+                {generateXml()}
+              </pre>
+            </div>
+            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+              <button onClick={() => setShowXmlPreview(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium">
+                Cerrar
+              </button>
+              <button onClick={() => { navigator.clipboard.writeText(generateXml()); toast.success('XML copiado al portapapeles'); }}
+                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium">
+                Copiar XML
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Demo notice */}
+      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
+        <AlertTriangle className="w-5 h-5 text-amber-500 mt-0.5 flex-shrink-0" />
+        <div>
+          <p className="text-sm font-semibold text-amber-800">Modo Demostración</p>
+          <p className="text-xs text-amber-700 mt-1">
+            Esta funcionalidad está en modo demo. El envío al SII es simulado. Para la integración real se necesita:
+            certificado digital, token de autenticación, y conexión con la API del SII de Chile.
+          </p>
         </div>
       </div>
     </div>
