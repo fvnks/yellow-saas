@@ -352,8 +352,6 @@ export const sidebarItems: NavGroup[] = [
         subItems: [
           { title: "Libro de Compras", path: "/dashboard/purchases/purchase-book", icon: "BookOpen", requiredPermission: { module: "purchase_orders", action: "read" } },
           { title: "Documentos", path: "/dashboard/purchases/documents", icon: "FileText", requiredPermission: { module: "purchase_orders", action: "read" } },
-          { title: "Notas de Crédito", path: "/dashboard/purchases/credit-notes", icon: "FileText", requiredPermission: { module: "purchase_orders", action: "read" } },
-          { title: "Notas de Débito", path: "/dashboard/purchases/debit-notes", icon: "FileText", requiredPermission: { module: "purchase_orders", action: "read" } },
           { title: "Guías de Despacho", path: "/dashboard/purchases/receipts", icon: "Truck", requiredPermission: { module: "purchase_orders", action: "read" } },
           { title: "Listado de Proveedores", path: "/dashboard/suppliers", icon: "Truck", requiredPermission: { module: "suppliers", action: "read" } },
           { title: "Listado de Productos", path: "/dashboard/inventory", icon: "Package", requiredPermission: { module: "inventory", action: "read" } },
