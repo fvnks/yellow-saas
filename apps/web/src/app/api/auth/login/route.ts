@@ -36,13 +36,43 @@ export async function POST(request: NextRequest) {
       return errorResponse('Contraseña incorrecta', 401);
     }
 
+    // Fetch user's companies from user_companies table (with fallback)
+    let companies: any[] = [];
+    try {
+      const companiesResult = await query(
+        `SELECT uc.company_id, uc.role AS company_role, uc.is_default,
+                c.name, c.slug, c.logo_url, c.plan, c.status
+         FROM user_companies uc
+         JOIN companies c ON c.id = uc.company_id
+         WHERE uc.user_id = $1
+         ORDER BY uc.is_default DESC, c.name ASC`,
+        [user.id]
+      );
+      companies = companiesResult.rows;
+    } catch {
+      // user_companies table doesn't exist yet, fallback to profiles
+      const fallbackResult = await query(
+        `SELECT p.company_id, p.role AS company_role, true AS is_default,
+                c.name, c.slug, c.logo_url, c.plan, c.status
+         FROM profiles p
+         JOIN companies c ON c.id = p.company_id
+         WHERE p.id = $1 AND p.company_id IS NOT NULL`,
+        [user.id]
+      );
+      companies = fallbackResult.rows;
+    }
+
+    // Use the user's company_id from profiles as the active company
+    const activeCompanyId = user.company_id;
+    const activeCompany = companies.find(c => c.company_id === activeCompanyId) || companies[0];
+
     const token = jwt.sign(
       {
         id: user.id,
         email: user.email,
         name: user.full_name,
-        company_id: user.company_id,
-        role: user.role,
+        company_id: activeCompanyId,
+        role: activeCompany?.company_role || user.role,
       },
       JWT_SECRET,
       { expiresIn: '7d' }
@@ -50,13 +80,24 @@ export async function POST(request: NextRequest) {
 
     return successResponse({
       token,
-      company_id: user.company_id,
+      company_id: activeCompanyId,
       user: {
         id: user.id,
         email: user.email,
         name: user.full_name,
-        role: user.role,
+        role: activeCompany?.company_role || user.role,
       },
+      companies: companies.map(c => ({
+        id: c.company_id,
+        name: c.name,
+        slug: c.slug,
+        logo_url: c.logo_url,
+        plan: c.plan,
+        status: c.status,
+        role: c.company_role,
+        is_default: c.is_default,
+        is_active: c.company_id === activeCompanyId,
+      })),
     });
   } catch (err) {
     console.error('Login error:', err);

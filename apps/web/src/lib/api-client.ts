@@ -1647,6 +1647,32 @@ async deleteAdjustmentReason(id: string) {
   async revokeCompanyGrant(companyId: string, grantId: string) {
     return this.request<any>(`/companies/${companyId}/grants/${grantId}`, { method: 'DELETE' });
   }
+
+  // Auth - Multi-company
+  async getAuthCompanies() {
+    const token = getTokenFromCookie();
+    const response = await fetch(`${API_BASE}/auth/companies`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Error fetching companies');
+    return data.data || data;
+  }
+
+  async switchCompany(companyId: string) {
+    const token = getTokenFromCookie();
+    const response = await fetch(`${API_BASE}/auth/switch-company`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ company_id: companyId }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Error switching company');
+    return data.data || data;
+  }
 }
 
 // Singleton with dynamic company_id from JWT
