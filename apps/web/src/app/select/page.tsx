@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
-import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight } from 'lucide-react';
+import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight, X, Lock, Zap } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 
 interface ModuleOption {
@@ -19,6 +19,7 @@ interface ModuleOption {
   hoverBorder: string;
   href: string;
   requiredModules: string[];
+  moduleName: string;
 }
 
 const modules: ModuleOption[] = [
@@ -34,6 +35,7 @@ const modules: ModuleOption[] = [
     hoverBorder: 'hover:border-indigo-300 hover:shadow-indigo-100',
     href: '/dashboard',
     requiredModules: ['inventory', 'products', 'sales', 'purchases', 'accounting', 'projects', 'crm'],
+    moduleName: 'erp',
   },
   {
     id: 'hr',
@@ -47,6 +49,7 @@ const modules: ModuleOption[] = [
     hoverBorder: 'hover:border-emerald-300 hover:shadow-emerald-100',
     href: '/hr',
     requiredModules: ['hr'],
+    moduleName: 'hr',
   },
   {
     id: 'projects',
@@ -60,6 +63,7 @@ const modules: ModuleOption[] = [
     hoverBorder: 'hover:border-amber-300 hover:shadow-amber-100',
     href: '/projects',
     requiredModules: ['projects'],
+    moduleName: 'projects',
   },
   {
     id: 'mi-cuenta',
@@ -73,6 +77,7 @@ const modules: ModuleOption[] = [
     hoverBorder: 'hover:border-violet-300 hover:shadow-violet-100',
     href: '/mi-cuenta',
     requiredModules: [],
+    moduleName: 'mi-cuenta',
   },
 ];
 
@@ -99,6 +104,10 @@ export default function SelectPage() {
   const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [activatedModules, setActivatedModules] = useState<Set<string>>(new Set());
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedModule, setSelectedModule] = useState<ModuleOption | null>(null);
+  const [activating, setActivating] = useState(false);
 
   useEffect(() => {
     const userData = getUserFromCookie();
@@ -106,13 +115,73 @@ export default function SelectPage() {
     setUser(userData);
 
     const api = getApiClient();
-    api.getCompany()
-      .then((companyRes) => {
-        if (companyRes) setCompany(companyRes);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    Promise.all([
+      api.getCompany(),
+      loadActivatedModules(),
+    ]).then(([companyRes]) => {
+      if (companyRes) setCompany(companyRes);
+      setLoading(false);
+    }).catch(() => setLoading(false));
   }, [router]);
+
+  const loadActivatedModules = async () => {
+    try {
+      const api = getApiClient();
+      const companyId = api['companyId'];
+      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+      const res = await fetch(`/api/companies/${companyId}/modules`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      const active = new Set<string>(
+        (data.data?.modules || [])
+          .filter((m: any) => m.status === 'active')
+          .map((m: any) => m.module_name)
+      );
+      setActivatedModules(active);
+    } catch (err) {
+      console.error('Failed to load activated modules:', err);
+    }
+  };
+
+  const isModuleActivated = useCallback((mod: ModuleOption) => {
+    if (mod.requiredModules.length === 0) return true;
+    return mod.requiredModules.some(rm => activatedModules.has(rm));
+  }, [activatedModules]);
+
+  const handleModuleClick = (mod: ModuleOption) => {
+    if (isModuleActivated(mod)) {
+      router.push(mod.href);
+    } else {
+      setSelectedModule(mod);
+      setModalOpen(true);
+    }
+  };
+
+  const handleActivate = async () => {
+    if (!selectedModule) return;
+    setActivating(true);
+    try {
+      const api = getApiClient();
+      const companyId = api['companyId'];
+      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+
+      for (const moduleName of selectedModule.requiredModules) {
+        await fetch(`/api/companies/${companyId}/modules/activate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ module_name: moduleName }),
+        });
+      }
+
+      await loadActivatedModules();
+      setModalOpen(false);
+      router.push(selectedModule.href);
+    } catch (err) {
+      console.error('Failed to activate module:', err);
+    }
+    setActivating(false);
+  };
 
   if (loading) {
     return (
@@ -161,13 +230,14 @@ export default function SelectPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {modules.map((mod, i) => {
               const Icon = mod.icon;
+              const activated = isModuleActivated(mod);
               return (
                 <motion.button
                   key={mod.id}
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, delay: 0.08 + i * 0.08 }}
-                  onClick={() => router.push(mod.href)}
+                  onClick={() => handleModuleClick(mod)}
                   className={`group relative bg-white border border-slate-200 ${mod.hoverBorder} rounded-2xl p-5 text-left transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/40 hover:-translate-y-0.5`}
                 >
                   {/* Gradient accent line */}
@@ -183,7 +253,11 @@ export default function SelectPage() {
                           <h3 className="text-base font-bold text-slate-900">{mod.title}</h3>
                           <p className="text-[11px] text-slate-400 mt-0.5">{mod.subtitle}</p>
                         </div>
-                        <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all duration-200 flex-shrink-0" />
+                        {activated ? (
+                          <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all duration-200 flex-shrink-0" />
+                        ) : (
+                          <Lock className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                        )}
                       </div>
                       <div className="flex flex-wrap gap-1.5 mt-3">
                         {mod.description.map((item, j) => (
@@ -209,6 +283,64 @@ export default function SelectPage() {
           </motion.p>
         </div>
       </div>
+
+      {/* Activation Modal */}
+      <AnimatePresence>
+        {modalOpen && selectedModule && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            onClick={() => setModalOpen(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.2 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-md"
+            >
+              <div className="p-6 text-center">
+                <div className={`w-16 h-16 ${selectedModule.iconBg} rounded-2xl flex items-center justify-center mx-auto mb-4`}>
+                  <Lock className="w-8 h-8 text-amber-500" />
+                </div>
+                <h2 className="text-lg font-bold text-slate-900">Módulo no activado</h2>
+                <p className="text-sm text-slate-500 mt-2">
+                  Hola <span className="font-semibold text-slate-700">{user?.name}</span>, el módulo{' '}
+                  <span className="font-semibold text-slate-700">{selectedModule.title}</span> aún no está activado en tu cuenta.
+                </p>
+                <p className="text-sm text-slate-500 mt-1">
+                  ¿Deseas activarlo ahora para comenzar a usarlo?
+                </p>
+              </div>
+              <div className="px-6 pb-6 flex gap-3">
+                <button
+                  onClick={() => setModalOpen(false)}
+                  className="flex-1 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors"
+                >
+                  Ahora no
+                </button>
+                <button
+                  onClick={handleActivate}
+                  disabled={activating}
+                  className="flex-1 bg-slate-900 hover:bg-black text-white px-4 py-2.5 rounded-xl text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                >
+                  {activating ? (
+                    'Activando...'
+                  ) : (
+                    <>
+                      <Zap className="w-4 h-4" />
+                      Activar módulo
+                    </>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
