@@ -1,24 +1,71 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from 'next/navigation';
 import { SidebarMenu, SidebarMenuItem } from "@/components/ui/sidebar";
+import CompanySwitcher from '@/components/ui/company-switcher';
+import { getApiClient } from '@/lib/api-client';
 
 export default function SidebarBrandHeader() {
+  const router = useRouter();
+  const [companies, setCompanies] = useState<any[]>([]);
+  const [currentCompanyId, setCurrentCompanyId] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const companyId = localStorage.getItem('company_id');
+    if (companyId) setCurrentCompanyId(companyId);
+
+    loadCompanies();
+  }, []);
+
+  const loadCompanies = async () => {
+    try {
+      const api = getApiClient();
+      const res = await api.getAuthCompanies();
+      setCompanies(res.companies || []);
+    } catch (err) {
+      console.error('Failed to load companies:', err);
+    }
+    setLoading(false);
+  };
+
+  const handleSwitch = async (companyId: string) => {
+    try {
+      const api = getApiClient();
+      const res = await api.switchCompany(companyId);
+
+      // Update token cookie
+      document.cookie = `auth-token=${res.token}; path=/; max-age=${7 * 24 * 60 * 60}`;
+
+      // Update localStorage
+      localStorage.setItem('company_id', companyId);
+
+      // Reload to refresh all data
+      window.location.reload();
+    } catch (err) {
+      console.error('Failed to switch company:', err);
+    }
+  };
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <Link href="/dashboard" className="flex items-center gap-3 px-2 py-3 rounded-xl hover:bg-sidebar-accent/50 transition-all duration-200 group">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden">
+        <div className="flex items-center gap-3 px-2 py-2 rounded-xl">
+          <Link href="/dashboard" className="flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden flex-shrink-0">
             <Image src="/logo/yellow-cube.svg" alt="Yellow" width={36} height={36} />
+          </Link>
+          <div className="flex-1 min-w-0 group-data-[collapsible=icon]:hidden">
+            <CompanySwitcher
+              companies={companies}
+              currentCompanyId={currentCompanyId}
+              onSwitch={handleSwitch}
+              loading={loading}
+            />
           </div>
-          <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-            <span className="text-sm font-bold text-slate-900 leading-tight dark:text-white">
-              Yellow <span className="font-normal text-slate-400 dark:text-slate-500">ERP</span>
-            </span>
-            <span className="text-[9px] font-semibold text-amber-500 uppercase tracking-widest">
-              Multi-tenant
-            </span>
-          </div>
-        </Link>
+        </div>
       </SidebarMenuItem>
     </SidebarMenu>
   );
