@@ -9,7 +9,13 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
     const { rows: invoices } = await query(
       `SELECT pi.*, s.name as supplier_name, s.tax_id as supplier_tax_id,
-        po.order_number as po_number
+        po.order_number as po_number,
+        (SELECT json_agg(json_build_object(
+          'id', pii.id, 'description', pii.description, 'quantity', pii.quantity,
+          'unit_price', pii.unit_price, 'discount_pct', pii.discount_pct,
+          'tax_pct', pii.tax_pct, 'line_total', pii.line_total,
+          'purchase_category_id', pii.purchase_category_id
+        )) FROM purchase_invoice_items pii WHERE pii.invoice_id = pi.id) as items
        FROM purchase_invoices pi
        JOIN suppliers s ON s.id = pi.supplier_id
        LEFT JOIN purchase_orders po ON po.id = pi.purchase_order_id

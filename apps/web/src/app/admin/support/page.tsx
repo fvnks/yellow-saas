@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Headphones, Plus, Search, Building2, AlertTriangle, CheckCircle, Clock, MessageSquare, Send, X } from 'lucide-react';
+import { Headphones, Plus, Search, Building2, AlertTriangle, CheckCircle, Clock, MessageSquare, Send, X, UserCheck } from 'lucide-react';
 
 interface Ticket {
   id: string;
@@ -14,6 +14,7 @@ interface Ticket {
   company_id: string;
   created_by_name: string;
   assigned_to_name: string;
+  assigned_to: string | null;
 }
 
 interface TicketDetail extends Ticket {
@@ -25,9 +26,16 @@ interface Company {
   name: string;
 }
 
+interface SuperAdmin {
+  id: string;
+  name: string;
+  email: string;
+}
+
 export default function AdminSupportPage() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [companies, setCompanies] = useState<Company[]>([]);
+  const [superAdmins, setSuperAdmins] = useState<SuperAdmin[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
@@ -43,6 +51,7 @@ export default function AdminSupportPage() {
   useEffect(() => {
     fetchTickets();
     fetchCompanies();
+    fetchSuperAdmins();
   }, []);
 
   const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
@@ -70,6 +79,32 @@ export default function AdminSupportPage() {
       if (data.success) setCompanies(data.data);
     } catch (err) {
       console.error('Failed to load companies:', err);
+    }
+  };
+
+  const fetchSuperAdmins = async () => {
+    try {
+      const res = await fetch('/api/super-admin/super-admins', {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      const data = await res.json();
+      if (data.success) setSuperAdmins(data.data);
+    } catch (err) {
+      console.error('Failed to load super admins:', err);
+    }
+  };
+
+  const handleAssign = async (ticketId: string, assignedTo: string) => {
+    try {
+      await fetch(`/api/super-admin/support/${ticketId}`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ assigned_to: assignedTo || null }),
+      });
+      fetchTickets();
+      if (selectedTicket?.id === ticketId) fetchTicketDetail(ticketId);
+    } catch (err) {
+      console.error('Failed to assign ticket:', err);
     }
   };
 
@@ -202,6 +237,19 @@ export default function AdminSupportPage() {
                 {s === 'in_progress' ? 'En progreso' : s === 'open' ? 'Abierto' : s === 'resolved' ? 'Resuelto' : 'Cerrado'}
               </button>
             ))}
+          </div>
+          <div className="flex items-center gap-2 ml-auto">
+            <UserCheck className="w-4 h-4 text-slate-500" />
+            <select
+              value={selectedTicket.assigned_to || ''}
+              onChange={(e) => handleAssign(selectedTicket.id, e.target.value)}
+              className="bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            >
+              <option value="">Sin asignar</option>
+              {superAdmins.map((admin) => (
+                <option key={admin.id} value={admin.id}>{admin.name}</option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -364,6 +412,7 @@ export default function AdminSupportPage() {
             <tr className="border-b border-slate-800">
               <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Ticket</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Empresa</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Asignado a</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Prioridad</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Estado</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Fecha</th>
@@ -374,12 +423,12 @@ export default function AdminSupportPage() {
             {loading ? (
               Array.from({ length: 3 }).map((_, i) => (
                 <tr key={i} className="border-b border-slate-800/50">
-                  <td colSpan={6} className="px-6 py-4"><div className="h-4 bg-slate-800 rounded animate-pulse" /></td>
+                  <td colSpan={7} className="px-6 py-4"><div className="h-4 bg-slate-800 rounded animate-pulse" /></td>
                 </tr>
               ))
             ) : filtered.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center">
+                <td colSpan={7} className="px-6 py-12 text-center">
                   <Headphones className="w-12 h-12 text-slate-700 mx-auto mb-3" />
                   <p className="text-sm text-slate-500">No hay tickets de soporte</p>
                 </td>
@@ -396,6 +445,9 @@ export default function AdminSupportPage() {
                       <Building2 className="w-3 h-3 text-slate-500" />
                       {ticket.company_name}
                     </div>
+                  </td>
+                  <td className="px-6 py-4 text-xs text-slate-400">
+                    {ticket.assigned_to_name || <span className="text-slate-600">—</span>}
                   </td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${priorityColors[ticket.priority]}`}>

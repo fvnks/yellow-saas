@@ -57,13 +57,15 @@ const invoiceStatusConfig: Record<string, { label: string; variant: 'success' | 
   sent: { label: 'Enviada', variant: 'info' },
 };
 
+import SalesDocumentsPage from './components/SalesDocumentsPage';
+
 const salesModules = [
   { id: 'ventas', label: 'Ventas', icon: ShoppingCart, tabs: [
     { id: 'orders', label: 'OV' }, { id: 'dashboard', label: 'Dashboard' }, { id: 'delivery', label: 'Despacho' },
     { id: 'invoices', label: 'Facturas' }, { id: 'customers', label: 'Clientes' }, { id: 'quotations', label: 'Cotizaciones' }, { id: 'returns', label: 'Devoluciones' },
   ]},
   { id: 'documentos', label: 'Documentos', icon: FileText, tabs: [
-    { id: 'credit-notes', label: 'NC' }, { id: 'debit-notes', label: 'ND' },
+    { id: 'unified', label: 'Unificados' }, { id: 'credit-notes', label: 'NC' }, { id: 'debit-notes', label: 'ND' },
   ]},
   { id: 'finanzas', label: 'Finanzas', icon: DollarSign, tabs: [
     { id: 'credit-control', label: 'Cr�dito' }, { id: 'statement', label: 'Estado Cta.' },
@@ -83,7 +85,7 @@ const salesModules = [
 function SalesPageContent() {
   const searchParams = useSearchParams();
   const tabParam = searchParams.get('tab');
-  const validTabs = ['orders', 'delivery', 'invoices', 'pos', 'customers', 'quotations', 'returns', 'credit-control', 'statement', 'targets', 'commissions', 'reports', 'price-history', 'forecast', 'routes', 'loyalty', 'contracts', 'dashboard', 'credit-notes', 'debit-notes'] as const;
+  const validTabs = ['orders', 'delivery', 'invoices', 'pos', 'customers', 'quotations', 'returns', 'credit-control', 'statement', 'targets', 'commissions', 'reports', 'price-history', 'forecast', 'routes', 'loyalty', 'contracts', 'dashboard', 'credit-notes', 'debit-notes', 'unified'] as const;
   const initialTab = validTabs.includes(tabParam as any) ? (tabParam as any) : 'orders';
   const [orders, setOrders] = useState<any[]>([]);
   const [deliveryGuides, setDeliveryGuides] = useState<any[]>([]);
@@ -729,16 +731,24 @@ function SalesPageContent() {
           </div>
         )}
 
-        {/* POS Tab - redirects to standalone POS */}
+        {/* Credit Notes */}
         {activeTab === 'credit-notes' && (
           <div className="p-6">
             <CreditNotes />
           </div>
         )}
 
+        {/* Debit Notes */}
         {activeTab === 'debit-notes' && (
           <div className="p-6">
             <DebitNotes />
+          </div>
+        )}
+
+        {/* Unified Sales Documents */}
+        {activeTab === 'unified' && (
+          <div className="p-6">
+            <SalesDocumentsPage />
           </div>
         )}
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ScrollText, Search, Shield, Building2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ScrollText, Search, Shield, Building2, ChevronLeft, ChevronRight, Filter, X } from 'lucide-react';
 
 interface AuditEntry {
   id: string;
@@ -11,7 +11,20 @@ interface AuditEntry {
   created_at: string;
   super_admin_name: string;
   super_admin_email: string;
+  super_admin_id: string;
   company_name: string;
+  company_id: string;
+}
+
+interface SuperAdmin {
+  id: string;
+  name: string;
+  email: string;
+}
+
+interface Company {
+  id: string;
+  name: string;
 }
 
 export default function AdminAuditPage() {
@@ -19,18 +32,33 @@ export default function AdminAuditPage() {
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
+  const [superAdmins, setSuperAdmins] = useState<SuperAdmin[]>([]);
+  const [companies, setCompanies] = useState<Company[]>([]);
   const limit = 50;
+
+  const [filters, setFilters] = useState({ action: '', super_admin_id: '', company_id: '', date_from: '', date_to: '' });
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     fetchEntries();
-  }, [page]);
+    fetchSuperAdmins();
+    fetchCompanies();
+  }, [page, filters]);
+
+  const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1] || '';
 
   const fetchEntries = async () => {
     setLoading(true);
     try {
-      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
-      const res = await fetch(`/api/super-admin/audit?limit=${limit}&offset=${page * limit}`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const params = new URLSearchParams({ limit: String(limit), offset: String(page * limit) });
+      if (filters.action) params.set('action', filters.action);
+      if (filters.super_admin_id) params.set('super_admin_id', filters.super_admin_id);
+      if (filters.company_id) params.set('company_id', filters.company_id);
+      if (filters.date_from) params.set('date_from', filters.date_from);
+      if (filters.date_to) params.set('date_to', filters.date_to);
+
+      const res = await fetch(`/api/super-admin/audit?${params}`, {
+        headers: { Authorization: `Bearer ${getToken()}` },
       });
       const data = await res.json();
       if (data.success) {
@@ -44,6 +72,37 @@ export default function AdminAuditPage() {
     }
   };
 
+  const fetchSuperAdmins = async () => {
+    try {
+      const res = await fetch('/api/super-admin/super-admins', {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      const data = await res.json();
+      if (data.success) setSuperAdmins(data.data);
+    } catch (err) {
+      console.error('Failed to load super admins:', err);
+    }
+  };
+
+  const fetchCompanies = async () => {
+    try {
+      const res = await fetch('/api/super-admin/companies', {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      const data = await res.json();
+      if (data.success) setCompanies(data.data);
+    } catch (err) {
+      console.error('Failed to load companies:', err);
+    }
+  };
+
+  const activeFilters = Object.values(filters).filter(Boolean).length;
+
+  const clearFilters = () => {
+    setFilters({ action: '', super_admin_id: '', company_id: '', date_from: '', date_to: '' });
+    setPage(0);
+  };
+
   const actionColors: Record<string, string> = {
     login: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     access: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
@@ -55,10 +114,90 @@ export default function AdminAuditPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-white">Audit Log</h1>
-        <p className="text-sm text-slate-400 mt-1">Registro de acciones de super admins en la plataforma</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Audit Log</h1>
+          <p className="text-sm text-slate-400 mt-1">Registro de acciones de super admins en la plataforma</p>
+        </div>
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            showFilters || activeFilters > 0 ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white'
+          }`}
+        >
+          <Filter className="w-4 h-4" />
+          Filtros {activeFilters > 0 && `(${activeFilters})`}
+        </button>
       </div>
+
+      {/* Filters */}
+      {showFilters && (
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-400">Acción</label>
+              <select
+                value={filters.action}
+                onChange={(e) => { setFilters({ ...filters, action: e.target.value }); setPage(0); }}
+                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              >
+                <option value="">Todas</option>
+                <option value="login">Login</option>
+                <option value="access">Access</option>
+                <option value="modify">Modify</option>
+                <option value="logout">Logout</option>
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-400">Super Admin</label>
+              <select
+                value={filters.super_admin_id}
+                onChange={(e) => { setFilters({ ...filters, super_admin_id: e.target.value }); setPage(0); }}
+                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              >
+                <option value="">Todos</option>
+                {superAdmins.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-400">Empresa</label>
+              <select
+                value={filters.company_id}
+                onChange={(e) => { setFilters({ ...filters, company_id: e.target.value }); setPage(0); }}
+                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              >
+                <option value="">Todas</option>
+                {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-400">Desde</label>
+              <input
+                type="date"
+                value={filters.date_from}
+                onChange={(e) => { setFilters({ ...filters, date_from: e.target.value }); setPage(0); }}
+                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-400">Hasta</label>
+              <input
+                type="date"
+                value={filters.date_to}
+                onChange={(e) => { setFilters({ ...filters, date_to: e.target.value }); setPage(0); }}
+                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
+          {activeFilters > 0 && (
+            <div className="mt-3 flex justify-end">
+              <button onClick={clearFilters} className="flex items-center gap-1 text-xs text-slate-400 hover:text-white transition-colors">
+                <X className="w-3 h-3" /> Limpiar filtros
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
         <table className="w-full">

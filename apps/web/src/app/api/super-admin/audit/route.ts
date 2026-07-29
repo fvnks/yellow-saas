@@ -10,21 +10,47 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const limit = parseInt(searchParams.get('limit') || '100');
   const offset = parseInt(searchParams.get('offset') || '0');
+  const action = searchParams.get('action') || '';
+  const superAdminId = searchParams.get('super_admin_id') || '';
+  const companyId = searchParams.get('company_id') || '';
+  const dateFrom = searchParams.get('date_from') || '';
+  const dateTo = searchParams.get('date_to') || '';
 
   try {
+    const conditions: string[] = [];
+    const values: any[] = [];
+    let idx = 1;
+
+    if (action) { conditions.push(`aal.action = $${idx++}`); values.push(action); }
+    if (superAdminId) { conditions.push(`aal.super_admin_id = $${idx++}`); values.push(superAdminId); }
+    if (companyId) { conditions.push(`aal.company_id = $${idx++}`); values.push(companyId); }
+    if (dateFrom) { conditions.push(`aal.created_at >= $${idx++}`); values.push(dateFrom); }
+    if (dateTo) { conditions.push(`aal.created_at <= $${idx++}`); values.push(dateTo + 'T23:59:59'); }
+
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+
+    values.push(limit, offset);
+    const limitIdx = idx++;
+    const offsetIdx = idx++;
+
     const result = await query(`
       SELECT 
         aal.id, aal.action, aal.details, aal.ip_address, aal.created_at,
+        aal.super_admin_id, aal.company_id,
         sa.name as super_admin_name, sa.email as super_admin_email,
         c.name as company_name
       FROM access_audit_log aal
       JOIN super_admins sa ON sa.id = aal.super_admin_id
       JOIN companies c ON c.id = aal.company_id
+      ${whereClause}
       ORDER BY aal.created_at DESC
-      LIMIT $1 OFFSET $2
-    `, [limit, offset]);
+      LIMIT $${limitIdx} OFFSET $${offsetIdx}
+    `, values);
 
-    const countResult = await query('SELECT COUNT(*) as total FROM access_audit_log');
+    const countResult = await query(
+      `SELECT COUNT(*) as total FROM access_audit_log aal ${whereClause}`,
+      values.slice(0, -2)
+    );
 
     return successResponse({
       entries: result.rows,

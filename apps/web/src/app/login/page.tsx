@@ -56,7 +56,14 @@ function LoginForm() {
 
       const maxAge = remember ? 7 * 24 * 60 * 60 : undefined;
       document.cookie = `auth-token=${data.data.token}; path=/; max-age=${maxAge}`;
-      window.location.href = redirect;
+
+      // Redirect based on role_type
+      const roleType = data.data.user?.role_type;
+      if (roleType === 'super_admin') {
+        window.location.href = '/admin';
+      } else {
+        window.location.href = redirect;
+      }
     } catch {
       setError('Error de conexión. Intenta nuevamente.');
       setLoading(false);

@@ -2,9 +2,9 @@ import { query } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import { SignJWT } from 'jose';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'yellow-erp-secret-key-change-in-production';
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'yellow-erp-secret-key-change-in-production');
 
 export async function POST(request: NextRequest) {
   try {
@@ -49,17 +49,17 @@ export async function POST(request: NextRequest) {
 
     const user = userResult.rows[0];
 
-    const token = jwt.sign(
-      {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        company_id: company.id,
-        role: 'owner',
-      },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+    const token = await new SignJWT({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      company_id: company.id,
+      role: 'owner',
+    })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setExpirationTime('7d')
+      .sign(JWT_SECRET);
 
     return successResponse({
       token,

@@ -9,20 +9,7 @@ import {
   Shield, Building2, Users, KeyRound, Settings, LogOut,
   LayoutDashboard, Menu, X, UserCog, Headphones, Bell, CreditCard, ScrollText
 } from 'lucide-react';
-
-function getClientSession(): { role_type?: string; name?: string; email?: string } | null {
-  if (typeof window === 'undefined') return null;
-  const cookies = document.cookie.split(';');
-  const authCookie = cookies.find(c => c.trim().startsWith('auth-token='));
-  if (!authCookie) return null;
-  const token = authCookie.split('=')[1];
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload;
-  } catch {
-    return null;
-  }
-}
+import { useAuthToken } from '@/hooks/use-auth-token';
 
 const sidebarItems = [
   { label: 'Plataforma', items: [
@@ -48,17 +35,17 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
+  const session = useAuthToken();
 
   useEffect(() => {
-    const session = getClientSession();
     if (!session || session.role_type !== 'super_admin') {
-      router.push('/super-admin/login');
+      router.push('/login');
       return;
     }
 
     setUserName(session.name || 'Super Admin');
     setUserEmail(session.email || '');
-  }, [router]);
+  }, [router, session]);
 
   const isActive = (path: string) => {
     if (path === '/admin') return pathname === '/admin';
@@ -67,7 +54,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   const handleLogout = () => {
     document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-    window.location.href = '/super-admin/login';
+    window.location.href = '/login';
   };
 
   return (

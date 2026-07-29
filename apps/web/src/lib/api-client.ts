@@ -270,6 +270,48 @@ export class ApiClient {
     return this.request<{ message: string }>(`/delivery-guides/${id}`, { method: 'DELETE' });
   }
 
+  // Credit Notes
+  async getCreditNotes(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; number: string; customer_id: string; customer_name: string; customer_rut: string; invoice_id: string; invoice_number: string; reason: string; credit_date: string; status: string; subtotal: number; tax_amount: number; total_amount: number; sii_status: string; sii_track_id: string; sii_xml: string; created_at: string }>('/credit-notes', params || {});
+  }
+
+  async getCreditNote(id: string) {
+    return this.request<{ id: string; number: string; customer_id: string; customer_name: string; customer_rut: string; invoice_id: string; invoice_number: string; reason: string; credit_date: string; status: string; subtotal: number; tax_amount: number; total_amount: number; notes: string; items: any[] }>(`/credit-notes/${id}`);
+  }
+
+  async createCreditNote(data: { customer_id: string; invoice_id?: string; reason: string; credit_date: string; notes?: string; items: { product_id?: string; description: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }) {
+    return this.request<{ id: string; number: string }>('/credit-notes', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateCreditNote(id: string, data: Partial<{ status: string; reason: string; notes: string }>) {
+    return this.request<{ id: string }>(`/credit-notes/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteCreditNote(id: string) {
+    return this.request<{ message: string }>(`/credit-notes/${id}`, { method: 'DELETE' });
+  }
+
+  // Debit Notes
+  async getDebitNotes(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; number: string; customer_id: string; customer_name: string; customer_rut: string; invoice_id: string; invoice_number: string; reason: string; debit_date: string; status: string; subtotal: number; tax_amount: number; total_amount: number; sii_status: string; sii_track_id: string; sii_xml: string; created_at: string }>('/debit-notes', params || {});
+  }
+
+  async getDebitNote(id: string) {
+    return this.request<{ id: string; number: string; customer_id: string; customer_name: string; customer_rut: string; invoice_id: string; invoice_number: string; reason: string; debit_date: string; status: string; subtotal: number; tax_amount: number; total_amount: number; notes: string; items: any[] }>(`/debit-notes/${id}`);
+  }
+
+  async createDebitNote(data: { customer_id: string; invoice_id?: string; reason: string; debit_date: string; notes?: string; items: { product_id?: string; description: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number }[] }) {
+    return this.request<{ id: string; number: string }>('/debit-notes', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateDebitNote(id: string, data: Partial<{ status: string; reason: string; notes: string }>) {
+    return this.request<{ id: string }>(`/debit-notes/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteDebitNote(id: string) {
+    return this.request<{ message: string }>(`/debit-notes/${id}`, { method: 'DELETE' });
+  }
+
   // Invoices
   async getInvoices(params?: Record<string, string>) {
     return this.requestWithPagination<{ id: string; invoice_number: string; order_id: string; status: string; total_amount: number; created_at: string }>('/invoices', params || {});

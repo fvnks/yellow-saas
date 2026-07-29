@@ -1,9 +1,9 @@
 import { query } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
-import jwt from 'jsonwebtoken';
+import { jwtVerify, SignJWT } from 'jose';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'yellow-erp-secret-key-change-in-production';
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'yellow-erp-secret-key-change-in-production');
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,7 +16,8 @@ export async function POST(request: NextRequest) {
 
     let payload;
     try {
-      payload = jwt.verify(token, JWT_SECRET) as any;
+      const { payload: verified } = await jwtVerify(token, JWT_SECRET);
+      payload = verified as any;
     } catch {
       return errorResponse('Token inválido', 401);
     }
@@ -72,17 +73,17 @@ export async function POST(request: NextRequest) {
     const company = companyResult.rows[0];
 
     // Generate new JWT with the new company_id
-    const newToken = jwt.sign(
-      {
-        id: payload.id,
-        email: payload.email,
-        name: payload.name,
-        company_id: company_id,
-        role: userRole,
-      },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+    const newToken = await new SignJWT({
+      id: payload.id,
+      email: payload.email,
+      name: payload.name,
+      company_id: company_id,
+      role: userRole,
+    })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setExpirationTime('7d')
+      .sign(JWT_SECRET);
 
     return successResponse({
       token: newToken,
