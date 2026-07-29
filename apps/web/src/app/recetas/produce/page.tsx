@@ -13,6 +13,7 @@ export default function ProducePage() {
   const [quantity, setQuantity] = useState('1');
   const [warehouseId, setWarehouseId] = useState('');
   const [notes, setNotes] = useState('');
+  const [outputPrice, setOutputPrice] = useState('');
   const [producing, setProducing] = useState(false);
   const [warehouses, setWarehouses] = useState<any[]>([]);
   const [lastResult, setLastResult] = useState<any>(null);
@@ -34,6 +35,7 @@ export default function ProducePage() {
     const api = getApiClient();
     const data = await api.getFormula(formulaId);
     setSelectedFormula(data);
+    setOutputPrice(data?.output_product?.sale_price ? String(data.output_product.sale_price) : '');
   };
 
   const handleProduce = async () => {
@@ -49,6 +51,14 @@ export default function ProducePage() {
         warehouse_id: warehouseId || undefined,
         notes: notes || undefined,
       });
+
+      if (selectedFormula.output_product_id && outputPrice) {
+        const price = parseFloat(outputPrice);
+        if (!isNaN(price) && price !== Number(selectedFormula.output_product?.sale_price)) {
+          await api.updateRecipeProduct(selectedFormula.output_product_id, { sale_price: price });
+        }
+      }
+
       setLastResult(result);
       toast.success(result.message || 'Producción completada');
       setQuantity('1');
@@ -98,7 +108,7 @@ export default function ProducePage() {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-slate-900">{f.name}</p>
-                    <p className="text-[10px] text-slate-500">{f.ingredient_count || 0} ingredientes · {f.yield_quantity} {f.yield_unit}</p>
+                    <p className="text-[10px] text-slate-500">{f.ingredient_count || 0} ingredientes · {Number(f.yield_quantity)} {f.yield_unit}</p>
                   </div>
                 </div>
               </button>
@@ -129,6 +139,20 @@ export default function ProducePage() {
                 {warehouses.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}
               </select>
             </div>
+            {selectedFormula.output_product && (
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-700">Precio de Venta del Producto</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">$</span>
+                  <input type="number" step="1" min="0" value={outputPrice} onChange={e => setOutputPrice(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-7 pr-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    placeholder="0" />
+                </div>
+                <p className="text-[10px] text-slate-400">
+                  {selectedFormula.output_product.name} — se actualizará al producir
+                </p>
+              </div>
+            )}
             <div className="space-y-1">
               <label className="block text-xs font-medium text-slate-700">Notas</label>
               <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2}

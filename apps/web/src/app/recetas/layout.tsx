@@ -8,7 +8,7 @@ import { ThemeProvider } from '@/components/ui/theme-toggle';
 import { PermissionsProvider } from '@/lib/permissions';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FlaskConical, Plus, BarChart3, Settings, Monitor, Package } from 'lucide-react';
+import { FlaskConical, Plus, BarChart3, Settings, Monitor, Package, ArrowDownUp } from 'lucide-react';
 import ThemeToggle from '@/components/ui/theme-toggle';
 
 function RecetasSidebar() {
@@ -19,6 +19,8 @@ function RecetasSidebar() {
     { href: '/recetas/new', label: 'Nueva Receta', icon: Plus },
     { href: '/recetas/produce', label: 'Producir', icon: Settings },
     { href: '/recetas/inventory', label: 'Inventario', icon: Package },
+    { href: '/recetas/stock', label: 'Entrada Stock', icon: ArrowDownUp },
+    { href: '/recetas/settings', label: 'Config Stock', icon: BarChart3 },
   ];
 
   return (

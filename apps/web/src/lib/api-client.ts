@@ -97,6 +97,23 @@ export class ApiClient {
     return this.request<{ id: string }>('/recipe-products', { method: 'POST', body: JSON.stringify(data) });
   }
 
+  async updateRecipeProduct(id: string, data: { stock?: number; min_stock?: number; name?: string; sku?: string; unit_of_measure?: string; cost_price?: number; sale_price?: number; description?: string; is_active?: boolean }) {
+    return this.request<any>('/recipe-products', { method: 'PATCH', body: JSON.stringify({ id, ...data }) });
+  }
+
+  async deleteRecipeProduct(id: string) {
+    return this.request<{ message: string }>('/recipe-products', { method: 'DELETE', body: JSON.stringify({ id }) });
+  }
+
+  // Recipe Stock Entries
+  async getRecipeStockEntries(params?: Record<string, string>) {
+    return this.requestWithPagination<{ id: string; product_id: string; product_name: string; product_sku: string; unit_of_measure: string; type: string; quantity: number; previous_stock: number; new_stock: number; reason: string | null; created_at: string }>('/recipe-stock-entries', params || {});
+  }
+
+  async createRecipeStockEntries(entries: { product_id: string; type: 'add' | 'remove'; quantity: number; reason?: string }[]) {
+    return this.request<{ count: number; entries: any[] }>('/recipe-stock-entries', { method: 'POST', body: JSON.stringify({ entries }) });
+  }
+
   // Warehouses
   async getWarehouses(params?: Record<string, string>) {
     return this.requestWithPagination<{ id: string; name: string; code: string; total_products: number; total_stock: number; is_default: boolean }>('/warehouses', params || {});
@@ -321,12 +338,16 @@ export class ApiClient {
     return this.request<{ id: string; invoice_number: string; status: string; invoice_date: string; due_date: string; payment_terms: number; subtotal: number; tax_amount: number; total_amount: number; notes: string; customer: { id: string; name: string; tax_id: string }; items: any[] }>(`/invoices/${id}`);
   }
 
-  async createInvoice(data: { order_id?: string; customer_id?: string; invoice_date: string; due_date?: string; payment_method?: string; payment_terms?: string; notes?: string; status?: string; document_type?: 'boleta' | 'factura'; items: { product_id?: string; quantity: number; unit_price: number; discount?: number; tax_rate?: number; description?: string }[] }) {
+  async createInvoice(data: { order_id?: string; customer_id?: string; invoice_date: string; due_date?: string; payment_method?: string; payment_terms?: string; notes?: string; status?: string; document_type?: 'boleta' | 'factura'; card_transaction_number?: string; items: { product_id?: string; quantity: number; unit_price: number; discount?: number; tax_rate?: number; description?: string }[] }) {
     return this.request<{ id: string; invoice_number: string }>('/invoices', { method: 'POST', body: JSON.stringify(data) });
   }
 
   async updateInvoice(id: string, data: Partial<{ status: string; payment_status: string; invoice_date: string; due_date: string; payment_terms: string; notes: string }>) {
     return this.request<{ id: string }>(`/invoices/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async patchInvoice(data: { id: string; card_transaction_number?: string; status?: string; payment_method?: string }) {
+    return this.request<any>('/invoices', { method: 'PATCH', body: JSON.stringify(data) });
   }
 
   async deleteInvoice(id: string) {

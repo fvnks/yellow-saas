@@ -48,7 +48,11 @@ export default function POSPage() {
 
   const [processing, setProcessing] = useState(false);
   const [company, setCompany] = useState<any>(null);
+  const [cardTransactionNumber, setCardTransactionNumber] = useState('');
+  const [showCardModal, setShowCardModal] = useState(false);
   const [completedInvoice, setCompletedInvoice] = useState<{ id: string; invoice_number: string; total: number; document_type: 'boleta' | 'factura'; cart: CartItem[]; customer: Customer | null; paymentMethod: string; amountPaid: number } | null>(null);
+
+  const inv = completedInvoice;
 
   useEffect(() => {
     const api = getApiClient();
@@ -135,9 +139,29 @@ export default function POSPage() {
         })),
       });
 
+      const invoiceId = invoiceResult?.id || '';
+      const invoiceNumber = invoiceResult?.invoice_number || '';
+
+      if (paymentMethod === 'card') {
+        setCompletedInvoice({
+          id: invoiceId,
+          invoice_number: invoiceNumber,
+          total,
+          document_type: documentType,
+          cart: [...cart],
+          customer: selectedCustomer,
+          paymentMethod,
+          amountPaid: total,
+        });
+        setShowPaymentModal(false);
+        setShowCardModal(true);
+        setCardTransactionNumber('');
+        return;
+      }
+
       setCompletedInvoice({
-        id: invoiceResult?.id || '',
-        invoice_number: invoiceResult?.invoice_number || '',
+        id: invoiceId,
+        invoice_number: invoiceNumber,
         total,
         document_type: documentType,
         cart: [...cart],
@@ -182,9 +206,25 @@ export default function POSPage() {
       tax_amount: completedInvoice.total - Math.round(completedInvoice.total / 1.19),
       total: completedInvoice.total,
       payment_method: completedInvoice.paymentMethod,
+      card_transaction_number: completedInvoice.paymentMethod === 'card' ? cardTransactionNumber : undefined,
       amount_paid: completedInvoice.amountPaid,
       change: completedInvoice.paymentMethod === 'cash' ? Math.max(0, completedInvoice.amountPaid - completedInvoice.total) : undefined,
     };
+  };
+
+  const handleCardConfirm = async () => {
+    if (!cardTransactionNumber.trim()) { toast.error('Ingresa el número de transacción'); return; }
+    if (completedInvoice?.id) {
+      try {
+        const api = getApiClient();
+        await api.patchInvoice({ id: completedInvoice.id, card_transaction_number: cardTransactionNumber.trim() });
+      } catch { }
+    }
+    setCart([]);
+    setShowCardModal(false);
+    setAmountPaid(0);
+    setSelectedCustomer(null);
+    setCustomerSearch('');
   };
 
   const handlePrint = () => {
@@ -572,6 +612,50 @@ export default function POSPage() {
                     Confirmar Pago
                   </>
                 )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Card Transaction Modal */}
+      {showCardModal && inv && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CreditCard className="w-5 h-5 text-indigo-600" />
+                <h2 className="text-lg font-semibold text-slate-900">N° Transacción Tarjeta</h2>
+              </div>
+            </div>
+            <div className="p-6 space-y-4">
+              <p className="text-sm text-slate-500">
+                Ingresa el número de transacción de la maquina de tarjetas para el comprobante.
+              </p>
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-700">N° Transacción *</label>
+                <input type="text" value={cardTransactionNumber} onChange={e => setCardTransactionNumber(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 font-mono placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  placeholder="Ej: 1234567890" autoFocus />
+                <p className="text-[10px] text-slate-400">Número que aparece en el comprobante de la maquina</p>
+              </div>
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-500">Venta</span>
+                  <span className="font-medium text-slate-900">{inv.invoice_number}</span>
+                </div>
+                <div className="flex justify-between text-sm mt-1">
+                  <span className="text-slate-500">Total</span>
+                  <span className="font-bold text-slate-900">${(inv.total || 0).toLocaleString('es-CL')}</span>
+                </div>
+              </div>
+            </div>
+            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+              <Button variant="secondary" onClick={() => { setShowCardModal(false); setCardTransactionNumber(''); }}>
+                Omitir
+              </Button>
+              <Button onClick={handleCardConfirm} disabled={!cardTransactionNumber.trim()}>
+                <Check className="w-4 h-4 mr-2" /> Guardar
               </Button>
             </div>
           </div>

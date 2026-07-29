@@ -156,7 +156,7 @@ export default function RecetaDetailPage() {
         </div>
         <div className="bg-white border border-slate-200 rounded-xl p-5">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Rendimiento</p>
-          <p className="text-sm font-medium text-slate-900 mt-1">{formula.yield_quantity} {formula.yield_unit}</p>
+          <p className="text-sm font-medium text-slate-900 mt-1">{Number(formula.yield_quantity)} {formula.yield_unit}</p>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl p-5">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Ingredientes</p>
@@ -171,7 +171,7 @@ export default function RecetaDetailPage() {
       {/* Ingredients */}
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
         <div className="px-6 py-4 border-b border-slate-100">
-          <h3 className="text-sm font-semibold text-slate-900">Ingredientes (por {formula.yield_quantity} {formula.yield_unit})</h3>
+          <h3 className="text-sm font-semibold text-slate-900">Ingredientes (por {Number(formula.yield_quantity)} {formula.yield_unit})</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">

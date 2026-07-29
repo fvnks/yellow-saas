@@ -19,6 +19,7 @@ interface Product {
   name: string;
   sku: string;
   price: number;
+  stock: number;
 }
 
 interface Customer {
@@ -47,22 +48,29 @@ export default function StandalonePOSPage() {
 
   const [processing, setProcessing] = useState(false);
   const [company, setCompany] = useState<any>(null);
+  const [cardTransactionNumber, setCardTransactionNumber] = useState('');
+  const [showCardModal, setShowCardModal] = useState(false);
   const [completedInvoice, setCompletedInvoice] = useState<{ id: string; invoice_number: string; total: number; document_type: 'boleta' | 'factura'; cart: CartItem[]; customer: Customer | null; paymentMethod: string; amountPaid: number } | null>(null);
+
+  const inv = completedInvoice;
 
   useEffect(() => {
     const api = getApiClient();
     Promise.all([
-      api.getProducts(),
+      api.getRecipeProducts({ limit: '500' }),
       api.getCustomers().catch(() => ({ data: [] })),
       api.getCompany().catch(() => null),
     ]).then(([productsRes, customersRes, companyRes]) => {
       if (companyRes) setCompany(companyRes);
-      const items = (productsRes.data || []).map((p: any) => ({
-        id: p.id,
-        name: p.name || '',
-        sku: p.sku || '',
-        price: p.sale_price || p.price || 0,
-      }));
+      const items = (productsRes.data || [])
+        .filter((p: any) => (p.sale_price || 0) > 0)
+        .map((p: any) => ({
+          id: p.id,
+          name: p.name || '',
+          sku: p.sku || '',
+          price: p.sale_price || 0,
+          stock: Number(p.stock) || 0,
+        }));
       setProducts(items);
       setCustomers((customersRes.data || []).map((c: any) => ({
         id: c.id,
@@ -134,9 +142,29 @@ export default function StandalonePOSPage() {
         })),
       });
 
+      const invoiceId = invoiceResult?.id || '';
+      const invoiceNumber = invoiceResult?.invoice_number || '';
+
+      if (paymentMethod === 'card') {
+        setCompletedInvoice({
+          id: invoiceId,
+          invoice_number: invoiceNumber,
+          total,
+          document_type: documentType,
+          cart: [...cart],
+          customer: selectedCustomer,
+          paymentMethod,
+          amountPaid: total,
+        });
+        setShowPaymentModal(false);
+        setShowCardModal(true);
+        setCardTransactionNumber('');
+        return;
+      }
+
       setCompletedInvoice({
-        id: invoiceResult?.id || '',
-        invoice_number: invoiceResult?.invoice_number || '',
+        id: invoiceId,
+        invoice_number: invoiceNumber,
         total,
         document_type: documentType,
         cart: [...cart],
@@ -181,9 +209,25 @@ export default function StandalonePOSPage() {
       tax_amount: completedInvoice.total - Math.round(completedInvoice.total / 1.19),
       total: completedInvoice.total,
       payment_method: completedInvoice.paymentMethod,
+      card_transaction_number: completedInvoice.paymentMethod === 'card' ? cardTransactionNumber : undefined,
       amount_paid: completedInvoice.amountPaid,
       change: completedInvoice.paymentMethod === 'cash' ? Math.max(0, completedInvoice.amountPaid - completedInvoice.total) : undefined,
     };
+  };
+
+  const handleCardConfirm = async () => {
+    if (!cardTransactionNumber.trim()) { toast.error('Ingresa el número de transacción'); return; }
+    if (completedInvoice?.id) {
+      try {
+        const api = getApiClient();
+        await api.patchInvoice({ id: completedInvoice.id, card_transaction_number: cardTransactionNumber.trim() });
+      } catch { }
+    }
+    setCart([]);
+    setShowCardModal(false);
+    setAmountPaid(0);
+    setSelectedCustomer(null);
+    setCustomerSearch('');
   };
 
   const handlePrint = () => {
@@ -267,15 +311,27 @@ export default function StandalonePOSPage() {
             ) : filteredProducts.map(product => (
               <button
                 key={product.id}
-                onClick={() => addToCart(product)}
-                className="p-4 bg-white border border-slate-200 rounded-xl text-left hover:border-indigo-300 hover:shadow-md transition-all group"
+                onClick={() => product.stock > 0 && addToCart(product)}
+                disabled={product.stock <= 0}
+                className={`p-4 bg-white border rounded-xl text-left transition-all group ${
+                  product.stock > 0
+                    ? 'border-slate-200 hover:border-indigo-300 hover:shadow-md cursor-pointer'
+                    : 'border-slate-100 opacity-50 cursor-not-allowed'
+                }`}
               >
                 <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-indigo-50 transition-colors">
                   <Package className="w-5 h-5 text-slate-400 group-hover:text-indigo-600" />
                 </div>
                 <p className="text-xs text-slate-500 font-mono">{product.sku}</p>
                 <p className="text-sm font-medium text-slate-900 mt-1 line-clamp-2">{product.name}</p>
-                <p className="text-lg font-bold text-slate-900 mt-2">${(product.price || 0).toLocaleString('es-CL')}</p>
+                <div className="flex items-center justify-between mt-2">
+                  <p className="text-lg font-bold text-slate-900">${(product.price || 0).toLocaleString('es-CL')}</p>
+                  <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${
+                    product.stock > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
+                  }`}>
+                    {product.stock} uds
+                  </span>
+                </div>
               </button>
             ))}
           </div>
@@ -537,6 +593,53 @@ export default function StandalonePOSPage() {
                     Confirmar Pago
                   </>
                 )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Card Transaction Modal */}
+      {showCardModal && inv && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CreditCard className="w-5 h-5 text-indigo-600" />
+                <h2 className="text-lg font-semibold text-slate-900">N° Transacción Tarjeta</h2>
+              </div>
+            </div>
+            <div className="p-6 space-y-4">
+              <p className="text-sm text-slate-500">
+                Ingresa el número de transacción de la maquina de tarjetas para el comprobante.
+              </p>
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-700">N° Transacción *</label>
+                <input type="text" value={cardTransactionNumber} onChange={e => setCardTransactionNumber(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 font-mono placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  placeholder="Ej: 1234567890" autoFocus />
+                <p className="text-[10px] text-slate-400">Número que aparece en el comprobante de la maquina</p>
+              </div>
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-500">Venta</span>
+                  <span className="font-medium text-slate-900">{inv.invoice_number}</span>
+                </div>
+                <div className="flex justify-between text-sm mt-1">
+                  <span className="text-slate-500">Total</span>
+                  <span className="font-bold text-slate-900">${(inv.total || 0).toLocaleString('es-CL')}</span>
+                </div>
+              </div>
+            </div>
+            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+              <button onClick={() => { setShowCardModal(false); setCardTransactionNumber(''); }}
+                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                Omitir
+              </button>
+              <button onClick={handleCardConfirm}
+                disabled={!cardTransactionNumber.trim()}
+                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+                <Check className="w-4 h-4" /> Guardar
               </button>
             </div>
           </div>

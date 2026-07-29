@@ -77,7 +77,7 @@ const modules: ModuleOption[] = [
     hoverBorder: 'hover:border-amber-300 hover:shadow-amber-100',
     href: '/recetas',
     requiredModules: [],
-    moduleName: 'formulas',
+    moduleName: 'recetas',
   },
   {
     id: 'mi-cuenta',
@@ -178,8 +178,8 @@ export default function SelectPage() {
   };
 
   const isModuleActivated = useCallback((mod: ModuleOption) => {
-    if (mod.requiredModules.length === 0) return true;
-    return mod.requiredModules.some(rm => activatedModules.has(rm));
+    if (mod.id === 'mi-cuenta') return true;
+    return activatedModules.has(mod.moduleName);
   }, [activatedModules]);
 
   const handleModuleClick = (mod: ModuleOption) => {
@@ -261,7 +261,13 @@ export default function SelectPage() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {modules.map((mod, i) => {
+            {modules.filter(mod => isModuleActivated(mod)).length === 0 ? (
+              <div className="col-span-full text-center py-12">
+                <Lock className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                <p className="text-sm text-slate-500 font-medium">No hay módulos activos</p>
+                <p className="text-xs text-slate-400 mt-1">Contacta al administrador para activar módulos</p>
+              </div>
+            ) : modules.filter(mod => isModuleActivated(mod)).map((mod, i) => {
               const Icon = mod.icon;
               const activated = isModuleActivated(mod);
               return (

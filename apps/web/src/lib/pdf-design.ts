@@ -697,6 +697,7 @@ export interface POSVoucherData {
   tax_amount: number;
   total: number;
   payment_method: string;
+  card_transaction_number?: string;
   amount_paid?: number;
   change?: number;
 }
@@ -806,6 +807,11 @@ export function generatePOSVoucher(data: POSVoucherData): jsPDF {
   y += 4;
   line(paymentLabels[data.payment_method] || data.payment_method, y, 7);
   y += 4;
+  if (data.card_transaction_number) {
+    line('N° Transacción:', y, 7);
+    line(data.card_transaction_number, y, 7, false, 'right');
+    y += 4;
+  }
   if (data.amount_paid) {
     line('Recibido:', y, 7);
     line(`$${(data.amount_paid || 0).toLocaleString('es-CL')}`, y, 7, false, 'right');

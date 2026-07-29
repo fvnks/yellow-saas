@@ -211,7 +211,7 @@ export async function POST(request: Request) {
     }
     results.push('Applied ALTER TABLE migrations');
 
-    const permModules = ['dashboard', 'inventory', 'warehouses', 'sales', 'purchases', 'customers', 'suppliers', 'crm', 'payroll', 'accounting', 'projects', 'pos', 'billing', 'settings', 'audit', 'reports', 'hr', 'internal_orders'];
+    const permModules = ['inventario', 'ventas', 'compras', 'finanzas', 'herramientas', 'recetas', 'costos', 'rrhh', 'sistema'];
     const permActions = ['create', 'read', 'update', 'delete'];
     for (const mod of permModules) {
       for (const act of permActions) {

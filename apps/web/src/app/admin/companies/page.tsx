@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Building2, Search, Filter, ExternalLink, Users, Calendar, AlertTriangle } from 'lucide-react';
+import { Building2, Search, ExternalLink, Users, Calendar, Plus, X, FlaskConical, Package, FolderKanban, UsersRound, CreditCard } from 'lucide-react';
 
 interface Company {
   id: string;
@@ -15,29 +15,59 @@ interface Company {
   user_count: number;
 }
 
+const MODULE_OPTIONS = [
+  { id: 'recetas', label: 'Recetas', icon: FlaskConical, color: 'text-amber-600 bg-amber-50 border-amber-200' },
+  { id: 'erp', label: 'ERP', icon: Package, color: 'text-indigo-600 bg-indigo-50 border-indigo-200' },
+  { id: 'hr', label: 'RRHH', icon: UsersRound, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
+  { id: 'projects', label: 'Proyectos', icon: FolderKanban, color: 'text-orange-600 bg-orange-50 border-orange-200' },
+  { id: 'mi-cuenta', label: 'Mi Cuenta', icon: CreditCard, color: 'text-violet-600 bg-violet-50 border-violet-200' },
+];
+
 export default function AdminCompaniesPage() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [showCreate, setShowCreate] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [form, setForm] = useState({ name: '', slug: '', email: '', password: '', plan: 'professional' });
+  const [selectedModules, setSelectedModules] = useState<string[]>(['mi-cuenta']);
 
-  useEffect(() => {
-    fetchCompanies();
-  }, []);
+  useEffect(() => { fetchCompanies(); }, []);
 
   const fetchCompanies = async () => {
     try {
       const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
-      const res = await fetch('/api/super-admin/companies', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch('/api/super-admin/companies', { headers: { Authorization: `Bearer ${token}` } });
       const data = await res.json();
       if (data.success) setCompanies(data.data);
-    } catch (err) {
-      console.error('Failed to load companies:', err);
-    } finally {
-      setLoading(false);
-    }
+    } catch (err) { console.error('Failed to load companies:', err); }
+    setLoading(false);
+  };
+
+  const handleCreate = async () => {
+    if (!form.name || !form.slug || !form.email || !form.password) return;
+    setCreating(true);
+    try {
+      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+      const res = await fetch('/api/super-admin/companies', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ ...form, modules: selectedModules }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setShowCreate(false);
+        setForm({ name: '', slug: '', email: '', password: '', plan: 'professional' });
+        setSelectedModules(['mi-cuenta']);
+        fetchCompanies();
+      }
+    } catch (err) { console.error('Failed to create company:', err); }
+    setCreating(false);
+  };
+
+  const toggleModule = (id: string) => {
+    setSelectedModules(prev => prev.includes(id) ? prev.filter(m => m !== id) : [...prev, id]);
   };
 
   const filtered = companies.filter(c => {
@@ -62,31 +92,25 @@ export default function AdminCompaniesPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Empresas</h1>
           <p className="text-sm text-slate-400 mt-1">Gestiona todas las empresas de la plataforma</p>
         </div>
+        <button onClick={() => setShowCreate(true)}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          <Plus className="w-4 h-4" /> Nueva Empresa
+        </button>
       </div>
 
-      {/* Filters */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-          <input
-            type="text"
-            placeholder="Buscar empresa..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-slate-800/50 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-          />
+          <input type="text" placeholder="Buscar empresa..." value={search} onChange={e => setSearch(e.target.value)}
+            className="w-full bg-slate-800/50 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500" />
         </div>
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        >
+        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
+          className="bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500">
           <option value="all">Todos los estados</option>
           <option value="active">Activas</option>
           <option value="trial">En prueba</option>
@@ -95,7 +119,6 @@ export default function AdminCompaniesPage() {
         </select>
       </div>
 
-      {/* Table */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
@@ -112,19 +135,13 @@ export default function AdminCompaniesPage() {
             {loading ? (
               Array.from({ length: 5 }).map((_, i) => (
                 <tr key={i} className="border-b border-slate-800/50">
-                  <td colSpan={6} className="px-6 py-4">
-                    <div className="h-4 bg-slate-800 rounded animate-pulse" />
-                  </td>
+                  <td colSpan={6} className="px-6 py-4"><div className="h-4 bg-slate-800 rounded animate-pulse" /></td>
                 </tr>
               ))
             ) : filtered.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-sm text-slate-500">
-                  No se encontraron empresas
-                </td>
-              </tr>
+              <tr><td colSpan={6} className="px-6 py-12 text-center text-sm text-slate-500">No se encontraron empresas</td></tr>
             ) : (
-              filtered.map((company) => (
+              filtered.map(company => (
                 <tr key={company.id} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
@@ -138,34 +155,21 @@ export default function AdminCompaniesPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${planColors[company.plan] || planColors.free}`}>
-                      {company.plan}
-                    </span>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${planColors[company.plan] || planColors.free}`}>{company.plan}</span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${statusColors[company.status] || statusColors.active}`}>
-                      {company.status}
-                    </span>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${statusColors[company.status] || statusColors.active}`}>{company.status}</span>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-1.5 text-sm text-slate-300">
-                      <Users className="w-3.5 h-3.5 text-slate-500" />
-                      {company.user_count}
-                    </div>
+                    <div className="flex items-center gap-1.5 text-sm text-slate-300"><Users className="w-3.5 h-3.5 text-slate-500" />{company.user_count}</div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                      <Calendar className="w-3.5 h-3.5" />
-                      {new Date(company.created_at).toLocaleDateString('es-CL')}
-                    </div>
+                    <div className="flex items-center gap-1.5 text-xs text-slate-400"><Calendar className="w-3.5 h-3.5" />{new Date(company.created_at).toLocaleDateString('es-CL')}</div>
                   </td>
                   <td className="px-6 py-4">
-                    <Link
-                      href={`/admin/companies/${company.id}`}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-colors"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5" />
-                      Ver
+                    <Link href={`/admin/companies/${company.id}`}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-colors">
+                      <ExternalLink className="w-3.5 h-3.5" /> Ver
                     </Link>
                   </td>
                 </tr>
@@ -174,6 +178,85 @@ export default function AdminCompaniesPage() {
           </tbody>
         </table>
       </div>
+
+      {showCreate && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setShowCreate(false)}>
+          <div className="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl w-full max-w-lg" onClick={e => e.stopPropagation()}>
+            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-white">Nueva Empresa</h2>
+              <button onClick={() => setShowCreate(false)} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-slate-400">Nombre *</label>
+                  <input type="text" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
+                    className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    placeholder="Mi Empresa" autoFocus />
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-slate-400">Slug *</label>
+                  <input type="text" value={form.slug} onChange={e => setForm(p => ({ ...p, slug: e.target.value }))}
+                    className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono"
+                    placeholder="mi-empresa" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-slate-400">Email admin *</label>
+                  <input type="email" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+                    className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    placeholder="admin@empresa.cl" />
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-slate-400">Password *</label>
+                  <input type="password" value={form.password} onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
+                    className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    placeholder="Minimo 8 caracteres" />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-400">Plan</label>
+                <select value={form.plan} onChange={e => setForm(p => ({ ...p, plan: e.target.value }))}
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                  <option value="free">Free</option>
+                  <option value="starter">Starter</option>
+                  <option value="professional">Professional</option>
+                  <option value="enterprise">Enterprise</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="block text-xs font-medium text-slate-400">Modulos a activar</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {MODULE_OPTIONS.map(mod => {
+                    const Icon = mod.icon;
+                    const active = selectedModules.includes(mod.id);
+                    return (
+                      <button key={mod.id} onClick={() => toggleModule(mod.id)}
+                        className={`p-3 rounded-lg border-2 flex items-center gap-3 transition-all text-left ${
+                          active ? `${mod.color} border-current` : 'border-slate-700 text-slate-400 hover:border-slate-600'
+                        }`}>
+                        <Icon className="w-4 h-4" />
+                        <span className="text-xs font-medium">{mod.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+            <div className="px-6 py-4 border-t border-slate-800 flex justify-end gap-3">
+              <button onClick={() => setShowCreate(false)}
+                className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                Cancelar
+              </button>
+              <button onClick={handleCreate} disabled={creating || !form.name || !form.slug || !form.email || !form.password}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+                <Plus className="w-4 h-4" /> {creating ? 'Creando...' : 'Crear Empresa'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
