@@ -133,7 +133,7 @@ export default function RecetasPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-center text-xs font-medium text-slate-900">
-                    {f.yield_quantity} {f.yield_unit}
+                    {Number(f.yield_quantity)} {f.yield_unit}
                   </td>
                   <td className="px-4 py-3 text-center text-xs text-slate-600">
                     {f.total_produced || 0}

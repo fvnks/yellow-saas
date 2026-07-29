@@ -20,8 +20,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const { rows: ingredients } = await query(
       `SELECT fi.*,
         (SELECT json_build_object('id', rp.id, 'name', rp.name, 'sku', rp.sku, 'unit_of_measure', rp.unit_of_measure) FROM recipe_products rp WHERE rp.id = fi.product_id) as product,
-        (SELECT COALESCE(SUM(sl.quantity), 0) FROM stock_levels sl WHERE sl.product_id = fi.product_id AND sl.company_id = fi.company_id) as current_stock
+        COALESCE(rp_stock.stock, 0) as current_stock
        FROM formula_ingredients fi
+       LEFT JOIN recipe_products rp_stock ON rp_stock.id = fi.product_id
        WHERE fi.formula_id = $1
        ORDER BY fi.created_at ASC`,
       [params.formulaId]

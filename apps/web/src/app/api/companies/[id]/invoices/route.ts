@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
 
     const {
       customer_id, order_id, invoice_date,
-      due_date, payment_terms, notes, items, document_type, status: requestedStatus, payment_method,
+      due_date, payment_terms, notes, items, document_type, status: requestedStatus, payment_method, card_transaction_number,
     } = body;
 
     if (!items?.length) {
@@ -121,15 +121,15 @@ export async function POST(request: NextRequest) {
     try { await query(`DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_attribute WHERE attrelid = 'invoices'::regclass AND attname = 'payment_method') THEN ALTER TABLE invoices ADD COLUMN payment_method TEXT; END IF; END $$`, []); } catch { /* already exists */ }
 
     const { rows: invoiceRows } = await query(
-      `INSERT INTO invoices (company_id, customer_id, order_id, invoice_number, document_type, status, invoice_date, due_date, payment_terms, subtotal, tax_amount, total_amount, notes, payment_method)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+      `INSERT INTO invoices (company_id, customer_id, order_id, invoice_number, document_type, status, invoice_date, due_date, payment_terms, subtotal, tax_amount, total_amount, notes, payment_method, card_transaction_number)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
        RETURNING *`,
       [
         companyId, customer_id || null, order_id || null, invoiceNumber, docType,
         requestedStatus || 'pending',
         invoice_date || new Date().toISOString(), due_date || null,
         payment_terms || 0, subtotal, taxAmount, subtotal + taxAmount, notes || null,
-        payment_method || null,
+        payment_method || null, card_transaction_number || null,
       ]
     );
 
@@ -164,5 +164,41 @@ export async function POST(request: NextRequest) {
     return successResponse({ ...invoice, items: invoiceItems }, 201);
   } catch {
     return errorResponse('Internal server error', 500);
+  }
+}
+
+export async function PATCH(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+    const { id, card_transaction_number, status, payment_method } = body;
+
+    if (!id) return errorResponse('Invoice ID requerido', 400);
+
+    const fields: string[] = [];
+    const values: any[] = [];
+    let idx = 1;
+
+    if (card_transaction_number !== undefined) { fields.push(`card_transaction_number = $${idx}`); values.push(card_transaction_number); idx++; }
+    if (status !== undefined) { fields.push(`status = $${idx}`); values.push(status); idx++; }
+    if (payment_method !== undefined) { fields.push(`payment_method = $${idx}`); values.push(payment_method); idx++; }
+
+    if (fields.length === 0) return errorResponse('No fields to update', 400);
+
+    fields.push(`updated_at = NOW()`);
+    values.push(companyId, id);
+
+    const { rows } = await query(
+      `UPDATE invoices SET ${fields.join(', ')} WHERE company_id = $${idx} AND id = $${idx + 1} RETURNING *`,
+      values
+    );
+
+    if (rows.length === 0) return errorResponse('Factura no encontrada', 404);
+    return successResponse(rows[0]);
+  } catch (e: any) {
+    console.error('PATCH invoices error:', e);
+    return errorResponse(e.message, 500);
   }
 }

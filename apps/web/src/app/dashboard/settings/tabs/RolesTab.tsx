@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Plus, Trash2, Save, ChevronDown, ChevronRight, Package, Warehouse, ShoppingCart, Truck, Receipt, Monitor, ShoppingBag, FileText, Users, Handshake, CreditCard, Calculator, FolderKanban, ScrollText, Settings, ShieldCheck, Bell, Zap, Globe, UserCheck } from 'lucide-react';
+import { Plus, Trash2, Save, ChevronDown, ChevronRight, Package, ShoppingCart, ShoppingBag, Users, Calculator, Wrench, FlaskConical, CircleDollarSign, Settings } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
 
@@ -21,27 +21,15 @@ interface Permission {
 }
 
 const MODULE_CONFIG: Record<string, { label: string; icon: any; color: string }> = {
-  inventory: { label: 'Inventario', icon: Package, color: 'text-blue-600 bg-blue-50' },
-  warehouses: { label: 'Bodegas', icon: Warehouse, color: 'text-indigo-600 bg-indigo-50' },
-  sales_orders: { label: 'Ordenes de Venta', icon: ShoppingCart, color: 'text-emerald-600 bg-emerald-50' },
-  delivery_guides: { label: 'Guias de Despacho', icon: Truck, color: 'text-amber-600 bg-amber-50' },
-  invoices: { label: 'Facturacion', icon: Receipt, color: 'text-rose-600 bg-rose-50' },
-  pos: { label: 'Punto de Venta', icon: Monitor, color: 'text-violet-600 bg-violet-50' },
-  purchase_orders: { label: 'Ordenes de Compra', icon: ShoppingBag, color: 'text-orange-600 bg-orange-50' },
-  quotations: { label: 'Cotizaciones', icon: FileText, color: 'text-cyan-600 bg-cyan-50' },
-  customers: { label: 'Clientes', icon: Users, color: 'text-teal-600 bg-teal-50' },
-  suppliers: { label: 'Proveedores', icon: Truck, color: 'text-pink-600 bg-pink-50' },
-  crm: { label: 'CRM', icon: Handshake, color: 'text-fuchsia-600 bg-fuchsia-50' },
-  price_lists: { label: 'Listas de Precio', icon: CreditCard, color: 'text-lime-600 bg-lime-50' },
-  payroll: { label: 'Nomina', icon: Calculator, color: 'text-red-600 bg-red-50' },
-  accounting: { label: 'Contabilidad', icon: Calculator, color: 'text-green-600 bg-green-50' },
-  projects: { label: 'Proyectos', icon: FolderKanban, color: 'text-yellow-600 bg-yellow-50' },
-  reports: { label: 'Reportes', icon: ScrollText, color: 'text-sky-600 bg-sky-50' },
-  audit: { label: 'Auditoria', icon: ScrollText, color: 'text-slate-600 bg-slate-50' },
-  settings: { label: 'Configuracion', icon: Settings, color: 'text-gray-600 bg-gray-50' },
-  users: { label: 'Usuarios', icon: UserCheck, color: 'text-blue-600 bg-blue-50' },
-  roles: { label: 'Roles', icon: ShieldCheck, color: 'text-purple-600 bg-purple-50' },
-  recetas: { label: 'Recetas', icon: Package, color: 'text-amber-600 bg-amber-50' },
+  inventario: { label: 'Inventario', icon: Package, color: 'text-blue-600 bg-blue-50' },
+  ventas: { label: 'Ventas', icon: ShoppingCart, color: 'text-emerald-600 bg-emerald-50' },
+  compras: { label: 'Compras', icon: ShoppingBag, color: 'text-orange-600 bg-orange-50' },
+  finanzas: { label: 'Finanzas', icon: Calculator, color: 'text-green-600 bg-green-50' },
+  herramientas: { label: 'Herramientas', icon: Wrench, color: 'text-violet-600 bg-violet-50' },
+  recetas: { label: 'Recetas', icon: FlaskConical, color: 'text-amber-600 bg-amber-50' },
+  costos: { label: 'Costos', icon: CircleDollarSign, color: 'text-rose-600 bg-rose-50' },
+  rrhh: { label: 'RRHH', icon: Users, color: 'text-pink-600 bg-pink-50' },
+  sistema: { label: 'Sistema', icon: Settings, color: 'text-gray-600 bg-gray-50' },
 };
 
 const ACTION_CONFIG: Record<string, { label: string; color: string; activeColor: string }> = {
