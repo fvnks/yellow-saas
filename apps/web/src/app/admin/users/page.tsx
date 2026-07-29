@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Users, Search, Building2, Mail, Calendar, Shield } from 'lucide-react';
+import { Users, Search, Building2, Mail, Calendar, Shield, Pencil, X, AlertCircle, CheckCircle } from 'lucide-react';
 
 interface User {
   id: string;
@@ -18,16 +18,22 @@ export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [message, setMessage] = useState({ type: '', text: '' });
+
+  const [editUser, setEditUser] = useState<User | null>(null);
+  const [editForm, setEditForm] = useState({ role: '', status: '' });
+  const [editSaving, setEditSaving] = useState(false);
 
   useEffect(() => {
     fetchUsers();
   }, []);
 
+  const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1] || '';
+
   const fetchUsers = async () => {
     try {
-      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
       const res = await fetch('/api/super-admin/users', {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${getToken()}` },
       });
       const data = await res.json();
       if (data.success) setUsers(data.data);
@@ -35,6 +41,33 @@ export default function AdminUsersPage() {
       console.error('Failed to load users:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editUser) return;
+    setEditSaving(true);
+
+    try {
+      const res = await fetch(`/api/super-admin/users/${editUser.id}`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(editForm),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setEditUser(null);
+        setMessage({ type: 'success', text: 'Usuario actualizado correctamente' });
+        fetchUsers();
+      } else {
+        setMessage({ type: 'error', text: data.error?.message || 'Error al actualizar' });
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'Error de conexión' });
+    } finally {
+      setEditSaving(false);
     }
   };
 
@@ -52,13 +85,30 @@ export default function AdminUsersPage() {
     viewer: 'bg-slate-500/10 text-slate-400 border-slate-500/20',
   };
 
+  const statusColors: Record<string, string> = {
+    active: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+    invited: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    suspended: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-white">Usuarios</h1>
-        <p className="text-sm text-slate-400 mt-1">Todos los usuarios de todas las empresas</p>
+        <p className="text-sm text-slate-400 mt-1">Gestiona usuarios de todas las empresas</p>
       </div>
+
+      {/* Message */}
+      {message.text && (
+        <div className={`flex items-center gap-2 p-3 rounded-lg text-sm ${
+          message.type === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+        }`}>
+          {message.type === 'success' ? <CheckCircle className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+          {message.text}
+          <button onClick={() => setMessage({ type: '', text: '' })} className="ml-auto"><X className="w-4 h-4" /></button>
+        </div>
+      )}
 
       {/* Search */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
@@ -84,20 +134,21 @@ export default function AdminUsersPage() {
               <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Rol</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Estado</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Registro</th>
+              <th className="text-right px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Acciones</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               Array.from({ length: 5 }).map((_, i) => (
                 <tr key={i} className="border-b border-slate-800/50">
-                  <td colSpan={5} className="px-6 py-4">
+                  <td colSpan={6} className="px-6 py-4">
                     <div className="h-4 bg-slate-800 rounded animate-pulse" />
                   </td>
                 </tr>
               ))
             ) : filtered.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-6 py-12 text-center text-sm text-slate-500">
+                <td colSpan={6} className="px-6 py-12 text-center text-sm text-slate-500">
                   No se encontraron usuarios
                 </td>
               </tr>
@@ -129,14 +180,25 @@ export default function AdminUsersPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${
-                      user.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-slate-500/10 text-slate-400 border-slate-500/20'
-                    }`}>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${statusColors[user.status] || statusColors.active}`}>
                       {user.status}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-xs text-slate-400">
                     {new Date(user.created_at).toLocaleDateString('es-CL')}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <button
+                      onClick={() => {
+                        setEditUser(user);
+                        setEditForm({ role: user.role, status: user.status });
+                        setMessage({ type: '', text: '' });
+                      }}
+                      className="p-1.5 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors"
+                      title="Editar"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
                   </td>
                 </tr>
               ))
@@ -144,6 +206,67 @@ export default function AdminUsersPage() {
           </tbody>
         </table>
       </div>
+
+      {/* Edit Modal */}
+      {editUser && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-slate-900 border border-slate-700 rounded-xl shadow-xl w-full max-w-md mx-4">
+            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-white">Editar Usuario</h2>
+                <p className="text-xs text-slate-400 mt-0.5">{editUser.full_name} — {editUser.email}</p>
+              </div>
+              <button onClick={() => setEditUser(null)} className="text-slate-400 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleUpdate} className="p-6 space-y-4">
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-slate-400">Rol</label>
+                <select
+                  value={editForm.role}
+                  onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                >
+                  <option value="owner">Owner</option>
+                  <option value="admin">Admin</option>
+                  <option value="manager">Manager</option>
+                  <option value="member">Member</option>
+                  <option value="viewer">Viewer</option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-slate-400">Estado</label>
+                <select
+                  value={editForm.status}
+                  onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                >
+                  <option value="active">Activo</option>
+                  <option value="invited">Invitado</option>
+                  <option value="suspended">Suspendido</option>
+                </select>
+              </div>
+              <div className="flex justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setEditUser(null)}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm font-medium text-slate-300 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={editSaving}
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
+                >
+                  {editSaving ? 'Guardando...' : 'Guardar'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

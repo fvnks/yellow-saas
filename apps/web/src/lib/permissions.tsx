@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, createContext, useContext, ReactNode } from 'react';
 import { getApiClient } from './api-client';
+import { getAuthTokenPayload } from '@/hooks/use-auth-token';
 
 interface Permission {
   id: string;
@@ -29,17 +30,8 @@ const PermissionsContext = createContext<PermissionsContextType>({
 });
 
 function getUserRole(): string {
-  if (typeof window === 'undefined') return 'member';
-  const cookies = document.cookie.split(';');
-  const authCookie = cookies.find(c => c.trim().startsWith('auth-token='));
-  if (!authCookie) return 'member';
-  try {
-    const token = authCookie.split('=')[1];
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.role || 'member';
-  } catch {
-    return 'member';
-  }
+  const payload = getAuthTokenPayload();
+  return payload?.role || 'member';
 }
 
 export function PermissionsProvider({ children }: { children: ReactNode }) {

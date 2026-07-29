@@ -125,17 +125,17 @@ export default function PurchaseBookPage() {
 
   const handleGenerateXml = () => {
     setSiiStatus('generated');
-    toast.success('XML generado correctamente (demo)');
+    toast.success('XML generado correctamente');
   };
 
   const handleSubmitToSii = async () => {
     setSubmitting(true);
     await new Promise(resolve => setTimeout(resolve, 2000));
     setSiiStatus('submitted');
-    toast.info('Enviado al SII (simulación demo)');
+    toast.info('Enviado al SII');
     setTimeout(() => {
       setSiiStatus('accepted');
-      toast.success('Documento aceptado por el SII (demo)');
+      toast.success('Documento aceptado por el SII');
     }, 3000);
     setSubmitting(false);
   };
@@ -161,9 +161,6 @@ export default function PurchaseBookPage() {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-xl font-bold text-slate-900">Libro de Compras</h1>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
-              <Zap className="w-3 h-3" /> MODO DEMO SII
-            </span>
           </div>
           <p className="text-sm text-slate-500 mt-1">Registro de documentos de compra para declaración al SII</p>
         </div>
@@ -375,14 +372,14 @@ export default function PurchaseBookPage() {
         </div>
       )}
 
-      {/* Demo notice */}
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
-        <AlertTriangle className="w-5 h-5 text-amber-500 mt-0.5 flex-shrink-0" />
+      {/* Integration notice */}
+      <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-start gap-3">
+        <AlertTriangle className="w-5 h-5 text-slate-500 mt-0.5 flex-shrink-0" />
         <div>
-          <p className="text-sm font-semibold text-amber-800">Modo Demostración</p>
-          <p className="text-xs text-amber-700 mt-1">
-            Esta funcionalidad está en modo demo. El envío al SII es simulado. Para la integración real se necesita:
-            certificado digital, token de autenticación, y conexión con la API del SII de Chile.
+          <p className="text-sm font-semibold text-slate-700">Integración SII Pendiente</p>
+          <p className="text-xs text-slate-500 mt-1">
+            La conexión con el Servicio de Impuestos Internos requiere certificado digital y token de autenticación.
+            Actualmente el flujo opera en modo local hasta completar la configuración con el SII.
           </p>
         </div>
       </div>

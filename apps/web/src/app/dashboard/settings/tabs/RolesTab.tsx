@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Button, Input, Badge } from '@yellow-erp/ui';
-import { Plus, Trash2, Save, X, Check, Pencil } from 'lucide-react';
+import { Plus, Trash2, Save, ChevronDown, ChevronRight, Package, Warehouse, ShoppingCart, Truck, Receipt, Monitor, ShoppingBag, FileText, Users, Handshake, CreditCard, Calculator, FolderKanban, ScrollText, Settings, ShieldCheck, Bell, Zap, Globe, UserCheck } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
 
@@ -21,49 +20,119 @@ interface Permission {
   description: string;
 }
 
-const MODULE_LABELS: Record<string, string> = {
-  inventory: 'Inventario', warehouses: 'Bodegas', sales_orders: 'Ordenes de Venta',
-  delivery_guides: 'Guias de Despacho', invoices: 'Facturacion', pos: 'Punto de Venta',
-  purchase_orders: 'Ordenes de Compra', quotations: 'Cotizaciones', customers: 'Clientes',
-  suppliers: 'Proveedores', crm: 'CRM', price_lists: 'Listas de Precio',
-  payroll: 'Nomina', accounting: 'Contabilidad', projects: 'Proyectos',
-  reports: 'Reportes', audit: 'Auditoria', settings: 'Configuracion',
-  users: 'Usuarios', roles: 'Roles',
+const MODULE_CONFIG: Record<string, { label: string; icon: any; color: string }> = {
+  inventory: { label: 'Inventario', icon: Package, color: 'text-blue-600 bg-blue-50' },
+  warehouses: { label: 'Bodegas', icon: Warehouse, color: 'text-indigo-600 bg-indigo-50' },
+  sales_orders: { label: 'Ordenes de Venta', icon: ShoppingCart, color: 'text-emerald-600 bg-emerald-50' },
+  delivery_guides: { label: 'Guias de Despacho', icon: Truck, color: 'text-amber-600 bg-amber-50' },
+  invoices: { label: 'Facturacion', icon: Receipt, color: 'text-rose-600 bg-rose-50' },
+  pos: { label: 'Punto de Venta', icon: Monitor, color: 'text-violet-600 bg-violet-50' },
+  purchase_orders: { label: 'Ordenes de Compra', icon: ShoppingBag, color: 'text-orange-600 bg-orange-50' },
+  quotations: { label: 'Cotizaciones', icon: FileText, color: 'text-cyan-600 bg-cyan-50' },
+  customers: { label: 'Clientes', icon: Users, color: 'text-teal-600 bg-teal-50' },
+  suppliers: { label: 'Proveedores', icon: Truck, color: 'text-pink-600 bg-pink-50' },
+  crm: { label: 'CRM', icon: Handshake, color: 'text-fuchsia-600 bg-fuchsia-50' },
+  price_lists: { label: 'Listas de Precio', icon: CreditCard, color: 'text-lime-600 bg-lime-50' },
+  payroll: { label: 'Nomina', icon: Calculator, color: 'text-red-600 bg-red-50' },
+  accounting: { label: 'Contabilidad', icon: Calculator, color: 'text-green-600 bg-green-50' },
+  projects: { label: 'Proyectos', icon: FolderKanban, color: 'text-yellow-600 bg-yellow-50' },
+  reports: { label: 'Reportes', icon: ScrollText, color: 'text-sky-600 bg-sky-50' },
+  audit: { label: 'Auditoria', icon: ScrollText, color: 'text-slate-600 bg-slate-50' },
+  settings: { label: 'Configuracion', icon: Settings, color: 'text-gray-600 bg-gray-50' },
+  users: { label: 'Usuarios', icon: UserCheck, color: 'text-blue-600 bg-blue-50' },
+  roles: { label: 'Roles', icon: ShieldCheck, color: 'text-purple-600 bg-purple-50' },
+  recetas: { label: 'Recetas', icon: Package, color: 'text-amber-600 bg-amber-50' },
 };
 
-const ACTION_LABELS: Record<string, string> = { create: 'Crear', read: 'Ver', update: 'Editar', delete: 'Eliminar' };
-const ACTION_COLORS: Record<string, string> = {
-  create: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  read: 'bg-blue-50 text-blue-700 border-blue-200',
-  update: 'bg-amber-50 text-amber-700 border-amber-200',
-  delete: 'bg-rose-50 text-rose-700 border-rose-200',
+const ACTION_CONFIG: Record<string, { label: string; color: string; activeColor: string }> = {
+  create: { label: 'Crear', color: 'border-emerald-200 text-emerald-700', activeColor: 'bg-emerald-500 text-white' },
+  read: { label: 'Ver', color: 'border-blue-200 text-blue-700', activeColor: 'bg-blue-500 text-white' },
+  update: { label: 'Editar', color: 'border-amber-200 text-amber-700', activeColor: 'bg-amber-500 text-white' },
+  delete: { label: 'Eliminar', color: 'border-rose-200 text-rose-700', activeColor: 'bg-rose-500 text-white' },
 };
 
 export default function RolesTab() {
   const [roles, setRoles] = useState<Role[]>([]);
   const [allPermissions, setAllPermissions] = useState<Permission[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editingRole, setEditingRole] = useState<Role | null>(null);
+  const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
+  const [rolePermMap, setRolePermMap] = useState<Record<string, Set<string>>>({});
+  const [modifiedRoles, setModifiedRoles] = useState<Set<string>>(new Set());
+  const [saving, setSaving] = useState(false);
   const [showNewRole, setShowNewRole] = useState(false);
   const [newRoleName, setNewRoleName] = useState('');
   const [newRoleDesc, setNewRoleDesc] = useState('');
-  const [selectedPerms, setSelectedPerms] = useState<string[]>([]);
-  const [saving, setSaving] = useState(false);
 
-  const loadRoles = useCallback(() => {
+  const loadData = useCallback(() => {
     const api = getApiClient();
     Promise.all([api.getRoles(), api.getPermissions()])
       .then(([r, p]: [any, any]) => {
         const rolesData = r?.data || (Array.isArray(r) ? r : []);
         const permsData = p?.data || (Array.isArray(p) ? p : []);
-        setRoles(Array.isArray(rolesData) ? rolesData : []);
-        setAllPermissions(Array.isArray(permsData) ? permsData : []);
+        const rolesList = Array.isArray(rolesData) ? rolesData : [];
+        const permsList = Array.isArray(permsData) ? permsData : [];
+
+        setRoles(rolesList);
+        setAllPermissions(permsList);
+
+        const map: Record<string, Set<string>> = {};
+        rolesList.forEach((role: Role) => {
+          map[role.id] = new Set(role.permissions?.map(p => p.id) || []);
+        });
+        setRolePermMap(map);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, []);
 
-  useEffect(() => { loadRoles(); }, [loadRoles]);
+  useEffect(() => { loadData(); }, [loadData]);
+
+  const groupedPerms = allPermissions.reduce<Record<string, Permission[]>>((acc, p) => {
+    if (!acc[p.module]) acc[p.module] = [];
+    acc[p.module].push(p);
+    return acc;
+  }, {});
+
+  const allModules = Object.keys(groupedPerms).sort();
+
+  const toggleModule = (mod: string) => {
+    setExpandedModules(prev => {
+      const next = new Set(prev);
+      if (next.has(mod)) next.delete(mod);
+      else next.add(mod);
+      return next;
+    });
+  };
+
+  const togglePerm = (roleId: string, permId: string) => {
+    setRolePermMap(prev => {
+      const next = { ...prev };
+      const roleSet = new Set(next[roleId] || []);
+      if (roleSet.has(permId)) roleSet.delete(permId);
+      else roleSet.add(permId);
+      next[roleId] = roleSet;
+      return next;
+    });
+    setModifiedRoles(prev => new Set(prev).add(roleId));
+  };
+
+  const toggleRoleModule = (roleId: string, mod: string) => {
+    const modulePermIds = groupedPerms[mod]?.map(p => p.id) || [];
+    const currentPerms = rolePermMap[roleId] || new Set();
+    const allSelected = modulePermIds.every(id => currentPerms.has(id));
+
+    setRolePermMap(prev => {
+      const next = { ...prev };
+      const roleSet = new Set(next[roleId] || []);
+      modulePermIds.forEach(id => {
+        if (allSelected) roleSet.delete(id);
+        else roleSet.add(id);
+      });
+      next[roleId] = roleSet;
+      return next;
+    });
+    setModifiedRoles(prev => new Set(prev).add(roleId));
+  };
 
   const handleCreateRole = async () => {
     if (!newRoleName.trim()) return;
@@ -74,183 +143,227 @@ export default function RolesTab() {
       setNewRoleName('');
       setNewRoleDesc('');
       setShowNewRole(false);
-      loadRoles();
+      loadData();
     } catch { toast.error('Error al crear rol'); }
     setSaving(false);
   };
 
-  const handleEditRole = (role: Role) => {
-    setEditingRole(role);
-    setSelectedPerms(role.permissions?.map(p => p.id) || []);
+  const handleDeleteRole = async (roleId: string) => {
+    if (!confirm('Eliminar este rol? Los usuarios asignados perderán sus permisos.')) return;
+    try {
+      const api = getApiClient();
+      await api.deleteRole(roleId);
+      loadData();
+    } catch { toast.error('Error al eliminar rol'); }
   };
 
-  const handleSavePermissions = async () => {
-    if (!editingRole) return;
+  const handleSaveAll = async () => {
     setSaving(true);
     try {
       const api = getApiClient();
-      await api.updateRolePermissions(editingRole.id, selectedPerms);
-      setEditingRole(null);
-      setSelectedPerms([]);
-      loadRoles();
+      const savePromises = Array.from(modifiedRoles).map(roleId =>
+        api.updateRolePermissions(roleId, Array.from(rolePermMap[roleId] || []))
+      );
+      await Promise.all(savePromises);
+      setModifiedRoles(new Set());
+      toast.success('Permisos guardados');
+      loadData();
     } catch { toast.error('Error al guardar permisos'); }
     setSaving(false);
   };
 
-  const handleDeleteRole = async (roleId: string) => {
-    if (!confirm('Eliminar este rol?')) return;
-    const api = getApiClient();
-    await api.deleteRole(roleId);
-    loadRoles();
+  const getModulePermCount = (roleId: string, mod: string) => {
+    const modulePermIds = groupedPerms[mod]?.map(p => p.id) || [];
+    const rolePerms = rolePermMap[roleId] || new Set();
+    return modulePermIds.filter(id => rolePerms.has(id)).length;
   };
-
-  const togglePerm = (permId: string) => {
-    setSelectedPerms(prev =>
-      prev.includes(permId) ? prev.filter(id => id !== permId) : [...prev, permId]
-    );
-  };
-
-  const toggleModule = (module: string) => {
-    const modulePerms = allPermissions.filter(p => p.module === module).map(p => p.id);
-    const allSelected = modulePerms.every(id => selectedPerms.includes(id));
-    if (allSelected) {
-      setSelectedPerms(prev => prev.filter(id => !modulePerms.includes(id)));
-    } else {
-      setSelectedPerms(prev => [...new Set([...prev, ...modulePerms])]);
-    }
-  };
-
-  const groupedPerms = allPermissions.reduce<Record<string, Permission[]>>((acc, p) => {
-    if (!acc[p.module]) acc[p.module] = [];
-    acc[p.module].push(p);
-    return acc;
-  }, {});
 
   if (loading) {
-    return <div className="animate-pulse bg-slate-200 h-32 rounded-xl" />;
+    return (
+      <div className="space-y-4">
+        {[1,2,3].map(i => (
+          <div key={i} className="h-16 bg-slate-100 rounded-xl animate-pulse" />
+        ))}
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6">
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+      {/* Roles header */}
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
         <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-slate-900">Roles Personalizados</h3>
-          <button
-            onClick={() => setShowNewRole(true)}
-            className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
-          >
-            <Plus className="w-4 h-4" /> Nuevo Rol
-          </button>
+          <div>
+            <h3 className="text-sm font-semibold text-slate-900">Roles</h3>
+            <p className="text-xs text-slate-500 mt-0.5">{roles.length} roles configurados</p>
+          </div>
+          <div className="flex items-center gap-3">
+            {modifiedRoles.size > 0 && (
+              <button onClick={handleSaveAll} disabled={saving}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+                <Save className="w-4 h-4" /> {saving ? 'Guardando...' : `Guardar (${modifiedRoles.size})`}
+              </button>
+            )}
+            <button onClick={() => setShowNewRole(true)}
+              className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              <Plus className="w-4 h-4" /> Nuevo Rol
+            </button>
+          </div>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-slate-200">
-                {['Nombre', 'Descripcion', 'Tipo', 'Permisos', 'Acciones'].map(h => (
-                  <th key={h} className="text-left px-6 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {roles.map(role => (
-                <tr key={role.id} className="border-b border-slate-100 hover:bg-slate-50">
-                  <td className="px-6 py-3 text-sm font-medium text-slate-900">{role.name}</td>
-                  <td className="px-6 py-3 text-sm text-slate-500 max-w-[200px] truncate">{role.description || '—'}</td>
-                  <td className="px-6 py-3">
-                    <Badge variant={role.is_system ? 'info' : 'neutral'}>{role.is_system ? 'Sistema' : 'Personalizado'}</Badge>
-                  </td>
-                  <td className="px-6 py-3 text-sm text-slate-500">{role.permissions?.length || 0} permisos</td>
-                  <td className="px-6 py-3">
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleEditRole(role)}
-                        className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"
-                        title="Editar permisos"
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </button>
-                      {!role.is_system && (
-                        <button
-                          onClick={() => handleDeleteRole(role.id)}
-                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
-                          title="Eliminar rol"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {roles.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-sm text-slate-400">No hay roles personalizados</td>
-                </tr>
+
+        {/* Roles list */}
+        <div className="divide-y divide-slate-100">
+          {roles.map(role => (
+            <div key={role.id} className="px-6 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors">
+              <div className="flex items-center gap-3">
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${
+                  role.is_system ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600'
+                }`}>
+                  {role.name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-slate-900">{role.name}</p>
+                  <p className="text-[10px] text-slate-400">
+                    {role.permissions?.length || 0} permisos
+                    {role.is_system && ' · Sistema'}
+                    {modifiedRoles.has(role.id) && ' · Sin guardar'}
+                  </p>
+                </div>
+              </div>
+              {!role.is_system && (
+                <button onClick={() => handleDeleteRole(role.id)}
+                  className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                  title="Eliminar rol">
+                  <Trash2 className="w-4 h-4" />
+                </button>
               )}
-            </tbody>
-          </table>
+            </div>
+          ))}
         </div>
       </div>
 
-      {editingRole && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-in fade-in-0">
-          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-9003xl max-h-[90vh] overflow-y-auto animate-in zoom-in-95 fade-in-0">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-slate-900">Permisos para: {editingRole.name}</h3>
-              <button onClick={() => { setEditingRole(null); setSelectedPerms([]); }} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded"><X className="w-5 h-5" /></button>
-            </div>
-            <div className="p-6 space-y-6">
-              {Object.entries(groupedPerms).map(([module, perms]) => (
-                <div key={module} className="border border-slate-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-medium text-slate-900 capitalize">{MODULE_LABELS[module] || module}</h4>
-                    <button
-                      onClick={() => toggleModule(module)}
-                      className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
-                    >
-                      {perms.every(p => selectedPerms.includes(p.id)) ? 'Deseleccionar todo' : 'Seleccionar todo'}
-                    </button>
+      {/* Permissions by module */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-slate-900">Permisos por Modulo</h3>
+          <p className="text-xs text-slate-500">Expande un modulo para configurar permisos por rol</p>
+        </div>
+
+        {allModules.map(mod => {
+          const config = MODULE_CONFIG[mod] || { label: mod, icon: Package, color: 'text-slate-600 bg-slate-50' };
+          const Icon = config.icon;
+          const perms = groupedPerms[mod];
+          const isExpanded = expandedModules.has(mod);
+
+          return (
+            <div key={mod} className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+              {/* Module header */}
+              <button onClick={() => toggleModule(mod)}
+                className="w-full px-5 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${config.color}`}>
+                    <Icon className="w-4.5 h-4.5" />
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {perms.map(perm => (
-                      <label key={perm.id} className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-colors cursor-pointer ${selectedPerms.includes(perm.id) ? ACTION_COLORS[perm.action] : 'border-slate-200 hover:border-slate-300'}`}
-                      >
-                        <input type="checkbox" checked={selectedPerms.includes(perm.id)} onChange={() => togglePerm(perm.id)} className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500" />
-                        <span className="text-xs font-medium capitalize">{ACTION_LABELS[perm.action]}</span>
-                        <Badge variant={(perm.action === 'create' ? 'success' : perm.action === 'read' ? 'info' : perm.action === 'update' ? 'warning' : 'danger') as 'success' | 'info' | 'warning' | 'danger'} className="text-[9px]">{perm.description}</Badge>
-                      </label>
-                    ))}
+                  <div className="text-left">
+                    <p className="text-sm font-semibold text-slate-900">{config.label}</p>
+                    <p className="text-[10px] text-slate-400">{perms.length} permisos · {roles.length} roles</p>
                   </div>
                 </div>
-              ))}
-            </div>
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
-              <Button variant="secondary" onClick={() => { setEditingRole(null); setSelectedPerms([]); }}>Cancelar</Button>
-              <Button onClick={handleSavePermissions} disabled={saving}>
-                <Save className="w-4 h-4 mr-2" />
-                {saving ? 'Guardando...' : 'Guardar Permisos'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+                <div className="flex items-center gap-2">
+                  {isExpanded ? (
+                    <ChevronDown className="w-4 h-4 text-slate-400" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4 text-slate-400" />
+                  )}
+                </div>
+              </button>
 
+              {/* Expanded: permissions grid */}
+              {isExpanded && (
+                <div className="border-t border-slate-100 px-5 py-4">
+                  {/* Column headers: roles */}
+                  <div className="grid gap-2 mb-3" style={{ gridTemplateColumns: `100px repeat(${roles.length}, 1fr) auto` }}>
+                    <div />
+                    {roles.map(role => (
+                      <div key={role.id} className="text-center">
+                        <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider truncate">{role.name}</p>
+                        <button onClick={() => toggleRoleModule(role.id, mod)}
+                          className="text-[9px] text-indigo-600 hover:text-indigo-700 mt-0.5">
+                          {getModulePermCount(role.id, mod) === perms.length ? 'Quitar todo' : 'Todo'}
+                        </button>
+                      </div>
+                    ))}
+                    <div className="w-16" />
+                  </div>
+
+                  {/* Action rows */}
+                  {perms.map(perm => {
+                    const actionConf = ACTION_CONFIG[perm.action] || { label: perm.action, color: 'border-slate-200', activeColor: 'bg-slate-500 text-white' };
+                    return (
+                      <div key={perm.id} className="grid gap-2 items-center mb-1.5"
+                        style={{ gridTemplateColumns: `100px repeat(${roles.length}, 1fr) auto` }}>
+                        <div className="flex items-center gap-2">
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold border ${actionConf.color}`}>
+                            {actionConf.label}
+                          </span>
+                        </div>
+                        {roles.map(role => {
+                          const isActive = rolePermMap[role.id]?.has(perm.id) || false;
+                          return (
+                            <button key={role.id}
+                              onClick={() => togglePerm(role.id, perm.id)}
+                              className={`h-9 rounded-lg border-2 text-[10px] font-medium transition-all ${
+                                isActive
+                                  ? `${actionConf.activeColor} border-transparent shadow-sm`
+                                  : 'border-slate-200 text-slate-400 hover:border-slate-300 hover:text-slate-500'
+                              }`}>
+                              {isActive ? 'Activo' : '—'}
+                            </button>
+                          );
+                        })}
+                        <div className="w-16 text-[9px] text-slate-400 truncate" title={perm.description}>
+                          {perm.description}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* New Role Modal */}
       {showNewRole && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-in fade-in-0">
-          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900md animate-in zoom-in-95 fade-in-0">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowNewRole(false)}>
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
               <h3 className="text-lg font-semibold text-slate-900">Nuevo Rol</h3>
-              <button onClick={() => setShowNewRole(false)} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded"><X className="w-5 h-5" /></button>
+              <button onClick={() => setShowNewRole(false)} className="text-slate-400 hover:text-slate-600">&times;</button>
             </div>
             <div className="p-6 space-y-4">
-              <Input label="Nombre del Rol" value={newRoleName} onChange={e => setNewRoleName(e.target.value)} placeholder="Ej: Supervisor Ventas" required />
-              <Input label="Descripcion" value={newRoleDesc} onChange={e => setNewRoleDesc(e.target.value)} placeholder="Descripcion opcional" />
-              <div className="flex justify-end gap-3 pt-4">
-                <Button variant="secondary" onClick={() => { setShowNewRole(false); setNewRoleName(''); setNewRoleDesc(''); }}>Cancelar</Button>
-                <Button onClick={handleCreateRole} disabled={saving || !newRoleName.trim()}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  {saving ? 'Creando...' : 'Crear Rol'}
-                </Button>
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-700">Nombre del Rol *</label>
+                <input type="text" value={newRoleName} onChange={e => setNewRoleName(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  placeholder="Ej: Supervisor Ventas" autoFocus />
+              </div>
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-slate-700">Descripcion</label>
+                <input type="text" value={newRoleDesc} onChange={e => setNewRoleDesc(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  placeholder="Descripcion opcional" />
+              </div>
+              <div className="flex justify-end gap-3 pt-2">
+                <button onClick={() => { setShowNewRole(false); setNewRoleName(''); setNewRoleDesc(''); }}
+                  className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                  Cancelar
+                </button>
+                <button onClick={handleCreateRole} disabled={saving || !newRoleName.trim()}
+                  className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+                  <Plus className="w-4 h-4" /> {saving ? 'Creando...' : 'Crear Rol'}
+                </button>
               </div>
             </div>
           </div>

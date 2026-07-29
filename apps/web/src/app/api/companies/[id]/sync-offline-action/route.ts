@@ -2,6 +2,34 @@ import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
+const ALLOWED_COLUMNS: Record<string, string[]> = {
+  product: ['name', 'sku', 'description', 'price', 'cost_price', 'sale_price', 'category_id', 'tax_id', 'unit_id', 'barcode', 'weight', 'volume', 'is_active', 'track_stock', 'image_url', 'notes', 'min_stock', 'max_stock'],
+  warehouse: ['name', 'code', 'address', 'phone', 'email', 'manager', 'is_active', 'notes'],
+  category: ['name', 'description', 'parent_id', 'is_active', 'sort_order', 'icon', 'color'],
+  tax: ['name', 'rate', 'type', 'is_active', 'description', 'code'],
+  uom: ['name', 'symbol', 'description', 'is_active', 'conversion_factor', 'base_unit'],
+  cost_center: ['name', 'code', 'description', 'is_active', 'budget', 'parent_id'],
+  supplier: ['name', 'email', 'phone', 'address', 'tax_id', 'contact_name', 'notes', 'is_active', 'payment_terms', 'website'],
+  customer: ['name', 'email', 'phone', 'address', 'tax_id', 'contact_name', 'notes', 'is_active', 'credit_limit', 'payment_terms', 'type'],
+};
+
+function sanitizeColumns(entityType: string, payload: Record<string, any>): { columns: string; placeholders: string; values: any[] } {
+  const allowed = ALLOWED_COLUMNS[entityType] || [];
+  const validKeys = Object.keys(payload).filter(k => k !== 'id' && allowed.includes(k));
+  const columns = validKeys.join(', ');
+  const placeholders = validKeys.map((_, i) => `$${i + 2}`).join(', ');
+  const values = validKeys.map(k => payload[k]);
+  return { columns, placeholders, values };
+}
+
+function sanitizeSetClause(entityType: string, payload: Record<string, any>): { setClause: string; values: any[] } {
+  const allowed = ALLOWED_COLUMNS[entityType] || [];
+  const validKeys = Object.keys(payload).filter(k => allowed.includes(k));
+  const setClause = validKeys.map((k, i) => `${k} = $${i + 3}`).join(', ');
+  const values = validKeys.map(k => payload[k]);
+  return { setClause, values };
+}
+
 export async function POST(request: NextRequest) {
   try {
     const companyId = await getCompanyId(request);
@@ -190,23 +218,21 @@ async function handleStockReceive(companyId: string, payload: any) {
 
 async function handleCreate(companyId: string, entityType: string, payload: any) {
   let tableName: string;
-  let idColumn: string;
 
   switch (entityType) {
-    case 'product': tableName = 'products'; idColumn = 'id'; break;
-    case 'warehouse': tableName = 'warehouses'; idColumn = 'id'; break;
-    case 'category': tableName = 'inventory_categories'; idColumn = 'id'; break;
-    case 'tax': tableName = 'taxes'; idColumn = 'id'; break;
-    case 'uom': tableName = 'units_of_measure'; idColumn = 'id'; break;
-    case 'cost_center': tableName = 'cost_centers'; idColumn = 'id'; break;
-    case 'supplier': tableName = 'suppliers'; idColumn = 'id'; break;
-    case 'customer': tableName = 'customers'; idColumn = 'id'; break;
+    case 'product': tableName = 'products'; break;
+    case 'warehouse': tableName = 'warehouses'; break;
+    case 'category': tableName = 'inventory_categories'; break;
+    case 'tax': tableName = 'taxes'; break;
+    case 'uom': tableName = 'units_of_measure'; break;
+    case 'cost_center': tableName = 'cost_centers'; break;
+    case 'supplier': tableName = 'suppliers'; break;
+    case 'customer': tableName = 'customers'; break;
     default: throw new Error(`Unsupported entity type for create: ${entityType}`);
   }
 
-  const columns = Object.keys(payload).filter(k => k !== 'id').join(', ');
-  const placeholders = Object.keys(payload).filter(k => k !== 'id').map((_, i) => `$${i + 2}`).join(', ');
-  const values = Object.entries(payload).filter(([k]) => k !== 'id').map(([_, v]) => v);
+  const { columns, placeholders, values } = sanitizeColumns(entityType, payload);
+  if (!columns) throw new Error('No valid columns for create');
 
   await query(
     `INSERT INTO ${tableName} (company_id, ${columns}) VALUES ($1, ${placeholders})`,
@@ -230,8 +256,8 @@ async function handleUpdate(companyId: string, entityType: string, entityId: str
     default: throw new Error(`Unsupported entity type for update: ${entityType}`);
   }
 
-  const setClause = Object.keys(payload).map((k, i) => `${k} = $${i + 3}`).join(', ');
-  const values = Object.values(payload);
+  const { setClause, values } = sanitizeSetClause(entityType, payload);
+  if (!setClause) throw new Error('No valid columns for update');
 
   await query(
     `UPDATE ${tableName} SET ${setClause}, updated_at = NOW() WHERE id = $1 AND company_id = $2`,

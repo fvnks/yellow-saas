@@ -23,8 +23,13 @@ export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Public paths - no auth required
-  const publicPaths = ['/', '/login', '/register', '/super-admin/login', '/auth/callback', '/forgot-password', '/reset-password'];
+  const publicPaths = ['/', '/login', '/register', '/auth/callback', '/forgot-password', '/reset-password'];
   if (publicPaths.some(path => pathname === path)) return response;
+
+  // Redirect super-admin login to unified login
+  if (pathname === '/super-admin/login') {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
 
   // Static assets and internal Next.js paths
   if (pathname.startsWith('/_next') || pathname.startsWith('/favicon') || pathname.includes('.')) return response;
@@ -71,10 +76,7 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get('auth-token')?.value;
 
   if (!token) {
-    // Determine where to redirect based on path
-    if (pathname.startsWith('/admin') || pathname.startsWith('/super-admin')) {
-      return NextResponse.redirect(new URL('/super-admin/login', request.url));
-    }
+    // All unauthenticated routes redirect to unified login
     const redirectUrl = new URL('/login', request.url);
     redirectUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(redirectUrl);
@@ -83,12 +85,7 @@ export async function middleware(request: NextRequest) {
   const payload = await verifyToken(token);
 
   if (!payload) {
-    // Invalid token - clear and redirect
-    if (pathname.startsWith('/admin') || pathname.startsWith('/super-admin')) {
-      const response = NextResponse.redirect(new URL('/super-admin/login', request.url));
-      response.cookies.set('auth-token', '', { path: '/', maxAge: 0 });
-      return response;
-    }
+    // Invalid token - clear and redirect to unified login
     const redirectUrl = new URL('/login', request.url);
     redirectUrl.searchParams.set('redirect', pathname);
     const response = NextResponse.redirect(redirectUrl);

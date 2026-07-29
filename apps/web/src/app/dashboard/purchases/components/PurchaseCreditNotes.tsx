@@ -1,23 +1,26 @@
 'use client';
 
-import { useState } from 'react';
-import { Search, ReceiptText, Zap, MoreVertical, Download, Printer } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Search, ReceiptText, MoreVertical, Download, Printer } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
-const MOCK_NC = [
-  { id: '1', note_number: 'NC-4501', supplier: 'Distribuidora Central SpA', rut: '76.123.456-7', issue_date: '2025-06-16', reason: 'Devolución parcial pedido #1234', amount: 350000, status: 'accepted' },
-  { id: '2', note_number: 'NC-4502', supplier: 'Insumos Industriales Ltda', rut: '76.987.654-3', issue_date: '2025-06-19', reason: 'Descuento por volumen', amount: 125000, status: 'accepted' },
-  { id: '3', note_number: 'NC-4503', supplier: 'Comercial Andes SpA', rut: '76.555.123-8', issue_date: '2025-06-21', reason: 'Error en facturación', amount: 890000, status: 'accepted' },
-  { id: '4', note_number: 'NC-4504', supplier: 'Proveedores del Sur Ltda', rut: '76.789.012-4', issue_date: '2025-06-26', reason: 'Devolución producto defectuoso', amount: 210000, status: 'accepted' },
-  { id: '5', note_number: 'NC-4505', supplier: 'Tecnología Total SpA', rut: '76.321.654-9', issue_date: '2025-06-29', reason: 'Ajuste por diferencia de precio', amount: 56000, status: 'accepted' },
-];
+interface CreditNote {
+  id: string;
+  note_number: string;
+  supplier_name: string;
+  supplier_tax_id: string;
+  issue_date: string;
+  reason: string;
+  total_amount: number;
+  status: string;
+}
 
 const STATUS_CFG: Record<string, { label: string; color: string; bg: string; border: string }> = {
   accepted: { label: 'Aceptado', color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200' },
   pending: { label: 'Pendiente', color: 'text-amber-700', bg: 'bg-amber-50', border: 'border-amber-200' },
 };
 
-function generateNcXml(n: typeof MOCK_NC[0]): string {
+function generateNcXml(n: CreditNote): string {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
   <Documento>
@@ -28,22 +31,22 @@ function generateNcXml(n: typeof MOCK_NC[0]): string {
         <FechaEmision>${n.issue_date}</FechaEmision>
       </IdDoc>
       <Emisor>
-        <RUTEmisor>${n.rut}</RUTEmisor>
-        <RazonSocial>${n.supplier}</RazonSocial>
+        <RUTEmisor>${n.supplier_tax_id}</RUTEmisor>
+        <RazonSocial>${n.supplier_name}</RazonSocial>
       </Emisor>
     </Encabezado>
     <Detalle>
       <Glosa>${n.reason}</Glosa>
-      <MontoItem>${n.amount}</MontoItem>
+      <MontoItem>${n.total_amount}</MontoItem>
     </Detalle>
     <Totales>
-      <MontoTotal>${n.amount}</MontoTotal>
+      <MontoTotal>${n.total_amount}</MontoTotal>
     </Totales>
   </Documento>
 </DTE>`;
 }
 
-function openPdfPreview(n: typeof MOCK_NC[0]) {
+function openPdfPreview(n: CreditNote) {
   const html = `<!DOCTYPE html><html><head><title>NC ${n.note_number}</title>
   <style>body{font-family:Arial,sans-serif;padding:40px;max-width:800px;margin:0 auto}
   h1{font-size:20px;border-bottom:2px solid #333;padding-bottom:8px}
@@ -51,10 +54,10 @@ function openPdfPreview(n: typeof MOCK_NC[0]) {
   .total{text-align:right;font-size:14px;font-weight:bold;margin-top:16px}
   @media print{body{padding:20px}}</style></head><body>
   <h1>NOTA DE CRÉDITO N° ${n.note_number}</h1>
-  <div class="row"><span><b>Proveedor:</b> ${n.supplier}</span><span><b>RUT:</b> ${n.rut}</span></div>
+  <div class="row"><span><b>Proveedor:</b> ${n.supplier_name}</span><span><b>RUT:</b> ${n.supplier_tax_id}</span></div>
   <div class="row"><span><b>Fecha:</b> ${n.issue_date}</span></div>
   <div class="row"><span><b>Motivo:</b> ${n.reason}</span></div>
-  <div class="total" style="margin-top:24px;font-size:18px;border-top:2px solid #333;padding-top:8px">MONTO NC: $${n.amount.toLocaleString('es-CL')}</div>
+  <div class="total" style="margin-top:24px;font-size:18px;border-top:2px solid #333;padding-top:8px">MONTO NC: $${n.total_amount.toLocaleString('es-CL')}</div>
   <script>window.onload=function(){window.print()}</script></body></html>`;
   const w = window.open('', '_blank');
   if (w) { w.document.write(html); w.document.close(); }
@@ -69,15 +72,25 @@ function downloadXml(filename: string, xml: string) {
 }
 
 export default function PurchaseCreditNotes() {
+  const [notes, setNotes] = useState<CreditNote[]>([]);
   const [search, setSearch] = useState('');
 
-  const filtered = MOCK_NC.filter(n =>
+  useEffect(() => {
+    const cid = localStorage.getItem('company_id');
+    if (!cid) return;
+    fetch(`/api/companies/${cid}/purchase-credit-notes`)
+      .then(r => r.json())
+      .then(d => setNotes(d.data || []))
+      .catch(() => {});
+  }, []);
+
+  const filtered = notes.filter(n =>
     n.note_number.toLowerCase().includes(search.toLowerCase()) ||
-    n.supplier.toLowerCase().includes(search.toLowerCase()) ||
-    n.rut.includes(search)
+    (n.supplier_name || '').toLowerCase().includes(search.toLowerCase()) ||
+    (n.supplier_tax_id || '').includes(search)
   );
 
-  const total = filtered.reduce((acc, n) => acc + n.amount, 0);
+  const total = filtered.reduce((acc, n) => acc + Number(n.total_amount || 0), 0);
 
   return (
     <div className="space-y-4">
@@ -85,9 +98,6 @@ export default function PurchaseCreditNotes() {
         <div className="flex items-center gap-2">
           <ReceiptText className="w-4 h-4 text-emerald-500" />
           <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Notas de Crédito Recibidas</span>
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
-            <Zap className="w-2.5 h-2.5" /> SII
-          </span>
         </div>
         <div className="text-right">
           <p className="text-[9px] font-semibold text-slate-500 uppercase">Total NC</p>
@@ -111,7 +121,7 @@ export default function PurchaseCreditNotes() {
               <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
               <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Motivo</th>
               <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Monto</th>
-              <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado SII</th>
+              <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
               <th className="w-12 px-4 py-3"></th>
             </tr>
           </thead>
@@ -121,11 +131,11 @@ export default function PurchaseCreditNotes() {
               return (
                 <tr key={n.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                   <td className="px-4 py-3 text-xs font-medium text-slate-900 font-mono">{n.note_number}</td>
-                  <td className="px-4 py-3 text-xs text-slate-700">{n.supplier}</td>
-                  <td className="px-4 py-3 text-xs text-slate-500 font-mono">{n.rut}</td>
+                  <td className="px-4 py-3 text-xs text-slate-700">{n.supplier_name}</td>
+                  <td className="px-4 py-3 text-xs text-slate-500 font-mono">{n.supplier_tax_id}</td>
                   <td className="px-4 py-3 text-xs text-slate-600">{n.issue_date}</td>
                   <td className="px-4 py-3 text-xs text-slate-600 max-w-xs truncate">{n.reason}</td>
-                  <td className="px-4 py-3 text-xs text-right font-medium text-emerald-600 font-mono">${n.amount.toLocaleString('es-CL')}</td>
+                  <td className="px-4 py-3 text-xs text-right font-medium text-emerald-600 font-mono">${Number(n.total_amount || 0).toLocaleString('es-CL')}</td>
                   <td className="px-4 py-3 text-center">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${st.bg} ${st.color} border ${st.border}`}>{st.label}</span>
                   </td>
@@ -156,13 +166,6 @@ export default function PurchaseCreditNotes() {
             )}
           </tbody>
         </table>
-      </div>
-
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center gap-3">
-        <Zap className="w-4 h-4 text-amber-500 flex-shrink-0" />
-        <p className="text-xs text-amber-700">
-          <span className="font-semibold">Modo Demo SII</span> — Estos documentos son una simulación de datos recibidos del Servicio de Impuestos Internos.
-        </p>
       </div>
     </div>
   );

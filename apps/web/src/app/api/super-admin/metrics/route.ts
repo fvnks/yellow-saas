@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
   if (!admin) return errorResponse('No autorizado', 401);
 
   try {
+    const dbStart = Date.now();
     const [companiesResult, usersResult, trialResult, activeUsersResult, recentResult, superAdminsResult] = await Promise.all([
       query('SELECT COUNT(*) as total FROM companies'),
       query('SELECT COUNT(*) as total FROM profiles'),
@@ -18,6 +19,7 @@ export async function GET(request: NextRequest) {
     ]);
 
     const activeCompaniesResult = await query("SELECT COUNT(*) as total FROM companies WHERE status = 'active'");
+    const dbLatency = Date.now() - dbStart;
 
     return successResponse({
       totalCompanies: parseInt(companiesResult.rows[0].total),
@@ -27,9 +29,21 @@ export async function GET(request: NextRequest) {
       activeUsers: parseInt(activeUsersResult.rows[0].total),
       recentSignups: parseInt(recentResult.rows[0].total),
       superAdmins: parseInt(superAdminsResult.rows[0].total),
+      dbStatus: 'connected',
+      dbLatency,
     });
   } catch (err) {
     console.error('Metrics error:', err);
-    return errorResponse('Error al obtener métricas', 500);
+    return successResponse({
+      totalCompanies: 0,
+      activeCompanies: 0,
+      trialCompanies: 0,
+      totalUsers: 0,
+      activeUsers: 0,
+      recentSignups: 0,
+      superAdmins: 0,
+      dbStatus: 'error',
+      dbLatency: 0,
+    });
   }
 }

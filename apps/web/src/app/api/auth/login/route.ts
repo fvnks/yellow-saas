@@ -2,9 +2,9 @@ import { query } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import { SignJWT } from 'jose';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'yellow-erp-secret-key-change-in-production';
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'yellow-erp-secret-key-change-in-production');
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,6 +15,43 @@ export async function POST(request: NextRequest) {
       return errorResponse('Email and password are required', 400);
     }
 
+    // First check if this is a super admin
+    const superAdminResult = await query(
+      'SELECT id, email, name, password_hash, is_active FROM super_admins WHERE email = $1',
+      [email]
+    );
+
+    if (superAdminResult.rows.length > 0) {
+      const admin = superAdminResult.rows[0];
+
+      if (!admin.is_active) {
+        return errorResponse('Cuenta desactivada', 403);
+      }
+
+      if (!admin.password_hash) {
+        return errorResponse('Cuenta sin contraseña configurada', 401);
+      }
+
+      const validPassword = await bcrypt.compare(password, admin.password_hash);
+      if (!validPassword) {
+        return errorResponse('Credenciales inválidas', 401);
+      }
+
+      await query('UPDATE super_admins SET last_login_at = now() WHERE id = $1', [admin.id]);
+
+      const token = await new SignJWT({ id: admin.id, email: admin.email, name: admin.name, role_type: 'super_admin', role: 'super_admin' })
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setExpirationTime('7d')
+        .sign(JWT_SECRET);
+
+      return successResponse({
+        token,
+        user: { id: admin.id, email: admin.email, name: admin.name, role_type: 'super_admin' },
+      });
+    }
+
+    // Regular user login
     const result = await query(
       'SELECT id, email, full_name, company_id, role, password_hash FROM profiles WHERE email = $1 AND status = $2',
       [email, 'active']
@@ -66,17 +103,17 @@ export async function POST(request: NextRequest) {
     const activeCompanyId = user.company_id;
     const activeCompany = companies.find(c => c.company_id === activeCompanyId) || companies[0];
 
-    const token = jwt.sign(
-      {
-        id: user.id,
-        email: user.email,
-        name: user.full_name,
-        company_id: activeCompanyId,
-        role: activeCompany?.company_role || user.role,
-      },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+    const token = await new SignJWT({
+      id: user.id,
+      email: user.email,
+      name: user.full_name,
+      company_id: activeCompanyId,
+      role: activeCompany?.company_role || user.role,
+    })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setExpirationTime('7d')
+      .sign(JWT_SECRET);
 
     return successResponse({
       token,

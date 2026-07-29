@@ -11,12 +11,15 @@ interface Metrics {
   activeUsers: number;
   recentSignups: number;
   superAdmins: number;
+  dbStatus: string;
+  dbLatency: number;
 }
 
 export default function AdminDashboard() {
   const [metrics, setMetrics] = useState<Metrics>({
     totalCompanies: 0, activeCompanies: 0, trialCompanies: 0,
     totalUsers: 0, activeUsers: 0, recentSignups: 0, superAdmins: 0,
+    dbStatus: 'checking', dbLatency: 0,
   });
   const [loading, setLoading] = useState(true);
 
@@ -107,9 +110,20 @@ export default function AdminDashboard() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-sm text-slate-400">Base de datos</span>
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                Conectada
+              <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                metrics.dbStatus === 'connected'
+                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                  : metrics.dbStatus === 'error'
+                  ? 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+                  : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+              }`}>
+                <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${
+                  metrics.dbStatus === 'connected' ? 'bg-emerald-400' : metrics.dbStatus === 'error' ? 'bg-rose-400' : 'bg-amber-400'
+                }`} />
+                {metrics.dbStatus === 'connected' ? 'Conectada' : metrics.dbStatus === 'error' ? 'Error' : 'Verificando...'}
+                {metrics.dbStatus === 'connected' && metrics.dbLatency > 0 && (
+                  <span className="text-emerald-500/70 ml-1">{metrics.dbLatency}ms</span>
+                )}
               </span>
             </div>
             <div className="flex items-center justify-between">
