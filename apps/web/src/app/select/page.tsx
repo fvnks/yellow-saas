@@ -122,11 +122,30 @@ export default function SelectPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedModule, setSelectedModule] = useState<ModuleOption | null>(null);
   const [activating, setActivating] = useState(false);
+  const [lastAccess, setLastAccess] = useState<string | null>(null);
 
   useEffect(() => {
     const userData = getUserFromCookie();
     if (!userData) { router.push('/login'); return; }
     setUser(userData);
+
+    const stored = localStorage.getItem('yellow_last_access');
+    if (stored) {
+      const date = new Date(stored);
+      const now = new Date();
+      const diffMs = now.getTime() - date.getTime();
+      const diffMin = Math.floor(diffMs / 60000);
+      if (diffMin < 1) setLastAccess('Hace menos de 1 minuto');
+      else if (diffMin < 60) setLastAccess(`Hace ${diffMin} minuto${diffMin > 1 ? 's' : ''}`);
+      else {
+        const diffH = Math.floor(diffMin / 60);
+        if (diffH < 24) setLastAccess(`Hace ${diffH} hora${diffH > 1 ? 's' : ''}`);
+        else {
+          const diffD = Math.floor(diffH / 24);
+          setLastAccess(`Hace ${diffD} día${diffD > 1 ? 's' : ''}`);
+        }
+      }
+    }
 
     const api = getApiClient();
     Promise.all([
@@ -355,6 +374,13 @@ export default function SelectPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Last Access */}
+      {lastAccess && (
+        <div className="fixed bottom-4 right-5 text-[10px] text-slate-300 select-none">
+          Último acceso: {lastAccess}
+        </div>
+      )}
     </div>
   );
 }
