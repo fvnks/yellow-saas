@@ -56,6 +56,7 @@ function LoginForm() {
 
       const maxAge = remember ? 7 * 24 * 60 * 60 : undefined;
       document.cookie = `auth-token=${data.data.token}; path=/; max-age=${maxAge}`;
+      localStorage.setItem('yellow_last_access', new Date().toISOString());
 
       // Redirect based on role_type
       const roleType = data.data.user?.role_type;
