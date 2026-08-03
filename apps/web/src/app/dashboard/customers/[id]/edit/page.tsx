@@ -17,6 +17,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
   const [priceLists, setPriceLists] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [segments, setSegments] = useState<any[]>([]);
+  const [rubros, setRubros] = useState<any[]>([]);
 
   const [name, setName] = useState('');
   const [tradeName, setTradeName] = useState('');
@@ -38,6 +39,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
   const [taxExempt, setTaxExempt] = useState(false);
   const [categoryId, setCategoryId] = useState('');
   const [segmentId, setSegmentId] = useState('');
+  const [rubroId, setRubroId] = useState('');
   const [notes, setNotes] = useState('');
   const [isActive, setIsActive] = useState(true);
   const [portalEnabled, setPortalEnabled] = useState(false);
@@ -50,7 +52,8 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
       api.getPriceLists().catch(() => ({ data: [] })),
       api.getCustomerCategories().catch(() => ({ data: [] })),
       api.getCustomerSegments().catch(() => ({ data: [] })),
-    ]).then(([customerData, pl, cat, seg]) => {
+      api.getRubros({ limit: 200 }).catch(() => []),
+    ]).then(([customerData, pl, cat, seg, rub]) => {
       const c = customerData as any;
       setName(c.name || '');
       setTradeName(c.trade_name || '');
@@ -72,6 +75,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
       setTaxExempt(c.tax_exempt || false);
       setCategoryId(c.category_id || '');
       setSegmentId(c.segment_id || '');
+      setRubroId(c.rubro_id || '');
       setNotes(c.notes || '');
       setIsActive(c.is_active !== false);
       setPortalEnabled(c.portal_enabled || false);
@@ -79,6 +83,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
       setPriceLists(pl.data || []);
       setCategories(cat.data || []);
       setSegments(seg.data || []);
+      setRubros(Array.isArray(rub) ? rub : []);
       setLoading(false);
     }).catch(() => {
       setError('No se pudo cargar el cliente');
@@ -116,6 +121,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
         tax_exempt: taxExempt,
         category_id: categoryId || undefined,
         segment_id: segmentId || undefined,
+        rubro_id: rubroId || undefined,
         notes: notes.trim() || undefined,
         is_active: isActive,
         portal_enabled: portalEnabled,
@@ -267,7 +273,16 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
               <h3 className="text-sm font-semibold text-slate-900">Clasificación</h3>
             </div>
             <div className="p-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-slate-700">Rubro</label>
+                  <select value={rubroId} onChange={(e) => setRubroId(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    <option value="">Sin rubro</option>
+                    {rubros.map((r: any) => (
+                      <option key={r.id} value={r.id}>{r.name}</option>
+                    ))}
+                  </select>
+                </div>
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-slate-700">Categoría</label>
                   <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">

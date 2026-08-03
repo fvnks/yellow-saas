@@ -5,8 +5,10 @@ import { Settings, Save, Package, ArrowLeft } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import { useRecetasRefresh } from '@/components/recetas/RefreshContext';
 
 export default function RecetasSettingsPage() {
+  const { refreshKey } = useRecetasRefresh();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -21,7 +23,7 @@ export default function RecetasSettingsPage() {
       toast.error('Error al cargar productos');
       setLoading(false);
     });
-  }, []);
+  }, [refreshKey]);
 
   const handleMinStockChange = (productId: string, value: string) => {
     const num = parseFloat(value) || 0;

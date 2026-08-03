@@ -21,10 +21,10 @@ const moduleColors: Record<string, string> = {
   'Inventario': 'bg-blue-50 text-blue-700 border-blue-200',
   'Clientes': 'bg-indigo-50 text-indigo-700 border-indigo-200',
   'Compras': 'bg-amber-50 text-amber-700 border-amber-200',
-  'Facturaci�n': 'bg-purple-50 text-purple-700 border-purple-200',
-  'Configuraci�n': 'bg-slate-100 text-slate-700 border-slate-200',
+  'Facturación': 'bg-purple-50 text-purple-700 border-purple-200',
+  'Configuración': 'bg-slate-100 text-slate-700 border-slate-200',
   'Reportes': 'bg-cyan-50 text-cyan-700 border-cyan-200',
-  'N�mina': 'bg-pink-50 text-pink-700 border-pink-200',
+  'Nómina': 'bg-pink-50 text-pink-700 border-pink-200',
   'Almacenes': 'bg-orange-50 text-orange-700 border-orange-200',
   'Proveedores': 'bg-teal-50 text-teal-700 border-teal-200',
   'Auth': 'bg-violet-50 text-violet-700 border-violet-200',
@@ -75,7 +75,7 @@ useEffect(() => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Auditor�a</h1>
+          <h1 className="text-xl font-bold text-slate-900">Auditoría</h1>
           <p className="text-sm text-slate-500 mt-1">Registro de actividades y cambios del sistema</p>
         </div>
         <Button variant="secondary">
@@ -86,9 +86,9 @@ useEffect(() => {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <KPICard label="Eventos Hoy" value={auditLogs.filter(l => l.timestamp.startsWith(new Date().toISOString().split('T')[0])).length} icon={Activity} trend="Registrados" trendUp={true} />
-        <KPICard label="Usuarios Activos" value={new Set(auditLogs.map(l => l.user)).size} icon={User} trend="њltimas 24h" trendUp={true} />
-        <KPICard label="Eliminaciones" value={auditLogs.filter(l => l.action === 'delete').length} icon={XCircle} trend="њltima semana" trendUp={false} />
-        <KPICard label="M�dulos Afectados" value={modules.length} icon={ScrollText} trend="Diferentes m�dulos" trendUp={true} />
+        <KPICard label="Usuarios Activos" value={new Set(auditLogs.map(l => l.user)).size} icon={User} trend="Últimas 24h" trendUp={true} />
+        <KPICard label="Eliminaciones" value={auditLogs.filter(l => l.action === 'delete').length} icon={XCircle} trend="Última semana" trendUp={false} />
+        <KPICard label="Módulos Afectados" value={modules.length} icon={ScrollText} trend="Diferentes módulos" trendUp={true} />
       </div>
 
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
@@ -112,7 +112,7 @@ useEffect(() => {
               { value: 'update', label: 'Actualizar' },
               { value: 'delete', label: 'Eliminar' },
               { value: 'login', label: 'Login' },
-              { value: 'config', label: 'Configuraci�n' },
+              { value: 'config', label: 'Configuración' },
               { value: 'export', label: 'Exportar' },
             ]}
           />
@@ -120,7 +120,7 @@ useEffect(() => {
             value={moduleFilter}
             onChange={(e) => setModuleFilter(e.target.value)}
             options={[
-              { value: 'all', label: 'Todos los m�dulos' },
+              { value: 'all', label: 'Todos los módulos' },
               ...modules.map(m => ({ value: m, label: m })),
             ]}
           />
@@ -134,8 +134,8 @@ useEffect(() => {
               <tr className="border-b border-slate-200">
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha/Hora</th>
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Usuario</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acci�n</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">M�dulo</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acción</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Módulo</th>
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Entidad</th>
                 <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Detalles</th>
                 <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">IP</th>
@@ -178,7 +178,7 @@ useEffect(() => {
       {filteredLogs.length === 0 && (
         <div className="text-center py-12">
           <ScrollText className="w-12 h-12 text-slate-200 mx-auto mb-3" />
-          <p className="text-sm text-slate-500">No se encontraron registros de auditor�a</p>
+          <p className="text-sm text-slate-500">No se encontraron registros de auditoría</p>
         </div>
       )}
     </div>

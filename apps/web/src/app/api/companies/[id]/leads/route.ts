@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
 
     const { rows } = await query(`
       SELECT l.*,
-        COALESCE(p.first_name || ' ' || p.last_name, 'Sin asignar') as assigned_name
+        COALESCE(p.full_name, 'Sin asignar') as assigned_name
       FROM leads l
       LEFT JOIN profiles p ON l.assigned_to = p.id
       ${where}

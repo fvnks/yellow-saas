@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
 import QuickCreateProduct from '@/components/recetas/QuickCreateProduct';
+import { useRecetasRefresh } from '@/components/recetas/RefreshContext';
 
 interface Ingredient {
   product_id: string;
@@ -16,6 +17,7 @@ interface Ingredient {
 
 export default function NewRecetaPage() {
   const router = useRouter();
+  const { refreshKey } = useRecetasRefresh();
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
   const [form, setForm] = useState({
@@ -24,6 +26,8 @@ export default function NewRecetaPage() {
     output_product_id: '',
     yield_quantity: '1',
     yield_unit: 'un',
+    min_margin_pct: '',
+    max_margin_pct: '',
   });
   const [ingredients, setIngredients] = useState<Ingredient[]>([
     { product_id: '', quantity: '', unit: 'un' },
@@ -36,7 +40,7 @@ export default function NewRecetaPage() {
     api.getRecipeProducts({ limit: '500' }).then((res: any) => {
       setProducts(res.data || []);
     }).catch(() => {});
-  }, []);
+  }, [refreshKey]);
 
   const addIngredient = () => {
     setIngredients([...ingredients, { product_id: '', quantity: '', unit: 'un' }]);
@@ -74,6 +78,8 @@ export default function NewRecetaPage() {
         output_product_id: form.output_product_id || undefined,
         yield_quantity: parseFloat(form.yield_quantity) || 1,
         yield_unit: form.yield_unit,
+        min_margin_pct: form.min_margin_pct ? parseFloat(form.min_margin_pct) : null,
+        max_margin_pct: form.max_margin_pct ? parseFloat(form.max_margin_pct) : null,
         ingredients: ingredients
           .filter(i => i.product_id && i.quantity)
           .map(i => ({ product_id: i.product_id, quantity: parseFloat(i.quantity), unit: i.unit })),
@@ -140,6 +146,18 @@ export default function NewRecetaPage() {
               <textarea value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} rows={2}
                 className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 placeholder="Descripción de la receta..." />
+            </div>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">Margen Mínimo (%)</label>
+              <input type="number" step="0.01" min="0" max="100" value={form.min_margin_pct} onChange={e => setForm(p => ({ ...p, min_margin_pct: e.target.value }))}
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                placeholder="Ej: 10" />
+            </div>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">Margen Máximo (%)</label>
+              <input type="number" step="0.01" min="0" max="100" value={form.max_margin_pct} onChange={e => setForm(p => ({ ...p, max_margin_pct: e.target.value }))}
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                placeholder="Ej: 60" />
             </div>
           </div>
         </div>

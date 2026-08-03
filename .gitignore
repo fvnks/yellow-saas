@@ -33,3 +33,10 @@ yarn-error.log*
 .idea/
 *.swp
 *.swo
+
+# database backups (contain customer data)
+/railway*.sql
+
+# local AI tooling
+.agents/
+skills-lock.json

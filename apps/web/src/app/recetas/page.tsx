@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { FlaskConical, Plus, Search, MoreVertical, Trash2, Edit, Eye, Play, Package } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { formatQuantity } from '@/lib/utils';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 export default function RecetasPage() {
@@ -133,7 +134,7 @@ export default function RecetasPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-center text-xs font-medium text-slate-900">
-                    {Number(f.yield_quantity)} {f.yield_unit}
+                    {formatQuantity(f.yield_quantity, f.yield_unit)}
                   </td>
                   <td className="px-4 py-3 text-center text-xs text-slate-600">
                     {f.total_produced || 0}

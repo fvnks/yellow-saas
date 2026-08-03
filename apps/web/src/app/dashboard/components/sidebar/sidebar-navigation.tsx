@@ -36,21 +36,26 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
 
   // Filter sidebar items based on permissions
   const filteredItems = useMemo(() => {
+    const filterSubItems = (items: any[]): any[] => {
+      return items.filter(sub => {
+        if (sub.requiredPermission && !hasPermission(sub.requiredPermission.module, sub.requiredPermission.action)) {
+          return false;
+        }
+        if (sub.subItems) {
+          sub.subItems = filterSubItems(sub.subItems);
+        }
+        return true;
+      });
+    };
+
     return sidebarItems.map(group => ({
       ...group,
       items: group.items.filter(item => {
-        // Check item-level permission
         if (item.requiredPermission && !hasPermission(item.requiredPermission.module, item.requiredPermission.action)) {
           return false;
         }
-        // Filter sub-items by permission
         if (item.subItems) {
-          item.subItems = item.subItems.filter(sub => {
-            if (sub.requiredPermission && !hasPermission(sub.requiredPermission.module, sub.requiredPermission.action)) {
-              return false;
-            }
-            return true;
-          });
+          item.subItems = filterSubItems(item.subItems);
         }
         return true;
       })
@@ -101,21 +106,31 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
     if (subItems) {
       return subItems.some((subItem) => {
         const subPath = subItem.path.split("?")[0];
-        return path.startsWith(subPath);
+        if (path.startsWith(subPath)) return true;
+        if (subItem.subItems) {
+          return subItem.subItems.some((nested) => {
+            return path.startsWith(nested.path.split("?")[0]);
+          });
+        }
+        return false;
       });
     }
     return path.startsWith(itemPath);
   };
 
   const isGroupActive = (group: NavGroup) => {
+    const checkSubItems = (subItems: any[]): boolean => {
+      return subItems.some((sub) => {
+        if (path.startsWith(sub.path.split("?")[0])) return true;
+        if (sub.subItems) return checkSubItems(sub.subItems);
+        return false;
+      });
+    };
+
     return group.items.some((item) => {
-      if (item.subItems) {
-        return item.subItems.some((sub) => {
-          const subPath = sub.path.split("?")[0];
-          return path.startsWith(subPath);
-        });
-      }
-      return path.startsWith(item.path);
+      if (path.startsWith(item.path)) return true;
+      if (item.subItems) return checkSubItems(item.subItems);
+      return false;
     });
   };
 
@@ -214,18 +229,59 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                                 <SidebarMenuSub>
                                   {item.subItems.map((subItem) => (
                                     <SidebarMenuSubItem key={subItem.title}>
-                                      <SidebarMenuSubButton
-                                        aria-disabled={subItem.comingSoon}
-                                        isActive={isActive(subItem.path)}
-                                        asChild
-                                        className="rounded-lg"
-                                      >
-                                        <a href={subItem.path}>
-                                          {renderIcon(subItem.icon)}
-                                          <span>{subItem.title}</span>
-                                          {subItem.comingSoon && <IsComingSoon />}
-                                        </a>
-                                      </SidebarMenuSubButton>
+                                      {subItem.subItems ? (
+                                        <Collapsible
+                                          open={openItems[subItem.title] ?? false}
+                                          onOpenChange={() => toggleItem(subItem.title)}
+                                        >
+                                          <CollapsibleTrigger asChild>
+                                            <SidebarMenuSubButton
+                                              isActive={isActive(subItem.path, subItem.subItems)}
+                                              className="rounded-lg justify-between"
+                                            >
+                                              <div className="flex items-center gap-2">
+                                                {renderIcon(subItem.icon)}
+                                                <span>{subItem.title}</span>
+                                              </div>
+                                              <ChevronRight className={cn(
+                                                "h-3 w-3 transition-transform duration-200",
+                                                "group-data-[state=open]/collapsible:rotate-90"
+                                              )} />
+                                            </SidebarMenuSubButton>
+                                          </CollapsibleTrigger>
+                                          <CollapsibleContent>
+                                            <SidebarMenuSub className="ml-4">
+                                              {subItem.subItems.map((nestedItem) => (
+                                                <SidebarMenuSubItem key={nestedItem.title}>
+                                                  <SidebarMenuSubButton
+                                                    asChild
+                                                    className="rounded-lg"
+                                                    isActive={isActive(nestedItem.path)}
+                                                  >
+                                                    <a href={nestedItem.path}>
+                                                      {renderIcon(nestedItem.icon)}
+                                                      <span>{nestedItem.title}</span>
+                                                    </a>
+                                                  </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                              ))}
+                                            </SidebarMenuSub>
+                                          </CollapsibleContent>
+                                        </Collapsible>
+                                      ) : (
+                                        <SidebarMenuSubButton
+                                          aria-disabled={subItem.comingSoon}
+                                          isActive={isActive(subItem.path)}
+                                          asChild
+                                          className="rounded-lg"
+                                        >
+                                          <a href={subItem.path}>
+                                            {renderIcon(subItem.icon)}
+                                            <span>{subItem.title}</span>
+                                            {subItem.comingSoon && <IsComingSoon />}
+                                          </a>
+                                        </SidebarMenuSubButton>
+                                      )}
                                     </SidebarMenuSubItem>
                                   ))}
                                 </SidebarMenuSub>

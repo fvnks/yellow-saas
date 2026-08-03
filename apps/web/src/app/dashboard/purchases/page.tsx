@@ -18,6 +18,7 @@ import SupplierPriceHistory from './components/SupplierPriceHistory';
 import SupplierContracts from './components/SupplierContracts';
 import PurchaseBudgets from './components/PurchaseBudgets';
 import PurchaseForecast from './components/PurchaseForecast';
+import PurchaseCategoriesTab from './components/PurchaseCategoriesTab';
 
 const purchaseModules = [
   { id: 'compras', label: 'Compras', icon: ShoppingCart, tabs: [
@@ -28,7 +29,8 @@ const purchaseModules = [
     { id: 'credit-notes', label: 'NC' }, { id: 'debit-notes', label: 'ND' },
   ]},
   { id: 'finanzas', label: 'Finanzas', icon: DollarSign, tabs: [
-    { id: 'credit-control', label: 'Cr�dito' }, { id: 'statement', label: 'Estado Cta.' },
+    { id: 'credit-control', label: 'Crédito' }, { id: 'statement', label: 'Estado Cta.' },
+    { id: 'categories', label: 'Categorías' },
   ]},
   { id: 'analisis', label: 'An�lisis', icon: BarChart3, tabs: [
     { id: 'dashboard', label: 'Dashboard' }, { id: 'reports', label: 'Reportes' },
@@ -37,9 +39,9 @@ const purchaseModules = [
   ]},
 ];
 
-type TabId = 'orders' | 'receipts' | 'quotations' | 'register' | 'invoices' | 'returns' | 'credit-notes' | 'debit-notes' | 'statement' | 'credit-control' | 'dashboard' | 'reports' | 'price-history' | 'contracts' | 'budgets' | 'forecast';
+type TabId = 'orders' | 'receipts' | 'quotations' | 'register' | 'invoices' | 'returns' | 'credit-notes' | 'debit-notes' | 'statement' | 'credit-control' | 'categories' | 'dashboard' | 'reports' | 'price-history' | 'contracts' | 'budgets' | 'forecast';
 
-const allTabs: TabId[] = ['orders','receipts','quotations','register','invoices','returns','credit-notes','debit-notes','statement','credit-control','dashboard','reports','price-history','contracts','budgets','forecast'];
+const allTabs: TabId[] = ['orders','receipts','quotations','register','invoices','returns','credit-notes','debit-notes','statement','credit-control','categories','dashboard','reports','price-history','contracts','budgets','forecast'];
 
 const ITEMS_PER_PAGE = 10;
 
@@ -318,6 +320,12 @@ export default function PurchasesPage() {
 
         {activeTab === 'credit-control' && (
           <div className="p-6"><SupplierCreditControl /></div>
+        )}
+
+        {activeTab === 'categories' && (
+          <div className="p-6">
+            <PurchaseCategoriesTab />
+          </div>
         )}
 
         {activeTab === 'dashboard' && (

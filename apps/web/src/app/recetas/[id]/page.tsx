@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Edit, MoreVertical, Trash2, Play, Package, CheckCircle2, AlertTriangle, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { formatQuantity } from '@/lib/utils';
 import { toast } from 'sonner';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import QuickSellModal from '@/components/recetas/QuickSellModal';
@@ -149,29 +150,33 @@ export default function RecetaDetailPage() {
       </div>
 
       {/* Info Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <div className="bg-white border border-slate-200 rounded-xl p-5">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto Salida</p>
           <p className="text-sm font-medium text-slate-900 mt-1">{formula.output_product?.name || 'Ninguno'}</p>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl p-5">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Rendimiento</p>
-          <p className="text-sm font-medium text-slate-900 mt-1">{Number(formula.yield_quantity)} {formula.yield_unit}</p>
+          <p className="text-sm font-medium text-slate-900 mt-1">{formatQuantity(formula.yield_quantity, formula.yield_unit)}</p>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl p-5">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Ingredientes</p>
           <p className="text-sm font-medium text-slate-900 mt-1">{formula.ingredients?.length || 0}</p>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl p-5">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Producido</p>
-          <p className="text-sm font-medium text-slate-900 mt-1">{formula.productions?.length || 0} veces</p>
+          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Margen Mín.</p>
+          <p className="text-sm font-medium text-slate-900 mt-1">{formula.min_margin_pct != null ? `${formula.min_margin_pct}%` : '—'}</p>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-xl p-5">
+          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Margen Máx.</p>
+          <p className="text-sm font-medium text-slate-900 mt-1">{formula.max_margin_pct != null ? `${formula.max_margin_pct}%` : '—'}</p>
         </div>
       </div>
 
       {/* Ingredients */}
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
         <div className="px-6 py-4 border-b border-slate-100">
-          <h3 className="text-sm font-semibold text-slate-900">Ingredientes (por {Number(formula.yield_quantity)} {formula.yield_unit})</h3>
+          <h3 className="text-sm font-semibold text-slate-900">Ingredientes (por {formatQuantity(formula.yield_quantity, formula.yield_unit)})</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -204,9 +209,9 @@ export default function RecetaDetailPage() {
       />
     </div>
                     </td>
-                    <td className="px-4 py-3 text-right text-xs font-medium text-slate-900">{ing.quantity}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{ing.unit}</td>
-                    <td className="px-4 py-3 text-right text-xs text-slate-600">{ing.current_stock}</td>
+                    <td className="px-4 py-3 text-right text-xs font-medium text-slate-900">{formatQuantity(ing.quantity, ing.unit)}</td>
+                    <td className="px-4 py-3 text-xs text-slate-600 uppercase">{ing.unit}</td>
+                    <td className="px-4 py-3 text-right text-xs text-slate-600">{formatQuantity(ing.current_stock, ing.unit)}</td>
                     <td className="px-4 py-3 text-center">
                       {hasEnough ? (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
@@ -246,7 +251,7 @@ export default function RecetaDetailPage() {
                 {formula.productions.map((p: any) => (
                   <tr key={p.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                     <td className="px-4 py-3 text-xs text-slate-600">{new Date(p.created_at).toLocaleDateString('es-CL')}</td>
-                    <td className="px-4 py-3 text-right text-xs font-medium text-slate-900">{p.quantity}</td>
+                    <td className="px-4 py-3 text-right text-xs font-medium text-slate-900">{formatQuantity(p.quantity, formula.yield_unit)}</td>
                     <td className="px-4 py-3 text-xs text-slate-600">{p.warehouse?.name || '—'}</td>
                     <td className="px-4 py-3 text-xs text-slate-600">{p.notes || '—'}</td>
                   </tr>

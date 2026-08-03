@@ -112,6 +112,7 @@ export interface NavSubItem {
   title: string;
   path: string;
   icon?: keyof typeof ICON_MAP;
+  subItems?: NavSubItem[];
   comingSoon?: boolean;
   requiredPermission?: { module: string; action: string };
 }
@@ -348,6 +349,7 @@ export const sidebarItems: NavGroup[] = [
           { title: "Proveedores", path: "/dashboard/suppliers", icon: "Truck", requiredPermission: { module: "compras", action: "read" } },
           { title: "Artículos", path: "/dashboard/inventory", icon: "Package", requiredPermission: { module: "compras", action: "read" } },
           { title: "Recepción de Artículos", path: "/dashboard/purchases/receipts", icon: "Boxes", requiredPermission: { module: "compras", action: "read" } },
+          { title: "Categorías", path: "/dashboard/purchases/categories", icon: "Tag", requiredPermission: { module: "compras", action: "read" } },
           { title: "Informes", path: "/dashboard/purchases/reports", icon: "BarChart3", requiredPermission: { module: "compras", action: "read" } },
         ],
       },
@@ -455,7 +457,17 @@ export const sidebarItems: NavGroup[] = [
         icon: "Settings",
         requiredPermission: { module: "sistema", action: "read" },
         subItems: [
-          { title: "General", path: "/dashboard/settings", icon: "Settings", requiredPermission: { module: "sistema", action: "read" } },
+          {
+            title: "General",
+            path: "/dashboard/settings",
+            icon: "Settings",
+            requiredPermission: { module: "sistema", action: "read" },
+            subItems: [
+              { title: "Empresa", path: "/dashboard/settings/empresa", icon: "Building2", requiredPermission: { module: "sistema", action: "read" } },
+              { title: "Rubros", path: "/dashboard/settings/rubros", icon: "Tag", requiredPermission: { module: "sistema", action: "read" } },
+              { title: "Centros de Costo", path: "/dashboard/cost-centers", icon: "CircleDollarSign", requiredPermission: { module: "sistema", action: "read" } },
+            ],
+          },
           { title: "Webhooks", path: "/dashboard/settings/webhooks", icon: "Webhook", requiredPermission: { module: "sistema", action: "read" } },
         ],
       },

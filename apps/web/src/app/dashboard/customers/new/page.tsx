@@ -15,6 +15,7 @@ export default function NewCustomerPage() {
   const [priceLists, setPriceLists] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [segments, setSegments] = useState<any[]>([]);
+  const [rubros, setRubros] = useState<any[]>([]);
 
   const [name, setName] = useState('');
   const [tradeName, setTradeName] = useState('');
@@ -36,6 +37,7 @@ export default function NewCustomerPage() {
   const [taxExempt, setTaxExempt] = useState(false);
   const [categoryId, setCategoryId] = useState('');
   const [segmentId, setSegmentId] = useState('');
+  const [rubroId, setRubroId] = useState('');
   const [notes, setNotes] = useState('');
 
   useEffect(() => {
@@ -44,10 +46,12 @@ export default function NewCustomerPage() {
       api.getPriceLists().catch(() => ({ data: [] })),
       api.getCustomerCategories().catch(() => ({ data: [] })),
       api.getCustomerSegments().catch(() => ({ data: [] })),
-    ]).then(([pl, cat, seg]) => {
+      api.getRubros({ limit: 200 }).catch(() => []),
+    ]).then(([pl, cat, seg, rub]) => {
       setPriceLists(pl.data || []);
       setCategories(cat.data || []);
       setSegments(seg.data || []);
+      setRubros(Array.isArray(rub) ? rub : []);
     }).catch(() => {});
   }, []);
 
@@ -79,6 +83,7 @@ export default function NewCustomerPage() {
         credit_limit: parseFloat(creditLimit) || 0,
         price_list_id: priceListId || undefined,
         tax_exempt: taxExempt,
+        rubro_id: rubroId || undefined,
         notes: notes.trim() || undefined,
       });
       toast.success('Cliente creado exitosamente');
@@ -200,7 +205,16 @@ export default function NewCustomerPage() {
               <h3 className="text-sm font-semibold text-slate-900">Clasificación</h3>
             </div>
             <div className="p-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-slate-700">Rubro</label>
+                  <select value={rubroId} onChange={(e) => setRubroId(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    <option value="">Sin rubro</option>
+                    {rubros.map((r: any) => (
+                      <option key={r.id} value={r.id}>{r.name}</option>
+                    ))}
+                  </select>
+                </div>
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-slate-700">Categoría</label>
                   <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
@@ -244,6 +258,7 @@ export default function NewCustomerPage() {
               <SummaryRow label="Crédito" value={creditLimit ? `$${parseFloat(creditLimit).toLocaleString('es-CL')}` : ''} />
               <SummaryRow label="Categoría" value={categories.find((c: any) => c.id === categoryId)?.name || ''} />
               <SummaryRow label="Segmento" value={segments.find((s: any) => s.id === segmentId)?.name || ''} />
+              <SummaryRow label="Rubro" value={rubros.find((r: any) => r.id === rubroId)?.name || ''} />
             </div>
           </div>
         </div>

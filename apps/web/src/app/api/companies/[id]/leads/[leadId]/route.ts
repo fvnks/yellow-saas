@@ -11,7 +11,7 @@ export async function GET(
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const { rows } = await query(
-      `SELECT l.*, COALESCE(p.first_name || ' ' || p.last_name, 'Sin asignar') as assigned_name
+      `SELECT l.*, COALESCE(p.full_name, 'Sin asignar') as assigned_name
        FROM leads l
        LEFT JOIN profiles p ON l.assigned_to = p.id
        WHERE l.id = $1 AND l.company_id = $2`,

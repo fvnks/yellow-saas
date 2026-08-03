@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
-import { Settings, Building2, Users, CreditCard, Bell, Shield, Globe, Save, Plus, Trash2, Mail, Key, Database, ShieldCheck, Zap, Pencil, X, Check } from 'lucide-react';
+import { Settings, Building2, Users, CreditCard, Bell, Shield, Globe, Save, Plus, Trash2, Mail, Key, ShieldCheck, Zap, Pencil, X, Check, ChevronRight, Webhook } from 'lucide-react';
 import { toast } from 'sonner';
 import { getApiClient } from '@/lib/api-client';
 import RolesTab from './tabs/RolesTab';
@@ -19,10 +19,69 @@ interface UserProfile {
   created_at: string;
 }
 
+interface Category {
+  id: string;
+  label: string;
+  items: SubItem[];
+}
+
+interface SubItem {
+  id: string;
+  label: string;
+  icon: typeof Settings;
+}
+
+const settingsCategories: Category[] = [
+  {
+    id: 'general',
+    label: 'General',
+    items: [
+      { id: 'empresa', label: 'Empresa', icon: Building2 },
+    ],
+  },
+  {
+    id: 'usuarios',
+    label: 'Usuarios',
+    items: [
+      { id: 'users', label: 'Usuarios', icon: Users },
+      { id: 'roles', label: 'Roles y Permisos', icon: ShieldCheck },
+    ],
+  },
+  {
+    id: 'facturacion',
+    label: 'Facturación',
+    items: [
+      { id: 'billing', label: 'Suscripción', icon: CreditCard },
+    ],
+  },
+  {
+    id: 'seguridad',
+    label: 'Seguridad',
+    items: [
+      { id: 'security', label: 'Seguridad', icon: Shield },
+      { id: 'support-access', label: 'Acceso de Soporte', icon: Key },
+    ],
+  },
+  {
+    id: 'integraciones',
+    label: 'Integraciones',
+    items: [
+      { id: 'integrations', label: 'Integraciones', icon: Globe },
+    ],
+  },
+  {
+    id: 'comunicaciones',
+    label: 'Comunicaciones',
+    items: [
+      { id: 'notifications', label: 'Notificaciones', icon: Bell },
+      { id: 'webhooks', label: 'Webhooks', icon: Zap },
+    ],
+  },
+];
+
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState('company');
-  const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [activeTab, setActiveTab] = useState('empresa');
+  const [expandedCategories, setExpandedCategories] = useState<string[]>(['general']);
   const [company, setCompany] = useState({
     id: '', name: '', tax_id: '', razon_social: '', giro: '',
     email: '', phone: '', address: '', city: '', region: '', logo_url: '',
@@ -30,7 +89,6 @@ export default function SettingsPage() {
   });
 
   useEffect(() => {
-    // Get user role from JWT
     const cookies = document.cookie.split(';');
     const authCookie = cookies.find(c => c.trim().startsWith('auth-token='));
     let userRole = 'member';
@@ -57,32 +115,11 @@ export default function SettingsPage() {
     }).catch(() => {});
   }, []);
 
-  const handleSave = async () => {
-    setSaving(true);
-    setSaved(false);
-    try {
-      const api = getApiClient();
-      await api.updateCompany(company);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
-    } catch {
-      toast.error('Error al guardar');
-    } finally {
-      setSaving(false);
-    }
+  const toggleCategory = (id: string) => {
+    setExpandedCategories(prev =>
+      prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
+    );
   };
-
-  const tabs = [
-    { id: 'company', label: 'Empresa', icon: Building2 },
-    { id: 'users', label: 'Usuarios', icon: Users },
-    { id: 'roles', label: 'Roles y Permisos', icon: ShieldCheck },
-    { id: 'billing', label: 'Suscripción', icon: CreditCard },
-    { id: 'notifications', label: 'Notificaciones', icon: Bell },
-    { id: 'security', label: 'Seguridad', icon: Shield },
-    { id: 'support-access', label: 'Acceso de Soporte', icon: Key },
-    { id: 'integrations', label: 'Integraciones', icon: Globe },
-    { id: 'webhooks', label: 'Webhooks', icon: Zap },
-  ];
 
   return (
     <div className="space-y-6">
@@ -92,62 +129,57 @@ export default function SettingsPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-5">
+        {/* Sidebar de Categorías */}
         <div className="lg:col-span-1">
-          <Card>
-            <CardContent className="p-2">
-              <nav className="space-y-1">
-                {tabs.map(tab => (
-                  <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                      activeTab === tab.id ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                    }`}>
-                    <tab.icon className="w-5 h-5" />
-                    {tab.label}
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+            <div className="px-4 py-3 border-b border-slate-100">
+              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Categorías</p>
+            </div>
+            <nav className="p-2">
+              {settingsCategories.map(category => (
+                <div key={category.id} className="mb-1">
+                  <button
+                    onClick={() => toggleCategory(category.id)}
+                    className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                  >
+                    <span>{category.label}</span>
+                    <ChevronRight className={`w-4 h-4 text-slate-400 transition-transform ${expandedCategories.includes(category.id) ? 'rotate-90' : ''}`} />
                   </button>
-                ))}
-              </nav>
-            </CardContent>
-          </Card>
+                  {expandedCategories.includes(category.id) && (
+                    <div className="ml-3 mt-1 space-y-0.5">
+                      {category.items.map(item => (
+                        <button
+                          key={item.id}
+                          onClick={() => setActiveTab(item.id)}
+                          className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
+                            activeTab === item.id
+                              ? 'bg-indigo-50 text-indigo-700 font-medium'
+                              : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
+                          }`}
+                        >
+                          <item.icon className="w-4 h-4" />
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </nav>
+          </div>
         </div>
 
+        {/* Contenido */}
         <div className="lg:col-span-4 space-y-6">
-          {activeTab === 'company' && (
-            <>
-              <Card>
-                <CardHeader><CardTitle>Datos de la Empresa</CardTitle></CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input label="Nombre de la Empresa" value={company.name} onChange={(e) => setCompany(p => ({ ...p, name: e.target.value }))} />
-                    <Input label="Razón Social" value={company.razon_social} onChange={(e) => setCompany(p => ({ ...p, razon_social: e.target.value }))} />
-                    <Input label="RUT" value={company.tax_id} onChange={(e) => setCompany(p => ({ ...p, tax_id: e.target.value }))} />
-                    <Input label="Giro" value={company.giro} onChange={(e) => setCompany(p => ({ ...p, giro: e.target.value }))} />
-                    <Input label="Email Corporativo" type="email" value={company.email} onChange={(e) => setCompany(p => ({ ...p, email: e.target.value }))} />
-                    <Input label="Teléfono" value={company.phone} onChange={(e) => setCompany(p => ({ ...p, phone: e.target.value }))} />
-                  </div>
-                  <Input label="Dirección" value={company.address} onChange={(e) => setCompany(p => ({ ...p, address: e.target.value }))} />
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input label="Ciudad" value={company.city} onChange={(e) => setCompany(p => ({ ...p, city: e.target.value }))} />
-                    <Select label="Región" value={company.region} onChange={(e) => setCompany(p => ({ ...p, region: e.target.value }))} options={[
-                      { value: '', label: 'Seleccionar...' },
-                      { value: '13', label: 'Metropolitana de Santiago' },
-                      { value: '1', label: 'Arica y Parinacota' }, { value: '2', label: 'Tarapacá' },
-                      { value: '3', label: 'Antofagasta' }, { value: '4', label: 'Atacama' },
-                      { value: '5', label: 'Coquimbo' }, { value: '6', label: 'Valparaíso' },
-                      { value: '7', label: 'Región del Libertador' }, { value: '8', label: 'Biobío' },
-                      { value: '9', label: 'La Araucanía' }, { value: '10', label: 'Los Ríos' },
-                      { value: '11', label: 'Los Lagos' }, { value: '12', label: 'Aysén' },
-                      { value: '14', label: 'Magallanes' }, { value: '15', label: 'Ñuble' },
-                    ]} />
-                  </div>
-                </CardContent>
-              </Card>
-              <div className="flex items-center justify-end gap-3">
-                {saved && <span className="text-sm text-emerald-600">Guardado correctamente</span>}
-                <Button onClick={handleSave} disabled={saving}>
-                  <Save className="w-4 h-4 mr-2" /> {saving ? 'Guardando...' : 'Guardar Cambios'}
-                </Button>
-              </div>
-            </>
+          {activeTab === 'empresa' && (
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 text-center">
+              <Building2 className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+              <h3 className="text-sm font-semibold text-slate-900">Datos de la Empresa</h3>
+              <p className="text-xs text-slate-500 mt-1 mb-4">Configure la información de su empresa, representante legal y logo SII.</p>
+              <Button onClick={() => window.location.href = '/dashboard/settings/empresa'}>
+                <Building2 className="w-4 h-4 mr-2" /> Ir a Configuración de Empresa
+              </Button>
+            </div>
           )}
 
           {activeTab === 'roles' && <RolesTab />}
@@ -166,47 +198,50 @@ export default function SettingsPage() {
 
           {activeTab === 'integrations' && <IntegrationsTab />}
 
-          {activeTab === 'webhooks' && (
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Webhooks</CardTitle>
-                <Button onClick={() => (window.location.href = '/dashboard/settings/webhooks')}>
-                  <Zap className="w-4 h-4 mr-2" /> Gestionar Webhooks
-                </Button>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Card className="bg-slate-50"><CardContent className="p-6">
-                    <Zap className="w-8 h-8 text-amber-600 mx-auto mb-2" />
-                    <p className="font-medium text-slate-900 text-center">Eventos en Tiempo Real</p>
-                    <p className="text-sm text-slate-500 mt-1 text-center">Recibe notificaciones instantáneas de stock, ventas, compras y más</p>
-                  </CardContent></Card>
-                  <Card className="bg-slate-50"><CardContent className="p-6">
-                    <Shield className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
-                    <p className="font-medium text-slate-900 text-center">Seguro y Confiable</p>
-                    <p className="text-sm text-slate-500 mt-1 text-center">Firma HMAC, reintentos exponenciales y logs de entrega</p>
-                  </CardContent></Card>
-                  <Card className="bg-slate-50"><CardContent className="p-6">
-                    <Globe className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-                    <p className="font-medium text-slate-900 text-center">Fácil Integración</p>
-                    <p className="text-sm text-slate-500 mt-1 text-center">JSON sobre HTTP/HTTPS, eventos tipados y documentados</p>
-                  </CardContent></Card>
-                </div>
-                <div className="pt-4 border-t border-slate-200">
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-                    {['stock.changed', 'stock.low', 'stock.out', 'batch.expiring', 'batch.expired', 'return.created', 'return.approved', 'order.created', 'order.shipped', 'invoice.created', 'invoice.paid', 'invoice.overdue', 'purchase_order.created', 'purchase_order.received'].map((event, i) => (
-                      <Badge key={i} variant="secondary" className="font-mono">{event}</Badge>
-                    ))}
-                  </div>
-                  <div className="mt-4 flex justify-end">
-                    <Button onClick={() => (window.location.href = '/dashboard/settings/webhooks')}>
-                      <Zap className="w-4 h-4 mr-2" /> Ir a Configuración de Webhooks
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+          {activeTab === 'webhooks' && <WebhooksTab />}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WebhooksTab() {
+  return (
+    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="px-6 py-4 border-b border-slate-100">
+        <h3 className="text-sm font-semibold text-slate-900">Webhooks</h3>
+      </div>
+      <div className="p-6 space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-6">
+            <Zap className="w-8 h-8 text-amber-600 mx-auto mb-2" />
+            <p className="font-medium text-slate-900 text-center text-sm">Eventos en Tiempo Real</p>
+            <p className="text-xs text-slate-500 mt-1 text-center">Recibe notificaciones instantáneas de stock, ventas, compras y más</p>
+          </div>
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-6">
+            <Shield className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
+            <p className="font-medium text-slate-900 text-center text-sm">Seguro y Confiable</p>
+            <p className="text-xs text-slate-500 mt-1 text-center">Firma HMAC, reintentos exponenciales y logs de entrega</p>
+          </div>
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-6">
+            <Globe className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+            <p className="font-medium text-slate-900 text-center text-sm">Fácil Integración</p>
+            <p className="text-xs text-slate-500 mt-1 text-center">JSON sobre HTTP/HTTPS, eventos tipados y documentados</p>
+          </div>
+        </div>
+        <div className="pt-4 border-t border-slate-100">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+            {['stock.changed', 'stock.low', 'stock.out', 'batch.expiring', 'batch.expired', 'return.created', 'return.approved', 'order.created', 'order.shipped', 'invoice.created', 'invoice.paid', 'invoice.overdue', 'purchase_order.created', 'purchase_order.received'].map((event, i) => (
+              <span key={i} className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-slate-100 text-slate-600 border border-slate-200 font-mono">
+                {event}
+              </span>
+            ))}
+          </div>
+          <div className="mt-4 flex justify-end">
+            <Button onClick={() => window.location.href = '/dashboard/settings/webhooks'}>
+              <Webhook className="w-4 h-4 mr-2" /> Ir a Configuración de Webhooks
+            </Button>
+          </div>
         </div>
       </div>
     </div>
@@ -278,123 +313,129 @@ function UsersTab() {
   const roleLabels: Record<string, string> = { owner: 'Propietario', admin: 'Administrador', manager: 'Gerente', member: 'Miembro', viewer: 'Observador' };
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Usuarios del Sistema</CardTitle>
+    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h3 className="text-sm font-semibold text-slate-900">Usuarios del Sistema</h3>
         <Button size="sm" onClick={() => setShowInvite(true)}>
           <Plus className="w-4 h-4 mr-2" /> Invitar Usuario
         </Button>
-      </CardHeader>
-      <CardContent className="p-0">
-        {showInvite && (
-          <div className="p-4 bg-indigo-50 border-b border-indigo-100 space-y-3">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <Input label="Email" type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} placeholder="usuario@empresa.cl" />
-              <Input label="Nombre" value={inviteName} onChange={(e) => setInviteName(e.target.value)} placeholder="Nombre completo" />
-              <Select label="Rol" value={inviteRole} onChange={(e) => setInviteRole(e.target.value)}
-                options={roles.length > 0
-                  ? roles.filter(r => r.name !== 'owner').map(r => ({ value: r.name, label: r.label }))
-                  : [
-                      { value: 'member', label: 'Miembro' },
-                      { value: 'admin', label: 'Administrador' },
-                      { value: 'manager', label: 'Gerente' },
-                      { value: 'viewer', label: 'Observador' },
-                    ]
-                } />
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button variant="secondary" size="sm" onClick={() => setShowInvite(false)}>Cancelar</Button>
-              <Button size="sm" onClick={handleInvite} disabled={saving || !inviteEmail}>
-                <Check className="w-4 h-4 mr-1" /> {saving ? 'Creando...' : 'Crear Usuario'}
-              </Button>
-            </div>
+      </div>
+      {showInvite && (
+        <div className="p-4 bg-indigo-50 border-b border-indigo-100 space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <Input label="Email" type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} placeholder="usuario@empresa.cl" />
+            <Input label="Nombre" value={inviteName} onChange={(e) => setInviteName(e.target.value)} placeholder="Nombre completo" />
+            <Select label="Rol" value={inviteRole} onChange={(e) => setInviteRole(e.target.value)}
+              options={roles.length > 0
+                ? roles.filter(r => r.name !== 'owner').map(r => ({ value: r.name, label: r.label }))
+                : [
+                    { value: 'member', label: 'Miembro' },
+                    { value: 'admin', label: 'Administrador' },
+                    { value: 'manager', label: 'Gerente' },
+                    { value: 'viewer', label: 'Observador' },
+                  ]
+              } />
           </div>
-        )}
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Email</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Rol</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Último Acceso</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-500">Cargando...</td></tr>
-              ) : users.length === 0 ? (
-                <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-500">No hay usuarios</td></tr>
-              ) : users.map(user => (
-                <tr key={user.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3 text-sm font-medium text-slate-900">{user.full_name || '—'}</td>
-                  <td className="px-4 py-3 text-sm text-slate-600">{user.email}</td>
-                  <td className="px-4 py-3">
-                    <Badge variant={user.role === 'owner' ? 'info' : user.role === 'admin' ? 'warning' : 'neutral'}>
-                      {roleLabels[user.role] || user.role}
-                    </Badge>
-                  </td>
-                  <td className="px-4 py-3">
-                    <Badge variant={user.status === 'active' ? 'success' : user.status === 'invited' ? 'warning' : 'danger'}>
-                      {user.status === 'active' ? 'Activo' : user.status === 'invited' ? 'Invitado' : 'Suspendido'}
-                    </Badge>
-                  </td>
-                  <td className="px-4 py-3 text-xs text-slate-500">
-                    {user.last_login_at ? new Date(user.last_login_at).toLocaleDateString('es-CL') : 'Nunca'}
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      {user.role !== 'owner' && (
-                        <>
-                          <button onClick={() => setEditingUser(user)} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors">
-                            <Pencil className="w-4 h-4" />
-                          </button>
-                          <button onClick={() => handleDelete(user.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors">
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="flex justify-end gap-2">
+            <Button variant="secondary" size="sm" onClick={() => setShowInvite(false)}>Cancelar</Button>
+            <Button size="sm" onClick={handleInvite} disabled={saving || !inviteEmail}>
+              <Check className="w-4 h-4 mr-1" /> {saving ? 'Creando...' : 'Crear Usuario'}
+            </Button>
+          </div>
         </div>
+      )}
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-slate-200">
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Email</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Rol</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Último Acceso</th>
+              <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-500">Cargando...</td></tr>
+            ) : users.length === 0 ? (
+              <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-500">No hay usuarios</td></tr>
+            ) : users.map(user => (
+              <tr key={user.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                <td className="px-4 py-3 text-sm font-medium text-slate-900">{user.full_name || '—'}</td>
+                <td className="px-4 py-3 text-sm text-slate-600">{user.email}</td>
+                <td className="px-4 py-3">
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
+                    user.role === 'owner' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
+                    user.role === 'admin' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                    'bg-slate-100 text-slate-600 border border-slate-200'
+                  }`}>
+                    {roleLabels[user.role] || user.role}
+                  </span>
+                </td>
+                <td className="px-4 py-3">
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
+                    user.status === 'active' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                    user.status === 'invited' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                    'bg-rose-50 text-rose-700 border border-rose-200'
+                  }`}>
+                    {user.status === 'active' ? 'Activo' : user.status === 'invited' ? 'Invitado' : 'Suspendido'}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-xs text-slate-500">
+                  {user.last_login_at ? new Date(user.last_login_at).toLocaleDateString('es-CL') : 'Nunca'}
+                </td>
+                <td className="px-4 py-3 text-right">
+                  <div className="flex items-center justify-end gap-1">
+                    {user.role !== 'owner' && (
+                      <>
+                        <button onClick={() => setEditingUser(user)} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors">
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => handleDelete(user.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-        {editingUser && (
-          <div className="p-4 bg-slate-50 border-t border-slate-200 space-y-3">
-            <h4 className="text-sm font-medium text-slate-900">Editar Usuario</h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <Input label="Nombre" value={editingUser.full_name || ''} onChange={(e) => setEditingUser({ ...editingUser, full_name: e.target.value })} />
-              <Select label="Rol" value={editingUser.role} onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
-                options={roles.length > 0
-                  ? roles.map(r => ({ value: r.name, label: r.label }))
-                  : [
-                      { value: 'admin', label: 'Administrador' },
-                      { value: 'manager', label: 'Gerente' },
-                      { value: 'member', label: 'Miembro' },
-                      { value: 'viewer', label: 'Observador' },
-                    ]
-                } />
-              <Select label="Estado" value={editingUser.status} onChange={(e) => setEditingUser({ ...editingUser, status: e.target.value })}
-                options={[
-                  { value: 'active', label: 'Activo' },
-                  { value: 'suspended', label: 'Suspendido' },
-                ]} />
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button variant="secondary" size="sm" onClick={() => setEditingUser(null)}>Cancelar</Button>
-              <Button size="sm" onClick={handleUpdate} disabled={saving}>
-                <Save className="w-4 h-4 mr-1" /> Guardar
-              </Button>
-            </div>
+      {editingUser && (
+        <div className="p-4 bg-slate-50 border-t border-slate-200 space-y-3">
+          <h4 className="text-sm font-medium text-slate-900">Editar Usuario</h4>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <Input label="Nombre" value={editingUser.full_name || ''} onChange={(e) => setEditingUser({ ...editingUser, full_name: e.target.value })} />
+            <Select label="Rol" value={editingUser.role} onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
+              options={roles.length > 0
+                ? roles.map(r => ({ value: r.name, label: r.label }))
+                : [
+                    { value: 'admin', label: 'Administrador' },
+                    { value: 'manager', label: 'Gerente' },
+                    { value: 'member', label: 'Miembro' },
+                    { value: 'viewer', label: 'Observador' },
+                  ]
+              } />
+            <Select label="Estado" value={editingUser.status} onChange={(e) => setEditingUser({ ...editingUser, status: e.target.value })}
+              options={[
+                { value: 'active', label: 'Activo' },
+                { value: 'suspended', label: 'Suspendido' },
+              ]} />
           </div>
-        )}
-      </CardContent>
-    </Card>
+          <div className="flex justify-end gap-2">
+            <Button variant="secondary" size="sm" onClick={() => setEditingUser(null)}>Cancelar</Button>
+            <Button size="sm" onClick={handleUpdate} disabled={saving}>
+              <Save className="w-4 h-4 mr-1" /> Guardar
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -427,10 +468,12 @@ function BillingTab({ plan, status }: { plan: string; status: string }) {
   }
 
   return (
-    <>
-      <Card>
-        <CardHeader><CardTitle>Plan Actual</CardTitle></CardHeader>
-        <CardContent>
+    <div className="space-y-6">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-100">
+          <h3 className="text-sm font-semibold text-slate-900">Plan Actual</h3>
+        </div>
+        <div className="p-6">
           {loadingPlans ? (
             <div className="p-4 text-sm text-slate-400">Cargando planes...</div>
           ) : current ? (
@@ -440,9 +483,13 @@ function BillingTab({ plan, status }: { plan: string; status: string }) {
                   <p className="text-lg font-bold text-indigo-900">{current.label}</p>
                   <p className="text-sm text-indigo-700">{formatPrice(current.price_monthly)}/mes</p>
                 </div>
-                <Badge variant={status === 'active' ? 'info' : status === 'trial' ? 'warning' : 'danger'}>
+                <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
+                  status === 'active' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
+                  status === 'trial' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                  'bg-rose-50 text-rose-700 border border-rose-200'
+                }`}>
                   {status === 'active' ? 'Activo' : status === 'trial' ? 'Prueba' : status === 'suspended' ? 'Suspendido' : status}
-                </Badge>
+                </span>
               </div>
               <div className="mt-4 grid grid-cols-3 gap-4 text-center text-sm">
                 <div className="p-3 bg-slate-50 rounded-lg">
@@ -462,11 +509,13 @@ function BillingTab({ plan, status }: { plan: string; status: string }) {
           ) : (
             <div className="p-4 text-sm text-slate-400">No se pudo cargar la información del plan</div>
           )}
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader><CardTitle>Planes Disponibles</CardTitle></CardHeader>
-        <CardContent>
+        </div>
+      </div>
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-100">
+          <h3 className="text-sm font-semibold text-slate-900">Planes Disponibles</h3>
+        </div>
+        <div className="p-6">
           {loadingPlans ? (
             <div className="p-4 text-sm text-slate-400">Cargando planes...</div>
           ) : otherPlans.length === 0 ? (
@@ -493,9 +542,9 @@ function BillingTab({ plan, status }: { plan: string; status: string }) {
               ))}
             </div>
           )}
-        </CardContent>
-      </Card>
-    </>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -534,12 +583,18 @@ function NotificationsTab() {
     setSaving(false);
   };
 
-  if (loading) return <Card><CardContent className="p-8 text-center text-sm text-slate-500">Cargando...</CardContent></Card>;
+  if (loading) return (
+    <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 text-center">
+      <div className="animate-pulse bg-slate-200 h-6 w-48 rounded mx-auto" />
+    </div>
+  );
 
   return (
-    <Card>
-      <CardHeader><CardTitle>Preferencias de Notificación</CardTitle></CardHeader>
-      <CardContent className="space-y-4">
+    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="px-6 py-4 border-b border-slate-100">
+        <h3 className="text-sm font-semibold text-slate-900">Preferencias de Notificación</h3>
+      </div>
+      <div className="p-6 space-y-4">
         <div className="p-4 bg-slate-50 rounded-lg space-y-3">
           <div className="flex items-center justify-between">
             <div>
@@ -575,14 +630,14 @@ function NotificationsTab() {
             </label>
           </div>
         ))}
-        <div className="flex justify-end gap-3 pt-4">
+        <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
           {saved && <span className="text-sm text-emerald-600">Guardado correctamente</span>}
           <Button onClick={handleSave} disabled={saving}>
             <Save className="w-4 h-4 mr-2" /> {saving ? 'Guardando...' : 'Guardar Preferencias'}
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 
@@ -613,9 +668,11 @@ function SecurityTab() {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader><CardTitle>Contraseña</CardTitle></CardHeader>
-        <CardContent className="space-y-4">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-100">
+          <h3 className="text-sm font-semibold text-slate-900">Contraseña</h3>
+        </div>
+        <div className="p-6 space-y-4">
           <Input label="Contraseña Actual" type="password" value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)} placeholder="Ingresa tu contraseña actual" />
           <Input label="Nueva Contraseña" type="password" value={newPassword}
@@ -628,21 +685,25 @@ function SecurityTab() {
               <Key className="w-4 h-4 mr-2" /> {changing ? 'Cambiando...' : 'Cambiar Contraseña'}
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardHeader><CardTitle>Autenticación de Dos Factores</CardTitle></CardHeader>
-        <CardContent>
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-100">
+          <h3 className="text-sm font-semibold text-slate-900">Autenticación de Dos Factores</h3>
+        </div>
+        <div className="p-6">
           <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
             <div>
               <p className="text-sm font-medium text-slate-900">2FA con Authenticator App</p>
               <p className="text-xs text-slate-500">Agrega una capa extra de seguridad a tu cuenta</p>
             </div>
-            <Badge variant="neutral">Próximamente</Badge>
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+              Próximamente
+            </span>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

@@ -14,17 +14,17 @@ if (fs.existsSync(envPath)) {
 
   if (envVars.DATABASE_URL) {
     process.env.DATABASE_URL = envVars.DATABASE_URL;
-    console.log('✓ Loaded DATABASE_URL from .env.local');
+    console.log('âœ“ Loaded DATABASE_URL from .env.local');
     console.log('  Using:', envVars.DATABASE_URL.replace(/:[^:]+@/, ':******@'));
   } else {
-    console.log('⚠ No DATABASE_URL found in .env.local');
+    console.log('âš  No DATABASE_URL found in .env.local');
   }
 
   if (envVars.JWT_SECRET) {
     process.env.JWT_SECRET = envVars.JWT_SECRET;
   }
 } else {
-  console.log('⚠ .env.local not found');
+  console.log('âš  .env.local not found');
 }
 
 let connectionString = process.env.DATABASE_URL;
@@ -33,11 +33,11 @@ if (!connectionString) {
   if (process.env.RAILWAY_SERVICE_HOST) {
     const password = process.env.RAILWAY_SERVICE_TOKEN || process.env.RAILWAY_PASSWORD || 'default';
     connectionString = `postgresql://postgres:${password}@${process.env.RAILWAY_SERVICE_HOST}:${process.env.RAILWAY_SERVICE_PORT || '5432'}/${process.env.RAILWAY_SERVICE_NAME || 'railway'}`;
-    console.log('✓ Using Railway PostgreSQL:', process.env.RAILWAY_SERVICE_HOST);
+    console.log('âœ“ Using Railway PostgreSQL:', process.env.RAILWAY_SERVICE_HOST);
   } else {
-    console.error('❌ No DATABASE_URL available. Please set environment variables');
+    console.error('âŒ No DATABASE_URL available. Please set environment variables');
     console.log('\nTo set DATABASE_URL locally:');
-    console.log('  export DATABASE_URL=postgresql://postgres:aXUTptOaTaDdrzsqWQQQjzIGMwMeRUiW@tokaido.proxy.rlwy.net:21360/railway');
+    console.log('  export DATABASE_URL=postgresql://user:password@host:5432/dbname');
     process.exit(1);
   }
 }
@@ -66,28 +66,28 @@ async function runMigrations() {
   for (const file of orderedFiles) {
     const filePath = path.join(migrationsDir, file);
     if (!fs.existsSync(filePath)) {
-      console.log('⚠ File not found: ' + file);
+      console.log('âš  File not found: ' + file);
       continue;
     }
     console.log('Running: ' + file);
     const sql = fs.readFileSync(filePath, 'utf8');
     try {
       await pool.query(sql);
-      console.log('  ✓ Done');
+      console.log('  âœ“ Done');
       successCount++;
     } catch (err) {
       if (err.message.includes('already exists')) {
-        console.log('  ⚠ Already exists, skipping');
+        console.log('  âš  Already exists, skipping');
         successCount++;
       } else {
-        console.error('  ✗ Error: ' + err.message);
+        console.error('  âœ— Error: ' + err.message);
         errorCount++;
       }
     }
   }
 
   await pool.end();
-  console.log('\n✅ Migration complete!');
+  console.log('\nâœ… Migration complete!');
   console.log('Success:', successCount, 'migrations');
   if (errorCount > 0) {
     console.log('Errors:', errorCount, 'migrations');
