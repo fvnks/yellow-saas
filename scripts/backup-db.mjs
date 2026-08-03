@@ -26,15 +26,24 @@ async function backup() {
   sql += `-- Generated: ${new Date().toISOString()}\n\n`;
   
   for (const table of tables) {
+    const genCols = await client.query(`
+      SELECT column_name FROM information_schema.columns
+      WHERE table_schema = 'public' AND table_name = $1
+        AND is_generated = 'ALWAYS'
+    `, [table]);
+    const generatedSet = new Set(genCols.rows.map(r => r.column_name));
+
     const dataResult = await client.query(`SELECT * FROM "${table}"`);
     
     if (dataResult.rows.length > 0) {
-      const columns = Object.keys(dataResult.rows[0]).join(', ');
+      const columns = Object.keys(dataResult.rows[0]).filter(c => !generatedSet.has(c)).join(', ');
+      const colKeys = Object.keys(dataResult.rows[0]).filter(c => !generatedSet.has(c));
       sql += `-- Table: ${table} (${dataResult.rows.length} rows)\n`;
       sql += `DELETE FROM "${table}";\n`;
       
       for (const row of dataResult.rows) {
-        const values = Object.values(row).map(v => {
+        const values = colKeys.map(c => {
+          const v = row[c];
           if (v === null) return 'NULL';
           if (typeof v === 'string') return `'${v.replace(/'/g, "''")}'`;
           if (v instanceof Date) return `'${v.toISOString()}'`;
