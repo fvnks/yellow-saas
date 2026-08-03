@@ -2,7 +2,7 @@ const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 
 const pool = new Pool({
-  connectionString: 'postgresql://postgres:TxgCpHmrCYHHyxizSiUaUKslqvLnjIkU@tokaido.proxy.rlwy.net:15371/yellow-saas',
+  connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false },
 });
 

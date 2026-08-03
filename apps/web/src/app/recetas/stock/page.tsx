@@ -3,8 +3,10 @@
 import { useState, useEffect } from 'react';
 import { Package, Search, Plus, Minus, ArrowLeft, Check, X, History } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { formatQuantity } from '@/lib/utils';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import { useRecetasRefresh } from '@/components/recetas/RefreshContext';
 
 interface StockLine {
   id: string;
@@ -21,6 +23,7 @@ interface StockLine {
 let lineCounter = 0;
 
 export default function StockEntryPage() {
+  const { refreshKey } = useRecetasRefresh();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -42,7 +45,7 @@ export default function StockEntryPage() {
       toast.error('Error al cargar productos');
       setLoading(false);
     });
-  }, []);
+  }, [refreshKey]);
 
   useEffect(() => {
     if (tab === 'history') loadHistory();
@@ -263,7 +266,7 @@ export default function StockEntryPage() {
                                           <p className="text-[9px] text-slate-400 font-mono">{p.sku}</p>
                                         </div>
                                       </div>
-                                      <span className="text-[10px] text-slate-500">{(Number(p.stock) || 0)} {p.unit_of_measure}</span>
+                                      <span className="text-[10px] text-slate-500">{formatQuantity(Number(p.stock) || 0, p.unit_of_measure)}</span>
                                     </button>
                                   ))}
                                 </div>
@@ -409,7 +412,7 @@ export default function StockEntryPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right text-xs font-semibold text-slate-900">
-                      {entry.type === 'add' ? '+' : '-'}{Number(entry.quantity).toLocaleString('es-CL')} {entry.unit_of_measure}
+                      {entry.type === 'add' ? '+' : '-'}{formatQuantity(entry.quantity, entry.unit_of_measure)}
                     </td>
                     <td className="px-4 py-3 text-right text-xs text-slate-500">
                       {Number(entry.previous_stock).toLocaleString('es-CL')}

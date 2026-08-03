@@ -6,7 +6,6 @@ import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
-import QuickCreateProduct from '@/components/recetas/QuickCreateProduct';
 
 interface Ingredient {
   product_id: string;
@@ -28,39 +27,37 @@ export default function EditRecetaPage() {
     output_product_id: '',
     yield_quantity: '1',
     yield_unit: 'un',
-    is_active: true,
+    min_margin_pct: '',
+    max_margin_pct: '',
   });
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-  const [showCreateProduct, setShowCreateProduct] = useState(false);
-  const [createProductForIndex, setCreateProductForIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const api = getApiClient();
     Promise.all([
       api.getFormula(formulaId),
       api.getRecipeProducts({ limit: '500' }),
-    ]).then(([formulaData, productsRes]) => {
+    ]).then(([formulaData, productsData]) => {
       setForm({
         name: formulaData.name || '',
         description: formulaData.description || '',
         output_product_id: formulaData.output_product_id || '',
         yield_quantity: String(formulaData.yield_quantity || 1),
         yield_unit: formulaData.yield_unit || 'un',
-        is_active: formulaData.is_active,
+        min_margin_pct: formulaData.min_margin_pct != null ? String(formulaData.min_margin_pct) : '',
+        max_margin_pct: formulaData.max_margin_pct != null ? String(formulaData.max_margin_pct) : '',
       });
       setIngredients(
-        (formulaData.ingredients || []).map((i: any) => ({
-          product_id: i.product_id,
-          quantity: String(i.quantity),
-          unit: i.unit || 'un',
+        (formulaData.ingredients || []).map((ing: any) => ({
+          product_id: ing.product_id || '',
+          quantity: String(ing.quantity || ''),
+          unit: ing.unit || 'un',
         }))
       );
-      setProducts(productsRes.data || []);
-      setLoading(false);
+      setProducts(productsData.data || []);
     }).catch(() => {
       toast.error('Error al cargar receta');
-      setLoading(false);
-    });
+    }).finally(() => setLoading(false));
   }, [formulaId]);
 
   const addIngredient = () => {
@@ -78,16 +75,10 @@ export default function EditRecetaPage() {
     setIngredients(updated);
   };
 
-  const handleProductCreated = (product: { id: string; name: string; sku: string }) => {
-    setProducts(prev => [...prev, product]);
-    if (createProductForIndex !== null) {
-      updateIngredient(createProductForIndex, 'product_id', product.id);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name) { toast.error('Nombre requerido'); return; }
+    if (ingredients.every(i => !i.product_id)) { toast.error('Al menos un ingrediente requerido'); return; }
 
     setSaving(true);
     try {
@@ -98,15 +89,16 @@ export default function EditRecetaPage() {
         output_product_id: form.output_product_id || undefined,
         yield_quantity: parseFloat(form.yield_quantity) || 1,
         yield_unit: form.yield_unit,
-        is_active: form.is_active,
+        min_margin_pct: form.min_margin_pct ? parseFloat(form.min_margin_pct) : null,
+        max_margin_pct: form.max_margin_pct ? parseFloat(form.max_margin_pct) : null,
         ingredients: ingredients
           .filter(i => i.product_id && i.quantity)
           .map(i => ({ product_id: i.product_id, quantity: parseFloat(i.quantity), unit: i.unit })),
       });
       toast.success('Receta actualizada');
       router.push(`/recetas/${formulaId}`);
-    } catch {
-      toast.error('Error al actualizar');
+    } catch (err) {
+      toast.error('Error al actualizar receta');
     }
     setSaving(false);
   };
@@ -127,7 +119,7 @@ export default function EditRecetaPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Editar Receta</h1>
-          <p className="text-sm text-slate-500 mt-1">Modificar ingredientes y configuración</p>
+          <p className="text-sm text-slate-500 mt-1">Modificar ingredientes, rendimiento y márgenes</p>
         </div>
         <Link href={`/recetas/${formulaId}`}
           className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
@@ -136,27 +128,30 @@ export default function EditRecetaPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Basic Info */}
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
           <h3 className="text-sm font-semibold text-slate-900 mb-4">Información General</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="block text-xs font-medium text-slate-700">Nombre *</label>
               <input type="text" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                placeholder="Ej: Torta de Manjar" />
             </div>
             <div className="space-y-1">
               <label className="block text-xs font-medium text-slate-700">Producto de Salida</label>
               <select value={form.output_product_id} onChange={e => setForm(p => ({ ...p, output_product_id: e.target.value }))}
                 className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                <option value="">Ninguno</option>
-                {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                <option value="">Ninguno (solo descontar)</option>
+                {products.map(p => <option key={p.id} value={p.id}>{p.name} ({p.sku})</option>)}
               </select>
             </div>
             <div className="space-y-1">
               <label className="block text-xs font-medium text-slate-700">Rendimiento</label>
               <div className="flex gap-2">
                 <input type="number" step="0.01" value={form.yield_quantity} onChange={e => setForm(p => ({ ...p, yield_quantity: e.target.value }))}
-                  className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  placeholder="1" />
                 <select value={form.yield_unit} onChange={e => setForm(p => ({ ...p, yield_unit: e.target.value }))}
                   className="w-24 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                   <option value="un">un</option>
@@ -168,22 +163,28 @@ export default function EditRecetaPage() {
                 </select>
               </div>
             </div>
-            <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Estado</label>
-              <select value={form.is_active ? 'true' : 'false'} onChange={e => setForm(p => ({ ...p, is_active: e.target.value === 'true' }))}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                <option value="true">Activa</option>
-                <option value="false">Inactiva</option>
-              </select>
-            </div>
             <div className="space-y-1 md:col-span-2">
               <label className="block text-xs font-medium text-slate-700">Descripción</label>
               <textarea value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} rows={2}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                placeholder="Descripción de la receta..." />
+            </div>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">Margen Mínimo (%)</label>
+              <input type="number" step="0.01" min="0" max="100" value={form.min_margin_pct} onChange={e => setForm(p => ({ ...p, min_margin_pct: e.target.value }))}
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                placeholder="Ej: 10" />
+            </div>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">Margen Máximo (%)</label>
+              <input type="number" step="0.01" min="0" max="100" value={form.max_margin_pct} onChange={e => setForm(p => ({ ...p, max_margin_pct: e.target.value }))}
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                placeholder="Ej: 60" />
             </div>
           </div>
         </div>
 
+        {/* Ingredients */}
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-semibold text-slate-900">Ingredientes</h3>
@@ -192,20 +193,22 @@ export default function EditRecetaPage() {
               <Plus className="w-3.5 h-3.5" /> Agregar
             </button>
           </div>
+
           <div className="space-y-3">
+            <div className="grid grid-cols-12 gap-2 text-[9px] font-semibold text-slate-500 uppercase tracking-wider px-1">
+              <div className="col-span-5">Producto</div>
+              <div className="col-span-3">Cantidad</div>
+              <div className="col-span-2">Unidad</div>
+              <div className="col-span-2"></div>
+            </div>
             {ingredients.map((ing, i) => (
               <div key={i} className="grid grid-cols-12 gap-2 items-center">
-                <div className="col-span-5 flex gap-1">
+                <div className="col-span-5">
                   <select value={ing.product_id} onChange={e => updateIngredient(i, 'product_id', e.target.value)}
-                    className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                     <option value="">Seleccionar...</option>
                     {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                   </select>
-                  <button type="button" onClick={() => { setCreateProductForIndex(i); setShowCreateProduct(true); }}
-                    className="px-2 bg-amber-50 border border-amber-200 hover:bg-amber-100 text-amber-700 rounded-lg text-xs font-medium transition-colors shrink-0"
-                    title="Crear nuevo ingrediente">
-                    <Plus className="w-3.5 h-3.5" />
-                  </button>
                 </div>
                 <div className="col-span-3">
                   <input type="number" step="0.001" value={ing.quantity} onChange={e => updateIngredient(i, 'quantity', e.target.value)}
@@ -234,6 +237,7 @@ export default function EditRecetaPage() {
           </div>
         </div>
 
+        {/* Submit */}
         <div className="flex justify-end gap-3">
           <Link href={`/recetas/${formulaId}`}
             className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
@@ -245,12 +249,6 @@ export default function EditRecetaPage() {
           </button>
         </div>
       </form>
-
-      <QuickCreateProduct
-        open={showCreateProduct}
-        onClose={() => { setShowCreateProduct(false); setCreateProductForIndex(null); }}
-        onCreated={handleProductCreated}
-      />
     </div>
   );
 }

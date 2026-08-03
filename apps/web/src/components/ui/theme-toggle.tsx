@@ -38,12 +38,20 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
 export default function ThemeToggle() {
   const { theme, toggle } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) {
+    return <div className="p-2" aria-hidden="true" />;
+  }
 
   return (
     <button
       onClick={toggle}
       className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
       title={theme === 'light' ? 'Modo oscuro' : 'Modo claro'}
+      suppressHydrationWarning
     >
       {theme === 'light' ? (
         <Moon className="w-4 h-4 text-slate-600" />

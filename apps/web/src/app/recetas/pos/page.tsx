@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react';
 import { Monitor, ShoppingCart, Search, CreditCard, Banknote, Receipt, Package, X, Check, User, FileText, Printer, Download } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import { generatePOSVoucher } from '@/lib/pdf-design';
+import { formatQuantity } from '@/lib/utils';
 import { toast } from 'sonner';
+import { useRecetasRefresh } from '@/components/recetas/RefreshContext';
 
 interface CartItem {
   id: string;
@@ -20,6 +22,8 @@ interface Product {
   sku: string;
   price: number;
   stock: number;
+  unit_of_measure?: string;
+  formula?: any;
 }
 
 interface Customer {
@@ -32,6 +36,7 @@ interface Customer {
 }
 
 export default function StandalonePOSPage() {
+  const { refreshKey } = useRecetasRefresh();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -57,19 +62,21 @@ export default function StandalonePOSPage() {
   useEffect(() => {
     const api = getApiClient();
     Promise.all([
-      api.getRecipeProducts({ limit: '500' }),
+      api.getRecipeProducts({ limit: '500', sellable: 'true' }),
       api.getCustomers().catch(() => ({ data: [] })),
       api.getCompany().catch(() => null),
     ]).then(([productsRes, customersRes, companyRes]) => {
+      console.log('[POS] Products response:', productsRes);
       if (companyRes) setCompany(companyRes);
       const items = (productsRes.data || [])
-        .filter((p: any) => (p.sale_price || 0) > 0)
         .map((p: any) => ({
           id: p.id,
           name: p.name || '',
           sku: p.sku || '',
           price: p.sale_price || 0,
           stock: Number(p.stock) || 0,
+          unit_of_measure: p.unit_of_measure || 'UN',
+          formula: p.formula || null,
         }));
       setProducts(items);
       setCustomers((customersRes.data || []).map((c: any) => ({
@@ -82,7 +89,7 @@ export default function StandalonePOSPage() {
       })));
       setLoading(false);
     }).catch(() => setLoading(false));
-  }, []);
+  }, [refreshKey]);
 
   const filteredProducts = products.filter(p =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -329,7 +336,7 @@ export default function StandalonePOSPage() {
                   <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${
                     product.stock > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
                   }`}>
-                    {product.stock} uds
+                    {formatQuantity(product.stock, product.unit_of_measure)}
                   </span>
                 </div>
               </button>

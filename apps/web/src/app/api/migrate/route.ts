@@ -424,6 +424,74 @@ export async function POST(request: Request) {
     }
     results.push('Internal Orders tables ensured');
 
+    const marginAlters = [
+      `ALTER TABLE formulas ADD COLUMN IF NOT EXISTS min_margin_pct DECIMAL(5,2) DEFAULT NULL`,
+      `ALTER TABLE formulas ADD COLUMN IF NOT EXISTS max_margin_pct DECIMAL(5,2) DEFAULT NULL`,
+    ];
+
+    for (const sql of marginAlters) {
+      try { await query(sql); } catch (e: any) { results.push(`margin alter warn: ${e.message?.substring(0, 60)}`); }
+    }
+    results.push('Formulas margin columns ensured');
+
+    const recipeExpensesTable = `
+      CREATE TABLE IF NOT EXISTS recipe_expenses (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        formula_id UUID REFERENCES formulas(id) ON DELETE SET NULL,
+        category VARCHAR(100) NOT NULL,
+        description TEXT NOT NULL,
+        amount DECIMAL(14,2) NOT NULL,
+        expense_date DATE DEFAULT CURRENT_DATE,
+        is_recurring BOOLEAN DEFAULT false,
+        recurring_period VARCHAR(50),
+        notes TEXT,
+        created_by UUID REFERENCES profiles(id),
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `;
+    try { await query(recipeExpensesTable); } catch (e: any) { results.push(`recipe_expenses warn: ${e.message?.substring(0, 60)}`); }
+    try { await query('CREATE INDEX IF NOT EXISTS idx_recipe_expenses_company ON recipe_expenses(company_id)'); } catch {}
+    try { await query('CREATE INDEX IF NOT EXISTS idx_recipe_expenses_formula ON recipe_expenses(formula_id)'); } catch {}
+    results.push('Recipe expenses table ensured');
+
+    const purchaseCategoriesTable = `
+      CREATE TABLE IF NOT EXISTS purchase_categories (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        name TEXT NOT NULL,
+        description TEXT,
+        is_default BOOLEAN DEFAULT false,
+        created_at TIMESTAMPTZ DEFAULT now(),
+        updated_at TIMESTAMPTZ DEFAULT now(),
+        UNIQUE (company_id, name)
+      )
+    `;
+    try { await query(purchaseCategoriesTable); } catch (e: any) { results.push(`purchase_categories warn: ${e.message?.substring(0, 60)}`); }
+    try { await query('CREATE INDEX IF NOT EXISTS idx_purchase_categories_company ON purchase_categories(company_id)'); } catch {}
+    try { await query('ALTER TABLE purchase_categories ADD COLUMN IF NOT EXISTS cost_center_id UUID REFERENCES cost_centers(id) ON DELETE SET NULL'); } catch {}
+    results.push('Purchase categories table ensured');
+
+    // 068: company_rubros
+    const companyRubrosTable = `
+      CREATE TABLE IF NOT EXISTS company_rubros (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        name TEXT NOT NULL,
+        description TEXT,
+        is_active BOOLEAN DEFAULT true,
+        created_at TIMESTAMPTZ DEFAULT now(),
+        updated_at TIMESTAMPTZ DEFAULT now(),
+        UNIQUE (company_id, name)
+      )
+    `;
+    try { await query(companyRubrosTable); } catch (e: any) { results.push(`company_rubros warn: ${e.message?.substring(0, 60)}`); }
+    try { await query('CREATE INDEX IF NOT EXISTS idx_company_rubros_company ON company_rubros(company_id)'); } catch {}
+    try { await query('ALTER TABLE customers ADD COLUMN IF NOT EXISTS rubro_id UUID REFERENCES company_rubros(id) ON DELETE SET NULL'); } catch {}
+    try { await query('CREATE INDEX IF NOT EXISTS idx_customers_rubro ON customers(rubro_id)'); } catch {}
+    results.push('Company rubros table ensured');
+
     return NextResponse.json({ success: true, results });
   } catch (err) {
     return NextResponse.json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 });

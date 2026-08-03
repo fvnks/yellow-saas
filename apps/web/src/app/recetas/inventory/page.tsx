@@ -3,8 +3,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Package, Search, Plus, Settings, Pencil, Trash2, X, FlaskConical } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { formatQuantity } from '@/lib/utils';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import { useRecetasRefresh } from '@/components/recetas/RefreshContext';
 
 function getStockStatus(stock: number, minStock: number) {
   if (minStock <= 0) return { color: 'text-slate-500 bg-slate-50 border-slate-200', label: 'Sin config', dot: 'bg-slate-400' };
@@ -21,9 +23,10 @@ interface ProductForm {
   cost_price: string;
   sale_price: string;
   description: string;
+  sellable: boolean;
 }
 
-const emptyForm: ProductForm = { name: '', sku: '', unit_of_measure: 'UN', cost_price: '', sale_price: '', description: '' };
+const emptyForm: ProductForm = { name: '', sku: '', unit_of_measure: 'UN', cost_price: '', sale_price: '', description: '', sellable: false };
 
 function ProductModal({ open, onClose, onSave, editProduct }: {
   open: boolean;
@@ -43,6 +46,7 @@ function ProductModal({ open, onClose, onSave, editProduct }: {
         cost_price: editProduct.cost_price ? String(editProduct.cost_price) : '',
         sale_price: editProduct.sale_price ? String(editProduct.sale_price) : '',
         description: editProduct.description || '',
+        sellable: editProduct.sellable || false,
       });
     } else {
       setForm(emptyForm);
@@ -116,6 +120,14 @@ function ProductModal({ open, onClose, onSave, editProduct }: {
               className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               placeholder="Descripción..." />
           </div>
+          <div className="space-y-1">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" checked={form.sellable} onChange={e => setForm(p => ({ ...p, sellable: e.target.checked }))}
+                className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500" />
+              <span className="text-xs font-medium text-slate-700">Vendible (aparece en POS y pestaña Producción)</span>
+            </label>
+            <p className="text-[10px] text-slate-400">Si está activo, el producto se podrá vender en POS y aparecerá en la pestaña Producción</p>
+          </div>
           <div className="flex justify-end gap-3 pt-2">
             <button type="button" onClick={onClose}
               className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
@@ -133,6 +145,7 @@ function ProductModal({ open, onClose, onSave, editProduct }: {
 }
 
 export default function RecipeInventoryPage() {
+  const { refreshKey, triggerRefresh } = useRecetasRefresh();
   const [activeTab, setActiveTab] = useState<'ingredients' | 'products'>('ingredients');
   const [allProducts, setAllProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -144,20 +157,22 @@ export default function RecipeInventoryPage() {
   const loadProducts = useCallback(async () => {
     try {
       const api = getApiClient();
-      const res = await api.getRecipeProducts({ limit: '500' });
-      setAllProducts(res.data || []);
-    } catch {
+      const allRes = await api.getRecipeProducts({ limit: '500' });
+      const all = allRes.data || [];
+      // Usar campo sellable del producto directamente
+      const enriched = all.map((p: any) => ({ ...p, _isOutput: p.sellable === true }));
+      setAllProducts(enriched);
+    } catch (e) {
+      console.error('[Inventory] Error:', e);
       toast.error('Error al cargar inventario');
     }
     setLoading(false);
   }, []);
 
-  useEffect(() => { loadProducts(); }, [loadProducts]);
+  useEffect(() => { loadProducts(); }, [loadProducts, refreshKey]);
 
-  const isOutputProduct = (p: any) => !!p.formula;
-
-  const ingredients = allProducts.filter(p => !isOutputProduct(p));
-  const products = allProducts.filter(p => isOutputProduct(p));
+  const ingredients = allProducts.filter(p => !p._isOutput);
+  const products = allProducts.filter(p => p._isOutput);
   const displayed = activeTab === 'ingredients' ? ingredients : products;
 
   const filtered = search
@@ -180,9 +195,10 @@ export default function RecipeInventoryPage() {
       cost_price: data.cost_price ? parseFloat(data.cost_price) : 0,
       sale_price: data.sale_price ? parseFloat(data.sale_price) : 0,
       description: data.description || undefined,
+      sellable: data.sellable,
     });
     toast.success(activeTab === 'ingredients' ? 'Ingrediente creado' : 'Producto creado');
-    loadProducts();
+    triggerRefresh();
   };
 
   const handleEdit = async (data: ProductForm) => {
@@ -195,10 +211,11 @@ export default function RecipeInventoryPage() {
       cost_price: data.cost_price ? parseFloat(data.cost_price) : 0,
       sale_price: data.sale_price ? parseFloat(data.sale_price) : 0,
       description: data.description || undefined,
+      sellable: data.sellable,
     });
     toast.success('Producto actualizado');
     setEditProduct(null);
-    loadProducts();
+    triggerRefresh();
   };
 
   const handleDelete = async (product: any) => {
@@ -208,7 +225,7 @@ export default function RecipeInventoryPage() {
       const api = getApiClient();
       await api.deleteRecipeProduct(product.id);
       toast.success('Producto eliminado');
-      loadProducts();
+      triggerRefresh();
     } catch (err: any) {
       toast.error(err.message || 'Error al eliminar');
     }
@@ -268,7 +285,7 @@ export default function RecipeInventoryPage() {
         </div>
         <div className="bg-white border border-slate-200 rounded-xl p-5">
           <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Stock Total</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">{totalStock.toLocaleString('es-CL')}</p>
+          <p className="text-2xl font-bold text-slate-900 mt-1">{Number(totalStock).toLocaleString('es-CL', { maximumFractionDigits: 2 })}</p>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl p-5">
           <p className="text-[9px] font-semibold text-rose-500 uppercase tracking-wider">Stock Bajo</p>
@@ -338,20 +355,20 @@ export default function RecipeInventoryPage() {
                         <div>
                           <span className="text-xs font-medium text-slate-900">{p.name}</span>
                           {p.formula && (
-                            <p className="text-[9px] text-slate-400">{p.formula.name} · {Number(p.formula.yield_quantity)} {p.formula.yield_unit}</p>
+                            <p className="text-[9px] text-slate-400">{p.formula.name} · {formatQuantity(p.formula.yield_quantity, p.formula.yield_unit)}</p>
                           )}
                         </div>
                       </div>
                     </td>
                     <td className="px-4 py-3 text-xs text-slate-600 font-mono">{p.sku}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{p.unit_of_measure}</td>
+                    <td className="px-4 py-3 text-xs text-slate-600 uppercase">{p.unit_of_measure}</td>
                     {activeTab === 'products' && (
                       <td className="px-4 py-3 text-right text-xs font-semibold text-slate-900">
                         ${(Number(p.sale_price) || 0).toLocaleString('es-CL')}
                       </td>
                     )}
-                    <td className="px-4 py-3 text-right text-xs font-semibold text-slate-900">{stock.toLocaleString('es-CL')}</td>
-                    <td className="px-4 py-3 text-right text-xs text-slate-500">{minStock > 0 ? minStock.toLocaleString('es-CL') : '—'}</td>
+                    <td className="px-4 py-3 text-right text-xs font-semibold text-slate-900">{formatQuantity(stock, p.unit_of_measure)}</td>
+                    <td className="px-4 py-3 text-right text-xs text-slate-500">{minStock > 0 ? formatQuantity(minStock, p.unit_of_measure) : '—'}</td>
                     <td className="px-4 py-3 text-center">
                       <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-semibold border ${status.color}`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${status.dot}`} />

@@ -40,6 +40,7 @@ export class ApiClient {
   private async request<T>(path: string, options: RequestInit = {}): Promise<T> {
     const url = `${API_BASE}/companies/${this.companyId}${path}`;
     const response = await fetch(url, {
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
@@ -58,7 +59,7 @@ export class ApiClient {
   private async requestWithPagination<T>(path: string, params: Record<string, string> = {}): Promise<{ data: T[]; pagination: { total: number; page: number; limit: number; totalPages: number } }> {
     const searchParams = new URLSearchParams(params);
     const url = `${API_BASE}/companies/${this.companyId}${path}?${searchParams}`;
-    const response = await fetch(url);
+    const response = await fetch(url, { credentials: 'include' });
     const result = await response.json();
     if (!response.ok) {
       const msg = typeof result.error === 'object' ? result.error?.message || JSON.stringify(result.error) : result.error;
@@ -90,14 +91,14 @@ export class ApiClient {
 
   // Recipe Products (Ingredientes de Recetas - aislados del inventario)
   async getRecipeProducts(params?: Record<string, string>) {
-    return this.requestWithPagination<{ id: string; name: string; sku: string; unit_of_measure: string; cost_price: number; sale_price: number; is_active: boolean }>('/recipe-products', params || {});
+    return this.requestWithPagination<{ id: string; name: string; sku: string; unit_of_measure: string; cost_price: number; sale_price: number; is_active: boolean; sellable: boolean }>('/recipe-products', params || {});
   }
 
-  async createRecipeProduct(data: { name: string; sku: string; unit_of_measure?: string; cost_price?: number; sale_price?: number; description?: string }) {
+  async createRecipeProduct(data: { name: string; sku: string; unit_of_measure?: string; cost_price?: number; sale_price?: number; description?: string; sellable?: boolean }) {
     return this.request<{ id: string }>('/recipe-products', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async updateRecipeProduct(id: string, data: { stock?: number; min_stock?: number; name?: string; sku?: string; unit_of_measure?: string; cost_price?: number; sale_price?: number; description?: string; is_active?: boolean }) {
+  async updateRecipeProduct(id: string, data: { stock?: number; min_stock?: number; name?: string; sku?: string; unit_of_measure?: string; cost_price?: number; sale_price?: number; description?: string; is_active?: boolean; sellable?: boolean }) {
     return this.request<any>('/recipe-products', { method: 'PATCH', body: JSON.stringify({ id, ...data }) });
   }
 
@@ -144,11 +145,11 @@ export class ApiClient {
     return this.request<{ id: string; name: string; code: string; trade_name: string; tax_id: string; email: string; phone: string; address: string }>(`/customers/${id}`);
   }
 
-  async createCustomer(data: { name: string; code?: string; trade_name?: string; tax_id?: string; tax_id_type?: string; address?: string; city?: string; region?: string; country?: string; postal_code?: string; phone?: string; email?: string; website?: string; contact_person?: string; contact_phone?: string; contact_email?: string; payment_terms?: number; credit_limit?: number; price_list_id?: string; tax_exempt?: boolean; notes?: string }) {
+  async createCustomer(data: { name: string; code?: string; trade_name?: string; tax_id?: string; tax_id_type?: string; address?: string; city?: string; region?: string; country?: string; postal_code?: string; phone?: string; email?: string; website?: string; contact_person?: string; contact_phone?: string; contact_email?: string; payment_terms?: number; credit_limit?: number; price_list_id?: string; tax_exempt?: boolean; rubro_id?: string; notes?: string }) {
     return this.request<{ id: string }>('/customers', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async updateCustomer(id: string, data: Partial<{ name: string; code: string; trade_name: string; tax_id: string; tax_id_type: string; address: string; city: string; region: string; country: string; postal_code: string; phone: string; email: string; website: string; contact_person: string; contact_phone: string; contact_email: string; payment_terms: number; credit_limit: number; price_list_id: string; tax_exempt: boolean; notes: string; is_active: boolean; category_id: string; segment_id: string; portal_enabled: boolean }>) {
+  async updateCustomer(id: string, data: Partial<{ name: string; code: string; trade_name: string; tax_id: string; tax_id_type: string; address: string; city: string; region: string; country: string; postal_code: string; phone: string; email: string; website: string; contact_person: string; contact_phone: string; contact_email: string; payment_terms: number; credit_limit: number; price_list_id: string; tax_exempt: boolean; rubro_id: string; notes: string; is_active: boolean; category_id: string; segment_id: string; portal_enabled: boolean }>) {
     return this.request<{ id: string }>(`/customers/${id}`, { method: 'PUT', body: JSON.stringify(data) });
   }
 
@@ -438,6 +439,23 @@ export class ApiClient {
 
   async deletePurchaseOrder(id: string) {
     return this.request<{ message: string }>(`/purchase-orders/${id}`, { method: 'DELETE' });
+  }
+
+  // Purchase Categories
+  async getPurchaseCategories() {
+    return this.request<any[]>('/purchase-categories');
+  }
+
+  async createPurchaseCategory(data: { name: string; description?: string; cost_center_id?: string }) {
+    return this.request<any>('/purchase-categories', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updatePurchaseCategory(id: string, data: { name?: string; description?: string; cost_center_id?: string }) {
+    return this.request<any>('/purchase-categories', { method: 'PUT', body: JSON.stringify({ id, ...data }) });
+  }
+
+  async deletePurchaseCategory(id: string) {
+    return this.request<any>(`/purchase-categories?id=${id}`, { method: 'DELETE' });
   }
 
   // Quotations
@@ -1738,11 +1756,11 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/formulas/${formulaId}`);
   }
 
-  async createFormula(data: { name: string; description?: string; output_product_id?: string; yield_quantity?: number; yield_unit?: string; ingredients: { product_id: string; quantity: number; unit?: string }[] }) {
+  async createFormula(data: { name: string; description?: string; output_product_id?: string; yield_quantity?: number; yield_unit?: string; min_margin_pct?: number | null; max_margin_pct?: number | null; ingredients: { product_id: string; quantity: number; unit?: string }[] }) {
     return this.request<any>('/formulas', { method: 'POST', body: JSON.stringify(data) });
   }
 
-  async updateFormula(formulaId: string, data: { name?: string; description?: string; output_product_id?: string; yield_quantity?: number; yield_unit?: string; is_active?: boolean; ingredients?: { product_id: string; quantity: number; unit?: string }[] }) {
+  async updateFormula(formulaId: string, data: { name?: string; description?: string; output_product_id?: string; yield_quantity?: number; yield_unit?: string; is_active?: boolean; min_margin_pct?: number | null; max_margin_pct?: number | null; ingredients?: { product_id: string; quantity: number; unit?: string }[] }) {
     return this.request<any>(`/formulas/${formulaId}`, { method: 'PUT', body: JSON.stringify(data) });
   }
 
@@ -1752,6 +1770,34 @@ async deleteAdjustmentReason(id: string) {
 
   async produceFormula(formulaId: string, data: { quantity: number; warehouse_id?: string; notes?: string }) {
     return this.request<any>(`/formulas/${formulaId}/produce`, { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  // Recipe Expenses (Gastos)
+  async getRecipeExpenses(params?: { search?: string; category?: string; formula_id?: string; page?: number; limit?: number }) {
+    const searchParams = new URLSearchParams();
+    if (params?.search) searchParams.set('search', params.search);
+    if (params?.category) searchParams.set('category', params.category);
+    if (params?.formula_id) searchParams.set('formula_id', params.formula_id);
+    if (params?.page) searchParams.set('page', String(params.page));
+    if (params?.limit) searchParams.set('limit', String(params.limit));
+    const qs = searchParams.toString();
+    return this.request<any>(`/recipe-expenses${qs ? `?${qs}` : ''}`);
+  }
+
+  async getRecipeExpense(expenseId: string) {
+    return this.request<any>(`/recipe-expenses/${expenseId}`);
+  }
+
+  async createRecipeExpense(data: { formula_id?: string; category: string; description: string; amount: number; expense_date?: string; is_recurring?: boolean; recurring_period?: string; notes?: string }) {
+    return this.request<any>('/recipe-expenses', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateRecipeExpense(expenseId: string, data: { formula_id?: string; category?: string; description?: string; amount?: number; expense_date?: string; is_recurring?: boolean; recurring_period?: string; notes?: string }) {
+    return this.request<any>(`/recipe-expenses/${expenseId}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteRecipeExpense(expenseId: string) {
+    return this.request<any>(`/recipe-expenses/${expenseId}`, { method: 'DELETE' });
   }
 
   // Company Access Grants
@@ -1765,6 +1811,24 @@ async deleteAdjustmentReason(id: string) {
 
   async revokeCompanyGrant(companyId: string, grantId: string) {
     return this.request<any>(`/companies/${companyId}/grants/${grantId}`, { method: 'DELETE' });
+  }
+
+  // Company Rubros
+  async getRubros(params?: { limit?: number }) {
+    const qs = params?.limit ? `?limit=${params.limit}` : '';
+    return this.request<any[]>(`/rubros${qs}`);
+  }
+
+  async createRubro(data: { name: string; description?: string }) {
+    return this.request<any>('/rubros', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateRubro(data: { id: string; name?: string; description?: string; is_active?: boolean }) {
+    return this.request<any>('/rubros', { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteRubro(id: string) {
+    return this.request<any>(`/rubros?id=${id}`, { method: 'DELETE' });
   }
 
   // Auth - Multi-company

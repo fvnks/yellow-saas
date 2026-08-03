@@ -3,10 +3,13 @@
 import { useState, useEffect } from 'react';
 import { Play, FlaskConical, Package, CheckCircle2, AlertTriangle, ShoppingCart } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { formatQuantity } from '@/lib/utils';
 import { toast } from 'sonner';
 import QuickSellModal from '@/components/recetas/QuickSellModal';
+import { useRecetasRefresh } from '@/components/recetas/RefreshContext';
 
 export default function ProducePage() {
+  const { refreshKey, triggerRefresh } = useRecetasRefresh();
   const [formulas, setFormulas] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedFormula, setSelectedFormula] = useState<any>(null);
@@ -29,7 +32,7 @@ export default function ProducePage() {
       setWarehouses(whRes.data || []);
       setLoading(false);
     }).catch(() => setLoading(false));
-  }, []);
+  }, [refreshKey]);
 
   const loadFormulaDetail = async (formulaId: string) => {
     const api = getApiClient();
@@ -63,6 +66,7 @@ export default function ProducePage() {
       toast.success(result.message || 'Producción completada');
       setQuantity('1');
       setNotes('');
+      triggerRefresh();
       loadFormulaDetail(selectedFormula.id);
     } catch (err: any) {
       toast.error(err.message || 'Error al producir');
@@ -108,7 +112,7 @@ export default function ProducePage() {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-slate-900">{f.name}</p>
-                    <p className="text-[10px] text-slate-500">{f.ingredient_count || 0} ingredientes · {Number(f.yield_quantity)} {f.yield_unit}</p>
+                    <p className="text-[10px] text-slate-500">{f.ingredient_count || 0} ingredientes · {formatQuantity(f.yield_quantity, f.yield_unit)}</p>
                   </div>
                 </div>
               </button>
@@ -180,7 +184,7 @@ export default function ProducePage() {
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="text-xs text-slate-600">
-                        {required} {ing.unit} <span className="text-slate-400">de {ing.current_stock}</span>
+                        {formatQuantity(required, ing.unit)} <span className="text-slate-400">de {formatQuantity(ing.current_stock, ing.unit)}</span>
                       </span>
                       {hasEnough ? (
                         <CheckCircle2 className="w-4 h-4 text-emerald-500" />

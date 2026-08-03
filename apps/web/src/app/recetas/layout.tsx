@@ -3,24 +3,23 @@
 import { ReactNode } from 'react';
 import { Toaster } from 'sonner';
 import { Separator } from '@/components/ui/separator';
-import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { ThemeProvider } from '@/components/ui/theme-toggle';
-import { PermissionsProvider } from '@/lib/permissions';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FlaskConical, Plus, BarChart3, Settings, Monitor, Package, ArrowDownUp } from 'lucide-react';
+import { FlaskConical, Plus, BarChart3, Settings, Monitor, Package, ArrowDownUp, Receipt } from 'lucide-react';
 import ThemeToggle from '@/components/ui/theme-toggle';
+import { RefreshProvider } from '@/components/recetas/RefreshContext';
 
 function RecetasSidebar() {
   const pathname = usePathname();
 
   const navItems = [
-    { href: '/recetas', label: 'Recetas', icon: FlaskConical },
+    { href: '/recetas/inventory', label: 'Inventario', icon: Package },
     { href: '/recetas/new', label: 'Nueva Receta', icon: Plus },
     { href: '/recetas/produce', label: 'Producir', icon: Settings },
-    { href: '/recetas/inventory', label: 'Inventario', icon: Package },
     { href: '/recetas/stock', label: 'Entrada Stock', icon: ArrowDownUp },
+    { href: '/recetas/expenses', label: 'Gastos', icon: Receipt },
     { href: '/recetas/settings', label: 'Config Stock', icon: BarChart3 },
+    { href: '/recetas/pos', label: 'POS', icon: Monitor },
   ];
 
   return (
@@ -39,7 +38,7 @@ function RecetasSidebar() {
       <nav className="flex-1 p-3 space-y-1">
         {navItems.map(item => {
           const Icon = item.icon;
-          const isActive = item.href === '/recetas' ? pathname === '/recetas' : pathname.startsWith(item.href);
+          const isActive = pathname.startsWith(item.href);
           return (
             <Link key={item.href} href={item.href}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
@@ -52,11 +51,6 @@ function RecetasSidebar() {
         })}
       </nav>
       <div className="p-3 border-t border-slate-200 space-y-1">
-        <Link href="/recetas/pos"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
-          <Monitor className="w-4 h-4" />
-          POS
-        </Link>
         <Link href="/dashboard" className="flex items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">
           ← Volver al ERP
         </Link>
@@ -67,25 +61,23 @@ function RecetasSidebar() {
 
 export default function RecetasLayout({ children }: { children: ReactNode }) {
   return (
-    <ThemeProvider>
-      <PermissionsProvider>
-        <main className="bg-slate-50 min-h-screen transition-colors">
-          <Toaster position="top-right" richColors closeButton />
-          <RecetasSidebar />
-          <div className="ml-60">
-            <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b border-slate-100 bg-white/80 backdrop-blur-xl">
-              <div className="flex items-center gap-2 px-4">
-                <Separator orientation="vertical" className="h-4" />
-                <span className="text-sm text-slate-500">Recetas</span>
-              </div>
-              <div className="ml-auto pr-4">
-                <ThemeToggle />
-              </div>
-            </header>
-            <div className="p-6">{children}</div>
-          </div>
-        </main>
-      </PermissionsProvider>
-    </ThemeProvider>
+    <RefreshProvider>
+      <main className="bg-slate-50 min-h-screen transition-colors">
+        <Toaster position="top-right" richColors closeButton />
+        <RecetasSidebar />
+        <div className="ml-60">
+          <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b border-slate-100 bg-white/80 backdrop-blur-xl">
+            <div className="flex items-center gap-2 px-4">
+              <Separator orientation="vertical" className="h-4" />
+              <span className="text-sm text-slate-500">Recetas</span>
+            </div>
+            <div className="ml-auto pr-4">
+              <ThemeToggle />
+            </div>
+          </header>
+          <div className="p-6">{children}</div>
+        </div>
+      </main>
+    </RefreshProvider>
   );
 }

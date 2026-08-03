@@ -50,16 +50,18 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const body = await request.json();
-    const { name, description, output_product_id, yield_quantity, yield_unit, is_active, ingredients } = body;
+    const { name, description, output_product_id, yield_quantity, yield_unit, is_active, ingredients, min_margin_pct, max_margin_pct } = body;
 
     const { rows } = await query(
       `UPDATE formulas
        SET name = COALESCE($3, name), description = $4, output_product_id = $5,
            yield_quantity = COALESCE($6, yield_quantity), yield_unit = COALESCE($7, yield_unit),
-           is_active = COALESCE($8, is_active), updated_at = NOW()
+           is_active = COALESCE($8, is_active),
+           min_margin_pct = $9, max_margin_pct = $10,
+           updated_at = NOW()
        WHERE id = $1 AND company_id = $2
        RETURNING *`,
-      [params.formulaId, companyId, name, description, output_product_id, yield_quantity, yield_unit, is_active]
+      [params.formulaId, companyId, name, description, output_product_id, yield_quantity, yield_unit, is_active, min_margin_pct ?? null, max_margin_pct ?? null]
     );
 
     if (rows.length === 0) return errorResponse('Receta no encontrada', 404);

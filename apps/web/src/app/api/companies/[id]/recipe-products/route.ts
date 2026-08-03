@@ -22,7 +22,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 
     if (sellable === 'true') {
-      whereClause += ` AND EXISTS (SELECT 1 FROM formulas f WHERE f.output_product_id = rp.id AND f.is_active = true AND f.company_id = $1)`;
+      whereClause += ` AND rp.sellable = true`;
     }
 
     const countResult = await query(
@@ -54,19 +54,19 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const body = await request.json();
-    const { name, sku, unit_of_measure, cost_price, sale_price, description } = body;
+    const { name, sku, unit_of_measure, cost_price, sale_price, description, sellable } = body;
 
     if (!name || !sku) return errorResponse('Nombre y SKU son requeridos', 400);
 
     const { rows } = await query(
-      `INSERT INTO recipe_products (company_id, name, sku, unit_of_measure, cost_price, sale_price, description)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `INSERT INTO recipe_products (company_id, name, sku, unit_of_measure, cost_price, sale_price, description, sellable)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
        ON CONFLICT (company_id, sku) DO UPDATE SET
          name = EXCLUDED.name, unit_of_measure = EXCLUDED.unit_of_measure,
          cost_price = EXCLUDED.cost_price, sale_price = EXCLUDED.sale_price,
-         description = EXCLUDED.description, updated_at = NOW()
+         description = EXCLUDED.description, sellable = EXCLUDED.sellable, updated_at = NOW()
        RETURNING *`,
-      [companyId, name, sku, unit_of_measure || 'UN', cost_price || 0, sale_price || 0, description || null]
+      [companyId, name, sku, unit_of_measure || 'UN', cost_price || 0, sale_price || 0, description || null, sellable || false]
     );
 
     return successResponse(rows[0], 201);
@@ -82,7 +82,7 @@ export async function PATCH(request: NextRequest) {
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const body = await request.json();
-    const { id, stock, min_stock, name, sku, unit_of_measure, cost_price, sale_price, description, is_active } = body;
+    const { id, stock, min_stock, name, sku, unit_of_measure, cost_price, sale_price, description, is_active, sellable } = body;
 
     if (!id) return errorResponse('Product ID requerido', 400);
 
@@ -99,6 +99,7 @@ export async function PATCH(request: NextRequest) {
     if (sale_price !== undefined) { fields.push(`sale_price = $${idx}`); values.push(sale_price); idx++; }
     if (description !== undefined) { fields.push(`description = $${idx}`); values.push(description); idx++; }
     if (is_active !== undefined) { fields.push(`is_active = $${idx}`); values.push(is_active); idx++; }
+    if (sellable !== undefined) { fields.push(`sellable = $${idx}`); values.push(sellable); idx++; }
 
     if (fields.length === 0) return errorResponse('No fields to update', 400);
 

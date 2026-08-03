@@ -16,8 +16,10 @@ export default function CustomersPage() {
   const [taxExemptFilter, setTaxExemptFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [segmentFilter, setSegmentFilter] = useState('all');
+  const [rubroFilter, setRubroFilter] = useState('all');
   const [categories, setCategories] = useState<any[]>([]);
   const [segments, setSegments] = useState<any[]>([]);
+  const [rubros, setRubros] = useState<any[]>([]);
   const [showImport, setShowImport] = useState(false);
 
   useEffect(() => {
@@ -26,10 +28,12 @@ export default function CustomersPage() {
       api.getCustomers(),
       api.getCustomerCategories().catch(() => ({ data: [] })),
       api.getCustomerSegments().catch(() => ({ data: [] })),
-    ]).then(([res, catRes, segRes]) => {
+      api.getRubros({ limit: 200 }).catch(() => []),
+    ]).then(([res, catRes, segRes, rubRes]) => {
       setCustomers(res.data || []);
       setCategories(catRes.data || []);
       setSegments(segRes.data || []);
+      setRubros(Array.isArray(rubRes) ? rubRes : []);
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);
@@ -43,13 +47,14 @@ export default function CustomersPage() {
     const matchesTaxExempt = taxExemptFilter === 'all' || (taxExemptFilter === 'exempt' && c.tax_exempt) || (taxExemptFilter === 'non-exempt' && !c.tax_exempt);
     const matchesCategory = categoryFilter === 'all' || c.category_id === categoryFilter;
     const matchesSegment = segmentFilter === 'all' || c.segment_id === segmentFilter;
-    return matchesSearch && matchesStatus && matchesTaxExempt && matchesCategory && matchesSegment;
+    const matchesRubro = rubroFilter === 'all' || c.rubro_id === rubroFilter;
+    return matchesSearch && matchesStatus && matchesTaxExempt && matchesCategory && matchesSegment && matchesRubro;
   });
 
   const handleExport = useCallback(() => {
     if (filteredCustomers.length === 0) return;
-    const headers = ['Nombre', 'Razón Social', 'RUT', 'Email', 'Teléfono', 'Ciudad', 'Región', 'Plazo Días', 'Límite Crédito', 'Exento IVA', 'Activo'];
-    const rows = filteredCustomers.map(c => [c.name, c.trade_name || '', c.tax_id || '', c.email || '', c.phone || '', c.city || '', c.region || '', c.payment_terms || 0, c.credit_limit || 0, c.tax_exempt ? 'Sí' : 'No', c.is_active ? 'Sí' : 'No']);
+    const headers = ['Nombre', 'Razón Social', 'RUT', 'Email', 'Teléfono', 'Ciudad', 'Región', 'Plazo Días', 'Límite Crédito', 'Exento IVA', 'Rubro', 'Activo'];
+    const rows = filteredCustomers.map(c => [c.name, c.trade_name || '', c.tax_id || '', c.email || '', c.phone || '', c.city || '', c.region || '', c.payment_terms || 0, c.credit_limit || 0, c.tax_exempt ? 'Sí' : 'No', rubros.find((r: any) => r.id === c.rubro_id)?.name || '', c.is_active ? 'Sí' : 'No']);
     const csv = [headers, ...rows].map(r => r.map(v => `"${(v || '').toString().replace(/"/g, '""')}"`).join(',')).join('\n');
     const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -161,7 +166,7 @@ export default function CustomersPage() {
               <Filter className="w-4 h-4" />
               Filtros
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
@@ -194,6 +199,12 @@ export default function CustomersPage() {
                   <option key={seg.id} value={seg.id}>{seg.name}</option>
                 ))}
               </select>
+              <select value={rubroFilter} onChange={(e) => setRubroFilter(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                <option value="all">Todos los rubros</option>
+                {rubros.map((r: any) => (
+                  <option key={r.id} value={r.id}>{r.name}</option>
+                ))}
+              </select>
             </div>
           </div>
         </CardContent>
@@ -216,6 +227,7 @@ export default function CustomersPage() {
                   <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">IVA</th>
                   <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
                   <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Categoría</th>
+                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Rubro</th>
                   <th className="w-12 px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
                 </tr>
               </thead>
@@ -223,14 +235,14 @@ export default function CustomersPage() {
                 {loading ? (
                   Array.from({ length: 5 }).map((_, i) => (
                     <tr key={i} className="border-b border-slate-100">
-                      {Array.from({ length: 11 }).map((_, j) => (
+                      {Array.from({ length: 12 }).map((_, j) => (
                         <td key={j} className="px-4 py-3"><div className="h-4 bg-slate-100 rounded animate-pulse" /></td>
                       ))}
                     </tr>
                   ))
                 ) : filteredCustomers.length === 0 ? (
                   <tr>
-                    <td colSpan={11} className="px-4 py-12 text-center text-sm text-slate-500">
+                    <td colSpan={12} className="px-4 py-12 text-center text-sm text-slate-500">
                       No se encontraron clientes
                     </td>
                   </tr>
@@ -277,6 +289,15 @@ export default function CustomersPage() {
                       {customer.category_id ? (
                         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
                           {categories.find((c: any) => c.id === customer.category_id)?.name || '—'}
+                        </span>
+                      ) : (
+                        <span className="text-[10px] text-slate-400">—</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      {customer.rubro_id ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                          {rubros.find((r: any) => r.id === customer.rubro_id)?.name || '—'}
                         </span>
                       ) : (
                         <span className="text-[10px] text-slate-400">—</span>

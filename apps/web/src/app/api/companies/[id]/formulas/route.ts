@@ -55,16 +55,16 @@ export async function POST(request: NextRequest) {
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const body = await request.json();
-    const { name, description, output_product_id, yield_quantity, yield_unit, ingredients } = body;
+    const { name, description, output_product_id, yield_quantity, yield_unit, ingredients, min_margin_pct, max_margin_pct } = body;
 
     if (!name) return errorResponse('name es requerido', 400);
     if (!ingredients?.length) return errorResponse('Al menos un ingrediente es requerido', 400);
 
     const { rows: formulaRows } = await query(
-      `INSERT INTO formulas (company_id, name, description, output_product_id, yield_quantity, yield_unit)
-       VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO formulas (company_id, name, description, output_product_id, yield_quantity, yield_unit, min_margin_pct, max_margin_pct)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
        RETURNING *`,
-      [companyId, name, description || null, output_product_id || null, yield_quantity || 1, yield_unit || 'un']
+      [companyId, name, description || null, output_product_id || null, yield_quantity || 1, yield_unit || 'un', min_margin_pct ?? null, max_margin_pct ?? null]
     );
 
     const formula = formulaRows[0];
