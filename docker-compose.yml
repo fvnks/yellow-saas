@@ -7,6 +7,13 @@ services:
       - "3000:3000"
     networks:
       - coolify
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.yellow-saas.rule=Host(`yb3vqkcuoj819gno5c3xish0.148.113.196.87.sslip.io`)"
+      - "traefik.http.routers.yellow-saas.entrypoints=https"
+      - "traefik.http.routers.yellow-saas.tls=true"
+      - "traefik.http.routers.yellow-saas.tls.certresolver=letsencrypt"
+      - "traefik.http.services.yellow-saas.loadbalancer.server.port=3000"
     environment:
       NODE_ENV: production
       PORT: "3000"
