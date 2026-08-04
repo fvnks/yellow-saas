@@ -1,0 +1,15 @@
+services:
+  web:
+    image: fvnkscl/yellow-saas:main
+    container_name: yellow-saas-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: "0.0.0.0"
+      DATABASE_URL: "postgresql://postgres:${DB_PASSWORD}@${DB_HOST}:5432/postgres"
+      DATABASE_SSL: "false"
+      JWT_SECRET: "${JWT_SECRET}"
+      NEXT_PUBLIC_APP_URL: "${NEXT_PUBLIC_APP_URL}"
