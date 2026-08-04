@@ -5,7 +5,7 @@ import { Toaster } from 'sonner';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FlaskConical, Plus, BarChart3, Settings, Monitor, Package, ArrowDownUp, Receipt, History } from 'lucide-react';
+import { FlaskConical, Plus, BarChart3, Settings, Monitor, Package, ArrowDownUp, Receipt, History, ListChecks } from 'lucide-react';
 import ThemeToggle from '@/components/ui/theme-toggle';
 import { RefreshProvider } from '@/components/recetas/RefreshContext';
 
@@ -13,6 +13,7 @@ function RecetasSidebar() {
   const pathname = usePathname();
 
   const navItems = [
+    { href: '/recetas', label: 'Recetas', icon: ListChecks },
     { href: '/recetas/inventory', label: 'Inventario', icon: Package },
     { href: '/recetas/new', label: 'Nueva Receta', icon: Plus },
     { href: '/recetas/produce', label: 'Producir', icon: Settings },
@@ -39,7 +40,9 @@ function RecetasSidebar() {
       <nav className="flex-1 p-3 space-y-1">
         {navItems.map(item => {
           const Icon = item.icon;
-          const isActive = pathname.startsWith(item.href);
+          const isActive = item.href === '/recetas'
+            ? pathname === '/recetas'
+            : pathname.startsWith(item.href);
           return (
             <Link key={item.href} href={item.href}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${

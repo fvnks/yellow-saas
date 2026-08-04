@@ -198,16 +198,7 @@ export default function RecetaDetailPage() {
                       <div className="flex items-center gap-2">
                         <Package className="w-4 h-4 text-slate-400" />
                         <span className="text-xs font-medium text-slate-900">{ing.product?.name || '—'}</span>
-      {/* Quick Sell Modal */}
-      <QuickSellModal
-        open={showQuickSell}
-        onClose={() => setShowQuickSell(false)}
-        productName={formula.output_product?.name}
-        productId={formula.output_product_id}
-        defaultPrice={formula.output_product?.sale_price || formula.output_product?.price || 0}
-        defaultQuantity={formula.yield_quantity || 1}
-      />
-    </div>
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-right text-xs font-medium text-slate-900">{formatQuantity(ing.quantity, ing.unit)}</td>
                     <td className="px-4 py-3 text-xs text-slate-600 uppercase">{ing.unit}</td>
@@ -311,6 +302,16 @@ export default function RecetaDetailPage() {
           </div>
         </div>
       )}
+
+      {/* Quick Sell Modal */}
+      <QuickSellModal
+        open={showQuickSell}
+        onClose={() => setShowQuickSell(false)}
+        productName={formula.output_product?.name}
+        productId={formula.output_product_id}
+        defaultPrice={formula.output_product?.sale_price || formula.output_product?.price || 0}
+        defaultQuantity={formula.yield_quantity || 1}
+      />
     </div>
   );
 }
