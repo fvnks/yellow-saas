@@ -41,13 +41,17 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
   const isOwner = userRole === 'owner' || userRole === 'admin';
 
   const load = useCallback(() => {
-    const api = getApiClient();
-    api.getPermissions()
-      .then((data) => {
-        setPermissions(Array.isArray(data) ? data : []);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    try {
+      const api = getApiClient();
+      api.getPermissions()
+        .then((data) => {
+          setPermissions(Array.isArray(data) ? data : []);
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
+    } catch {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
