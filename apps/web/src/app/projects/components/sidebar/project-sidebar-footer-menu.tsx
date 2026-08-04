@@ -56,9 +56,9 @@ export default function ProjectSidebarFooterMenu({ user }: ProjectSidebarFooterM
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent side="top" align="start" className="w-56">
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem onClick={() => (window.location.href = '/select')} className="cursor-pointer">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              <span>Volver al ERP</span>
+              <span>Volver al selector</span>
             </DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer">
               <Building2 className="mr-2 h-4 w-4" />

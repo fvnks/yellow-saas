@@ -55,8 +55,8 @@ function RecetasSidebar() {
         })}
       </nav>
       <div className="p-3 border-t border-slate-200 space-y-1">
-        <Link href="/dashboard" className="flex items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">
-          ← Volver al ERP
+        <Link href="/select" className="flex items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">
+          ← Volver al selector
         </Link>
       </div>
     </div>
