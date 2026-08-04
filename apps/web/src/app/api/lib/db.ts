@@ -1,8 +1,15 @@
 import { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg';
 
+const ssl =
+  process.env.DATABASE_SSL === 'false'
+    ? false
+    : process.env.NODE_ENV === 'production'
+      ? { rejectUnauthorized: false }
+      : false;
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  ssl,
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 5000,
