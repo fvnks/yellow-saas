@@ -53,7 +53,7 @@ export const hrSidebarItems: HRNavGroup[] = [
     label: "Navegación",
     items: [
       {
-        title: "Volver al ERP",
+        title: "Volver al selector",
         path: "/select",
         icon: "ArrowLeft",
       },
