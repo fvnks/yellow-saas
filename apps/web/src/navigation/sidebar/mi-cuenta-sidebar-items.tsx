@@ -3,7 +3,6 @@ import {
   Receipt,
   Puzzle,
   History,
-  ArrowLeft,
   AlertTriangle,
   LucideIcon,
 } from "lucide-react";
@@ -13,7 +12,6 @@ export const MI_CUENTA_ICON_MAP = {
   Receipt,
   Puzzle,
   History,
-  ArrowLeft,
   AlertTriangle,
 };
 
@@ -42,17 +40,6 @@ export interface MiCuentaNavGroup {
 }
 
 export const miCuentaSidebarItems: MiCuentaNavGroup[] = [
-  {
-    id: 1,
-    label: "Navegación",
-    items: [
-      {
-        title: "Volver al selector",
-        path: "/select",
-        icon: "ArrowLeft",
-      },
-    ],
-  },
   {
     id: 2,
     label: "Mi Cuenta",

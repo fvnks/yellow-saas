@@ -6,7 +6,6 @@ import {
   FileText,
   BarChart3,
   Settings,
-  ArrowLeft,
   AlertTriangle,
   Users,
   Calendar,
@@ -24,7 +23,6 @@ export const PROJECT_ICON_MAP = {
   FileText,
   BarChart3,
   Settings,
-  ArrowLeft,
   AlertTriangle,
   Users,
   Calendar,
@@ -58,17 +56,6 @@ export interface ProjectNavGroup {
 }
 
 export const projectSidebarItems: ProjectNavGroup[] = [
-  {
-    id: 1,
-    label: "Navegación",
-    items: [
-      {
-        title: "Volver al selector",
-        path: "/select",
-        icon: "ArrowLeft",
-      },
-    ],
-  },
   {
     id: 2,
     label: "Gestión de Proyectos",
