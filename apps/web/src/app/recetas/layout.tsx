@@ -5,7 +5,7 @@ import { Toaster } from 'sonner';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FlaskConical, Plus, BarChart3, Settings, Monitor, Package, ArrowDownUp, Receipt } from 'lucide-react';
+import { FlaskConical, Plus, BarChart3, Settings, Monitor, Package, ArrowDownUp, Receipt, History } from 'lucide-react';
 import ThemeToggle from '@/components/ui/theme-toggle';
 import { RefreshProvider } from '@/components/recetas/RefreshContext';
 
@@ -18,6 +18,7 @@ function RecetasSidebar() {
     { href: '/recetas/produce', label: 'Producir', icon: Settings },
     { href: '/recetas/stock', label: 'Entrada Stock', icon: ArrowDownUp },
     { href: '/recetas/expenses', label: 'Gastos', icon: Receipt },
+    { href: '/recetas/sales', label: 'Historial Ventas', icon: History },
     { href: '/recetas/settings', label: 'Config Stock', icon: BarChart3 },
     { href: '/recetas/pos', label: 'POS', icon: Monitor },
   ];

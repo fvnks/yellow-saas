@@ -19,6 +19,8 @@ export async function GET(request: NextRequest) {
     const url = new URL(request.url);
     const status = url.searchParams.get('status');
     const customer = url.searchParams.get('customer');
+    const paymentMethod = url.searchParams.get('payment_method');
+    const documentType = url.searchParams.get('document_type');
 
     const params: any[] = [companyId];
     let where = 'WHERE i.company_id = $1';
@@ -39,6 +41,18 @@ export async function GET(request: NextRequest) {
     if (customer) {
       where += ` AND i.customer_id = $${paramIndex}`;
       params.push(customer);
+      paramIndex++;
+    }
+
+    if (paymentMethod) {
+      where += ` AND i.payment_method = $${paramIndex}`;
+      params.push(paymentMethod);
+      paramIndex++;
+    }
+
+    if (documentType) {
+      where += ` AND i.document_type = $${paramIndex}`;
+      params.push(documentType);
       paramIndex++;
     }
 
