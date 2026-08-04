@@ -64,6 +64,10 @@ export default function EditRecetaPage() {
     setIngredients([...ingredients, { product_id: '', quantity: '', unit: 'un' }]);
   };
 
+  const selectedIngredientIds = new Set(ingredients.map(i => i.product_id).filter(Boolean));
+  const outputProducts = products.filter(p => p.sellable === true || p.id === form.output_product_id);
+  const ingredientProducts = products.filter(p => p.sellable !== true || selectedIngredientIds.has(p.id));
+
   const removeIngredient = (index: number) => {
     if (ingredients.length <= 1) return;
     setIngredients(ingredients.filter((_, i) => i !== index));
@@ -143,7 +147,7 @@ export default function EditRecetaPage() {
               <select value={form.output_product_id} onChange={e => setForm(p => ({ ...p, output_product_id: e.target.value }))}
                 className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                 <option value="">Ninguno (solo descontar)</option>
-                {products.map(p => <option key={p.id} value={p.id}>{p.name} ({p.sku})</option>)}
+                {outputProducts.map(p => <option key={p.id} value={p.id}>{p.name} ({p.sku})</option>)}
               </select>
             </div>
             <div className="space-y-1">
@@ -207,7 +211,7 @@ export default function EditRecetaPage() {
                   <select value={ing.product_id} onChange={e => updateIngredient(i, 'product_id', e.target.value)}
                     className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                     <option value="">Seleccionar...</option>
-                    {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                    {ingredientProducts.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                   </select>
                 </div>
                 <div className="col-span-3">
