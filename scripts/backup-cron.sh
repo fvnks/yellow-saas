@@ -28,7 +28,7 @@ if command -v pg_dump >/dev/null 2>&1; then
   pg_dump -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" \
     --no-owner --no-privileges -f "$OUT"
 else
-  CONTAINER="$(docker ps --format '{{.Names}}' | grep -i postgres | head -n1)"
+  CONTAINER="$(docker ps --format '{{.Names}} {{.Image}}' | grep -i postgres | head -n1 | awk '{print $1}')"
   if [ -z "$CONTAINER" ]; then
     echo "ERROR: no pg_dump and no postgres container found" >&2
     exit 1
