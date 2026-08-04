@@ -1,0 +1,61 @@
+import { NextRequest } from 'next/server';
+import { query } from '@/api/lib/db';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { jwtVerify } from 'jose';
+
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'yellow-erp-secret-key-change-in-production');
+
+async function getUserFromRequest(request: NextRequest): Promise<{ id: string; company_id: string } | null> {
+  const authHeader = request.headers.get('Authorization');
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : request.cookies.get('auth-token')?.value;
+  if (!token) return null;
+  try {
+    const { payload } = await jwtVerify(token, JWT_SECRET);
+    if (!payload.company_id || !payload.id) return null;
+    return { id: payload.id as string, company_id: payload.company_id as string };
+  } catch {
+    return null;
+  }
+}
+
+export async function GET(request: NextRequest, { params }: { params: { id: string; ticketId: string } }) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const user = await getUserFromRequest(request);
+    if (!user) return errorResponse('No autorizado', 401);
+    if (user.company_id !== companyId) return errorResponse('Acceso denegado', 403);
+
+    const { rows } = await query(
+      `SELECT t.id, t.subject, t.status, t.priority, t.created_at, t.updated_at,
+        p.full_name as created_by_name,
+        sa.name as assigned_to_name, sa.email as assigned_to_email
+       FROM support_tickets t
+       LEFT JOIN profiles p ON p.id = t.created_by
+       LEFT JOIN super_admins sa ON sa.id = t.assigned_to
+       WHERE t.id = $1 AND t.company_id = $2`,
+      [params.ticketId, companyId]
+    );
+
+    if (rows.length === 0) return errorResponse('Ticket no encontrado', 404);
+
+    const messagesResult = await query(
+      `SELECT tm.id, tm.sender_type, tm.message, tm.created_at,
+        CASE
+          WHEN tm.sender_type = 'super_admin' THEN sa.name
+          ELSE p.full_name
+        END as sender_name
+       FROM ticket_messages tm
+       LEFT JOIN super_admins sa ON sa.id = tm.sender_id AND tm.sender_type = 'super_admin'
+       LEFT JOIN profiles p ON p.id = tm.sender_id AND tm.sender_type = 'company'
+       WHERE tm.ticket_id = $1
+       ORDER BY tm.created_at ASC`,
+      [params.ticketId]
+    );
+
+    return successResponse({ ...rows[0], messages: messagesResult.rows });
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}

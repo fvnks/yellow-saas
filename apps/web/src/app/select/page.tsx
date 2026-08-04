@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
-import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight, X, Lock, Zap, FlaskConical } from 'lucide-react';
+import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight, X, Lock, Zap, FlaskConical, LifeBuoy } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 
 interface ModuleOption {
@@ -93,6 +93,20 @@ const modules: ModuleOption[] = [
     requiredModules: [],
     moduleName: 'mi-cuenta',
   },
+  {
+    id: 'ayuda',
+    title: 'Ayuda',
+    subtitle: 'Soporte y Preguntas Frecuentes',
+    description: ['Preguntas frecuentes', 'Tickets de soporte', 'Atención a fallas'],
+    icon: LifeBuoy,
+    gradient: 'from-blue-500 to-cyan-600',
+    iconBg: 'bg-blue-500/10',
+    iconColor: 'text-blue-600',
+    hoverBorder: 'hover:border-blue-300 hover:shadow-blue-100',
+    href: '/ayuda',
+    requiredModules: [],
+    moduleName: 'ayuda',
+  },
 ];
 
 function getUserFromCookie() {
@@ -178,7 +192,7 @@ export default function SelectPage() {
   };
 
   const isModuleActivated = useCallback((mod: ModuleOption) => {
-    if (mod.id === 'mi-cuenta') return true;
+    if (mod.id === 'mi-cuenta' || mod.id === 'ayuda') return true;
     return activatedModules.has(mod.moduleName);
   }, [activatedModules]);
 
