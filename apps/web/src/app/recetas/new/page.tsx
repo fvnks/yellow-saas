@@ -46,6 +46,9 @@ export default function NewRecetaPage() {
     setIngredients([...ingredients, { product_id: '', quantity: '', unit: 'un' }]);
   };
 
+  const outputProducts = products.filter(p => p.sellable === true);
+  const ingredientProducts = products.filter(p => p.sellable !== true);
+
   const removeIngredient = (index: number) => {
     if (ingredients.length <= 1) return;
     setIngredients(ingredients.filter((_, i) => i !== index));
@@ -121,7 +124,7 @@ export default function NewRecetaPage() {
               <select value={form.output_product_id} onChange={e => setForm(p => ({ ...p, output_product_id: e.target.value }))}
                 className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                 <option value="">Ninguno (solo descontar)</option>
-                {products.map(p => <option key={p.id} value={p.id}>{p.name} ({p.sku})</option>)}
+                {outputProducts.map(p => <option key={p.id} value={p.id}>{p.name} ({p.sku})</option>)}
               </select>
             </div>
             <div className="space-y-1">
@@ -185,7 +188,7 @@ export default function NewRecetaPage() {
                   <select value={ing.product_id} onChange={e => updateIngredient(i, 'product_id', e.target.value)}
                     className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                     <option value="">Seleccionar...</option>
-                    {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                    {ingredientProducts.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                   </select>
                   <button type="button" onClick={() => { setCreateProductForIndex(i); setShowCreateProduct(true); }}
                     className="px-2 bg-amber-50 border border-amber-200 hover:bg-amber-100 text-amber-700 rounded-lg text-xs font-medium transition-colors shrink-0"
