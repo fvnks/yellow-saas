@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut, Settings, User, ChevronsUpDown, Building2, ArrowLeft } from "lucide-react";
+import { LogOut, Settings, User, ChevronsUpDown, Building2 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -56,10 +56,6 @@ export default function ProjectSidebarFooterMenu({ user }: ProjectSidebarFooterM
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent side="top" align="start" className="w-56">
-            <DropdownMenuItem onClick={() => (window.location.href = '/select')} className="cursor-pointer">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              <span>Volver al selector</span>
-            </DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer">
               <Building2 className="mr-2 h-4 w-4" />
               <span>Mi Empresa</span>

@@ -6,7 +6,6 @@ import {
   GraduationCap,
   UserPlus,
   Settings,
-  ArrowLeft,
   AlertTriangle,
   LucideIcon,
 } from "lucide-react";
@@ -19,7 +18,6 @@ export const HR_ICON_MAP = {
   GraduationCap,
   UserPlus,
   Settings,
-  ArrowLeft,
   AlertTriangle,
 };
 
@@ -48,17 +46,6 @@ export interface HRNavGroup {
 }
 
 export const hrSidebarItems: HRNavGroup[] = [
-  {
-    id: 1,
-    label: "Navegación",
-    items: [
-      {
-        title: "Volver al selector",
-        path: "/select",
-        icon: "ArrowLeft",
-      },
-    ],
-  },
   {
     id: 2,
     label: "Recursos Humanos",

@@ -5,7 +5,7 @@ import { Toaster } from 'sonner';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FlaskConical, Plus, BarChart3, Settings, Monitor, Package, ArrowDownUp, Receipt, History, ListChecks } from 'lucide-react';
+import { FlaskConical, Plus, BarChart3, Settings, Monitor, Package, ArrowDownUp, Receipt, History, ListChecks, ArrowLeft } from 'lucide-react';
 import ThemeToggle from '@/components/ui/theme-toggle';
 import { RefreshProvider } from '@/components/recetas/RefreshContext';
 
@@ -38,6 +38,11 @@ function RecetasSidebar() {
         </Link>
       </div>
       <nav className="flex-1 p-3 space-y-1">
+        <Link href="/select"
+          className="flex items-center gap-2 px-3 py-2 mb-2 text-xs font-medium text-slate-500 hover:text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Volver al selector
+        </Link>
         {navItems.map(item => {
           const Icon = item.icon;
           const isActive = item.href === '/recetas'
@@ -54,11 +59,6 @@ function RecetasSidebar() {
           );
         })}
       </nav>
-      <div className="p-3 border-t border-slate-200 space-y-1">
-        <Link href="/select" className="flex items-center gap-2 px-3 py-2 text-xs text-slate-500 hover:text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">
-          ← Volver al selector
-        </Link>
-      </div>
     </div>
   );
 }
