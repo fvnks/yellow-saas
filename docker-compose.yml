@@ -9,7 +9,7 @@ services:
       - coolify
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.yellow-saas.rule=Host(`yb3vqkcuoj819gno5c3xish0.148.113.196.87.sslip.io`)"
+      - "traefik.http.routers.yellow-saas.rule=Host(`x14fwmtnzpw9cur43gs3wwx1.148.113.196.87.sslip.io`)"
       - "traefik.http.routers.yellow-saas.entrypoints=https"
       - "traefik.http.routers.yellow-saas.tls=true"
       - "traefik.http.routers.yellow-saas.tls.certresolver=letsencrypt"
