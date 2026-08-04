@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarSeparator } from "@/components/ui/sidebar";
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarSeparator, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
 import { sidebarItems, NavGroup } from "@/navigation/sidebar/sidebar-items";
 import SidebarFooterMenu from "./sidebar-footer-menu";
 import SidebarBrandHeader from "./sidebar-header";
@@ -69,6 +71,19 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
         <SidebarSeparator className="mx-3 opacity-30" />
       </SidebarHeader>
       <SidebarContent>
+        <SidebarMenu className="px-2 mb-1">
+          <SidebarMenuItem>
+            <Link href="/select">
+              <SidebarMenuButton
+                tooltip="Volver al selector"
+                className="rounded-xl transition-all duration-200 text-slate-500 hover:text-slate-900"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span>Volver al selector</span>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
+        </SidebarMenu>
         <SidebarNavigation sidebarItems={filteredSidebarItems} />
       </SidebarContent>
       <SidebarFooter>
