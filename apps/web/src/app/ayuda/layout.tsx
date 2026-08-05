@@ -1,14 +1,58 @@
 'use client';
 
-import { ReactNode } from 'react';
-import { Toaster } from 'sonner';
+import { ReactNode, useEffect, useRef, useState } from 'react';
+import { Toaster, toast } from 'sonner';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LifeBuoy, BookOpen, Ticket, ArrowLeft } from 'lucide-react';
+import { LifeBuoy, BookOpen, Ticket, ArrowLeft, Headphones } from 'lucide-react';
 import ThemeToggle from '@/components/ui/theme-toggle';
+import { getCompanyIdFromToken } from '@/lib/api-client';
 
 function AyudaSidebar() {
   const pathname = usePathname();
+  const [unread, setUnread] = useState(0);
+  const seenTicketsRef = useRef<Set<string>>(new Set());
+  const initializedRef = useRef(false);
+
+  const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+
+  const fetchSummary = async () => {
+    const companyId = getCompanyIdFromToken();
+    const token = getToken();
+    if (!companyId || !token) return;
+    try {
+      const res = await fetch(`/api/companies/${companyId}/support/summary`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!data.success) return;
+
+      setUnread(Number(data.data.unread) || 0);
+
+      const isFirstLoad = !initializedRef.current;
+      initializedRef.current = true;
+
+      const recent = data.data.recent || [];
+      for (const t of recent) {
+        if (seenTicketsRef.current.has(t.id)) continue;
+        seenTicketsRef.current.add(t.id);
+        if (!isFirstLoad) {
+          toast.info('Nueva respuesta de soporte', {
+            description: t.subject,
+            action: { label: 'Ver', onClick: () => (window.location.href = `/ayuda/tickets/${t.id}`) },
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load support summary:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSummary();
+    const interval = setInterval(fetchSummary, 20000);
+    return () => clearInterval(interval);
+  }, []);
 
   const navItems = [
     { href: '/ayuda', label: 'Centro de Ayuda', icon: BookOpen },
@@ -46,9 +90,18 @@ function AyudaSidebar() {
               }`}>
               <Icon className="w-4 h-4" />
               {item.label}
+              {item.href === '/ayuda/tickets' && unread > 0 && (
+                <span className="ml-auto inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-[9px] font-bold bg-blue-600 text-white">
+                  {unread}
+                </span>
+              )}
             </Link>
           );
         })}
+        <p className="flex items-center gap-2 px-3 py-2.5 text-xs font-medium text-slate-400">
+          <Headphones className="w-4 h-4" />
+          Respuestas pendientes: {unread}
+        </p>
       </nav>
     </div>
   );

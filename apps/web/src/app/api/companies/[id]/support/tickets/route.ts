@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     if (!user) return errorResponse('No autorizado', 401);
     if (user.company_id !== companyId) return errorResponse('Acceso denegado', 403);
 
-    const { page, limit, offset } = parseSearchParams(request);
+    const { page, limit, offset, search } = parseSearchParams(request);
     const url = new URL(request.url);
     const status = url.searchParams.get('status');
 
@@ -38,6 +38,12 @@ export async function GET(request: NextRequest) {
     if (status) {
       where += ` AND t.status = $${paramIndex}`;
       params.push(status);
+      paramIndex++;
+    }
+
+    if (search) {
+      where += ` AND LOWER(t.subject) LIKE $${paramIndex}`;
+      params.push(`%${search.toLowerCase()}%`);
       paramIndex++;
     }
 
@@ -59,7 +65,7 @@ export async function GET(request: NextRequest) {
       params
     );
 
-    return successResponse({ tickets: rows, total });
+    return successResponse({ tickets: rows, total, page, limit });
   } catch (e: any) {
     return errorResponse(e.message, 500);
   }

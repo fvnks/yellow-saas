@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Send, Clock, Inbox, Loader2, CheckCircle2, XCircle, Headphones } from 'lucide-react';
+import { ArrowLeft, Send, Clock, Inbox, Loader2, CheckCircle2, XCircle, Headphones, RotateCcw, Star } from 'lucide-react';
 import { getCompanyIdFromToken } from '@/lib/api-client';
 import { toast } from 'sonner';
 
@@ -24,6 +24,12 @@ interface TicketDetail {
   created_by_name: string;
   assigned_to_name: string | null;
   messages: Message[];
+}
+
+interface Feedback {
+  rating: number;
+  comment: string | null;
+  created_at: string;
 }
 
 const statusConfig: Record<string, { label: string; classes: string; icon: any }> = {
@@ -49,11 +55,18 @@ export default function TicketDetailPage() {
   const [loading, setLoading] = useState(true);
   const [replyText, setReplyText] = useState('');
   const [sending, setSending] = useState(false);
+  const [changingStatus, setChangingStatus] = useState(false);
+
+  const [feedback, setFeedback] = useState<Feedback | null>(null);
+  const [rating, setRating] = useState(0);
+  const [feedbackComment, setFeedbackComment] = useState('');
+  const [submittingFeedback, setSubmittingFeedback] = useState(false);
 
   const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+  const getCompanyId = () => getCompanyIdFromToken();
 
-  const fetchDetail = async () => {
-    const companyId = getCompanyIdFromToken();
+  const fetchDetail = useCallback(async () => {
+    const companyId = getCompanyId();
     if (!companyId) return;
     try {
       const res = await fetch(`/api/companies/${companyId}/support/tickets/${ticketId}`, {
@@ -67,16 +80,31 @@ export default function TicketDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [ticketId]);
+
+  const fetchFeedback = useCallback(async () => {
+    const companyId = getCompanyId();
+    if (!companyId) return;
+    try {
+      const res = await fetch(`/api/companies/${companyId}/support/tickets/${ticketId}/feedback`, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      const data = await res.json();
+      if (data.success) setFeedback(data.data);
+    } catch {
+      // noop
+    }
+  }, [ticketId]);
 
   useEffect(() => {
     fetchDetail();
-  }, [ticketId]);
+    fetchFeedback();
+  }, [fetchDetail, fetchFeedback]);
 
   const handleSend = async () => {
     if (!replyText.trim()) return;
     setSending(true);
-    const companyId = getCompanyIdFromToken();
+    const companyId = getCompanyId();
     try {
       const res = await fetch(`/api/companies/${companyId}/support/tickets/${ticketId}/messages`, {
         method: 'POST',
@@ -94,6 +122,56 @@ export default function TicketDetailPage() {
       toast.error('Error al enviar mensaje');
     } finally {
       setSending(false);
+    }
+  };
+
+  const handleChangeStatus = async (status: string) => {
+    setChangingStatus(true);
+    const companyId = getCompanyId();
+    try {
+      const res = await fetch(`/api/companies/${companyId}/support/tickets/${ticketId}/status`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success(status === 'resolved' ? 'Ticket marcado como resuelto' : 'Ticket reabierto');
+        fetchDetail();
+      } else {
+        toast.error(data.error?.message || 'Error al actualizar estado');
+      }
+    } catch {
+      toast.error('Error al actualizar estado');
+    } finally {
+      setChangingStatus(false);
+    }
+  };
+
+  const handleSubmitFeedback = async () => {
+    if (rating < 1) {
+      toast.error('Selecciona una calificación');
+      return;
+    }
+    setSubmittingFeedback(true);
+    const companyId = getCompanyId();
+    try {
+      const res = await fetch(`/api/companies/${companyId}/support/tickets/${ticketId}/feedback`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rating, comment: feedbackComment }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success('Gracias por tu valoración');
+        setFeedback(data.data);
+      } else {
+        toast.error(data.error?.message || 'Error al enviar valoración');
+      }
+    } catch {
+      toast.error('Error al enviar valoración');
+    } finally {
+      setSubmittingFeedback(false);
     }
   };
 
@@ -123,7 +201,9 @@ export default function TicketDetailPage() {
   const st = statusConfig[ticket.status] || statusConfig.open;
   const pr = priorityConfig[ticket.priority] || priorityConfig.medium;
   const StatusIcon = st.icon;
-  const isClosed = ticket.status === 'closed' || ticket.status === 'resolved';
+  const isClosed = ticket.status === 'closed';
+  const isResolved = ticket.status === 'resolved';
+  const canReply = !isClosed && !isResolved;
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -150,6 +230,22 @@ export default function TicketDetailPage() {
           </p>
         </div>
       </div>
+
+      {!canReply && (
+        <div className="flex items-center justify-between bg-white border border-slate-200 rounded-xl p-4">
+          <p className="text-sm text-slate-500">
+            Este ticket está {isClosed ? 'cerrado' : 'resuelto'}. Si necesitas más ayuda, puedes reabrirlo.
+          </p>
+          <button
+            onClick={() => handleChangeStatus('open')}
+            disabled={changingStatus}
+            className="inline-flex items-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+          >
+            <RotateCcw className="w-4 h-4" />
+            Reabrir ticket
+          </button>
+        </div>
+      )}
 
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-4 max-h-[480px] overflow-y-auto">
         {ticket.messages.length === 0 ? (
@@ -187,30 +283,86 @@ export default function TicketDetailPage() {
         )}
       </div>
 
-      {isClosed ? (
-        <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
-          <p className="text-sm text-slate-500">Este ticket está {ticket.status === 'closed' ? 'cerrado' : 'resuelto'}. Si necesitas más ayuda, crea un nuevo ticket.</p>
-        </div>
-      ) : (
-        <div className="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3">
-          <input
-            type="text"
-            value={replyText}
-            onChange={e => setReplyText(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleSend()}
-            placeholder="Escribe tu mensaje..."
-            className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-          <button
-            onClick={handleSend}
-            disabled={sending || !replyText.trim()}
-            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50 flex items-center gap-2"
-          >
-            <Send className="w-4 h-4" />
-            Enviar
-          </button>
+      {isResolved && (
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+          {feedback ? (
+            <div className="text-center">
+              <p className="text-sm font-semibold text-slate-900 mb-2">¡Gracias por tu valoración!</p>
+              <div className="flex items-center justify-center gap-1 mb-2">
+                {[1, 2, 3, 4, 5].map(i => (
+                  <Star key={i} className={`w-5 h-5 ${i <= feedback.rating ? 'text-amber-400 fill-amber-400' : 'text-slate-200'}`} />
+                ))}
+              </div>
+              {feedback.comment && <p className="text-sm text-slate-500">{feedback.comment}</p>}
+            </div>
+          ) : (
+            <div className="text-center">
+              <p className="text-sm font-semibold text-slate-900 mb-1">¿Cómo calificas la atención recibida?</p>
+              <p className="text-xs text-slate-500 mb-4">Tu opinión nos ayuda a mejorar</p>
+              <div className="flex items-center justify-center gap-2 mb-4">
+                {[1, 2, 3, 4, 5].map(i => (
+                  <button
+                    key={i}
+                    onClick={() => setRating(i)}
+                    className={`p-1.5 rounded-lg transition-colors ${rating >= i ? 'text-amber-400' : 'text-slate-300 hover:text-slate-400'}`}
+                  >
+                    <Star className={`w-7 h-7 ${rating >= i ? 'fill-amber-400' : ''}`} />
+                  </button>
+                ))}
+              </div>
+              <textarea
+                value={feedbackComment}
+                onChange={e => setFeedbackComment(e.target.value)}
+                placeholder="Cuéntanos tu experiencia (opcional)..."
+                rows={2}
+                className="w-full max-w-md mx-auto block bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              />
+              <button
+                onClick={handleSubmitFeedback}
+                disabled={submittingFeedback}
+                className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+              >
+                {submittingFeedback ? 'Enviando...' : 'Enviar valoración'}
+              </button>
+            </div>
+          )}
         </div>
       )}
+
+      {canReply ? (
+        <div className="bg-white border border-slate-200 rounded-xl p-4">
+          <div className="flex items-center gap-3">
+            <input
+              type="text"
+              value={replyText}
+              onChange={e => setReplyText(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleSend()}
+              placeholder="Escribe tu mensaje..."
+              className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <button
+              onClick={handleSend}
+              disabled={sending || !replyText.trim()}
+              className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50 flex items-center gap-2"
+            >
+              <Send className="w-4 h-4" />
+              Enviar
+            </button>
+            <button
+              onClick={() => handleChangeStatus('resolved')}
+              disabled={changingStatus}
+              className="px-4 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-sm font-medium text-slate-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+            >
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              Marcar resuelto
+            </button>
+          </div>
+        </div>
+      ) : isClosed ? (
+        <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
+          <p className="text-sm text-slate-500">Este ticket está cerrado. Si necesitas más ayuda, crea un nuevo ticket.</p>
+        </div>
+      ) : null}
     </div>
   );
 }

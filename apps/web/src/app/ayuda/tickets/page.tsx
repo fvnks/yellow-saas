@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Ticket, Plus, Search, MessageSquare, Inbox, Clock, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
+import { Ticket, Plus, Search, MessageSquare, Inbox, Clock, CheckCircle2, XCircle, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getCompanyIdFromToken } from '@/lib/api-client';
 import { toast } from 'sonner';
 
@@ -40,6 +40,9 @@ export default function MisTicketsPage() {
   const [showCreate, setShowCreate] = useState(false);
   const [form, setForm] = useState({ subject: '', priority: 'medium', message: '' });
   const [saving, setSaving] = useState(false);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const pageSize = 10;
 
   const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
 
@@ -47,11 +50,17 @@ export default function MisTicketsPage() {
     const companyId = getCompanyIdFromToken();
     if (!companyId) return;
     try {
-      const res = await fetch(`/api/companies/${companyId}/support/tickets?limit=100`, {
+      const params = new URLSearchParams({ page: String(page), limit: String(pageSize) });
+      if (filter !== 'all') params.set('status', filter);
+      if (search) params.set('search', search);
+      const res = await fetch(`/api/companies/${companyId}/support/tickets?${params.toString()}`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       const data = await res.json();
-      if (data.success) setTickets(data.data.tickets || []);
+      if (data.success) {
+        setTickets(data.data.tickets || []);
+        setTotal(data.data.total || 0);
+      }
     } catch (err) {
       console.error('Failed to load tickets:', err);
     } finally {
@@ -60,8 +69,12 @@ export default function MisTicketsPage() {
   };
 
   useEffect(() => {
-    fetchTickets();
-  }, []);
+    setLoading(true);
+    const timer = setTimeout(() => {
+      fetchTickets();
+    }, search ? 400 : 0);
+    return () => clearTimeout(timer);
+  }, [page, filter, search]);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,13 +104,8 @@ export default function MisTicketsPage() {
     }
   };
 
-  const filtered = tickets.filter(t => {
-    const matchFilter = filter === 'all' || t.status === filter;
-    const matchSearch = search === '' || t.subject.toLowerCase().includes(search.toLowerCase());
-    return matchFilter && matchSearch;
-  });
-
   const openCount = tickets.filter(t => t.status === 'open' || t.status === 'in_progress').length;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   return (
     <div className="space-y-6">
@@ -176,7 +184,7 @@ export default function MisTicketsPage() {
             {['all', 'open', 'in_progress', 'resolved', 'closed'].map(f => (
               <button
                 key={f}
-                onClick={() => setFilter(f)}
+                onClick={() => { setFilter(f); setPage(1); }}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                   filter === f ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
@@ -206,7 +214,7 @@ export default function MisTicketsPage() {
                   <td colSpan={5} className="px-6 py-4"><div className="h-4 bg-slate-200 rounded animate-pulse" /></td>
                 </tr>
               ))
-            ) : filtered.length === 0 ? (
+            ) : tickets.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-12 text-center">
                   <Ticket className="w-12 h-12 text-slate-300 mx-auto mb-3" />
@@ -215,7 +223,7 @@ export default function MisTicketsPage() {
                 </td>
               </tr>
             ) : (
-              filtered.map(ticket => {
+              tickets.map(ticket => {
                 const st = statusConfig[ticket.status] || statusConfig.open;
                 const pr = priorityConfig[ticket.priority] || priorityConfig.medium;
                 const StatusIcon = st.icon;
@@ -261,6 +269,27 @@ export default function MisTicketsPage() {
             )}
           </tbody>
         </table>
+      </div>
+
+      <div className="flex items-center justify-between text-xs text-slate-500">
+        <p>Mostrando {total === 0 ? 0 : (page - 1) * pageSize + 1}-{Math.min(page * pageSize, total)} de {total}</p>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page <= 1}
+            className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-40 disabled:hover:bg-transparent"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <span className="text-xs font-medium text-slate-700">Página {page} de {totalPages}</span>
+          <button
+            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            disabled={page >= totalPages}
+            className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-40 disabled:hover:bg-transparent"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
       </div>
     </div>
   );
