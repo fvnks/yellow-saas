@@ -2,6 +2,8 @@ import { query } from '@/api/lib/db';
 import { successResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const { rows } = await query(
