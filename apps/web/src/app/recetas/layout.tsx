@@ -5,7 +5,7 @@ import { Toaster } from 'sonner';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FlaskConical, Plus, BarChart3, Settings, Monitor, Package, ArrowDownUp, Receipt, History, ListChecks, ArrowLeft, LifeBuoy } from 'lucide-react';
+import { FlaskConical, Plus, BarChart3, Settings, Monitor, Package, ArrowDownUp, Receipt, History, ListChecks, ArrowLeft } from 'lucide-react';
 import ThemeToggle from '@/components/ui/theme-toggle';
 import { RefreshProvider } from '@/components/recetas/RefreshContext';
 
@@ -42,11 +42,6 @@ function RecetasSidebar() {
           className="flex items-center gap-2 px-3 py-2 mb-1 text-xs font-medium text-slate-500 hover:text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">
           <ArrowLeft className="w-3.5 h-3.5" />
           Volver al selector
-        </Link>
-        <Link href="/ayuda"
-          className="flex items-center gap-2 px-3 py-2 mb-2 text-xs font-medium text-slate-500 hover:text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">
-          <LifeBuoy className="w-3.5 h-3.5" />
-          Ayuda y Soporte
         </Link>
         {navItems.map(item => {
           const Icon = item.icon;
