@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import { Search, FileMinus, MoreVertical, Download, Printer } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { usePrintDocument } from '@/components/print/use-print';
+import { getCompanyIdFromToken } from '@/lib/api-client';
+import { type DocumentSettings, mergeSettings, DEFAULT_DOCUMENT_SETTINGS } from '@/lib/document-settings';
 
 interface DebitNote {
   id: string;
@@ -46,23 +49,6 @@ function generateNdXml(n: DebitNote): string {
 </DTE>`;
 }
 
-function openPdfPreview(n: DebitNote) {
-  const html = `<!DOCTYPE html><html><head><title>ND ${n.note_number}</title>
-  <style>body{font-family:Arial,sans-serif;padding:40px;max-width:800px;margin:0 auto}
-  h1{font-size:20px;border-bottom:2px solid #333;padding-bottom:8px}
-  .row{display:flex;justify-content:space-between;margin:4px 0}
-  .total{text-align:right;font-size:14px;font-weight:bold;margin-top:16px}
-  @media print{body{padding:20px}}</style></head><body>
-  <h1>NOTA DE DÉBITO N° ${n.note_number}</h1>
-  <div class="row"><span><b>Proveedor:</b> ${n.supplier_name}</span><span><b>RUT:</b> ${n.supplier_tax_id}</span></div>
-  <div class="row"><span><b>Fecha:</b> ${n.issue_date}</span></div>
-  <div class="row"><span><b>Motivo:</b> ${n.reason}</span></div>
-  <div class="total" style="margin-top:24px;font-size:18px;border-top:2px solid #333;padding-top:8px">MONTO ND: $${n.total_amount.toLocaleString('es-CL')}</div>
-  <script>window.onload=function(){window.print()}</script></body></html>`;
-  const w = window.open('', '_blank');
-  if (w) { w.document.write(html); w.document.close(); }
-}
-
 function downloadXml(filename: string, xml: string) {
   const blob = new Blob([xml], { type: 'application/xml' });
   const url = URL.createObjectURL(blob);
@@ -74,15 +60,38 @@ function downloadXml(filename: string, xml: string) {
 export default function PurchaseDebitNotes() {
   const [notes, setNotes] = useState<DebitNote[]>([]);
   const [search, setSearch] = useState('');
+  const [settings, setSettings] = useState<DocumentSettings>(DEFAULT_DOCUMENT_SETTINGS);
+  const { print } = usePrintDocument();
 
   useEffect(() => {
-    const cid = localStorage.getItem('company_id');
-    if (!cid) return;
-    fetch(`/api/companies/${cid}/purchase-debit-notes`)
-      .then(r => r.json())
-      .then(d => setNotes(d.data || []))
-      .catch(() => {});
+    const companyId = getCompanyIdFromToken();
+    if (!companyId) return;
+    Promise.all([
+      fetch(`/api/companies/${companyId}/purchase-debit-notes`).then(r => r.json()).then(d => setNotes(d.data || [])).catch(() => {}),
+      fetch(`/api/companies/${companyId}/settings/documents`, {
+        headers: { Authorization: `Bearer ${document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1] || ''}` },
+      }).then(r => r.json()).then(d => { if (d.success) setSettings(mergeSettings(d.data)); }).catch(() => {}),
+    ]);
   }, []);
+
+  const handlePrintDebitNote = (n: DebitNote) => {
+    print('debit-note', {
+      id: n.id,
+      number: n.note_number,
+      type: 'nota_debito',
+      date: n.issue_date,
+      status: n.status,
+      settings,
+      company: { name: 'Empresa' },
+      supplier: { name: n.supplier_name, tax_id: n.supplier_tax_id },
+      items: [],
+      subtotal: 0,
+      tax_amount: 0,
+      total: n.total_amount,
+      notes: '',
+      reason: n.reason,
+    } as any);
+  };
 
   const filtered = notes.filter(n =>
     n.note_number.toLowerCase().includes(search.toLowerCase()) ||
@@ -147,7 +156,7 @@ export default function PurchaseDebitNotes() {
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-44">
-                        <DropdownMenuItem onClick={() => openPdfPreview(n)}>
+                        <DropdownMenuItem onClick={() => handlePrintDebitNote(n)}>
                           <Printer className="w-4 h-4 mr-2 text-slate-500" />
                           Vista previa PDF
                         </DropdownMenuItem>

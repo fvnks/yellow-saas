@@ -6,7 +6,9 @@ import { ArrowLeft, Printer, Calendar, Truck, CheckCircle, Clock, AlertTriangle,
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
+import { getCompanyIdFromToken } from '@/lib/api-client';
 import { usePrintDocument } from '@/components/print/use-print';
+import { type DocumentSettings, mergeSettings, DEFAULT_DOCUMENT_SETTINGS } from '@/lib/document-settings';
 
 interface QuotationItem {
   product_id: string;
@@ -56,8 +58,24 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
   const [error, setError] = useState('');
   const [warehouses, setWarehouses] = useState<{ id: string; name: string }[]>([]);
   const [company, setCompany] = useState<any>(null);
+  const [settings, setSettings] = useState<DocumentSettings>(DEFAULT_DOCUMENT_SETTINGS);
 
   const { print } = usePrintDocument();
+
+  async function fetchDocumentSettings() {
+    try {
+      const companyId = getCompanyIdFromToken();
+      if (!companyId) return DEFAULT_DOCUMENT_SETTINGS;
+      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+      if (!token) return DEFAULT_DOCUMENT_SETTINGS;
+      const res = await fetch(`/api/companies/${companyId}/settings/documents`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.success) return mergeSettings(data.data);
+    } catch {}
+    return DEFAULT_DOCUMENT_SETTINGS;
+  }
 
   const handlePrint = () => {
     if (!quotation) return;
@@ -87,6 +105,7 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
       notes: quotation.notes,
       valid_until: quotation.valid_until || quotation.expiry_date,
       payment_method: quotation.payment_terms,
+      settings,
     });
   };
 
@@ -129,10 +148,12 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
       api.getQuotation(id),
       api.getWarehouses().catch(() => ({ data: [] })),
       api.getCompany().catch(() => null),
-    ]).then(([quoteRes, warehousesRes, companyRes]) => {
+      fetchDocumentSettings(),
+    ]).then(([quoteRes, warehousesRes, companyRes, settingsRes]) => {
       setQuotation(quoteRes as unknown as QuotationDetail);
       setWarehouses((warehousesRes.data || []).map((w: any) => ({ id: w.id, name: w.name })));
       if (companyRes) setCompany(companyRes);
+      if (settingsRes) setSettings(settingsRes);
       setLoading(false);
     }).catch(() => {
       setError('No se pudo cargar la cotización');

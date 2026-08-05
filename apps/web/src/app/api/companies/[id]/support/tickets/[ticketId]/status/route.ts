@@ -48,6 +48,12 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
 
     await query('UPDATE support_tickets SET status = $1, updated_at = now() WHERE id = $2', [status, params.ticketId]);
 
+    await query(
+      `INSERT INTO ticket_status_history (ticket_id, from_status, to_status, changed_by_id, changed_by_type)
+       VALUES ($1, $2, $3, $4, 'company')`,
+      [params.ticketId, rows[0].status, status, user.id]
+    );
+
     return successResponse({ success: true, status });
   } catch (e: any) {
     return errorResponse(e.message, 500);

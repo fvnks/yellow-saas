@@ -5,8 +5,10 @@ import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody
 import { ArrowLeft, Printer, Calendar, Truck, MapPin, CheckCircle, Download, Send, XCircle, Pencil } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { getCompanyIdFromToken } from '@/lib/api-client';
 import { generateOrdenCompraPDF } from '@/lib/pdf-design';
 import { usePrintDocument } from '@/components/print/use-print';
+import { type DocumentSettings, mergeSettings, DEFAULT_DOCUMENT_SETTINGS } from '@/lib/document-settings';
 
 interface OrderItem {
   product_id: string;
@@ -45,6 +47,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
   const { id } = params;
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [company, setCompany] = useState<any>(null);
+  const [settings, setSettings] = useState<DocumentSettings>(DEFAULT_DOCUMENT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -55,9 +58,11 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
     Promise.all([
       api.getPurchaseOrder(id),
       api.getCompany().catch(() => null),
-    ]).then(([data, companyRes]) => {
+      fetchDocumentSettings(),
+    ]).then(([data, companyRes, settingsRes]) => {
       setOrder(data as unknown as OrderDetail);
       if (companyRes) setCompany(companyRes);
+      if (settingsRes) setSettings(settingsRes);
       setLoading(false);
     }).catch(() => {
       setError('No se pudo cargar la orden');
@@ -65,10 +70,25 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
     });
   }, [id]);
 
+  async function fetchDocumentSettings() {
+    try {
+      const companyId = getCompanyIdFromToken();
+      if (!companyId) return;
+      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+      if (!token) return;
+      const res = await fetch(`/api/companies/${companyId}/settings/documents`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.success) return mergeSettings(data.data);
+    } catch {}
+    return DEFAULT_DOCUMENT_SETTINGS;
+  }
+
   const handleDownloadPDF = async () => {
     if (!order) return;
     const api = getApiClient();
-    const company = await api.getCompany().catch(() => null);
+    const companyRes = await api.getCompany().catch(() => null);
     const items = order.items || [];
     const subtotal = items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0);
     const tax = Math.round(subtotal * 0.19);
@@ -78,11 +98,11 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
       type: 'orden_compra',
       date: order.created_at?.split('T')[0] || '',
       payment_terms: order.payment_terms,
-      company: company ? {
-        name: company.name, tax_id: company.tax_id || undefined, razon_social: company.razon_social || undefined,
-        giro: company.giro || undefined, address: company.address || undefined, city: company.city || undefined,
-        region: company.region || undefined, phone: company.phone || undefined, email: company.email || undefined,
-        logo_url: company.logo_url || undefined,
+      company: companyRes ? {
+        name: companyRes.name, tax_id: companyRes.tax_id || undefined, razon_social: companyRes.razon_social || undefined,
+        giro: companyRes.giro || undefined, address: companyRes.address || undefined, city: companyRes.city || undefined,
+        region: companyRes.region || undefined, phone: companyRes.phone || undefined, email: companyRes.email || undefined,
+        logo_url: companyRes.logo_url || undefined,
       } : { name: 'Empresa' },
       supplier: order.supplier ? { name: order.supplier.name, tax_id: order.supplier.tax_id } : undefined,
       items: items.map(item => ({
@@ -98,6 +118,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
       tax_amount: tax,
       total: order.total_amount || subtotal + tax,
       notes: order.notes,
+      settings,
     });
     doc.save(`${order.number}.pdf`);
   };
@@ -130,6 +151,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
       warehouse: order.warehouse?.name,
       delivery_date: order.expected_date,
       payment_terms: order.payment_terms,
+      settings,
     });
   };
 

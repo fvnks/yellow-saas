@@ -3,8 +3,11 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Search, Eye, Download, FileText, Filter, X, ChevronDown } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { getCompanyIdFromToken } from '@/lib/api-client';
 import { Badge } from '@yellow-erp/ui';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { usePrintDocument } from '@/components/print/use-print';
+import { type DocumentSettings, mergeSettings, DEFAULT_DOCUMENT_SETTINGS, formatCurrency as fmtCurrency, formatDate as fmtDate } from '@/lib/document-settings';
 
 interface UnifiedDocument {
   id: string;
@@ -57,14 +60,6 @@ const STATUS_CONFIG: Record<string, { label: string; variant: 'success' | 'warni
   in_transit: { label: 'En Tránsito', variant: 'info' },
   delivered: { label: 'Entregado', variant: 'success' },
 };
-
-function formatCurrency(amount: number) {
-  return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', minimumFractionDigits: 0 }).format(amount);
-}
-
-function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString('es-CL');
-}
 
 function getSiiSemaphore(siiStatus: string) {
   const config = SII_STATUS_CONFIG[siiStatus] || SII_STATUS_CONFIG.pending;
@@ -210,73 +205,6 @@ function generateDeliveryGuideXml(doc: UnifiedDocument) {
 </DTE>`;
 }
 
-function openPdfPreview(doc: UnifiedDocument) {
-  let html = '';
-
-  if (doc.type === 'invoice') {
-    html = `<!DOCTYPE html><html><head><title>${doc.typeLabel} ${doc.number}</title>
-    <style>body{font-family:Arial,sans-serif;padding:40px;max-width:800px;margin:0 auto}
-    h1{font-size:20px;border-bottom:2px solid #333;padding-bottom:8px}
-    .row{display:flex;justify-content:space-between;margin:4px 0}
-    .total{text-align:right;font-size:14px;font-weight:bold;margin-top:16px}
-    @media print{body{padding:20px}}</style></head><body>
-    <h1>${doc.typeLabel} N° ${doc.number}</h1>
-    <div class="row"><span><b>Cliente:</b> ${doc.customerName}</span><span><b>RUT:</b> ${doc.customerRut || '—'}</span></div>
-    <div class="row"><span><b>Fecha:</b> ${formatDate(doc.date)}</span><span><b>Vencimiento:</b> ${doc.dueDate ? formatDate(doc.dueDate) : '—'}</span></div>
-    <div class="row"><span><b>Tipo:</b> ${doc.documentType || 'factura'}</span></div>
-    <h3 style="margin-top:16px">Items</h3>
-    <table style="width:100%;border-collapse:collapse"><thead><tr style="border-bottom:2px solid #333"><th style="text-align:left;padding:4px">Descripción</th><th style="text-align:right;padding:4px">Cant.</th><th style="text-align:right;padding:4px">Precio</th><th style="text-align:right;padding:4px">Total</th></tr></thead>
-    <tbody>${(doc.items || []).map(item => `<tr><td style="padding:4px">${item.description}</td><td style="text-align:right;padding:4px">${item.quantity}</td><td style="text-align:right;padding:4px">$${item.unit_price.toLocaleString('es-CL')}</td><td style="text-align:right;padding:4px">$${(item.line_total || item.quantity * item.unit_price).toLocaleString('es-CL')}</td></tr>`).join('')}</tbody></table>
-    <div class="total">TOTAL: ${formatCurrency(doc.amount)}</div>
-    <script>window.onload=function(){window.print()}</script></body></html>`;
-  } else if (doc.type === 'credit_note') {
-    html = `<!DOCTYPE html><html><head><title>NC ${doc.number}</title>
-    <style>body{font-family:Arial,sans-serif;padding:40px;max-width:800px;margin:0 auto}
-    h1{font-size:20px;border-bottom:2px solid #333;padding-bottom:8px}
-    .row{display:flex;justify-content:space-between;margin:4px 0}
-    .total{text-align:right;font-size:14px;font-weight:bold;margin-top:16px}
-    @media print{body{padding:20px}}</style></head><body>
-    <h1>NOTA DE CRÉDITO N° ${doc.number}</h1>
-    <div class="row"><span><b>Cliente:</b> ${doc.customerName}</span><span><b>RUT:</b> ${doc.customerRut || '—'}</span></div>
-    <div class="row"><span><b>Fecha:</b> ${formatDate(doc.date)}</span></div>
-    <div class="row"><span><b>Motivo:</b> ${doc.reason || '—'}</span></div>
-    <div class="row"><span><b>Factura Ref:</b> ${doc.referenceInvoice || '—'}</span></div>
-    <div class="total" style="margin-top:24px;font-size:18px;border-top:2px solid #333;padding-top:8px">MONTO NC: ${formatCurrency(doc.amount)}</div>
-    <script>window.onload=function(){window.print()}</script></body></html>`;
-  } else if (doc.type === 'debit_note') {
-    html = `<!DOCTYPE html><html><head><title>ND ${doc.number}</title>
-    <style>body{font-family:Arial,sans-serif;padding:40px;max-width:800px;margin:0 auto}
-    h1{font-size:20px;border-bottom:2px solid #333;padding-bottom:8px}
-    .row{display:flex;justify-content:space-between;margin:4px 0}
-    .total{text-align:right;font-size:14px;font-weight:bold;margin-top:16px}
-    @media print{body{padding:20px}}</style></head><body>
-    <h1>NOTA DE DÉBITO N° ${doc.number}</h1>
-    <div class="row"><span><b>Cliente:</b> ${doc.customerName}</span><span><b>RUT:</b> ${doc.customerRut || '—'}</span></div>
-    <div class="row"><span><b>Fecha:</b> ${formatDate(doc.date)}</span></div>
-    <div class="row"><span><b>Motivo:</b> ${doc.reason || '—'}</span></div>
-    <div class="row"><span><b>Factura Ref:</b> ${doc.referenceInvoice || '—'}</span></div>
-    <div class="total" style="margin-top:24px;font-size:18px;border-top:2px solid #333;padding-top:8px">MONTO ND: ${formatCurrency(doc.amount)}</div>
-    <script>window.onload=function(){window.print()}</script></body></html>`;
-  } else if (doc.type === 'delivery_guide') {
-    html = `<!DOCTYPE html><html><head><title>GD ${doc.guideNumber || doc.number}</title>
-    <style>body{font-family:Arial,sans-serif;padding:40px;max-width:800px;margin:0 auto}
-    h1{font-size:20px;border-bottom:2px solid #333;padding-bottom:8px}
-    .row{display:flex;justify-content:space-between;margin:4px 0}
-    @media print{body{padding:20px}}</style></head><body>
-    <h1>GUÍA DE DESPACHO N° ${doc.guideNumber || doc.number}</h1>
-    <div class="row"><span><b>Bodega:</b> ${doc.warehouseName || '—'}</span><span><b>Fecha:</b> ${formatDate(doc.date)}</span></div>
-    <div class="row"><span><b>Transportista:</b> ${doc.transport || '—'}</span></div>
-    <div class="row"><span><b>Cliente/Destino:</b> ${doc.customerName}</span></div>
-    <h3 style="margin-top:16px">Items</h3>
-    <table style="width:100%;border-collapse:collapse"><thead><tr style="border-bottom:2px solid #333"><th style="text-align:left;padding:4px">Descripción</th><th style="text-align:right;padding:4px">Cantidad</th></tr></thead>
-    <tbody>${(doc.items || []).map(item => `<tr><td style="padding:4px">${item.description || item.product?.name || ''}</td><td style="text-align:right;padding:4px">${item.quantity}</td></tr>`).join('')}</tbody></table>
-    <script>window.onload=function(){window.print()}</script></body></html>`;
-  }
-
-  const w = window.open('', '_blank');
-  if (w) { w.document.write(html); w.document.close(); }
-}
-
 function downloadXml(filename: string, xml: string) {
   const blob = new Blob([xml], { type: 'application/xml' });
   const url = URL.createObjectURL(blob);
@@ -292,7 +220,61 @@ export default function SalesDocumentsPage() {
   const [typeFilter, setTypeFilter] = useState<'all' | 'invoice' | 'credit_note' | 'debit_note' | 'delivery_guide'>('all');
   const [siiFilter, setSiiFilter] = useState<'all' | 'accepted' | 'rejected' | 'sent' | 'pending'>('all');
   const [page, setPage] = useState(1);
+  const [settings, setSettings] = useState<DocumentSettings>(DEFAULT_DOCUMENT_SETTINGS);
   const ITEMS_PER_PAGE = 20;
+  const { print } = usePrintDocument();
+
+  useEffect(() => {
+    const companyId = getCompanyIdFromToken();
+    if (!companyId) return;
+    const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+    if (!token) return;
+    fetch(`/api/companies/${companyId}/settings/documents`, {
+      headers: { Authorization: `Bearer ${token}` },
+    }).then(r => r.json()).then(d => { if (d.success) setSettings(mergeSettings(d.data)); }).catch(() => {});
+  }, []);
+
+  const handlePrintDoc = (doc: UnifiedDocument) => {
+    const isBoleta = doc.documentType === 'boleta';
+    let docType: string;
+    if (doc.type === 'invoice') docType = isBoleta ? 'boleta' : 'factura';
+    else if (doc.type === 'credit_note') docType = 'credit-note';
+    else if (doc.type === 'debit_note') docType = 'debit-note';
+    else docType = 'delivery-guide';
+
+    print(docType as any, {
+      id: doc.id,
+      number: doc.number,
+      type: doc.type,
+      date: doc.date,
+      due_date: doc.dueDate,
+      status: doc.status,
+      settings,
+      company: { name: 'Empresa' },
+      customer: doc.customerName ? { name: doc.customerName, tax_id: doc.customerRut } : undefined,
+      supplier: doc.type === 'delivery_guide' ? { name: doc.customerName, tax_id: doc.customerRut } : undefined,
+      items: (doc.items || []).map(item => ({
+        name: item.description || '',
+        sku: '',
+        quantity: item.quantity || 1,
+        unit_price: item.unit_price || 0,
+        discount: 0,
+        tax_rate: 19,
+        total: item.line_total || item.quantity * item.unit_price || 0,
+        observation: item.description,
+      })),
+      subtotal: doc.amount || 0,
+      tax_amount: doc.amount ? Math.round(doc.amount * 0.19 / 1.19) : 0,
+      total: doc.amount || 0,
+      notes: '',
+      reason: doc.reason,
+      reference_invoice: doc.referenceInvoice,
+      warehouse: doc.warehouseName,
+      transport: doc.transport,
+      order_number: doc.referenceInvoice,
+      shipping_address: doc.customerName,
+    } as any);
+  };
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -496,7 +478,7 @@ export default function SalesDocumentsPage() {
         </div>
         <div className="bg-white border border-slate-200 rounded-xl p-5">
           <p className="text-[9px] font-semibold text-blue-500 uppercase tracking-wider">Monto Total</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">{formatCurrency(filteredDocs.reduce((sum, d) => sum + d.amount, 0))}</p>
+          <p className="text-2xl font-bold text-slate-900 mt-1">{fmtCurrency(filteredDocs.reduce((sum, d) => sum + d.amount, 0), settings)}</p>
         </div>
       </div>
 
@@ -535,8 +517,8 @@ export default function SalesDocumentsPage() {
                       {doc.referenceInvoice && <div className="text-[10px] text-slate-500 mt-0.5">Ref: {doc.referenceInvoice}</div>}
                       {doc.reason && <div className="text-[10px] text-slate-500 mt-0.5 truncate max-w-[200px]">{doc.reason}</div>}
                     </td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{formatDate(doc.date)}</td>
-                    <td className="px-4 py-3 text-xs text-slate-900 text-right font-medium">{formatCurrency(doc.amount)}</td>
+                    <td className="px-4 py-3 text-xs text-slate-500">{fmtDate(doc.date, settings)}</td>
+                    <td className="px-4 py-3 text-xs text-slate-900 text-right font-medium">{fmtCurrency(doc.amount, settings)}</td>
                     <td className="px-4 py-3">
                       <Badge variant={statusConfig.variant}>{statusConfig.label}</Badge>
                     </td>
@@ -549,7 +531,7 @@ export default function SalesDocumentsPage() {
                           </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-56">
-                          <DropdownMenuItem className="flex items-center gap-2" onClick={() => openPdfPreview(doc)}>
+                          <DropdownMenuItem className="flex items-center gap-2" onClick={() => handlePrintDoc(doc)}>
                             <Eye className="w-4 h-4 text-slate-500" />
                             Vista previa PDF
                           </DropdownMenuItem>

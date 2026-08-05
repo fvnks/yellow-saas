@@ -5,8 +5,10 @@ import { ArrowLeft, Trash2, CheckCircle2, Clock, AlertCircle, Send, FileText, Pr
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
+import { getCompanyIdFromToken } from '@/lib/api-client';
 import { toast } from 'sonner';
 import { usePrintDocument } from '@/components/print/use-print';
+import { type DocumentSettings, mergeSettings, DEFAULT_DOCUMENT_SETTINGS } from '@/lib/document-settings';
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
   draft: { label: 'Borrador', color: 'bg-slate-100 text-slate-700', icon: Clock },
@@ -22,8 +24,21 @@ export default function InvoiceDetailPage() {
   const invoiceId = params.id as string;
   const [invoice, setInvoice] = useState<any>(null);
   const [companyName, setCompanyName] = useState('Empresa');
+  const [settings, setSettings] = useState<DocumentSettings>(DEFAULT_DOCUMENT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const { print } = usePrintDocument();
+
+  useEffect(() => {
+    const companyId = getCompanyIdFromToken();
+    if (companyId) {
+      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+      if (token) {
+        fetch(`/api/companies/${companyId}/settings/documents`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }).then(r => r.json()).then(d => { if (d.success) setSettings(mergeSettings(d.data)); }).catch(() => {});
+      }
+    }
+  }, []);
 
   useEffect(() => { loadInvoice(); }, [invoiceId]);
 
@@ -64,6 +79,7 @@ export default function InvoiceDetailPage() {
       tax_amount: invoice.tax_amount || 0,
       total: invoice.total_amount || 0,
       notes: invoice.notes,
+      settings,
     });
   };
 

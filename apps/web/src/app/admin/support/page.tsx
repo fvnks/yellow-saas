@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Headphones, Plus, Search, Building2, AlertTriangle, CheckCircle, Clock, MessageSquare, Send, X, UserCheck, Star } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Headphones, Plus, Search, Building2, AlertTriangle, CheckCircle, Clock, MessageSquare, Send, X, UserCheck, Star, Paperclip, FileText, Image as ImageIcon, History, CheckCircle2 } from 'lucide-react';
 
 interface Ticket {
   id: string;
@@ -17,9 +17,35 @@ interface Ticket {
   assigned_to: string | null;
 }
 
+interface Attachment {
+  id: string;
+  name: string;
+  mime_type: string;
+  file_size: number;
+}
+
+interface Message {
+  id: string;
+  sender_type: string;
+  sender_name: string;
+  message: string;
+  created_at: string;
+  attachments?: Attachment[];
+}
+
+interface StatusHistory {
+  id: string;
+  from_status: string;
+  to_status: string;
+  changed_by_type: string;
+  changed_by_name: string | null;
+  created_at: string;
+}
+
 interface TicketDetail extends Ticket {
-  messages: { id: string; sender_type: string; sender_name: string; message: string; created_at: string }[];
+  messages: Message[];
   feedback: { rating: number; comment: string | null; created_at: string } | null;
+  status_history?: StatusHistory[];
 }
 
 interface Company {
@@ -45,6 +71,8 @@ export default function AdminSupportPage() {
   const [loadingDetail, setLoadingDetail] = useState(false);
   const [replyText, setReplyText] = useState('');
   const [sending, setSending] = useState(false);
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState({ company_id: '', subject: '', priority: 'medium', message: '' });
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
@@ -153,17 +181,21 @@ export default function AdminSupportPage() {
   };
 
   const handleSendReply = async () => {
-    if (!selectedTicket || !replyText.trim()) return;
+    if (!selectedTicket || (!replyText.trim() && pendingFiles.length === 0)) return;
     setSending(true);
     try {
+      const formData = new FormData();
+      formData.append('message', replyText);
+      pendingFiles.forEach((f, i) => formData.append(`file${i}`, f));
       const res = await fetch(`/api/super-admin/support/${selectedTicket.id}/messages`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: replyText }),
+        headers: { Authorization: `Bearer ${getToken()}` },
+        body: formData,
       });
       const data = await res.json();
       if (data.success) {
         setReplyText('');
+        setPendingFiles([]);
         fetchTicketDetail(selectedTicket.id);
       }
     } catch (err) {
@@ -171,6 +203,13 @@ export default function AdminSupportPage() {
     } finally {
       setSending(false);
     }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+    setPendingFiles(prev => [...prev, ...files].slice(0, 5));
+    if (e.target) e.target.value = '';
   };
 
   const handleStatusChange = async (ticketId: string, status: string) => {
@@ -205,6 +244,13 @@ export default function AdminSupportPage() {
     in_progress: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
     resolved: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     closed: 'bg-slate-500/10 text-slate-400 border-slate-500/20',
+  };
+
+  const statusLabels: Record<string, string> = {
+    open: 'Abierto',
+    in_progress: 'En progreso',
+    resolved: 'Resuelto',
+    closed: 'Cerrado',
   };
 
   if (selectedTicket) {
@@ -269,6 +315,24 @@ export default function AdminSupportPage() {
                 }`}>
                   <p className="text-[10px] font-bold text-slate-400 mb-1">{msg.sender_name} — {new Date(msg.created_at).toLocaleString('es-CL')}</p>
                   <p className="text-sm text-white">{msg.message}</p>
+                  {msg.attachments?.length ? (
+                    <div className="mt-2 space-y-1.5">
+                      {msg.attachments.map(att => (
+                        <a
+                          key={att.id}
+                          href={`/api/super-admin/support/${selectedTicket.id}/attachments/${att.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 px-2 py-1.5 rounded-lg border border-slate-700 bg-slate-800/50 text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+                        >
+                          {(att.mime_type || '').startsWith('image/')
+                            ? <ImageIcon className="w-3.5 h-3.5 flex-shrink-0" />
+                            : <FileText className="w-3.5 h-3.5 flex-shrink-0" />}
+                          <span className="text-xs truncate">{att.name}</span>
+                        </a>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
               </div>
             ))
@@ -292,22 +356,75 @@ export default function AdminSupportPage() {
           </div>
         )}
 
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-3">
-          <input
-            type="text"
-            value={replyText}
-            onChange={(e) => setReplyText(e.target.value)}
-            placeholder="Escribe tu respuesta..."
-            onKeyDown={(e) => e.key === 'Enter' && handleSendReply()}
-            className="flex-1 bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          />
-          <button
-            onClick={handleSendReply}
-            disabled={sending || !replyText.trim()}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
-          >
-            <Send className="w-4 h-4" />
-          </button>
+        {selectedTicket.status_history && selectedTicket.status_history.length > 0 && (
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <History className="w-4 h-4 text-slate-500" />
+              <h3 className="text-sm font-semibold text-white">Historial de estados</h3>
+            </div>
+            <div className="space-y-2">
+              {selectedTicket.status_history.map((h) => (
+                <div key={h.id} className="flex items-center gap-3 text-xs">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400 flex-shrink-0" />
+                  <span className="text-slate-300">
+                    {statusLabels[h.from_status]} <span className="text-slate-500">→</span> {statusLabels[h.to_status]}
+                  </span>
+                  <span className="text-slate-500">· {h.changed_by_name || 'Sistema'}</span>
+                  <span className="text-slate-600 ml-auto">{new Date(h.created_at).toLocaleString('es-CL')}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+          {pendingFiles.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-3">
+              {pendingFiles.map((f, i) => (
+                <div key={i} className="flex items-center gap-1.5 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1">
+                  {f.type.startsWith('image/')
+                    ? <ImageIcon className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                    : <FileText className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />}
+                  <span className="text-xs text-slate-300 max-w-[120px] truncate">{f.name}</span>
+                  <button onClick={() => setPendingFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-slate-500 hover:text-slate-300">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="flex items-center gap-3">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileSelect}
+              multiple
+              className="hidden"
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={sending || pendingFiles.length >= 5}
+              className="w-10 h-10 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-slate-400 hover:text-white flex items-center justify-center transition-colors disabled:opacity-50 flex-shrink-0"
+              title="Adjuntar archivo"
+            >
+              <Paperclip className="w-4 h-4" />
+            </button>
+            <input
+              type="text"
+              value={replyText}
+              onChange={(e) => setReplyText(e.target.value)}
+              placeholder="Escribe tu respuesta..."
+              onKeyDown={(e) => e.key === 'Enter' && handleSendReply()}
+              className="flex-1 bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            />
+            <button
+              onClick={handleSendReply}
+              disabled={sending || (!replyText.trim() && pendingFiles.length === 0)}
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50 flex items-center gap-2"
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
     );

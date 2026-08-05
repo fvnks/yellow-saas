@@ -3,6 +3,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Search, FileText, Zap, MoreVertical, CheckCircle2, Eye, Download, Printer, X, Save, SlidersHorizontal } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { getApiClient } from '@/lib/api-client';
+import { getCompanyIdFromToken } from '@/lib/api-client';
+import { usePrintDocument } from '@/components/print/use-print';
+import { type DocumentSettings, mergeSettings, DEFAULT_DOCUMENT_SETTINGS } from '@/lib/document-settings';
 
 interface InvoiceItem {
   description: string;
@@ -92,31 +96,6 @@ function generateInvoiceXml(inv: Invoice): string {
 </DTE>`;
 }
 
-function openPdfPreview(inv: Invoice) {
-  const html = `<!DOCTYPE html><html><head><title>Factura ${inv.invoice_number}</title>
-  <style>body{font-family:Arial,sans-serif;padding:40px;max-width:800px;margin:0 auto}
-  h1{font-size:20px;border-bottom:2px solid #333;padding-bottom:8px}
-  .row{display:flex;justify-content:space-between;margin:4px 0}
-  table{width:100%;border-collapse:collapse;margin:16px 0}
-  th,td{border:1px solid #ddd;padding:8px;text-align:left;font-size:12px}
-  th{background:#f5f5f5;font-weight:600}
-  .total{text-align:right;font-size:14px;font-weight:bold;margin-top:16px}
-  @media print{body{padding:20px}}</style></head><body>
-  <h1>FACTURA DE COMPRA N° ${inv.invoice_number}</h1>
-  <div class="row"><span><b>Proveedor:</b> ${inv.supplier_name}</span><span><b>RUT:</b> ${inv.supplier_tax_id}</span></div>
-  <div class="row"><span><b>Fecha Emisión:</b> ${inv.invoice_date}</span><span><b>Vencimiento:</b> ${inv.due_date}</span></div>
-  <div class="row"><span><b>Tipo:</b> ${DOC_TYPE_LABELS[inv.doc_type || ''] || inv.doc_type || 'N/A'}</span></div>
-  <table><thead><tr><th>Descripción</th><th>Cant.</th><th>Precio Unit.</th><th>Desc.</th><th>Total</th></tr></thead>
-  <tbody>${(inv.items || []).map(it => `<tr><td>${it.description}</td><td>${it.quantity}</td><td>$${it.unit_price.toLocaleString('es-CL')}</td><td>${it.discount_pct}%</td><td>$${it.line_total.toLocaleString('es-CL')}</td></tr>`).join('')}
-  </tbody></table>
-  <div class="total">Neto: $${inv.subtotal.toLocaleString('es-CL')}</div>
-  <div class="total">IVA (19%): $${inv.tax_amount.toLocaleString('es-CL')}</div>
-  <div class="total" style="font-size:16px;border-top:2px solid #333;padding-top:8px">TOTAL: $${inv.total_amount.toLocaleString('es-CL')}</div>
-  <script>window.onload=function(){window.print()}</script></body></html>`;
-  const w = window.open('', '_blank');
-  if (w) { w.document.write(html); w.document.close(); }
-}
-
 function downloadXml(filename: string, xml: string) {
   const blob = new Blob([xml], { type: 'application/xml' });
   const url = URL.createObjectURL(blob);
@@ -143,18 +122,52 @@ export default function PurchaseInvoices() {
   const [categories, setCategories] = useState<PurchaseCategory[]>([]);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [costCenters, setCostCenters] = useState<CostCenter[]>([]);
+  const [settings, setSettings] = useState<DocumentSettings>(DEFAULT_DOCUMENT_SETTINGS);
   const [integrateForm, setIntegrateForm] = useState<{ payment_method_id: string; cost_center_id: string; items: { description: string; purchase_category_id: string }[] }>({ payment_method_id: '', cost_center_id: '', items: [] });
+  const { print } = usePrintDocument();
 
   useEffect(() => {
-    const cid = localStorage.getItem('company_id');
-    if (!cid) return;
+    const companyId = getCompanyIdFromToken();
+    if (!companyId) return;
     Promise.all([
-      fetch(`/api/companies/${cid}/purchase-invoices`).then(r => r.json()).then(d => setInvoices(d.data || [])).catch(() => {}),
-      fetch(`/api/companies/${cid}/purchase-categories`).then(r => r.json()).then(d => setCategories(d.data || [])).catch(() => {}),
-      fetch(`/api/companies/${cid}/payment-methods`).then(r => r.json()).then(d => setPaymentMethods(d.data || [])).catch(() => {}),
-      fetch(`/api/companies/${cid}/cost-centers`).then(r => r.json()).then(d => setCostCenters(d.data || [])).catch(() => {}),
+      fetch(`/api/companies/${companyId}/purchase-invoices`).then(r => r.json()).then(d => setInvoices(d.data || [])).catch(() => {}),
+      fetch(`/api/companies/${companyId}/purchase-categories`).then(r => r.json()).then(d => setCategories(d.data || [])).catch(() => {}),
+      fetch(`/api/companies/${companyId}/payment-methods`).then(r => r.json()).then(d => setPaymentMethods(d.data || [])).catch(() => {}),
+      fetch(`/api/companies/${companyId}/cost-centers`).then(r => r.json()).then(d => setCostCenters(d.data || [])).catch(() => {}),
     ]);
   }, []);
+
+  const handlePrintInvoice = (inv: Invoice) => {
+    const items = inv.items || [];
+    const subtotal = inv.subtotal || 0;
+    const tax = inv.tax_amount || 0;
+    const total = inv.total_amount || subtotal + tax;
+    print('invoice', {
+      id: inv.id,
+      number: inv.invoice_number,
+      type: 'factura',
+      date: inv.invoice_date,
+      due_date: inv.due_date,
+      status: inv.status,
+      settings,
+      company: { name: 'Empresa' },
+      supplier: { name: inv.supplier_name, tax_id: inv.supplier_tax_id },
+      items: items.map(item => ({
+        name: item.description || '',
+        sku: '',
+        quantity: item.quantity,
+        unit_price: item.unit_price,
+        discount: item.discount_pct,
+        tax_rate: item.tax_pct,
+        total: item.line_total,
+      })),
+      subtotal,
+      tax_amount: tax,
+      total,
+      notes: '',
+      payment_method: inv.payment_method_id || '',
+    } as any);
+  };
 
   const filtered = invoices.filter(inv => {
     const matchSearch = inv.invoice_number.includes(search) ||
@@ -379,7 +392,7 @@ export default function PurchaseInvoices() {
                             <DropdownMenuSeparator />
                           </>
                         )}
-                        <DropdownMenuItem onClick={() => openPdfPreview(inv)}>
+                        <DropdownMenuItem onClick={() => handlePrintInvoice(inv)}>
                           <Printer className="w-4 h-4 mr-2 text-slate-500" />
                           Vista previa PDF
                         </DropdownMenuItem>

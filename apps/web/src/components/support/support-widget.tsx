@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   LifeBuoy, X, Send, Plus, BookOpen, MessageSquare,
-  Inbox, Clock, CheckCircle2, Loader2, ChevronLeft, Headphones
+  Inbox, Clock, CheckCircle2, Loader2, ChevronLeft, Headphones, Paperclip, FileText, Image as ImageIcon
 } from 'lucide-react';
 import { getCompanyIdFromToken } from '@/lib/api-client';
 import { toast } from 'sonner';
@@ -25,6 +25,14 @@ interface Message {
   sender_name: string;
   message: string;
   created_at: string;
+  attachments?: Attachment[];
+}
+
+interface Attachment {
+  id: string;
+  name: string;
+  mime_type: string;
+  file_size: number;
 }
 
 interface TicketDetail {
@@ -64,6 +72,8 @@ export function SupportWidget() {
   const [loadingChat, setLoadingChat] = useState(false);
   const [replyText, setReplyText] = useState('');
   const [sending, setSending] = useState(false);
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState({ subject: '', priority: 'medium', message: '' });
   const [saving, setSaving] = useState(false);
   const chatBottomRef = useRef<HTMLDivElement>(null);
@@ -193,17 +203,21 @@ export function SupportWidget() {
   };
 
   const handleSend = async () => {
-    if (!replyText.trim() || !ticket || !companyId) return;
+    if ((!replyText.trim() && pendingFiles.length === 0) || !ticket || !companyId) return;
     setSending(true);
     try {
+      const formData = new FormData();
+      formData.append('message', replyText);
+      pendingFiles.forEach((f, i) => formData.append(`file${i}`, f));
       const res = await fetch(`/api/companies/${companyId}/support/tickets/${ticket.id}/messages`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: replyText }),
+        headers: { Authorization: `Bearer ${getToken()}` },
+        body: formData,
       });
       const data = await res.json();
       if (data.success) {
         setReplyText('');
+        setPendingFiles([]);
         openTicket(ticket.id);
       } else {
         toast.error(data.error?.message || 'Error al enviar mensaje');
@@ -213,6 +227,13 @@ export function SupportWidget() {
     } finally {
       setSending(false);
     }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+    setPendingFiles(prev => [...prev, ...files].slice(0, 5));
+    if (e.target) e.target.value = '';
   };
 
   const closeWidget = () => {
@@ -479,6 +500,28 @@ export function SupportWidget() {
                             <p className={`text-sm leading-relaxed ${isSupport ? 'text-slate-700 dark:text-slate-200' : 'text-white'}`}>
                               {msg.message}
                             </p>
+                            {msg.attachments?.length ? (
+                              <div className="mt-2 space-y-1.5">
+                                {msg.attachments.map(att => (
+                                  <a
+                                    key={att.id}
+                                    href={`/api/companies/${companyId}/support/tickets/${ticket!.id}/attachments/${att.id}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`flex items-center gap-2 px-2 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
+                                      isSupport
+                                        ? 'bg-slate-100 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600'
+                                        : 'bg-blue-700/30 border-blue-400/40 text-white hover:bg-blue-700/40'
+                                    }`}
+                                  >
+                                    {(att.mime_type || '').startsWith('image/')
+                                      ? <ImageIcon className="w-3.5 h-3.5 flex-shrink-0" />
+                                      : <FileText className="w-3.5 h-3.5 flex-shrink-0" />}
+                                    <span className="text-xs truncate">{att.name}</span>
+                                  </a>
+                                ))}
+                              </div>
+                            ) : null}
                           </div>
                         </div>
                       );
@@ -493,22 +536,54 @@ export function SupportWidget() {
                     </p>
                   </div>
                 ) : (
-                  <div className="px-3 py-3 border-t border-slate-200 dark:border-slate-800 flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={replyText}
-                      onChange={e => setReplyText(e.target.value)}
-                      onKeyDown={e => e.key === 'Enter' && handleSend()}
-                      placeholder="Escribe un mensaje..."
-                      className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                    <button
-                      onClick={handleSend}
-                      disabled={sending || !replyText.trim()}
-                      className="w-9 h-9 bg-blue-600 hover:bg-blue-700 rounded-lg text-white flex items-center justify-center transition-colors disabled:opacity-50 flex-shrink-0"
-                    >
-                      <Send className="w-4 h-4" />
-                    </button>
+                  <div className="px-3 py-3 border-t border-slate-200 dark:border-slate-800">
+                    {pendingFiles.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {pendingFiles.map((f, i) => (
+                          <div key={i} className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1">
+                            {f.type.startsWith('image/')
+                              ? <ImageIcon className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />
+                              : <FileText className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />}
+                            <span className="text-xs text-slate-600 dark:text-slate-300 max-w-[120px] truncate">{f.name}</span>
+                            <button onClick={() => setPendingFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-slate-400 hover:text-slate-600">
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileSelect}
+                        multiple
+                        className="hidden"
+                      />
+                      <button
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={sending || pendingFiles.length >= 5}
+                        className="w-9 h-9 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-500 dark:text-slate-300 flex items-center justify-center transition-colors flex-shrink-0 disabled:opacity-50"
+                        title="Adjuntar archivo"
+                      >
+                        <Paperclip className="w-4 h-4" />
+                      </button>
+                      <input
+                        type="text"
+                        value={replyText}
+                        onChange={e => setReplyText(e.target.value)}
+                        onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
+                        placeholder="Escribe un mensaje..."
+                        className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                      <button
+                        onClick={handleSend}
+                        disabled={sending || (!replyText.trim() && pendingFiles.length === 0)}
+                        className="w-9 h-9 bg-blue-600 hover:bg-blue-700 rounded-lg text-white flex items-center justify-center transition-colors disabled:opacity-50 flex-shrink-0"
+                      >
+                        {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>

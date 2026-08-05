@@ -5,8 +5,10 @@ import { ArrowLeft, Printer, Download, ShoppingCart, Trash2, Calendar, User, Fil
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
+import { getCompanyIdFromToken } from '@/lib/api-client';
 import { generateCotizacionPDF } from '@/lib/pdf-design';
 import { usePrintDocument } from '@/components/print/use-print';
+import { type DocumentSettings, mergeSettings, DEFAULT_DOCUMENT_SETTINGS } from '@/lib/document-settings';
 
 interface QuotationItem {
   product_id: string;
@@ -47,6 +49,7 @@ export default function SalesQuotationDetailPage({ params }: { params: { id: str
   const router = useRouter();
   const [quotation, setQuotation] = useState<QuotationDetail | null>(null);
   const [company, setCompany] = useState<any>(null);
+  const [settings, setSettings] = useState<DocumentSettings>(DEFAULT_DOCUMENT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
@@ -58,15 +61,32 @@ export default function SalesQuotationDetailPage({ params }: { params: { id: str
     Promise.all([
       api.getSalesQuotation(id),
       api.getCompany().catch(() => null),
-    ]).then(([data, companyRes]) => {
+      fetchDocumentSettings(),
+    ]).then(([data, companyRes, settingsRes]) => {
       setQuotation(data as unknown as QuotationDetail);
       if (companyRes) setCompany(companyRes);
+      if (settingsRes) setSettings(settingsRes);
       setLoading(false);
     }).catch(() => {
       setError('No se pudo cargar la cotización');
       setLoading(false);
     });
   }, [id]);
+
+  async function fetchDocumentSettings() {
+    try {
+      const companyId = getCompanyIdFromToken();
+      if (!companyId) return;
+      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+      if (!token) return;
+      const res = await fetch(`/api/companies/${companyId}/settings/documents`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.success) return mergeSettings(data.data);
+    } catch {}
+    return DEFAULT_DOCUMENT_SETTINGS;
+  }
 
   const handlePrint = () => {
     if (!quotation) return;
@@ -90,6 +110,7 @@ export default function SalesQuotationDetailPage({ params }: { params: { id: str
       })),
       subtotal, tax_amount: tax, total, notes: quotation.notes,
       valid_until: quotation.valid_until,
+      settings,
     });
   };
 
@@ -125,6 +146,7 @@ export default function SalesQuotationDetailPage({ params }: { params: { id: str
       tax_amount: tax,
       total: subtotal + tax,
       notes: quotation.notes,
+      settings,
     });
     doc.save(`${quotation.quotation_number}.pdf`);
   };

@@ -2,6 +2,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import QRCode from 'qrcode';
 import JsBarcode from 'jsbarcode';
+import { mergeSettings, hexToRgb, getDocumentTitle, type DocumentSettings } from './document-settings';
 
 const BASE_URL = typeof window !== 'undefined' ? window.location.origin : 'https://yellow-erp.cl';
 
@@ -47,6 +48,7 @@ export interface DocumentData {
   warehouse?: string;
   valid_until?: string;
   payment_method?: string;
+  settings?: DocumentSettings;
 }
 
 export interface PayslipData {
@@ -120,15 +122,36 @@ const DOC_TYPE_LABELS: Record<string, string> = {
   orden_compra: 'ORDEN DE COMPRA',
 };
 
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(amount);
+function resolveSettings(data: { settings?: DocumentSettings }): DocumentSettings {
+  return mergeSettings(data.settings);
 }
 
-function formatDate(dateStr: string): string {
+function resolvePalette(settings: DocumentSettings) {
+  const primary = hexToRgb(settings.primary_color);
+  const accent = hexToRgb(settings.accent_color);
+  return {
+    primary,
+    accent,
+    lightBg: [248, 250, 252] as [number, number, number],
+    border: [226, 232, 240] as [number, number, number],
+    textDark: [15, 23, 42] as [number, number, number],
+    textMuted: [100, 116, 139] as [number, number, number],
+    success: [22, 163, 74] as [number, number, number],
+  };
+}
+
+function formatCurrency(amount: number, settings?: DocumentSettings): string {
+  const currency = settings?.currency || 'CLP';
+  const locale = settings?.language === 'en' ? 'en-US' : 'es-CL';
+  return new Intl.NumberFormat(locale, { style: 'currency', currency, maximumFractionDigits: 0 }).format(amount);
+}
+
+function formatDate(dateStr: string, settings?: DocumentSettings): string {
   if (!dateStr) return '—';
   try {
     const d = new Date(dateStr);
-    return d.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const locale = settings?.language === 'en' ? 'en-US' : 'es-CL';
+    return d.toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' });
   } catch {
     return dateStr;
   }
@@ -165,11 +188,13 @@ function getDocTypeRoute(type: string): string {
 }
 
 async function buildDocumentHeader(doc: jsPDF, data: DocumentData): Promise<number> {
+  const settings = resolveSettings(data);
+  const C = resolvePalette(settings);
   const pageWidth = doc.internal.pageSize.getWidth();
   let y = 15;
 
   // Logo
-  if (data.company.logo_url) {
+  if (settings.show_logo && data.company.logo_url) {
     try {
       const logoDataUrl = await fetchLogoAsDataUrl(data.company.logo_url);
       if (logoDataUrl) {
@@ -179,15 +204,15 @@ async function buildDocumentHeader(doc: jsPDF, data: DocumentData): Promise<numb
   }
 
   // Company info (left)
-  const textStartX = data.company.logo_url ? 50 : 15;
+  const textStartX = settings.show_logo && data.company.logo_url ? 50 : 15;
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(14);
-  doc.setTextColor(...COLORS.textDark);
+  doc.setTextColor(...C.textDark);
   doc.text(data.company.name || 'Empresa', textStartX, y + 6);
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
-  doc.setTextColor(...COLORS.textMuted);
+  doc.setTextColor(...C.textMuted);
   let infoY = y + 12;
   if (data.company.tax_id) { doc.text(`RUT: ${data.company.tax_id}`, textStartX, infoY); infoY += 4; }
   if (data.company.razon_social) { doc.text(data.company.razon_social, textStartX, infoY); infoY += 4; }
@@ -197,23 +222,25 @@ async function buildDocumentHeader(doc: jsPDF, data: DocumentData): Promise<numb
   if (data.company.email) { doc.text(data.company.email, textStartX, infoY); }
 
   // QR Code (right)
-  const qrUrl = `${BASE_URL}/view/${getDocTypeRoute(data.type)}/${data.id}`;
-  try {
-    const qrDataUrl = await generateQRDataUrl(qrUrl);
-    doc.addImage(qrDataUrl, 'PNG', pageWidth - 40, y, 28, 28);
-  } catch { /* skip QR */ }
+  if (settings.show_qr) {
+    const qrUrl = `${BASE_URL}/view/${getDocTypeRoute(data.type)}/${data.id}`;
+    try {
+      const qrDataUrl = await generateQRDataUrl(qrUrl);
+      doc.addImage(qrDataUrl, 'PNG', pageWidth - 40, y, 28, 28);
+    } catch { /* skip QR */ }
+  }
 
   y = Math.max(y + 35, infoY + 5);
 
   // Separator line
-  doc.setDrawColor(...COLORS.border);
+  doc.setDrawColor(...C.border);
   doc.setLineWidth(0.5);
   doc.line(15, y, pageWidth - 15, y);
   y += 6;
 
   // Document type badge
-  const docLabel = DOC_TYPE_LABELS[data.type] || data.type.toUpperCase();
-  doc.setFillColor(...COLORS.primary);
+  const docLabel = getDocumentTitle(settings, data.type);
+  doc.setFillColor(...C.primary);
   const badgeWidth = doc.getTextWidth(docLabel) + 12;
   doc.roundedRect(15, y - 4, badgeWidth, 8, 2, 2, 'F');
   doc.setFont('helvetica', 'bold');
@@ -222,46 +249,46 @@ async function buildDocumentHeader(doc: jsPDF, data: DocumentData): Promise<numb
   doc.text(docLabel, 21, y + 1);
 
   // Document number and date (right of badge)
-  doc.setTextColor(...COLORS.textDark);
+  doc.setTextColor(...C.textDark);
   doc.setFontSize(9);
   doc.text(`N°: ${data.number}`, 15 + badgeWidth + 10, y + 1);
-  doc.setTextColor(...COLORS.textMuted);
-  doc.text(`Fecha: ${formatDate(data.date)}`, pageWidth - 15, y + 1, { align: 'right' });
+  doc.setTextColor(...C.textMuted);
+  doc.text(`Fecha: ${formatDate(data.date, settings)}`, pageWidth - 15, y + 1, { align: 'right' });
 
   y += 10;
 
   // Due date / Validity / Delivery date
-  if (data.due_date) {
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(...COLORS.textMuted);
-    doc.text(`Vencimiento: ${formatDate(data.due_date)}`, 15, y);
-    y += 5;
-  }
-  if (data.valid_until) {
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(...COLORS.textMuted);
-    doc.text(`Válido hasta: ${formatDate(data.valid_until)}`, 15, y);
-    y += 5;
-  }
-  if (data.delivery_date) {
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(...COLORS.textMuted);
-    doc.text(`Fecha de entrega: ${formatDate(data.delivery_date)}`, 15, y);
-    y += 5;
-  }
+if (data.due_date) {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(...C.textMuted);
+      doc.text(`Vencimiento: ${formatDate(data.due_date, settings)}`, 15, y);
+      y += 5;
+    }
+    if (data.valid_until) {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(...C.textMuted);
+      doc.text(`Válido hasta: ${formatDate(data.valid_until, settings)}`, 15, y);
+      y += 5;
+    }
+    if (data.delivery_date) {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(...C.textMuted);
+      doc.text(`Fecha de entrega: ${formatDate(data.delivery_date, settings)}`, 15, y);
+      y += 5;
+    }
 
   // Customer/Supplier info
   const party = data.customer || data.supplier;
   if (party) {
     y += 2;
-    doc.setFillColor(...COLORS.lightBg);
+    doc.setFillColor(...C.lightBg);
     doc.roundedRect(15, y - 3, pageWidth - 30, data.customer ? 20 : 14, 2, 2, 'F');
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
-    doc.setTextColor(...COLORS.textDark);
+    doc.setTextColor(...C.textDark);
     const partyLabel = data.customer ? 'Cliente' : 'Proveedor';
     doc.text(partyLabel, 20, y + 2);
     doc.setFont('helvetica', 'normal');
@@ -278,10 +305,23 @@ async function buildDocumentHeader(doc: jsPDF, data: DocumentData): Promise<numb
     y += data.customer ? 24 : 16;
   }
 
+  // Custom header text
+  if (settings.header_text) {
+    y += 4;
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(...C.accent);
+    const lines = doc.splitTextToSize(settings.header_text, pageWidth - 30);
+    doc.text(lines, 15, y);
+    y += lines.length * 4;
+  }
+
   return y;
 }
 
 function buildItemsTable(doc: jsPDF, data: DocumentData, startY: number): number {
+  const settings = resolveSettings(data);
+  const C = resolvePalette(settings);
   const isPriceDocument = data.type === 'cotizacion' || data.type === 'orden_venta' || data.type === 'orden_compra' || data.type === 'boleta';
 
   const head = isPriceDocument
@@ -295,9 +335,9 @@ function buildItemsTable(doc: jsPDF, data: DocumentData, startY: number): number
         item.name,
         item.sku || '—',
         String(item.quantity),
-        formatCurrency(item.unit_price),
+        formatCurrency(item.unit_price, settings),
         item.discount ? `${item.discount}%` : '—',
-        formatCurrency(item.total),
+        formatCurrency(item.total, settings),
       ];
     }
     return [String(i + 1), item.name, item.sku || '—', String(item.quantity), '—'];
@@ -322,7 +362,7 @@ function buildItemsTable(doc: jsPDF, data: DocumentData, startY: number): number
     body,
     theme: 'grid',
     headStyles: {
-      fillColor: COLORS.primary,
+      fillColor: C.primary,
       textColor: [255, 255, 255],
       fontStyle: 'bold',
       fontSize: 7,
@@ -330,10 +370,10 @@ function buildItemsTable(doc: jsPDF, data: DocumentData, startY: number): number
     },
     bodyStyles: {
       fontSize: 8,
-      textColor: COLORS.textDark,
+      textColor: C.textDark,
     },
     alternateRowStyles: {
-      fillColor: COLORS.lightBg,
+      fillColor: C.lightBg,
     },
     columnStyles,
     margin: { left: 15, right: 15 },
@@ -343,6 +383,8 @@ function buildItemsTable(doc: jsPDF, data: DocumentData, startY: number): number
 }
 
 function buildTotalsBlock(doc: jsPDF, data: DocumentData, y: number): number {
+  const settings = resolveSettings(data);
+  const C = resolvePalette(settings);
   const pageWidth = doc.internal.pageSize.getWidth();
   const totalsX = pageWidth - 80;
 
@@ -350,18 +392,18 @@ function buildTotalsBlock(doc: jsPDF, data: DocumentData, y: number): number {
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
-  doc.setTextColor(...COLORS.textMuted);
+  doc.setTextColor(...C.textMuted);
 
   doc.text('Subtotal:', totalsX, y);
-  doc.text(formatCurrency(data.subtotal), pageWidth - 15, y, { align: 'right' });
+  doc.text(formatCurrency(data.subtotal, settings), pageWidth - 15, y, { align: 'right' });
   y += 6;
 
-  doc.text('IVA (19%):', totalsX, y);
-  doc.text(formatCurrency(data.tax_amount), pageWidth - 15, y, { align: 'right' });
+  doc.text((settings.tax_label || 'IVA (19%)') + ':', totalsX, y);
+  doc.text(formatCurrency(data.tax_amount, settings), pageWidth - 15, y, { align: 'right' });
   y += 6;
 
   // Separator
-  doc.setDrawColor(...COLORS.border);
+  doc.setDrawColor(...C.border);
   doc.setLineWidth(0.3);
   doc.line(totalsX, y - 2, pageWidth - 15, y - 2);
   y += 2;
@@ -369,16 +411,16 @@ function buildTotalsBlock(doc: jsPDF, data: DocumentData, y: number): number {
   // Total
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(12);
-  doc.setTextColor(...COLORS.textDark);
+  doc.setTextColor(...C.textDark);
   doc.text('TOTAL:', totalsX, y);
-  doc.text(formatCurrency(data.total), pageWidth - 15, y, { align: 'right' });
+  doc.text(formatCurrency(data.total, settings), pageWidth - 15, y, { align: 'right' });
   y += 8;
 
   // Payment info for boletas
   if (data.type === 'boleta' && data.payment_method) {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
-    doc.setTextColor(...COLORS.textMuted);
+    doc.setTextColor(...C.textMuted);
     doc.text(`Forma de pago: ${data.payment_method}`, totalsX, y);
     y += 5;
   }
@@ -387,36 +429,41 @@ function buildTotalsBlock(doc: jsPDF, data: DocumentData, y: number): number {
 }
 
 function buildNotes(doc: jsPDF, data: DocumentData, y: number): number {
-  if (!data.notes) return y;
+  const C = resolvePalette(resolveSettings(data));
+  const settings = resolveSettings(data);
+  const notes = data.notes || settings.default_notes || '';
+  if (!notes) return y;
   y += 4;
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(8);
-  doc.setTextColor(...COLORS.textDark);
+  doc.setTextColor(...C.textDark);
   doc.text('Notas:', 15, y);
   y += 5;
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
-  doc.setTextColor(...COLORS.textMuted);
-  const lines = doc.splitTextToSize(data.notes, doc.internal.pageSize.getWidth() - 30);
+  doc.setTextColor(...C.textMuted);
+  const lines = doc.splitTextToSize(notes, doc.internal.pageSize.getWidth() - 30);
   doc.text(lines, 15, y);
   y += lines.length * 4;
   return y;
 }
 
-function buildFooter(doc: jsPDF, data: { id: string; type: string }): void {
+function buildFooter(doc: jsPDF, data: { id: string; type: string; settings?: DocumentSettings }): void {
+  const C = resolvePalette(resolveSettings(data));
+  const settings = resolveSettings(data);
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
 
   // Separator
-  doc.setDrawColor(...COLORS.border);
+  doc.setDrawColor(...C.border);
   doc.setLineWidth(0.3);
   doc.line(15, pageHeight - 20, pageWidth - 15, pageHeight - 20);
 
   // Footer text
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7);
-  doc.setTextColor(...COLORS.textMuted);
-  doc.text('Documento generado por Yellow ERP', 15, pageHeight - 14);
+  doc.setTextColor(...C.textMuted);
+  doc.text(settings.footer_text || 'Documento generado por Yellow ERP', 15, pageHeight - 14);
   doc.text(`Verificar: ${BASE_URL}/view/${getDocTypeRoute(data.type)}/${data.id}`, pageWidth - 15, pageHeight - 14, { align: 'right' });
 }
 
@@ -482,6 +529,141 @@ export async function generateOrdenCompraPDF(data: DocumentData): Promise<jsPDF>
   return doc;
 }
 
+export interface CreditNoteData {
+  id: string;
+  number: string;
+  date: string;
+  company: CompanyData;
+  customer?: { name: string; tax_id?: string; address?: string; email?: string; phone?: string };
+  items: DocumentItem[];
+  subtotal: number;
+  tax_amount: number;
+  total: number;
+  reference_invoice?: string;
+  reason?: string;
+  notes?: string;
+  settings?: DocumentSettings;
+}
+
+export interface DebitNoteData {
+  id: string;
+  number: string;
+  date: string;
+  company: CompanyData;
+  customer?: { name: string; tax_id?: string; address?: string; email?: string; phone?: string };
+  items: DocumentItem[];
+  subtotal: number;
+  tax_amount: number;
+  total: number;
+  reference_invoice?: string;
+  reason?: string;
+  notes?: string;
+  settings?: DocumentSettings;
+}
+
+export async function generateCreditNotePDF(data: CreditNoteData): Promise<jsPDF> {
+  const settings = resolveSettings(data);
+  const C = resolvePalette(settings);
+  const doc = new jsPDF('p', 'mm', 'a4');
+
+  const docData: DocumentData = {
+    id: data.id,
+    number: data.number,
+    type: 'factura',
+    date: data.date,
+    company: data.company,
+    customer: data.customer,
+    items: data.items,
+    subtotal: data.subtotal,
+    tax_amount: data.tax_amount,
+    total: data.total,
+    notes: data.notes,
+    settings,
+  };
+
+  let y = await buildDocumentHeader(doc, docData);
+
+  // Reference invoice
+  if (data.reference_invoice) {
+    const pageWidth = doc.internal.pageSize.getWidth();
+    doc.setFillColor(...C.lightBg);
+    doc.roundedRect(15, y, pageWidth - 30, 12, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...C.textMuted);
+    doc.text(settings.language === 'en' ? 'Reference Invoice' : 'Factura Ref', 20, y + 5);
+    doc.setTextColor(...C.textDark);
+    doc.text(data.reference_invoice, pageWidth - 20, y + 5, { align: 'right' });
+    y += 16;
+  }
+
+  // Reason
+  if (data.reason) {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...C.textMuted);
+    doc.text(`${settings.language === 'en' ? 'Reason' : 'Motivo'}: ${data.reason}`, 15, y);
+    y += 5;
+  }
+
+  const tableY = buildItemsTable(doc, docData, y);
+  const totalsY = buildTotalsBlock(doc, docData, tableY);
+  buildNotes(doc, docData, totalsY);
+  buildFooter(doc, docData);
+  return doc;
+}
+
+export async function generateDebitNotePDF(data: DebitNoteData): Promise<jsPDF> {
+  const settings = resolveSettings(data);
+  const doc = new jsPDF('p', 'mm', 'a4');
+
+  const docData: DocumentData = {
+    id: data.id,
+    number: data.number,
+    type: 'factura',
+    date: data.date,
+    company: data.company,
+    customer: data.customer,
+    items: data.items,
+    subtotal: data.subtotal,
+    tax_amount: data.tax_amount,
+    total: data.total,
+    notes: data.notes,
+    settings,
+  };
+
+  let y = await buildDocumentHeader(doc, docData);
+
+  if (data.reference_invoice) {
+    const C = resolvePalette(settings);
+    const pageWidth = doc.internal.pageSize.getWidth();
+    doc.setFillColor(...C.lightBg);
+    doc.roundedRect(15, y, pageWidth - 30, 12, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...C.textMuted);
+    doc.text(settings.language === 'en' ? 'Reference Invoice' : 'Factura Ref', 20, y + 5);
+    doc.setTextColor(...C.textDark);
+    doc.text(data.reference_invoice, pageWidth - 20, y + 5, { align: 'right' });
+    y += 16;
+  }
+
+  if (data.reason) {
+    const C = resolvePalette(settings);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...C.textMuted);
+    doc.text(`${settings.language === 'en' ? 'Reason' : 'Motivo'}: ${data.reason}`, 15, y);
+    y += 5;
+  }
+
+  const tableY = buildItemsTable(doc, docData, y);
+  const totalsY = buildTotalsBlock(doc, docData, tableY);
+  buildNotes(doc, docData, totalsY);
+  buildFooter(doc, docData);
+  return doc;
+}
+
 export interface ReturnNoteData {
   id: string;
   number: string;
@@ -492,45 +674,49 @@ export interface ReturnNoteData {
   reason?: string;
   condition?: string;
   notes?: string;
+  settings?: DocumentSettings;
 }
 
 export async function generateReturnNotePDF(data: ReturnNoteData): Promise<jsPDF> {
   const doc = new jsPDF('p', 'mm', 'a4');
-  let y = await buildDocumentHeader(doc, {
+
+  // Build a DocumentData-compatible object with settings
+  const docData: DocumentData = {
     ...data,
     type: 'boleta',
     subtotal: data.items.reduce((sum, item) => sum + item.total, 0),
     tax_amount: 0,
     total: data.items.reduce((sum, item) => sum + item.total, 0),
-  });
+  };
 
-  // Return-specific info
-  if (data.reason) {
+  let y = await buildDocumentHeader(doc, docData);
+
+  // Return-specific info (motivo, condición)
+  if (data.reason || data.condition) {
     y += 2;
+    const C = resolvePalette(resolveSettings(docData));
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
-    doc.setTextColor(...COLORS.textMuted);
-    doc.text(`Motivo: ${data.reason}`, 15, y);
-    y += 4;
-  }
-  if (data.condition) {
-    doc.text(`Condición: ${data.condition}`, 15, y);
-    y += 4;
+    doc.setTextColor(...C.textMuted);
+    if (data.reason) {
+      doc.text(`Motivo: ${data.reason}`, 15, y);
+      y += 4;
+    }
+    if (data.condition) {
+      doc.text(`Condición: ${data.condition}`, 15, y);
+      y += 4;
+    }
   }
 
-  const tableY = buildItemsTable(doc, {
-    ...data,
-    type: 'boleta',
-    subtotal: data.items.reduce((sum, item) => sum + item.total, 0),
-    tax_amount: 0,
-    total: data.items.reduce((sum, item) => sum + item.total, 0),
-  }, y);
+  const tableY = buildItemsTable(doc, docData, y);
 
+  // Notes
   if (data.notes) {
     y = tableY + 4;
+    const C = resolvePalette(resolveSettings(docData));
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
-    doc.setTextColor(...COLORS.textMuted);
+    doc.setTextColor(...C.textMuted);
     doc.text('Notas:', 15, y);
     y += 4;
     doc.setFontSize(7);
@@ -538,7 +724,7 @@ export async function generateReturnNotePDF(data: ReturnNoteData): Promise<jsPDF
     doc.text(noteLines, 15, y);
   }
 
-  buildFooter(doc, { ...data, type: 'boleta' });
+  buildFooter(doc, docData);
   return doc;
 }
 
@@ -555,68 +741,104 @@ export interface DeliveryGuideData {
   plate?: string;
   notes?: string;
   shipping_date?: string;
+  settings?: DocumentSettings;
 }
 
 export async function generateDeliveryGuidePDF(data: DeliveryGuideData): Promise<jsPDF> {
+  const settings = resolveSettings(data);
+  const C = resolvePalette(settings);
   const doc = new jsPDF('p', 'mm', 'a4');
-  const logoDataUrl = data.company.logo_url ? await fetchLogoAsDataUrl(data.company.logo_url) : null;
 
-  // Header
-  let y = 18;
-  if (logoDataUrl) {
-    try { doc.addImage(logoDataUrl, 'PNG', 15, y - 6, 12, 12); } catch {}
+  // Header - reuse similar structure to buildDocumentHeader but adapted for guide
+  let y = 15;
+
+  // Logo
+  if (settings.show_logo && data.company.logo_url) {
+    try {
+      const logoDataUrl = await fetchLogoAsDataUrl(data.company.logo_url);
+      if (logoDataUrl) {
+        doc.addImage(logoDataUrl, 'PNG', 15, y, 25, 25);
+      }
+    } catch { /* skip logo */ }
   }
+
+  const textStartX = settings.show_logo && data.company.logo_url ? 45 : 15;
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(18);
-  doc.setTextColor(...COLORS.primary);
-  doc.text(data.company.name || 'Empresa', 30, y);
-  y += 8;
+  doc.setFontSize(14);
+  doc.setTextColor(...C.textDark);
+  doc.text(data.company.name || 'Empresa', textStartX, y + 6);
 
-  doc.setFontSize(7);
-  doc.setTextColor(...COLORS.textMuted);
-  const companyDetails: string[] = [];
-  if (data.company.tax_id) companyDetails.push(`RUT: ${data.company.tax_id}`);
-  if (data.company.address) companyDetails.push(data.company.address);
-  if (data.company.phone) companyDetails.push(`Tel: ${data.company.phone}`);
-  doc.text(companyDetails.join(' | '), 30, y);
-  y += 8;
-
-  // Title
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(16);
-  doc.setTextColor(...COLORS.primary);
-  doc.text('GUÍA DE DESPACHO', 15, y);
-  y += 5;
-
-  // Document badge + info
-  doc.setFillColor(...COLORS.accent);
-  doc.roundedRect(15, y, 30, 8, 2, 2, 'F');
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(10);
-  doc.setTextColor(255);
-  doc.text(data.number || 'Sin número', 30, y + 5.5, { align: 'center' });
-  y += 13;
-
-  doc.setTextColor(...COLORS.textDark);
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8);
-  doc.text(`Fecha de emisión: ${data.date}`, 15, y); y += 4;
-  if (data.shipping_date) { doc.text(`Fecha de despacho: ${data.shipping_date}`, 15, y); y += 4; }
+  doc.setFontSize(7);
+  doc.setTextColor(...C.textMuted);
+  let infoY = y + 12;
+  if (data.company.tax_id) { doc.text(`RUT: ${data.company.tax_id}`, textStartX, infoY); infoY += 4; }
+  if (data.company.address) { doc.text(data.company.address, textStartX, infoY); infoY += 4; }
+  if (data.company.phone) { doc.text(`Tel: ${data.company.phone}`, textStartX, infoY); }
+
+  // QR
+  if (settings.show_qr) {
+    const qrUrl = `${BASE_URL}/view/guia_despacho/${data.id}`;
+    try {
+      const qrDataUrl = await generateQRDataUrl(qrUrl);
+      doc.addImage(qrDataUrl, 'PNG', doc.internal.pageSize.getWidth() - 35, y, 25, 25);
+    } catch { /* skip QR */ }
+  }
+
+  y = Math.max(y + 30, infoY + 5);
+
+  // Separator
+  doc.setDrawColor(...C.border);
+  doc.setLineWidth(0.5);
+  doc.line(15, y, doc.internal.pageSize.getWidth() - 15, y);
+  y += 6;
+
+  // Document badge - use custom title
+  const docLabel = settings.document_titles?.orden_venta || 'GUÍA DE DESPACHO';
+  doc.setFillColor(...C.primary);
+  const badgeWidth = doc.getTextWidth(docLabel) + 12;
+  doc.roundedRect(15, y - 4, badgeWidth, 8, 2, 2, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(255, 255, 255);
+  doc.text(docLabel, 21, y + 1);
+
+  doc.setTextColor(...C.textDark);
+  doc.setFontSize(9);
+  doc.text(`N°: ${data.number}`, 15 + badgeWidth + 10, y + 1);
+  doc.setTextColor(...C.textMuted);
+  doc.text(`Fecha: ${formatDate(data.date, settings)}`, doc.internal.pageSize.getWidth() - 15, y + 1, { align: 'right' });
+  y += 10;
+
+  if (data.shipping_date) {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...C.textMuted);
+    doc.text(`Fecha de despacho: ${formatDate(data.shipping_date, settings)}`, 15, y);
+    y += 5;
+  }
 
   // Customer info
   if (data.customer) {
     y += 2;
+    doc.setFillColor(...C.lightBg);
+    doc.roundedRect(15, y - 3, doc.internal.pageSize.getWidth() - 30, 14, 2, 2, 'F');
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
-    doc.text('CLIENTE', 15, y); y += 5;
-    doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
-    doc.text(data.customer.name, 15, y); y += 4;
-    if (data.customer.rut) { doc.text(`RUT: ${data.customer.rut}`, 15, y); y += 4; }
-    if (data.customer.address) { doc.text(`Dirección: ${data.customer.address}`, 15, y); y += 4; }
+    doc.setTextColor(...C.textDark);
+    doc.text('CLIENTE', 20, y + 2);
+    doc.setFont('helvetica', 'normal');
+    doc.text(data.customer.name, 20, y + 7);
+    if (data.customer.rut) {
+      doc.text(`RUT: ${data.customer.rut}`, 20, y + 12);
+    }
+    if (data.customer.address) {
+      doc.text(data.customer.address, 20, y + 17);
+    }
+    y += 20;
   }
 
-  // Items table
+  // Items table (guide-specific columns)
   y += 3;
   const body = data.items.map(item => [
     item.name,
@@ -631,9 +853,19 @@ export async function generateDeliveryGuidePDF(data: DeliveryGuideData): Promise
     head: [['Producto', 'SKU', 'Cant.', 'Unidad', 'Observación']],
     body,
     theme: 'grid',
-    headStyles: { fillColor: COLORS.accent, textColor: 255, fontSize: 8, fontStyle: 'bold' },
-    bodyStyles: { fontSize: 8, textColor: COLORS.textDark },
-    alternateRowStyles: { fillColor: [249, 250, 251] },
+    headStyles: {
+      fillColor: C.accent,
+      textColor: [255, 255, 255],
+      fontStyle: 'bold',
+      fontSize: 8,
+    },
+    bodyStyles: {
+      fontSize: 8,
+      textColor: C.textDark,
+    },
+    alternateRowStyles: {
+      fillColor: C.lightBg,
+    },
     columnStyles: {
       0: { cellWidth: 55 },
       1: { cellWidth: 30 },
@@ -648,15 +880,15 @@ export async function generateDeliveryGuidePDF(data: DeliveryGuideData): Promise
 
   // Transport info
   if (data.transport || data.driver || data.plate) {
-    doc.setFillColor(...COLORS.lightBg);
-    doc.roundedRect(15, y, 180, 22, 2, 2, 'F');
-    doc.setDrawColor(...COLORS.border);
-    doc.roundedRect(15, y, 180, 22, 2, 2, 'S');
+    doc.setFillColor(...C.lightBg);
+    doc.roundedRect(15, y, doc.internal.pageSize.getWidth() - 30, 22, 2, 2, 'F');
+    doc.setDrawColor(...C.border);
+    doc.roundedRect(15, y, doc.internal.pageSize.getWidth() - 30, 22, 2, 2, 'S');
 
     let ty = y + 5;
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
-    doc.setTextColor(...COLORS.textDark);
+    doc.setTextColor(...C.textDark);
     doc.text('TRANSPORTE', 20, ty);
     ty += 6;
 
@@ -673,15 +905,26 @@ export async function generateDeliveryGuidePDF(data: DeliveryGuideData): Promise
     y += 2;
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
-    doc.setTextColor(...COLORS.textMuted);
+    doc.setTextColor(...C.textMuted);
     doc.text('Notas:', 15, y);
     y += 4;
     doc.setFontSize(7);
-    const noteLines = doc.splitTextToSize(data.notes, 180);
+    const noteLines = doc.splitTextToSize(data.notes, doc.internal.pageSize.getWidth() - 30);
     doc.text(noteLines, 15, y);
   }
 
-  buildFooter(doc, data);
+  // Footer with custom footer text
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  doc.setDrawColor(...C.border);
+  doc.setLineWidth(0.3);
+  doc.line(15, pageHeight - 20, pageWidth - 15, pageHeight - 20);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7);
+  doc.setTextColor(...C.textMuted);
+  doc.text(settings.footer_text || 'Documento generado por Yellow ERP', 15, pageHeight - 14);
+  doc.text(`Verificar: ${BASE_URL}/view/guia_despacho/${data.id}`, pageWidth - 15, pageHeight - 14, { align: 'right' });
+
   return doc;
 }
 
