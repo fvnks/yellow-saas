@@ -1,5 +1,8 @@
 services:
   web:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: fvnkscl/yellow-saas:main
     container_name: yellow-saas-web
     restart: unless-stopped
