@@ -140,6 +140,31 @@ export function SupportWidget() {
     }
   };
 
+  const refreshTicket = async (ticketId: string) => {
+    if (!companyId || !open) return;
+    try {
+      const res = await fetch(`/api/companies/${companyId}/support/tickets/${ticketId}`, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setTicket(prev => {
+          if (!prev || prev.id !== ticketId) return prev;
+          return data.data;
+        });
+      }
+    } catch {
+      // noop
+    }
+  };
+
+  useEffect(() => {
+    if (!open || view !== 'chat' || !ticket) return;
+    const interval = setInterval(() => refreshTicket(ticket.id), 10000);
+    return () => clearInterval(interval);
+  }, [open, view, ticket?.id]);
+
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.subject.trim()) { toast.error('Asunto es requerido'); return; }
