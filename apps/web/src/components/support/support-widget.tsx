@@ -97,6 +97,10 @@ export function SupportWidget() {
   }, [companyId]);
 
   useEffect(() => {
+    if (open) closeWidget();
+  }, [pathname]);
+
+  useEffect(() => {
     if (!chatBottomRef.current) return;
     chatBottomRef.current.scrollTop = chatBottomRef.current.scrollHeight;
   }, [ticket?.messages?.length]);
