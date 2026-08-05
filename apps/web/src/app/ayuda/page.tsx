@@ -1,75 +1,35 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Ticket, Search, LifeBuoy, BookOpen, MessageSquare } from 'lucide-react';
 
 interface FaqItem {
+  id: string;
   question: string;
   answer: string;
   category: string;
 }
 
-const faqItems: FaqItem[] = [
-  {
-    category: 'Cuenta',
-    question: '¿Cómo puedo recuperar mi contraseña?',
-    answer: 'En la pantalla de inicio de sesión haz clic en "¿Olvidaste tu contraseña?" e ingresa tu correo. Recibirás un enlace para restablecerla. Si no recibes el correo, revisa tu bandeja de spam o contacta con soporte.',
-  },
-  {
-    category: 'Cuenta',
-    question: '¿Cómo agrego o elimino usuarios en mi empresa?',
-    answer: 'Ve al módulo ERP → Configuración → Usuarios. Allí podrás invitar nuevos usuarios con roles específicos o desactivar usuarios existentes. Los roles controlan qué módulos y acciones puede ver cada usuario.',
-  },
-  {
-    category: 'Módulos',
-    question: '¿Cómo activo un módulo adicional?',
-    answer: 'Desde "Mi Cuenta" → "Módulos Adicionales" verás el catálogo de módulos disponibles. Actívalos y quedarán disponibles en el selector de módulos. Algunos módulos requieren contacto con soporte para su configuración inicial.',
-  },
-  {
-    category: 'Módulos',
-    question: 'No encuentro un módulo en mi selector de módulos',
-    answer: 'El selector muestra solo los módulos activos para tu plan. Verifica en "Mi Cuenta" → "Módulos Adicionales" que el módulo esté activo. Si sigue sin aparecer, cierra sesión y vuelve a entrar.',
-  },
-  {
-    category: 'Inventario',
-    question: '¿Cómo ajusto el stock de un producto?',
-    answer: 'En el módulo ERP → Inventario → "Ajustes de Stock" puedes crear un ajuste manual indicando el motivo y el nuevo stock. Los ajustes quedan registrados en el historial para auditoría.',
-  },
-  {
-    category: 'Inventario',
-    question: '¿Qué significa stock negativo?',
-    answer: 'Un stock negativo indica que se registraron más salidas que entradas del producto. Revisa los movimientos del producto y realiza un ajuste de stock con la cantidad correcta.',
-  },
-  {
-    category: 'Ventas',
-    question: '¿Cómo emito una boleta o factura?',
-    answer: 'En el módulo ERP → Ventas → "Nuevo Documento" selecciona el tipo de documento (boleta o factura), agrega el cliente y los productos. Completa los datos de pago y guarda el documento.',
-  },
-  {
-    category: 'Ventas',
-    question: '¿Puedo anular o corregir una venta ya emitida?',
-    answer: 'Sí. Desde el listado de ventas, abre el documento y usa la opción de anulación o nota de crédito. El sistema mantiene un registro de las correcciones para fines contables.',
-  },
-  {
-    category: 'Reportes',
-    question: '¿Cómo descargo un reporte?',
-    answer: 'La mayoría de los listados tienen un botón de exportación (CSV o PDF). Abre el módulo correspondiente, aplica tus filtros y usa el botón de exportar para descargar la información.',
-  },
-  {
-    category: 'Soporte',
-    question: '¿Cómo contacto con soporte?',
-    answer: 'Crea un ticket desde "Mis Tickets" en este mismo módulo de Ayuda. Describe el problema con el mayor detalle posible: qué módulo usabas, qué acción realizabas y qué error viste. Nuestro equipo te atenderá a la brevedad.',
-  },
-];
-
-const categories = ['Todos', 'Cuenta', 'Módulos', 'Inventario', 'Ventas', 'Reportes', 'Soporte'];
-
 export default function AyudaPage() {
+  const [faqItems, setFaqItems] = useState<FaqItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('Todos');
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openId, setOpenId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/support/faq')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) setFaqItems(data.data || []);
+      })
+      .catch(err => console.error('Failed to load FAQ:', err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const categories = ['Todos', ...Array.from(new Set(faqItems.map(i => i.category)))];
 
   const filtered = faqItems.filter(item => {
     const matchCategory = category === 'Todos' || item.category === category;
@@ -130,7 +90,15 @@ export default function AyudaPage() {
       </div>
 
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="divide-y divide-slate-100">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="px-6 py-5">
+                <div className="h-4 w-1/3 bg-slate-200 rounded animate-pulse" />
+              </div>
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="p-12 text-center">
             <BookOpen className="w-10 h-10 text-slate-300 mx-auto mb-3" />
             <p className="text-sm text-slate-500">No se encontraron resultados</p>
@@ -143,11 +111,11 @@ export default function AyudaPage() {
           </div>
         ) : (
           filtered.map((item, index) => {
-            const isOpen = openIndex === index;
+            const isOpen = openId === item.id;
             return (
-              <div key={index} className="border-b border-slate-100 last:border-b-0">
+              <div key={item.id || index} className="border-b border-slate-100 last:border-b-0">
                 <button
-                  onClick={() => setOpenIndex(isOpen ? null : index)}
+                  onClick={() => setOpenId(isOpen ? null : item.id)}
                   className={`w-full flex items-center justify-between px-6 py-4 text-left transition-colors ${
                     isOpen ? 'bg-slate-50/80' : 'hover:bg-slate-50'
                   }`}

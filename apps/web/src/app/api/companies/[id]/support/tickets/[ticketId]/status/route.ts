@@ -18,7 +18,7 @@ async function getUserFromRequest(request: NextRequest): Promise<{ id: string; c
   }
 }
 
-export async function GET(request: NextRequest, { params }: { params: { id: string; ticketId: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string; ticketId: string } }) {
   try {
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
@@ -27,36 +27,28 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     if (!user) return errorResponse('No autorizado', 401);
     if (user.company_id !== companyId) return errorResponse('Acceso denegado', 403);
 
+    const body = await request.json();
+    const { status } = body;
+    if (!['open', 'resolved'].includes(status)) {
+      return errorResponse('Estado no permitido. Solo puedes reabrirlo o marcarlo como resuelto.', 400);
+    }
+
     const { rows } = await query(
-      `SELECT t.id, t.subject, t.status, t.priority, t.created_at, t.updated_at,
-        p.full_name as created_by_name,
-        sa.name as assigned_to_name, sa.email as assigned_to_email
-       FROM support_tickets t
-       LEFT JOIN profiles p ON p.id = t.created_by
-       LEFT JOIN super_admins sa ON sa.id = t.assigned_to
-       WHERE t.id = $1 AND t.company_id = $2`,
+      'SELECT id, status FROM support_tickets WHERE id = $1 AND company_id = $2',
       [params.ticketId, companyId]
     );
-
     if (rows.length === 0) return errorResponse('Ticket no encontrado', 404);
 
-    await query('UPDATE support_tickets SET company_last_read_at = now() WHERE id = $1', [params.ticketId]);
+    if (status === 'open' && !['resolved', 'closed'].includes(rows[0].status)) {
+      return errorResponse('El ticket ya está abierto', 400);
+    }
+    if (status === 'resolved' && rows[0].status === 'resolved') {
+      return errorResponse('El ticket ya está resuelto', 400);
+    }
 
-    const messagesResult = await query(
-      `SELECT tm.id, tm.sender_type, tm.message, tm.created_at,
-        CASE
-          WHEN tm.sender_type = 'super_admin' THEN sa.name
-          ELSE p.full_name
-        END as sender_name
-       FROM ticket_messages tm
-       LEFT JOIN super_admins sa ON sa.id = tm.sender_id AND tm.sender_type = 'super_admin'
-       LEFT JOIN profiles p ON p.id = tm.sender_id AND tm.sender_type = 'company'
-       WHERE tm.ticket_id = $1
-       ORDER BY tm.created_at ASC`,
-      [params.ticketId]
-    );
+    await query('UPDATE support_tickets SET status = $1, updated_at = now() WHERE id = $2', [status, params.ticketId]);
 
-    return successResponse({ ...rows[0], messages: messagesResult.rows });
+    return successResponse({ success: true, status });
   } catch (e: any) {
     return errorResponse(e.message, 500);
   }

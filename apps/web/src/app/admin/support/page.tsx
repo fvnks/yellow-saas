@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Headphones, Plus, Search, Building2, AlertTriangle, CheckCircle, Clock, MessageSquare, Send, X, UserCheck } from 'lucide-react';
+import { Headphones, Plus, Search, Building2, AlertTriangle, CheckCircle, Clock, MessageSquare, Send, X, UserCheck, Star } from 'lucide-react';
 
 interface Ticket {
   id: string;
@@ -19,6 +19,7 @@ interface Ticket {
 
 interface TicketDetail extends Ticket {
   messages: { id: string; sender_type: string; sender_name: string; message: string; created_at: string }[];
+  feedback: { rating: number; comment: string | null; created_at: string } | null;
 }
 
 interface Company {
@@ -273,6 +274,23 @@ export default function AdminSupportPage() {
             ))
           )}
         </div>
+
+        {selectedTicket.feedback && (
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-4">
+            <div className="flex items-center gap-1">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Star key={i} className={`w-5 h-5 ${i <= selectedTicket.feedback!.rating ? 'text-amber-400 fill-amber-400' : 'text-slate-600'}`} />
+              ))}
+            </div>
+            <div className="flex-1">
+              <p className="text-xs font-semibold text-white">Valoración del cliente: {selectedTicket.feedback.rating}/5</p>
+              {selectedTicket.feedback.comment && (
+                <p className="text-xs text-slate-400 mt-0.5">{selectedTicket.feedback.comment}</p>
+              )}
+            </div>
+            <p className="text-[10px] text-slate-500">{new Date(selectedTicket.feedback.created_at).toLocaleString('es-CL')}</p>
+          </div>
+        )}
 
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-3">
           <input

@@ -18,7 +18,7 @@ async function getUserFromRequest(request: NextRequest): Promise<{ id: string; c
   }
 }
 
-export async function GET(request: NextRequest, { params }: { params: { id: string; ticketId: string } }) {
+export async function GET(request: NextRequest) {
   try {
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
@@ -27,36 +27,40 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     if (!user) return errorResponse('No autorizado', 401);
     if (user.company_id !== companyId) return errorResponse('Acceso denegado', 403);
 
-    const { rows } = await query(
-      `SELECT t.id, t.subject, t.status, t.priority, t.created_at, t.updated_at,
-        p.full_name as created_by_name,
-        sa.name as assigned_to_name, sa.email as assigned_to_email
+    const counts = await query(
+      `SELECT
+        COUNT(*) FILTER (WHERE t.status IN ('open', 'in_progress')) as open,
+        COUNT(*) FILTER (WHERE EXISTS (
+          SELECT 1 FROM ticket_messages tm
+          WHERE tm.ticket_id = t.id AND tm.sender_type = 'super_admin'
+          AND tm.created_at > COALESCE(t.company_last_read_at, t.created_at)
+        )) as unread
        FROM support_tickets t
-       LEFT JOIN profiles p ON p.id = t.created_by
-       LEFT JOIN super_admins sa ON sa.id = t.assigned_to
-       WHERE t.id = $1 AND t.company_id = $2`,
-      [params.ticketId, companyId]
+       WHERE t.company_id = $1`,
+      [companyId]
     );
 
-    if (rows.length === 0) return errorResponse('Ticket no encontrado', 404);
-
-    await query('UPDATE support_tickets SET company_last_read_at = now() WHERE id = $1', [params.ticketId]);
-
-    const messagesResult = await query(
-      `SELECT tm.id, tm.sender_type, tm.message, tm.created_at,
-        CASE
-          WHEN tm.sender_type = 'super_admin' THEN sa.name
-          ELSE p.full_name
-        END as sender_name
-       FROM ticket_messages tm
-       LEFT JOIN super_admins sa ON sa.id = tm.sender_id AND tm.sender_type = 'super_admin'
-       LEFT JOIN profiles p ON p.id = tm.sender_id AND tm.sender_type = 'company'
-       WHERE tm.ticket_id = $1
-       ORDER BY tm.created_at ASC`,
-      [params.ticketId]
+    const recent = await query(
+      `SELECT t.id, t.subject, t.status,
+        (SELECT MAX(tm.created_at) FROM ticket_messages tm
+          WHERE tm.ticket_id = t.id AND tm.sender_type = 'super_admin'
+          AND tm.created_at > COALESCE(t.company_last_read_at, t.created_at)) as last_reply_at
+       FROM support_tickets t
+       WHERE t.company_id = $1
+       AND EXISTS (
+         SELECT 1 FROM ticket_messages tm
+         WHERE tm.ticket_id = t.id AND tm.sender_type = 'super_admin'
+         AND tm.created_at > COALESCE(t.company_last_read_at, t.created_at)
+       )
+       ORDER BY last_reply_at DESC
+       LIMIT 10`,
+      [companyId]
     );
 
-    return successResponse({ ...rows[0], messages: messagesResult.rows });
+    return successResponse({
+      ...counts.rows[0],
+      recent: recent.rows,
+    });
   } catch (e: any) {
     return errorResponse(e.message, 500);
   }

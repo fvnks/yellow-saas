@@ -37,9 +37,16 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       ORDER BY tm.created_at ASC
     `, [params.id]);
 
+    const feedbackResult = await query(`
+      SELECT rating, comment, created_at
+      FROM ticket_feedback
+      WHERE ticket_id = $1
+    `, [params.id]);
+
     return successResponse({
       ...ticketResult.rows[0],
       messages: messagesResult.rows,
+      feedback: feedbackResult.rows[0] || null,
     });
   } catch (err) {
     console.error('Support ticket detail error:', err);

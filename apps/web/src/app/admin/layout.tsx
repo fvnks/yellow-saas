@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { toast, Toaster } from 'sonner';
 import {
   Shield, Building2, Users, KeyRound, Settings, LogOut,
-  LayoutDashboard, Menu, X, UserCog, Headphones, Bell, CreditCard, ScrollText
+  LayoutDashboard, Menu, X, UserCog, Headphones, Bell, CreditCard, ScrollText, BookOpen
 } from 'lucide-react';
 import { useAuthToken } from '@/hooks/use-auth-token';
 
@@ -20,6 +20,7 @@ const sidebarItems = [
   ]},
   { label: 'Operaciones', items: [
     { title: 'Soporte', path: '/admin/support', icon: Headphones },
+    { title: 'Centro de Ayuda', path: '/admin/support/faq', icon: BookOpen },
     { title: 'Notificaciones', path: '/admin/notifications', icon: Bell },
     { title: 'Billing', path: '/admin/billing', icon: CreditCard },
   ]},
