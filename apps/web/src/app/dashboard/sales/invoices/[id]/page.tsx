@@ -5,8 +5,10 @@ import { ArrowLeft, Printer, Download, CreditCard, User, Calendar, FileText } fr
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
+import { getCompanyIdFromToken } from '@/lib/api-client';
 import { generateBoletaPDF } from '@/lib/pdf-design';
 import { usePrintDocument } from '@/components/print/use-print';
+import { type DocumentSettings, mergeSettings, DEFAULT_DOCUMENT_SETTINGS } from '@/lib/document-settings';
 
 interface InvoiceItem {
   id: string;
@@ -50,6 +52,7 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
   const { id } = params;
   const [invoice, setInvoice] = useState<InvoiceDetail | null>(null);
   const [company, setCompany] = useState<any>(null);
+  const [settings, setSettings] = useState<DocumentSettings>(DEFAULT_DOCUMENT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const { print } = usePrintDocument();
 
@@ -58,12 +61,29 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
     Promise.all([
       api.getInvoice(id),
       api.getCompany().catch(() => null),
-    ]).then(([data, companyRes]) => {
+      fetchDocumentSettings(),
+    ]).then(([data, companyRes, settingsRes]) => {
       setInvoice(data as unknown as InvoiceDetail);
       if (companyRes) setCompany(companyRes);
+      if (settingsRes) setSettings(settingsRes);
       setLoading(false);
     }).catch(() => setLoading(false));
   }, [id]);
+
+  async function fetchDocumentSettings() {
+    try {
+      const companyId = getCompanyIdFromToken();
+      if (!companyId) return;
+      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+      if (!token) return;
+      const res = await fetch(`/api/companies/${companyId}/settings/documents`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.success) return mergeSettings(data.data);
+    } catch {}
+    return DEFAULT_DOCUMENT_SETTINGS;
+  }
 
   const handlePrint = () => {
     if (!invoice) return;
@@ -92,6 +112,7 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
         discount: item.discount_percent, tax_rate: item.tax_rate || 19, total: item.line_total,
       })),
       subtotal, tax_amount: tax, total, notes: invoice.notes,
+      settings,
     });
   };
 
@@ -124,6 +145,7 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
       tax_amount: tax,
       total,
       notes: invoice.notes,
+      settings,
     });
     doc.save(`${invoice.invoice_number}.pdf`);
   };

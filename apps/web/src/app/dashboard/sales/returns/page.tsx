@@ -4,7 +4,9 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
 import { Plus, Search, Eye, CheckCircle, X, RotateCcw, ArrowLeft, Download } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { getCompanyIdFromToken } from '@/lib/api-client';
 import { generateReturnNotePDF } from '@/lib/pdf-design';
+import { type DocumentSettings, mergeSettings, DEFAULT_DOCUMENT_SETTINGS } from '@/lib/document-settings';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
@@ -41,6 +43,7 @@ export default function SalesReturnsPage() {
   const [customers, setCustomers] = useState<{ id: string; name: string; tax_id: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [company, setCompany] = useState<any>(null);
+  const [settings, setSettings] = useState<DocumentSettings>(DEFAULT_DOCUMENT_SETTINGS);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -67,6 +70,15 @@ export default function SalesReturnsPage() {
   };
 
   useEffect(() => {
+    const companyId = getCompanyIdFromToken();
+    if (companyId) {
+      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+      if (token) {
+        fetch(`/api/companies/${companyId}/settings/documents`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }).then(r => r.json()).then(d => { if (d.success) setSettings(mergeSettings(d.data)); }).catch(() => {});
+      }
+    }
     const api = getApiClient();
     Promise.all([
       api.getCustomerReturns({ limit: '200' }),
@@ -413,8 +425,9 @@ export default function SalesReturnsPage() {
                       total: item.quantity * item.unit_price,
                     })),
                     reason: selectedReturn.reason || undefined,
-                    condition: viewReturnItems[0]?.condition || undefined,
-                  });
+                     condition: viewReturnItems[0]?.condition || undefined,
+                     settings,
+                   });
                   doc.save(`${selectedReturn.return_number}.pdf`);
                 }}
                 className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"

@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
-import { Settings, Building2, Users, CreditCard, Bell, Shield, Globe, Save, Plus, Trash2, Mail, Key, ShieldCheck, Zap, Pencil, X, Check, ChevronRight, Webhook } from 'lucide-react';
+import { Settings, Building2, Users, CreditCard, Bell, Shield, Globe, Save, Plus, Trash2, Mail, Key, ShieldCheck, Zap, Pencil, X, Check, ChevronRight, Webhook, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import { getApiClient } from '@/lib/api-client';
 import RolesTab from './tabs/RolesTab';
 import SupportAccessTab from './tabs/SupportAccessTab';
 import IntegrationsTab from './tabs/IntegrationsTab';
+import { DocumentsTab } from './tabs/DocumentsTab';
 
 interface UserProfile {
   id: string;
@@ -37,6 +38,7 @@ const settingsCategories: Category[] = [
     label: 'General',
     items: [
       { id: 'empresa', label: 'Empresa', icon: Building2 },
+      { id: 'documentos', label: 'Documentos', icon: FileText },
     ],
   },
   {
@@ -85,7 +87,7 @@ export default function SettingsPage() {
   const [company, setCompany] = useState({
     id: '', name: '', tax_id: '', razon_social: '', giro: '',
     email: '', phone: '', address: '', city: '', region: '', logo_url: '',
-    plan: 'free', status: 'active', userRole: 'member',
+    plan: 'free', status: 'active', userRole: 'member', canManageSettings: false,
   });
 
   useEffect(() => {
@@ -102,6 +104,8 @@ export default function SettingsPage() {
       } catch {}
     }
 
+    const canManageSettings = ['owner', 'admin'].includes(userRole);
+
     const api = getApiClient();
     api.getCompany().then((data: any) => {
       setCompany({
@@ -111,6 +115,7 @@ export default function SettingsPage() {
         address: data.address || '', city: data.city || '', region: data.region || '',
         logo_url: data.logo_url || '', plan: data.plan || 'free', status: data.status || 'active',
         userRole,
+        canManageSettings,
       });
     }).catch(() => {});
   }, []);
@@ -147,7 +152,7 @@ export default function SettingsPage() {
                   </button>
                   {expandedCategories.includes(category.id) && (
                     <div className="ml-3 mt-1 space-y-0.5">
-                      {category.items.map(item => (
+                      {category.items.filter(item => item.id !== 'documentos' || company.canManageSettings).map(item => (
                         <button
                           key={item.id}
                           onClick={() => setActiveTab(item.id)}
@@ -181,6 +186,8 @@ export default function SettingsPage() {
               </Button>
             </div>
           )}
+
+          {activeTab === 'documentos' && company.canManageSettings && <DocumentsTab />}
 
           {activeTab === 'roles' && <RolesTab />}
 

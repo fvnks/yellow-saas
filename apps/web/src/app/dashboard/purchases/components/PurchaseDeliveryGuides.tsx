@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import { Search, Truck, MoreVertical, Download, Printer } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { usePrintDocument } from '@/components/print/use-print';
+import { getCompanyIdFromToken } from '@/lib/api-client';
+import { type DocumentSettings, mergeSettings, DEFAULT_DOCUMENT_SETTINGS } from '@/lib/document-settings';
 
 interface DeliveryGuide {
   id: string;
@@ -51,25 +54,6 @@ function generateGuideXml(g: DeliveryGuide): string {
 </DTE>`;
 }
 
-function openPdfPreview(g: DeliveryGuide) {
-  const itemList = (g.items || []).map(it => `<div class="row"><span>${it.product?.name || 'N/A'} (x${it.quantity})</span></div>`).join('');
-  const html = `<!DOCTYPE html><html><head><title>GD ${g.guide_number}</title>
-  <style>body{font-family:Arial,sans-serif;padding:40px;max-width:800px;margin:0 auto}
-  h1{font-size:20px;border-bottom:2px solid #333;padding-bottom:8px}
-  .row{display:flex;justify-content:space-between;margin:4px 0}
-  @media print{body{padding:20px}}</style></head><body>
-  <h1>GUÍA DE DESPACHO N° ${g.guide_number}</h1>
-  <div class="row"><span><b>Bodega:</b> ${g.warehouse?.name || 'N/A'}</span><span><b>Fecha:</b> ${g.shipping_date}</span></div>
-  <div class="row"><span><b>Transporte:</b> ${g.transport || 'N/A'}</span><span><b>Patente:</b> ${g.vehicle_plate || 'N/A'}</span></div>
-  <div class="row"><span><b>Chofer:</b> ${g.driver_name || 'N/A'}</span></div>
-  <div class="row"><span><b>Dirección destino:</b> ${g.shipping_address || 'N/A'}</span></div>
-  <h3 style="margin-top:16px">Items</h3>
-  ${itemList || '<p>Sin items</p>'}
-  <script>window.onload=function(){window.print()}</script></body></html>`;
-  const w = window.open('', '_blank');
-  if (w) { w.document.write(html); w.document.close(); }
-}
-
 function downloadXml(filename: string, xml: string) {
   const blob = new Blob([xml], { type: 'application/xml' });
   const url = URL.createObjectURL(blob);
@@ -82,15 +66,49 @@ export default function PurchaseDeliveryGuides() {
   const [guides, setGuides] = useState<DeliveryGuide[]>([]);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [settings, setSettings] = useState<DocumentSettings>(DEFAULT_DOCUMENT_SETTINGS);
+  const { print } = usePrintDocument();
 
   useEffect(() => {
-    const cid = localStorage.getItem('company_id');
-    if (!cid) return;
-    fetch(`/api/companies/${cid}/delivery-guides`)
-      .then(r => r.json())
-      .then(d => setGuides(d.data || []))
-      .catch(() => {});
+    const companyId = getCompanyIdFromToken();
+    if (!companyId) return;
+    Promise.all([
+      fetch(`/api/companies/${companyId}/delivery-guides`).then(r => r.json()).then(d => setGuides(d.data || [])).catch(() => {}),
+      fetch(`/api/companies/${companyId}/settings/documents`, {
+        headers: { Authorization: `Bearer ${document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1] || ''}` },
+      }).then(r => r.json()).then(d => { if (d.success) setSettings(mergeSettings(d.data)); }).catch(() => {}),
+    ]);
   }, []);
+
+  const handlePrintGuide = (g: DeliveryGuide) => {
+    print('delivery-guide', {
+      id: g.id,
+      number: g.guide_number,
+      type: 'guia_despacho',
+      date: g.shipping_date,
+      status: g.status,
+      settings,
+      company: { name: 'Empresa' },
+      customer: g.warehouse ? { name: g.warehouse.name, tax_id: '' } : undefined,
+      items: (g.items || []).map(item => ({
+        name: item.product?.name || '',
+        sku: item.product?.sku || '',
+        quantity: item.quantity,
+        unit_price: 0,
+        discount: 0,
+        tax_rate: 0,
+        total: 0,
+        observation: item.observation,
+      })),
+      subtotal: 0,
+      tax_amount: 0,
+      total: 0,
+      transport: g.transport,
+      driver_name: g.driver_name,
+      vehicle_plate: g.vehicle_plate,
+      shipping_address: g.shipping_address,
+    } as any);
+  };
 
   const filtered = guides.filter(g => {
     const matchSearch = g.guide_number.toLowerCase().includes(search.toLowerCase()) ||
@@ -167,7 +185,7 @@ export default function PurchaseDeliveryGuides() {
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-44">
-                        <DropdownMenuItem onClick={() => openPdfPreview(g)}>
+                        <DropdownMenuItem onClick={() => handlePrintGuide(g)}>
                           <Printer className="w-4 h-4 mr-2 text-slate-500" />
                           Vista previa PDF
                         </DropdownMenuItem>

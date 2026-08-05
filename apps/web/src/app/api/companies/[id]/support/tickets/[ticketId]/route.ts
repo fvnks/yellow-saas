@@ -47,11 +47,17 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         CASE
           WHEN tm.sender_type = 'super_admin' THEN sa.name
           ELSE p.full_name
-        END as sender_name
+        END as sender_name,
+        COALESCE(array_agg(
+          json_build_object('id', att.id, 'name', att.name, 'mime_type', att.mime_type, 'file_size', att.file_size)
+          ORDER BY att.created_at
+        ) FILTER (WHERE att.id IS NOT NULL), '{}'::json[]) as attachments
        FROM ticket_messages tm
        LEFT JOIN super_admins sa ON sa.id = tm.sender_id AND tm.sender_type = 'super_admin'
        LEFT JOIN profiles p ON p.id = tm.sender_id AND tm.sender_type = 'company'
+       LEFT JOIN ticket_attachments att ON att.message_id = tm.id
        WHERE tm.ticket_id = $1
+       GROUP BY tm.id, tm.sender_type, tm.message, tm.created_at, sa.name, p.full_name
        ORDER BY tm.created_at ASC`,
       [params.ticketId]
     );

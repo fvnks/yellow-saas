@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import { ArrowLeft, Printer, Download, Truck, User, Calendar, MapPin, Package } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { getCompanyIdFromToken } from '@/lib/api-client';
 import { generateDeliveryGuidePDF } from '@/lib/pdf-design';
 import { usePrintDocument } from '@/components/print/use-print';
+import { type DocumentSettings, mergeSettings, DEFAULT_DOCUMENT_SETTINGS } from '@/lib/document-settings';
 
 interface DeliveryGuideItem {
   id: string;
@@ -42,18 +44,36 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
   const { id } = params;
   const [guide, setGuide] = useState<DeliveryGuideDetail | null>(null);
   const [company, setCompany] = useState<any>(null);
+  const [settings, setSettings] = useState<DocumentSettings>(DEFAULT_DOCUMENT_SETTINGS);
   const [loading, setLoading] = useState(true);
 
   const { print } = usePrintDocument();
+
+  async function fetchDocumentSettings() {
+    try {
+      const companyId = getCompanyIdFromToken();
+      if (!companyId) return DEFAULT_DOCUMENT_SETTINGS;
+      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+      if (!token) return DEFAULT_DOCUMENT_SETTINGS;
+      const res = await fetch(`/api/companies/${companyId}/settings/documents`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.success) return mergeSettings(data.data);
+    } catch {}
+    return DEFAULT_DOCUMENT_SETTINGS;
+  }
 
   useEffect(() => {
     const api = getApiClient();
     Promise.all([
       api.getDeliveryGuide(id),
       api.getCompany().catch(() => null),
-    ]).then(([data, companyRes]) => {
+      fetchDocumentSettings(),
+    ]).then(([data, companyRes, settingsRes]) => {
       setGuide(data as unknown as DeliveryGuideDetail);
       if (companyRes) setCompany(companyRes);
+      if (settingsRes) setSettings(settingsRes);
       setLoading(false);
     }).catch(() => setLoading(false));
   }, [id]);
@@ -81,6 +101,7 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
       subtotal: 0, tax_amount: 0, total: 0,
       transport: guide.transport, driver_name: guide.driver_name,
       vehicle_plate: guide.vehicle_plate, shipping_address: guide.shipping_address,
+      settings,
     });
   };
 
@@ -112,6 +133,7 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
       driver: guide.driver_name,
       plate: guide.vehicle_plate,
       shipping_date: guide.created_at?.split('T')[0] || '',
+      settings,
     });
     doc.save(`${guide.guide_number}.pdf`);
   };

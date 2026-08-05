@@ -15,7 +15,7 @@ export async function GET(
         docQuery = `
           SELECT i.*, c.name as company_name, c.tax_id as company_tax_id, c.razon_social, c.giro,
                  c.address as company_address, c.city as company_city, c.region as company_region,
-                 c.phone as company_phone, c.email as company_email, c.logo_url as company_logo_url,
+                 c.phone as company_phone, c.email as company_email, c.logo_url as company_logo_url, c.document_settings,
                  cu.name as customer_name, cu.tax_id as customer_tax_id, cu.address as customer_address,
                  cu.email as customer_email, cu.phone as customer_phone,
                  json_agg(json_build_object(
@@ -35,7 +35,7 @@ export async function GET(
         docQuery = `
           SELECT sq.*, c.name as company_name, c.tax_id as company_tax_id, c.razon_social, c.giro,
                  c.address as company_address, c.city as company_city, c.region as company_region,
-                 c.phone as company_phone, c.email as company_email, c.logo_url as company_logo_url,
+                 c.phone as company_phone, c.email as company_email, c.logo_url as company_logo_url, c.document_settings,
                  cu.name as customer_name, cu.tax_id as customer_tax_id, cu.address as customer_address,
                  cu.email as customer_email, cu.phone as customer_phone,
                  json_agg(json_build_object(
@@ -55,7 +55,7 @@ export async function GET(
         docQuery = `
           SELECT so.*, c.name as company_name, c.tax_id as company_tax_id, c.razon_social, c.giro,
                  c.address as company_address, c.city as company_city, c.region as company_region,
-                 c.phone as company_phone, c.email as company_email, c.logo_url as company_logo_url,
+                 c.phone as company_phone, c.email as company_email, c.logo_url as company_logo_url, c.document_settings,
                  cu.name as customer_name, cu.tax_id as customer_tax_id, cu.address as customer_address,
                  cu.email as customer_email, cu.phone as customer_phone,
                  w.name as warehouse_name,
@@ -77,7 +77,7 @@ export async function GET(
         docQuery = `
           SELECT po.*, c.name as company_name, c.tax_id as company_tax_id, c.razon_social, c.giro,
                  c.address as company_address, c.city as company_city, c.region as company_region,
-                 c.phone as company_phone, c.email as company_email, c.logo_url as company_logo_url,
+                 c.phone as company_phone, c.email as company_email, c.logo_url as company_logo_url, c.document_settings,
                  s.name as supplier_name, s.tax_id as supplier_tax_id, s.address as supplier_address,
                  s.phone as supplier_phone,
                  json_agg(json_build_object(
@@ -133,6 +133,7 @@ export async function GET(
         email: row.company_email,
         logo_url: row.company_logo_url,
       },
+      settings: row.document_settings || null,
       customer: row.customer_name ? {
         name: row.customer_name,
         tax_id: row.customer_tax_id,
