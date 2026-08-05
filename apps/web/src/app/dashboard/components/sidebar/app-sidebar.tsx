@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, LifeBuoy } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarSeparator, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
 import { sidebarItems, NavGroup } from "@/navigation/sidebar/sidebar-items";
 import SidebarFooterMenu from "./sidebar-footer-menu";
@@ -80,17 +80,6 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
               >
                 <ArrowLeft className="h-4 w-4" />
                 <span>Volver al selector</span>
-              </SidebarMenuButton>
-            </Link>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <Link href="/ayuda">
-              <SidebarMenuButton
-                tooltip="Ayuda y Soporte"
-                className="rounded-xl transition-all duration-200 text-slate-500 hover:text-slate-900"
-              >
-                <LifeBuoy className="h-4 w-4" />
-                <span>Ayuda y Soporte</span>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>

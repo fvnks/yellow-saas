@@ -71,11 +71,8 @@ export function SupportWidget() {
   const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
   const companyId = getCompanyIdFromToken();
 
-  const isErmPath = pathname.startsWith('/dashboard')
-    || pathname.startsWith('/hr')
-    || pathname.startsWith('/projects')
-    || pathname.startsWith('/mi-cuenta')
-    || pathname.startsWith('/recetas');
+  const hiddenPaths = ['/login', '/register', '/select', '/admin', '/super-admin', '/ayuda', '/terms', '/privacy', '/contact'];
+  const isHiddenPath = hiddenPaths.some(p => pathname.startsWith(p));
 
   const fetchUnread = async () => {
     if (!companyId) return;
@@ -224,14 +221,14 @@ export function SupportWidget() {
     setTicket(null);
   };
 
-  if (!isErmPath || !companyId) return null;
+  if (!companyId || isHiddenPath) return null;
 
   return (
     <>
       {/* Floating button */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 z-[60] w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-xl flex items-center justify-center transition-all active:scale-95"
+        className="fixed bottom-6 right-6 z-[60] w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-xl flex items-center justify-center transition-all duration-300 active:scale-95 hover:scale-110 hover:shadow-2xl hover:shadow-blue-600/40 hover:rotate-6"
         aria-label="Ayuda y soporte"
       >
         {open ? <X className="w-6 h-6" /> : <LifeBuoy className="w-6 h-6" />}
