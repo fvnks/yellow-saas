@@ -1,10 +1,10 @@
 'use client';
 
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Toaster } from 'sonner';
+import { toast, Toaster } from 'sonner';
 import {
   Shield, Building2, Users, KeyRound, Settings, LogOut,
   LayoutDashboard, Menu, X, UserCog, Headphones, Bell, CreditCard, ScrollText
@@ -35,7 +35,42 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
+  const [supportPending, setSupportPending] = useState(0);
+  const [supportUnassigned, setSupportUnassigned] = useState(0);
+  const seenTicketsRef = useRef<Set<string>>(new Set());
+  const initializedRef = useRef(false);
   const session = useAuthToken();
+
+  const fetchSupportSummary = async () => {
+    try {
+      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+      if (!token) return;
+      const res = await fetch('/api/super-admin/support/summary', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!data.success) return;
+      setSupportPending(Number(data.data.pending) || 0);
+      setSupportUnassigned(Number(data.data.unassigned) || 0);
+
+      const isFirstLoad = !initializedRef.current;
+      initializedRef.current = true;
+
+      const recent = data.data.recent || [];
+      for (const t of recent) {
+        if (seenTicketsRef.current.has(t.id)) continue;
+        seenTicketsRef.current.add(t.id);
+        if (!isFirstLoad) {
+          toast.info(`Nuevo ticket de soporte: ${t.subject}`, {
+            description: `${t.company_name} · ${String(t.priority).toUpperCase()} · ${new Date(t.created_at).toLocaleString('es-CL')}`,
+            action: { label: 'Ver', onClick: () => window.open('/admin/support', '_self') },
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load support summary:', err);
+    }
+  };
 
   useEffect(() => {
     if (!session || session.role_type !== 'super_admin') {
@@ -45,6 +80,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
     setUserName(session.name || 'Super Admin');
     setUserEmail(session.email || '');
+
+    fetchSupportSummary();
+    const interval = setInterval(fetchSupportSummary, 20000);
+    return () => clearInterval(interval);
   }, [router, session]);
 
   const isActive = (path: string) => {
@@ -101,6 +140,15 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                     >
                       <Icon className="w-4 h-4 flex-shrink-0" />
                       {sidebarOpen && <span className="truncate">{item.title}</span>}
+                      {item.path === '/admin/support' && supportPending > 0 && (
+                        <span className={`ml-auto inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-[9px] font-bold ${
+                          supportUnassigned > 0
+                            ? 'bg-rose-500 text-white'
+                            : 'bg-indigo-600 text-white'
+                        }`}>
+                          {supportPending}
+                        </span>
+                      )}
                     </Link>
                   );
                 })}
