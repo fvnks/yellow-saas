@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Ticket, Search, LifeBuoy, BookOpen, MessageSquare } from 'lucide-react';
 
 interface FaqItem {
@@ -141,27 +142,50 @@ export default function AyudaPage() {
             </Link>
           </div>
         ) : (
-          filtered.map((item, index) => (
-            <div key={index} className="border-b border-slate-100 last:border-b-0">
-              <button
-                onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-slate-50 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
-                    {item.category}
-                  </span>
-                  <span className="text-sm font-medium text-slate-900">{item.question}</span>
-                </div>
-                <ChevronDown className={`w-4 h-4 text-slate-400 flex-shrink-0 transition-transform ${openIndex === index ? 'rotate-180' : ''}`} />
-              </button>
-              {openIndex === index && (
-                <div className="px-6 pb-4 pl-16">
-                  <p className="text-sm text-slate-600 leading-relaxed">{item.answer}</p>
-                </div>
-              )}
-            </div>
-          ))
+          filtered.map((item, index) => {
+            const isOpen = openIndex === index;
+            return (
+              <div key={index} className="border-b border-slate-100 last:border-b-0">
+                <button
+                  onClick={() => setOpenIndex(isOpen ? null : index)}
+                  className={`w-full flex items-center justify-between px-6 py-4 text-left transition-colors ${
+                    isOpen ? 'bg-slate-50/80' : 'hover:bg-slate-50'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border transition-colors ${
+                      isOpen ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-slate-100 text-slate-600 border-slate-200'
+                    }`}>
+                      {item.category}
+                    </span>
+                    <span className={`text-sm font-medium transition-colors ${isOpen ? 'text-blue-700' : 'text-slate-900'}`}>{item.question}</span>
+                  </div>
+                  <motion.span
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    className="flex-shrink-0"
+                  >
+                    <ChevronDown className={`w-4 h-4 ${isOpen ? 'text-blue-600' : 'text-slate-400'}`} />
+                  </motion.span>
+                </button>
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-6 pb-4 pl-16">
+                        <p className="text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })
         )}
       </div>
     </div>
