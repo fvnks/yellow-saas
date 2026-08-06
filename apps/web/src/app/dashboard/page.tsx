@@ -40,12 +40,12 @@ const salesMarkers = [
 ];
 
 const kpiColors = [
-  { bg: 'bg-indigo-50 dark:bg-indigo-500/10', text: 'text-indigo-600 dark:text-indigo-400', ring: 'ring-indigo-100 dark:ring-indigo-500/20' },
-  { bg: 'bg-emerald-50 dark:bg-emerald-500/10', text: 'text-emerald-600 dark:text-emerald-400', ring: 'ring-emerald-100 dark:ring-emerald-500/20' },
-  { bg: 'bg-amber-50 dark:bg-amber-500/10', text: 'text-amber-600 dark:text-amber-400', ring: 'ring-amber-100 dark:ring-amber-500/20' },
-  { bg: 'bg-rose-50 dark:bg-rose-500/10', text: 'text-rose-600 dark:text-rose-400', ring: 'ring-rose-100 dark:ring-rose-500/20' },
-  { bg: 'bg-violet-50 dark:bg-violet-500/10', text: 'text-violet-600 dark:text-violet-400', ring: 'ring-violet-100 dark:ring-violet-500/20' },
-  { bg: 'bg-amber-50 dark:bg-amber-500/10', text: 'text-amber-600 dark:text-amber-400', ring: 'ring-amber-100 dark:ring-amber-500/20' },
+  { bg: 'bg-slate-100', text: 'text-slate-600', ring: 'ring-slate-200' },
+  { bg: 'bg-slate-100', text: 'text-slate-600', ring: 'ring-slate-200' },
+  { bg: 'bg-slate-100', text: 'text-slate-600', ring: 'ring-slate-200' },
+  { bg: 'bg-slate-100', text: 'text-slate-600', ring: 'ring-slate-200' },
+  { bg: 'bg-slate-100', text: 'text-slate-600', ring: 'ring-slate-200' },
+  { bg: 'bg-slate-100', text: 'text-slate-600', ring: 'ring-slate-200' },
 ];
 
 export default function DashboardPage() {
@@ -71,7 +71,7 @@ export default function DashboardPage() {
         </div>
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-5 bg-white dark:bg-slate-900">
+            <div key={i} className="border border-slate-200 rounded-xl shadow-sm p-5 bg-white">
               <div className="h-4 w-20 bg-slate-100 rounded animate-pulse mb-3" />
               <div className="h-8 w-28 bg-slate-200 rounded animate-pulse" />
             </div>
@@ -106,10 +106,10 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 dark:text-white">Dashboard</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Resumen general de tu empresa</p>
+          <h1 className="text-xl font-bold text-slate-900">Dashboard</h1>
+          <p className="text-sm text-slate-500 mt-1">Resumen general de tu empresa</p>
         </div>
-        <Link href="/dashboard/sales" className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:shadow-md hover:shadow-slate-900/20 active:scale-[0.98] dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100">
+        <Link href="/dashboard/sales" className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 active:scale-[0.98]">
           Nueva Venta
         </Link>
       </div>
@@ -119,16 +119,16 @@ export default function DashboardPage() {
         {kpiCards.map((kpi, i) => {
           const colors = kpiColors[i % kpiColors.length];
           return (
-            <div key={i} className="group border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-5 bg-white dark:bg-slate-900 hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300">
+            <div key={i} className="group border border-slate-200 rounded-xl shadow-sm p-5 bg-white hover:border-slate-300 transition-all duration-150">
               <div className="flex items-center justify-between mb-3">
-                <p className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{kpi.label}</p>
-                <div className={`w-9 h-9 ${colors.bg} rounded-xl flex items-center justify-center ring-1 ${colors.ring}`}>
+                <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider">{kpi.label}</p>
+                <div className={`w-9 h-9 ${colors.bg} rounded-lg flex items-center justify-center`}>
                   <kpi.icon className={`w-4 h-4 ${colors.text}`} />
                 </div>
               </div>
-              <p className="text-2xl font-bold text-slate-900 dark:text-white">{kpi.value}</p>
+              <p className="text-2xl font-bold text-slate-900">{kpi.value}</p>
               <div className="flex items-center justify-between mt-1.5">
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">{kpi.sub}</p>
+                <p className="text-[11px] text-slate-500">{kpi.sub}</p>
                 <ChangeIndicator value={kpi.change} />
               </div>
             </div>

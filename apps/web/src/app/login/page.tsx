@@ -22,16 +22,16 @@ function LoginForm() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.08, delayChildren: 0.1 },
+      transition: { staggerChildren: 0.06, delayChildren: 0.05 },
     },
   };
 
   const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 15 },
+    hidden: { opacity: 0, y: 10 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { type: 'spring', stiffness: 300, damping: 24 },
+      transition: { type: 'spring', stiffness: 400, damping: 30 },
     },
   };
 
@@ -59,7 +59,6 @@ function LoginForm() {
       document.cookie = `auth-token=${data.data.token}; path=/; max-age=${maxAge}`;
       localStorage.setItem('yellow_last_access', new Date().toISOString());
 
-      // Redirect based on role_type
       const roleType = data.data.user?.role_type;
       if (roleType === 'super_admin') {
         window.location.href = '/admin';
@@ -81,10 +80,10 @@ function LoginForm() {
       <div className="flex w-full flex-col items-center justify-center p-6 sm:p-12 lg:w-1/2">
         {/* Mobile logo */}
         <div className="lg:hidden mb-8 flex items-center gap-3">
-          <div className="w-10 h-10 bg-slate-950 rounded-xl flex items-center justify-center border border-slate-800">
-            <Building2 className="w-6 h-6 text-white" />
+          <div className="w-9 h-9 bg-slate-900 rounded-lg flex items-center justify-center">
+            <Building2 className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-bold text-slate-900">Yellow ERP</span>
+          <span className="text-lg font-semibold text-slate-900">Yellow ERP</span>
         </div>
 
         <motion.div
@@ -95,7 +94,7 @@ function LoginForm() {
         >
           {/* Title */}
           <motion.div variants={itemVariants} className="mb-10">
-            <h1 className="mb-4 text-[40px] font-bold leading-[1.05] tracking-tight text-slate-950 sm:text-[48px]">
+            <h1 className="mb-4 text-[40px] font-bold leading-[1.05] tracking-tight text-slate-900 sm:text-[48px]">
               Bienvenido
               <br />
               de vuelta
@@ -120,7 +119,7 @@ function LoginForm() {
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             {/* Email */}
             <motion.div variants={itemVariants} className="flex flex-col gap-2">
-              <label htmlFor="email" className="text-[14px] font-medium text-slate-800">
+              <label htmlFor="email" className="text-[14px] font-medium text-slate-700">
                 Correo electrónico
               </label>
               <div className="relative">
@@ -133,14 +132,14 @@ function LoginForm() {
                   placeholder="admin@yellow-erp.cl"
                   autoComplete="email"
                   required
-                  className="w-full rounded-lg border border-slate-200 bg-white pl-10 pr-4 py-3 text-[14px] text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-colors"
+                  className="w-full rounded-lg border border-slate-200 bg-white pl-10 pr-4 py-3 text-[14px] text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10 transition-colors"
                 />
               </div>
             </motion.div>
 
             {/* Password */}
             <motion.div variants={itemVariants} className="flex flex-col gap-2">
-              <label htmlFor="password" className="text-[14px] font-medium text-slate-800">
+              <label htmlFor="password" className="text-[14px] font-medium text-slate-700">
                 Contraseña
               </label>
               <div className="relative">
@@ -153,7 +152,7 @@ function LoginForm() {
                   placeholder="••••••••"
                   autoComplete="current-password"
                   required
-                  className="w-full rounded-lg border border-slate-200 bg-white pl-10 pr-12 py-3 text-[14px] font-mono text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-colors"
+                  className="w-full rounded-lg border border-slate-200 bg-white pl-10 pr-12 py-3 text-[14px] font-mono text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10 transition-colors"
                 />
                 <button
                   type="button"
@@ -174,7 +173,7 @@ function LoginForm() {
                   type="checkbox"
                   checked={remember}
                   onChange={(e) => setRemember(e.target.checked)}
-                  className="size-[18px] rounded border-slate-300 text-blue-600 focus:ring-blue-600 focus:ring-2 transition-colors"
+                  className="size-[18px] rounded border-slate-300 text-slate-900 focus:ring-slate-900 focus:ring-2 transition-colors"
                 />
                 <label htmlFor="remember" className="text-[14px] text-slate-600 cursor-pointer">
                   Mantener sesión
@@ -182,7 +181,7 @@ function LoginForm() {
               </div>
               <Link
                 href="/forgot-password"
-                className="text-[14px] font-medium text-blue-600 hover:text-blue-700 transition-colors"
+                className="text-[14px] font-medium text-slate-900 hover:text-slate-700 transition-colors"
               >
                 ¿Olvidaste tu contraseña?
               </Link>
@@ -193,7 +192,7 @@ function LoginForm() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-lg bg-blue-600 py-3 text-[14px] font-medium text-white transition-all hover:bg-blue-700 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full rounded-lg bg-slate-900 py-3 text-[14px] font-medium text-white transition-all hover:bg-slate-800 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
@@ -211,7 +210,7 @@ function LoginForm() {
           {/* Footer */}
           <motion.div variants={itemVariants} className="mt-8 text-center text-[14px] text-slate-500">
             ¿No tienes cuenta?{' '}
-            <Link href="/register" className="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+            <Link href="/register" className="font-semibold text-slate-900 hover:text-slate-700 transition-colors">
               Regístrate
             </Link>
           </motion.div>
