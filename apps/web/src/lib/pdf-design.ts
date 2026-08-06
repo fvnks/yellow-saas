@@ -234,7 +234,8 @@ async function buildDocumentHeader(doc: jsPDF, data: DocumentData): Promise<numb
     doc.setFontSize(11);
     doc.setTextColor(...C.textDark);
     const docLabel = getDocumentTitle(settings, data.type);
-    doc.text(docLabel, 15, y);
+    const docLabelWidth = doc.getTextWidth(docLabel);
+    doc.text(docLabel, (pageWidth - docLabelWidth) / 2, y);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     doc.setTextColor(...C.textMuted);
@@ -300,11 +301,12 @@ async function buildDocumentHeader(doc: jsPDF, data: DocumentData): Promise<numb
     const docLabel = getDocumentTitle(settings, data.type);
     doc.setFillColor(...C.accent);
     const badgeWidth = doc.getTextWidth(docLabel) + 16;
-    doc.roundedRect(15, y - 4, badgeWidth, 10, 2, 2, 'F');
+    const badgeX = (pageWidth - badgeWidth) / 2;
+    doc.roundedRect(badgeX, y - 4, badgeWidth, 10, 2, 2, 'F');
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(10);
     doc.setTextColor(255, 255, 255);
-    doc.text(docLabel, 23, y + 2);
+    doc.text(docLabel, badgeX + 8, y + 2);
 
     doc.setTextColor(...C.textDark);
     doc.setFontSize(9);
@@ -378,11 +380,12 @@ async function buildDocumentHeader(doc: jsPDF, data: DocumentData): Promise<numb
     const docLabel = getDocumentTitle(settings, data.type);
     doc.setFillColor(...C.primary);
     const badgeWidth = doc.getTextWidth(docLabel) + 12;
-    doc.roundedRect(15, y - 4, badgeWidth, 8, 2, 2, 'F');
+    const badgeX = (pageWidth - badgeWidth) / 2;
+    doc.roundedRect(badgeX, y - 4, badgeWidth, 8, 2, 2, 'F');
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
     doc.setTextColor(255, 255, 255);
-    doc.text(docLabel, 21, y + 1);
+    doc.text(docLabel, badgeX + 6, y + 1);
 
     doc.setTextColor(...C.textDark);
     doc.setFontSize(9);
