@@ -22,9 +22,14 @@ import { usePermissions } from "@/lib/permissions";
 function findScrollableAncestor(el: HTMLElement | null): HTMLElement | null {
   let node: HTMLElement | null = el;
   while (node && node !== document.body) {
+    // First check for the sidebar content data attribute (most reliable)
+    if (node.getAttribute("data-sidebar") === "content") {
+      return node;
+    }
+    // Fallback: check for overflow-auto/scroll styling
     const style = window.getComputedStyle(node);
     const overflowY = style.overflowY;
-    if ((overflowY === "auto" || overflowY === "scroll") && node.scrollHeight > node.clientHeight) {
+    if (overflowY === "auto" || overflowY === "scroll") {
       return node;
     }
     node = node.parentElement;
@@ -33,7 +38,8 @@ function findScrollableAncestor(el: HTMLElement | null): HTMLElement | null {
 }
 
 // Scroll an element into view inside its scrollable sidebar ancestor.
-// Uses block: 'nearest' to only scroll when the element is out of view.
+// When a dropdown opens, position the trigger near the top of the viewport
+// so the expanded content has room below it.
 function scrollIntoSidebarView(el: HTMLElement | null) {
   if (!el) return;
   const scrollContainer = findScrollableAncestor(el);
@@ -42,22 +48,19 @@ function scrollIntoSidebarView(el: HTMLElement | null) {
   const containerRect = scrollContainer.getBoundingClientRect();
   const elRect = el.getBoundingClientRect();
 
-  // If the trigger is above the visible area, scroll up
-  if (elRect.top < containerRect.top) {
-    scrollContainer.scrollTo({
-      top: scrollContainer.scrollTop - (containerRect.top - elRect.top) - 8,
-      behavior: "smooth",
-    });
-  } else if (elRect.bottom > containerRect.bottom) {
-    // If below, scroll down so the trigger sits comfortably with room for the expanded content
-    scrollContainer.scrollTo({
-      top:
-        scrollContainer.scrollTop +
-        (elRect.bottom - containerRect.bottom) +
-        8,
-      behavior: "smooth",
-    });
+  // If trigger is already fully visible, don't scroll
+  if (elRect.top >= containerRect.top && elRect.bottom <= containerRect.bottom) {
+    return;
   }
+
+  // Calculate target scroll position: trigger at top of container + small offset
+  // This ensures the expanded content has room below the trigger
+  const targetScrollTop = scrollContainer.scrollTop + (elRect.top - containerRect.top) - 8;
+
+  scrollContainer.scrollTo({
+    top: Math.max(0, targetScrollTop),
+    behavior: "smooth",
+  });
 }
 
 interface SidebarNavigationProps {
