@@ -132,7 +132,7 @@ export default function NewTransferPage() {
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   rows={2}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Motivo de la transferencia..."
                 />
               </div>
@@ -159,7 +159,7 @@ export default function NewTransferPage() {
                   </thead>
                   <tbody>
                     {items.map((item, idx) => (
-                      <tr key={idx} className="border-b border-slate-100">
+                      <tr key={idx} className="border-b border-border">
                         <td className="px-6 py-3">
                           <Select
                             value={item.product_id}
@@ -209,8 +209,8 @@ export default function NewTransferPage() {
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
-                  <Truck className="w-4 h-4 text-indigo-600" />
+                <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <Truck className="w-4 h-4 text-primary" />
                 </div>
                 <div>
                   <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Origen</p>
@@ -226,7 +226,7 @@ export default function NewTransferPage() {
                   <p className="font-medium text-foreground">{warehouses.find(w => w.id === destWarehouse)?.name || '—'}</p>
                 </div>
               </div>
-              <hr className="border-slate-100" />
+              <hr className="border-border" />
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Productos</span>
                 <span className="font-medium">{items.filter(i => i.product_id).length}</span>

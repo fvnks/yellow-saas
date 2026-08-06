@@ -145,21 +145,21 @@ export default function PayrollRunDetailPage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <div className="h-9 w-9 bg-slate-200 rounded-lg animate-pulse" />
+          <div className="h-9 w-9 bg-muted rounded-lg animate-pulse" />
           <div className="space-y-2">
-            <div className="h-6 w-48 bg-slate-200 rounded animate-pulse" />
-            <div className="h-4 w-32 bg-slate-200 rounded animate-pulse" />
+            <div className="h-6 w-48 bg-muted rounded animate-pulse" />
+            <div className="h-4 w-32 bg-muted rounded animate-pulse" />
           </div>
         </div>
         <div className="grid gap-4 md:grid-cols-4">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="h-28 bg-slate-200 rounded-xl animate-pulse" />
+            <div key={i} className="h-28 bg-muted rounded-xl animate-pulse" />
           ))}
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-6 dark:bg-slate-900 dark:border-slate-800 space-y-4">
-          <div className="h-6 w-40 bg-slate-200 rounded animate-pulse" />
+        <div className="bg-card border border-border rounded-xl p-6 dark:bg-primary dark:border-border space-y-4">
+          <div className="h-6 w-40 bg-muted rounded animate-pulse" />
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-12 w-full bg-slate-100 rounded-lg animate-pulse" />
+            <div key={i} className="h-12 w-full bg-muted rounded-lg animate-pulse" />
           ))}
         </div>
       </div>
@@ -169,11 +169,11 @@ export default function PayrollRunDetailPage() {
   if (!run) {
     return (
       <div className="space-y-6">
-        <Link href="/dashboard/payroll?tab=periods" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700">
+        <Link href="/dashboard/payroll?tab=periods" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="w-4 h-4" /> Volver
         </Link>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-12 dark:bg-slate-900 dark:border-slate-800 text-center">
-          <p className="text-sm text-slate-500">Nómina no encontrada</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-12 dark:bg-primary dark:border-border text-center">
+          <p className="text-sm text-muted-foreground">Nómina no encontrada</p>
         </div>
       </div>
     );
@@ -208,12 +208,12 @@ export default function PayrollRunDetailPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-4">
-          <Link href="/dashboard/payroll?tab=periods" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+          <Link href="/dashboard/payroll?tab=periods" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">Nómina {run.period_label}</h1>
-            <p className="text-sm text-slate-500 mt-1">
+            <h1 className="text-xl font-bold text-foreground">Nómina {run.period_label}</h1>
+            <p className="text-sm text-muted-foreground mt-1">
               {run.period_start} al {run.period_end}
             </p>
           </div>
@@ -231,69 +231,69 @@ export default function PayrollRunDetailPage() {
 
       {/* Summary Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Empleados</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">{run.employee_count}</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Empleados</p>
+              <p className="text-2xl font-bold text-foreground mt-1">{run.employee_count}</p>
             </div>
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
-              <Users className="w-6 h-6 text-slate-600" />
+            <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
+              <Users className="w-6 h-6 text-foreground" />
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Sueldo Imponible</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">${(run.gross_amount || 0).toLocaleString('es-CL')}</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Sueldo Imponible</p>
+              <p className="text-2xl font-bold text-foreground mt-1">${(run.gross_amount || 0).toLocaleString('es-CL')}</p>
             </div>
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
-              <DollarSign className="w-6 h-6 text-slate-600" />
+            <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
+              <DollarSign className="w-6 h-6 text-foreground" />
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Retenciones</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">${((run.total_deductions || 0) + (run.total_tax || 0)).toLocaleString('es-CL')}</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Retenciones</p>
+              <p className="text-2xl font-bold text-foreground mt-1">${((run.total_deductions || 0) + (run.total_tax || 0)).toLocaleString('es-CL')}</p>
             </div>
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
-              <Calculator className="w-6 h-6 text-slate-600" />
+            <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
+              <Calculator className="w-6 h-6 text-foreground" />
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Líquido a Pagar</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Líquido a Pagar</p>
               <p className="text-2xl font-bold text-emerald-600 mt-1">${(run.net_amount || 0).toLocaleString('es-CL')}</p>
             </div>
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
-              <FileText className="w-6 h-6 text-slate-600" />
+            <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
+              <FileText className="w-6 h-6 text-foreground" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Employee breakdown */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
-        <div className="px-6 py-4 border-b border-slate-100">
-          <h3 className="text-sm font-semibold text-slate-900">Detalle por Empleado</h3>
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+        <div className="px-6 py-4 border-b border-border">
+          <h3 className="text-sm font-semibold text-foreground">Detalle por Empleado</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Empleado</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">RUT</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Sueldo Base</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Haberes</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Retenciones</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Impuesto</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Líquido</th>
-                <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Detalle</th>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Empleado</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">RUT</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Sueldo Base</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Haberes</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Retenciones</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Impuesto</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Líquido</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Detalle</th>
               </tr>
             </thead>
             <tbody>
@@ -302,25 +302,25 @@ export default function PayrollRunDetailPage() {
                 const isExpanded = expandedEmployee === empId;
                 return (
                   <>
-                    <tr key={empId} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                      <td className="px-4 py-3 text-sm font-medium text-slate-900">{emp.name}</td>
-                      <td className="px-4 py-3 text-xs font-mono text-slate-500">{emp.rut}</td>
-                      <td className="px-4 py-3 text-xs text-right text-slate-700">${emp.base_salary.toLocaleString('es-CL')}</td>
+                    <tr key={empId} className="border-b border-border hover:bg-muted transition-colors">
+                      <td className="px-4 py-3 text-sm font-medium text-foreground">{emp.name}</td>
+                      <td className="px-4 py-3 text-xs font-mono text-muted-foreground">{emp.rut}</td>
+                      <td className="px-4 py-3 text-xs text-right text-foreground">${emp.base_salary.toLocaleString('es-CL')}</td>
                       <td className="px-4 py-3 text-xs text-right font-medium text-emerald-600">${totals.earnings.toLocaleString('es-CL')}</td>
                       <td className="px-4 py-3 text-xs text-right font-medium text-rose-600">${totals.deductions.toLocaleString('es-CL')}</td>
-                      <td className="px-4 py-3 text-xs text-right text-slate-700">${totals.tax.toLocaleString('es-CL')}</td>
-                      <td className="px-4 py-3 text-xs text-right font-bold text-slate-900">${totals.net.toLocaleString('es-CL')}</td>
+                      <td className="px-4 py-3 text-xs text-right text-foreground">${totals.tax.toLocaleString('es-CL')}</td>
+                      <td className="px-4 py-3 text-xs text-right font-bold text-foreground">${totals.net.toLocaleString('es-CL')}</td>
                       <td className="px-4 py-3 text-center">
                         <div className="flex items-center justify-center gap-2">
                           <button
                             onClick={() => setExpandedEmployee(isExpanded ? null : empId)}
-                            className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+                            className="text-xs text-primary hover:text-primary font-medium"
                           >
                             {isExpanded ? 'Ocultar' : 'Ver'}
                           </button>
                           <button
                             onClick={() => generatePayslip(empId)}
-                            className="p-1 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"
+                            className="p-1 text-muted-foreground hover:text-primary hover:bg-blue-50 rounded transition-colors"
                             title="Descargar boleta"
                           >
                             <Printer className="w-3.5 h-3.5" />
@@ -330,32 +330,32 @@ export default function PayrollRunDetailPage() {
                     </tr>
                     {isExpanded && (
                       <tr key={`${empId}-detail`}>
-                        <td colSpan={8} className="px-4 py-3 bg-slate-50">
+                        <td colSpan={8} className="px-4 py-3 bg-muted">
                           <div className="grid grid-cols-3 gap-4 text-xs">
                             <div>
-                              <p className="font-semibold text-slate-700 mb-2">Haberes</p>
+                              <p className="font-semibold text-foreground mb-2">Haberes</p>
                               {emp.items.filter(i => i.category === 'earning').map((item, idx) => (
                                 <div key={idx} className="flex justify-between py-1">
-                                  <span className="text-slate-600">{item.concept}</span>
+                                  <span className="text-foreground">{item.concept}</span>
                                   <span className="font-medium text-emerald-600">${item.amount.toLocaleString('es-CL')}</span>
                                 </div>
                               ))}
                             </div>
                             <div>
-                              <p className="font-semibold text-slate-700 mb-2">Descuentos</p>
+                              <p className="font-semibold text-foreground mb-2">Descuentos</p>
                               {emp.items.filter(i => i.category === 'deduction' && !i.is_employer).map((item, idx) => (
                                 <div key={idx} className="flex justify-between py-1">
-                                  <span className="text-slate-600">{item.concept}</span>
+                                  <span className="text-foreground">{item.concept}</span>
                                   <span className="font-medium text-rose-600">${item.amount.toLocaleString('es-CL')}</span>
                                 </div>
                               ))}
                             </div>
                             <div>
-                              <p className="font-semibold text-slate-700 mb-2">Cargas Empleador</p>
+                              <p className="font-semibold text-foreground mb-2">Cargas Empleador</p>
                               {emp.items.filter(i => i.category === 'employer').map((item, idx) => (
                                 <div key={idx} className="flex justify-between py-1">
-                                  <span className="text-slate-600">{item.concept}</span>
-                                  <span className="font-medium text-indigo-600">${item.amount.toLocaleString('es-CL')}</span>
+                                  <span className="text-foreground">{item.concept}</span>
+                                  <span className="font-medium text-primary">${item.amount.toLocaleString('es-CL')}</span>
                                 </div>
                               ))}
                             </div>
@@ -370,8 +370,8 @@ export default function PayrollRunDetailPage() {
           </table>
           {employeeEntries.length === 0 && (
             <div className="p-12 text-center">
-              <Users className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-              <p className="text-sm text-slate-500">Sin datos de empleados</p>
+              <Users className="w-10 h-10 text-foreground mx-auto mb-3" />
+              <p className="text-sm text-muted-foreground">Sin datos de empleados</p>
             </div>
           )}
         </div>

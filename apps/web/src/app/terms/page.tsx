@@ -25,7 +25,7 @@ export default function TermsPage() {
           <h1 className="text-3xl font-bold text-foreground">Terminos y Condiciones</h1>
           <p className="mt-2 text-sm text-muted-foreground">Ultima actualizacion: Enero 2025</p>
 
-          <div className="mt-10 space-y-8 text-sm text-slate-600 leading-relaxed">
+          <div className="mt-10 space-y-8 text-sm text-foreground leading-relaxed">
             <section>
               <h2 className="text-base font-semibold text-foreground mb-2">1. Aceptacion de los Terminos</h2>
               <p>

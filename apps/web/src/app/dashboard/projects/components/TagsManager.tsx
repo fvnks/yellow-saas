@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Plus, X, Tag } from 'lucide-react';
@@ -74,7 +74,7 @@ export default function TagsManager({ selectedTagIds, onChange }: TagsManagerPro
           return (
             <button key={tag.id} onClick={() => toggleTag(tag.id)}
               className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border transition-all ${
-                selected ? 'text-white' : 'text-slate-600 bg-card border-border hover:border-slate-300'
+                selected ? 'text-white' : 'text-foreground bg-card border-border hover:border-border'
               }`}
               style={selected ? { backgroundColor: tag.color, borderColor: tag.color } : {}}>
               <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: tag.color }} />
@@ -84,7 +84,7 @@ export default function TagsManager({ selectedTagIds, onChange }: TagsManagerPro
           );
         })}
         <button onClick={() => setShowCreate(!showCreate)}
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border border-dashed border-slate-300 text-muted-foreground hover:text-slate-600 hover:border-slate-400 transition-colors">
+          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border border-dashed border-border text-muted-foreground hover:text-foreground hover:border-border transition-colors">
           <Plus className="w-2.5 h-2.5" /> Nuevo
         </button>
       </div>

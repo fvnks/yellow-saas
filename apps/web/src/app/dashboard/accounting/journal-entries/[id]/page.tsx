@@ -8,7 +8,7 @@ import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
-  draft: { label: 'Borrador', color: 'bg-slate-100 text-slate-700', icon: Clock },
+  draft: { label: 'Borrador', color: 'bg-muted text-foreground', icon: Clock },
   posted: { label: 'Publicado', color: 'bg-emerald-100 text-emerald-700', icon: CheckCircle2 },
   reversed: { label: 'Revertido', color: 'bg-red-100 text-red-700', icon: XCircle },
 };
@@ -58,8 +58,8 @@ export default function JournalEntryDetailPage() {
     } catch (err: any) { toast.error(err?.message || 'Error'); }
   };
 
-  if (loading) return <div className="animate-pulse space-y-4"><div className="h-8 bg-slate-200 rounded w-1/3" /></div>;
-  if (!entry) return <div className="text-center py-12 text-sm text-slate-500">Asiento no encontrado</div>;
+  if (loading) return <div className="animate-pulse space-y-4"><div className="h-8 bg-muted rounded w-1/3" /></div>;
+  if (!entry) return <div className="text-center py-12 text-sm text-muted-foreground">Asiento no encontrado</div>;
 
   const st = statusConfig[entry.status] || statusConfig.draft;
   const StatusIcon = st.icon;
@@ -67,17 +67,17 @@ export default function JournalEntryDetailPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/accounting/journal-entries" className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-          <ArrowLeft className="w-5 h-5 text-slate-600" />
+        <Link href="/dashboard/accounting/journal-entries" className="p-2 hover:bg-muted rounded-lg transition-colors">
+          <ArrowLeft className="w-5 h-5 text-foreground" />
         </Link>
         <div className="flex-1">
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold text-slate-900">{entry.entry_number}</h1>
+            <h1 className="text-xl font-bold text-foreground">{entry.entry_number}</h1>
             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold ${st.color}`}>
               <StatusIcon className="w-3 h-3" /> {st.label}
             </span>
           </div>
-          <p className="text-sm text-slate-500 mt-1">{entry.description}</p>
+          <p className="text-sm text-muted-foreground mt-1">{entry.description}</p>
         </div>
         <div className="flex items-center gap-2">
           {entry.status === 'draft' && (
@@ -87,14 +87,14 @@ export default function JournalEntryDetailPage() {
                 <CheckCircle2 className="w-4 h-4" /> Publicar
               </button>
               <button onClick={handleDelete}
-                className="bg-white border border-slate-200 hover:bg-red-50 text-red-600 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-red-500/10 dark:text-red-400 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+                className="bg-card border border-border hover:bg-red-50 text-red-600 dark:bg-card dark:border-border dark:hover:bg-red-500/10 dark:text-red-400 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
                 <Trash2 className="w-4 h-4" /> Eliminar
               </button>
             </>
           )}
           {entry.status === 'posted' && (
             <button onClick={handleReverse}
-              className="bg-white border border-slate-200 hover:bg-red-50 text-red-600 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-red-500/10 dark:text-red-400 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+              className="bg-card border border-border hover:bg-red-50 text-red-600 dark:bg-card dark:border-border dark:hover:bg-red-500/10 dark:text-red-400 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
               Revertir
             </button>
           )}
@@ -102,67 +102,67 @@ export default function JournalEntryDetailPage() {
       </div>
 
       <div className="grid grid-cols-4 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</p>
-          <p className="text-sm font-semibold text-slate-900 mt-1">{new Date(entry.date).toLocaleDateString('es-CL')}</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</p>
+          <p className="text-sm font-semibold text-foreground mt-1">{new Date(entry.date).toLocaleDateString('es-CL')}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Debe</p>
-          <p className="text-sm font-semibold text-slate-900 mt-1">${Number(entry.total_debit).toLocaleString('es-CL')}</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Debe</p>
+          <p className="text-sm font-semibold text-foreground mt-1">${Number(entry.total_debit).toLocaleString('es-CL')}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Haber</p>
-          <p className="text-sm font-semibold text-slate-900 mt-1">${Number(entry.total_credit).toLocaleString('es-CL')}</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Haber</p>
+          <p className="text-sm font-semibold text-foreground mt-1">${Number(entry.total_credit).toLocaleString('es-CL')}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Lineas</p>
-          <p className="text-sm font-semibold text-slate-900 mt-1">{entry.lines?.length || 0}</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Lineas</p>
+          <p className="text-sm font-semibold text-foreground mt-1">{entry.lines?.length || 0}</p>
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
-        <div className="px-6 py-4 border-b border-slate-100">
-          <h3 className="text-sm font-semibold text-slate-900">Detalle de Lineas</h3>
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+        <div className="px-6 py-4 border-b border-border">
+          <h3 className="text-sm font-semibold text-foreground">Detalle de Lineas</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cuenta</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Descripcion</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Debe</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Haber</th>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cuenta</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Descripcion</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Debe</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Haber</th>
               </tr>
             </thead>
             <tbody>
               {(entry.lines || []).map((line: any, i: number) => (
-                <tr key={i} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                <tr key={i} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3">
-                    <span className="text-xs font-mono font-semibold text-slate-900">{line.account?.code}</span>
-                    <span className="text-xs text-slate-500 ml-2">{line.account?.name}</span>
+                    <span className="text-xs font-mono font-semibold text-foreground">{line.account?.code}</span>
+                    <span className="text-xs text-muted-foreground ml-2">{line.account?.name}</span>
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-700">{line.description || '—'}</td>
-                  <td className="px-4 py-3 text-xs text-right font-medium text-slate-900">
+                  <td className="px-4 py-3 text-xs text-foreground">{line.description || '—'}</td>
+                  <td className="px-4 py-3 text-xs text-right font-medium text-foreground">
                     {Number(line.debit) > 0 ? `$${Number(line.debit).toLocaleString('es-CL')}` : '—'}
                   </td>
-                  <td className="px-4 py-3 text-xs text-right font-medium text-slate-900">
+                  <td className="px-4 py-3 text-xs text-right font-medium text-foreground">
                     {Number(line.credit) > 0 ? `$${Number(line.credit).toLocaleString('es-CL')}` : '—'}
                   </td>
                 </tr>
               ))}
             </tbody>
             <tfoot>
-              <tr className="border-t-2 border-slate-300 bg-slate-50">
-                <td colSpan={2} className="px-4 py-3 text-xs font-semibold text-slate-900">Totales</td>
-                <td className="px-4 py-3 text-xs text-right font-bold text-slate-900">${Number(entry.total_debit).toLocaleString('es-CL')}</td>
-                <td className="px-4 py-3 text-xs text-right font-bold text-slate-900">${Number(entry.total_credit).toLocaleString('es-CL')}</td>
+              <tr className="border-t-2 border-border bg-muted">
+                <td colSpan={2} className="px-4 py-3 text-xs font-semibold text-foreground">Totales</td>
+                <td className="px-4 py-3 text-xs text-right font-bold text-foreground">${Number(entry.total_debit).toLocaleString('es-CL')}</td>
+                <td className="px-4 py-3 text-xs text-right font-bold text-foreground">${Number(entry.total_credit).toLocaleString('es-CL')}</td>
               </tr>
             </tfoot>
           </table>
         </div>
       </div>
 
-      <div className="text-[10px] text-slate-400 text-right">
+      <div className="text-[10px] text-muted-foreground text-right">
         Creado: {new Date(entry.created_at).toLocaleString('es-CL')}
         {entry.posted_at && <> · Publicado: {new Date(entry.posted_at).toLocaleString('es-CL')}</>}
       </div>

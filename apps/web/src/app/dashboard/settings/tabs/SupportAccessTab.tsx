@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
@@ -89,8 +89,8 @@ export default function SupportAccessTab({ companyId, userRole }: SupportAccessT
     return (
       <Card>
         <CardContent className="p-8 text-center">
-          <Shield className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <p className="text-sm text-slate-500">Solo los administradores de la empresa pueden gestionar accesos de soporte.</p>
+          <Shield className="w-12 h-12 text-foreground mx-auto mb-4" />
+          <p className="text-sm text-muted-foreground">Solo los administradores de la empresa pueden gestionar accesos de soporte.</p>
         </CardContent>
       </Card>
     );
@@ -106,8 +106,8 @@ export default function SupportAccessTab({ companyId, userRole }: SupportAccessT
               <AlertTriangle className="w-5 h-5 text-amber-600" />
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-slate-900">Acceso de Soporte</h4>
-              <p className="text-xs text-slate-500 mt-1">
+              <h4 className="text-sm font-semibold text-foreground">Acceso de Soporte</h4>
+              <p className="text-xs text-muted-foreground mt-1">
                 Permite a los administradores de Yellow ERP acceder a tu empresa para soporte técnico, 
                 configuración o resolución de problemas. Tú controlas quién tiene acceso y a qué nivel.
               </p>
@@ -128,28 +128,28 @@ export default function SupportAccessTab({ companyId, userRole }: SupportAccessT
           {loading ? (
             <div className="space-y-3">
               {[1, 2].map(i => (
-                <div key={i} className="h-16 bg-slate-100 rounded-lg animate-pulse" />
+                <div key={i} className="h-16 bg-muted rounded-lg animate-pulse" />
               ))}
             </div>
           ) : grants.filter(g => g.is_active).length === 0 ? (
             <div className="text-center py-8">
-              <Key className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-              <p className="text-sm text-slate-500">No hay accesos de soporte activos</p>
-              <p className="text-xs text-slate-400 mt-1">Concede acceso a un administrador cuando necesites soporte</p>
+              <Key className="w-10 h-10 text-foreground mx-auto mb-3" />
+              <p className="text-sm text-muted-foreground">No hay accesos de soporte activos</p>
+              <p className="text-xs text-muted-foreground mt-1">Concede acceso a un administrador cuando necesites soporte</p>
             </div>
           ) : (
             <div className="space-y-3">
               {grants.filter(g => g.is_active).map(grant => (
-                <div key={grant.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <div key={grant.id} className="flex items-center justify-between p-4 bg-muted rounded-xl border border-border">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-                      <Shield className="w-5 h-5 text-indigo-600" />
+                    <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                      <Shield className="w-5 h-5 text-primary" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-slate-900">{grant.super_admin_name}</p>
-                      <p className="text-xs text-slate-500">{grant.super_admin_email}</p>
+                      <p className="text-sm font-medium text-foreground">{grant.super_admin_name}</p>
+                      <p className="text-xs text-muted-foreground">{grant.super_admin_email}</p>
                       {grant.reason && (
-                        <p className="text-xs text-slate-400 mt-0.5">Motivo: {grant.reason}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">Motivo: {grant.reason}</p>
                       )}
                     </div>
                   </div>
@@ -163,14 +163,14 @@ export default function SupportAccessTab({ companyId, userRole }: SupportAccessT
                         {grant.access_level === 'full' ? 'Lectura + Escritura' : 'Solo Lectura'}
                       </span>
                       {grant.expires_at && (
-                        <p className="text-[10px] text-slate-400 mt-1 flex items-center gap-1">
+                        <p className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1">
                           <Clock className="w-3 h-3" /> Expira: {new Date(grant.expires_at).toLocaleDateString('es-CL')}
                         </p>
                       )}
                     </div>
                     <button
                       onClick={() => handleRevoke(grant.id)}
-                      className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                      className="p-2 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
                       title="Revocar acceso"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -192,10 +192,10 @@ export default function SupportAccessTab({ companyId, userRole }: SupportAccessT
           <CardContent>
             <div className="space-y-2">
               {grants.filter(g => !g.is_active).map(grant => (
-                <div key={grant.id} className="flex items-center gap-3 p-3 text-sm text-slate-500">
-                  <XCircle className="w-4 h-4 text-slate-400" />
+                <div key={grant.id} className="flex items-center gap-3 p-3 text-sm text-muted-foreground">
+                  <XCircle className="w-4 h-4 text-muted-foreground" />
                   <span>{grant.super_admin_name} — Acceso revocado</span>
-                  <span className="text-xs text-slate-400 ml-auto">
+                  <span className="text-xs text-muted-foreground ml-auto">
                     {new Date(grant.created_at).toLocaleDateString('es-CL')}
                   </span>
                 </div>
@@ -208,60 +208,60 @@ export default function SupportAccessTab({ companyId, userRole }: SupportAccessT
       {/* Invite Modal */}
       {showInvite && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900">Conceder Acceso</h2>
-              <button onClick={() => setShowInvite(false)} className="text-slate-400 hover:text-slate-600">
+          <div className="bg-card rounded-xl shadow-xl w-full max-w-md mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">Conceder Acceso</h2>
+              <button onClick={() => setShowInvite(false)} className="text-muted-foreground hover:text-foreground">
                 <XCircle className="w-5 h-5" />
               </button>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">Email del Super Admin</label>
+                <label className="block text-xs font-medium text-foreground mb-1">Email del Super Admin</label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <input
                     type="email"
                     value={inviteEmail}
                     onChange={(e) => setInviteEmail(e.target.value)}
                     placeholder="admin@yellow.cl"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full bg-muted border border-border rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">Nivel de Acceso</label>
+                <label className="block text-xs font-medium text-foreground mb-1">Nivel de Acceso</label>
                 <select
                   value={inviteLevel}
                   onChange={(e) => setInviteLevel(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
                 >
                   <option value="read">Solo Lectura — Puede ver datos pero no modificar</option>
                   <option value="full">Lectura + Escritura — Puede ver y modificar datos</option>
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">Motivo (opcional)</label>
+                <label className="block text-xs font-medium text-foreground mb-1">Motivo (opcional)</label>
                 <input
                   type="text"
                   value={inviteReason}
                   onChange={(e) => setInviteReason(e.target.value)}
                   placeholder="Ej: Soporte técnico, configuración inicial..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
                 />
               </div>
             </div>
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button
                 onClick={() => setShowInvite(false)}
-                className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-lg transition-colors"
+                className="px-4 py-2 text-sm font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleInvite}
                 disabled={!inviteEmail || inviting}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50"
+                className="px-4 py-2 bg-primary hover:bg-primary/90 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50"
               >
                 {inviting ? 'Concediendo...' : 'Conceder Acceso'}
               </button>

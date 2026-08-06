@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Plus, Phone, Mail, Calendar, CheckSquare, StickyNote, X, Save, Clock } from 'lucide-react';
@@ -121,9 +121,9 @@ export default function CustomerActivities({ customerId }: Props) {
 
   if (loading) {
     return (
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-        <div className="px-6 py-4 border-b border-slate-100">
-          <div className="h-4 w-36 bg-slate-200 rounded animate-pulse" />
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+        <div className="px-6 py-4 border-b border-border">
+          <div className="h-4 w-36 bg-muted rounded animate-pulse" />
         </div>
         <div className="p-6 space-y-3">
           {[1, 2, 3].map(i => (
@@ -135,8 +135,8 @@ export default function CustomerActivities({ customerId }: Props) {
   }
 
   return (
-    <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-      <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+    <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+      <div className="px-6 py-4 border-b border-border flex items-center justify-between">
         <h3 className="text-sm font-semibold text-foreground">Actividades</h3>
         <button
           onClick={handleOpenNew}
@@ -147,14 +147,14 @@ export default function CustomerActivities({ customerId }: Props) {
         </button>
       </div>
 
-      <div className="px-6 py-3 border-b border-slate-100">
+      <div className="px-6 py-3 border-b border-border">
         <div className="flex items-center gap-2">
           <button
             onClick={() => setFilterType('all')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               filterType === 'all'
                 ? 'bg-primary text-white'
-                : 'bg-muted text-slate-600 hover:bg-slate-200'
+                : 'bg-muted text-foreground hover:bg-muted'
             }`}
           >
             Todas
@@ -166,7 +166,7 @@ export default function CustomerActivities({ customerId }: Props) {
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 ${
                 filterType === key
                   ? 'bg-primary text-white'
-                  : 'bg-muted text-slate-600 hover:bg-slate-200'
+                  : 'bg-muted text-foreground hover:bg-muted'
               }`}
             >
               {config.icon}
@@ -178,13 +178,13 @@ export default function CustomerActivities({ customerId }: Props) {
 
       {filteredActivities.length === 0 ? (
         <div className="text-center py-12">
-          <Clock className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+          <Clock className="w-8 h-8 text-foreground mx-auto mb-2" />
           <p className="text-sm text-muted-foreground">No hay actividades registradas</p>
         </div>
       ) : (
         <div className="p-6">
           <div className="relative">
-            <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-slate-200" />
+            <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-muted" />
             <div className="space-y-6">
               {filteredActivities.map((activity) => {
                 const config = activityTypeConfig[activity.type] || activityTypeConfig.note;
@@ -195,7 +195,7 @@ export default function CustomerActivities({ customerId }: Props) {
                       config.variant === 'warning' ? 'bg-amber-100 text-amber-600' :
                       config.variant === 'success' ? 'bg-emerald-100 text-emerald-600' :
                       config.variant === 'danger' ? 'bg-rose-100 text-rose-600' :
-                      'bg-muted text-slate-600'
+                      'bg-muted text-foreground'
                     }`}>
                       {config.icon}
                     </div>
@@ -208,7 +208,7 @@ export default function CustomerActivities({ customerId }: Props) {
                               config.variant === 'warning' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
                               config.variant === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
                               config.variant === 'danger' ? 'bg-rose-50 text-rose-700 border border-rose-200' :
-                              'bg-muted text-slate-600 border border-border'
+                              'bg-muted text-foreground border border-border'
                             }`}>
                               {config.label}
                             </span>
@@ -222,8 +222,8 @@ export default function CustomerActivities({ customerId }: Props) {
                       </div>
                       {activity.assigned_to && (
                         <div className="mt-2 flex items-center gap-1.5">
-                          <div className="w-5 h-5 bg-indigo-100 rounded-full flex items-center justify-center">
-                            <span className="text-[8px] font-medium text-indigo-600">
+                          <div className="w-5 h-5 bg-blue-50 rounded-full flex items-center justify-center">
+                            <span className="text-[8px] font-medium text-primary">
                               {activity.assigned_to.charAt(0).toUpperCase()}
                             </span>
                           </div>
@@ -244,7 +244,7 @@ export default function CustomerActivities({ customerId }: Props) {
           <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarylg mx-4">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">Nueva Actividad</h2>
-              <button onClick={handleClose} className="text-muted-foreground hover:text-slate-600">
+              <button onClick={handleClose} className="text-muted-foreground hover:text-foreground">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -269,7 +269,7 @@ export default function CustomerActivities({ customerId }: Props) {
                   type="text"
                   value={form.subject}
                   onChange={e => update('subject', e.target.value)}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                   placeholder="Asunto de la actividad"
                 />
               </div>
@@ -280,7 +280,7 @@ export default function CustomerActivities({ customerId }: Props) {
                   value={form.description}
                   onChange={e => update('description', e.target.value)}
                   rows={3}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
                   placeholder="Descripción de la actividad"
                 />
               </div>
@@ -291,7 +291,7 @@ export default function CustomerActivities({ customerId }: Props) {
                   type="datetime-local"
                   value={form.due_date}
                   onChange={e => update('due_date', e.target.value)}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                 />
               </div>
             </div>
@@ -299,7 +299,7 @@ export default function CustomerActivities({ customerId }: Props) {
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button
                 onClick={handleClose}
-                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>

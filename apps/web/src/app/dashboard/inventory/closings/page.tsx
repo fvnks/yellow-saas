@@ -89,7 +89,7 @@ export default function ClosingsPage() {
       </div>
 
       <div className="bg-card border border-border rounded-xl shadow-sm">
-        <div className="px-6 py-4 border-b border-slate-100">
+        <div className="px-6 py-4 border-b border-border">
           <h3 className="text-sm font-semibold text-foreground">Calendario de Cierres {selectedYear}</h3>
         </div>
         <div className="p-6">
@@ -121,7 +121,7 @@ export default function ClosingsPage() {
       </div>
 
       <div className="bg-card border border-border rounded-xl shadow-sm">
-        <div className="px-6 py-4 border-b border-slate-100">
+        <div className="px-6 py-4 border-b border-border">
           <h3 className="text-sm font-semibold text-foreground">Historial de Conteos</h3>
         </div>
         <div className="overflow-x-auto">
@@ -143,7 +143,7 @@ export default function ClosingsPage() {
               ) : closings.map(c => {
                 const st = statusConfig[c.status] || statusConfig.open;
                 return (
-                  <tr key={c.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={c.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs text-foreground">{c.period}</td>
                     <td className="px-4 py-3 text-xs text-foreground">{c.warehouse_name}</td>
                     <td className="px-4 py-3 text-xs text-foreground text-center">{c.total_products}</td>

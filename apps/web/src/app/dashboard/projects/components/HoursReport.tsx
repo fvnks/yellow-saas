@@ -97,31 +97,31 @@ export default function HoursReport({ timesheets, tasks, employees }: HoursRepor
             </button>
           </div>
           <div className="flex gap-1">
-            <button onClick={() => handleExport('csv')} className="px-2 py-1 bg-card border border-border rounded-lg text-[10px] font-medium text-slate-600 hover:bg-muted">CSV</button>
-            <button onClick={() => handleExport('excel')} className="px-2 py-1 bg-card border border-border rounded-lg text-[10px] font-medium text-slate-600 hover:bg-muted">Excel</button>
+            <button onClick={() => handleExport('csv')} className="px-2 py-1 bg-card border border-border rounded-lg text-[10px] font-medium text-foreground hover:bg-muted">CSV</button>
+            <button onClick={() => handleExport('excel')} className="px-2 py-1 bg-card border border-border rounded-lg text-[10px] font-medium text-foreground hover:bg-muted">Excel</button>
           </div>
         </div>
       </div>
 
       {/* Summary KPIs */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Horas</p>
           <p className="text-xl font-bold text-foreground mt-1">{totalHours.toFixed(1)}</p>
         </div>
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Horas Facturables</p>
           <p className="text-xl font-bold text-emerald-600 mt-1">{totalBillable.toFixed(1)}</p>
           <p className="text-[10px] text-muted-foreground">{totalHours > 0 ? Math.round((totalBillable / totalHours) * 100) : 0}% del total</p>
         </div>
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Empleados</p>
           <p className="text-xl font-bold text-foreground mt-1">{employeeStats.length}</p>
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -148,28 +148,28 @@ export default function HoursReport({ timesheets, tasks, employees }: HoursRepor
             <tbody>
               {viewMode === 'employee' ? (
                 employeeStats.map((emp, i) => (
-                  <tr key={emp.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={emp.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-medium text-foreground">{emp.name}</td>
                     <td className="px-4 py-3 text-xs text-foreground text-right font-semibold">{emp.totalHours.toFixed(1)}h</td>
                     <td className="px-4 py-3 text-xs text-foreground text-right">{emp.billableHours.toFixed(1)}h</td>
                     <td className="px-4 py-3 text-xs text-foreground text-right">{emp.taskCount}</td>
                     <td className="px-4 py-3">
                       <div className="w-full bg-muted rounded-full h-2">
-                        <div className="bg-indigo-500 h-2 rounded-full" style={{ width: `${totalHours > 0 ? (emp.totalHours / totalHours) * 100 : 0}%` }} />
+                        <div className="bg-primary h-2 rounded-full" style={{ width: `${totalHours > 0 ? (emp.totalHours / totalHours) * 100 : 0}%` }} />
                       </div>
                     </td>
                   </tr>
                 ))
               ) : (
                 taskStats.map((task, i) => (
-                  <tr key={i} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={i} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-medium text-foreground">{task.name}</td>
                     <td className="px-4 py-3 text-xs text-muted-foreground">{task.assignee}</td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
                         task.status === 'done' ? 'bg-emerald-50 text-emerald-700' :
                         task.status === 'in_progress' ? 'bg-blue-50 text-blue-700' :
-                        'bg-muted text-slate-600'
+                        'bg-muted text-foreground'
                       }`}>
                         {task.status === 'done' ? 'Completada' : task.status === 'in_progress' ? 'En Progreso' : task.status === 'review' ? 'Revision' : 'Por Hacer'}
                       </span>
@@ -177,7 +177,7 @@ export default function HoursReport({ timesheets, tasks, employees }: HoursRepor
                     <td className="px-4 py-3 text-xs text-foreground text-right font-semibold">{task.totalHours.toFixed(1)}h</td>
                     <td className="px-4 py-3">
                       <div className="w-full bg-muted rounded-full h-2">
-                        <div className="bg-indigo-500 h-2 rounded-full" style={{ width: `${totalHours > 0 ? (task.totalHours / totalHours) * 100 : 0}%` }} />
+                        <div className="bg-primary h-2 rounded-full" style={{ width: `${totalHours > 0 ? (task.totalHours / totalHours) * 100 : 0}%` }} />
                       </div>
                     </td>
                   </tr>

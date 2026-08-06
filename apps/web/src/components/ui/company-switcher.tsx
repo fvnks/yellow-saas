@@ -39,9 +39,9 @@ const ROLE_LABELS: Record<string, string> = {
 
 const ROLE_COLORS: Record<string, string> = {
   owner: 'bg-amber-50 text-amber-700 border border-amber-200',
-  admin: 'bg-indigo-50 text-indigo-700 border border-indigo-200',
+  admin: 'bg-blue-50 text-primary border border-primary/20',
   manager: 'bg-blue-50 text-blue-700 border border-blue-200',
-  member: 'bg-muted text-slate-600 border border-border',
+  member: 'bg-muted text-foreground border border-border',
   viewer: 'bg-muted text-muted-foreground border border-border',
 };
 
@@ -51,8 +51,8 @@ export default function CompanySwitcher({ companies, currentCompanyId, onSwitch,
   if (loading) {
     return (
       <div className="flex items-center gap-2 px-2 py-1.5 rounded-xl animate-pulse">
-        <div className="w-6 h-6 bg-slate-200 rounded-lg" />
-        <div className="h-3 bg-slate-200 rounded w-20" />
+        <div className="w-6 h-6 bg-muted rounded-lg" />
+        <div className="h-3 bg-muted rounded w-20" />
       </div>
     );
   }
@@ -70,7 +70,7 @@ export default function CompanySwitcher({ companies, currentCompanyId, onSwitch,
             {currentCompany.name}
           </span>
           {companies.length > 1 && (
-            <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[collapsible=icon]:hidden flex-shrink-0 group-hover:text-slate-600 transition-colors" />
+            <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[collapsible=icon]:hidden flex-shrink-0 group-hover:text-foreground transition-colors" />
           )}
         </button>
       </DropdownMenuTrigger>

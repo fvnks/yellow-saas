@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { cn } from '@/lib/utils';
 import { ReactNode } from 'react';
@@ -15,7 +15,7 @@ export function ShimmerButton({ children, className, variant = 'primary' }: Shim
       className={cn(
         'relative overflow-hidden rounded-xl px-8 py-4 font-semibold text-base cursor-pointer transition-all duration-300 active:scale-[0.98]',
         variant === 'primary' && 'bg-primary text-white hover:bg-primary/90 hover:shadow-lg hover:shadow-slate-900/25',
-        variant === 'secondary' && 'border border-border bg-card text-foreground hover:bg-muted hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700',
+        variant === 'secondary' && 'border border-border bg-card text-foreground hover:bg-muted hover:border-border dark:border-border dark:bg-card dark:text-white dark:hover:bg-primary/90',
         className
       )}
     >

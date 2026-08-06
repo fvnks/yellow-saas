@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, Search, Package, CheckCircle, Eye, X, RotateCcw } from 'lucide-react';
@@ -102,7 +102,7 @@ export default function ReturnsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
           <Link href="/dashboard/inventory" className="p-2 hover:bg-muted rounded-lg transition-colors">
-            <ArrowLeft className="w-5 h-5 text-slate-600" />
+            <ArrowLeft className="w-5 h-5 text-foreground" />
           </Link>
           <div>
             <h1 className="text-xl font-bold text-foreground">Devoluciones</h1>
@@ -119,11 +119,11 @@ export default function ReturnsPage() {
 
       {/* Form */}
       {showForm && (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-semibold text-foreground">Nueva Devolucion</h3>
             <button onClick={() => { setShowForm(false); setForm({ warehouse_id: '', reason: '', items: [] }); setProductSearch(''); }}
-              className="text-muted-foreground hover:text-slate-600 text-sm">Cancelar</button>
+              className="text-muted-foreground hover:text-foreground text-sm">Cancelar</button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div className="space-y-1">
@@ -137,7 +137,7 @@ export default function ReturnsPage() {
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Motivo</label>
               <textarea value={form.reason} onChange={e => setForm({ ...form, reason: e.target.value })} placeholder="Motivo de la devolucion..." rows={2}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent resize-none" />
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent resize-none" />
             </div>
           </div>
 
@@ -145,7 +145,7 @@ export default function ReturnsPage() {
           <div className="mb-4">
             <div className="flex items-center justify-between mb-2">
               <h4 className="text-xs font-semibold text-foreground">Items</h4>
-              <button onClick={addItem} className="text-xs text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1">
+              <button onClick={addItem} className="text-xs text-primary hover:text-primary font-medium flex items-center gap-1">
                 <Plus className="w-3 h-3" /> Agregar item
               </button>
             </div>
@@ -161,24 +161,24 @@ export default function ReturnsPage() {
                     <div className="absolute z-10 w-full border border-border rounded-lg max-h-32 overflow-y-auto bg-card mt-1 shadow-lg">
                       {filteredProducts.slice(0, 5).map((p: any) => (
                         <button key={p.id} onClick={() => { updateItem(idx, { product_id: p.id }); setProductSearch(''); }}
-                          className="w-full text-left px-2 py-1.5 text-xs hover:bg-muted border-b border-slate-100 last:border-0">{p.name}</button>
+                          className="w-full text-left px-2 py-1.5 text-xs hover:bg-muted border-b border-border last:border-0">{p.name}</button>
                       ))}
                     </div>
                   )}
                 </div>
                 <input type="number" value={item.quantity} onChange={e => updateItem(idx, { quantity: e.target.value })} placeholder="Cant."
-                  className="bg-card border border-border rounded-lg px-2 py-1.5 text-xs focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20" />
+                  className="bg-card border border-border rounded-lg px-2 py-1.5 text-xs focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-2 focus:ring-primary/20" />
                 <input type="number" value={item.unit_price} onChange={e => updateItem(idx, { unit_price: e.target.value })} placeholder="Precio"
-                  className="bg-card border border-border rounded-lg px-2 py-1.5 text-xs focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20" />
+                  className="bg-card border border-border rounded-lg px-2 py-1.5 text-xs focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-2 focus:ring-primary/20" />
                 <select value={item.condition} onChange={e => updateItem(idx, { condition: e.target.value })}
-                  className="bg-card border border-border rounded-lg px-2 py-1.5 text-xs focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20">
+                  className="bg-card border border-border rounded-lg px-2 py-1.5 text-xs focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-2 focus:ring-primary/20">
                   <option value="good">Buen estado</option>
                   <option value="damaged">Danado</option>
                   <option value="defective">Defectuoso</option>
                 </select>
                 <div className="flex items-center gap-2">
-                  <label className="flex items-center gap-1 text-[9px] text-slate-600">
-                    <input type="checkbox" checked={item.restock} onChange={e => updateItem(idx, { restock: e.target.checked })} className="rounded border-slate-300" />
+                  <label className="flex items-center gap-1 text-[9px] text-foreground">
+                    <input type="checkbox" checked={item.restock} onChange={e => updateItem(idx, { restock: e.target.checked })} className="rounded border-border" />
                     Reposicion
                   </label>
                   <button onClick={() => removeItem(idx)} className="text-muted-foreground hover:text-rose-600 ml-auto"><X className="w-3 h-3" /></button>
@@ -188,23 +188,23 @@ export default function ReturnsPage() {
           </div>
           <div className="flex justify-end gap-2">
             <button onClick={() => { setShowForm(false); setForm({ warehouse_id: '', reason: '', items: [] }); setProductSearch(''); }}
-              className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
             <button onClick={saveReturn} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
           </div>
         </div>
       )}
 
       {/* Search */}
-      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input type="text" placeholder="Buscar por numero, cliente..." value={search} onChange={e => setSearch(e.target.value)}
-            className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+            className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
         {loading ? (
           <div className="p-6 space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-12 bg-muted rounded-lg animate-pulse" />)}</div>
         ) : (
@@ -223,12 +223,12 @@ export default function ReturnsPage() {
               </thead>
               <tbody>
                 {returns.map(r => (
-                  <tr key={r.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={r.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-mono font-semibold text-foreground">{r.return_number}</td>
                     <td className="px-4 py-3 text-xs text-foreground">{r.customer?.name || '-'}</td>
                     <td className="px-4 py-3 text-xs text-foreground">{r.warehouse?.name}</td>
                     <td className="px-4 py-3 text-center">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${STATUS_MAP[r.status]?.className || 'bg-muted text-slate-600 border border-border'}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${STATUS_MAP[r.status]?.className || 'bg-muted text-foreground border border-border'}`}>
                         {STATUS_MAP[r.status]?.label || r.status}
                       </span>
                     </td>
@@ -236,7 +236,7 @@ export default function ReturnsPage() {
                     <td className="px-4 py-3 text-right text-xs font-medium text-foreground">{r.total_amount ? `$${Number(r.total_amount).toLocaleString('es-CL')}` : '-'}</td>
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-1">
-                        <button onClick={() => viewDetail(r)} className="p-1.5 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors" title="Ver detalle">
+                        <button onClick={() => viewDetail(r)} className="p-1.5 text-muted-foreground hover:text-primary hover:bg-blue-50 rounded transition-colors" title="Ver detalle">
                           <Eye className="w-3.5 h-3.5" />
                         </button>
                         {r.status === 'pending' && (
@@ -264,7 +264,7 @@ export default function ReturnsPage() {
                 <h2 className="text-lg font-semibold text-foreground">Devolucion {detailReturn.return_number}</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">{detailReturn.customer?.name || 'Sin cliente'} &middot; {new Date(detailReturn.created_at).toLocaleDateString('es-CL')}</p>
               </div>
-              <button onClick={() => setDetailReturn(null)} className="text-muted-foreground hover:text-slate-600"><X className="w-5 h-5" /></button>
+              <button onClick={() => setDetailReturn(null)} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
             </div>
             <div className="p-6 overflow-y-auto max-h-[50vh]">
               <div className="flex items-center gap-3 mb-4">
@@ -273,7 +273,7 @@ export default function ReturnsPage() {
                 </span>
                 <span className="text-xs text-muted-foreground">Bodega: {detailReturn.warehouse?.name}</span>
               </div>
-              {detailReturn.reason && <p className="text-sm text-slate-600 mb-4">Motivo: {detailReturn.reason}</p>}
+              {detailReturn.reason && <p className="text-sm text-foreground mb-4">Motivo: {detailReturn.reason}</p>}
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-border">
@@ -286,7 +286,7 @@ export default function ReturnsPage() {
                 </thead>
                 <tbody>
                   {(detailReturn.items || []).map((item: ReturnItem) => (
-                    <tr key={item.id} className="border-b border-slate-100">
+                    <tr key={item.id} className="border-b border-border">
                       <td className="px-3 py-2">
                         <p className="text-xs font-medium text-foreground">{item.product?.name}</p>
                         <p className="text-[9px] text-muted-foreground">{item.product?.sku}</p>
@@ -294,7 +294,7 @@ export default function ReturnsPage() {
                       <td className="px-3 py-2 text-center text-xs text-foreground">{item.quantity}</td>
                       <td className="px-3 py-2 text-right text-xs text-foreground">${Number(item.unit_price).toLocaleString('es-CL')}</td>
                       <td className="px-3 py-2 text-center">
-                        <span className="text-[9px] text-slate-600 capitalize">{item.condition === 'good' ? 'Buen estado' : item.condition === 'damaged' ? 'Danado' : 'Defectuoso'}</span>
+                        <span className="text-[9px] text-foreground capitalize">{item.condition === 'good' ? 'Buen estado' : item.condition === 'damaged' ? 'Danado' : 'Defectuoso'}</span>
                       </td>
                       <td className="px-3 py-2 text-center">
                         {item.restock ? <span className="text-emerald-600 text-[9px] font-semibold">Si</span> : <span className="text-muted-foreground text-[9px]">No</span>}
@@ -305,7 +305,7 @@ export default function ReturnsPage() {
               </table>
             </div>
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
-              <button onClick={() => setDetailReturn(null)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cerrar</button>
+              <button onClick={() => setDetailReturn(null)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cerrar</button>
               {detailReturn.status === 'pending' && (
                 <button onClick={() => completeReturn(detailReturn.id)} className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
                   <CheckCircle className="w-4 h-4" /> Completar

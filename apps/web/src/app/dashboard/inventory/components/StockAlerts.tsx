@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { AlertTriangle, Bell, BellOff, Plus, Trash2, Settings, TrendingDown, TrendingUp, XCircle, CheckCircle, X } from 'lucide-react';
@@ -145,29 +145,29 @@ export default function StockAlerts() {
         <div className="bg-muted border border-border rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-foreground">Crear Alerta</span>
-            <button onClick={() => setShowCreate(false)} className="p-1 hover:bg-slate-200 rounded">
+            <button onClick={() => setShowCreate(false)} className="p-1 hover:bg-muted rounded">
               <X className="w-3 h-3 text-muted-foreground" />
             </button>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <select value={newAlert.product_id} onChange={e => setNewAlert({ ...newAlert, product_id: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20">
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-2 focus:ring-primary/20">
               <option value="">Producto...</option>
               {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
             <select value={newAlert.warehouse_id} onChange={e => setNewAlert({ ...newAlert, warehouse_id: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20">
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-2 focus:ring-primary/20">
               <option value="">Bodega...</option>
               {warehouses.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}
             </select>
             <select value={newAlert.alert_type} onChange={e => setNewAlert({ ...newAlert, alert_type: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20">
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-2 focus:ring-primary/20">
               <option value="min_stock">Stock Minimo</option>
               <option value="max_stock">Stock Maximo</option>
               <option value="out_of_stock">Sin Stock</option>
             </select>
             <input type="number" value={newAlert.threshold} onChange={e => setNewAlert({ ...newAlert, threshold: Number(e.target.value) })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20"
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-2 focus:ring-primary/20"
               placeholder="Umbral" />
           </div>
           <button onClick={handleCreate}
@@ -178,7 +178,7 @@ export default function StockAlerts() {
       )}
 
       {alerts.length === 0 ? (
-        <div className="text-center py-8 bg-muted border border-dashed border-slate-300 rounded-xl">
+        <div className="text-center py-8 bg-muted border border-dashed border-border rounded-xl">
           <CheckCircle className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">Todo en orden - sin alertas activas</p>
         </div>

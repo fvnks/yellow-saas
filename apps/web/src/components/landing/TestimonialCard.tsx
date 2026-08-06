@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { cn } from '@/lib/utils';
 import { Stars } from './Stars';
@@ -16,16 +16,16 @@ export function TestimonialCard({ quote, author, role, company, rating = 5, clas
   return (
     <div
       className={cn(
-        'flex-shrink-0 w-[380px] rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800/50 dark:hover:border-slate-600',
+        'flex-shrink-0 w-[380px] rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:border-border dark:border-border dark:bg-card/50 dark:hover:border-border',
         className
       )}
     >
       <Stars rating={rating} className="mb-4" />
-      <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
+      <p className="text-sm text-foreground dark:text-foreground leading-relaxed mb-6">
         &ldquo;{quote}&rdquo;
       </p>
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
+        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-primary flex items-center justify-center text-white font-bold text-sm">
           {author.charAt(0)}
         </div>
         <div>

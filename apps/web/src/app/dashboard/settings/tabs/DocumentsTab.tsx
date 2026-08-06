@@ -11,9 +11,9 @@ import {
 import { generateBoletaPDF, generateCotizacionPDF, generateOrdenVentaPDF, generateOrdenCompraPDF, generateDeliveryGuidePDF, DocumentData, type DocumentItem, type DeliveryGuideData, type ReturnNoteData } from '@/lib/pdf-design';
 
 const STYLE: { input: string; select: string; toggle: string } = {
-  input: 'w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 hover:border-slate-300',
-  select: 'w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 hover:border-slate-300 appearance-none cursor-pointer',
-  toggle: 'w-12 h-6 bg-slate-200 peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[""] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600 shadow-inner',
+  input: 'w-full bg-card border border-border rounded-xl px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-all duration-200 hover:border-border',
+  select: 'w-full bg-card border border-border rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-all duration-200 hover:border-border appearance-none cursor-pointer',
+  toggle: 'w-12 h-6 bg-muted peer-focus:ring-2 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[""] after:absolute after:top-0.5 after:left-[2px] after:bg-card after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary shadow-inner',
 };
 
 const COLOR_PRESETS = [
@@ -48,20 +48,20 @@ export function DocumentsTab() {
       {/* Editor */}
       <div className="lg:col-span-2 space-y-5">
         {loading ? (
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 text-center">
-            <div className="animate-pulse bg-slate-200 h-6 w-48 rounded-xl mx-auto" />
+          <div className="bg-card border border-border rounded-xl shadow-sm p-8 text-center">
+            <div className="animate-pulse bg-muted h-6 w-48 rounded-xl mx-auto" />
           </div>
         ) : (
           <>
             {/* Template Selection */}
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
-                  <LayoutTemplate className="w-4 h-4 text-indigo-600" />
+            <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-border flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+                  <LayoutTemplate className="w-4 h-4 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-900">Plantilla</h3>
-                  <p className="text-xs text-slate-500">Estilo visual del documento</p>
+                  <h3 className="text-sm font-semibold text-foreground">Plantilla</h3>
+                  <p className="text-xs text-muted-foreground">Estilo visual del documento</p>
                 </div>
               </div>
               <div className="p-4">
@@ -72,26 +72,26 @@ export function DocumentsTab() {
                       onClick={() => update({ template_id: t.id })}
                       className={`relative flex flex-col items-center p-4 rounded-xl border-2 transition-all duration-200 ${
                         settings.template_id === t.id
-                          ? 'border-indigo-500 bg-indigo-50 shadow-md scale-[1.02]'
-                          : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                          ? 'border-primary bg-blue-50 shadow-md scale-[1.02]'
+                          : 'border-border hover:border-border hover:bg-muted'
                       }`}
                     >
                       {settings.template_id === t.id && (
-                        <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-indigo-500 rounded-full flex items-center justify-center">
+                        <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
                           <Check className="w-3 h-3 text-white" />
                         </div>
                       )}
                       <div className={`w-12 h-16 rounded-lg mb-2 flex items-center justify-center ${
-                        t.id === 'classic' ? 'bg-slate-100 border border-slate-200' :
-                        t.id === 'minimal' ? 'bg-white border border-slate-200' :
-                        'bg-gradient-to-br from-indigo-500 to-purple-600'
+                        t.id === 'classic' ? 'bg-muted border border-border' :
+                        t.id === 'minimal' ? 'bg-card border border-border' :
+                        'bg-gradient-to-br from-primary to-primary'
                       }`}>
-                        {t.id === 'classic' && <FileText className="w-6 h-6 text-slate-600" />}
-                        {t.id === 'minimal' && <Minus className="w-6 h-6 text-slate-400" />}
+                        {t.id === 'classic' && <FileText className="w-6 h-6 text-foreground" />}
+                        {t.id === 'minimal' && <Minus className="w-6 h-6 text-muted-foreground" />}
                         {t.id === 'bold' && <Zap className="w-6 h-6 text-white" />}
                       </div>
-                      <span className="text-xs font-semibold text-slate-900">{t.name}</span>
-                      <span className="text-[10px] text-slate-500 mt-0.5 text-center leading-tight">{t.description}</span>
+                      <span className="text-xs font-semibold text-foreground">{t.name}</span>
+                      <span className="text-[10px] text-muted-foreground mt-0.5 text-center leading-tight">{t.description}</span>
                     </button>
                   ))}
                 </div>
@@ -99,20 +99,20 @@ export function DocumentsTab() {
             </div>
 
             {/* Colors */}
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center">
-                  <Palette className="w-4 h-4 text-purple-600" />
+            <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-border flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+                  <Palette className="w-4 h-4 text-blue-700" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-900">Colores</h3>
-                  <p className="text-xs text-slate-500">Personaliza la paleta</p>
+                  <h3 className="text-sm font-semibold text-foreground">Colores</h3>
+                  <p className="text-xs text-muted-foreground">Personaliza la paleta</p>
                 </div>
               </div>
               <div className="p-5 space-y-5">
                 {/* Color Presets */}
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-2.5">Paletas predefinidas</label>
+                  <label className="block text-xs font-medium text-foreground mb-2.5">Paletas predefinidas</label>
                   <div className="flex gap-2 flex-wrap">
                     {COLOR_PRESETS.map(preset => (
                       <button
@@ -120,15 +120,15 @@ export function DocumentsTab() {
                         onClick={() => update({ primary_color: preset.primary, accent_color: preset.accent })}
                         className={`group flex items-center gap-2 px-3 py-2 rounded-xl border transition-all duration-200 ${
                           settings.primary_color === preset.primary && settings.accent_color === preset.accent
-                            ? 'border-indigo-500 bg-indigo-50 shadow-sm'
-                            : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                            ? 'border-primary bg-blue-50 shadow-sm'
+                            : 'border-border hover:border-border hover:bg-muted'
                         }`}
                       >
                         <div className="flex -space-x-1">
                           <div className="w-4 h-4 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: preset.primary }} />
                           <div className="w-4 h-4 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: preset.accent }} />
                         </div>
-                        <span className="text-xs font-medium text-slate-700">{preset.name}</span>
+                        <span className="text-xs font-medium text-foreground">{preset.name}</span>
                       </button>
                     ))}
                   </div>
@@ -149,91 +149,91 @@ export function DocumentsTab() {
             </div>
 
             {/* Localization */}
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2.5">
+            <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-border flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
                   <Hash className="w-4 h-4 text-emerald-600" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-900">Localización</h3>
-                  <p className="text-xs text-slate-500">Idioma y moneda</p>
+                  <h3 className="text-sm font-semibold text-foreground">Localización</h3>
+                  <p className="text-xs text-muted-foreground">Idioma y moneda</p>
                 </div>
               </div>
               <div className="p-5 space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-medium text-slate-700">Idioma</label>
+                    <label className="block text-xs font-medium text-foreground">Idioma</label>
                     <div className="relative">
                       <select value={settings.language} onChange={e => update({ language: e.target.value as DocumentSettings['language'] })} className={STYLE.select}>
                         {LANGUAGES.map(l => <option key={l.code} value={l.code}>{l.label}</option>)}
                       </select>
                       <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                        <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                        <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                       </div>
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-medium text-slate-700">Moneda</label>
+                    <label className="block text-xs font-medium text-foreground">Moneda</label>
                     <div className="relative">
                       <select value={settings.currency} onChange={e => update({ currency: e.target.value as DocumentSettings['currency'] })} className={STYLE.select}>
                         {CURRENCIES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}
                       </select>
                       <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                        <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                        <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-medium text-slate-700">Etiqueta de impuesto</label>
+                  <label className="block text-xs font-medium text-foreground">Etiqueta de impuesto</label>
                   <input type="text" value={settings.tax_label} onChange={e => update({ tax_label: e.target.value })} className={STYLE.input} placeholder="IVA (19%)" />
                 </div>
               </div>
             </div>
 
             {/* Texts */}
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2.5">
+            <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-border flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
                   <Type className="w-4 h-4 text-amber-600" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-900">Textos</h3>
-                  <p className="text-xs text-slate-500">Encabezado, pie y notas</p>
+                  <h3 className="text-sm font-semibold text-foreground">Textos</h3>
+                  <p className="text-xs text-muted-foreground">Encabezado, pie y notas</p>
                 </div>
               </div>
               <div className="p-5 space-y-4">
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-medium text-slate-700">Texto de encabezado</label>
+                  <label className="block text-xs font-medium text-foreground">Texto de encabezado</label>
                   <input type="text" value={settings.header_text} onChange={e => update({ header_text: e.target.value })} className={STYLE.input} placeholder="Texto opcional bajo los datos de la empresa" />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-medium text-slate-700">Texto de pie</label>
+                  <label className="block text-xs font-medium text-foreground">Texto de pie</label>
                   <input type="text" value={settings.footer_text} onChange={e => update({ footer_text: e.target.value })} className={STYLE.input} placeholder="Documento generado por Yellow ERP" />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-medium text-slate-700">Notas predeterminadas</label>
+                  <label className="block text-xs font-medium text-foreground">Notas predeterminadas</label>
                   <textarea value={settings.default_notes} onChange={e => update({ default_notes: e.target.value })} rows={3} className={`${STYLE.input} resize-none`} placeholder="Notas que aparecerán por defecto en cada documento" />
                 </div>
               </div>
             </div>
 
             {/* Document Titles */}
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-cyan-50 flex items-center justify-center">
-                  <FileText className="w-4 h-4 text-cyan-600" />
+            <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-border flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-teal-600" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-900">Títulos de documento</h3>
-                  <p className="text-xs text-slate-500">Nombres personalizados</p>
+                  <h3 className="text-sm font-semibold text-foreground">Títulos de documento</h3>
+                  <p className="text-xs text-muted-foreground">Nombres personalizados</p>
                 </div>
               </div>
               <div className="p-5">
                 <div className="grid grid-cols-1 gap-3">
                   {(['boleta', 'factura', 'cotizacion', 'orden_venta', 'orden_compra'] as const).map(key => (
                     <div key={key} className="flex items-center gap-3">
-                      <label className="text-xs font-medium text-slate-700 w-24 capitalize">{key.replace('_', ' ')}</label>
+                      <label className="text-xs font-medium text-foreground w-24 capitalize">{key.replace('_', ' ')}</label>
                       <input
                         type="text"
                         value={settings.document_titles[key]}
@@ -251,15 +251,15 @@ export function DocumentsTab() {
 
       {/* Preview */}
       <div className="lg:col-span-3">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden sticky top-20">
-          <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden sticky top-20">
+          <div className="px-6 py-4 border-b border-border flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
-                <Eye className="w-4 h-4 text-slate-600" />
+              <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                <Eye className="w-4 h-4 text-foreground" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-slate-900">Vista previa</h3>
-                <p className="text-xs text-slate-500">En tiempo real</p>
+                <h3 className="text-sm font-semibold text-foreground">Vista previa</h3>
+                <p className="text-xs text-muted-foreground">En tiempo real</p>
               </div>
             </div>
             {savingStatus === 'saved' && (
@@ -272,11 +272,11 @@ export function DocumentsTab() {
           <div className="p-6">
             <DocumentPreview settings={settings} />
           </div>
-          <div className="px-6 py-4 border-t border-slate-100 flex justify-end">
+          <div className="px-6 py-4 border-t border-border flex justify-end">
             <button
               onClick={handleSave}
               disabled={savingStatus === 'saving'}
-              className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 disabled:opacity-50 flex items-center gap-2 shadow-lg shadow-slate-900/20 hover:shadow-xl hover:shadow-slate-900/25 active:scale-[0.98]"
+              className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 disabled:opacity-50 flex items-center gap-2 shadow-lg shadow-slate-900/20 hover:shadow-xl hover:shadow-slate-900/25 active:scale-[0.98]"
             >
               {savingStatus === 'saving' ? (
                 <>
@@ -300,13 +300,13 @@ export function DocumentsTab() {
 function ColorField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
   return (
     <div className="space-y-1.5">
-      <label className="block text-xs font-medium text-slate-700">{label}</label>
+      <label className="block text-xs font-medium text-foreground">{label}</label>
       <div className="flex items-center gap-2">
         <div className="relative">
-          <input type="color" value={value} onChange={e => onChange(e.target.value)} className="w-10 h-10 rounded-xl border-2 border-slate-200 bg-white cursor-pointer hover:border-slate-300 transition-colors shadow-sm" />
+          <input type="color" value={value} onChange={e => onChange(e.target.value)} className="w-10 h-10 rounded-xl border-2 border-border bg-card cursor-pointer hover:border-border transition-colors shadow-sm" />
           <div className="absolute inset-0 rounded-xl ring-2 ring-black/5 pointer-events-none" />
         </div>
-        <input type="text" value={value} onChange={e => onChange(e.target.value)} className="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-900 font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all hover:border-slate-300" />
+        <input type="text" value={value} onChange={e => onChange(e.target.value)} className="flex-1 bg-card border border-border rounded-xl px-3 py-2 text-sm text-foreground font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all hover:border-border" />
       </div>
     </div>
   );
@@ -314,10 +314,10 @@ function ColorField({ label, value, onChange }: { label: string; value: string; 
 
 function ToggleRow({ label, sublabel, checked, onChange }: { label: string; sublabel?: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
-    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors">
+    <div className="flex items-center justify-between p-3 bg-muted rounded-xl hover:bg-muted transition-colors">
       <div>
-        <p className="text-sm font-medium text-slate-900">{label}</p>
-        {sublabel && <p className="text-xs text-slate-500 mt-0.5">{sublabel}</p>}
+        <p className="text-sm font-medium text-foreground">{label}</p>
+        {sublabel && <p className="text-xs text-muted-foreground mt-0.5">{sublabel}</p>}
       </div>
       <label className="relative inline-flex items-center cursor-pointer">
         <input type="checkbox" checked={checked} onChange={e => onChange(e.target.checked)} className="sr-only peer" />
@@ -410,7 +410,7 @@ function DocumentPreview({ settings }: { settings: DocumentSettings }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-1 bg-slate-100 rounded-xl p-1" role="tablist">
+      <div className="flex gap-1 bg-muted rounded-xl p-1" role="tablist">
         {PREVIEW_TYPES.map(t => (
           <button
             key={t.id}
@@ -419,8 +419,8 @@ function DocumentPreview({ settings }: { settings: DocumentSettings }) {
             onClick={() => setActiveType(t.id as typeof activeType)}
             className={`flex-1 px-3 py-2 text-xs font-medium rounded-lg transition-all duration-200 ${
               activeType === t.id
-                ? 'bg-white text-slate-900 shadow-sm'
-                : 'text-slate-500 hover:text-slate-700 hover:bg-white/50'
+                ? 'bg-card text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground hover:bg-card/50'
             }`}
           >
             <span className="mr-1">{t.icon}</span>
@@ -434,16 +434,16 @@ function DocumentPreview({ settings }: { settings: DocumentSettings }) {
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <div className="flex flex-col items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-white/80 flex items-center justify-center animate-pulse">
-                <Sparkles className="w-6 h-6 text-slate-400" />
+              <div className="w-12 h-12 rounded-xl bg-card/80 flex items-center justify-center animate-pulse">
+                <Sparkles className="w-6 h-6 text-muted-foreground" />
               </div>
-              <div className="animate-pulse bg-white/60 h-4 w-32 rounded-lg" />
+              <div className="animate-pulse bg-card/60 h-4 w-32 rounded-lg" />
             </div>
           </div>
         )}
       </div>
-      <p className="text-xs text-slate-500 text-center">
-        Vista previa de <span className="font-medium text-slate-700">
+      <p className="text-xs text-muted-foreground text-center">
+        Vista previa de <span className="font-medium text-foreground">
           {activeType === 'boleta' ? 'Boleta' : activeType === 'factura' ? 'Factura' : activeType === 'cotizacion' ? 'Cotización' : activeType === 'orden_venta' ? 'Orden de Venta' : activeType === 'orden_compra' ? 'Orden de Compra' : 'Guía de Despacho'}
         </span> de ejemplo
       </p>

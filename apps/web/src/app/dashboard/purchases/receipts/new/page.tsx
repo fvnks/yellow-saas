@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -143,7 +143,7 @@ export default function NewGoodsReceiptPage() {
       <div className="flex items-center gap-3">
         <button onClick={() => step === 2 ? setStep(1) : router.push('/dashboard/purchases/receipts')}
           className="p-1 hover:bg-muted rounded transition-colors">
-          <ArrowLeft className="w-5 h-5 text-slate-600" />
+          <ArrowLeft className="w-5 h-5 text-foreground" />
         </button>
         <div className="flex-1">
           <h1 className="text-xl font-bold text-foreground">Nueva Recepción de Mercadería</h1>
@@ -159,15 +159,15 @@ export default function NewGoodsReceiptPage() {
       )}
 
       {step === 1 ? (
-        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-          <div className="px-6 py-4 border-b border-slate-100">
+        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+          <div className="px-6 py-4 border-b border-border">
             <h3 className="text-sm font-semibold text-foreground">Órdenes de Compra Confirmadas</h3>
             <p className="text-xs text-muted-foreground mt-1">Selecciona una orden de compra para recepcionar</p>
           </div>
           <div className="p-6">
             {orders.length === 0 ? (
               <div className="text-center py-12">
-                <PackageCheck className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                <PackageCheck className="w-12 h-12 text-foreground mx-auto mb-4" />
                 <p className="text-sm text-muted-foreground">No hay órdenes de compra confirmadas disponibles</p>
               </div>
             ) : (
@@ -176,7 +176,7 @@ export default function NewGoodsReceiptPage() {
                   <button
                     key={order.id}
                     onClick={() => handleSelectOrder(order.id)}
-                    className="w-full text-left p-4 border border-border rounded-lg hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors"
+                    className="w-full text-left p-4 border border-border rounded-lg hover:border-primary/30 hover:bg-blue-50/50 transition-colors"
                   >
                     <div className="flex items-center justify-between">
                       <div>
@@ -202,8 +202,8 @@ export default function NewGoodsReceiptPage() {
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-            <div className="px-6 py-4 border-b border-slate-100">
+          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+            <div className="px-6 py-4 border-b border-border">
               <h3 className="text-sm font-semibold text-foreground">Items a Recibir</h3>
               <p className="text-xs text-muted-foreground mt-1">Ingresa las cantidades a recibir para cada producto</p>
             </div>
@@ -228,7 +228,7 @@ export default function NewGoodsReceiptPage() {
                     </tr>
                   ) : (
                     receiveItems.map((item, index) => (
-                      <tr key={item.purchase_order_item_id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                      <tr key={item.purchase_order_item_id} className="border-b border-border hover:bg-muted transition-colors">
                         <td className="px-4 py-3">
                           <p className="text-xs font-medium text-foreground">{item.product_name}</p>
                           <p className="text-[10px] text-muted-foreground font-mono">{item.product_sku}</p>
@@ -254,7 +254,7 @@ export default function NewGoodsReceiptPage() {
                             value={item.batch_number}
                             onChange={(e) => handleBatchChange(index, e.target.value)}
                             placeholder="Opcional"
-                            className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground text-center placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                            className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground text-center placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                           />
                         </td>
                       </tr>
@@ -265,8 +265,8 @@ export default function NewGoodsReceiptPage() {
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-            <div className="px-6 py-4 border-b border-slate-100">
+          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+            <div className="px-6 py-4 border-b border-border">
               <h3 className="text-sm font-semibold text-foreground">Observaciones</h3>
             </div>
             <div className="p-6">
@@ -275,12 +275,12 @@ export default function NewGoodsReceiptPage() {
                 onChange={(e) => setNotes(e.target.value)}
                 rows={3}
                 placeholder="Notas sobre la recepción..."
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
               />
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <p className="text-sm font-medium text-foreground">Resumen de Recepción</p>
@@ -293,7 +293,7 @@ export default function NewGoodsReceiptPage() {
             </div>
             <div className="flex gap-3">
               <button onClick={() => setStep(1)}
-                className="flex-1 bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                className="flex-1 bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                 Volver
               </button>
               <button onClick={handleSubmit} disabled={saving || totalItemsToReceive === 0}

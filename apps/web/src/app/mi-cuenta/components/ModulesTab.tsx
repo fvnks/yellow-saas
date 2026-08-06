@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Puzzle, Check, Plus } from 'lucide-react';
@@ -134,7 +134,7 @@ export default function ModulesTab() {
               {CATEGORY_LABELS[category] || category}
               <span className={cn(
                 "px-1.5 py-0.5 rounded-full text-[9px] font-semibold",
-                isActive ? "bg-indigo-50 text-indigo-600" : "bg-slate-200 text-muted-foreground"
+                isActive ? "bg-blue-50 text-primary" : "bg-muted text-muted-foreground"
               )}>
                 {categoryCount}
               </span>
@@ -148,11 +148,11 @@ export default function ModulesTab() {
         {filteredModules.map(module => {
           const active = isActivated(module.name);
           return (
-            <div key={module.id} className={`bg-card border rounded-xl p-6 transition-all ${active ? 'border-emerald-200 bg-emerald-50/30' : 'border-border hover:border-slate-300 hover:shadow-md'}`}>
+            <div key={module.id} className={`bg-card border rounded-xl p-6 transition-all ${active ? 'border-emerald-200 bg-emerald-50/30' : 'border-border hover:border-border hover:shadow-md'}`}>
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${active ? 'bg-emerald-100' : 'bg-indigo-50'}`}>
-                    <Puzzle className={`w-5 h-5 ${active ? 'text-emerald-600' : 'text-indigo-600'}`} />
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${active ? 'bg-emerald-100' : 'bg-blue-50'}`}>
+                    <Puzzle className={`w-5 h-5 ${active ? 'text-emerald-600' : 'text-primary'}`} />
                   </div>
                   <div>
                     <h4 className="text-sm font-semibold text-foreground">{module.label}</h4>
@@ -174,7 +174,7 @@ export default function ModulesTab() {
 
               <div className="flex flex-wrap gap-1.5 mb-5">
                 {module.features.map((feature, i) => (
-                  <span key={i} className="inline-flex items-center px-2 py-0.5 bg-muted text-slate-600 text-[10px] font-medium rounded-md border border-slate-100">
+                  <span key={i} className="inline-flex items-center px-2 py-0.5 bg-muted text-foreground text-[10px] font-medium rounded-md border border-border">
                     {feature}
                   </span>
                 ))}

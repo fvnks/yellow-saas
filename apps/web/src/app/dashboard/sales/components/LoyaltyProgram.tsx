@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Star, Gift, TrendingUp, Award, Plus, X, Save, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
@@ -84,7 +84,7 @@ export default function LoyaltyProgram() {
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase">Puntos Totales</p>
@@ -95,18 +95,18 @@ export default function LoyaltyProgram() {
             </div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase">Clientes Activos</p>
               <p className="text-xl font-bold text-foreground mt-1">{activeCustomers}</p>
             </div>
-            <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center">
-              <Award className="w-5 h-5 text-indigo-600" />
+            <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+              <Award className="w-5 h-5 text-primary" />
             </div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase">Total Canjeado</p>
@@ -121,17 +121,17 @@ export default function LoyaltyProgram() {
 
       <div className="flex gap-2">
         <button onClick={() => setActiveView('summary')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${activeView === 'summary' ? 'bg-primary text-white' : 'bg-card border border-border text-slate-600 hover:bg-muted'}`}>
+          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${activeView === 'summary' ? 'bg-primary text-white' : 'bg-card border border-border text-foreground hover:bg-muted'}`}>
           Resumen
         </button>
         <button onClick={() => setActiveView('transactions')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${activeView === 'transactions' ? 'bg-primary text-white' : 'bg-card border border-border text-slate-600 hover:bg-muted'}`}>
+          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${activeView === 'transactions' ? 'bg-primary text-white' : 'bg-card border border-border text-foreground hover:bg-muted'}`}>
           Movimientos
         </button>
       </div>
 
       {activeView === 'summary' && (
-        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-border">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border">
@@ -143,12 +143,12 @@ export default function LoyaltyProgram() {
             </thead>
             <tbody>
               {customers.map(c => (
-                <tr key={c.id} className="border-b border-slate-50 hover:bg-muted transition-colors">
+                <tr key={c.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3">
                     <p className="text-xs font-medium text-foreground">{c.name}</p>
                     <p className="text-[9px] text-muted-foreground">{c.tax_id}</p>
                   </td>
-                  <td className="px-4 py-3 text-xs text-right text-slate-600">{c.total_earned.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-xs text-right text-foreground">{c.total_earned.toLocaleString()}</td>
                   <td className="px-4 py-3 text-xs text-right text-red-500">-{c.total_redeemed.toLocaleString()}</td>
                   <td className="px-4 py-3 text-right">
                     <span className={`inline-flex items-center gap-1 text-xs font-bold ${c.balance > 0 ? 'text-emerald-600' : 'text-muted-foreground'}`}>
@@ -166,7 +166,7 @@ export default function LoyaltyProgram() {
       )}
 
       {activeView === 'transactions' && (
-        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-border">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border">
@@ -179,7 +179,7 @@ export default function LoyaltyProgram() {
             </thead>
             <tbody>
               {transactions.map(t => (
-                <tr key={t.id} className="border-b border-slate-50 hover:bg-muted transition-colors">
+                <tr key={t.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3">
                     {t.type === 'earned' ? (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700">
@@ -192,7 +192,7 @@ export default function LoyaltyProgram() {
                     )}
                   </td>
                   <td className="px-4 py-3 text-xs text-foreground">{t.customer_name}</td>
-                  <td className="px-4 py-3 text-xs text-slate-600">{t.description}</td>
+                  <td className="px-4 py-3 text-xs text-foreground">{t.description}</td>
                   <td className={`px-4 py-3 text-xs text-right font-bold ${t.type === 'earned' ? 'text-emerald-600' : 'text-red-600'}`}>
                     {t.type === 'earned' ? '+' : '-'}{t.points.toLocaleString()}
                   </td>
@@ -212,18 +212,18 @@ export default function LoyaltyProgram() {
           <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">Registrar Puntos</h2>
-              <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-slate-600"><X className="w-5 h-5" /></button>
+              <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
             </div>
             <div className="p-6 space-y-4">
               <div>
                 <label className="block text-xs font-medium text-foreground mb-1">Acción</label>
                 <div className="flex gap-2">
                   <button onClick={() => setForm({ ...form, action: 'earn' })}
-                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${form.action === 'earn' ? 'bg-emerald-600 text-white' : 'bg-muted text-slate-600'}`}>
+                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${form.action === 'earn' ? 'bg-emerald-600 text-white' : 'bg-muted text-foreground'}`}>
                     <ArrowUpCircle className="w-4 h-4 inline mr-1" /> Ganar
                   </button>
                   <button onClick={() => setForm({ ...form, action: 'redeem' })}
-                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${form.action === 'redeem' ? 'bg-red-600 text-white' : 'bg-muted text-slate-600'}`}>
+                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${form.action === 'redeem' ? 'bg-red-600 text-white' : 'bg-muted text-foreground'}`}>
                     <ArrowDownCircle className="w-4 h-4 inline mr-1" /> Canjear
                   </button>
                 </div>
@@ -248,7 +248,7 @@ export default function LoyaltyProgram() {
               </div>
             </div>
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
-              <button onClick={() => setShowForm(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={() => setShowForm(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={!form.customer_id || !form.points}
                 className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors disabled:opacity-50">
                 <Save className="w-3.5 h-3.5" /> Guardar

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { History, ArrowDownCircle, ArrowUpCircle, ArrowRightLeft, Settings, RefreshCw, Filter, Calendar, Package } from 'lucide-react';
@@ -24,7 +24,7 @@ const typeConfig: Record<string, { label: string; icon: typeof ArrowUpCircle; co
   out: { label: 'Salida', icon: ArrowUpCircle, color: 'text-red-700', bg: 'bg-red-50 border-red-200' },
   transfer_in: { label: 'Transferencia Entrante', icon: ArrowRightLeft, color: 'text-blue-700', bg: 'bg-blue-50 border-blue-200' },
   transfer_out: { label: 'Transferencia Saliente', icon: ArrowRightLeft, color: 'text-amber-700', bg: 'bg-amber-50 border-amber-200' },
-  adjustment: { label: 'Ajuste', icon: Settings, color: 'text-purple-700', bg: 'bg-purple-50 border-purple-200' },
+  adjustment: { label: 'Ajuste', icon: Settings, color: 'text-blue-700', bg: 'bg-blue-50 border-blue-200' },
   initial: { label: 'Inicial', icon: Package, color: 'text-foreground', bg: 'bg-muted border-border' },
 };
 
@@ -90,12 +90,12 @@ export default function InventoryMovementHistory() {
           </span>
         </div>
         <button onClick={() => loadMovements()}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium transition-colors">
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground rounded-lg text-xs font-medium transition-colors">
           <RefreshCw className="w-3.5 h-3.5" /> Actualizar
         </button>
       </div>
 
-      <div className="bg-card border border-border rounded-xl p-3 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl p-3 dark:bg-primary dark:border-border">
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-1.5">
             <Filter className="w-3.5 h-3.5 text-muted-foreground" />
@@ -126,8 +126,8 @@ export default function InventoryMovementHistory() {
           ))}
         </div>
       ) : movements.length === 0 ? (
-        <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
-          <History className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+        <div className="text-center py-12 bg-muted border border-dashed border-border rounded-xl">
+          <History className="w-8 h-8 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">Sin movimientos registrados</p>
         </div>
       ) : (
@@ -176,11 +176,11 @@ export default function InventoryMovementHistory() {
           <p>Mostrando {page * 50 + 1}-{Math.min((page + 1) * 50, total)} de {total}</p>
           <div className="flex items-center gap-2">
             <button onClick={() => setPage(Math.max(0, page - 1))} disabled={page === 0}
-              className="px-3 py-1 bg-card border border-border rounded-lg hover:bg-muted dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 disabled:opacity-50 transition-colors">
+              className="px-3 py-1 bg-card border border-border rounded-lg hover:bg-muted dark:bg-card dark:border-border dark:hover:bg-primary/90 disabled:opacity-50 transition-colors">
               Anterior
             </button>
             <button onClick={() => setPage(page + 1)} disabled={(page + 1) * 50 >= total}
-              className="px-3 py-1 bg-card border border-border rounded-lg hover:bg-muted dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 disabled:opacity-50 transition-colors">
+              className="px-3 py-1 bg-card border border-border rounded-lg hover:bg-muted dark:bg-card dark:border-border dark:hover:bg-primary/90 disabled:opacity-50 transition-colors">
               Siguiente
             </button>
           </div>

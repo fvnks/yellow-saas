@@ -128,9 +128,9 @@ export default function AutomationManager({ projectId }: AutomationManagerProps)
       </div>
 
       {showCreate && (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 space-y-3">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border space-y-3">
           <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-            className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
             placeholder="Nombre de la regla..." />
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
@@ -164,7 +164,7 @@ export default function AutomationManager({ projectId }: AutomationManagerProps)
               className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-xs text-foreground font-mono focus:outline-none focus:ring-2 focus:ring-primary/20" />
           </div>
           <div className="flex justify-end gap-2">
-            <button onClick={() => setShowCreate(false)} className="px-3 py-1.5 text-xs text-slate-600 hover:text-foreground">Cancelar</button>
+            <button onClick={() => setShowCreate(false)} className="px-3 py-1.5 text-xs text-foreground hover:text-foreground">Cancelar</button>
             <button onClick={handleCreate} disabled={saving || !form.name}
               className="bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50">
               {saving ? 'Creando...' : 'Crear Regla'}
@@ -174,15 +174,15 @@ export default function AutomationManager({ projectId }: AutomationManagerProps)
       )}
 
       {rules.length === 0 ? (
-        <div className="text-center py-8 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-          <Zap className="w-10 h-10 text-slate-200 mx-auto mb-2" />
+        <div className="text-center py-8 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+          <Zap className="w-10 h-10 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">Sin reglas de automatización</p>
           <p className="text-[10px] text-muted-foreground mt-1">Crea reglas para automatizar flujos de trabajo</p>
         </div>
       ) : (
         <div className="space-y-2">
           {rules.map(rule => (
-            <div key={rule.id} className={`bg-card border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 hover:shadow-md dark:bg-primary dark:border-slate-800 transition-shadow ${rule.is_active ? 'border-border' : 'border-slate-100 opacity-60'}`}>
+            <div key={rule.id} className={`bg-card border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border hover:shadow-md dark:bg-primary dark:border-border transition-shadow ${rule.is_active ? 'border-border' : 'border-border opacity-60'}`}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${rule.is_active ? 'bg-amber-50' : 'bg-muted'}`}>

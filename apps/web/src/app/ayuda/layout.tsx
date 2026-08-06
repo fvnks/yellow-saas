@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { Toaster, toast } from 'sonner';
@@ -60,21 +60,21 @@ function AyudaSidebar() {
   ];
 
   return (
-    <div className="w-60 bg-white border-r border-slate-200 h-screen fixed left-0 top-0 z-40 flex flex-col">
-      <div className="p-4 border-b border-slate-200">
+    <div className="w-60 bg-card border-r border-border h-screen fixed left-0 top-0 z-40 flex flex-col">
+      <div className="p-4 border-b border-border">
         <Link href="/ayuda" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
             <LifeBuoy className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="text-sm font-bold text-slate-900">Ayuda</p>
-            <p className="text-[9px] text-slate-400">Soporte y FAQ</p>
+            <p className="text-sm font-bold text-foreground">Ayuda</p>
+            <p className="text-[9px] text-muted-foreground">Soporte y FAQ</p>
           </div>
         </Link>
       </div>
       <nav className="flex-1 p-3 space-y-1">
         <Link href="/select"
-          className="flex items-center gap-2 px-3 py-2 mb-2 text-xs font-medium text-slate-500 hover:text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">
+          className="flex items-center gap-2 px-3 py-2 mb-2 text-xs font-medium text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted transition-colors">
           <ArrowLeft className="w-3.5 h-3.5" />
           Volver al selector
         </Link>
@@ -86,19 +86,19 @@ function AyudaSidebar() {
           return (
             <Link key={item.href} href={item.href}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                isActive ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                isActive ? 'bg-blue-50 text-blue-700' : 'text-foreground hover:bg-muted hover:text-foreground'
               }`}>
               <Icon className="w-4 h-4" />
               {item.label}
               {item.href === '/ayuda/tickets' && unread > 0 && (
-                <span className="ml-auto inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-[9px] font-bold bg-slate-900 text-white">
+                <span className="ml-auto inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-[9px] font-bold bg-primary text-white">
                   {unread}
                 </span>
               )}
             </Link>
           );
         })}
-        <p className="flex items-center gap-2 px-3 py-2.5 text-xs font-medium text-slate-400">
+        <p className="flex items-center gap-2 px-3 py-2.5 text-xs font-medium text-muted-foreground">
           <Headphones className="w-4 h-4" />
           Respuestas pendientes: {unread}
         </p>
@@ -109,13 +109,13 @@ function AyudaSidebar() {
 
 export default function AyudaLayout({ children }: { children: ReactNode }) {
   return (
-    <main className="bg-slate-50 min-h-screen transition-colors">
+    <main className="bg-muted min-h-screen transition-colors">
       <Toaster position="top-right" richColors closeButton />
       <AyudaSidebar />
       <div className="ml-60">
-        <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b border-slate-100 bg-white/80 backdrop-blur-xl">
+        <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b border-border bg-card/80 backdrop-blur-xl">
           <div className="flex items-center gap-2 px-4">
-            <span className="text-sm text-slate-500">Ayuda y Soporte</span>
+            <span className="text-sm text-muted-foreground">Ayuda y Soporte</span>
           </div>
           <div className="ml-auto pr-4">
             <ThemeToggle />

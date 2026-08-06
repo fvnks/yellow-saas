@@ -107,7 +107,7 @@ export default function AdminAuditPage() {
     login: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     access: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
     modify: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-    logout: 'bg-muted0/10 text-muted-foreground border-slate-500/20',
+    logout: 'bg-muted0/10 text-muted-foreground border-border/20',
   };
 
   const totalPages = Math.ceil(total / limit);
@@ -122,7 +122,7 @@ export default function AdminAuditPage() {
         <button
           onClick={() => setShowFilters(!showFilters)}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            showFilters || activeFilters > 0 ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-muted-foreground hover:text-white'
+            showFilters || activeFilters > 0 ? 'bg-primary text-white' : 'bg-card text-muted-foreground hover:text-white'
           }`}
         >
           <Filter className="w-4 h-4" />
@@ -132,14 +132,14 @@ export default function AdminAuditPage() {
 
       {/* Filters */}
       {showFilters && (
-        <div className="bg-primary border border-slate-800 rounded-xl p-4">
+        <div className="bg-primary border border-border rounded-xl p-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <div className="space-y-1">
               <label className="text-xs font-medium text-muted-foreground">Acción</label>
               <select
                 value={filters.action}
                 onChange={(e) => { setFilters({ ...filters, action: e.target.value }); setPage(0); }}
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
               >
                 <option value="">Todas</option>
                 <option value="login">Login</option>
@@ -153,7 +153,7 @@ export default function AdminAuditPage() {
               <select
                 value={filters.super_admin_id}
                 onChange={(e) => { setFilters({ ...filters, super_admin_id: e.target.value }); setPage(0); }}
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
               >
                 <option value="">Todos</option>
                 {superAdmins.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
@@ -164,7 +164,7 @@ export default function AdminAuditPage() {
               <select
                 value={filters.company_id}
                 onChange={(e) => { setFilters({ ...filters, company_id: e.target.value }); setPage(0); }}
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
               >
                 <option value="">Todas</option>
                 {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -176,7 +176,7 @@ export default function AdminAuditPage() {
                 type="date"
                 value={filters.date_from}
                 onChange={(e) => { setFilters({ ...filters, date_from: e.target.value }); setPage(0); }}
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
               />
             </div>
             <div className="space-y-1">
@@ -185,7 +185,7 @@ export default function AdminAuditPage() {
                 type="date"
                 value={filters.date_to}
                 onChange={(e) => { setFilters({ ...filters, date_to: e.target.value }); setPage(0); }}
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
               />
             </div>
           </div>
@@ -199,10 +199,10 @@ export default function AdminAuditPage() {
         </div>
       )}
 
-      <div className="bg-primary border border-slate-800 rounded-xl overflow-hidden">
+      <div className="bg-primary border border-border rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-800">
+            <tr className="border-b border-border">
               <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Fecha</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Super Admin</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Empresa</th>
@@ -213,9 +213,9 @@ export default function AdminAuditPage() {
           <tbody>
             {loading ? (
               Array.from({ length: 5 }).map((_, i) => (
-                <tr key={i} className="border-b border-slate-800/50">
+                <tr key={i} className="border-b border-border/50">
                   <td colSpan={5} className="px-6 py-4">
-                    <div className="h-4 bg-slate-800 rounded animate-pulse" />
+                    <div className="h-4 bg-card rounded animate-pulse" />
                   </td>
                 </tr>
               ))
@@ -228,14 +228,14 @@ export default function AdminAuditPage() {
               </tr>
             ) : (
               entries.map((entry) => (
-                <tr key={entry.id} className="border-b border-slate-800/50 hover:bg-primary/90/30 transition-colors">
+                <tr key={entry.id} className="border-b border-border/50 hover:bg-primary/90/30 transition-colors">
                   <td className="px-6 py-4 text-xs text-muted-foreground">
                     {new Date(entry.created_at).toLocaleString('es-CL')}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 bg-indigo-500/10 rounded-lg flex items-center justify-center">
-                        <Shield className="w-3.5 h-3.5 text-indigo-400" />
+                      <div className="w-7 h-7 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <Shield className="w-3.5 h-3.5 text-primary/70" />
                       </div>
                       <div>
                         <p className="text-xs font-medium text-white">{entry.super_admin_name}</p>
@@ -244,7 +244,7 @@ export default function AdminAuditPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-1.5 text-xs text-slate-300">
+                    <div className="flex items-center gap-1.5 text-xs text-foreground">
                       <Building2 className="w-3 h-3 text-muted-foreground" />
                       {entry.company_name}
                     </div>
@@ -271,7 +271,7 @@ export default function AdminAuditPage() {
             <button
               onClick={() => setPage(p => Math.max(0, p - 1))}
               disabled={page === 0}
-              className="p-1.5 rounded-lg bg-slate-800 text-muted-foreground hover:text-white disabled:opacity-30 transition-colors"
+              className="p-1.5 rounded-lg bg-card text-muted-foreground hover:text-white disabled:opacity-30 transition-colors"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -279,7 +279,7 @@ export default function AdminAuditPage() {
             <button
               onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
               disabled={page >= totalPages - 1}
-              className="p-1.5 rounded-lg bg-slate-800 text-muted-foreground hover:text-white disabled:opacity-30 transition-colors"
+              className="p-1.5 rounded-lg bg-card text-muted-foreground hover:text-white disabled:opacity-30 transition-colors"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

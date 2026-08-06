@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { Badge } from '@yellow-erp/ui';
@@ -126,7 +126,7 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => setWeekFilter(!weekFilter)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${weekFilter ? 'bg-indigo-100 text-indigo-700' : 'bg-muted text-muted-foreground hover:bg-slate-200'}`}>
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${weekFilter ? 'bg-blue-50 text-primary' : 'bg-muted text-muted-foreground hover:bg-muted'}`}>
             <Filter className="w-3 h-3 mr-1 inline" /> Esta semana
           </button>
           <select value={statusFilter} onChange={e => setStatusFilter(e.target.value as any)}
@@ -143,12 +143,12 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
       </div>
 
       {filtered.length === 0 ? (
-        <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
-          <Clock className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+        <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+          <Clock className="w-12 h-12 text-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">No hay registros de horas</p>
         </div>
       ) : (
-        <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border">
@@ -163,7 +163,7 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
             </thead>
             <tbody>
               {filtered.map(t => (
-                <tr key={t.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <tr key={t.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3 text-xs text-foreground">{new Date(t.date).toLocaleDateString('es-CL')}</td>
                   <td className="px-4 py-3 text-xs text-foreground">{t.employee_name || '—'}</td>
                   <td className="px-4 py-3 text-xs text-foreground">{t.task_name || '—'}</td>
@@ -206,7 +206,7 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
           <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">{editing ? 'Editar Horas' : 'Registrar Horas'}</h2>
-              <button onClick={() => { setShowForm(false); setEditing(null); }} className="text-muted-foreground hover:text-slate-600">X</button>
+              <button onClick={() => { setShowForm(false); setEditing(null); }} className="text-muted-foreground hover:text-foreground">X</button>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -218,7 +218,7 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-foreground">Horas *</label>
                   <input type="number" step="0.5" min="0.5" max="24" value={form.hours} onChange={e => setForm({ ...form, hours: e.target.value })}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="8" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="8" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -242,16 +242,16 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">Descripcion</label>
                 <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={2}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="flex items-center gap-2">
                 <input type="checkbox" id="billable" checked={form.billable} onChange={e => setForm({ ...form, billable: e.target.checked })}
-                  className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-primary/20" />
+                  className="w-4 h-4 text-primary rounded border-border focus:ring-primary/20" />
                 <label htmlFor="billable" className="text-sm text-foreground">Horas facturables</label>
               </div>
             </div>
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
-              <button onClick={() => { setShowForm(false); setEditing(null); }} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={() => { setShowForm(false); setEditing(null); }} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={saving || !form.date || !form.hours}
                 className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                 {saving ? 'Guardando...' : editing ? 'Actualizar' : 'Registrar'}

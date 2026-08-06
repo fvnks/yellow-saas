@@ -11,23 +11,23 @@ const actionConfig: Record<string, { label: string; icon: typeof CheckCircle2; c
   create: { label: 'Crear', icon: CheckCircle2, color: 'text-emerald-600' },
   update: { label: 'Actualizar', icon: Activity, color: 'text-blue-600' },
   delete: { label: 'Eliminar', icon: XCircle, color: 'text-rose-600' },
-  login: { label: 'Login', icon: User, color: 'text-indigo-600' },
+  login: { label: 'Login', icon: User, color: 'text-primary' },
   config: { label: 'Config', icon: AlertTriangle, color: 'text-amber-600' },
-  export: { label: 'Exportar', icon: Download, color: 'text-slate-600' },
+  export: { label: 'Exportar', icon: Download, color: 'text-foreground' },
 };
 
 const moduleColors: Record<string, string> = {
   'Ventas': 'bg-emerald-50 text-emerald-700 border-emerald-200',
   'Inventario': 'bg-blue-50 text-blue-700 border-blue-200',
-  'Clientes': 'bg-indigo-50 text-indigo-700 border-indigo-200',
+  'Clientes': 'bg-blue-50 text-primary border-primary/20',
   'Compras': 'bg-amber-50 text-amber-700 border-amber-200',
-  'Facturación': 'bg-purple-50 text-purple-700 border-purple-200',
+  'Facturación': 'bg-blue-50 text-blue-700 border-blue-200',
   'Configuración': 'bg-muted text-foreground border-border',
-  'Reportes': 'bg-cyan-50 text-cyan-700 border-cyan-200',
-  'Nómina': 'bg-pink-50 text-pink-700 border-pink-200',
+  'Reportes': 'bg-teal-50 text-teal-700 border-teal-200',
+  'Nómina': 'bg-rose-50 text-rose-700 border-rose-200',
   'Almacenes': 'bg-orange-50 text-orange-700 border-orange-200',
   'Proveedores': 'bg-teal-50 text-teal-700 border-teal-200',
-  'Auth': 'bg-violet-50 text-violet-700 border-violet-200',
+  'Auth': 'bg-blue-50 text-blue-700 border-blue-200',
 };
 
 export default function AuditPage() {
@@ -91,7 +91,7 @@ useEffect(() => {
         <KPICard label="Módulos Afectados" value={modules.length} icon={ScrollText} trend="Diferentes módulos" trendUp={true} />
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="flex flex-wrap items-center gap-4">
           <div className="relative flex-1 min-w-[200px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -127,7 +127,7 @@ useEffect(() => {
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -147,7 +147,7 @@ useEffect(() => {
                 const actionInfo = actionConfig[log.action] || actionConfig.update;
                 const ActionIcon = actionInfo.icon;
                 return (
-                  <tr key={log.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={log.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-mono text-muted-foreground whitespace-nowrap">{log.timestamp}</td>
                     <td className="px-4 py-3 text-xs text-foreground">{log.user}</td>
                     <td className="px-4 py-3">
@@ -157,7 +157,7 @@ useEffect(() => {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border ${moduleColors[log.module] || 'bg-muted text-slate-600 border-border'}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border ${moduleColors[log.module] || 'bg-muted text-foreground border-border'}`}>
                         {log.module}
                       </span>
                     </td>
@@ -177,7 +177,7 @@ useEffect(() => {
 
       {filteredLogs.length === 0 && (
         <div className="text-center py-12">
-          <ScrollText className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+          <ScrollText className="w-12 h-12 text-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">No se encontraron registros de auditoría</p>
         </div>
       )}

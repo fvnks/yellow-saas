@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { KeyRound, Search, Building2, Shield, CheckCircle, XCircle, Clock, AlertTriangle, Plus, X } from 'lucide-react';
@@ -128,7 +128,7 @@ export default function AdminGrantsPage() {
         </div>
         <button
           onClick={() => { setShowCreate(!showCreate); setMessage({ type: '', text: '' }); }}
-          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm font-medium text-white transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors"
         >
           <Plus className="w-4 h-4" />
           {showCreate ? 'Cancelar' : 'Nuevo Acceso'}
@@ -137,7 +137,7 @@ export default function AdminGrantsPage() {
 
       {/* Create Form */}
       {showCreate && (
-        <div className="bg-primary border border-slate-800 rounded-xl p-6">
+        <div className="bg-primary border border-border rounded-xl p-6">
           <h3 className="text-sm font-semibold text-white mb-4">Crear Acceso</h3>
           {message.text && (
             <div className={`mb-4 flex items-center gap-2 p-3 rounded-lg text-sm ${
@@ -154,7 +154,7 @@ export default function AdminGrantsPage() {
                 value={form.company_id}
                 onChange={(e) => setForm({ ...form, company_id: e.target.value })}
                 required
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
               >
                 <option value="">Seleccionar empresa...</option>
                 {companies.map((c) => (
@@ -167,7 +167,7 @@ export default function AdminGrantsPage() {
               <select
                 value={form.access_level}
                 onChange={(e) => setForm({ ...form, access_level: e.target.value })}
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
               >
                 <option value="read">Lectura</option>
                 <option value="full">Completo</option>
@@ -180,7 +180,7 @@ export default function AdminGrantsPage() {
                 value={form.reason}
                 onChange={(e) => setForm({ ...form, reason: e.target.value })}
                 placeholder="Ej: Soporte técnico"
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
+                className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
               />
             </div>
             <div className="space-y-1">
@@ -189,14 +189,14 @@ export default function AdminGrantsPage() {
                 type="date"
                 value={form.expires_at}
                 onChange={(e) => setForm({ ...form, expires_at: e.target.value })}
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
               />
             </div>
             <div className="flex items-end">
               <button
                 type="submit"
                 disabled={saving}
-                className="w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
+                className="w-full px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
               >
                 {saving ? 'Creando...' : 'Crear Acceso'}
               </button>
@@ -206,7 +206,7 @@ export default function AdminGrantsPage() {
       )}
 
       {/* Filters */}
-      <div className="bg-primary border border-slate-800 rounded-xl p-4 flex items-center gap-4">
+      <div className="bg-primary border border-border rounded-xl p-4 flex items-center gap-4">
         <div className="flex items-center gap-2">
           {[
             { value: 'all', label: 'Todos' },
@@ -218,8 +218,8 @@ export default function AdminGrantsPage() {
               onClick={() => setFilter(opt.value)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                 filter === opt.value
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-slate-800 text-muted-foreground hover:text-white hover:bg-slate-700'
+                  ? 'bg-primary text-white'
+                  : 'bg-card text-muted-foreground hover:text-white hover:bg-primary/90'
               }`}
             >
               {opt.label}
@@ -229,10 +229,10 @@ export default function AdminGrantsPage() {
       </div>
 
       {/* Grants Table */}
-      <div className="bg-primary border border-slate-800 rounded-xl overflow-hidden">
+      <div className="bg-primary border border-border rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-800">
+            <tr className="border-b border-border">
               <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Super Admin</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Empresa</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Nivel</th>
@@ -245,9 +245,9 @@ export default function AdminGrantsPage() {
           <tbody>
             {loading ? (
               Array.from({ length: 3 }).map((_, i) => (
-                <tr key={i} className="border-b border-slate-800/50">
+                <tr key={i} className="border-b border-border/50">
                   <td colSpan={7} className="px-6 py-4">
-                    <div className="h-4 bg-slate-800 rounded animate-pulse" />
+                    <div className="h-4 bg-card rounded animate-pulse" />
                   </td>
                 </tr>
               ))
@@ -260,11 +260,11 @@ export default function AdminGrantsPage() {
               </tr>
             ) : (
               filtered.map((grant) => (
-                <tr key={grant.id} className="border-b border-slate-800/50 hover:bg-primary/90/30 transition-colors">
+                <tr key={grant.id} className="border-b border-border/50 hover:bg-primary/90/30 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-indigo-500/10 rounded-lg flex items-center justify-center">
-                        <Shield className="w-4 h-4 text-indigo-400" />
+                      <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <Shield className="w-4 h-4 text-primary/70" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-white">{grant.super_admin_name}</p>
@@ -273,7 +273,7 @@ export default function AdminGrantsPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-1.5 text-sm text-slate-300">
+                    <div className="flex items-center gap-1.5 text-sm text-foreground">
                       <Building2 className="w-3.5 h-3.5 text-muted-foreground" />
                       {grant.company_name}
                     </div>
@@ -288,7 +288,7 @@ export default function AdminGrantsPage() {
                   <td className="px-6 py-4 text-xs text-muted-foreground">{grant.reason || '—'}</td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold ${
-                      grant.is_active ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-muted0/10 text-muted-foreground border border-slate-500/20'
+                      grant.is_active ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-muted0/10 text-muted-foreground border border-border/20'
                     }`}>
                       {grant.is_active ? <CheckCircle className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
                       {grant.is_active ? 'Activo' : 'Inactivo'}

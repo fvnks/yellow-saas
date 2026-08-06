@@ -57,7 +57,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           >
             {icons[t.type]}
             <p className="text-sm font-medium flex-1">{t.message}</p>
-            <button onClick={() => dismiss(t.id)} className="text-muted-foreground hover:text-slate-600">
+            <button onClick={() => dismiss(t.id)} className="text-muted-foreground hover:text-foreground">
               <X className="w-4 h-4" />
             </button>
           </div>

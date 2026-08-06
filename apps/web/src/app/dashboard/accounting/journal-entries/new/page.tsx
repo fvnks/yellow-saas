@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, Trash2, Save, AlertCircle } from 'lucide-react';
@@ -90,7 +90,7 @@ export default function NewJournalEntryPage() {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Link href="/dashboard/accounting/journal-entries" className="p-2 hover:bg-muted rounded-lg transition-colors">
-          <ArrowLeft className="w-5 h-5 text-slate-600" />
+          <ArrowLeft className="w-5 h-5 text-foreground" />
         </Link>
         <div className="flex-1">
           <h1 className="text-xl font-bold text-foreground">Nuevo Asiento Contable</h1>
@@ -98,7 +98,7 @@ export default function NewJournalEntryPage() {
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="grid grid-cols-3 gap-4 mb-6">
           <div className="space-y-1">
             <label className="block text-xs font-medium text-foreground">Fecha *</label>
@@ -109,14 +109,14 @@ export default function NewJournalEntryPage() {
             <label className="block text-xs font-medium text-foreground">Descripcion *</label>
             <input type="text" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
               placeholder="Descripcion del asiento contable"
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
         </div>
 
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-semibold text-foreground">Lineas Contables</h3>
           <button onClick={addLine}
-            className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors">
+            className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors">
             <Plus className="w-3.5 h-3.5" /> Agregar Linea
           </button>
         </div>
@@ -143,19 +143,19 @@ export default function NewJournalEntryPage() {
               <div className="col-span-3">
                 <input type="text" value={line.description} onChange={e => updateLine(i, 'description', e.target.value)}
                   placeholder="Detalle..."
-                  className="w-full bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="col-span-2">
                 <input type="number" step="0.01" min="0" value={line.debit}
                   onChange={e => { updateLine(i, 'debit', e.target.value); if (e.target.value) updateLine(i, 'credit', ''); }}
                   placeholder="0"
-                  className="w-full bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground text-right placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground text-right placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="col-span-2">
                 <input type="number" step="0.01" min="0" value={line.credit}
                   onChange={e => { updateLine(i, 'credit', e.target.value); if (e.target.value) updateLine(i, 'debit', ''); }}
                   placeholder="0"
-                  className="w-full bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground text-right placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground text-right placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="col-span-1 flex justify-center">
                 <button onClick={() => removeLine(i)} disabled={lines.length <= 2}
@@ -179,7 +179,7 @@ export default function NewJournalEntryPage() {
           </div>
           <div className="flex items-center gap-3">
             <Link href="/dashboard/accounting/journal-entries"
-              className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</Link>
+              className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</Link>
             <button onClick={handleSubmit} disabled={saving || !isBalanced}
               className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
               <Save className="w-4 h-4" /> {saving ? 'Guardando...' : 'Crear Asiento'}

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useRef } from 'react';
 import { Upload, X, FileText, CheckCircle, AlertCircle, ChevronDown } from 'lucide-react';
@@ -170,7 +170,7 @@ export default function CustomerImport({ open, onClose, onComplete }: Props) {
       <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primary4xl mx-4 max-h-[90vh] overflow-hidden flex flex-col">
         <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <h2 className="text-lg font-semibold text-foreground">Importar Clientes</h2>
-          <button onClick={handleClose} className="text-muted-foreground hover:text-slate-600">
+          <button onClick={handleClose} className="text-muted-foreground hover:text-foreground">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -179,7 +179,7 @@ export default function CustomerImport({ open, onClose, onComplete }: Props) {
           {!file ? (
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-slate-300 rounded-xl p-12 text-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition-colors"
+              className="border-2 border-dashed border-border rounded-xl p-12 text-center cursor-pointer hover:border-primary/40 hover:bg-blue-50 transition-colors"
             >
               <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-sm font-medium text-foreground">Arrastra un archivo CSV aquí o haz clic para seleccionar</p>
@@ -228,7 +228,7 @@ export default function CustomerImport({ open, onClose, onComplete }: Props) {
           ) : (
             <div className="space-y-6">
               <div className="flex items-center gap-3">
-                <FileText className="w-5 h-5 text-slate-600" />
+                <FileText className="w-5 h-5 text-foreground" />
                 <div>
                   <p className="text-sm font-medium text-foreground">{file.name}</p>
                   <p className="text-xs text-muted-foreground">{headers.length} columnas detectadas</p>
@@ -291,7 +291,7 @@ export default function CustomerImport({ open, onClose, onComplete }: Props) {
                     </thead>
                     <tbody>
                       {preview.map((row, rowIndex) => (
-                        <tr key={rowIndex} className="border-b border-slate-100">
+                        <tr key={rowIndex} className="border-b border-border">
                           {row.map((cell, cellIndex) => (
                             <td key={cellIndex} className="px-3 py-2 text-xs text-foreground">
                               {cell || '—'}
@@ -310,7 +310,7 @@ export default function CustomerImport({ open, onClose, onComplete }: Props) {
         <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
           <button
             onClick={handleClose}
-            className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           >
             {result ? 'Cerrar' : 'Cancelar'}
           </button>

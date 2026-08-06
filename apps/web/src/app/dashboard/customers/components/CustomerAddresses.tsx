@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, X, Save, MapPin } from 'lucide-react';
@@ -165,9 +165,9 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
 
   if (loading) {
     return (
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-        <div className="px-6 py-4 border-b border-slate-100">
-          <div className="h-4 w-36 bg-slate-200 rounded animate-pulse" />
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+        <div className="px-6 py-4 border-b border-border">
+          <div className="h-4 w-36 bg-muted rounded animate-pulse" />
         </div>
         <div className="p-6 space-y-3">
           {[1, 2, 3].map(i => (
@@ -179,8 +179,8 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
   }
 
   return (
-    <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-      <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+    <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+      <div className="px-6 py-4 border-b border-border flex items-center justify-between">
         <h3 className="text-sm font-semibold text-foreground">Direcciones</h3>
         <button
           onClick={handleOpenNew}
@@ -193,7 +193,7 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
 
       {addresses.length === 0 ? (
         <div className="text-center py-12">
-          <MapPin className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+          <MapPin className="w-8 h-8 text-foreground mx-auto mb-2" />
           <p className="text-sm text-muted-foreground">No hay direcciones registradas</p>
         </div>
       ) : (
@@ -212,11 +212,11 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
               {addresses.map(addr => {
                 const typeCfg = addressTypeConfig[addr.address_type] || addressTypeConfig.other;
                 return (
-                  <tr key={addr.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={addr.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
-                          <MapPin className="w-4 h-4 text-indigo-600" />
+                        <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                          <MapPin className="w-4 h-4 text-primary" />
                         </div>
                         <span className="text-xs font-medium text-foreground">{addr.label || 'Sin etiqueta'}</span>
                       </div>
@@ -225,7 +225,7 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
                         typeCfg.variant === 'info' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
                         typeCfg.variant === 'warning' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                        'bg-muted text-slate-600 border border-border'
+                        'bg-muted text-foreground border border-border'
                       }`}>
                         {typeCfg.label}
                       </span>
@@ -244,7 +244,7 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
                       <div className="flex items-center justify-center gap-1">
                         <button
                           onClick={() => handleOpenEdit(addr)}
-                          className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"
+                          className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"
                           aria-label="Editar"
                         >
                           <Edit className="w-4 h-4" />
@@ -273,7 +273,7 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
               <h2 className="text-lg font-semibold text-foreground">
                 {editingId ? 'Editar Dirección' : 'Nueva Dirección'}
               </h2>
-              <button onClick={handleClose} className="text-muted-foreground hover:text-slate-600">
+              <button onClick={handleClose} className="text-muted-foreground hover:text-foreground">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -286,7 +286,7 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
                     type="text"
                     value={form.label}
                     onChange={e => update('label', e.target.value)}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="Ej: Sede Principal"
                   />
                 </div>
@@ -311,7 +311,7 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
                     type="text"
                     value={form.street}
                     onChange={e => update('street', e.target.value)}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="Av. Principal"
                   />
                 </div>
@@ -321,7 +321,7 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
                     type="text"
                     value={form.number}
                     onChange={e => update('number', e.target.value)}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="1234"
                   />
                 </div>
@@ -334,7 +334,7 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
                     type="text"
                     value={form.commune}
                     onChange={e => update('commune', e.target.value)}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="Las Condes"
                   />
                 </div>
@@ -344,7 +344,7 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
                     type="text"
                     value={form.city}
                     onChange={e => update('city', e.target.value)}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="Santiago"
                   />
                 </div>
@@ -357,7 +357,7 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
                     type="text"
                     value={form.region}
                     onChange={e => update('region', e.target.value)}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="Región Metropolitana"
                   />
                 </div>
@@ -367,7 +367,7 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
                     type="text"
                     value={form.country}
                     onChange={e => update('country', e.target.value)}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="Chile"
                   />
                 </div>
@@ -377,7 +377,7 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
                     type="text"
                     value={form.postal_code}
                     onChange={e => update('postal_code', e.target.value)}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="7550000"
                   />
                 </div>
@@ -391,7 +391,7 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
                     onChange={e => update('is_default', e.target.checked)}
                     className="sr-only peer"
                   />
-                  <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                  <div className="w-9 h-5 bg-muted peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:border-border after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
                 </label>
                 <span className="text-xs font-medium text-foreground">Dirección por defecto</span>
               </div>
@@ -400,7 +400,7 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button
                 onClick={handleClose}
-                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>

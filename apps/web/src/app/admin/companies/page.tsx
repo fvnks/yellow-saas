@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -17,10 +17,10 @@ interface Company {
 
 const MODULE_OPTIONS = [
   { id: 'recetas', label: 'Recetas', icon: FlaskConical, color: 'text-amber-600 bg-amber-50 border-amber-200' },
-  { id: 'erp', label: 'ERP', icon: Package, color: 'text-indigo-600 bg-indigo-50 border-indigo-200' },
+  { id: 'erp', label: 'ERP', icon: Package, color: 'text-primary bg-blue-50 border-primary/20' },
   { id: 'hr', label: 'RRHH', icon: UsersRound, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
   { id: 'projects', label: 'Proyectos', icon: FolderKanban, color: 'text-orange-600 bg-orange-50 border-orange-200' },
-  { id: 'mi-cuenta', label: 'Mi Cuenta', icon: CreditCard, color: 'text-violet-600 bg-violet-50 border-violet-200' },
+  { id: 'mi-cuenta', label: 'Mi Cuenta', icon: CreditCard, color: 'text-blue-700 bg-blue-50 border-blue-200' },
 ];
 
 export default function AdminCompaniesPage() {
@@ -80,13 +80,13 @@ export default function AdminCompaniesPage() {
     active: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     trial: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
     suspended: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-    cancelled: 'bg-muted0/10 text-muted-foreground border-slate-500/20',
+    cancelled: 'bg-muted0/10 text-muted-foreground border-border/20',
   };
 
   const planColors: Record<string, string> = {
-    free: 'bg-muted0/10 text-muted-foreground border-slate-500/20',
+    free: 'bg-muted0/10 text-muted-foreground border-border/20',
     starter: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    professional: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
+    professional: 'bg-blue-600/10 text-blue-500 border-blue-500/20',
     enterprise: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
   };
 
@@ -98,19 +98,19 @@ export default function AdminCompaniesPage() {
           <p className="text-sm text-muted-foreground mt-1">Gestiona todas las empresas de la plataforma</p>
         </div>
         <button onClick={() => setShowCreate(true)}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" /> Nueva Empresa
         </button>
       </div>
 
-      <div className="bg-primary border border-slate-800 rounded-xl p-4 flex items-center gap-4">
+      <div className="bg-primary border border-border rounded-xl p-4 flex items-center gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input type="text" placeholder="Buscar empresa..." value={search} onChange={e => setSearch(e.target.value)}
-            className="w-full bg-slate-800/50 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-indigo-500" />
+            className="w-full bg-card/50 border border-border rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary" />
         </div>
         <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
-          className="bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20">
+          className="bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20">
           <option value="all">Todos los estados</option>
           <option value="active">Activas</option>
           <option value="trial">En prueba</option>
@@ -119,10 +119,10 @@ export default function AdminCompaniesPage() {
         </select>
       </div>
 
-      <div className="bg-primary border border-slate-800 rounded-xl overflow-hidden">
+      <div className="bg-primary border border-border rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-800">
+            <tr className="border-b border-border">
               <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Empresa</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Plan</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Estado</th>
@@ -134,18 +134,18 @@ export default function AdminCompaniesPage() {
           <tbody>
             {loading ? (
               Array.from({ length: 5 }).map((_, i) => (
-                <tr key={i} className="border-b border-slate-800/50">
-                  <td colSpan={6} className="px-6 py-4"><div className="h-4 bg-slate-800 rounded animate-pulse" /></td>
+                <tr key={i} className="border-b border-border/50">
+                  <td colSpan={6} className="px-6 py-4"><div className="h-4 bg-card rounded animate-pulse" /></td>
                 </tr>
               ))
             ) : filtered.length === 0 ? (
               <tr><td colSpan={6} className="px-6 py-12 text-center text-sm text-muted-foreground">No se encontraron empresas</td></tr>
             ) : (
               filtered.map(company => (
-                <tr key={company.id} className="border-b border-slate-800/50 hover:bg-primary/90/30 transition-colors">
+                <tr key={company.id} className="border-b border-border/50 hover:bg-primary/90/30 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 bg-slate-800 rounded-lg flex items-center justify-center">
+                      <div className="w-9 h-9 bg-card rounded-lg flex items-center justify-center">
                         <Building2 className="w-4 h-4 text-muted-foreground" />
                       </div>
                       <div>
@@ -161,14 +161,14 @@ export default function AdminCompaniesPage() {
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${statusColors[company.status] || statusColors.active}`}>{company.status}</span>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-1.5 text-sm text-slate-300"><Users className="w-3.5 h-3.5 text-muted-foreground" />{company.user_count}</div>
+                    <div className="flex items-center gap-1.5 text-sm text-foreground"><Users className="w-3.5 h-3.5 text-muted-foreground" />{company.user_count}</div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground"><Calendar className="w-3.5 h-3.5" />{new Date(company.created_at).toLocaleDateString('es-CL')}</div>
                   </td>
                   <td className="px-6 py-4">
                     <Link href={`/admin/companies/${company.id}`}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-colors">
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-card hover:bg-primary/90 rounded-lg text-xs font-medium text-foreground hover:text-white transition-colors">
                       <ExternalLink className="w-3.5 h-3.5" /> Ver
                     </Link>
                   </td>
@@ -181,8 +181,8 @@ export default function AdminCompaniesPage() {
 
       {showCreate && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setShowCreate(false)}>
-          <div className="bg-primary border border-slate-700 rounded-xl shadow-2xl w-full max-w-lg" onClick={e => e.stopPropagation()}>
-            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+          <div className="bg-primary border border-border rounded-xl shadow-2xl w-full max-w-lg" onClick={e => e.stopPropagation()}>
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-white">Nueva Empresa</h2>
               <button onClick={() => setShowCreate(false)} className="text-muted-foreground hover:text-white"><X className="w-5 h-5" /></button>
             </div>
@@ -191,13 +191,13 @@ export default function AdminCompaniesPage() {
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-muted-foreground">Nombre *</label>
                   <input type="text" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
-                    className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-primary/20"
+                    className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-primary/20"
                     placeholder="Mi Empresa" autoFocus />
                 </div>
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-muted-foreground">Slug *</label>
                   <input type="text" value={form.slug} onChange={e => setForm(p => ({ ...p, slug: e.target.value }))}
-                    className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-primary/20 font-mono"
+                    className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-primary/20 font-mono"
                     placeholder="mi-empresa" />
                 </div>
               </div>
@@ -205,20 +205,20 @@ export default function AdminCompaniesPage() {
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-muted-foreground">Email admin *</label>
                   <input type="email" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
-                    className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-primary/20"
+                    className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-primary/20"
                     placeholder="admin@empresa.cl" />
                 </div>
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-muted-foreground">Password *</label>
                   <input type="password" value={form.password} onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
-                    className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-primary/20"
+                    className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-primary/20"
                     placeholder="Minimo 8 caracteres" />
                 </div>
               </div>
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-muted-foreground">Plan</label>
                 <select value={form.plan} onChange={e => setForm(p => ({ ...p, plan: e.target.value }))}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20">
+                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20">
                   <option value="free">Free</option>
                   <option value="starter">Starter</option>
                   <option value="professional">Professional</option>
@@ -234,7 +234,7 @@ export default function AdminCompaniesPage() {
                     return (
                       <button key={mod.id} onClick={() => toggleModule(mod.id)}
                         className={`p-3 rounded-lg border-2 flex items-center gap-3 transition-all text-left ${
-                          active ? `${mod.color} border-current` : 'border-slate-700 text-muted-foreground hover:border-slate-600'
+                          active ? `${mod.color} border-current` : 'border-border text-muted-foreground hover:border-border'
                         }`}>
                         <Icon className="w-4 h-4" />
                         <span className="text-xs font-medium">{mod.label}</span>
@@ -244,13 +244,13 @@ export default function AdminCompaniesPage() {
                 </div>
               </div>
             </div>
-            <div className="px-6 py-4 border-t border-slate-800 flex justify-end gap-3">
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button onClick={() => setShowCreate(false)}
-                className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                className="bg-card hover:bg-primary/90 text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                 Cancelar
               </button>
               <button onClick={handleCreate} disabled={creating || !form.name || !form.slug || !form.email || !form.password}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
                 <Plus className="w-4 h-4" /> {creating ? 'Creando...' : 'Crear Empresa'}
               </button>
             </div>

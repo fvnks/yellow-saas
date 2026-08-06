@@ -117,7 +117,7 @@ export default function PurchaseDebitNotes() {
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <input type="search" placeholder="Buscar por N° ND, proveedor o RUT..." value={search} onChange={e => setSearch(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+          className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
       </div>
 
       <div className="bg-card border border-border rounded-xl overflow-hidden">
@@ -138,12 +138,12 @@ export default function PurchaseDebitNotes() {
             {filtered.map(n => {
               const st = STATUS_CFG[n.status] || STATUS_CFG.pending;
               return (
-                <tr key={n.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <tr key={n.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3 text-xs font-medium text-foreground font-mono">{n.note_number}</td>
                   <td className="px-4 py-3 text-xs text-foreground">{n.supplier_name}</td>
                   <td className="px-4 py-3 text-xs text-muted-foreground font-mono">{n.supplier_tax_id}</td>
-                  <td className="px-4 py-3 text-xs text-slate-600">{n.issue_date}</td>
-                  <td className="px-4 py-3 text-xs text-slate-600 max-w-xs truncate">{n.reason}</td>
+                  <td className="px-4 py-3 text-xs text-foreground">{n.issue_date}</td>
+                  <td className="px-4 py-3 text-xs text-foreground max-w-xs truncate">{n.reason}</td>
                   <td className="px-4 py-3 text-xs text-right font-medium text-amber-600 font-mono">${Number(n.total_amount || 0).toLocaleString('es-CL')}</td>
                   <td className="px-4 py-3 text-center">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${st.bg} ${st.color} border ${st.border}`}>{st.label}</span>
@@ -151,7 +151,7 @@ export default function PurchaseDebitNotes() {
                   <td className="px-4 py-3">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded-lg transition-colors">
+                        <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
                           <MoreVertical className="w-4 h-4" />
                         </button>
                       </DropdownMenuTrigger>

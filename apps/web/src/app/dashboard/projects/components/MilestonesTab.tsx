@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { Badge } from '@yellow-erp/ui';
@@ -65,8 +65,8 @@ export default function MilestonesTab({ projectId, milestones, onRefresh }: { pr
       </div>
 
       {milestones.length === 0 ? (
-        <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
-          <Flag className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+        <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+          <Flag className="w-12 h-12 text-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">No hay hitos definidos</p>
         </div>
       ) : (
@@ -74,7 +74,7 @@ export default function MilestonesTab({ projectId, milestones, onRefresh }: { pr
           {milestones.map(m => {
             const isOverdue = m.status === 'pending' && new Date(m.due_date) < new Date();
             return (
-              <div key={m.id} className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 flex items-center justify-between">
+              <div key={m.id} className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${m.status === 'completed' ? 'bg-emerald-50' : isOverdue ? 'bg-red-50' : 'bg-muted'}`}>
                     <Flag className={`w-5 h-5 ${m.status === 'completed' ? 'text-emerald-600' : isOverdue ? 'text-red-600' : 'text-muted-foreground'}`} />
@@ -114,18 +114,18 @@ export default function MilestonesTab({ projectId, milestones, onRefresh }: { pr
           <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">Nuevo Hito</h2>
-              <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-slate-600">X</button>
+              <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-foreground">X</button>
             </div>
             <div className="p-6 space-y-4">
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">Nombre *</label>
                 <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">Descripcion</label>
                 <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={2}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">Fecha Limite *</label>
@@ -134,7 +134,7 @@ export default function MilestonesTab({ projectId, milestones, onRefresh }: { pr
               </div>
             </div>
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
-              <button onClick={() => setShowForm(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={() => setShowForm(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleCreate} disabled={saving || !form.name || !form.due_date}
                 className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                 {saving ? 'Creando...' : 'Crear Hito'}

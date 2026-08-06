@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { Button } from '@yellow-erp/ui';
@@ -74,7 +74,7 @@ export default function LiquidationModal({ employees, onClose }: Props) {
       <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primary2xl mx-4 max-h-[90vh] overflow-y-auto">
         <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <h2 className="text-lg font-semibold text-foreground">Liquidacion de Remuneraciones</h2>
-          <button onClick={onClose} className="text-muted-foreground hover:text-slate-600">
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -126,7 +126,7 @@ export default function LiquidationModal({ employees, onClose }: Props) {
                 id="notice_given"
                 checked={noticeGiven}
                 onChange={e => setNoticeGiven(e.target.checked)}
-                className="rounded border-slate-300"
+                className="rounded border-border"
               />
               <label htmlFor="notice_given" className="text-xs text-foreground">
                 Se dio aviso previo al empleado (sin recargo del 25%)
@@ -180,7 +180,7 @@ export default function LiquidationModal({ employees, onClose }: Props) {
                   </thead>
                   <tbody>
                     {result.items.map((item: any, i: number) => (
-                      <tr key={i} className="border-b border-slate-100">
+                      <tr key={i} className="border-b border-border">
                         <td className="px-3 py-2 font-mono text-muted-foreground">{item.code}</td>
                         <td className="px-3 py-2 text-foreground">{item.concept}</td>
                         <td className="px-3 py-2 text-right font-medium text-foreground">${item.amount.toLocaleString('es-CL')}</td>

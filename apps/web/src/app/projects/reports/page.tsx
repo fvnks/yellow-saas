@@ -56,8 +56,8 @@ export default function ProjectReportsPage() {
           {[1, 2, 3].map(i => (
             <div key={i} className="bg-card border border-border rounded-xl shadow-sm p-6">
               <div className="animate-pulse space-y-4">
-                <div className="h-4 bg-slate-200 rounded w-1/3" />
-                <div className="h-3 bg-slate-200 rounded w-2/3" />
+                <div className="h-4 bg-muted rounded w-1/3" />
+                <div className="h-3 bg-muted rounded w-2/3" />
               </div>
             </div>
           ))}
@@ -89,7 +89,7 @@ export default function ProjectReportsPage() {
               {byStatus.map((item: any, i: number) => (
                 <div key={i} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <span className={`w-3 h-3 rounded-full ${item.status === 'active' ? 'bg-indigo-500' : item.status === 'completed' ? 'bg-emerald-500' : item.status === 'planning' ? 'bg-amber-500' : 'bg-slate-300'}`} />
+                    <span className={`w-3 h-3 rounded-full ${item.status === 'active' ? 'bg-primary' : item.status === 'completed' ? 'bg-emerald-500' : item.status === 'planning' ? 'bg-amber-500' : 'bg-muted'}`} />
                     <span className="text-sm text-foreground capitalize">{item.status}</span>
                   </div>
                   <span className="text-sm font-medium text-foreground">{item.count}</span>

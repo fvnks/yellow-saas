@@ -39,7 +39,7 @@ export default function PurchaseReports() {
 
       <div className="flex gap-2 flex-wrap">
         {([['summary','Resumen',BarChart3],['monthly','Mensual',TrendingUp],['by-supplier','Por Proveedor',Users],['by-product','Por Producto',Package]] as const).map(([id, label, Icon]) => (
-          <button key={id} onClick={() => setReportType(id)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${reportType === id ? 'bg-primary text-white' : 'bg-card border border-border text-slate-600 hover:bg-muted'}`}>
+          <button key={id} onClick={() => setReportType(id)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${reportType === id ? 'bg-primary text-white' : 'bg-card border border-border text-foreground hover:bg-muted'}`}>
             <Icon className="w-3.5 h-3.5" /> {label}
           </button>
         ))}
@@ -50,29 +50,29 @@ export default function PurchaseReports() {
       {!loading && reportType === 'summary' && data && (
         <div className="space-y-4">
           <div className="grid grid-cols-4 gap-3">
-            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
               <p className="text-[9px] font-semibold text-muted-foreground uppercase">Total Compras {selectedYear}</p>
               <p className="text-xl font-bold text-foreground mt-1">{fmt(parseFloat(data.summary?.total || 0))}</p>
               <p className="text-xs text-muted-foreground mt-1">{data.summary?.count || 0} órdenes</p>
             </div>
-            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
               <p className="text-[9px] font-semibold text-muted-foreground uppercase">Ticket Promedio</p>
               <p className="text-xl font-bold text-foreground mt-1">{fmt(parseFloat(data.summary?.avg_order || 0))}</p>
             </div>
-            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
               <p className="text-[9px] font-semibold text-muted-foreground uppercase">Facturado</p>
               <p className="text-xl font-bold text-emerald-600 mt-1">{fmt(parseFloat(data.invoicing?.total || 0))}</p>
             </div>
-            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
               <p className="text-[9px] font-semibold text-muted-foreground uppercase">Por Pagar</p>
               <p className="text-xl font-bold text-red-600 mt-1">{fmt((parseFloat(data.invoicing?.total || 0)) - (parseFloat(data.invoicing?.paid || 0)))}</p>
             </div>
           </div>
-          <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
             <h3 className="text-xs font-semibold text-foreground mb-3">Top Proveedores</h3>
             <div className="space-y-2">
               {(data.topSuppliers || []).map((s: any, i: number) => (
-                <div key={i} className="flex items-center justify-between py-1.5 border-b border-slate-50 last:border-0">
+                <div key={i} className="flex items-center justify-between py-1.5 border-b border-border last:border-0">
                   <span className="text-xs text-foreground">{s.name}</span>
                   <span className="text-xs font-bold text-foreground">{fmt(parseFloat(s.total))}</span>
                 </div>
@@ -83,7 +83,7 @@ export default function PurchaseReports() {
       )}
 
       {!loading && (reportType === 'monthly' || reportType === 'by-supplier' || reportType === 'by-product') && data && (
-        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-border">
           <table className="w-full">
             <thead><tr className="border-b border-border">
               <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">{reportType === 'monthly' ? 'Mes' : reportType === 'by-supplier' ? 'Proveedor' : 'Producto'}</th>
@@ -92,10 +92,10 @@ export default function PurchaseReports() {
             </tr></thead>
             <tbody>
               {data.map((row: any, i: number) => (
-                <tr key={i} className="border-b border-slate-50 hover:bg-muted transition-colors">
+                <tr key={i} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3 text-xs font-medium text-foreground">{reportType === 'monthly' ? monthNames[parseInt(row.month) - 1] : row.name}</td>
                   <td className="px-4 py-3 text-xs text-right font-bold text-foreground">{fmt(parseFloat(row.total))}</td>
-                  <td className="px-4 py-3 text-xs text-center text-slate-600">{row.order_count || row.qty || row.count}</td>
+                  <td className="px-4 py-3 text-xs text-center text-foreground">{row.order_count || row.qty || row.count}</td>
                 </tr>
               ))}
               {data.length === 0 && <tr><td colSpan={3} className="text-center py-8 text-xs text-muted-foreground">Sin datos</td></tr>}

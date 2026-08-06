@@ -24,7 +24,7 @@ interface PhasesTabProps {
 }
 
 const statusConfig: Record<string, { label: string; color: string }> = {
-  pending: { label: 'Pendiente', color: 'bg-muted text-slate-600 border-border' },
+  pending: { label: 'Pendiente', color: 'bg-muted text-foreground border-border' },
   in_progress: { label: 'En Progreso', color: 'bg-blue-50 text-blue-700 border-blue-200' },
   completed: { label: 'Completada', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
   cancelled: { label: 'Cancelada', color: 'bg-rose-50 text-rose-700 border-rose-200' },
@@ -93,13 +93,13 @@ export default function PhasesTab({ projectId, phases, onRefresh }: PhasesTabPro
       </div>
 
       {phases.length > 0 && (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-medium text-foreground">Resumen Presupuesto</span>
             <span className="text-xs text-muted-foreground">{phases.length} fases</span>
           </div>
           <div className="w-full bg-muted rounded-full h-2">
-            <div className="bg-indigo-600 h-2 rounded-full transition-all"
+            <div className="bg-primary h-2 rounded-full transition-all"
               style={{ width: `${totalBudget > 0 ? Math.min((totalSpent / totalBudget) * 100, 100) : 0}%` }} />
           </div>
           <div className="flex items-center justify-between mt-2 text-[10px] text-muted-foreground">
@@ -110,24 +110,24 @@ export default function PhasesTab({ projectId, phases, onRefresh }: PhasesTabPro
       )}
 
       {showForm && (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 space-y-3">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border space-y-3">
           <div className="space-y-1">
             <label className="block text-xs font-medium text-foreground">Nombre</label>
             <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Ej: Fase 1 - Planificacion" />
           </div>
           <div className="space-y-1">
             <label className="block text-xs font-medium text-foreground">Descripcion</label>
             <input type="text" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Descripcion..." />
           </div>
           <div className="grid grid-cols-3 gap-3">
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Presupuesto</label>
               <input type="number" value={form.budget} onChange={(e) => setForm({ ...form, budget: e.target.value })}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="0" />
             </div>
             <div className="space-y-1">
@@ -142,7 +142,7 @@ export default function PhasesTab({ projectId, phases, onRefresh }: PhasesTabPro
             </div>
           </div>
           <div className="flex justify-end gap-2">
-            <button onClick={() => { setShowForm(false); setEditingPhase(null); }} className="px-3 py-1.5 text-xs text-slate-600 hover:text-foreground">Cancelar</button>
+            <button onClick={() => { setShowForm(false); setEditingPhase(null); }} className="px-3 py-1.5 text-xs text-foreground hover:text-foreground">Cancelar</button>
             <button onClick={handleSave} disabled={saving || !form.name}
               className="bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50">
               {saving ? 'Guardando...' : editingPhase ? 'Actualizar' : 'Crear'}
@@ -152,8 +152,8 @@ export default function PhasesTab({ projectId, phases, onRefresh }: PhasesTabPro
       )}
 
       {phases.length === 0 ? (
-        <div className="text-center py-8 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-          <DollarSign className="w-10 h-10 text-slate-200 mx-auto mb-2" />
+        <div className="text-center py-8 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+          <DollarSign className="w-10 h-10 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">No hay fases definidas</p>
           <p className="text-[10px] text-muted-foreground mt-1">Divide el proyecto en fases para mejor control presupuestario</p>
         </div>
@@ -162,12 +162,12 @@ export default function PhasesTab({ projectId, phases, onRefresh }: PhasesTabPro
           {phases.map(phase => {
             const usage = phase.budget > 0 ? Math.round((phase.spent / phase.budget) * 100) : 0;
             return (
-              <div key={phase.id} className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 hover:shadow-md transition-shadow">
+              <div key={phase.id} className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border hover:shadow-md transition-shadow">
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <h4 className="text-sm font-semibold text-foreground">{phase.name}</h4>
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border ${statusConfig[phase.status]?.color || 'bg-muted text-slate-600 border-border'}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border ${statusConfig[phase.status]?.color || 'bg-muted text-foreground border-border'}`}>
                         {statusConfig[phase.status]?.label || phase.status}
                       </span>
                     </div>
@@ -179,7 +179,7 @@ export default function PhasesTab({ projectId, phases, onRefresh }: PhasesTabPro
                       {phase.start_date && <span>{phase.start_date} - {phase.end_date || '...'}</span>}
                     </div>
                     <div className="w-full bg-muted rounded-full h-1.5 mt-2">
-                      <div className={`h-1.5 rounded-full transition-all ${usage > 90 ? 'bg-red-500' : usage > 70 ? 'bg-amber-500' : 'bg-indigo-600'}`}
+                      <div className={`h-1.5 rounded-full transition-all ${usage > 90 ? 'bg-red-500' : usage > 70 ? 'bg-amber-500' : 'bg-primary'}`}
                         style={{ width: `${Math.min(usage, 100)}%` }} />
                     </div>
                   </div>

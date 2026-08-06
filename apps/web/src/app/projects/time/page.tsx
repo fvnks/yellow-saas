@@ -75,8 +75,8 @@ export default function ProjectTimePage() {
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Horas</p>
               <p className="text-2xl font-bold text-foreground mt-1">{totalHours.toFixed(1)}h</p>
             </div>
-            <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
-              <Clock className="w-6 h-6 text-indigo-600" />
+            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+              <Clock className="w-6 h-6 text-primary" />
             </div>
           </div>
         </div>
@@ -113,8 +113,8 @@ export default function ProjectTimePage() {
           {[1, 2, 3].map(i => (
             <div key={i} className="bg-card border border-border rounded-xl shadow-sm p-6">
               <div className="animate-pulse space-y-4">
-                <div className="h-4 bg-slate-200 rounded w-1/3" />
-                <div className="h-3 bg-slate-200 rounded w-2/3" />
+                <div className="h-4 bg-muted rounded w-1/3" />
+                <div className="h-3 bg-muted rounded w-2/3" />
               </div>
             </div>
           ))}
@@ -134,13 +134,13 @@ export default function ProjectTimePage() {
               </thead>
               <tbody>
                 {filteredTimers.map((timer, i) => (
-                  <tr key={i} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={i} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-medium text-foreground">{timer.employee_name || '—'}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{timer.project_name}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{timer.description || '—'}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{timer.project_name}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{timer.description || '—'}</td>
                     <td className="px-4 py-3 text-xs font-medium text-foreground">{timer.hours?.toFixed(1) || '0.0'}h</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${!timer.end_time ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-muted text-slate-600 border border-border'}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${!timer.end_time ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-muted text-foreground border border-border'}`}>
                         {!timer.end_time ? 'Activo' : 'Completado'}
                       </span>
                     </td>
@@ -154,7 +154,7 @@ export default function ProjectTimePage() {
 
       {!loading && filteredTimers.length === 0 && (
         <div className="text-center py-12">
-          <Clock className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+          <Clock className="w-12 h-12 text-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">No se encontraron registros de tiempo</p>
         </div>
       )}

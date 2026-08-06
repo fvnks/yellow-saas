@@ -23,7 +23,7 @@ const sourceConfig: Record<string, { label: string; icon: any; color: string }> 
   inventory: { label: 'Inventario', icon: Package, color: 'text-amber-600 bg-amber-50' },
   payroll: { label: 'Nómina', icon: Wallet, color: 'text-emerald-600 bg-emerald-50' },
   expense: { label: 'Gastos', icon: Receipt, color: 'text-rose-600 bg-rose-50' },
-  manual: { label: 'Manual', icon: DollarSign, color: 'text-slate-600 bg-muted' },
+  manual: { label: 'Manual', icon: DollarSign, color: 'text-foreground bg-muted' },
 };
 
 export default function CostsTab({ costs, budget }: CostsTabProps) {
@@ -47,7 +47,7 @@ export default function CostsTab({ costs, budget }: CostsTabProps) {
         <h3 className="text-sm font-semibold text-foreground mb-4">Centro de Costos</h3>
 
         {/* Budget vs Actual */}
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Presupuesto vs Real</p>
@@ -66,7 +66,7 @@ export default function CostsTab({ costs, budget }: CostsTabProps) {
             </div>
             <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
               <div
-                className={`h-full rounded-full transition-all duration-300 ${percentUsed > 100 ? 'bg-red-500' : percentUsed > 80 ? 'bg-amber-500' : 'bg-indigo-500'}`}
+                className={`h-full rounded-full transition-all duration-300 ${percentUsed > 100 ? 'bg-red-500' : percentUsed > 80 ? 'bg-amber-500' : 'bg-primary'}`}
                 style={{ width: `${Math.min(percentUsed, 100)}%` }}
               />
             </div>
@@ -84,7 +84,7 @@ export default function CostsTab({ costs, budget }: CostsTabProps) {
           const amount = summary.bySource[key] || 0;
           const Icon = config.icon;
           return (
-            <div key={key} className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+            <div key={key} className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
               <div className="flex items-center justify-between mb-3">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${config.color}`}>
                   <Icon className="w-5 h-5" />
@@ -99,8 +99,8 @@ export default function CostsTab({ costs, budget }: CostsTabProps) {
 
       {/* Cost Details */}
       {costs.length > 0 && (
-        <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
-          <div className="px-6 py-4 border-b border-slate-100">
+        <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+          <div className="px-6 py-4 border-b border-border">
             <h4 className="text-sm font-semibold text-foreground">Detalle de Costos</h4>
           </div>
           <table className="w-full">
@@ -115,7 +115,7 @@ export default function CostsTab({ costs, budget }: CostsTabProps) {
             </thead>
             <tbody>
               {costs.slice(0, 20).map(c => (
-                <tr key={c.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <tr key={c.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3 text-xs text-foreground">{new Date(c.cost_date).toLocaleDateString('es-CL')}</td>
                   <td className="px-4 py-3">
                     <Badge variant={sourceConfig[c.source_type]?.label ? 'info' : 'neutral'}>{sourceConfig[c.source_type]?.label || c.source_type}</Badge>
@@ -131,8 +131,8 @@ export default function CostsTab({ costs, budget }: CostsTabProps) {
       )}
 
       {costs.length === 0 && (
-        <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
-          <DollarSign className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+        <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+          <DollarSign className="w-12 h-12 text-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">No hay costos registrados</p>
           <p className="text-xs text-muted-foreground mt-1">Los costos se agregan desde compras, inventario y nomina</p>
         </div>

@@ -205,7 +205,7 @@ export default function NewPurchaseOrderPage() {
                   </thead>
                   <tbody>
                     {items.map((item, index) => (
-                      <tr key={index} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                      <tr key={index} className="border-b border-border hover:bg-muted transition-colors">
                         <td className="px-4 py-3 text-xs text-muted-foreground">{index + 1}</td>
                         <td className="px-4 py-3">
                           <select
@@ -271,7 +271,7 @@ export default function NewPurchaseOrderPage() {
                     value={formData.notes}
                     onChange={handleFormChange('notes')}
                     rows={3}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
                     placeholder="Instrucciones especiales para el proveedor..."
                   />
                 </div>
@@ -281,7 +281,7 @@ export default function NewPurchaseOrderPage() {
                     value={formData.internalNotes}
                     onChange={handleFormChange('internalNotes')}
                     rows={2}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
                     placeholder="Notas internas (no se ven en el documento)..."
                   />
                 </div>

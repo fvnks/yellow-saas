@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
 import {
@@ -124,7 +124,7 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-grid opacity-[0.03]" />
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-4 py-1.5 text-xs font-medium text-slate-600 mb-8 animate-fade-in-up">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-4 py-1.5 text-xs font-medium text-foreground mb-8 animate-fade-in-up">
             <Zap className="w-3.5 h-3.5" />
             Multi-tenant ERP para PyMEs chilenas
           </div>
@@ -149,7 +149,7 @@ export default function HomePage() {
             </Link>
             <Link
               href="#modules"
-              className="group rounded-lg border border-border bg-card px-8 py-3.5 text-sm font-medium text-foreground transition-all duration-150 hover:bg-muted hover:border-slate-300"
+              className="group rounded-lg border border-border bg-card px-8 py-3.5 text-sm font-medium text-foreground transition-all duration-150 hover:bg-muted hover:border-border"
             >
               Ver Módulos
               <ArrowRight className="inline-block ml-2 w-4 h-4 transition-transform group-hover:translate-x-0.5" />
@@ -177,10 +177,10 @@ export default function HomePage() {
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 mt-16 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
           <div className="relative rounded-xl border border-border bg-card shadow-xl shadow-slate-200/50 overflow-hidden">
             {/* Window bar */}
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-100 bg-muted">
-              <div className="w-3 h-3 rounded-full bg-slate-300" />
-              <div className="w-3 h-3 rounded-full bg-slate-300" />
-              <div className="w-3 h-3 rounded-full bg-slate-300" />
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-muted">
+              <div className="w-3 h-3 rounded-full bg-muted" />
+              <div className="w-3 h-3 rounded-full bg-muted" />
+              <div className="w-3 h-3 rounded-full bg-muted" />
               <div className="ml-4 text-xs text-muted-foreground">app.yellow-erp.cl/dashboard</div>
             </div>
             {/* Mock content */}
@@ -199,7 +199,7 @@ export default function HomePage() {
                   { label: 'Stock Items', value: '3,891', change: '-2%' },
                   { label: 'Órdenes', value: '89', change: '+18%' },
                 ].map((kpi) => (
-                  <div key={kpi.label} className="rounded-lg border border-slate-100 bg-card p-4">
+                  <div key={kpi.label} className="rounded-lg border border-border bg-card p-4">
                     <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{kpi.label}</p>
                     <p className="text-xl font-bold text-foreground mt-1">{kpi.value}</p>
                     <p className={`text-xs mt-1 ${kpi.change.startsWith('+') ? 'text-emerald-600' : 'text-rose-600'}`}>{kpi.change}</p>
@@ -211,7 +211,7 @@ export default function HomePage() {
                 {[35, 55, 40, 70, 50, 85, 65, 95, 75, 60, 88, 100].map((h, i) => (
                   <div
                     key={i}
-                    className="flex-1 rounded-t bg-slate-200"
+                    className="flex-1 rounded-t bg-muted"
                     style={{ height: `${h}%` }}
                   />
                 ))}
@@ -222,7 +222,7 @@ export default function HomePage() {
       </section>
 
       {/* ─── 3. STATS (count-up social proof) ─── */}
-      <section className="py-16 px-4 sm:px-6 border-b border-slate-100">
+      <section className="py-16 px-4 sm:px-6 border-b border-border">
         <div className="max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-10">
           <StatsCounter value={200} suffix="+" label="Empresas activas" />
           <StatsCounter value={10} suffix="k+" label="Usuarios gestionando" />
@@ -232,7 +232,7 @@ export default function HomePage() {
       </section>
 
       {/* ─── 4. SOCIAL PROOF / LOGOS ─── */}
-      <section className="py-12 border-b border-slate-100">
+      <section className="py-12 border-b border-border">
         <p className="text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-8">
           Powered by las mejores tecnologías
         </p>
@@ -240,7 +240,7 @@ export default function HomePage() {
           {logos.map((logo) => (
             <div
               key={logo}
-              className="flex items-center justify-center px-6 py-3 text-sm font-bold text-slate-300 hover:text-muted-foreground transition-colors whitespace-nowrap"
+              className="flex items-center justify-center px-6 py-3 text-sm font-bold text-foreground hover:text-muted-foreground transition-colors whitespace-nowrap"
             >
               {logo}
             </div>
@@ -264,10 +264,10 @@ export default function HomePage() {
             {modules.map((mod) => (
               <div
                 key={mod.title}
-                className="group rounded-xl border border-border bg-card p-6 transition-all duration-150 hover:border-slate-300 hover:shadow-sm"
+                className="group rounded-xl border border-border bg-card p-6 transition-all duration-150 hover:border-border hover:shadow-sm"
               >
                 <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors duration-150">
-                  <mod.icon className="w-5 h-5 text-slate-600 group-hover:text-white transition-colors duration-150" />
+                  <mod.icon className="w-5 h-5 text-foreground group-hover:text-white transition-colors duration-150" />
                 </div>
                 <h3 className="text-sm font-semibold text-foreground mb-1.5">{mod.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{mod.description}</p>
@@ -294,7 +294,7 @@ export default function HomePage() {
                 {features.map((f) => (
                   <div key={f.title} className="flex items-start gap-4">
                     <div className="w-9 h-9 rounded-lg bg-card border border-border flex items-center justify-center flex-shrink-0">
-                      <f.icon className="w-4 h-4 text-slate-600" />
+                      <f.icon className="w-4 h-4 text-foreground" />
                     </div>
                     <div>
                       <h3 className="text-sm font-semibold text-foreground">{f.title}</h3>
@@ -314,7 +314,7 @@ export default function HomePage() {
                     { label: 'Almacenes', value: '4', change: '+1' },
                     { label: 'Proveedores', value: '56', change: '+7%' },
                   ].map((kpi) => (
-                    <div key={kpi.label} className="rounded-lg border border-slate-100 p-4">
+                    <div key={kpi.label} className="rounded-lg border border-border p-4">
                       <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{kpi.label}</p>
                       <p className="text-xl font-bold text-foreground mt-1">{kpi.value}</p>
                       <p className={`text-xs mt-1 ${kpi.change.startsWith('+') ? 'text-emerald-600' : 'text-rose-600'}`}>{kpi.change}</p>
@@ -387,8 +387,8 @@ export default function HomePage() {
                 key={plan.name}
                 className={`relative rounded-xl border p-8 transition-all duration-150 ${
                   plan.popular
-                    ? 'border-slate-900 bg-card shadow-lg'
-                    : 'border-border bg-card hover:border-slate-300'
+                    ? 'border-border bg-card shadow-lg'
+                    : 'border-border bg-card hover:border-border'
                 }`}
               >
                 {plan.popular && (
@@ -404,7 +404,7 @@ export default function HomePage() {
                 </div>
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((f) => (
-                    <li key={f} className="flex items-start gap-3 text-sm text-slate-600">
+                    <li key={f} className="flex items-start gap-3 text-sm text-foreground">
                       <Check className="w-4 h-4 text-foreground mt-0.5 flex-shrink-0" />
                       {f}
                     </li>

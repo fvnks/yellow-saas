@@ -153,11 +153,11 @@ export default function InventoryPage() {
                 placeholder="Buscar por nombre, SKU..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-10 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                className="w-full pl-10 pr-10 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
               />
               <button
                 onClick={() => setShowScanner(true)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-indigo-600 transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
                 title="Escanear codigo de barras"
               >
                 <ScanBarcode className="w-4 h-4" />
@@ -245,7 +245,7 @@ export default function InventoryPage() {
                     <TableCell>{product.warehouse}</TableCell>
                     <TableCell>
                       {product.cost_center ? (
-                        <span className="text-xs text-slate-600">{product.cost_center.code}</span>
+                        <span className="text-xs text-foreground">{product.cost_center.code}</span>
                       ) : (
                         <span className="text-xs text-muted-foreground">—</span>
                       )}
@@ -253,12 +253,12 @@ export default function InventoryPage() {
                     <TableCell>
                       <div className="flex items-center justify-center gap-1">
                         <Link href={`/dashboard/inventory/${product.id}`}>
-                          <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors" aria-label="Ver">
+                          <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors" aria-label="Ver">
                             <Eye className="w-4 h-4" />
                           </button>
                         </Link>
                         <Link href={`/dashboard/inventory/${product.id}/edit`}>
-                          <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors" aria-label="Editar">
+                          <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors" aria-label="Editar">
                             <Edit className="w-4 h-4" />
                           </button>
                         </Link>

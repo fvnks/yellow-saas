@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
@@ -32,7 +32,7 @@ const modules: ModuleOption[] = [
     gradient: 'from-slate-700 to-slate-900',
     iconBg: 'bg-muted',
     iconColor: 'text-foreground',
-    hoverBorder: 'hover:border-slate-300',
+    hoverBorder: 'hover:border-border',
     href: '/dashboard',
     requiredModules: ['inventory', 'products', 'sales', 'purchases', 'accounting', 'projects', 'crm'],
     moduleName: 'erp',
@@ -46,7 +46,7 @@ const modules: ModuleOption[] = [
     gradient: 'from-slate-700 to-slate-900',
     iconBg: 'bg-muted',
     iconColor: 'text-foreground',
-    hoverBorder: 'hover:border-slate-300',
+    hoverBorder: 'hover:border-border',
     href: '/hr',
     requiredModules: ['hr'],
     moduleName: 'hr',
@@ -60,7 +60,7 @@ const modules: ModuleOption[] = [
     gradient: 'from-slate-700 to-slate-900',
     iconBg: 'bg-muted',
     iconColor: 'text-foreground',
-    hoverBorder: 'hover:border-slate-300',
+    hoverBorder: 'hover:border-border',
     href: '/projects',
     requiredModules: ['projects'],
     moduleName: 'projects',
@@ -74,7 +74,7 @@ const modules: ModuleOption[] = [
     gradient: 'from-slate-700 to-slate-900',
     iconBg: 'bg-muted',
     iconColor: 'text-foreground',
-    hoverBorder: 'hover:border-slate-300',
+    hoverBorder: 'hover:border-border',
     href: '/recetas',
     requiredModules: [],
     moduleName: 'recetas',
@@ -88,7 +88,7 @@ const modules: ModuleOption[] = [
     gradient: 'from-slate-700 to-slate-900',
     iconBg: 'bg-muted',
     iconColor: 'text-foreground',
-    hoverBorder: 'hover:border-slate-300',
+    hoverBorder: 'hover:border-border',
     href: '/mi-cuenta',
     requiredModules: [],
     moduleName: 'mi-cuenta',
@@ -102,7 +102,7 @@ const modules: ModuleOption[] = [
     gradient: 'from-slate-700 to-slate-900',
     iconBg: 'bg-muted',
     iconColor: 'text-foreground',
-    hoverBorder: 'hover:border-slate-300',
+    hoverBorder: 'hover:border-border',
     href: '/ayuda',
     requiredModules: [],
     moduleName: 'ayuda',
@@ -255,7 +255,7 @@ export default function SelectPage() {
               <p className="text-[11px] text-muted-foreground">Bienvenido, {user?.name}</p>
             </div>
           </div>
-          <a href="/dashboard/settings" className="text-xs text-muted-foreground hover:text-slate-600 flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-muted transition-colors">
+          <a href="/dashboard/settings" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-muted transition-colors">
             <Settings className="w-3.5 h-3.5" /> Configuración
           </a>
         </div>
@@ -284,7 +284,7 @@ export default function SelectPage() {
                 <div className="w-16 h-16 bg-muted rounded-xl flex items-center justify-center mx-auto mb-4">
                   <Lock className="w-7 h-7 text-muted-foreground" />
                 </div>
-                <p className="text-sm font-medium text-slate-600">No hay módulos activos</p>
+                <p className="text-sm font-medium text-foreground">No hay módulos activos</p>
                 <p className="text-xs text-muted-foreground mt-1">Contacta al administrador para activar módulos</p>
               </div>
             ) : modules.filter(mod => isModuleActivated(mod)).map((mod, i) => {
@@ -297,7 +297,7 @@ export default function SelectPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.25, delay: 0.05 + i * 0.05 }}
                   onClick={() => handleModuleClick(mod)}
-                  className="group relative bg-card border border-border hover:border-slate-300 rounded-xl p-5 text-left transition-all duration-200 hover:shadow-lg hover:shadow-slate-200/50"
+                  className="group relative bg-card border border-border hover:border-border rounded-xl p-5 text-left transition-all duration-200 hover:shadow-lg hover:shadow-slate-200/50"
                 >
                   <div className="flex items-start gap-4">
                     <div className={`w-11 h-11 ${mod.iconBg} rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-200 group-hover:scale-105`}>
@@ -310,14 +310,14 @@ export default function SelectPage() {
                           <p className="text-[11px] text-muted-foreground mt-0.5">{mod.subtitle}</p>
                         </div>
                         {activated ? (
-                          <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-muted-foreground group-hover:translate-x-0.5 transition-all duration-150 flex-shrink-0" />
+                          <ArrowRight className="w-4 h-4 text-foreground group-hover:text-muted-foreground group-hover:translate-x-0.5 transition-all duration-150 flex-shrink-0" />
                         ) : (
                           <Lock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                         )}
                       </div>
                       <div className="flex flex-wrap gap-1.5 mt-3">
                         {mod.description.map((item, j) => (
-                          <span key={j} className="inline-flex items-center px-2 py-0.5 bg-muted text-slate-600 text-[10px] font-medium rounded-md border border-slate-100">
+                          <span key={j} className="inline-flex items-center px-2 py-0.5 bg-muted text-foreground text-[10px] font-medium rounded-md border border-border">
                             {item}
                           </span>
                         ))}

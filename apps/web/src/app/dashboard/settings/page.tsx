@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
@@ -141,7 +141,7 @@ export default function SettingsPage() {
         <div className="space-y-6">
           {activeTab === 'empresa' && (
             <div className="bg-card border border-border rounded-xl shadow-sm p-8 text-center">
-              <Building2 className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+              <Building2 className="w-12 h-12 text-foreground mx-auto mb-3" />
               <h3 className="text-sm font-semibold text-foreground">Datos de la Empresa</h3>
               <p className="text-xs text-muted-foreground mt-1 mb-4">Configure la información de su empresa, representante legal y logo SII.</p>
               <Button onClick={() => window.location.href = '/dashboard/settings/empresa'}>
@@ -177,7 +177,7 @@ export default function SettingsPage() {
 function WebhooksTab() {
   return (
     <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
-      <div className="px-6 py-4 border-b border-slate-100">
+      <div className="px-6 py-4 border-b border-border">
         <h3 className="text-sm font-semibold text-foreground">Webhooks</h3>
       </div>
       <div className="p-6 space-y-4">
@@ -198,10 +198,10 @@ function WebhooksTab() {
             <p className="text-xs text-muted-foreground mt-1 text-center">JSON sobre HTTP/HTTPS, eventos tipados y documentados</p>
           </div>
         </div>
-        <div className="pt-4 border-t border-slate-100">
+        <div className="pt-4 border-t border-border">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
             {['stock.changed', 'stock.low', 'stock.out', 'batch.expiring', 'batch.expired', 'return.created', 'return.approved', 'order.created', 'order.shipped', 'invoice.created', 'invoice.paid', 'invoice.overdue', 'purchase_order.created', 'purchase_order.received'].map((event, i) => (
-              <span key={i} className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-muted text-slate-600 border border-border font-mono">
+              <span key={i} className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-muted text-foreground border border-border font-mono">
                 {event}
               </span>
             ))}
@@ -283,14 +283,14 @@ function UsersTab() {
 
   return (
     <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
-      <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+      <div className="px-6 py-4 border-b border-border flex items-center justify-between">
         <h3 className="text-sm font-semibold text-foreground">Usuarios del Sistema</h3>
         <Button size="sm" onClick={() => setShowInvite(true)}>
           <Plus className="w-4 h-4 mr-2" /> Invitar Usuario
         </Button>
       </div>
       {showInvite && (
-        <div className="p-4 bg-indigo-50 border-b border-indigo-100 space-y-3">
+        <div className="p-4 bg-blue-50 border-b border-primary/10 space-y-3">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <Input label="Email" type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} placeholder="usuario@empresa.cl" />
             <Input label="Nombre" value={inviteName} onChange={(e) => setInviteName(e.target.value)} placeholder="Nombre completo" />
@@ -331,14 +331,14 @@ function UsersTab() {
             ) : users.length === 0 ? (
               <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-muted-foreground">No hay usuarios</td></tr>
             ) : users.map(user => (
-              <tr key={user.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+              <tr key={user.id} className="border-b border-border hover:bg-muted transition-colors">
                 <td className="px-4 py-3 text-sm font-medium text-foreground">{user.full_name || '—'}</td>
-                <td className="px-4 py-3 text-sm text-slate-600">{user.email}</td>
+                <td className="px-4 py-3 text-sm text-foreground">{user.email}</td>
                 <td className="px-4 py-3">
                   <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
                     user.role === 'owner' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
                     user.role === 'admin' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                    'bg-muted text-slate-600 border border-border'
+                    'bg-muted text-foreground border border-border'
                   }`}>
                     {roleLabels[user.role] || user.role}
                   </span>
@@ -359,7 +359,7 @@ function UsersTab() {
                   <div className="flex items-center justify-end gap-1">
                     {user.role !== 'owner' && (
                       <>
-                        <button onClick={() => setEditingUser(user)} className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors">
+                        <button onClick={() => setEditingUser(user)} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors">
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button onClick={() => handleDelete(user.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors">
@@ -439,7 +439,7 @@ function BillingTab({ plan, status }: { plan: string; status: string }) {
   return (
     <div className="space-y-6">
       <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100">
+        <div className="px-6 py-4 border-b border-border">
           <h3 className="text-sm font-semibold text-foreground">Plan Actual</h3>
         </div>
         <div className="p-6">
@@ -447,10 +447,10 @@ function BillingTab({ plan, status }: { plan: string; status: string }) {
             <div className="p-4 text-sm text-muted-foreground">Cargando planes...</div>
           ) : current ? (
             <>
-              <div className="flex items-center justify-between p-4 bg-indigo-50 rounded-xl border border-indigo-100">
+              <div className="flex items-center justify-between p-4 bg-blue-50 rounded-xl border border-primary/10">
                 <div>
-                  <p className="text-lg font-bold text-indigo-900">{current.label}</p>
-                  <p className="text-sm text-indigo-700">{formatPrice(current.price_monthly)}/mes</p>
+                  <p className="text-lg font-bold text-primary">{current.label}</p>
+                  <p className="text-sm text-primary">{formatPrice(current.price_monthly)}/mes</p>
                 </div>
                 <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
                   status === 'active' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
@@ -481,7 +481,7 @@ function BillingTab({ plan, status }: { plan: string; status: string }) {
         </div>
       </div>
       <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100">
+        <div className="px-6 py-4 border-b border-border">
           <h3 className="text-sm font-semibold text-foreground">Planes Disponibles</h3>
         </div>
         <div className="p-6">
@@ -493,13 +493,13 @@ function BillingTab({ plan, status }: { plan: string; status: string }) {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {otherPlans.map((p) => (
                 <div key={p.name} className={`p-4 rounded-xl border-2 transition-colors ${
-                  plan === p.name ? 'border-indigo-500 bg-indigo-50' : 'border-border hover:border-slate-300'
+                  plan === p.name ? 'border-primary bg-blue-50' : 'border-border hover:border-border'
                 }`}>
                   <p className="font-bold text-foreground">{p.label}</p>
-                  <p className="text-lg font-bold text-indigo-600 mt-1">{formatPrice(p.price_monthly)}/mes</p>
+                  <p className="text-lg font-bold text-primary mt-1">{formatPrice(p.price_monthly)}/mes</p>
                   <ul className="mt-3 space-y-1">
                     {featuresList(p).map((f, i) => (
-                      <li key={i} className="text-xs text-slate-600 flex items-center gap-1">
+                      <li key={i} className="text-xs text-foreground flex items-center gap-1">
                         <Check className="w-3 h-3 text-emerald-500" /> {f}
                       </li>
                     ))}
@@ -554,13 +554,13 @@ function NotificationsTab() {
 
   if (loading) return (
     <div className="bg-card border border-border rounded-xl shadow-sm p-8 text-center">
-      <div className="animate-pulse bg-slate-200 h-6 w-48 rounded mx-auto" />
+      <div className="animate-pulse bg-muted h-6 w-48 rounded mx-auto" />
     </div>
   );
 
   return (
     <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
-      <div className="px-6 py-4 border-b border-slate-100">
+      <div className="px-6 py-4 border-b border-border">
         <h3 className="text-sm font-semibold text-foreground">Preferencias de Notificación</h3>
       </div>
       <div className="p-6 space-y-4">
@@ -572,7 +572,7 @@ function NotificationsTab() {
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" checked={prefs.email_enabled} onChange={(e) => setPrefs(p => ({ ...p, email_enabled: e.target.checked }))} className="sr-only peer" />
-              <div className="w-11 h-6 bg-slate-200 peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-card after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+              <div className="w-11 h-6 bg-muted peer-focus:ring-2 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-card after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
             </label>
           </div>
           {prefs.email_enabled && (
@@ -595,11 +595,11 @@ function NotificationsTab() {
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" checked={(prefs as any)[item.key]}
                 onChange={(e) => setPrefs(p => ({ ...p, [item.key]: e.target.checked }))} className="sr-only peer" />
-              <div className="w-11 h-6 bg-slate-200 peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-card after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+              <div className="w-11 h-6 bg-muted peer-focus:ring-2 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-card after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
             </label>
           </div>
         ))}
-        <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+        <div className="flex justify-end gap-3 pt-4 border-t border-border">
           {saved && <span className="text-sm text-emerald-600">Guardado correctamente</span>}
           <Button onClick={handleSave} disabled={saving}>
             <Save className="w-4 h-4 mr-2" /> {saving ? 'Guardando...' : 'Guardar Preferencias'}
@@ -638,7 +638,7 @@ function SecurityTab() {
   return (
     <div className="space-y-6">
       <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100">
+        <div className="px-6 py-4 border-b border-border">
           <h3 className="text-sm font-semibold text-foreground">Contraseña</h3>
         </div>
         <div className="p-6 space-y-4">
@@ -658,7 +658,7 @@ function SecurityTab() {
       </div>
 
       <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100">
+        <div className="px-6 py-4 border-b border-border">
           <h3 className="text-sm font-semibold text-foreground">Autenticación de Dos Factores</h3>
         </div>
         <div className="p-6">
@@ -667,7 +667,7 @@ function SecurityTab() {
               <p className="text-sm font-medium text-foreground">2FA con Authenticator App</p>
               <p className="text-xs text-muted-foreground">Agrega una capa extra de seguridad a tu cuenta</p>
             </div>
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-muted text-slate-600 border border-border">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-muted text-foreground border border-border">
               Próximamente
             </span>
           </div>

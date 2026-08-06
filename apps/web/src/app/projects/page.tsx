@@ -110,7 +110,7 @@ function ProjectDashboardInner() {
           {showNotifications && (
             <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-xl shadow-xl z-50 max-h-80 overflow-y-auto">
               {notifications.slice(0, 8).map((n, i) => (
-                <Link key={i} href={`/projects/${n.project_id}`} className="block px-4 py-3 hover:bg-muted border-b border-slate-100 last:border-0 transition-colors">
+                <Link key={i} href={`/projects/${n.project_id}`} className="block px-4 py-3 hover:bg-muted border-b border-border last:border-0 transition-colors">
                   <div className="flex items-start gap-3">
                     {n.severity === 'danger' ? <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" /> : <Calendar className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />}
                     <div>
@@ -133,8 +133,8 @@ function ProjectDashboardInner() {
               <p className="text-2xl font-bold text-foreground mt-1">{projects.length}</p>
               <p className="text-xs text-emerald-600 mt-1">{activeProjects} activos</p>
             </div>
-            <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
-              <FolderKanban className="w-6 h-6 text-indigo-600" />
+            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+              <FolderKanban className="w-6 h-6 text-primary" />
             </div>
           </div>
         </div>
@@ -204,9 +204,9 @@ function ProjectDashboardInner() {
           {[1, 2, 3].map(i => (
             <div key={i} className="bg-card border border-border rounded-xl shadow-sm p-6">
               <div className="animate-pulse space-y-4">
-                <div className="h-4 bg-slate-200 rounded w-1/3" />
-                <div className="h-3 bg-slate-200 rounded w-2/3" />
-                <div className="h-2 bg-slate-200 rounded w-full" />
+                <div className="h-4 bg-muted rounded w-1/3" />
+                <div className="h-3 bg-muted rounded w-2/3" />
+                <div className="h-2 bg-muted rounded w-full" />
               </div>
             </div>
           ))}
@@ -219,7 +219,7 @@ function ProjectDashboardInner() {
                 <div>
                   <div className="flex items-center gap-3">
                     <h3 className="text-base font-semibold text-foreground">{project.name}</h3>
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${statusConfig[project.status]?.variant === 'success' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : statusConfig[project.status]?.variant === 'warning' ? 'bg-amber-50 text-amber-700 border-amber-200' : statusConfig[project.status]?.variant === 'danger' ? 'bg-rose-50 text-rose-700 border-rose-200' : statusConfig[project.status]?.variant === 'info' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-muted text-slate-600 border-border'} border`}>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${statusConfig[project.status]?.variant === 'success' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : statusConfig[project.status]?.variant === 'warning' ? 'bg-amber-50 text-amber-700 border-amber-200' : statusConfig[project.status]?.variant === 'danger' ? 'bg-rose-50 text-rose-700 border-rose-200' : statusConfig[project.status]?.variant === 'info' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-muted text-foreground border-border'} border`}>
                       {statusConfig[project.status]?.label || project.status}
                     </span>
                     {project.archived && (
@@ -273,7 +273,7 @@ function ProjectDashboardInner() {
                 </div>
                 <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-indigo-500 rounded-full transition-all duration-300"
+                    className="h-full bg-primary rounded-full transition-all duration-300"
                     style={{ width: `${project.progress || 0}%` }}
                   />
                 </div>
@@ -281,7 +281,7 @@ function ProjectDashboardInner() {
 
               {project.project_manager_name && (
                 <div className="flex items-center gap-2 mt-4">
-                  <div className="flex items-center gap-1.5 px-2 py-1 bg-muted rounded-full text-xs text-slate-600">
+                  <div className="flex items-center gap-1.5 px-2 py-1 bg-muted rounded-full text-xs text-foreground">
                     <Users className="w-3 h-3" />
                     {project.project_manager_name}
                   </div>
@@ -294,7 +294,7 @@ function ProjectDashboardInner() {
 
       {!loading && filteredByTab.length === 0 && (
         <div className="text-center py-12">
-          <FolderKanban className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+          <FolderKanban className="w-12 h-12 text-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">No se encontraron proyectos</p>
         </div>
       )}

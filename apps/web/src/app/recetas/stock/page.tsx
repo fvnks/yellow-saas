@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Package, Search, Plus, Minus, ArrowLeft, Check, X, History } from 'lucide-react';
@@ -163,13 +163,13 @@ export default function StockEntryPage() {
       <div className="bg-card border border-border rounded-xl shadow-sm p-1 flex gap-1">
         <button onClick={() => setTab('entry')}
           className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-            tab === 'entry' ? 'bg-primary text-white' : 'text-slate-600 hover:bg-muted'
+            tab === 'entry' ? 'bg-primary text-white' : 'text-foreground hover:bg-muted'
           }`}>
           <Plus className="w-4 h-4" /> Nuevo Movimiento
         </button>
         <button onClick={() => setTab('history')}
           className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-            tab === 'history' ? 'bg-primary text-white' : 'text-slate-600 hover:bg-muted'
+            tab === 'history' ? 'bg-primary text-white' : 'text-foreground hover:bg-muted'
           }`}>
           <History className="w-4 h-4" /> Historial
           {historyTotal > 0 && (
@@ -209,10 +209,10 @@ export default function StockEntryPage() {
                   {lines.length === 0 ? (
                     <tr>
                       <td colSpan={7} className="px-4 py-16 text-center">
-                        <Package className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+                        <Package className="w-10 h-10 text-foreground mx-auto mb-3" />
                         <p className="text-sm text-muted-foreground">No hay productos agregados</p>
                         <button onClick={addLine}
-                          className="text-sm text-indigo-600 hover:underline mt-2 inline-flex items-center gap-1">
+                          className="text-sm text-primary hover:underline mt-2 inline-flex items-center gap-1">
                           <Plus className="w-3.5 h-3.5" /> Agregar primer producto
                         </button>
                       </td>
@@ -222,10 +222,10 @@ export default function StockEntryPage() {
                     const finalStock = line.type === 'add' ? line.current_stock + qty : line.current_stock - qty;
                     const hasStockError = line.type === 'remove' && qty > line.current_stock;
                     return (
-                      <tr key={line.id} className="border-b border-slate-100 hover:bg-muted/50 transition-colors">
+                      <tr key={line.id} className="border-b border-border hover:bg-muted/50 transition-colors">
                         <td className="px-2 py-3 text-center">
                           <button onClick={() => removeLine(line.id)}
-                            className="p-1 text-slate-300 hover:text-rose-500 transition-colors rounded">
+                            className="p-1 text-foreground hover:text-rose-500 transition-colors rounded">
                             <X className="w-3.5 h-3.5" />
                           </button>
                         </td>
@@ -241,12 +241,12 @@ export default function StockEntryPage() {
                           ) : (
                             <div className="relative">
                               <button onClick={() => setShowDropdown(showDropdown === line.id ? null : line.id)}
-                                className="w-full text-left bg-muted border border-border rounded-lg px-3 py-2 text-sm text-muted-foreground hover:border-slate-300 transition-colors">
+                                className="w-full text-left bg-muted border border-border rounded-lg px-3 py-2 text-sm text-muted-foreground hover:border-border transition-colors">
                                 Seleccionar producto...
                               </button>
                               {showDropdown === line.id && (
                                 <div className="absolute z-20 top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-xl max-h-60 overflow-y-auto">
-                                  <div className="sticky top-0 bg-card p-2 border-b border-slate-100">
+                                  <div className="sticky top-0 bg-card p-2 border-b border-border">
                                     <div className="relative">
                                       <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
                                       <input type="text" value={search} onChange={e => setSearch(e.target.value)}
@@ -258,7 +258,7 @@ export default function StockEntryPage() {
                                     <p className="p-3 text-xs text-muted-foreground text-center">No encontrado</p>
                                   ) : filteredProducts.map(p => (
                                     <button key={p.id} onClick={() => selectProduct(line.id, p)}
-                                      className="w-full text-left px-3 py-2 hover:bg-muted flex items-center justify-between border-b border-slate-50 last:border-0">
+                                      className="w-full text-left px-3 py-2 hover:bg-muted flex items-center justify-between border-b border-border last:border-0">
                                       <div className="flex items-center gap-2">
                                         <Package className="w-3.5 h-3.5 text-amber-500" />
                                         <div>
@@ -275,7 +275,7 @@ export default function StockEntryPage() {
                           )}
                         </td>
                         <td className="px-4 py-3 text-center">
-                          <span className="text-xs text-slate-600">
+                          <span className="text-xs text-foreground">
                             {line.product_id ? `${line.current_stock.toLocaleString('es-CL')} ${line.unit}` : '—'}
                           </span>
                         </td>
@@ -314,7 +314,7 @@ export default function StockEntryPage() {
                           {line.product_id && (
                             <input type="text" value={line.reason}
                               onChange={e => updateLine(line.id, { reason: e.target.value })}
-                              className="w-full bg-muted border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-primary/20"
+                              className="w-full bg-muted border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
                               placeholder="Motivo..." />
                           )}
                         </td>
@@ -324,7 +324,7 @@ export default function StockEntryPage() {
                               {hasStockError ? '✗' : `${finalStock.toLocaleString('es-CL')} ${line.unit}`}
                             </span>
                           ) : (
-                            <span className="text-xs text-slate-300">—</span>
+                            <span className="text-xs text-foreground">—</span>
                           )}
                         </td>
                       </tr>
@@ -380,19 +380,19 @@ export default function StockEntryPage() {
               <tbody>
                 {historyLoading ? (
                   [1, 2, 3, 4, 5].map(i => (
-                    <tr key={i} className="border-b border-slate-100">
+                    <tr key={i} className="border-b border-border">
                       <td colSpan={7} className="px-4 py-3"><div className="h-4 bg-muted rounded animate-pulse" /></td>
                     </tr>
                   ))
                 ) : history.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="px-4 py-12 text-center">
-                      <History className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+                      <History className="w-10 h-10 text-foreground mx-auto mb-3" />
                       <p className="text-sm text-muted-foreground">No hay movimientos registrados</p>
                     </td>
                   </tr>
                 ) : history.map(entry => (
-                  <tr key={entry.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={entry.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs text-muted-foreground">
                       {new Date(entry.created_at).toLocaleDateString('es-CL')} {new Date(entry.created_at).toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })}
                     </td>
@@ -427,7 +427,7 @@ export default function StockEntryPage() {
             </table>
           </div>
           {historyTotal > 20 && (
-            <div className="px-4 py-3 border-t border-slate-100 flex items-center justify-between text-xs text-muted-foreground">
+            <div className="px-4 py-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
               <p>Mostrando {(historyPage - 1) * 20 + 1}-{Math.min(historyPage * 20, historyTotal)} de {historyTotal}</p>
               <div className="flex items-center gap-2">
                 <button onClick={() => setHistoryPage(p => Math.max(1, p - 1))} disabled={historyPage === 1}

@@ -55,11 +55,11 @@ export default function SalesDashboard() {
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-card border border-border rounded-xl shadow-sm p-5 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-5 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Ventas del Mes</span>
-            <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-              <DollarSign className="w-5 h-5 text-indigo-600" />
+            <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+              <DollarSign className="w-5 h-5 text-primary" />
             </div>
           </div>
           <p className="text-2xl font-bold text-foreground">{formatMoney(kpis.monthlySales)}</p>
@@ -71,7 +71,7 @@ export default function SalesDashboard() {
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl shadow-sm p-5 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-5 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Órdenes del Mes</span>
             <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
@@ -82,7 +82,7 @@ export default function SalesDashboard() {
           <p className="text-xs text-muted-foreground mt-2">{formatMoney(kpis.monthlyInvoiced)} facturados</p>
         </div>
 
-        <div className="bg-card border border-border rounded-xl shadow-sm p-5 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-5 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Despachos Pendientes</span>
             <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
@@ -93,7 +93,7 @@ export default function SalesDashboard() {
           <p className="text-xs text-muted-foreground mt-2">en tránsito o pendientes</p>
         </div>
 
-        <div className="bg-card border border-border rounded-xl shadow-sm p-5 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-5 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Facturas Vencidas</span>
             <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center">
@@ -106,8 +106,8 @@ export default function SalesDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-          <div className="px-6 py-4 border-b border-slate-100">
+        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+          <div className="px-6 py-4 border-b border-border">
             <h3 className="text-sm font-semibold text-foreground">Top Productos (Año)</h3>
           </div>
           <div className="p-4">
@@ -132,8 +132,8 @@ export default function SalesDashboard() {
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-          <div className="px-6 py-4 border-b border-slate-100">
+        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+          <div className="px-6 py-4 border-b border-border">
             <h3 className="text-sm font-semibold text-foreground">Top Clientes (Año)</h3>
           </div>
           <div className="p-4">
@@ -160,8 +160,8 @@ export default function SalesDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-          <div className="px-6 py-4 border-b border-slate-100">
+        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+          <div className="px-6 py-4 border-b border-border">
             <h3 className="text-sm font-semibold text-foreground">Tendencia Mensual (12 meses)</h3>
           </div>
           <div className="p-4">
@@ -174,7 +174,7 @@ export default function SalesDashboard() {
                   const height = maxVal > 0 ? (parseFloat(m.total) / maxVal) * 100 : 0;
                   return (
                     <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                      <div className="w-full bg-indigo-400 rounded-t" style={{ height: `${Math.max(4, height)}%` }} />
+                      <div className="w-full bg-primary/70 rounded-t" style={{ height: `${Math.max(4, height)}%` }} />
                       <span className="text-[7px] text-muted-foreground">{new Date(m.month).toLocaleDateString('es-CL', { month: 'short' })}</span>
                     </div>
                   );
@@ -184,8 +184,8 @@ export default function SalesDashboard() {
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-          <div className="px-6 py-4 border-b border-slate-100">
+        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+          <div className="px-6 py-4 border-b border-border">
             <h3 className="text-sm font-semibold text-foreground">Órdenes por Estado (Año)</h3>
           </div>
           <div className="p-4">
@@ -197,17 +197,17 @@ export default function SalesDashboard() {
                   const total = statusBreakdown.reduce((sum: number, x: any) => sum + parseInt(x.count), 0);
                   const pct = total > 0 ? (parseInt(s.count) / total) * 100 : 0;
                   const colors: Record<string, string> = {
-                    draft: 'bg-slate-400', confirmed: 'bg-blue-500', processing: 'bg-amber-500',
-                    shipped: 'bg-indigo-500', delivered: 'bg-emerald-500', cancelled: 'bg-red-400', invoiced: 'bg-purple-500'
+                    draft: 'bg-muted', confirmed: 'bg-blue-500', processing: 'bg-amber-500',
+                    shipped: 'bg-primary', delivered: 'bg-emerald-500', cancelled: 'bg-red-400', invoiced: 'bg-blue-600'
                   };
                   return (
                     <div key={i}>
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-xs text-foreground capitalize">{s.status}</span>
-                        <span className="text-xs font-medium text-slate-600">{s.count} ({pct.toFixed(0)}%)</span>
+                        <span className="text-xs font-medium text-foreground">{s.count} ({pct.toFixed(0)}%)</span>
                       </div>
                       <div className="h-2 bg-muted rounded-full overflow-hidden">
-                        <div className={`h-full rounded-full ${colors[s.status] || 'bg-slate-400'}`} style={{ width: `${pct}%` }} />
+                        <div className={`h-full rounded-full ${colors[s.status] || 'bg-muted'}`} style={{ width: `${pct}%` }} />
                       </div>
                     </div>
                   );

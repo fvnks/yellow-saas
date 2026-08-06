@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -16,7 +16,7 @@ interface Reservation {
 
 const statusMap: Record<string, { bg: string; text: string; border: string; label: string }> = {
   active: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200', label: 'Activa' },
-  released: { bg: 'bg-muted', text: 'text-slate-600', border: 'border-border', label: 'Liberada' },
+  released: { bg: 'bg-muted', text: 'text-foreground', border: 'border-border', label: 'Liberada' },
   fulfilled: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', label: 'Cumplida' },
 };
 
@@ -86,7 +86,7 @@ export default function ReservationsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.back()} className="p-2 hover:bg-muted rounded-lg transition-colors"><ArrowLeft className="w-5 h-5 text-slate-600" /></button>
+          <button onClick={() => router.back()} className="p-2 hover:bg-muted rounded-lg transition-colors"><ArrowLeft className="w-5 h-5 text-foreground" /></button>
           <div>
             <h1 className="text-xl font-bold text-foreground">Reservas de Stock</h1>
             <p className="text-sm text-muted-foreground mt-1">Reservar stock para ordenes</p>
@@ -99,16 +99,16 @@ export default function ReservationsPage() {
 
       {error && <NotificationAlert variant="warning" title={error} dismissible onDismiss={() => setError('')} />}
 
-      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input type="text" placeholder="Buscar producto, SKU..." value={search} onChange={e => setSearch(e.target.value)}
-            className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+            className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
         </div>
       </div>
 
       {showNew && (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <h3 className="text-sm font-semibold text-foreground mb-4">Nueva Reserva</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="space-y-1">
@@ -150,17 +150,17 @@ export default function ReservationsPage() {
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Notas</label>
               <input type="text" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20" />
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20" />
             </div>
           </div>
           <div className="flex justify-end gap-3 mt-4">
-            <button onClick={() => setShowNew(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+            <button onClick={() => setShowNew(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
             <button onClick={handleCreate} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Crear Reserva</button>
           </div>
         </div>
       )}
 
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -180,7 +180,7 @@ export default function ReservationsPage() {
               ) : filtered.map(r => {
                 const st = statusMap[r.status] || statusMap.active;
                 return (
-                  <tr key={r.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={r.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-medium text-foreground">{r.product?.name} <span className="text-muted-foreground ml-1">({r.product?.sku})</span></td>
                     <td className="px-4 py-3 text-xs text-foreground">{r.warehouse?.name}</td>
                     <td className="px-4 py-3 text-center text-xs font-bold text-foreground">{r.quantity}</td>

@@ -274,7 +274,7 @@ export default function NewInvoicePage() {
                     {items.map((item, index) => {
                       const lineTotal = getLineTotal(item);
                       return (
-                        <tr key={index} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                        <tr key={index} className="border-b border-border hover:bg-muted transition-colors">
                           <td className="px-4 py-3 text-xs text-muted-foreground">{index + 1}</td>
                           <td className="px-4 py-3">
                             <select

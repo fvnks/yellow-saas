@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, Search, Filter, Eye, Trash2, FileText, CheckCircle2, Clock, XCircle } from 'lucide-react';
@@ -64,7 +64,7 @@ export default function JournalEntriesPage() {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Link href="/dashboard/accounting" className="p-2 hover:bg-muted rounded-lg transition-colors">
-          <ArrowLeft className="w-5 h-5 text-slate-600" />
+          <ArrowLeft className="w-5 h-5 text-foreground" />
         </Link>
         <div className="flex-1">
           <h1 className="text-xl font-bold text-foreground">Asientos Contables</h1>
@@ -77,14 +77,14 @@ export default function JournalEntriesPage() {
         </Link>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="flex items-center gap-4">
           <div className="flex-1 relative">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input type="text" value={search} onChange={e => setSearch(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSearch()}
               placeholder="Buscar por numero o descripcion..."
-              className="w-full bg-muted border border-border rounded-lg pl-10 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+              className="w-full bg-muted border border-border rounded-lg pl-10 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
           <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
             className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
@@ -94,13 +94,13 @@ export default function JournalEntriesPage() {
             <option value="reversed">Revertido</option>
           </select>
           <button onClick={handleSearch}
-            className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <Filter className="w-4 h-4" /> Buscar
           </button>
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -120,15 +120,15 @@ export default function JournalEntriesPage() {
                 <tr><td colSpan={8} className="px-4 py-12 text-center text-sm text-muted-foreground">Cargando...</td></tr>
               ) : entries.length === 0 ? (
                 <tr><td colSpan={8} className="px-4 py-12 text-center">
-                  <FileText className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+                  <FileText className="w-12 h-12 text-foreground mx-auto mb-3" />
                   <p className="text-sm text-muted-foreground">No hay asientos contables</p>
-                  <Link href="/dashboard/accounting/journal-entries/new" className="text-indigo-600 hover:underline text-sm mt-2 inline-block">Crear primer asiento</Link>
+                  <Link href="/dashboard/accounting/journal-entries/new" className="text-primary hover:underline text-sm mt-2 inline-block">Crear primer asiento</Link>
                 </td></tr>
               ) : entries.map(entry => {
                 const st = statusConfig[entry.status] || statusConfig.draft;
                 const StatusIcon = st.icon;
                 return (
-                  <tr key={entry.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={entry.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-mono font-semibold text-foreground">{entry.entry_number}</td>
                     <td className="px-4 py-3 text-xs text-foreground">{new Date(entry.date).toLocaleDateString('es-CL')}</td>
                     <td className="px-4 py-3 text-xs text-foreground max-w-xs truncate">{entry.description}</td>

@@ -93,14 +93,14 @@ export default function TemplatesTab({ onApply }: TemplatesTabProps) {
       </div>
 
       {showCreateForm && (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 space-y-3">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border space-y-3">
           <div className="space-y-1">
             <label className="block text-xs font-medium text-foreground">Nombre</label>
             <input
               type="text"
               value={newTemplate.name}
               onChange={(e) => setNewTemplate({ ...newTemplate, name: e.target.value })}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Ej: Proyecto Constructora"
             />
           </div>
@@ -110,12 +110,12 @@ export default function TemplatesTab({ onApply }: TemplatesTabProps) {
               type="text"
               value={newTemplate.description}
               onChange={(e) => setNewTemplate({ ...newTemplate, description: e.target.value })}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Descripcion breve..."
             />
           </div>
           <div className="flex justify-end gap-2">
-            <button onClick={() => setShowCreateForm(false)} className="px-3 py-1.5 text-xs text-slate-600 hover:text-foreground">Cancelar</button>
+            <button onClick={() => setShowCreateForm(false)} className="px-3 py-1.5 text-xs text-foreground hover:text-foreground">Cancelar</button>
             <button
               onClick={handleCreate}
               disabled={saving || !newTemplate.name}
@@ -128,15 +128,15 @@ export default function TemplatesTab({ onApply }: TemplatesTabProps) {
       )}
 
       {templates.length === 0 ? (
-        <div className="text-center py-8 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-          <FileText className="w-10 h-10 text-slate-200 mx-auto mb-2" />
+        <div className="text-center py-8 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+          <FileText className="w-10 h-10 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">No hay plantillas creadas</p>
           <p className="text-[10px] text-muted-foreground mt-1">Crea una plantilla para reutilizar tareas e hitos</p>
         </div>
       ) : (
         <div className="space-y-2">
           {templates.map(template => (
-            <div key={template.id} className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 hover:shadow-md transition-shadow">
+            <div key={template.id} className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
                   <h4 className="text-sm font-semibold text-foreground">{template.name}</h4>
@@ -151,10 +151,10 @@ export default function TemplatesTab({ onApply }: TemplatesTabProps) {
                   {onApply && (
                     <button
                       onClick={() => onApply(template.id)}
-                      className="p-1.5 hover:bg-indigo-50 rounded-lg transition-colors"
+                      className="p-1.5 hover:bg-blue-50 rounded-lg transition-colors"
                       title="Aplicar a proyecto"
                     >
-                      <Copy className="w-3.5 h-3.5 text-indigo-600" />
+                      <Copy className="w-3.5 h-3.5 text-primary" />
                     </button>
                   )}
                   <button

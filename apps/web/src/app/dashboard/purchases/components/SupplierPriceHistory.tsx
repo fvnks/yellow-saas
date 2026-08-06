@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { DollarSign, TrendingUp, TrendingDown, Minus, ChevronDown, ChevronUp } from 'lucide-react';
@@ -33,10 +33,10 @@ export default function SupplierPriceHistory() {
         <DollarSign className="w-4 h-4 text-muted-foreground" />
         <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Hist. Precios Proveedor</span>
       </div>
-      <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
         <div className="flex items-center gap-4">
           <input type="text" placeholder="Buscar proveedor..." value={search} onChange={e => setSearch(e.target.value)}
-            className="flex-1 bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+            className="flex-1 bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           <select value={selectedSupplier} onChange={e => setSelectedSupplier(e.target.value)}
             className="w-72 bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
             <option value="">Seleccionar proveedor...</option>
@@ -45,8 +45,8 @@ export default function SupplierPriceHistory() {
         </div>
       </div>
       {!selectedSupplier && (
-        <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
-          <DollarSign className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+        <div className="text-center py-12 bg-muted border border-dashed border-border rounded-xl">
+          <DollarSign className="w-8 h-8 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">Selecciona un proveedor</p>
         </div>
       )}
@@ -56,7 +56,7 @@ export default function SupplierPriceHistory() {
           {productPrices.map((pp: any, idx: number) => {
             const isExpanded = expanded === `${idx}`;
             return (
-              <div key={idx} className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
+              <div key={idx} className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-border">
                 <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-muted transition-colors" onClick={() => setExpanded(isExpanded ? null : `${idx}`)}>
                   <div className="flex items-center gap-3">
                     <DollarSign className="w-4 h-4 text-muted-foreground" />
@@ -65,13 +65,13 @@ export default function SupplierPriceHistory() {
                   <div className="flex items-center gap-6 text-right">
                     <div><p className="text-[9px] text-muted-foreground">Último</p><p className="text-xs font-bold text-foreground">{fmt(pp.prices[0]?.price || 0)}</p></div>
                     <div><p className="text-[9px] text-muted-foreground">Promedio</p><p className="text-xs font-bold text-foreground">{fmt(pp.avgPrice)}</p></div>
-                    <div><p className="text-[9px] text-muted-foreground">Rango</p><p className="text-xs text-slate-600">{fmt(pp.minPrice)} - {fmt(pp.maxPrice)}</p></div>
+                    <div><p className="text-[9px] text-muted-foreground">Rango</p><p className="text-xs text-foreground">{fmt(pp.minPrice)} - {fmt(pp.maxPrice)}</p></div>
                     <div><p className="text-[9px] text-muted-foreground">Unidades</p><p className="text-xs font-bold text-foreground">{pp.totalQty}</p></div>
                     {isExpanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
                   </div>
                 </div>
                 {isExpanded && (
-                  <div className="border-t border-slate-100 px-4 pb-4">
+                  <div className="border-t border-border px-4 pb-4">
                     <table className="w-full mt-2">
                       <thead><tr className="border-b border-border">
                         <th className="text-left px-3 py-2 text-[9px] font-semibold text-muted-foreground uppercase">Fecha</th>
@@ -84,11 +84,11 @@ export default function SupplierPriceHistory() {
                         {pp.prices.map((p: any, pi: number) => {
                           const diff = pp.avgPrice > 0 ? ((p.price - pp.avgPrice) / pp.avgPrice) * 100 : 0;
                           return (
-                            <tr key={pi} className="border-b border-slate-50">
-                              <td className="px-3 py-2 text-xs text-slate-600">{new Date(p.date).toLocaleDateString('es-CL')}</td>
+                            <tr key={pi} className="border-b border-border">
+                              <td className="px-3 py-2 text-xs text-foreground">{new Date(p.date).toLocaleDateString('es-CL')}</td>
                               <td className="px-3 py-2 text-xs text-foreground font-medium">{p.order}</td>
                               <td className="px-3 py-2 text-xs text-right font-bold text-foreground">{fmt(p.price)}</td>
-                              <td className="px-3 py-2 text-xs text-right text-slate-600">{p.qty}</td>
+                              <td className="px-3 py-2 text-xs text-right text-foreground">{p.qty}</td>
                               <td className="px-3 py-2 text-right"><span className={`text-[9px] font-semibold ${diff > 0 ? 'text-red-600' : diff < 0 ? 'text-emerald-600' : 'text-muted-foreground'}`}>{diff > 0 ? '+' : ''}{diff.toFixed(1)}%</span></td>
                             </tr>
                           );

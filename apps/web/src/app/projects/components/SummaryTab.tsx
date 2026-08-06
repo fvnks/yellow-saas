@@ -35,7 +35,7 @@ export default function SummaryTab({ project, tasks, members, expenses, costs }:
     warning: 'bg-amber-50 text-amber-700 border-amber-200',
     danger: 'bg-rose-50 text-rose-700 border-rose-200',
     info: 'bg-blue-50 text-blue-700 border-blue-200',
-    neutral: 'bg-muted text-slate-600 border-border',
+    neutral: 'bg-muted text-foreground border-border',
   };
 
   const taskStats = {
@@ -65,7 +65,7 @@ export default function SummaryTab({ project, tasks, members, expenses, costs }:
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Progreso</p>
           <p className="text-2xl font-bold text-foreground mt-1">{project.progress || 0}%</p>
           <div className="w-full h-2 bg-muted rounded-full mt-2 overflow-hidden">
-            <div className="h-full bg-indigo-500 rounded-full transition-all" style={{ width: `${project.progress || 0}%` }} />
+            <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${project.progress || 0}%` }} />
           </div>
         </div>
         <div className="bg-card border border-border rounded-xl p-5">
@@ -120,7 +120,7 @@ export default function SummaryTab({ project, tasks, members, expenses, costs }:
             </div>
           </div>
           {project.description && (
-            <div className="pt-3 border-t border-slate-100">
+            <div className="pt-3 border-t border-border">
               <p className="text-[9px] font-semibold text-muted-foreground uppercase mb-1">Descripción</p>
               <p className="text-xs text-foreground">{project.description}</p>
             </div>
@@ -131,7 +131,7 @@ export default function SummaryTab({ project, tasks, members, expenses, costs }:
           <h3 className="text-sm font-semibold text-foreground">Distribución de Tareas</h3>
           <div className="space-y-3">
             {[
-              { label: 'Por Hacer', count: taskStats.todo, color: 'bg-slate-400' },
+              { label: 'Por Hacer', count: taskStats.todo, color: 'bg-muted' },
               { label: 'En Progreso', count: taskStats.in_progress, color: 'bg-blue-500' },
               { label: 'En Revisión', count: taskStats.review, color: 'bg-amber-500' },
               { label: 'Completadas', count: taskStats.done, color: 'bg-emerald-500' },
@@ -144,16 +144,16 @@ export default function SummaryTab({ project, tasks, members, expenses, costs }:
             ))}
           </div>
 
-          <div className="pt-3 border-t border-slate-100">
+          <div className="pt-3 border-t border-border">
             <h4 className="text-xs font-semibold text-foreground mb-2">Miembros ({members.length})</h4>
             <div className="flex flex-wrap gap-1.5">
               {members.slice(0, 8).map((m: any, i: number) => (
-                <span key={i} className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-medium bg-muted text-slate-600">
+                <span key={i} className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-medium bg-muted text-foreground">
                   {m.user_name || m.email || 'Usuario'}
                 </span>
               ))}
               {members.length > 8 && (
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-medium bg-slate-200 text-muted-foreground">
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-medium bg-muted text-muted-foreground">
                   +{members.length - 8}
                 </span>
               )}

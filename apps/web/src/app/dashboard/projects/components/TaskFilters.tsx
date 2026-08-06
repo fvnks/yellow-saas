@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { Search, Filter, X } from 'lucide-react';
@@ -79,14 +79,14 @@ export default function TaskFilters({ tasks, users, onFilter }: TaskFiltersProps
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
           <input type="text" value={filters.search} onChange={e => applyFilters({ ...filters, search: e.target.value })}
-            className="w-full bg-muted border border-border rounded-lg pl-8 pr-3 py-2 text-xs text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+            className="w-full bg-muted border border-border rounded-lg pl-8 pr-3 py-2 text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
             placeholder="Buscar tareas..." />
         </div>
         <button onClick={() => setShowAdvanced(!showAdvanced)}
           className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors border ${
             showAdvanced || activeFilterCount > 0
-              ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
-              : 'bg-card text-foreground border-border hover:bg-muted dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700'
+              ? 'bg-blue-50 text-primary border-primary/20'
+              : 'bg-card text-foreground border-border hover:bg-muted dark:bg-card dark:text-foreground dark:border-border dark:hover:bg-primary/90'
           }`}>
           <Filter className="w-3.5 h-3.5" />
           Filtros {activeFilterCount > 0 && `(${activeFilterCount})`}
@@ -99,7 +99,7 @@ export default function TaskFilters({ tasks, users, onFilter }: TaskFiltersProps
       </div>
 
       {showAdvanced && (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-3 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-3 dark:bg-primary dark:border-border">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
             <select value={filters.status} onChange={e => applyFilters({ ...filters, status: e.target.value })}
               className="bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary/20">

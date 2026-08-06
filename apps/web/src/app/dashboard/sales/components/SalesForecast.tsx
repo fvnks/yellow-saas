@@ -58,31 +58,31 @@ export default function SalesForecast() {
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase">Promedio Mensual</p>
           <p className="text-xl font-bold text-foreground mt-1">{formatMoney(avgMonthly)}</p>
           <p className="text-xs text-muted-foreground mt-1">Últimos 6 meses</p>
         </div>
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase">Próximo Mes (Est.)</p>
           <p className="text-xl font-bold text-emerald-600 mt-1">{formatMoney(forecast[0]?.predicted_total || 0)}</p>
           <p className="text-xs text-muted-foreground mt-1">{forecast[0]?.predicted_orders || 0} órdenes estimadas</p>
         </div>
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase">Rango Confianza</p>
-          <p className="text-xs text-slate-600 mt-2">
+          <p className="text-xs text-foreground mt-2">
             {formatMoney(forecast[0]?.confidence_low || 0)} — {formatMoney(forecast[0]?.confidence_high || 0)}
           </p>
           <p className="text-xs text-muted-foreground mt-1">±20% estimación</p>
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
         <h3 className="text-xs font-semibold text-foreground mb-4">Histórico + Pronóstico</h3>
         <div className="flex items-end gap-1 h-48">
           {last12.map((m, i) => (
             <div key={i} className="flex-1 flex flex-col items-center">
-              <div className="w-full bg-slate-200 rounded-t" style={{ height: `${(m.total / maxVal) * 160}px` }}>
+              <div className="w-full bg-muted rounded-t" style={{ height: `${(m.total / maxVal) * 160}px` }}>
                 <div className="w-full bg-blue-500 rounded-t opacity-80" style={{ height: '100%' }}></div>
               </div>
               <p className="text-[8px] text-muted-foreground mt-1">{monthNames[m.month - 1]}</p>
@@ -108,8 +108,8 @@ export default function SalesForecast() {
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
-        <div className="px-6 py-4 border-b border-slate-100">
+      <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-border">
+        <div className="px-6 py-4 border-b border-border">
           <h3 className="text-xs font-semibold text-foreground">Factores Estacionales</h3>
         </div>
         <div className="p-4">
@@ -120,7 +120,7 @@ export default function SalesForecast() {
               const isLow = factor < 0.9;
               return (
                 <div key={i} className="flex flex-col items-center">
-                  <div className={`w-full rounded-t ${isHigh ? 'bg-emerald-500' : isLow ? 'bg-red-300' : 'bg-slate-300'}`}
+                  <div className={`w-full rounded-t ${isHigh ? 'bg-emerald-500' : isLow ? 'bg-red-300' : 'bg-muted'}`}
                     style={{ height: `${height}px` }}></div>
                   <p className="text-[8px] text-muted-foreground mt-1">{monthNames[i]}</p>
                   <p className={`text-[8px] font-semibold ${isHigh ? 'text-emerald-600' : isLow ? 'text-red-500' : 'text-muted-foreground'}`}>
@@ -133,8 +133,8 @@ export default function SalesForecast() {
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
-        <div className="px-6 py-4 border-b border-slate-100">
+      <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-border">
+        <div className="px-6 py-4 border-b border-border">
           <h3 className="text-xs font-semibold text-foreground">Pronóstico 3 Meses</h3>
         </div>
         <table className="w-full">
@@ -148,11 +148,11 @@ export default function SalesForecast() {
           </thead>
           <tbody>
             {forecast.map((f, i) => (
-              <tr key={i} className="border-b border-slate-50 hover:bg-muted transition-colors">
+              <tr key={i} className="border-b border-border hover:bg-muted transition-colors">
                 <td className="px-4 py-3 text-xs font-medium text-foreground">{monthNames[f.month - 1]} {f.year}</td>
                 <td className="px-4 py-3 text-xs text-right font-bold text-emerald-600">{formatMoney(f.predicted_total)}</td>
-                <td className="px-4 py-3 text-xs text-center text-slate-600">{f.predicted_orders}</td>
-                <td className="px-4 py-3 text-xs text-right text-slate-600">{formatMoney(f.confidence_low)} — {formatMoney(f.confidence_high)}</td>
+                <td className="px-4 py-3 text-xs text-center text-foreground">{f.predicted_orders}</td>
+                <td className="px-4 py-3 text-xs text-right text-foreground">{formatMoney(f.confidence_low)} — {formatMoney(f.confidence_high)}</td>
               </tr>
             ))}
           </tbody>

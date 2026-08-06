@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Badge, Button, Input, Select } from '@yellow-erp/ui';
@@ -123,7 +123,7 @@ export default function PriceListsPage() {
               <p className="text-2xl font-bold text-foreground mt-1">{priceLists.length}</p>
             </div>
             <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">
-              <List className="w-5 h-5 text-slate-600" />
+              <List className="w-5 h-5 text-foreground" />
             </div>
           </div>
         </CardContent></Card>
@@ -134,7 +134,7 @@ export default function PriceListsPage() {
               <p className="text-2xl font-bold text-foreground mt-1">{totalProducts}</p>
             </div>
             <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">
-              <Tag className="w-5 h-5 text-slate-600" />
+              <Tag className="w-5 h-5 text-foreground" />
             </div>
           </div>
         </CardContent></Card>
@@ -145,7 +145,7 @@ export default function PriceListsPage() {
               <p className="text-lg font-bold text-foreground mt-1">{defaultList}</p>
             </div>
             <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">
-              <Star className="w-5 h-5 text-slate-600" />
+              <Star className="w-5 h-5 text-foreground" />
             </div>
           </div>
         </CardContent></Card>
@@ -155,7 +155,7 @@ export default function PriceListsPage() {
         <Card>
           <CardHeader className="flex items-center justify-between">
             <CardTitle>{editingList ? 'Editar Lista' : 'Nueva Lista de Precios'}</CardTitle>
-            <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-slate-600">
+            <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-foreground">
               <X className="w-5 h-5" />
             </button>
           </CardHeader>
@@ -167,7 +167,7 @@ export default function PriceListsPage() {
             <div className="flex items-center gap-2">
               <input type="checkbox" id="is_default" checked={formDefault}
                 onChange={(e) => setFormDefault(e.target.checked)}
-                className="w-4 h-4 text-indigo-600 bg-muted border-slate-300 rounded focus:ring-primary/20" />
+                className="w-4 h-4 text-primary bg-muted border-border rounded focus:ring-primary/20" />
               <label htmlFor="is_default" className="text-sm text-foreground">Lista por defecto (se aplica automáticamente)</label>
             </div>
             <div className="flex justify-end gap-2">
@@ -201,7 +201,7 @@ export default function PriceListsPage() {
                 ) : priceLists.length === 0 ? (
                   <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-muted-foreground">No hay listas de precios. Crea la primera.</td></tr>
                 ) : priceLists.map(list => (
-                  <tr key={list.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={list.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-sm font-medium text-foreground">{list.name}</td>
                     <td className="px-4 py-3 text-sm text-muted-foreground">{list.description || '—'}</td>
                     <td className="px-4 py-3 text-sm text-foreground text-center">{list.items?.length || 0}</td>
@@ -215,7 +215,7 @@ export default function PriceListsPage() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
-                        <button onClick={() => openEdit(list)} className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors">
+                        <button onClick={() => openEdit(list)} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors">
                           <Edit className="w-4 h-4" />
                         </button>
                         <button onClick={() => handleCopy(list)} className="p-1.5 text-muted-foreground hover:text-blue-600 hover:bg-blue-50 rounded transition-colors">

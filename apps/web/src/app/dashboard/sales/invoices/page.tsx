@@ -73,7 +73,7 @@ export default function InvoicesListPage() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input type="text" placeholder="Buscar por número o cliente..." value={search} onChange={e => { setSearch(e.target.value); setPage(1); }}
-              className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+              className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
           <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
             className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
@@ -110,10 +110,10 @@ export default function InvoicesListPage() {
               ) : invoices.map(inv => {
                 const st = statusConfig[inv.status] || { label: inv.status, variant: 'neutral' as const };
                 return (
-                  <tr key={inv.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={inv.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-mono font-medium text-foreground">{inv.invoice_number}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${inv.document_type === 'boleta' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-violet-50 text-violet-700 border border-violet-200'}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${inv.document_type === 'boleta' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-blue-50 text-blue-700 border border-blue-200'}`}>
                         {docTypeLabels[inv.document_type] || inv.document_type}
                       </span>
                     </td>
@@ -126,7 +126,7 @@ export default function InvoicesListPage() {
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <Link href={`/dashboard/sales/invoices/${inv.id}`}>
-                          <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
+                          <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
                         </Link>
                         <button onClick={() => handleDelete(inv.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-4 h-4" /></button>
                       </div>
@@ -138,7 +138,7 @@ export default function InvoicesListPage() {
           </table>
         </div>
         {total > ITEMS_PER_PAGE && (
-          <div className="px-4 py-3 border-t border-slate-100 flex items-center justify-between text-xs text-muted-foreground">
+          <div className="px-4 py-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
             <p>Mostrando {(page - 1) * ITEMS_PER_PAGE + 1}-{Math.min(page * ITEMS_PER_PAGE, total)} de {total}</p>
             <div className="flex items-center gap-2">
               <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-3 py-1 rounded border border-border hover:bg-muted disabled:opacity-40">Anterior</button>

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, X, Save, Phone, Mail, User } from 'lucide-react';
@@ -145,9 +145,9 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
 
   if (loading) {
     return (
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-        <div className="px-6 py-4 border-b border-slate-100">
-          <div className="h-4 w-40 bg-slate-200 rounded animate-pulse" />
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+        <div className="px-6 py-4 border-b border-border">
+          <div className="h-4 w-40 bg-muted rounded animate-pulse" />
         </div>
         <div className="p-6 space-y-3">
           {[1, 2, 3].map(i => (
@@ -159,8 +159,8 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
   }
 
   return (
-    <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-      <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+    <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+      <div className="px-6 py-4 border-b border-border flex items-center justify-between">
         <h3 className="text-sm font-semibold text-foreground">Contactos</h3>
         <button
           onClick={handleOpenNew}
@@ -173,7 +173,7 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
 
       {contacts.length === 0 ? (
         <div className="text-center py-12">
-          <User className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+          <User className="w-8 h-8 text-foreground mx-auto mb-2" />
           <p className="text-sm text-muted-foreground">No hay contactos registrados</p>
         </div>
       ) : (
@@ -192,11 +192,11 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
             </thead>
             <tbody>
               {contacts.map(contact => (
-                <tr key={contact.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <tr key={contact.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
-                        <User className="w-4 h-4 text-indigo-600" />
+                      <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                        <User className="w-4 h-4 text-primary" />
                       </div>
                       <span className="text-xs font-medium text-foreground">{contact.name}</span>
                     </div>
@@ -239,7 +239,7 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
                     <div className="flex items-center justify-center gap-1">
                       <button
                         onClick={() => handleOpenEdit(contact)}
-                        className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"
+                        className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"
                         aria-label="Editar"
                       >
                         <Edit className="w-4 h-4" />
@@ -267,7 +267,7 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
               <h2 className="text-lg font-semibold text-foreground">
                 {editingId ? 'Editar Contacto' : 'Nuevo Contacto'}
               </h2>
-              <button onClick={handleClose} className="text-muted-foreground hover:text-slate-600">
+              <button onClick={handleClose} className="text-muted-foreground hover:text-foreground">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -279,7 +279,7 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
                   type="text"
                   value={form.name}
                   onChange={e => update('name', e.target.value)}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                   placeholder="Nombre del contacto"
                 />
               </div>
@@ -291,7 +291,7 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
                     type="text"
                     value={form.role}
                     onChange={e => update('role', e.target.value)}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="Ej: Gerente Compra"
                   />
                 </div>
@@ -301,7 +301,7 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
                     type="email"
                     value={form.email}
                     onChange={e => update('email', e.target.value)}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="contacto@empresa.cl"
                   />
                 </div>
@@ -314,7 +314,7 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
                     type="tel"
                     value={form.phone}
                     onChange={e => update('phone', e.target.value)}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="+56 2 2345 6789"
                   />
                 </div>
@@ -324,7 +324,7 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
                     type="tel"
                     value={form.mobile}
                     onChange={e => update('mobile', e.target.value)}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="+56 9 1234 5678"
                   />
                 </div>
@@ -338,7 +338,7 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
                     onChange={e => update('is_primary', e.target.checked)}
                     className="sr-only peer"
                   />
-                  <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                  <div className="w-9 h-5 bg-muted peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:border-border after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
                 </label>
                 <span className="text-xs font-medium text-foreground">Contacto principal</span>
               </div>
@@ -349,7 +349,7 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
                   value={form.notes}
                   onChange={e => update('notes', e.target.value)}
                   rows={2}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                   placeholder="Notas adicionales..."
                 />
               </div>
@@ -358,7 +358,7 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button
                 onClick={handleClose}
-                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>

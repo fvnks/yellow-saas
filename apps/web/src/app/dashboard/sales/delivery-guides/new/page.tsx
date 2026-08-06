@@ -166,7 +166,7 @@ export default function NewDeliveryGuidePage() {
                     value={formData.shippingAddress}
                     onChange={handleFormChange('shippingAddress')}
                     rows={3}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
                     placeholder="Av. Principal 1234, Santiago, Chile"
                   />
                 </div>
@@ -194,7 +194,7 @@ export default function NewDeliveryGuidePage() {
                     {items.map((item, index) => {
                       const isOverStock = item.quantity > item.stock;
                       return (
-                        <tr key={index} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                        <tr key={index} className="border-b border-border hover:bg-muted transition-colors">
                           <td className="px-4 py-3 text-xs text-muted-foreground">{index + 1}</td>
                           <td className="px-4 py-3">
                             <select
@@ -238,7 +238,7 @@ export default function NewDeliveryGuidePage() {
                               type="text"
                               value={item.observation}
                               onChange={(e) => handleItemChange(index, 'observation', e.target.value)}
-                              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                               placeholder="Observación..."
                             />
                           </td>
@@ -252,7 +252,7 @@ export default function NewDeliveryGuidePage() {
                   <button
                     type="button"
                     onClick={() => setItems(prev => [...prev, { productId: '', name: '', sku: '', stock: 0, quantity: 1, observation: '' }])}
-                    className="text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors"
+                    className="text-sm font-medium text-primary hover:text-primary transition-colors"
                   >
                     + Agregar producto
                   </button>
@@ -297,7 +297,7 @@ export default function NewDeliveryGuidePage() {
                   <hr className="border-border" />
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-semibold text-foreground">Estado</span>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-muted text-slate-600 border border-border">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-muted text-foreground border border-border">
                       Borrador
                     </span>
                   </div>

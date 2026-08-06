@@ -165,18 +165,18 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <div className="w-9 h-9 bg-slate-200 rounded-lg animate-pulse" />
+          <div className="w-9 h-9 bg-muted rounded-lg animate-pulse" />
           <div className="space-y-2">
-            <div className="h-6 w-48 bg-slate-200 rounded animate-pulse" />
-            <div className="h-4 w-32 bg-slate-200 rounded animate-pulse" />
+            <div className="h-6 w-48 bg-muted rounded animate-pulse" />
+            <div className="h-4 w-32 bg-muted rounded animate-pulse" />
           </div>
         </div>
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
-            <Card><CardContent><div className="h-48 bg-slate-100 rounded animate-pulse" /></CardContent></Card>
-            <Card><CardContent><div className="h-32 bg-slate-100 rounded animate-pulse" /></CardContent></Card>
+            <Card><CardContent><div className="h-48 bg-muted rounded animate-pulse" /></CardContent></Card>
+            <Card><CardContent><div className="h-32 bg-muted rounded animate-pulse" /></CardContent></Card>
           </div>
-          <Card><CardContent><div className="h-32 bg-slate-100 rounded animate-pulse" /></CardContent></Card>
+          <Card><CardContent><div className="h-32 bg-muted rounded animate-pulse" /></CardContent></Card>
         </div>
       </div>
     );
@@ -186,14 +186,14 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Link href="/dashboard/purchases" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+          <Link href="/dashboard/purchases" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <h1 className="text-xl font-bold text-slate-900">Orden no encontrada</h1>
+          <h1 className="text-xl font-bold text-foreground">Orden no encontrada</h1>
         </div>
         <Card>
           <CardContent className="text-center py-12">
-            <p className="text-sm text-slate-500">{error || 'La orden solicitada no existe.'}</p>
+            <p className="text-sm text-muted-foreground">{error || 'La orden solicitada no existe.'}</p>
             <Link href="/dashboard/purchases">
               <Button className="mt-4">Volver a Compras</Button>
             </Link>
@@ -213,13 +213,13 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/purchases" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href="/dashboard/purchases" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold text-slate-900">Detalle de Orden de Compra</h1>
-            <span className="text-sm font-mono text-slate-500">{order.number}</span>
+            <h1 className="text-xl font-bold text-foreground">Detalle de Orden de Compra</h1>
+            <span className="text-sm font-mono text-muted-foreground">{order.number}</span>
           </div>
           <div className="flex items-center gap-2 mt-1">
             <Badge variant={status.variant}>{status.label}</Badge>
@@ -227,7 +227,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
         </div>
         <div className="flex items-center gap-2">
           <Link href={`/dashboard/purchases/${id}/edit`}>
-            <button className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            <button className="bg-primary hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
               <Pencil className="w-4 h-4" />
               Editar
             </button>
@@ -244,13 +244,13 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
       </div>
 
       {order.status !== 'cancelled' && order.status !== 'received' && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-3">Acciones de Estado</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-3">Acciones de Estado</p>
           <div className="flex items-center gap-2 flex-wrap">
             {order.status === 'draft' && (
               <button
                 onClick={() => handleStatusChange('pending')}
-                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+                className="bg-primary hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
               >
                 <Send className="w-4 h-4" />
                 Enviar a Pendiente
@@ -259,7 +259,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
             {order.status === 'pending' && (
               <button
                 onClick={() => handleStatusChange('confirmed')}
-                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+                className="bg-primary hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
               >
                 <CheckCircle className="w-4 h-4" />
                 Confirmar
@@ -268,7 +268,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
             {(order.status === 'confirmed' || order.status === 'partial') && (
               <button
                 onClick={() => handleStatusChange('received')}
-                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+                className="bg-primary hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
               >
                 <CheckCircle className="w-4 h-4" />
                 Marcar Recibido
@@ -294,41 +294,41 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Truck className="w-4 h-4 text-indigo-600" />
+                  <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Truck className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Proveedor</p>
-                    <p className="text-sm font-medium text-slate-900">{order.supplier?.name || '—'}</p>
-                    <p className="text-xs text-slate-400">{order.supplier?.tax_id || ''}</p>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Proveedor</p>
+                    <p className="text-sm font-medium text-foreground">{order.supplier?.name || '—'}</p>
+                    <p className="text-xs text-muted-foreground">{order.supplier?.tax_id || ''}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Calendar className="w-4 h-4 text-indigo-600" />
+                  <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Calendar className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha de Orden</p>
-                    <p className="text-sm font-medium text-slate-900">{order.created_at?.split('T')[0] || '—'}</p>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha de Orden</p>
+                    <p className="text-sm font-medium text-foreground">{order.created_at?.split('T')[0] || '—'}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Calendar className="w-4 h-4 text-indigo-600" />
+                  <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Calendar className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha Esperada</p>
-                    <p className="text-sm font-medium text-slate-900">{order.expected_date || '—'}</p>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha Esperada</p>
+                    <p className="text-sm font-medium text-foreground">{order.expected_date || '—'}</p>
                   </div>
                 </div>
                 {order.warehouse && (
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-4 h-4 text-indigo-600" />
+                    <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-4 h-4 text-primary" />
                     </div>
                     <div>
-                      <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Bodega Destino</p>
-                      <p className="text-sm font-medium text-slate-900">{order.warehouse.name}</p>
+                      <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Bodega Destino</p>
+                      <p className="text-sm font-medium text-foreground">{order.warehouse.name}</p>
                     </div>
                   </div>
                 )}
@@ -358,8 +358,8 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
                     <TableRow key={index}>
                       <TableCell>
                         <div>
-                          <p className="font-medium text-slate-900">{item.product?.name || 'Producto'}</p>
-                          <p className="text-[9px] text-slate-400 font-mono">{item.product?.sku || item.product_id}</p>
+                          <p className="font-medium text-foreground">{item.product?.name || 'Producto'}</p>
+                          <p className="text-[9px] text-muted-foreground font-mono">{item.product?.sku || item.product_id}</p>
                         </div>
                       </TableCell>
                       <TableCell className="text-center">{item.quantity}</TableCell>
@@ -370,7 +370,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
                             {item.received_quantity}
                           </span>
                         ) : (
-                          <span className={`text-xs font-medium ${item.received_quantity > 0 ? 'text-amber-600' : 'text-slate-400'}`}>
+                          <span className={`text-xs font-medium ${item.received_quantity > 0 ? 'text-amber-600' : 'text-muted-foreground'}`}>
                             {item.received_quantity}
                           </span>
                         )}
@@ -380,7 +380,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
                         {item.discount_percent > 0 ? (
                           <Badge variant="warning">{item.discount_percent}%</Badge>
                         ) : (
-                          <span className="text-xs text-slate-400">-</span>
+                          <span className="text-xs text-muted-foreground">-</span>
                         )}
                       </TableCell>
                       <TableCell className="text-right font-medium">${(item.line_total || item.quantity * item.unit_price).toLocaleString('es-CL')}</TableCell>
@@ -398,7 +398,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
                 <CardTitle>Notas</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-slate-700">{order.notes}</p>
+                <p className="text-sm text-foreground">{order.notes}</p>
               </CardContent>
             </Card>
           )}
@@ -412,21 +412,21 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
             <CardContent className="space-y-4">
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-500">Subtotal</span>
-                  <span className="font-medium text-slate-900">${subtotal.toLocaleString('es-CL')}</span>
+                  <span className="text-muted-foreground">Subtotal</span>
+                  <span className="font-medium text-foreground">${subtotal.toLocaleString('es-CL')}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-500">IVA (19%)</span>
-                  <span className="font-medium text-slate-900">${tax.toLocaleString('es-CL')}</span>
+                  <span className="text-muted-foreground">IVA (19%)</span>
+                  <span className="font-medium text-foreground">${tax.toLocaleString('es-CL')}</span>
                 </div>
-                <hr className="border-slate-200" />
+                <hr className="border-border" />
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold text-slate-900">Total</span>
-                  <span className="text-xl font-bold text-slate-900">${order.total_amount?.toLocaleString('es-CL') || (subtotal + tax).toLocaleString('es-CL')}</span>
+                  <span className="text-sm font-semibold text-foreground">Total</span>
+                  <span className="text-xl font-bold text-foreground">${order.total_amount?.toLocaleString('es-CL') || (subtotal + tax).toLocaleString('es-CL')}</span>
                 </div>
               </div>
 
-              <div className="space-y-2 text-xs text-slate-500">
+              <div className="space-y-2 text-xs text-muted-foreground">
                 <div className="flex items-center justify-between">
                   <span>Items:</span>
                   <span className="font-medium">{items.length}</span>

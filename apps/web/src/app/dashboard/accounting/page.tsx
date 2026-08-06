@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
@@ -159,7 +159,7 @@ export default function AccountingPage() {
                 <p className="text-xl font-bold text-emerald-600 mt-1">${totalAssets.toLocaleString('es-CL')}</p>
               </div>
               <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-slate-600" />
+                <TrendingUp className="w-5 h-5 text-foreground" />
               </div>
             </div>
           </CardContent>
@@ -172,7 +172,7 @@ export default function AccountingPage() {
                 <p className="text-xl font-bold text-blue-600 mt-1">${totalLiabilities.toLocaleString('es-CL')}</p>
               </div>
               <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">
-                <CreditCard className="w-5 h-5 text-slate-600" />
+                <CreditCard className="w-5 h-5 text-foreground" />
               </div>
             </div>
           </CardContent>
@@ -185,7 +185,7 @@ export default function AccountingPage() {
                 <p className="text-xl font-bold text-amber-600 mt-1">${totalEquity.toLocaleString('es-CL')}</p>
               </div>
               <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">
-                <Building2 className="w-5 h-5 text-slate-600" />
+                <Building2 className="w-5 h-5 text-foreground" />
               </div>
             </div>
           </CardContent>
@@ -195,10 +195,10 @@ export default function AccountingPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Ingresos</p>
-                <p className="text-xl font-bold text-indigo-600 mt-1">${totalIncome.toLocaleString('es-CL')}</p>
+                <p className="text-xl font-bold text-primary mt-1">${totalIncome.toLocaleString('es-CL')}</p>
               </div>
               <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-slate-600" />
+                <DollarSign className="w-5 h-5 text-foreground" />
               </div>
             </div>
           </CardContent>
@@ -211,7 +211,7 @@ export default function AccountingPage() {
                 <p className="text-xl font-bold text-rose-600 mt-1">${totalExpenses.toLocaleString('es-CL')}</p>
               </div>
               <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">
-                <Calculator className="w-5 h-5 text-slate-600" />
+                <Calculator className="w-5 h-5 text-foreground" />
               </div>
             </div>
           </CardContent>
@@ -273,10 +273,10 @@ export default function AccountingPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-1">
-                        <button disabled className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Ver">
+                        <button disabled className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Ver">
                           <Eye className="w-4 h-4" />
                         </button>
-                        <button onClick={() => handleEditAccount(account)} className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors" aria-label="Editar">
+                        <button onClick={() => handleEditAccount(account)} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors" aria-label="Editar">
                           <Edit className="w-4 h-4" />
                         </button>
                         <button disabled className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Eliminar">
@@ -332,10 +332,10 @@ export default function AccountingPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-1">
-                        <button disabled className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Ver">
+                        <button disabled className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Ver">
                           <Eye className="w-4 h-4" />
                         </button>
-                        <button disabled className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Editar">
+                        <button disabled className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Editar">
                           <Edit className="w-4 h-4" />
                         </button>
                       </div>
@@ -402,7 +402,7 @@ export default function AccountingPage() {
           <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">Editar Cuenta</h2>
-              <button onClick={() => setEditingAccount(null)} className="text-muted-foreground hover:text-slate-600">X</button>
+              <button onClick={() => setEditingAccount(null)} className="text-muted-foreground hover:text-foreground">X</button>
             </div>
             <div className="p-6 space-y-4">
               <div className="space-y-1">
@@ -429,7 +429,7 @@ export default function AccountingPage() {
             </div>
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button onClick={() => setEditingAccount(null)}
-                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSaveAccount} disabled={saving || !editForm.name}
                 className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                 {saving ? 'Guardando...' : 'Guardar'}

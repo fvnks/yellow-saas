@@ -243,7 +243,7 @@ export default function NewSalePage() {
                     {items.map((item, index) => {
                       const product = products.find(p => p.id === item.productId);
                       return (
-                        <tr key={index} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                        <tr key={index} className="border-b border-border hover:bg-muted transition-colors">
                           <td className="px-4 py-3 text-xs text-muted-foreground">{index + 1}</td>
                           <td className="px-4 py-3">
                             <select
@@ -329,7 +329,7 @@ export default function NewSalePage() {
                     value={formData.notes}
                     onChange={handleFormChange('notes')}
                     rows={3}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
                     placeholder="Instrucciones especiales, notas al cliente..."
                   />
                 </div>

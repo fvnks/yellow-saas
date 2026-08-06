@@ -70,7 +70,7 @@ export default function RecetasPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input type="search" value={search} onChange={e => setSearch(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSearch()}
-              className="w-full pl-9 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full pl-9 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Buscar receta..." />
           </div>
           <div className="flex gap-1">
@@ -110,12 +110,12 @@ export default function RecetasPage() {
                 <tr><td colSpan={7} className="px-4 py-12 text-center text-sm text-muted-foreground">Cargando...</td></tr>
               ) : formulas.length === 0 ? (
                 <tr><td colSpan={7} className="px-4 py-12 text-center">
-                  <FlaskConical className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+                  <FlaskConical className="w-12 h-12 text-foreground mx-auto mb-3" />
                   <p className="text-sm text-muted-foreground">No hay recetas creadas</p>
-                  <Link href="/recetas/new" className="text-sm text-indigo-600 hover:underline mt-1 inline-block">Crear primera receta</Link>
+                  <Link href="/recetas/new" className="text-sm text-primary hover:underline mt-1 inline-block">Crear primera receta</Link>
                 </td></tr>
               ) : formulas.map(f => (
-                <tr key={f.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <tr key={f.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center">
@@ -127,21 +127,21 @@ export default function RecetasPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-600">{f.output_product?.name || '—'}</td>
+                  <td className="px-4 py-3 text-xs text-foreground">{f.output_product?.name || '—'}</td>
                   <td className="px-4 py-3 text-center">
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-muted text-slate-600">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-muted text-foreground">
                       <Package className="w-2.5 h-2.5" /> {f.ingredient_count || 0}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-center text-xs font-medium text-foreground">
                     {formatQuantity(f.yield_quantity, f.yield_unit)}
                   </td>
-                  <td className="px-4 py-3 text-center text-xs text-slate-600">
+                  <td className="px-4 py-3 text-center text-xs text-foreground">
                     {f.total_produced || 0}
                   </td>
                   <td className="px-4 py-3 text-center">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border ${
-                      f.is_active ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-muted text-slate-600 border-border'
+                      f.is_active ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-muted text-foreground border-border'
                     }`}>
                       {f.is_active ? 'Activa' : 'Inactiva'}
                     </span>
@@ -149,7 +149,7 @@ export default function RecetasPage() {
                   <td className="px-4 py-3">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded-lg transition-colors">
+                        <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
                           <MoreVertical className="w-4 h-4" />
                         </button>
                       </DropdownMenuTrigger>

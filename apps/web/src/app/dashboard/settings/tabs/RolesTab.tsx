@@ -25,11 +25,11 @@ const MODULE_CONFIG: Record<string, { label: string; icon: any; color: string }>
   ventas: { label: 'Ventas', icon: ShoppingCart, color: 'text-emerald-600 bg-emerald-50' },
   compras: { label: 'Compras', icon: ShoppingBag, color: 'text-orange-600 bg-orange-50' },
   finanzas: { label: 'Finanzas', icon: Calculator, color: 'text-green-600 bg-green-50' },
-  herramientas: { label: 'Herramientas', icon: Wrench, color: 'text-violet-600 bg-violet-50' },
+  herramientas: { label: 'Herramientas', icon: Wrench, color: 'text-blue-700 bg-blue-50' },
   recetas: { label: 'Recetas', icon: FlaskConical, color: 'text-amber-600 bg-amber-50' },
   costos: { label: 'Costos', icon: CircleDollarSign, color: 'text-rose-600 bg-rose-50' },
-  rrhh: { label: 'RRHH', icon: Users, color: 'text-pink-600 bg-pink-50' },
-  sistema: { label: 'Sistema', icon: Settings, color: 'text-gray-600 bg-gray-50' },
+  rrhh: { label: 'RRHH', icon: Users, color: 'text-rose-600 bg-rose-50' },
+  sistema: { label: 'Sistema', icon: Settings, color: 'text-muted-foreground bg-muted' },
 };
 
 const ACTION_CONFIG: Record<string, { label: string; color: string; activeColor: string }> = {
@@ -170,7 +170,7 @@ export default function RolesTab() {
     return (
       <div className="space-y-4">
         {[1,2,3].map(i => (
-          <div key={i} className="h-16 bg-slate-100 rounded-xl animate-pulse" />
+          <div key={i} className="h-16 bg-muted rounded-xl animate-pulse" />
         ))}
       </div>
     );
@@ -179,11 +179,11 @@ export default function RolesTab() {
   return (
     <div className="space-y-6">
       {/* Roles header */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+      <div className="bg-card border border-border rounded-xl shadow-sm">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <div>
-            <h3 className="text-sm font-semibold text-slate-900">Roles</h3>
-            <p className="text-xs text-slate-500 mt-0.5">{roles.length} roles configurados</p>
+            <h3 className="text-sm font-semibold text-foreground">Roles</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">{roles.length} roles configurados</p>
           </div>
           <div className="flex items-center gap-3">
             {modifiedRoles.size > 0 && (
@@ -193,7 +193,7 @@ export default function RolesTab() {
               </button>
             )}
             <button onClick={() => setShowNewRole(true)}
-              className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
               <Plus className="w-4 h-4" /> Nuevo Rol
             </button>
           </div>
@@ -202,16 +202,16 @@ export default function RolesTab() {
         {/* Roles list */}
         <div className="divide-y divide-slate-100">
           {roles.map(role => (
-            <div key={role.id} className="px-6 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors">
+            <div key={role.id} className="px-6 py-3 flex items-center justify-between hover:bg-muted transition-colors">
               <div className="flex items-center gap-3">
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${
-                  role.is_system ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600'
+                  role.is_system ? 'bg-blue-50 text-primary' : 'bg-muted text-foreground'
                 }`}>
                   {role.name.charAt(0).toUpperCase()}
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-slate-900">{role.name}</p>
-                  <p className="text-[10px] text-slate-400">
+                  <p className="text-sm font-medium text-foreground">{role.name}</p>
+                  <p className="text-[10px] text-muted-foreground">
                     {role.permissions?.length || 0} permisos
                     {role.is_system && ' · Sistema'}
                     {modifiedRoles.has(role.id) && ' · Sin guardar'}
@@ -220,7 +220,7 @@ export default function RolesTab() {
               </div>
               {!role.is_system && (
                 <button onClick={() => handleDeleteRole(role.id)}
-                  className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                  className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
                   title="Eliminar rol">
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -233,50 +233,50 @@ export default function RolesTab() {
       {/* Permissions by module */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-slate-900">Permisos por Modulo</h3>
-          <p className="text-xs text-slate-500">Expande un modulo para configurar permisos por rol</p>
+          <h3 className="text-sm font-semibold text-foreground">Permisos por Modulo</h3>
+          <p className="text-xs text-muted-foreground">Expande un modulo para configurar permisos por rol</p>
         </div>
 
         {allModules.map(mod => {
-          const config = MODULE_CONFIG[mod] || { label: mod, icon: Package, color: 'text-slate-600 bg-slate-50' };
+          const config = MODULE_CONFIG[mod] || { label: mod, icon: Package, color: 'text-foreground bg-muted' };
           const Icon = config.icon;
           const perms = groupedPerms[mod];
           const isExpanded = expandedModules.has(mod);
 
           return (
-            <div key={mod} className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+            <div key={mod} className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
               {/* Module header */}
               <button onClick={() => toggleModule(mod)}
-                className="w-full px-5 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                className="w-full px-5 py-4 flex items-center justify-between hover:bg-muted transition-colors">
                 <div className="flex items-center gap-3">
                   <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${config.color}`}>
                     <Icon className="w-4.5 h-4.5" />
                   </div>
                   <div className="text-left">
-                    <p className="text-sm font-semibold text-slate-900">{config.label}</p>
-                    <p className="text-[10px] text-slate-400">{perms.length} permisos · {roles.length} roles</p>
+                    <p className="text-sm font-semibold text-foreground">{config.label}</p>
+                    <p className="text-[10px] text-muted-foreground">{perms.length} permisos · {roles.length} roles</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   {isExpanded ? (
-                    <ChevronDown className="w-4 h-4 text-slate-400" />
+                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
                   ) : (
-                    <ChevronRight className="w-4 h-4 text-slate-400" />
+                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
                   )}
                 </div>
               </button>
 
               {/* Expanded: permissions grid */}
               {isExpanded && (
-                <div className="border-t border-slate-100 px-5 py-4">
+                <div className="border-t border-border px-5 py-4">
                   {/* Column headers: roles */}
                   <div className="grid gap-2 mb-3" style={{ gridTemplateColumns: `100px repeat(${roles.length}, 1fr) auto` }}>
                     <div />
                     {roles.map(role => (
                       <div key={role.id} className="text-center">
-                        <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider truncate">{role.name}</p>
+                        <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider truncate">{role.name}</p>
                         <button onClick={() => toggleRoleModule(role.id, mod)}
-                          className="text-[9px] text-indigo-600 hover:text-indigo-700 mt-0.5">
+                          className="text-[9px] text-primary hover:text-primary mt-0.5">
                           {getModulePermCount(role.id, mod) === perms.length ? 'Quitar todo' : 'Todo'}
                         </button>
                       </div>
@@ -286,7 +286,7 @@ export default function RolesTab() {
 
                   {/* Action rows */}
                   {perms.map(perm => {
-                    const actionConf = ACTION_CONFIG[perm.action] || { label: perm.action, color: 'border-slate-200', activeColor: 'bg-slate-500 text-white' };
+                    const actionConf = ACTION_CONFIG[perm.action] || { label: perm.action, color: 'border-border', activeColor: 'bg-muted0 text-white' };
                     return (
                       <div key={perm.id} className="grid gap-2 items-center mb-1.5"
                         style={{ gridTemplateColumns: `100px repeat(${roles.length}, 1fr) auto` }}>
@@ -303,13 +303,13 @@ export default function RolesTab() {
                               className={`h-9 rounded-lg border-2 text-[10px] font-medium transition-all ${
                                 isActive
                                   ? `${actionConf.activeColor} border-transparent shadow-sm`
-                                  : 'border-slate-200 text-slate-400 hover:border-slate-300 hover:text-slate-500'
+                                  : 'border-border text-muted-foreground hover:border-border hover:text-muted-foreground'
                               }`}>
                               {isActive ? 'Activo' : '—'}
                             </button>
                           );
                         })}
-                        <div className="w-16 text-[9px] text-slate-400 truncate" title={perm.description}>
+                        <div className="w-16 text-[9px] text-muted-foreground truncate" title={perm.description}>
                           {perm.description}
                         </div>
                       </div>
@@ -325,31 +325,31 @@ export default function RolesTab() {
       {/* New Role Modal */}
       {showNewRole && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowNewRole(false)}>
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md" onClick={e => e.stopPropagation()}>
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-slate-900">Nuevo Rol</h3>
-              <button onClick={() => setShowNewRole(false)} className="text-slate-400 hover:text-slate-600">&times;</button>
+          <div className="bg-card rounded-xl shadow-xl w-full max-w-md" onClick={e => e.stopPropagation()}>
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-foreground">Nuevo Rol</h3>
+              <button onClick={() => setShowNewRole(false)} className="text-muted-foreground hover:text-foreground">&times;</button>
             </div>
             <div className="p-6 space-y-4">
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Nombre del Rol *</label>
+                <label className="block text-xs font-medium text-foreground">Nombre del Rol *</label>
                 <input type="text" value={newRoleName} onChange={e => setNewRoleName(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Ej: Supervisor Ventas" autoFocus />
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Descripcion</label>
+                <label className="block text-xs font-medium text-foreground">Descripcion</label>
                 <input type="text" value={newRoleDesc} onChange={e => setNewRoleDesc(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Descripcion opcional" />
               </div>
               <div className="flex justify-end gap-3 pt-2">
                 <button onClick={() => { setShowNewRole(false); setNewRoleName(''); setNewRoleDesc(''); }}
-                  className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                  className="bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                   Cancelar
                 </button>
                 <button onClick={handleCreateRole} disabled={saving || !newRoleName.trim()}
-                  className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+                  className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
                   <Plus className="w-4 h-4" /> {saving ? 'Creando...' : 'Crear Rol'}
                 </button>
               </div>

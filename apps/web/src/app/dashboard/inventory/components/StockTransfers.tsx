@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { ArrowRightLeft, Plus, Package, MapPin, Clock, CheckCircle, XCircle, Truck, X } from 'lucide-react';
@@ -139,18 +139,18 @@ export default function StockTransfers() {
         <div className="bg-muted border border-border rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-foreground">Nueva Transferencia</span>
-            <button onClick={() => setShowCreate(false)} className="p-1 hover:bg-slate-200 rounded">
+            <button onClick={() => setShowCreate(false)} className="p-1 hover:bg-muted rounded">
               <X className="w-3 h-3 text-muted-foreground" />
             </button>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <select value={form.product_id} onChange={e => setForm({ ...form, product_id: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white">
               <option value="">Producto...</option>
               {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
             <select value={form.from_warehouse_id} onChange={e => setForm({ ...form, from_warehouse_id: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white">
               <option value="">Origen...</option>
               {warehouses.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}
             </select>
@@ -158,14 +158,14 @@ export default function StockTransfers() {
               <ArrowRightLeft className="w-5 h-5 text-muted-foreground" />
             </div>
             <select value={form.to_warehouse_id} onChange={e => setForm({ ...form, to_warehouse_id: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white">
               <option value="">Destino...</option>
               {warehouses.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}
             </select>
             <input type="number" value={form.quantity} onChange={e => setForm({ ...form, quantity: Number(e.target.value) })}
-              min={1} className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" placeholder="Cantidad" />
+              min={1} className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white" placeholder="Cantidad" />
             <input type="text" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" placeholder="Notas (opcional)" />
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white" placeholder="Notas (opcional)" />
           </div>
           <button onClick={handleCreate}
             className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
@@ -175,8 +175,8 @@ export default function StockTransfers() {
       )}
 
       {transfers.length === 0 ? (
-        <div className="text-center py-8 bg-muted border border-dashed border-slate-300 rounded-xl">
-          <ArrowRightLeft className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+        <div className="text-center py-8 bg-muted border border-dashed border-border rounded-xl">
+          <ArrowRightLeft className="w-8 h-8 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">Sin transferencias registradas</p>
         </div>
       ) : (
@@ -187,7 +187,7 @@ export default function StockTransfers() {
               <div key={t.id} className={`flex items-center justify-between p-3 rounded-xl border ${config.bg}`}>
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-card rounded-lg flex items-center justify-center">
-                    <Package className="w-4 h-4 text-slate-600" />
+                    <Package className="w-4 h-4 text-foreground" />
                   </div>
                   <div>
                     <p className="text-sm font-medium text-foreground">{t.product_name}</p>

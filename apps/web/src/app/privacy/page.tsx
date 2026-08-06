@@ -25,7 +25,7 @@ export default function PrivacyPage() {
           <h1 className="text-3xl font-bold text-foreground">Politica de Privacidad</h1>
           <p className="mt-2 text-sm text-muted-foreground">Ultima actualizacion: Enero 2025</p>
 
-          <div className="mt-10 space-y-8 text-sm text-slate-600 leading-relaxed">
+          <div className="mt-10 space-y-8 text-sm text-foreground leading-relaxed">
             <section>
               <h2 className="text-base font-semibold text-foreground mb-2">1. Informacion que Recopilamos</h2>
               <p>
@@ -97,7 +97,7 @@ export default function PrivacyPage() {
               </ul>
               <p className="mt-2">
                 Para ejercer estos derechos, contactenos a{' '}
-                <a href="mailto:privacidad@yellow-erp.cl" className="text-indigo-600 hover:text-indigo-500">privacidad@yellow-erp.cl</a>.
+                <a href="mailto:privacidad@yellow-erp.cl" className="text-primary hover:text-primary">privacidad@yellow-erp.cl</a>.
               </p>
             </section>
 
@@ -136,7 +136,7 @@ export default function PrivacyPage() {
                 sus datos personales:
               </p>
               <ul className="mt-2 ml-5 list-disc space-y-1">
-                <li>Correo: <a href="mailto:privacidad@yellow-erp.cl" className="text-indigo-600 hover:text-indigo-500">privacidad@yellow-erp.cl</a></li>
+                <li>Correo: <a href="mailto:privacidad@yellow-erp.cl" className="text-primary hover:text-primary">privacidad@yellow-erp.cl</a></li>
                 <li>Direccion: Santiago, Chile</li>
               </ul>
             </section>

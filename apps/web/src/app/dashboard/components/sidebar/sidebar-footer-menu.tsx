@@ -16,9 +16,9 @@ import {
 
 const ROLE_CONFIG: Record<string, { label: string; classes: string }> = {
   owner: { label: 'Propietario', classes: 'bg-amber-50 text-amber-700 border border-amber-200' },
-  admin: { label: 'Administrador', classes: 'bg-indigo-50 text-indigo-700 border border-indigo-200' },
+  admin: { label: 'Administrador', classes: 'bg-blue-50 text-primary border border-primary/20' },
   manager: { label: 'Gerente', classes: 'bg-blue-50 text-blue-700 border border-blue-200' },
-  member: { label: 'Miembro', classes: 'bg-muted text-slate-600 border border-border' },
+  member: { label: 'Miembro', classes: 'bg-muted text-foreground border border-border' },
   viewer: { label: 'Observador', classes: 'bg-muted text-muted-foreground border border-border' },
 };
 

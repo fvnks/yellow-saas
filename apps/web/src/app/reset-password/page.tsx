@@ -82,7 +82,7 @@ function ResetPasswordForm() {
       <div className="flex w-full flex-col items-center justify-center p-6 sm:p-12 lg:w-1/2">
         {/* Mobile logo */}
         <div className="lg:hidden mb-8 flex items-center gap-3">
-          <div className="w-10 h-10 bg-slate-950 rounded-xl flex items-center justify-center border border-slate-800">
+          <div className="w-10 h-10 bg-background rounded-xl flex items-center justify-center border border-border">
             <Building2 className="w-6 h-6 text-white" />
           </div>
           <span className="text-xl font-bold text-foreground">Yellow ERP</span>
@@ -112,7 +112,7 @@ function ResetPasswordForm() {
                 <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-5">
                   <Lock className="w-6 h-6 text-blue-600" />
                 </div>
-                <h1 className="mb-3 text-[36px] font-bold leading-[1.05] tracking-tight text-slate-950">
+                <h1 className="mb-3 text-[36px] font-bold leading-[1.05] tracking-tight text-foreground">
                   Nueva
                   <br />
                   contraseña
@@ -137,7 +137,7 @@ function ResetPasswordForm() {
               <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                 {/* Password */}
                 <motion.div variants={itemVariants} className="flex flex-col gap-2">
-                  <label htmlFor="password" className="text-[14px] font-medium text-slate-800">
+                  <label htmlFor="password" className="text-[14px] font-medium text-foreground">
                     Nueva contraseña
                   </label>
                   <div className="relative">
@@ -156,7 +156,7 @@ function ResetPasswordForm() {
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-slate-600 transition-colors"
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground transition-colors"
                     >
                       {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
@@ -165,7 +165,7 @@ function ResetPasswordForm() {
 
                 {/* Confirm */}
                 <motion.div variants={itemVariants} className="flex flex-col gap-2">
-                  <label htmlFor="confirmPassword" className="text-[14px] font-medium text-slate-800">
+                  <label htmlFor="confirmPassword" className="text-[14px] font-medium text-foreground">
                     Confirmar contraseña
                   </label>
                   <div className="relative">
@@ -184,15 +184,15 @@ function ResetPasswordForm() {
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-slate-600 transition-colors"
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground transition-colors"
                     >
                       {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
                   </div>
                 </motion.div>
 
-                <div className="bg-muted p-4 rounded-lg border border-slate-100">
-                  <p className="text-sm text-slate-600 font-medium mb-2">La contraseña debe incluir:</p>
+                <div className="bg-muted p-4 rounded-lg border border-border">
+                  <p className="text-sm text-foreground font-medium mb-2">La contraseña debe incluir:</p>
                   <ul className="text-xs text-muted-foreground space-y-1">
                     <li>• Al menos 8 caracteres</li>
                     <li>• Una letra mayúscula y una minúscula</li>
@@ -226,7 +226,7 @@ function ResetPasswordForm() {
                 <div className="w-16 h-16 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-6">
                   <CheckCircle2 className="w-8 h-8 text-emerald-600" />
                 </div>
-                <h1 className="mb-3 text-2xl font-bold tracking-tight text-slate-950">
+                <h1 className="mb-3 text-2xl font-bold tracking-tight text-foreground">
                   ¡Contraseña actualizada!
                 </h1>
                 <p className="text-[15px] text-muted-foreground text-balance">

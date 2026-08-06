@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { AlertTriangle, Clock, DollarSign, Users, TrendingDown } from 'lucide-react';
@@ -103,7 +103,7 @@ export default function CreditControl() {
       {summary && (
         <div className="bg-primary text-white rounded-xl p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <DollarSign className="w-5 h-5 text-slate-300" />
+            <DollarSign className="w-5 h-5 text-foreground" />
             <span className="text-sm font-medium">Total por Cobrar</span>
           </div>
           <span className="text-xl font-bold">{formatMoney(summary.total)}</span>
@@ -111,8 +111,8 @@ export default function CreditControl() {
       )}
 
       {customerTotals.length === 0 ? (
-        <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
-          <AlertTriangle className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+        <div className="text-center py-12 bg-muted border border-dashed border-border rounded-xl">
+          <AlertTriangle className="w-8 h-8 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">Sin facturas pendientes</p>
         </div>
       ) : (
@@ -148,7 +148,7 @@ export default function CreditControl() {
                     </div>
                     {c.credit_limit > 0 && (
                       <div className="text-right">
-                        <p className="text-xs text-slate-600">{formatMoney(c.credit_limit)}</p>
+                        <p className="text-xs text-foreground">{formatMoney(c.credit_limit)}</p>
                         <p className="text-[9px] text-muted-foreground">Límite</p>
                       </div>
                     )}
@@ -162,7 +162,7 @@ export default function CreditControl() {
                 </div>
 
                 {isExpanded && details.length > 0 && (
-                  <div className="border-t border-slate-100 px-4 pb-4">
+                  <div className="border-t border-border px-4 pb-4">
                     <table className="w-full mt-2">
                       <thead>
                         <tr className="border-b border-border">
@@ -178,12 +178,12 @@ export default function CreditControl() {
                         {details.map(d => {
                           const cfg = bucketConfig[d.aging_bucket] || bucketConfig.current;
                           return (
-                            <tr key={d.invoice_id} className="border-b border-slate-50">
+                            <tr key={d.invoice_id} className="border-b border-border">
                               <td className="px-3 py-2 text-xs text-foreground">{d.invoice_number}</td>
-                              <td className="px-3 py-2 text-xs text-right text-slate-600">{formatMoney(d.total_amount)}</td>
+                              <td className="px-3 py-2 text-xs text-right text-foreground">{formatMoney(d.total_amount)}</td>
                               <td className="px-3 py-2 text-xs text-right text-emerald-600">{formatMoney(d.paid_amount)}</td>
                               <td className="px-3 py-2 text-xs text-right font-bold text-foreground">{formatMoney(d.balance)}</td>
-                              <td className="px-3 py-2 text-xs text-right text-slate-600">{new Date(d.due_date).toLocaleDateString('es-CL')}</td>
+                              <td className="px-3 py-2 text-xs text-right text-foreground">{new Date(d.due_date).toLocaleDateString('es-CL')}</td>
                               <td className="px-3 py-2 text-right">
                                 <span className={`px-2 py-0.5 rounded-full text-[9px] font-semibold ${cfg.bg} ${cfg.color}`}>
                                   {d.days_overdue > 0 ? `${d.days_overdue}d` : 'OK'}

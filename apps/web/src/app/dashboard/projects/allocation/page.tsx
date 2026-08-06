@@ -11,9 +11,9 @@ const PERIOD_OPTIONS = [
 ];
 
 const PROJECT_COLORS = [
-  'bg-indigo-500', 'bg-emerald-500', 'bg-amber-500', 'bg-blue-500',
-  'bg-rose-500', 'bg-violet-500', 'bg-cyan-500', 'bg-orange-500',
-  'bg-teal-500', 'bg-pink-500',
+  'bg-primary', 'bg-emerald-500', 'bg-amber-500', 'bg-blue-500',
+  'bg-rose-500', 'bg-blue-600', 'bg-teal-500', 'bg-orange-500',
+  'bg-teal-500', 'bg-rose-500',
 ];
 
 export default function AllocationPage() {
@@ -35,8 +35,8 @@ export default function AllocationPage() {
 
   if (loading) return (
     <div className="space-y-6 animate-pulse">
-      <div className="h-8 bg-slate-200 rounded w-1/3" />
-      <div className="grid grid-cols-3 gap-4">{[1, 2, 3].map(i => <div key={i} className="h-24 bg-slate-200 rounded-xl" />)}</div>
+      <div className="h-8 bg-muted rounded w-1/3" />
+      <div className="grid grid-cols-3 gap-4">{[1, 2, 3].map(i => <div key={i} className="h-24 bg-muted rounded-xl" />)}</div>
     </div>
   );
 
@@ -57,7 +57,7 @@ export default function AllocationPage() {
         <div className="flex items-center gap-2">
           {PERIOD_OPTIONS.map(opt => (
             <button key={opt.value} onClick={() => setPeriod(opt.value)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${period === opt.value ? 'bg-indigo-100 text-indigo-700' : 'bg-muted text-muted-foreground hover:bg-slate-200'}`}>
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${period === opt.value ? 'bg-blue-50 text-primary' : 'bg-muted text-muted-foreground hover:bg-muted'}`}>
               {opt.label}
             </button>
           ))}
@@ -65,18 +65,18 @@ export default function AllocationPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Empleados</p>
               <p className="text-2xl font-bold text-foreground mt-1">{employees.length}</p>
             </div>
-            <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
-              <Users className="w-6 h-6 text-indigo-600" />
+            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+              <Users className="w-6 h-6 text-primary" />
             </div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Horas Totales</p>
@@ -87,7 +87,7 @@ export default function AllocationPage() {
             </div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Proyectos Activos</p>
@@ -100,8 +100,8 @@ export default function AllocationPage() {
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-        <div className="px-6 py-4 border-b border-slate-100">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+        <div className="px-6 py-4 border-b border-border">
           <h3 className="text-sm font-semibold text-foreground">Distribucion por Empleado</h3>
         </div>
         <div className="p-6">
@@ -113,7 +113,7 @@ export default function AllocationPage() {
                 const empAllocation = getEmployeeAllocation(emp.employee_id);
                 const projectCount = empAllocation.length;
                 return (
-                  <div key={emp.employee_id} className="border border-slate-100 rounded-lg p-4">
+                  <div key={emp.employee_id} className="border border-border rounded-lg p-4">
                     <div className="flex items-center justify-between mb-3">
                       <div>
                         <span className="text-sm font-semibold text-foreground">{emp.employee_name}</span>
@@ -138,7 +138,7 @@ export default function AllocationPage() {
                       {empAllocation.map((a: any, i: number) => (
                         <div key={i} className="flex items-center gap-1.5">
                           <span className={`w-2 h-2 rounded-full ${PROJECT_COLORS[i % PROJECT_COLORS.length]}`} />
-                          <span className="text-[10px] text-slate-600">{a.project_name}</span>
+                          <span className="text-[10px] text-foreground">{a.project_name}</span>
                           <span className="text-[10px] font-semibold text-foreground">{a.allocation_pct}%</span>
                         </div>
                       ))}
@@ -151,8 +151,8 @@ export default function AllocationPage() {
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-        <div className="px-6 py-4 border-b border-slate-100">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+        <div className="px-6 py-4 border-b border-border">
           <h3 className="text-sm font-semibold text-foreground">Carga por Proyecto</h3>
         </div>
         <div className="p-6">
@@ -161,7 +161,7 @@ export default function AllocationPage() {
               <div key={p.project_id} className="flex items-center gap-4">
                 <span className="text-xs text-foreground w-40 truncate">{p.project_name}</span>
                 <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-                  <div className="h-full bg-indigo-500 rounded-full"
+                  <div className="h-full bg-primary rounded-full"
                     style={{ width: `${Math.min((parseFloat(p.total_hours) / (projects[0] ? parseFloat(projects[0].total_hours) : 1)) * 100, 100)}%` }} />
                 </div>
                 <span className="text-xs font-medium text-foreground w-12 text-right">{parseFloat(p.total_hours).toFixed(0)}h</span>

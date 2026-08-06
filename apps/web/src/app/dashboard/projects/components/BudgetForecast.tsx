@@ -59,12 +59,12 @@ export default function BudgetForecast({ projectId }: BudgetForecastProps) {
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase">Burn Rate Diario</p>
           <p className="text-lg font-bold text-foreground mt-1">${data.burn_rate_daily.toLocaleString()}</p>
           <p className="text-[10px] text-muted-foreground">promedio gasto/dia</p>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase">Restante</p>
           <p className="text-lg font-bold text-emerald-600 mt-1">${data.remaining.toLocaleString()}</p>
           <p className="text-[10px] text-muted-foreground">{100 - data.usage_percent}% del presupuesto</p>
@@ -76,7 +76,7 @@ export default function BudgetForecast({ projectId }: BudgetForecastProps) {
           </p>
           <p className="text-[10px] text-muted-foreground">proyeccion actual</p>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase">Fecha Agotamiento</p>
           <p className="text-lg font-bold text-foreground mt-1">
             {data.projected_exhaust_date ? new Date(data.projected_exhaust_date).toLocaleDateString('es-CL', { day: '2-digit', month: 'short' }) : '—'}
@@ -99,12 +99,12 @@ export default function BudgetForecast({ projectId }: BudgetForecastProps) {
       )}
 
       {data.weekly_burn.length > 0 && (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <p className="text-xs font-semibold text-foreground mb-3">Gasto Semanal</p>
           <div className="flex items-end gap-1 h-32">
             {data.weekly_burn.slice(-12).map((w, i) => (
               <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                <div className="w-full bg-indigo-500 rounded-t transition-all hover:bg-indigo-600"
+                <div className="w-full bg-primary rounded-t transition-all hover:bg-primary/90"
                   style={{ height: `${(w.amount / maxWeekly) * 100}%`, minHeight: '4px' }}
                   title={`$${w.amount.toLocaleString()}`} />
                 <span className="text-[8px] text-muted-foreground">
@@ -117,22 +117,22 @@ export default function BudgetForecast({ projectId }: BudgetForecastProps) {
       )}
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center gap-2 mb-2">
             <Calendar className="w-4 h-4 text-muted-foreground" />
             <span className="text-xs font-semibold text-foreground">Cronograma</span>
           </div>
-          <div className="space-y-1 text-xs text-slate-600">
+          <div className="space-y-1 text-xs text-foreground">
             <div className="flex justify-between"><span>Inicio:</span><span>{data.start_date || '—'}</span></div>
             <div className="flex justify-between"><span>Fin:</span><span>{data.end_date || '—'}</span></div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center gap-2 mb-2">
             <Clock className="w-4 h-4 text-muted-foreground" />
             <span className="text-xs font-semibold text-foreground">Horas</span>
           </div>
-          <div className="space-y-1 text-xs text-slate-600">
+          <div className="space-y-1 text-xs text-foreground">
             <div className="flex justify-between"><span>Registradas:</span><span>{Math.round(data.total_hours)}h</span></div>
             <div className="flex justify-between"><span>Promedio/dia:</span><span>{data.expense_count > 0 ? Math.round(data.total_hours / Math.max(1, data.expense_count)) : 0}h</span></div>
           </div>

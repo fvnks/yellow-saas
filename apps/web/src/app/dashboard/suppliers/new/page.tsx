@@ -192,7 +192,7 @@ export default function NewSupplierPage() {
                   value={formData.notes}
                   onChange={handleFormChange('notes')}
                   rows={3}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
                   placeholder="Notas sobre el proveedor, condiciones especiales, etc."
                 />
               </CardContent>

@@ -21,9 +21,9 @@ interface ProjectMembersProps {
 
 const ROLE_OPTIONS = [
   { value: 'owner', label: 'Propietario', color: 'bg-amber-50 text-amber-700 border-amber-200' },
-  { value: 'admin', label: 'Administrador', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
+  { value: 'admin', label: 'Administrador', color: 'bg-blue-50 text-primary border-primary/20' },
   { value: 'member', label: 'Miembro', color: 'bg-blue-50 text-blue-700 border-blue-200' },
-  { value: 'viewer', label: 'Observador', color: 'bg-muted text-slate-600 border-border' },
+  { value: 'viewer', label: 'Observador', color: 'bg-muted text-foreground border-border' },
 ];
 
 export default function ProjectMembers({ projectId, members, onRefresh }: ProjectMembersProps) {
@@ -89,11 +89,11 @@ export default function ProjectMembers({ projectId, members, onRefresh }: Projec
             {members.map(member => {
               const role = getRole(member.role);
               return (
-                <tr key={member.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <tr key={member.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                        <span className="text-xs font-semibold text-indigo-600">
+                      <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center">
+                        <span className="text-xs font-semibold text-primary">
                           {(member.user_name || member.email || '?')[0].toUpperCase()}
                         </span>
                       </div>
@@ -107,11 +107,11 @@ export default function ProjectMembers({ projectId, members, onRefresh }: Projec
                       {ROLE_OPTIONS.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
                     </select>
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-600">{member.created_at?.split('T')[0] || '—'}</td>
+                  <td className="px-4 py-3 text-xs text-foreground">{member.created_at?.split('T')[0] || '—'}</td>
                   <td className="px-4 py-3">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded-lg transition-colors">
+                        <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
                           <MoreVertical className="w-4 h-4" />
                         </button>
                       </DropdownMenuTrigger>
@@ -137,7 +137,7 @@ export default function ProjectMembers({ projectId, members, onRefresh }: Projec
           <div className="bg-card rounded-xl shadow-xl w-full max-w-md" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">Agregar Miembro</h2>
-              <button onClick={() => setShowAdd(false)} className="text-muted-foreground hover:text-slate-600 text-xl">&times;</button>
+              <button onClick={() => setShowAdd(false)} className="text-muted-foreground hover:text-foreground text-xl">&times;</button>
             </div>
             <div className="p-6 space-y-4">
               <div>

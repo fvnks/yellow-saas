@@ -118,61 +118,61 @@ export default function VacationTab() {
   };
 
   if (loading) {
-    return <div className="animate-pulse bg-slate-200 h-32 rounded-xl" />;
+    return <div className="animate-pulse bg-muted h-32 rounded-xl" />;
   }
 
   return (
     <div className="space-y-6">
       {/* KPIs */}
       <div className="grid gap-4 md:grid-cols-4">
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Días Ganados</p>
               <p className="text-2xl font-bold text-foreground mt-1">{totalDaysEarned}</p>
             </div>
             <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-slate-600" />
+              <Calendar className="w-6 h-6 text-foreground" />
             </div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Días Usados</p>
               <p className="text-2xl font-bold text-foreground mt-1">{totalDaysUsed}</p>
             </div>
             <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
-              <Plane className="w-6 h-6 text-slate-600" />
+              <Plane className="w-6 h-6 text-foreground" />
             </div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Disponibles</p>
               <p className="text-2xl font-bold text-emerald-600 mt-1">{totalDaysAvailable}</p>
             </div>
             <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
-              <Check className="w-6 h-6 text-slate-600" />
+              <Check className="w-6 h-6 text-foreground" />
             </div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Pendientes</p>
               <p className="text-2xl font-bold text-amber-600 mt-1">{pendingRequests}</p>
             </div>
             <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
-              <Clock className="w-6 h-6 text-slate-600" />
+              <Clock className="w-6 h-6 text-foreground" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Sub-tabs */}
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
         <div className="border-b border-border">
           <div className="flex items-center justify-between px-4">
             <div className="flex">
@@ -184,12 +184,12 @@ export default function VacationTab() {
                   key={tab.id}
                   onClick={() => setSubTab(tab.id)}
                   className={`px-6 py-3 text-sm font-medium transition-colors flex items-center gap-2 ${
-                    subTab === tab.id ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-muted-foreground hover:text-foreground'
+                    subTab === tab.id ? 'text-primary border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   {tab.label}
                   {'count' in tab && (
-                    <span className="ml-1 bg-muted text-slate-600 text-[9px] font-semibold px-1.5 py-0.5 rounded-full">{tab.count}</span>
+                    <span className="ml-1 bg-muted text-foreground text-[9px] font-semibold px-1.5 py-0.5 rounded-full">{tab.count}</span>
                   )}
                 </button>
               ))}
@@ -236,14 +236,14 @@ export default function VacationTab() {
               </thead>
               <tbody>
                 {balances.map(b => (
-                  <tr key={b.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={b.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3">
                       <div>
                         <p className="text-sm font-medium text-foreground">{b.first_name} {b.last_name}</p>
                         <p className="text-[9px] text-muted-foreground">{b.rut}</p>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{b.position || '—'}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{b.position || '—'}</td>
                     <td className="px-4 py-3 text-xs text-muted-foreground">{b.hire_date ? new Date(b.hire_date).toLocaleDateString('es-CL') : '—'}</td>
                     <td className="px-4 py-3 text-xs text-center font-medium text-foreground">{b.days_earned}</td>
                     <td className="px-4 py-3 text-xs text-center text-rose-600">{b.days_used}</td>
@@ -252,7 +252,7 @@ export default function VacationTab() {
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
                         b.days_available > 0
                           ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                          : 'bg-muted text-slate-600 border border-border'
+                          : 'bg-muted text-foreground border border-border'
                       }`}>
                         {b.days_available} días
                       </span>
@@ -263,7 +263,7 @@ export default function VacationTab() {
             </table>
             {balances.length === 0 && (
               <div className="p-12 text-center">
-                <Calendar className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+                <Calendar className="w-10 h-10 text-foreground mx-auto mb-3" />
                 <p className="text-sm text-muted-foreground">No hay saldos de vacaciones para {yearFilter}</p>
                 <p className="text-xs text-muted-foreground mt-1">Asigna saldos a los empleados para comenzar</p>
               </div>
@@ -274,7 +274,7 @@ export default function VacationTab() {
         {/* Requests Tab */}
         {subTab === 'requests' && (
           <>
-            <div className="p-4 border-b border-slate-100">
+            <div className="p-4 border-b border-border">
               <div className="flex items-center gap-4">
                 <Select
                   value={statusFilter}
@@ -304,7 +304,7 @@ export default function VacationTab() {
                 </thead>
                 <tbody>
                   {filteredRequests.map(r => (
-                    <tr key={r.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <tr key={r.id} className="border-b border-border hover:bg-muted transition-colors">
                       <td className="px-4 py-3">
                         <div>
                           <p className="text-sm font-medium text-foreground">{r.first_name} {r.last_name}</p>
@@ -362,7 +362,7 @@ export default function VacationTab() {
               </table>
               {filteredRequests.length === 0 && (
                 <div className="p-12 text-center">
-                  <Plane className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+                  <Plane className="w-10 h-10 text-foreground mx-auto mb-3" />
                   <p className="text-sm text-muted-foreground">No hay solicitudes de vacaciones</p>
                 </div>
               )}
@@ -431,7 +431,7 @@ function VacationRequestModal({ employees, balances, onClose, onSave }: {
       <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
         <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <h2 className="text-lg font-semibold text-foreground">Nueva Solicitud de Vacación</h2>
-          <button onClick={onClose} className="text-muted-foreground hover:text-slate-600"><X className="w-5 h-5" /></button>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
         </div>
         <div className="p-6 space-y-4">
           {error && <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-sm text-rose-700">{error}</div>}
@@ -454,7 +454,7 @@ function VacationRequestModal({ employees, balances, onClose, onSave }: {
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               rows={2}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Motivo de la solicitud..."
             />
           </div>
@@ -505,7 +505,7 @@ function VacationBalanceModal({ employees, year, onClose, onSave }: {
       <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
         <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <h2 className="text-lg font-semibold text-foreground">Asignar Saldo de Vacaciones</h2>
-          <button onClick={onClose} className="text-muted-foreground hover:text-slate-600"><X className="w-5 h-5" /></button>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
         </div>
         <div className="p-6 space-y-4">
           {error && <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-sm text-rose-700">{error}</div>}
@@ -525,7 +525,7 @@ function VacationBalanceModal({ employees, year, onClose, onSave }: {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Notas adicionales..."
             />
           </div>

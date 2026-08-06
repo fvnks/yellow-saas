@@ -48,30 +48,30 @@ export default function ContactPage() {
                 <h2 className="text-sm font-semibold text-foreground mb-4">Informacion de contacto</h2>
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Mail className="w-4 h-4 text-indigo-600" />
+                    <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Mail className="w-4 h-4 text-primary" />
                     </div>
                     <div>
                       <p className="text-xs font-medium text-foreground">Correo electronico</p>
-                      <a href="mailto:hola@yellow-erp.cl" className="text-sm text-indigo-600 hover:text-indigo-500">hola@yellow-erp.cl</a>
+                      <a href="mailto:hola@yellow-erp.cl" className="text-sm text-primary hover:text-primary">hola@yellow-erp.cl</a>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Phone className="w-4 h-4 text-indigo-600" />
+                    <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Phone className="w-4 h-4 text-primary" />
                     </div>
                     <div>
                       <p className="text-xs font-medium text-foreground">Telefono</p>
-                      <p className="text-sm text-slate-600">+56 9 1234 5678</p>
+                      <p className="text-sm text-foreground">+56 9 1234 5678</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-4 h-4 text-indigo-600" />
+                    <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-4 h-4 text-primary" />
                     </div>
                     <div>
                       <p className="text-xs font-medium text-foreground">Direccion</p>
-                      <p className="text-sm text-slate-600">Santiago, Chile</p>
+                      <p className="text-sm text-foreground">Santiago, Chile</p>
                     </div>
                   </div>
                 </div>
@@ -82,7 +82,7 @@ export default function ContactPage() {
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   Si eres cliente activo y tienes un problema tecnico, contacta a nuestro equipo
                   de soporte en{' '}
-                  <a href="mailto:soporte@yellow-erp.cl" className="text-indigo-600 hover:text-indigo-500">soporte@yellow-erp.cl</a>{' '}
+                  <a href="mailto:soporte@yellow-erp.cl" className="text-primary hover:text-primary">soporte@yellow-erp.cl</a>{' '}
                   con tu numero de empresa para una respuesta prioritaria.
                 </p>
               </div>
@@ -118,7 +118,7 @@ export default function ContactPage() {
                     <p className="mt-2 text-sm text-muted-foreground">Te responderemos dentro de 24 horas habiles.</p>
                     <button
                       onClick={() => { setSent(false); setForm({ name: '', email: '', company: '', subject: '', message: '' }); }}
-                      className="mt-6 text-sm text-indigo-600 hover:text-indigo-500 font-medium"
+                      className="mt-6 text-sm text-primary hover:text-primary font-medium"
                     >
                       Enviar otro mensaje
                     </button>
@@ -133,7 +133,7 @@ export default function ContactPage() {
                           required
                           value={form.name}
                           onChange={e => setForm({ ...form, name: e.target.value })}
-                          className="w-full bg-muted border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                          className="w-full bg-muted border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                           placeholder="Tu nombre"
                         />
                       </div>
@@ -144,7 +144,7 @@ export default function ContactPage() {
                           required
                           value={form.email}
                           onChange={e => setForm({ ...form, email: e.target.value })}
-                          className="w-full bg-muted border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                          className="w-full bg-muted border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                           placeholder="tu@empresa.cl"
                         />
                       </div>
@@ -157,7 +157,7 @@ export default function ContactPage() {
                           type="text"
                           value={form.company}
                           onChange={e => setForm({ ...form, company: e.target.value })}
-                          className="w-full bg-muted border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                          className="w-full bg-muted border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                           placeholder="Nombre de tu empresa"
                         />
                       </div>
@@ -186,7 +186,7 @@ export default function ContactPage() {
                         rows={5}
                         value={form.message}
                         onChange={e => setForm({ ...form, message: e.target.value })}
-                        className="w-full bg-muted border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent resize-none"
+                        className="w-full bg-muted border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent resize-none"
                         placeholder="Cuentanos en que podemos ayudarte..."
                       />
                     </div>
@@ -208,7 +208,7 @@ export default function ContactPage() {
 
                     <p className="text-[10px] text-muted-foreground text-center">
                       Al enviar aceptas nuestra{' '}
-                      <Link href="/privacy" className="text-indigo-600 hover:text-indigo-500">Politica de Privacidad</Link>.
+                      <Link href="/privacy" className="text-primary hover:text-primary">Politica de Privacidad</Link>.
                     </p>
                   </form>
                 )}

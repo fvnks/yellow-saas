@@ -9,12 +9,12 @@ import { toast } from 'sonner';
 interface ProductTag { id: string; name: string; color: string; is_active: boolean; product_count?: number; }
 
 const COLORS = [
-  { name: 'indigo', value: '#6366f1', bg: 'bg-indigo-50', text: 'text-indigo-700', border: 'border-indigo-200' },
+  { name: 'indigo', value: '#6366f1', bg: 'bg-blue-50', text: 'text-primary', border: 'border-primary/20' },
   { name: 'emerald', value: '#10b981', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
   { name: 'amber', value: '#f59e0b', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
   { name: 'rose', value: '#f43f5e', bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200' },
   { name: 'blue', value: '#3b82f6', bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
-  { name: 'slate', value: '#64748b', bg: 'bg-muted', text: 'text-slate-600', border: 'border-border' },
+  { name: 'slate', value: '#64748b', bg: 'bg-muted', text: 'text-foreground', border: 'border-border' },
 ];
 
 export default function TagsPage() {
@@ -64,7 +64,7 @@ export default function TagsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
           <Link href="/dashboard/inventory" className="p-2 hover:bg-muted rounded-lg transition-colors">
-            <ArrowLeft className="w-5 h-5 text-slate-600" />
+            <ArrowLeft className="w-5 h-5 text-foreground" />
           </Link>
           <div>
             <h1 className="text-xl font-bold text-foreground">Tags de Productos</h1>
@@ -79,18 +79,18 @@ export default function TagsPage() {
 
       {/* Form */}
       {showForm && (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-semibold text-foreground">{editingTag ? 'Editar Tag' : 'Nuevo Tag'}</h3>
-            <button onClick={() => { setShowForm(false); setEditingTag(null); }} className="text-muted-foreground hover:text-slate-600 text-sm">Cancelar</button>
+            <button onClick={() => { setShowForm(false); setEditingTag(null); }} className="text-muted-foreground hover:text-foreground text-sm">Cancelar</button>
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
             <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-              placeholder="Nombre del tag" className="flex-1 bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+              placeholder="Nombre del tag" className="flex-1 bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
             <div className="flex gap-2 items-center">
               {COLORS.map(c => (
                 <button key={c.name} onClick={() => setForm({ ...form, color: c.value })}
-                  className={`w-8 h-8 rounded-lg border-2 transition-all ${form.color === c.value ? 'border-slate-900 scale-110' : 'border-transparent hover:scale-105'}`}
+                  className={`w-8 h-8 rounded-lg border-2 transition-all ${form.color === c.value ? 'border-border scale-110' : 'border-transparent hover:scale-105'}`}
                   style={{ backgroundColor: c.value }} title={c.name} />
               ))}
             </div>
@@ -102,16 +102,16 @@ export default function TagsPage() {
       )}
 
       {/* Search */}
-      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="relative max-w-md">
           <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input type="text" placeholder="Buscar tags..." value={search} onChange={e => setSearch(e.target.value)}
-            className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+            className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
         {loading ? (
           <div className="p-6 space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-12 bg-muted rounded-lg animate-pulse" />)}</div>
         ) : (
@@ -127,7 +127,7 @@ export default function TagsPage() {
               </thead>
               <tbody>
                 {tags.map(tag => (
-                  <tr key={tag.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={tag.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3">
                       <div className="w-4 h-4 rounded" style={{ backgroundColor: tag.color }} />
                     </td>
@@ -135,7 +135,7 @@ export default function TagsPage() {
                     <td className="px-4 py-3 text-center text-xs text-muted-foreground">{tag.product_count ?? 0}</td>
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-1">
-                        <button onClick={() => editTag(tag)} className="p-1.5 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors">
+                        <button onClick={() => editTag(tag)} className="p-1.5 text-muted-foreground hover:text-primary hover:bg-blue-50 rounded transition-colors">
                           <Edit className="w-3.5 h-3.5" />
                         </button>
                         <button onClick={() => deleteTag(tag.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors">

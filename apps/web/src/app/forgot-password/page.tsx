@@ -62,7 +62,7 @@ function ForgotPasswordForm() {
       <div className="flex w-full flex-col items-center justify-center p-6 sm:p-12 lg:w-1/2">
         {/* Mobile logo */}
         <div className="lg:hidden mb-8 flex items-center gap-3">
-          <div className="w-10 h-10 bg-slate-950 rounded-xl flex items-center justify-center border border-slate-800">
+          <div className="w-10 h-10 bg-background rounded-xl flex items-center justify-center border border-border">
             <Building2 className="w-6 h-6 text-white" />
           </div>
           <span className="text-xl font-bold text-foreground">Yellow ERP</span>
@@ -92,7 +92,7 @@ function ForgotPasswordForm() {
                 <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-5">
                   <Lock className="w-6 h-6 text-blue-600" />
                 </div>
-                <h1 className="mb-3 text-[36px] font-bold leading-[1.05] tracking-tight text-slate-950">
+                <h1 className="mb-3 text-[36px] font-bold leading-[1.05] tracking-tight text-foreground">
                   ¿Olvidaste tu
                   <br />
                   contraseña?
@@ -117,7 +117,7 @@ function ForgotPasswordForm() {
               <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                 {/* Email */}
                 <motion.div variants={itemVariants} className="flex flex-col gap-2">
-                  <label htmlFor="email" className="text-[14px] font-medium text-slate-800">
+                  <label htmlFor="email" className="text-[14px] font-medium text-foreground">
                     Correo electrónico
                   </label>
                   <div className="relative">
@@ -160,7 +160,7 @@ function ForgotPasswordForm() {
                 <div className="w-16 h-16 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-6">
                   <CheckCircle2 className="w-8 h-8 text-emerald-600" />
                 </div>
-                <h1 className="mb-3 text-2xl font-bold tracking-tight text-slate-950">
+                <h1 className="mb-3 text-2xl font-bold tracking-tight text-foreground">
                   Revisa tu correo
                 </h1>
                 <p className="text-[15px] text-muted-foreground text-balance">

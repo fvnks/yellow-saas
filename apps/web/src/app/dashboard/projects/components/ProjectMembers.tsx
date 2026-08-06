@@ -21,9 +21,9 @@ interface ProjectMembersProps {
 }
 
 const roleConfig: Record<string, { label: string; color: string }> = {
-  owner: { label: 'Propietario', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
+  owner: { label: 'Propietario', color: 'bg-blue-50 text-primary border-primary/20' },
   admin: { label: 'Admin', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  member: { label: 'Miembro', color: 'bg-muted text-slate-600 border-border' },
+  member: { label: 'Miembro', color: 'bg-muted text-foreground border-border' },
   viewer: { label: 'Visor', color: 'bg-amber-50 text-amber-700 border-amber-200' },
 };
 
@@ -95,7 +95,7 @@ export default function ProjectMembers({ projectId, users }: ProjectMembersProps
       </div>
 
       {showAdd && (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 space-y-3">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <select value={selectedUser} onChange={e => setSelectedUser(e.target.value)}
               className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20">
@@ -110,7 +110,7 @@ export default function ProjectMembers({ projectId, users }: ProjectMembersProps
             </select>
           </div>
           <div className="flex justify-end gap-2">
-            <button onClick={() => setShowAdd(false)} className="px-3 py-1.5 text-xs text-slate-600 hover:text-foreground">Cancelar</button>
+            <button onClick={() => setShowAdd(false)} className="px-3 py-1.5 text-xs text-foreground hover:text-foreground">Cancelar</button>
             <button onClick={handleAdd} disabled={!selectedUser}
               className="bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50">
               Agregar
@@ -120,8 +120,8 @@ export default function ProjectMembers({ projectId, users }: ProjectMembersProps
       )}
 
       {members.length === 0 ? (
-        <div className="text-center py-8 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-          <Users className="w-10 h-10 text-slate-200 mx-auto mb-2" />
+        <div className="text-center py-8 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+          <Users className="w-10 h-10 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">Sin miembros asignados</p>
           <p className="text-[10px] text-muted-foreground mt-1">Agrega miembros para controlar acceso</p>
         </div>
@@ -130,11 +130,11 @@ export default function ProjectMembers({ projectId, users }: ProjectMembersProps
           {members.map(member => {
             const role = roleConfig[member.role] || roleConfig.member;
             return (
-              <div key={member.id} className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 hover:shadow-md transition-shadow">
+              <div key={member.id} className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                      <span className="text-xs font-semibold text-indigo-600">
+                    <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
+                      <span className="text-xs font-semibold text-primary">
                         {member.user_name?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
                       </span>
                     </div>
@@ -168,7 +168,7 @@ export default function ProjectMembers({ projectId, users }: ProjectMembersProps
           <Shield className="w-4 h-4 text-muted-foreground" />
           <span className="text-xs font-semibold text-foreground">Permisos por Rol</span>
         </div>
-        <div className="grid grid-cols-2 gap-2 text-[10px] text-slate-600">
+        <div className="grid grid-cols-2 gap-2 text-[10px] text-foreground">
           <div><span className="font-semibold">Propietario:</span> Control total</div>
           <div><span className="font-semibold">Admin:</span> Editar, asignar, eliminar</div>
           <div><span className="font-semibold">Miembro:</span> Editar tareas propias</div>

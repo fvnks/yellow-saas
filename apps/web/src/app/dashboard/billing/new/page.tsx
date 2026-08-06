@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, Trash2, Save, AlertCircle } from 'lucide-react';
@@ -114,7 +114,7 @@ export default function NewInvoicePage() {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Link href="/dashboard/billing" className="p-2 hover:bg-muted rounded-lg transition-colors">
-          <ArrowLeft className="w-5 h-5 text-slate-600" />
+          <ArrowLeft className="w-5 h-5 text-foreground" />
         </Link>
         <div className="flex-1">
           <h1 className="text-xl font-bold text-foreground">Nueva Factura</h1>
@@ -122,7 +122,7 @@ export default function NewInvoicePage() {
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="grid grid-cols-4 gap-4 mb-6">
           <div className="space-y-1">
             <label className="block text-xs font-medium text-foreground">Tipo Documento *</label>
@@ -159,14 +159,14 @@ export default function NewInvoicePage() {
             <label className="block text-xs font-medium text-foreground">Condiciones de Pago</label>
             <input type="text" value={form.payment_terms} onChange={e => setForm({ ...form, payment_terms: e.target.value })}
               placeholder="Ej: 30 dias"
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
         </div>
 
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-semibold text-foreground">Items</h3>
           <button onClick={addItem}
-            className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors">
+            className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors">
             <Plus className="w-3.5 h-3.5" /> Agregar Item
           </button>
         </div>
@@ -195,7 +195,7 @@ export default function NewInvoicePage() {
               <div className="col-span-3">
                 <input type="text" value={item.description} onChange={e => updateItem(i, 'description', e.target.value)}
                   placeholder="Descripcion..."
-                  className="w-full bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="col-span-1">
                 <input type="number" step="0.01" min="0" value={item.quantity}
@@ -231,7 +231,7 @@ export default function NewInvoicePage() {
           <div className="space-y-1 w-96">
             <label className="block text-xs font-medium text-foreground">Notas</label>
             <textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} rows={2}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
           <div className="text-right space-y-1">
             <p className="text-xs text-muted-foreground">Subtotal: <span className="font-semibold text-foreground">${subtotal.toLocaleString('es-CL')}</span></p>
@@ -242,7 +242,7 @@ export default function NewInvoicePage() {
 
         <div className="mt-4 flex items-center justify-end gap-3">
           <Link href="/dashboard/billing"
-            className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</Link>
+            className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</Link>
           <button onClick={handleSubmit} disabled={saving}
             className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
             <Save className="w-4 h-4" /> {saving ? 'Guardando...' : 'Crear Factura'}

@@ -96,7 +96,7 @@ export default function ProjectsPage() {
       {notifications.length > 0 && (
         <div className="relative">
           <button onClick={() => setShowNotifications(!showNotifications)}
-            className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 w-full text-left hover:shadow-md transition-shadow">
+            className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border w-full text-left hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center"><Bell className="w-5 h-5 text-amber-600" /></div>
@@ -111,7 +111,7 @@ export default function ProjectsPage() {
           {showNotifications && (
             <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-xl shadow-xl z-50 max-h-80 overflow-y-auto">
               {notifications.slice(0, 8).map((n, i) => (
-                <Link key={i} href={`/dashboard/projects/${n.project_id}`} className="block px-4 py-3 hover:bg-muted border-b border-slate-100 last:border-0 transition-colors">
+                <Link key={i} href={`/dashboard/projects/${n.project_id}`} className="block px-4 py-3 hover:bg-muted border-b border-border last:border-0 transition-colors">
                   <div className="flex items-start gap-3">
                     {n.severity === 'danger' ? <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" /> : <Calendar className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />}
                     <div>
@@ -133,7 +133,7 @@ export default function ProjectsPage() {
         <KPICard label="Completados" value={completedProjects} icon={CheckCircle2} trend={`${projects.length > 0 ? Math.round(completedProjects / projects.length * 100) : 0}% del total`} trendUp={true} />
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <ContinuousTabs
           tabs={tabs}
           defaultActiveId={statusFilter}
@@ -141,7 +141,7 @@ export default function ProjectsPage() {
         />
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="flex items-center gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -159,11 +159,11 @@ export default function ProjectsPage() {
       {loading ? (
         <div className="space-y-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+            <div key={i} className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
               <div className="animate-pulse space-y-4">
-                <div className="h-4 bg-slate-200 rounded w-1/3" />
-                <div className="h-3 bg-slate-200 rounded w-2/3" />
-                <div className="h-2 bg-slate-200 rounded w-full" />
+                <div className="h-4 bg-muted rounded w-1/3" />
+                <div className="h-3 bg-muted rounded w-2/3" />
+                <div className="h-2 bg-muted rounded w-full" />
               </div>
             </div>
           ))}
@@ -230,7 +230,7 @@ export default function ProjectsPage() {
                 </div>
                 <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-indigo-500 rounded-full transition-all duration-300"
+                    className="h-full bg-primary rounded-full transition-all duration-300"
                     style={{ width: `${project.progress || 0}%` }}
                   />
                 </div>
@@ -238,7 +238,7 @@ export default function ProjectsPage() {
 
               {project.project_manager_name && (
                 <div className="flex items-center gap-2 mt-4">
-                  <div className="flex items-center gap-1.5 px-2 py-1 bg-muted rounded-full text-xs text-slate-600">
+                  <div className="flex items-center gap-1.5 px-2 py-1 bg-muted rounded-full text-xs text-foreground">
                     <Users className="w-3 h-3" />
                     {project.project_manager_name}
                   </div>
@@ -251,7 +251,7 @@ export default function ProjectsPage() {
 
       {!loading && filteredByTab.length === 0 && (
         <div className="text-center py-12">
-          <FolderKanban className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+          <FolderKanban className="w-12 h-12 text-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">No se encontraron proyectos</p>
         </div>
       )}

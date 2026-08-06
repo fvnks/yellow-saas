@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { BookOpen, Search, Download, Calendar, DollarSign, FileText, Send, Eye, CheckCircle2, XCircle, Clock, AlertTriangle, Zap, RefreshCw } from 'lucide-react';
@@ -20,8 +20,8 @@ interface PurchaseRegister {
 }
 
 const SII_DOC_TYPES = [
-  { code: '30', label: 'Factura de Compra', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
-  { code: '34', label: 'Factura Exenta', color: 'bg-violet-50 text-violet-700 border-violet-200' },
+  { code: '30', label: 'Factura de Compra', color: 'bg-blue-50 text-primary border-primary/20' },
+  { code: '34', label: 'Factura Exenta', color: 'bg-blue-50 text-blue-700 border-blue-200' },
   { code: '45', label: 'Nota de Crédito', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
   { code: '55', label: 'Nota de Débito', color: 'bg-amber-50 text-amber-700 border-amber-200' },
   { code: '61', label: 'Factura de Compra (Exenta)', color: 'bg-blue-50 text-blue-700 border-blue-200' },
@@ -196,7 +196,7 @@ export default function PurchaseBookPage() {
                   <Icon className={`w-4 h-4 ${isActive ? status.color : 'text-muted-foreground'}`} />
                 </div>
                 <span className={`text-[10px] font-medium ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>{status.label}</span>
-                {i < SII_STATUSES.length - 1 && <div className={`h-0.5 flex-1 rounded ${isActive ? 'bg-indigo-200' : 'bg-slate-200'}`} />}
+                {i < SII_STATUSES.length - 1 && <div className={`h-0.5 flex-1 rounded ${isActive ? 'bg-blue-50' : 'bg-muted'}`} />}
               </div>
             );
           })}
@@ -212,7 +212,7 @@ export default function PurchaseBookPage() {
         </div>
         <div className="bg-card border border-border rounded-xl p-5">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">IVA (19%)</p>
-          <p className="text-2xl font-bold text-indigo-600 mt-1">${totals.iva.toLocaleString('es-CL')}</p>
+          <p className="text-2xl font-bold text-primary mt-1">${totals.iva.toLocaleString('es-CL')}</p>
         </div>
         <div className="bg-card border border-border rounded-xl p-5">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Compras</p>
@@ -230,7 +230,7 @@ export default function PurchaseBookPage() {
           <div className="relative flex-1 min-w-[200px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input type="text" placeholder="Buscar por proveedor, RUT o número..." value={search} onChange={e => setSearch(e.target.value)}
-              className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+              className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4 text-muted-foreground" />
@@ -245,7 +245,7 @@ export default function PurchaseBookPage() {
 
       {/* Table with SII columns */}
       <div className="bg-card border border-border rounded-xl shadow-sm">
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <h3 className="text-sm font-semibold text-foreground">Documentos del Período</h3>
           <p className="text-xs text-muted-foreground">Asigna el tipo de documento SII a cada registro</p>
         </div>
@@ -273,9 +273,9 @@ export default function PurchaseBookPage() {
                 const docType = docTypes[r.id] || '30';
                 const siiDoc = SII_DOC_TYPES.find(d => d.code === docType);
                 const { neto, iva, total } = calculateIVA(Number(r.amount) || 0, docType);
-                const st = statusLabels[r.status] || { label: r.status, color: 'bg-muted text-slate-600 border border-border' };
+                const st = statusLabels[r.status] || { label: r.status, color: 'bg-muted text-foreground border border-border' };
                 return (
-                  <tr key={r.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={r.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs text-foreground">{r.emission_date || '—'}</td>
                     <td className="px-4 py-3 text-xs font-medium text-foreground">{r.razon_social}</td>
                     <td className="px-4 py-3 text-xs text-muted-foreground font-mono">{r.rut || '—'}</td>
@@ -288,8 +288,8 @@ export default function PurchaseBookPage() {
                         ))}
                       </select>
                     </td>
-                    <td className="px-4 py-3 text-xs text-slate-600 text-right font-mono">${neto.toLocaleString('es-CL')}</td>
-                    <td className="px-4 py-3 text-xs text-indigo-600 text-right font-mono">${iva.toLocaleString('es-CL')}</td>
+                    <td className="px-4 py-3 text-xs text-foreground text-right font-mono">${neto.toLocaleString('es-CL')}</td>
+                    <td className="px-4 py-3 text-xs text-primary text-right font-mono">${iva.toLocaleString('es-CL')}</td>
                     <td className="px-4 py-3 text-xs font-semibold text-foreground text-right font-mono">${total.toLocaleString('es-CL')}</td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${st.color}`}>{st.label}</span>
@@ -300,10 +300,10 @@ export default function PurchaseBookPage() {
             </tbody>
             {records.length > 0 && (
               <tfoot>
-                <tr className="border-t-2 border-slate-300 bg-muted">
+                <tr className="border-t-2 border-border bg-muted">
                   <td colSpan={5} className="px-4 py-3 text-xs font-semibold text-foreground">Totales</td>
                   <td className="px-4 py-3 text-xs font-bold text-foreground text-right font-mono">${totals.neto.toLocaleString('es-CL')}</td>
-                  <td className="px-4 py-3 text-xs font-bold text-indigo-600 text-right font-mono">${totals.iva.toLocaleString('es-CL')}</td>
+                  <td className="px-4 py-3 text-xs font-bold text-primary text-right font-mono">${totals.iva.toLocaleString('es-CL')}</td>
                   <td className="px-4 py-3 text-xs font-bold text-foreground text-right font-mono">${totals.total.toLocaleString('es-CL')}</td>
                   <td></td>
                 </tr>
@@ -350,7 +350,7 @@ export default function PurchaseBookPage() {
           <div className="bg-card rounded-xl shadow-xl w-full max-w-3xl max-h-[80vh] flex flex-col" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">Vista Previa XML - Libro de Compras</h2>
-              <button onClick={() => setShowXmlPreview(false)} className="text-muted-foreground hover:text-slate-600">
+              <button onClick={() => setShowXmlPreview(false)} className="text-muted-foreground hover:text-foreground">
                 <XCircle className="w-5 h-5" />
               </button>
             </div>

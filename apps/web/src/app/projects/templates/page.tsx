@@ -89,7 +89,7 @@ export default function ProjectTemplatesPage() {
                 type="text"
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="Nombre de la plantilla"
               />
             </div>
@@ -99,7 +99,7 @@ export default function ProjectTemplatesPage() {
                 type="text"
                 value={newDescription}
                 onChange={(e) => setNewDescription(e.target.value)}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="Descripción breve"
               />
             </div>
@@ -133,8 +133,8 @@ export default function ProjectTemplatesPage() {
           {[1, 2, 3].map(i => (
             <div key={i} className="bg-card border border-border rounded-xl shadow-sm p-6">
               <div className="animate-pulse space-y-4">
-                <div className="h-4 bg-slate-200 rounded w-1/3" />
-                <div className="h-3 bg-slate-200 rounded w-2/3" />
+                <div className="h-4 bg-muted rounded w-1/3" />
+                <div className="h-3 bg-muted rounded w-2/3" />
               </div>
             </div>
           ))}
@@ -145,8 +145,8 @@ export default function ProjectTemplatesPage() {
             <div key={template.id} className="bg-card border border-border rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-indigo-600" />
+                  <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-primary" />
                   </div>
                   <div>
                     <h3 className="text-sm font-semibold text-foreground">{template.name}</h3>
@@ -167,7 +167,7 @@ export default function ProjectTemplatesPage() {
 
       {!loading && filteredTemplates.length === 0 && (
         <div className="text-center py-12">
-          <FileText className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+          <FileText className="w-12 h-12 text-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">No se encontraron plantillas</p>
         </div>
       )}

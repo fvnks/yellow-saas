@@ -49,7 +49,7 @@ export default function CreditNotesPage() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input type="text" placeholder="Buscar por número o cliente..." value={search} onChange={e => setSearch(e.target.value)}
-              className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+              className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
           <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
             className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
@@ -83,7 +83,7 @@ export default function CreditNotesPage() {
               ) : filtered.map(n => {
                 const st = statusConfig[n.status] || { label: n.status, variant: 'neutral' as const };
                 return (
-                  <tr key={n.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={n.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-mono font-medium text-foreground">{n.note_number}</td>
                     <td className="px-4 py-3 text-xs text-foreground">{n.customer_name || '—'}</td>
                     <td className="px-4 py-3 text-xs text-muted-foreground">{n.invoice_number || '—'}</td>

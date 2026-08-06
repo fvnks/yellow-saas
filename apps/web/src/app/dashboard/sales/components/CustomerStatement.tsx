@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { FileText, Download, User, DollarSign, CreditCard, ArrowRight } from 'lucide-react';
@@ -38,7 +38,7 @@ const txTypeConfig: Record<string, { label: string; color: string; bg: string }>
   invoice: { label: 'Factura', color: 'text-blue-700', bg: 'bg-blue-50' },
   credit_note: { label: 'N. Crédito', color: 'text-emerald-700', bg: 'bg-emerald-50' },
   debit_note: { label: 'N. Débito', color: 'text-orange-700', bg: 'bg-orange-50' },
-  payment: { label: 'Pago', color: 'text-indigo-700', bg: 'bg-indigo-50' },
+  payment: { label: 'Pago', color: 'text-primary', bg: 'bg-blue-50' },
 };
 
 const statusConfig: Record<string, { label: string; color: string; bg: string }> = {
@@ -94,7 +94,7 @@ export default function CustomerStatement() {
         <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado de Cuenta</span>
       </div>
 
-      <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
         <div className="flex items-center gap-4">
           <div className="relative flex-1">
             <input
@@ -102,7 +102,7 @@ export default function CustomerStatement() {
               placeholder="Buscar cliente..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
             />
           </div>
           <select
@@ -119,15 +119,15 @@ export default function CustomerStatement() {
       </div>
 
       {!statement && (
-        <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
-          <User className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+        <div className="text-center py-12 bg-muted border border-dashed border-border rounded-xl">
+          <User className="w-8 h-8 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">Selecciona un cliente para ver su estado de cuenta</p>
         </div>
       )}
 
       {statement && (
         <>
-          <div className="bg-card border border-border rounded-xl p-6 dark:bg-primary dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl p-6 dark:bg-primary dark:border-border">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-lg font-bold text-foreground">{statement.customer.name}</h3>
@@ -160,8 +160,8 @@ export default function CustomerStatement() {
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-xl dark:bg-primary dark:border-slate-800">
-            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+          <div className="bg-card border border-border rounded-xl dark:bg-primary dark:border-border">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h3 className="text-sm font-semibold text-foreground">Movimientos</h3>
               <span className="text-[9px] font-semibold text-muted-foreground">{statement.transactions.length} registros</span>
             </div>
@@ -183,19 +183,19 @@ export default function CustomerStatement() {
                     const txCfg = txTypeConfig[tx.type] || txTypeConfig.invoice;
                     const stCfg = statusConfig[tx.status] || { label: tx.status, color: 'text-foreground', bg: 'bg-muted' };
                     return (
-                      <tr key={idx} className="border-b border-slate-50 hover:bg-muted transition-colors">
+                      <tr key={idx} className="border-b border-border hover:bg-muted transition-colors">
                         <td className="px-4 py-3">
                           <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${txCfg.bg} ${txCfg.color}`}>
                             {txCfg.label}
                           </span>
                         </td>
                         <td className="px-4 py-3 text-xs font-medium text-foreground">{tx.reference}</td>
-                        <td className="px-4 py-3 text-xs text-slate-600">{new Date(tx.date).toLocaleDateString('es-CL')}</td>
+                        <td className="px-4 py-3 text-xs text-foreground">{new Date(tx.date).toLocaleDateString('es-CL')}</td>
                         <td className={`px-4 py-3 text-xs text-right font-medium ${tx.amount >= 0 ? 'text-foreground' : 'text-emerald-600'}`}>
                           {tx.amount >= 0 ? formatMoney(tx.amount) : `-${formatMoney(tx.amount)}`}
                         </td>
-                        <td className="px-4 py-3 text-xs text-right text-slate-600">{tx.paid > 0 ? formatMoney(tx.paid) : '-'}</td>
-                        <td className={`px-4 py-3 text-xs text-right font-bold ${tx.balance > 0 ? 'text-red-600' : 'text-slate-600'}`}>
+                        <td className="px-4 py-3 text-xs text-right text-foreground">{tx.paid > 0 ? formatMoney(tx.paid) : '-'}</td>
+                        <td className={`px-4 py-3 text-xs text-right font-bold ${tx.balance > 0 ? 'text-red-600' : 'text-foreground'}`}>
                           {tx.balance > 0 ? formatMoney(tx.balance) : '-'}
                         </td>
                         <td className="px-4 py-3 text-right">

@@ -104,7 +104,7 @@ export default function PurchaseCategoriesTab() {
       <div className="relative max-w-sm">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <input type="text" placeholder="Buscar categoría..." value={search} onChange={e => setSearch(e.target.value)}
-          className="w-full bg-muted border border-border rounded-lg pl-10 pr-4 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+          className="w-full bg-muted border border-border rounded-lg pl-10 pr-4 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
       </div>
 
       <div className="bg-card border border-border rounded-xl shadow-sm">
@@ -121,37 +121,37 @@ export default function PurchaseCategoriesTab() {
             <tbody>
               {loading ? (
                 Array.from({ length: 3 }).map((_, i) => (
-                  <tr key={i} className="border-b border-slate-100">
+                  <tr key={i} className="border-b border-border">
                     <td colSpan={4} className="px-4 py-3"><div className="h-4 bg-muted rounded animate-pulse" /></td>
                   </tr>
                 ))
               ) : filtered.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="px-4 py-8 text-center">
-                    <FolderOpen className="w-8 h-8 text-slate-200 mx-auto mb-2" />
+                    <FolderOpen className="w-8 h-8 text-foreground mx-auto mb-2" />
                     <p className="text-xs text-muted-foreground">No hay categorías</p>
                   </td>
                 </tr>
               ) : (
                 filtered.map(cat => (
-                  <tr key={cat.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={cat.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <Tag className="w-3.5 h-3.5 text-indigo-500" />
+                        <Tag className="w-3.5 h-3.5 text-primary" />
                         <span className="text-xs font-medium text-foreground">{cat.name}</span>
                         {cat.is_default && (
                           <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-blue-50 text-blue-600 border border-blue-200">Default</span>
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{cat.description || '—'}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600">
+                    <td className="px-4 py-3 text-xs text-foreground">{cat.description || '—'}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">
                       {cat.cost_center_name ? `${cat.cost_center_code || ''} ${cat.cost_center_name}` : '—'}
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <button onClick={() => openEdit(cat)}
-                          className="p-1.5 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                          className="p-1.5 text-muted-foreground hover:text-primary hover:bg-blue-50 rounded-lg transition-colors">
                           <Edit className="w-3.5 h-3.5" />
                         </button>
                         <button onClick={() => handleDelete(cat.id)}
@@ -174,7 +174,7 @@ export default function PurchaseCategoriesTab() {
           <div className="bg-card rounded-xl shadow-xl w-full max-w-md" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">{editing ? 'Editar Categoría' : 'Nueva Categoría'}</h2>
-              <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-slate-600">
+              <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -182,13 +182,13 @@ export default function PurchaseCategoriesTab() {
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">Nombre *</label>
                 <input type="text" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Ej: Materias Primas" autoFocus />
               </div>
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">Descripción</label>
                 <textarea value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} rows={2}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Descripción de la categoría..." />
               </div>
             </div>

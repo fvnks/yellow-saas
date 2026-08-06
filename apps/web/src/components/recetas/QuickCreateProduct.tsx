@@ -58,7 +58,7 @@ export default function QuickCreateProduct({ open, onClose, onCreated }: QuickCr
             </div>
             <h2 className="text-lg font-semibold text-foreground">Nuevo Ingrediente</h2>
           </div>
-          <button onClick={onClose} className="text-muted-foreground hover:text-slate-600">
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -66,14 +66,14 @@ export default function QuickCreateProduct({ open, onClose, onCreated }: QuickCr
           <div className="space-y-1">
             <label className="block text-xs font-medium text-foreground">Nombre *</label>
             <input type="text" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Ej: Harina de trigo" autoFocus />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">SKU *</label>
               <input type="text" value={form.sku} onChange={e => setForm(p => ({ ...p, sku: e.target.value }))}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent font-mono"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent font-mono"
                 placeholder="ING-001" />
             </div>
             <div className="space-y-1">
@@ -92,13 +92,13 @@ export default function QuickCreateProduct({ open, onClose, onCreated }: QuickCr
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Costo Unitario</label>
               <input type="number" step="1" min="0" value={form.cost_price} onChange={e => setForm(p => ({ ...p, cost_price: e.target.value }))}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="0" />
             </div>
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Precio Venta</label>
               <input type="number" step="1" min="0" value={form.sale_price} onChange={e => setForm(p => ({ ...p, sale_price: e.target.value }))}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="0" />
             </div>
           </div>

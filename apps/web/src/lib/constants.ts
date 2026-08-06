@@ -1,8 +1,8 @@
 export const CRM_STATUSES = [
   { value: 'new', label: 'Nuevo', color: 'bg-blue-100 text-blue-700' },
-  { value: 'contacted', label: 'Contactado', color: 'bg-indigo-100 text-indigo-700' },
+  { value: 'contacted', label: 'Contactado', color: 'bg-blue-50 text-primary' },
   { value: 'qualified', label: 'Calificado', color: 'bg-amber-100 text-amber-700' },
-  { value: 'proposal', label: 'Propuesta', color: 'bg-purple-100 text-purple-700' },
+  { value: 'proposal', label: 'Propuesta', color: 'bg-blue-50 text-blue-700' },
   { value: 'negotiation', label: 'Negociacion', color: 'bg-orange-100 text-orange-700' },
   { value: 'won', label: 'Ganado', color: 'bg-emerald-100 text-emerald-700' },
   { value: 'lost', label: 'Perdido', color: 'bg-red-100 text-red-700' },

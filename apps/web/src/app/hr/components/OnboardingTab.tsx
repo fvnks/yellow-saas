@@ -87,7 +87,7 @@ export default function OnboardingTab() {
       </div>
 
       {showForm && (
-        <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 space-y-3">
+        <div className="bg-blue-50 border border-primary/20 rounded-xl p-4 space-y-3">
           <h4 className="text-sm font-medium text-foreground">Nuevo Proceso de Onboarding</h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <select value={form.employee_id} onChange={e => setForm({ ...form, employee_id: e.target.value })}
@@ -129,7 +129,7 @@ export default function OnboardingTab() {
               ) : filtered.length === 0 ? (
                 <tr><td colSpan={6} className="text-center py-8 text-sm text-muted-foreground">Sin procesos de onboarding</td></tr>
               ) : filtered.map(o => (
-                <tr key={o.id} className="border-b border-slate-100 hover:bg-muted">
+                <tr key={o.id} className="border-b border-border hover:bg-muted">
                   <td className="px-4 py-3">
                     <p className="text-xs font-medium text-foreground">{o.employee_name}</p>
                     <p className="text-[10px] text-muted-foreground">{o.employee_rut}</p>
@@ -138,10 +138,10 @@ export default function OnboardingTab() {
                   <td className="px-4 py-3 text-xs">{o.mentor_name || '—'}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-20 bg-slate-200 rounded-full h-1.5">
-                        <div className="bg-indigo-600 h-1.5 rounded-full" style={{ width: `${o.progress || 0}%` }} />
+                      <div className="w-20 bg-muted rounded-full h-1.5">
+                        <div className="bg-primary h-1.5 rounded-full" style={{ width: `${o.progress || 0}%` }} />
                       </div>
-                      <span className="text-xs text-slate-600">{o.progress || 0}%</span>
+                      <span className="text-xs text-foreground">{o.progress || 0}%</span>
                     </div>
                   </td>
                   <td className="px-4 py-3 text-xs">{o.tasks_completed || 0}/{o.tasks_total || 0}</td>

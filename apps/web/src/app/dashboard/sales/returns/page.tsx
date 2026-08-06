@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { Card, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
@@ -207,7 +207,7 @@ export default function SalesReturnsPage() {
         </button>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="flex items-center gap-4">
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -216,7 +216,7 @@ export default function SalesReturnsPage() {
               placeholder="Buscar por número o cliente..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+              className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
             />
           </div>
           <select
@@ -232,7 +232,7 @@ export default function SalesReturnsPage() {
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -263,20 +263,20 @@ export default function SalesReturnsPage() {
             <tbody>
               {loading ? (
                 Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i} className="border-b border-slate-100">
-                    <td className="px-4 py-3"><div className="h-4 bg-slate-200 rounded w-24 animate-pulse" /></td>
-                    <td className="px-4 py-3"><div className="h-4 bg-slate-200 rounded w-32 animate-pulse" /></td>
-                    <td className="px-4 py-3"><div className="h-4 bg-slate-200 rounded w-28 animate-pulse" /></td>
-                    <td className="px-4 py-3"><div className="h-4 bg-slate-200 rounded w-8 mx-auto animate-pulse" /></td>
-                    <td className="px-4 py-3"><div className="h-4 bg-slate-200 rounded w-20 animate-pulse" /></td>
-                    <td className="px-4 py-3"><div className="h-5 bg-slate-200 rounded-full w-20 animate-pulse" /></td>
-                    <td className="px-4 py-3"><div className="h-4 bg-slate-200 rounded w-8 ml-auto animate-pulse" /></td>
+                  <tr key={i} className="border-b border-border">
+                    <td className="px-4 py-3"><div className="h-4 bg-muted rounded w-24 animate-pulse" /></td>
+                    <td className="px-4 py-3"><div className="h-4 bg-muted rounded w-32 animate-pulse" /></td>
+                    <td className="px-4 py-3"><div className="h-4 bg-muted rounded w-28 animate-pulse" /></td>
+                    <td className="px-4 py-3"><div className="h-4 bg-muted rounded w-8 mx-auto animate-pulse" /></td>
+                    <td className="px-4 py-3"><div className="h-4 bg-muted rounded w-20 animate-pulse" /></td>
+                    <td className="px-4 py-3"><div className="h-5 bg-muted rounded-full w-20 animate-pulse" /></td>
+                    <td className="px-4 py-3"><div className="h-4 bg-muted rounded w-8 ml-auto animate-pulse" /></td>
                   </tr>
                 ))
               ) : filteredReturns.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-4 py-12 text-center">
-                    <RotateCcw className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+                    <RotateCcw className="w-12 h-12 text-foreground mx-auto mb-3" />
                     <p className="text-sm text-muted-foreground">No se encontraron devoluciones</p>
                   </td>
                 </tr>
@@ -284,7 +284,7 @@ export default function SalesReturnsPage() {
                 filteredReturns.map((ret) => {
                   const status = statusConfig[ret.status] || statusConfig.pending;
                   return (
-                    <tr key={ret.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <tr key={ret.id} className="border-b border-border hover:bg-muted transition-colors">
                       <td className="px-4 py-3 text-xs font-mono font-medium text-foreground">{ret.return_number}</td>
                       <td className="px-4 py-3 text-xs text-foreground">{ret.customer?.name || '—'}</td>
                       <td className="px-4 py-3 text-xs text-foreground">{ret.warehouse?.name || '—'}</td>
@@ -302,7 +302,7 @@ export default function SalesReturnsPage() {
                       <td className="px-4 py-3 text-right">
                         <button
                           onClick={() => handleViewReturn(ret)}
-                          className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"
+                          className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
@@ -323,7 +323,7 @@ export default function SalesReturnsPage() {
               <h2 className="text-lg font-semibold text-foreground">Detalle de Devolución</h2>
               <button
                 onClick={() => { setShowDetailModal(false); setSelectedReturn(null); }}
-                className="text-muted-foreground hover:text-slate-600"
+                className="text-muted-foreground hover:text-foreground"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -383,7 +383,7 @@ export default function SalesReturnsPage() {
                     </thead>
                     <tbody>
                       {viewReturnItems.map((item, i) => (
-                        <tr key={i} className="border-b border-slate-100">
+                        <tr key={i} className="border-b border-border">
                           <td className="px-2 py-1 text-foreground">{item.product_name}</td>
                           <td className="px-2 py-1 text-center text-foreground">{item.quantity}</td>
                           <td className="px-2 py-1 text-right text-foreground">${item.unit_price.toLocaleString('es-CL')}</td>
@@ -398,7 +398,7 @@ export default function SalesReturnsPage() {
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button
                 onClick={() => { setShowDetailModal(false); setSelectedReturn(null); }}
-                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cerrar
               </button>
@@ -430,7 +430,7 @@ export default function SalesReturnsPage() {
                    });
                   doc.save(`${selectedReturn.return_number}.pdf`);
                 }}
-                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
               >
                 <Download className="w-4 h-4" />
                 Descargar PDF
@@ -460,7 +460,7 @@ export default function SalesReturnsPage() {
                   setNewReturn({ customer_id: '', warehouse_id: '', reason: '' });
                   setReturnItems([]);
                 }}
-                className="text-muted-foreground hover:text-slate-600"
+                className="text-muted-foreground hover:text-foreground"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -504,7 +504,7 @@ export default function SalesReturnsPage() {
                   value={newReturn.reason}
                   onChange={(e) => setNewReturn((prev) => ({ ...prev, reason: e.target.value }))}
                   rows={3}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
                   placeholder="Describir el motivo de la devolución..."
                 />
               </div>
@@ -515,7 +515,7 @@ export default function SalesReturnsPage() {
                   <button
                     type="button"
                     onClick={addReturnItem}
-                    className="text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors"
+                    className="text-sm font-medium text-primary hover:text-primary transition-colors"
                   >
                     + Agregar producto
                   </button>
@@ -523,7 +523,7 @@ export default function SalesReturnsPage() {
                 <div className="space-y-3">
                   {returnItems.length === 0 ? (
                     <div className="text-center py-8 border-2 border-dashed border-border rounded-xl">
-                      <RotateCcw className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                      <RotateCcw className="w-8 h-8 text-foreground mx-auto mb-2" />
                       <p className="text-sm text-muted-foreground">No hay productos agregados</p>
                       <p className="text-xs text-muted-foreground mt-1">Haz clic en &quot;Agregar producto&quot; para comenzar</p>
                     </div>
@@ -550,7 +550,7 @@ export default function SalesReturnsPage() {
                                 updateReturnItem(index, 'product_id', e.target.value);
                                 if (product) updateReturnItem(index, 'product_name', product.name);
                               }}
-                              className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-transparent dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+                              className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-transparent dark:bg-card dark:border-border dark:text-white"
                             >
                               <option value="">Seleccionar...</option>
                               {products.map((p) => (
@@ -565,7 +565,7 @@ export default function SalesReturnsPage() {
                             <select
                               value={item.condition}
                               onChange={(e) => updateReturnItem(index, 'condition', e.target.value)}
-                              className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-transparent dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+                              className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-transparent dark:bg-card dark:border-border dark:text-white"
                             >
                               <option value="good">Buen estado</option>
                               <option value="damaged">Dañado</option>
@@ -579,7 +579,7 @@ export default function SalesReturnsPage() {
                               min="1"
                               value={item.quantity}
                               onChange={(e) => updateReturnItem(index, 'quantity', parseInt(e.target.value) || 1)}
-                              className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-transparent dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+                              className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-transparent dark:bg-card dark:border-border dark:text-white"
                             />
                           </div>
                           <div className="space-y-1">
@@ -589,7 +589,7 @@ export default function SalesReturnsPage() {
                               min="0"
                               value={item.unit_price}
                               onChange={(e) => updateReturnItem(index, 'unit_price', parseInt(e.target.value) || 0)}
-                              className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-transparent dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+                              className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-transparent dark:bg-card dark:border-border dark:text-white"
                             />
                           </div>
                         </div>
@@ -599,7 +599,7 @@ export default function SalesReturnsPage() {
                             type="text"
                             value={item.reason}
                             onChange={(e) => updateReturnItem(index, 'reason', e.target.value)}
-                            className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white dark:placeholder-slate-400 focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                            className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none dark:bg-card dark:border-border dark:text-white dark:placeholder-muted-foreground focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                             placeholder="Motivo específico del producto..."
                           />
                         </div>
@@ -616,7 +616,7 @@ export default function SalesReturnsPage() {
                   setNewReturn({ customer_id: '', warehouse_id: '', reason: '' });
                   setReturnItems([]);
                 }}
-                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>

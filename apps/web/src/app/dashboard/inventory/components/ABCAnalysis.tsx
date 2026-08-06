@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { BarChart3, Play, Settings, TrendingUp, Package, ArrowUpRight } from 'lucide-react';
@@ -94,7 +94,7 @@ export default function ABCAnalysis() {
         </div>
         <div className="flex gap-2">
           <button onClick={() => setShowConfig(!showConfig)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium transition-colors">
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground rounded-lg text-xs font-medium transition-colors">
             <Settings className="w-3.5 h-3.5" /> Configurar
           </button>
           <button onClick={handleRun} disabled={running}
@@ -113,24 +113,24 @@ export default function ABCAnalysis() {
             <div>
               <label className="text-[9px] font-semibold text-muted-foreground uppercase">Umbral A (%)</label>
               <input type="number" value={config.a_threshold} onChange={e => setConfig({ ...config, a_threshold: Number(e.target.value) })}
-                className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white" />
             </div>
             <div>
               <label className="text-[9px] font-semibold text-muted-foreground uppercase">Umbral B (%)</label>
               <input type="number" value={config.b_threshold} onChange={e => setConfig({ ...config, b_threshold: Number(e.target.value) })}
-                className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white" />
             </div>
             <div>
               <label className="text-[9px] font-semibold text-muted-foreground uppercase">Periodo (meses)</label>
               <input type="number" value={config.period_months} onChange={e => setConfig({ ...config, period_months: Number(e.target.value) })}
-                className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white" />
             </div>
           </div>
         </div>
       )}
 
       {activeRule && (
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-medium text-foreground">Resumen por Clasificacion</span>
             {activeRule.last_run_at && (
@@ -160,7 +160,7 @@ export default function ABCAnalysis() {
       )}
 
       {results.length > 0 ? (
-        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-border">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -178,10 +178,10 @@ export default function ABCAnalysis() {
                 {results.map(r => {
                   const cfg = classConfig[r.classification] || classConfig.C;
                   return (
-                    <tr key={r.rank} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <tr key={r.rank} className="border-b border-border hover:bg-muted transition-colors">
                       <td className="px-4 py-3 text-xs text-muted-foreground">{r.rank}</td>
                       <td className="px-4 py-3 text-xs font-medium text-foreground">{r.product_name}</td>
-                      <td className="px-4 py-3 text-xs text-slate-600">{r.sku}</td>
+                      <td className="px-4 py-3 text-xs text-foreground">{r.sku}</td>
                       <td className="px-4 py-3">
                         <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${cfg.bg} ${cfg.color} border ${cfg.border}`}>
                           {r.classification}
@@ -190,8 +190,8 @@ export default function ABCAnalysis() {
                       <td className="px-4 py-3 text-xs text-right font-medium text-foreground">
                         ${Number(r.total_movement_value).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </td>
-                      <td className="px-4 py-3 text-xs text-right text-slate-600">{r.movement_count}</td>
-                      <td className="px-4 py-3 text-xs text-right text-slate-600">{r.cumulative_pct}%</td>
+                      <td className="px-4 py-3 text-xs text-right text-foreground">{r.movement_count}</td>
+                      <td className="px-4 py-3 text-xs text-right text-foreground">{r.cumulative_pct}%</td>
                     </tr>
                   );
                 })}
@@ -200,8 +200,8 @@ export default function ABCAnalysis() {
           </div>
         </div>
       ) : (
-        <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
-          <BarChart3 className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+        <div className="text-center py-12 bg-muted border border-dashed border-border rounded-xl">
+          <BarChart3 className="w-8 h-8 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">Ejecute el analisis ABC para clasificar productos</p>
         </div>
       )}

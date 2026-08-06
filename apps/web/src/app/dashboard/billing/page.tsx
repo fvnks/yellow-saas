@@ -85,7 +85,7 @@ export default function BillingPage() {
         <KPICard label="Vencidas" value={overdueInvoices.length} icon={AlertCircle} trend={overdueInvoices.length > 0 ? "Requiere atenci�n" : "Sin vencidas"} trendUp={overdueInvoices.length === 0} />
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="flex items-center gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -121,7 +121,7 @@ export default function BillingPage() {
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -139,16 +139,16 @@ export default function BillingPage() {
             <tbody>
               {loading ? (
                 Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i} className="border-b border-slate-100">
+                  <tr key={i} className="border-b border-border">
                     {Array.from({ length: 8 }).map((_, j) => (
                       <td key={j} className="px-4 py-3">
-                        <div className="h-4 bg-slate-200 rounded animate-pulse" />
+                        <div className="h-4 bg-muted rounded animate-pulse" />
                       </td>
                     ))}
                   </tr>
                 ))
               ) : filteredInvoices.map(invoice => (
-                <tr key={invoice.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <tr key={invoice.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3 text-xs font-mono font-medium text-foreground">{invoice.id}</td>
                   <td className="px-4 py-3">
                     <p className="text-sm font-medium text-foreground">{invoice.client}</p>
@@ -183,7 +183,7 @@ export default function BillingPage() {
 
       {filteredInvoices.length === 0 && (
         <div className="text-center py-12">
-          <FileText className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+          <FileText className="w-12 h-12 text-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">No se encontraron facturas</p>
         </div>
       )}

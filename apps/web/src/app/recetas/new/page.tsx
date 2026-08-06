@@ -116,7 +116,7 @@ export default function NewRecetaPage() {
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Nombre *</label>
               <input type="text" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="Ej: Torta de Manjar" />
             </div>
             <div className="space-y-1">
@@ -147,19 +147,19 @@ export default function NewRecetaPage() {
             <div className="space-y-1 md:col-span-2">
               <label className="block text-xs font-medium text-foreground">Descripción</label>
               <textarea value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} rows={2}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="Descripción de la receta..." />
             </div>
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Margen Mínimo (%)</label>
               <input type="number" step="0.01" min="0" max="100" value={form.min_margin_pct} onChange={e => setForm(p => ({ ...p, min_margin_pct: e.target.value }))}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="Ej: 10" />
             </div>
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Margen Máximo (%)</label>
               <input type="number" step="0.01" min="0" max="100" value={form.max_margin_pct} onChange={e => setForm(p => ({ ...p, max_margin_pct: e.target.value }))}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="Ej: 60" />
             </div>
           </div>
@@ -198,7 +198,7 @@ export default function NewRecetaPage() {
                 </div>
                 <div className="col-span-3">
                   <input type="number" step="0.001" value={ing.quantity} onChange={e => updateIngredient(i, 'quantity', e.target.value)}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                     placeholder="0.000" />
                 </div>
                 <div className="col-span-2">

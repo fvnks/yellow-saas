@@ -30,12 +30,12 @@ const stats = [
 export default function AuthPanel() {
   return (
     <div className="relative hidden w-full flex-col p-4 lg:flex lg:min-h-screen lg:w-1/2">
-      <div className="relative flex h-full w-full flex-col overflow-hidden rounded-[24px] bg-slate-950 shadow-xl">
+      <div className="relative flex h-full w-full flex-col overflow-hidden rounded-[24px] bg-background shadow-xl">
         {/* Grid pattern + glows */}
         <div className="absolute inset-0 bg-grid opacity-40" />
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />
         <div className="absolute -top-32 -left-32 w-[420px] h-[420px] bg-blue-600/20 rounded-full blur-[128px]" />
-        <div className="absolute -bottom-40 -right-24 w-[380px] h-[380px] bg-indigo-600/20 rounded-full blur-[128px]" />
+        <div className="absolute -bottom-40 -right-24 w-[380px] h-[380px] bg-primary/20 rounded-full blur-[128px]" />
 
         <div className="relative z-10 flex flex-col h-full p-10">
           {/* Logo */}
@@ -75,28 +75,28 @@ export default function AuthPanel() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-12 rounded-xl bg-primary/80 backdrop-blur border border-slate-800 overflow-hidden shadow-2xl"
+            className="mt-12 rounded-xl bg-primary/80 backdrop-blur border border-border overflow-hidden shadow-2xl"
           >
-            <div className="flex items-center gap-1.5 px-4 py-3 border-b border-slate-800">
+            <div className="flex items-center gap-1.5 px-4 py-3 border-b border-border">
               <div className="w-2.5 h-2.5 rounded-full bg-rose-500/70" />
               <div className="w-2.5 h-2.5 rounded-full bg-amber-500/70" />
               <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/70" />
-              <div className="ml-4 flex-1 h-6 rounded-md bg-slate-800/80 flex items-center px-3">
+              <div className="ml-4 flex-1 h-6 rounded-md bg-card/80 flex items-center px-3">
                 <span className="text-[10px] text-muted-foreground">app.yellow-erp.cl/dashboard</span>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-3 p-4">
-              <div className="rounded-xl bg-slate-800/60 border border-slate-700/60 p-3">
+              <div className="rounded-xl bg-card/60 border border-border/60 p-3">
                 <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Ventas hoy</p>
                 <p className="text-lg font-bold text-white mt-1">$2,4M</p>
                 <p className="text-[10px] text-emerald-400 mt-0.5">+18,2%</p>
               </div>
-              <div className="rounded-xl bg-slate-800/60 border border-slate-700/60 p-3">
+              <div className="rounded-xl bg-card/60 border border-border/60 p-3">
                 <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Facturas</p>
                 <p className="text-lg font-bold text-white mt-1">128</p>
                 <p className="text-[10px] text-emerald-400 mt-0.5">+9</p>
               </div>
-              <div className="rounded-xl bg-slate-800/60 border border-slate-700/60 p-3">
+              <div className="rounded-xl bg-card/60 border border-border/60 p-3">
                 <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Stock</p>
                 <p className="text-lg font-bold text-white mt-1">4.312</p>
                 <p className="text-[10px] text-blue-400 mt-0.5">Óptimo</p>
@@ -108,7 +108,7 @@ export default function AuthPanel() {
                 {[35, 55, 42, 70, 58, 85, 64, 92, 74, 100, 82, 95].map((h, i) => (
                   <div
                     key={i}
-                    className={`flex-1 rounded-t-md ${i >= 7 ? 'bg-blue-500' : 'bg-slate-700'}`}
+                    className={`flex-1 rounded-t-md ${i >= 7 ? 'bg-blue-500' : 'bg-muted'}`}
                     style={{ height: `${h}%` }}
                   />
                 ))}
@@ -118,7 +118,7 @@ export default function AuthPanel() {
 
           {/* Bottom stats + trust */}
           <div className="mt-auto pt-10">
-            <div className="flex items-center gap-6 border-t border-slate-800 pt-6">
+            <div className="flex items-center gap-6 border-t border-border pt-6">
               {stats.map((s) => (
                 <div key={s.label}>
                   <p className="text-lg font-bold text-white">{s.value}</p>

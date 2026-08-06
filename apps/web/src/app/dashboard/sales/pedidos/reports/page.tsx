@@ -91,7 +91,7 @@ export default function PedidosReportsPage() {
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Pedidos</p>
               <p className="text-2xl font-bold text-foreground mt-1">{stats.total}</p>
             </div>
-            <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center"><Package className="w-6 h-6 text-slate-600" /></div>
+            <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center"><Package className="w-6 h-6 text-foreground" /></div>
           </div>
         </div>
         <div className="bg-card border border-border rounded-xl p-5">
@@ -129,10 +129,10 @@ export default function PedidosReportsPage() {
         <h3 className="text-sm font-semibold text-foreground mb-4">Distribución por Estado</h3>
         <div className="grid grid-cols-6 gap-3">
           {[
-            { label: 'Borrador', count: stats.draft, color: 'bg-muted text-slate-600' },
+            { label: 'Borrador', count: stats.draft, color: 'bg-muted text-foreground' },
             { label: 'Pendiente', count: stats.pending, color: 'bg-amber-50 text-amber-600' },
             { label: 'Aprobado', count: stats.approved, color: 'bg-blue-50 text-blue-600' },
-            { label: 'Despacho', count: stats.picking, color: 'bg-indigo-50 text-indigo-600' },
+            { label: 'Despacho', count: stats.picking, color: 'bg-blue-50 text-primary' },
             { label: 'Completado', count: stats.completed, color: 'bg-emerald-50 text-emerald-600' },
             { label: 'Cancelado', count: stats.cancelled, color: 'bg-rose-50 text-rose-600' },
           ].map(item => (
@@ -155,7 +155,7 @@ export default function PedidosReportsPage() {
               <div key={m.month} className="flex items-center gap-3">
                 <span className="text-xs text-muted-foreground w-16">{m.month}</span>
                 <div className="flex-1 bg-muted rounded-full h-5 overflow-hidden">
-                  <div className="h-full bg-indigo-500 rounded-full transition-all" style={{ width: `${(m.count / maxMonthly) * 100}%` }} />
+                  <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${(m.count / maxMonthly) * 100}%` }} />
                 </div>
                 <span className="text-xs text-foreground w-8 text-right">{m.count}</span>
               </div>
@@ -171,7 +171,7 @@ export default function PedidosReportsPage() {
               <p className="text-sm text-muted-foreground text-center py-4">Sin datos</p>
             ) : byWarehouse.map((w, i) => (
               <div key={w.warehouse_name} className="flex items-center gap-3 p-3 bg-muted rounded-lg">
-                <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center"><Warehouse className="w-4 h-4 text-indigo-600" /></div>
+                <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center"><Warehouse className="w-4 h-4 text-primary" /></div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{w.warehouse_name}</p>
                   <p className="text-xs text-muted-foreground">{w.item_count} items</p>
@@ -192,7 +192,7 @@ export default function PedidosReportsPage() {
               <p className="text-sm text-muted-foreground text-center py-4">Sin datos</p>
             ) : topProducts.map((p, i) => (
               <div key={p.sku} className="flex items-center gap-3 p-3 bg-muted rounded-lg">
-                <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center text-xs font-bold text-indigo-600">{i + 1}</div>
+                <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-xs font-bold text-primary">{i + 1}</div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{p.product_name}</p>
                   <p className="text-xs text-muted-foreground font-mono">{p.sku}</p>
@@ -214,7 +214,7 @@ export default function PedidosReportsPage() {
               <p className="text-sm text-muted-foreground text-center py-4">Sin datos</p>
             ) : byRequester.map((r, i) => (
               <div key={r.requester_name} className="flex items-center gap-3 p-3 bg-muted rounded-lg">
-                <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center text-xs font-bold text-indigo-600">{i + 1}</div>
+                <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-xs font-bold text-primary">{i + 1}</div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{r.requester_name || 'Sin asignar'}</p>
                 </div>

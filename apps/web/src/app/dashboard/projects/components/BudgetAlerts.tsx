@@ -94,7 +94,7 @@ export default function BudgetAlerts({ projectId, budget, costs, expenses }: Bud
   return (
     <div className="space-y-3">
       {/* Budget Progress Bar */}
-      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-muted-foreground" />
@@ -129,7 +129,7 @@ export default function BudgetAlerts({ projectId, budget, costs, expenses }: Bud
         <div className="relative mt-1 h-2">
           {[50, 75, 90].map(threshold => (
             <div key={threshold}
-              className="absolute top-0 w-px h-2 bg-slate-300"
+              className="absolute top-0 w-px h-2 bg-muted"
               style={{ left: `${threshold}%` }}
               title={`${threshold}%`}
             />
@@ -139,7 +139,7 @@ export default function BudgetAlerts({ projectId, budget, costs, expenses }: Bud
 
       {/* Alert Config Panel */}
       {showConfig && (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between mb-3">
             <h4 className="text-xs font-semibold text-foreground">Configurar Alertas</h4>
             <button onClick={() => setShowConfig(false)} className="p-1 hover:bg-muted rounded">
@@ -148,7 +148,7 @@ export default function BudgetAlerts({ projectId, budget, costs, expenses }: Bud
           </div>
           
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-xs text-slate-600">Alertar al</span>
+            <span className="text-xs text-foreground">Alertar al</span>
             <select value={newThreshold} onChange={e => setNewThreshold(e.target.value)}
               className="bg-muted border border-border rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary/20">
               <option value="50">50%</option>
@@ -159,7 +159,7 @@ export default function BudgetAlerts({ projectId, budget, costs, expenses }: Bud
               <option value="95">95%</option>
               <option value="100">100%</option>
             </select>
-            <span className="text-xs text-slate-600">del presupuesto</span>
+            <span className="text-xs text-foreground">del presupuesto</span>
             <button onClick={createAlert}
               className="bg-primary hover:bg-primary/90 text-white px-3 py-1 rounded-lg text-xs font-medium transition-colors">
               Crear

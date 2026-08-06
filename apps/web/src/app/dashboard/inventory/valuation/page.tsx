@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { ArrowLeft, RefreshCw, Download, Calculator, Layers, Settings, Plus, Edit, Trash2, Play, CheckCircle, X } from 'lucide-react';
@@ -193,8 +193,8 @@ export default function ValuationPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 bg-slate-200 rounded w-64 animate-pulse" />
-        <div className="h-4 bg-slate-200 rounded w-96 animate-pulse" />
+        <div className="h-8 bg-muted rounded w-64 animate-pulse" />
+        <div className="h-4 bg-muted rounded w-96 animate-pulse" />
         <div className="grid grid-cols-4 gap-4">
           {[1, 2, 3, 4].map(i => <div key={i} className="h-24 bg-muted rounded-xl animate-pulse" />)}
         </div>
@@ -231,7 +231,7 @@ export default function ValuationPage() {
       )}
 
       {/* Tabs */}
-      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <ContinuousTabs
           tabs={[
             { id: 'methods', label: 'Metodos' },
@@ -247,8 +247,8 @@ export default function ValuationPage() {
       {/* METHODS TAB */}
       {activeTab === 'methods' && (
         <div className="space-y-6">
-          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h3 className="text-sm font-semibold text-foreground">
                 {editingMethod ? 'Editar Método' : 'Nuevo Método'}
               </h3>
@@ -263,24 +263,24 @@ export default function ValuationPage() {
                   <label className="block text-xs font-medium text-foreground">Código</label>
                   <input type="text" value={methodForm.code} onChange={e => setMethodForm({ ...methodForm, code: e.target.value.toUpperCase() })}
                     placeholder="FIFO" required
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-foreground">Nombre</label>
                   <input type="text" value={methodForm.name} onChange={e => setMethodForm({ ...methodForm, name: e.target.value })}
                     placeholder="First In, First Out" required
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-foreground">Descripción</label>
                   <input type="text" value={methodForm.description} onChange={e => setMethodForm({ ...methodForm, description: e.target.value })}
                     placeholder="Los primeros en entrar salen primero"
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
                 <div className="flex items-end gap-3">
                   <label className="flex items-center gap-2 text-sm cursor-pointer">
                     <input type="checkbox" checked={methodForm.is_default} onChange={e => setMethodForm({ ...methodForm, is_default: e.target.checked })}
-                      className="rounded border-slate-300 text-indigo-600 focus:ring-primary/20" />
+                      className="rounded border-border text-primary focus:ring-primary/20" />
                     Por defecto
                   </label>
                   <button type="submit"
@@ -292,8 +292,8 @@ export default function ValuationPage() {
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h3 className="text-sm font-semibold text-foreground">Métodos de Valoración</h3>
               <button onClick={loadData} className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1">
                 <RefreshCw className="w-3 h-3" /> Refrescar
@@ -315,20 +315,20 @@ export default function ValuationPage() {
                   {methods.length === 0 ? (
                     <tr><td colSpan={6} className="px-6 py-12 text-center text-sm text-muted-foreground">No hay métodos configurados. Crea uno para comenzar.</td></tr>
                   ) : methods.map(m => (
-                    <tr key={m.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <tr key={m.id} className="border-b border-border hover:bg-muted transition-colors">
                       <td className="px-6 py-3 text-xs font-mono font-semibold text-foreground">{m.code}</td>
                       <td className="px-6 py-3 text-xs font-medium text-foreground">{m.name}</td>
                       <td className="px-6 py-3 text-xs text-muted-foreground max-w-[300px] truncate">{m.description || '-'}</td>
                       <td className="px-6 py-3 text-center">
                         {m.is_default && (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-blue-50 text-primary border border-primary/20">
                             Por defecto
                           </span>
                         )}
                       </td>
                       <td className="px-6 py-3 text-center">
                         <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
-                          m.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-muted text-slate-600 border border-border'
+                          m.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-muted text-foreground border border-border'
                         }`}>
                           {m.is_active ? 'Activo' : 'Inactivo'}
                         </span>
@@ -336,7 +336,7 @@ export default function ValuationPage() {
                       <td className="px-6 py-3">
                         <div className="flex justify-end gap-1">
                           <button onClick={() => handleEditMethod(m)}
-                            className="p-1.5 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors">
+                            className="p-1.5 text-muted-foreground hover:text-primary hover:bg-blue-50 rounded transition-colors">
                             <Edit className="w-4 h-4" />
                           </button>
                           {!m.is_default && (
@@ -359,8 +359,8 @@ export default function ValuationPage() {
       {/* RUNS TAB */}
       {activeTab === 'runs' && (
         <div className="space-y-6">
-          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-            <div className="px-6 py-4 border-b border-slate-100">
+          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+            <div className="px-6 py-4 border-b border-border">
               <h3 className="text-sm font-semibold text-foreground">Ejecutar Nueva Valoración</h3>
             </div>
             <div className="p-6">
@@ -389,7 +389,7 @@ export default function ValuationPage() {
                 </div>
                 <div className="flex items-end">
                   <button type="submit" disabled={running || methods.length === 0}
-                    className="w-full bg-primary hover:bg-primary/90 disabled:bg-slate-400 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors">
+                    className="w-full bg-primary hover:bg-primary/90 disabled:bg-muted text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors">
                     {running ? (
                       <><RefreshCw className="w-4 h-4 animate-spin" /> Calculando...</>
                     ) : (
@@ -404,8 +404,8 @@ export default function ValuationPage() {
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h3 className="text-sm font-semibold text-foreground">Historial de Valoraciones</h3>
               <button onClick={loadData} className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1">
                 <RefreshCw className="w-3 h-3" /> Refrescar
@@ -426,9 +426,9 @@ export default function ValuationPage() {
                   {runs.length === 0 ? (
                     <tr><td colSpan={5} className="px-6 py-12 text-center text-sm text-muted-foreground">No hay valoraciones ejecutadas.</td></tr>
                   ) : runs.map(r => (
-                    <tr key={r.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <tr key={r.id} className="border-b border-border hover:bg-muted transition-colors">
                       <td className="px-6 py-3 text-xs font-medium text-foreground">{r.method_name || r.valuation_method_id}</td>
-                      <td className="px-6 py-3 text-xs text-slate-600">
+                      <td className="px-6 py-3 text-xs text-foreground">
                         {new Date(r.period_start).toLocaleDateString('es-CL')} - {new Date(r.period_end).toLocaleDateString('es-CL')}
                       </td>
                       <td className="px-6 py-3 text-right text-xs font-bold text-foreground">{formatCurrency(r.total_value)}</td>
@@ -456,18 +456,18 @@ export default function ValuationPage() {
         <div className="space-y-6">
           {/* KPIs */}
           <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-            <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+            <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Valor Total</p>
                   <p className="text-2xl font-bold text-foreground mt-1">{formatCurrency(totalValue)}</p>
                 </div>
-                <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
-                  <Calculator className="w-6 h-6 text-indigo-600" />
+                <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                  <Calculator className="w-6 h-6 text-primary" />
                 </div>
               </div>
             </div>
-            <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+            <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Unidades Totales</p>
@@ -478,7 +478,7 @@ export default function ValuationPage() {
                 </div>
               </div>
             </div>
-            <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+            <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Productos</p>
@@ -489,7 +489,7 @@ export default function ValuationPage() {
                 </div>
               </div>
             </div>
-            <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+            <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Bodegas</p>
@@ -503,21 +503,21 @@ export default function ValuationPage() {
           </div>
 
           {/* Layers Table */}
-          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-            <div className="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+            <div className="px-6 py-4 border-b border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <h3 className="text-sm font-semibold text-foreground">Capas de Valoración (Stock Valorizado)</h3>
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <input type="text" placeholder="Buscar producto, SKU o bodega..." value={filter.search}
                     onChange={e => setFilter({ ...filter, search: e.target.value })}
-                    className="w-64 bg-muted border border-border rounded-lg pl-3 pr-3 py-1.5 text-xs text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                    className="w-64 bg-muted border border-border rounded-lg pl-3 pr-3 py-1.5 text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
                 <button onClick={handleExportCSV}
-                  className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
+                  className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
                   <Download className="w-3.5 h-3.5" /> CSV
                 </button>
                 <button onClick={loadData}
-                  className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
+                  className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
                   <RefreshCw className="w-3.5 h-3.5" /> Refrescar
                 </button>
               </div>
@@ -541,7 +541,7 @@ export default function ValuationPage() {
                       {layers.length === 0 ? 'No hay stock valorizado. Ejecuta una valoración primero.' : 'No se encontraron resultados.'}
                     </td></tr>
                   ) : filteredLayers.map(l => (
-                    <tr key={l.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <tr key={l.id} className="border-b border-border hover:bg-muted transition-colors">
                       <td className="px-6 py-3 text-xs font-medium text-foreground">{l.product_name}</td>
                       <td className="px-6 py-3 text-xs font-mono text-muted-foreground">{l.product_sku}</td>
                       <td className="px-6 py-3 text-xs text-foreground">{l.warehouse_name}</td>
@@ -555,7 +555,7 @@ export default function ValuationPage() {
               </table>
             </div>
             {filteredLayers.length > 0 && (
-              <div className="px-6 py-3 border-t border-border bg-muted flex justify-between text-xs text-slate-600">
+              <div className="px-6 py-3 border-t border-border bg-muted flex justify-between text-xs text-foreground">
                 <span>{filteredLayers.length} registros</span>
                 <span className="font-semibold">Total: {formatCurrency(totalValue)}</span>
               </div>

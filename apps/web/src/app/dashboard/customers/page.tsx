@@ -111,8 +111,8 @@ export default function CustomersPage() {
                 <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Clientes</p>
                 <p className="text-2xl font-bold text-foreground mt-1">{customers.length}</p>
               </div>
-              <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-                <Users className="w-5 h-5 text-indigo-600" />
+              <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                <Users className="w-5 h-5 text-primary" />
               </div>
             </div>
           </CardContent>
@@ -174,7 +174,7 @@ export default function CustomersPage() {
                   placeholder="Buscar nombre, RUT, email..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 />
               </div>
               <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
@@ -234,7 +234,7 @@ export default function CustomersPage() {
               <tbody>
                 {loading ? (
                   Array.from({ length: 5 }).map((_, i) => (
-                    <tr key={i} className="border-b border-slate-100">
+                    <tr key={i} className="border-b border-border">
                       {Array.from({ length: 12 }).map((_, j) => (
                         <td key={j} className="px-4 py-3"><div className="h-4 bg-muted rounded animate-pulse" /></td>
                       ))}
@@ -247,7 +247,7 @@ export default function CustomersPage() {
                     </td>
                   </tr>
                 ) : filteredCustomers.map((customer) => (
-                  <tr key={customer.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={customer.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3">
                       <div className="text-xs font-medium text-foreground">{customer.name}</div>
                     </td>
@@ -256,13 +256,13 @@ export default function CustomersPage() {
                     <td className="px-4 py-3">
                       <div className="space-y-0.5">
                         {customer.phone && (
-                          <div className="flex items-center gap-1 text-[10px] text-slate-600">
+                          <div className="flex items-center gap-1 text-[10px] text-foreground">
                             <Phone className="w-3 h-3 text-muted-foreground" />
                             <span>{customer.phone}</span>
                           </div>
                         )}
                         {customer.email && (
-                          <div className="flex items-center gap-1 text-[10px] text-slate-600">
+                          <div className="flex items-center gap-1 text-[10px] text-foreground">
                             <Mail className="w-3 h-3 text-muted-foreground" />
                             <span className="truncate max-w-[140px]">{customer.email}</span>
                           </div>
@@ -276,7 +276,7 @@ export default function CustomersPage() {
                     <td className="px-4 py-3 text-center text-xs font-medium text-foreground">{customer.payment_terms || 0} días</td>
                     <td className="px-4 py-3 text-right text-xs font-medium text-foreground">${(customer.credit_limit || 0).toLocaleString('es-CL')}</td>
                     <td className="px-4 py-3 text-center">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${customer.tax_exempt ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-muted text-slate-600 border border-border'}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${customer.tax_exempt ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-muted text-foreground border border-border'}`}>
                         {customer.tax_exempt ? 'Exento' : 'Gravado'}
                       </span>
                     </td>
@@ -287,7 +287,7 @@ export default function CustomersPage() {
                     </td>
                     <td className="px-4 py-3 text-center">
                       {customer.category_id ? (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-blue-50 text-primary border border-primary/20">
                           {categories.find((c: any) => c.id === customer.category_id)?.name || '—'}
                         </span>
                       ) : (
@@ -306,12 +306,12 @@ export default function CustomersPage() {
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-center gap-1">
                         <Link href={`/dashboard/customers/${customer.id}`}>
-                          <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors">
+                          <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors">
                             <Eye className="w-4 h-4" />
                           </button>
                         </Link>
                         <Link href={`/dashboard/customers/${customer.id}/edit`}>
-                          <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors">
+                          <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors">
                             <Edit className="w-4 h-4" />
                           </button>
                         </Link>

@@ -42,7 +42,7 @@ const salesMarkers = [
 const kpiColors = [
   { bg: 'bg-blue-50', text: 'text-blue-600', ring: 'ring-blue-100' },
   { bg: 'bg-teal-50', text: 'text-teal-600', ring: 'ring-teal-100' },
-  { bg: 'bg-purple-50', text: 'text-purple-600', ring: 'ring-purple-100' },
+  { bg: 'bg-blue-50', text: 'text-blue-700', ring: 'ring-purple-100' },
   { bg: 'bg-amber-50', text: 'text-amber-600', ring: 'ring-amber-100' },
   { bg: 'bg-rose-50', text: 'text-rose-600', ring: 'ring-rose-100' },
   { bg: 'bg-emerald-50', text: 'text-emerald-600', ring: 'ring-emerald-100' },
@@ -65,7 +65,7 @@ export default function DashboardPage() {
       <div className="space-y-6 pt-4">
         <div className="flex items-center justify-between">
           <div>
-            <div className="h-7 w-48 bg-slate-200 rounded-lg animate-pulse" />
+            <div className="h-7 w-48 bg-muted rounded-lg animate-pulse" />
             <div className="h-4 w-64 bg-muted rounded mt-2 animate-pulse" />
           </div>
         </div>
@@ -73,7 +73,7 @@ export default function DashboardPage() {
           {[...Array(6)].map((_, i) => (
             <div key={i} className="border border-border rounded-2xl shadow-sm p-5 bg-card">
               <div className="h-4 w-20 bg-muted rounded animate-pulse mb-3" />
-              <div className="h-8 w-28 bg-slate-200 rounded animate-pulse" />
+              <div className="h-8 w-28 bg-muted rounded animate-pulse" />
             </div>
           ))}
         </div>
@@ -221,7 +221,7 @@ export default function DashboardPage() {
               {topProducts.map((p: any, i: number) => (
                 <div key={i} className="flex items-center justify-between group/item">
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className="text-xs font-bold text-slate-300 w-5 group-hover/item:text-amber-500 transition-colors">{i + 1}</span>
+                    <span className="text-xs font-bold text-foreground w-5 group-hover/item:text-amber-500 transition-colors">{i + 1}</span>
                     <div className="min-w-0">
                       <p className="text-xs font-medium text-foreground truncate">{p.name}</p>
                       <p className="text-[10px] text-muted-foreground">{p.sku}</p>

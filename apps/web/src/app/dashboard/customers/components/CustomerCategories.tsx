@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, X, Save, Tag } from 'lucide-react';
@@ -125,9 +125,9 @@ export default function CustomerCategories() {
 
   if (loading) {
     return (
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-        <div className="px-6 py-4 border-b border-slate-100">
-          <div className="h-4 w-36 bg-slate-200 rounded animate-pulse" />
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+        <div className="px-6 py-4 border-b border-border">
+          <div className="h-4 w-36 bg-muted rounded animate-pulse" />
         </div>
         <div className="p-6 space-y-3">
           {[1, 2, 3].map(i => (
@@ -139,8 +139,8 @@ export default function CustomerCategories() {
   }
 
   return (
-    <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-      <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+    <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+      <div className="px-6 py-4 border-b border-border flex items-center justify-between">
         <h3 className="text-sm font-semibold text-foreground">Categorías de Clientes</h3>
         <button
           onClick={handleOpenNew}
@@ -153,7 +153,7 @@ export default function CustomerCategories() {
 
       {categories.length === 0 ? (
         <div className="text-center py-12">
-          <Tag className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+          <Tag className="w-8 h-8 text-foreground mx-auto mb-2" />
           <p className="text-sm text-muted-foreground">No hay categorías</p>
         </div>
       ) : (
@@ -169,7 +169,7 @@ export default function CustomerCategories() {
             </thead>
             <tbody>
               {categories.map(cat => (
-                <tr key={cat.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <tr key={cat.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3 text-xs font-medium text-foreground">{cat.name}</td>
                   <td className="px-4 py-3 text-xs text-foreground">{cat.description || '—'}</td>
                   <td className="px-4 py-3">
@@ -185,7 +185,7 @@ export default function CustomerCategories() {
                     <div className="flex items-center justify-center gap-1">
                       <button
                         onClick={() => handleOpenEdit(cat)}
-                        className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"
+                        className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"
                         aria-label="Editar"
                       >
                         <Edit className="w-4 h-4" />
@@ -213,7 +213,7 @@ export default function CustomerCategories() {
               <h2 className="text-lg font-semibold text-foreground">
                 {editingId ? 'Editar Categoría' : 'Nueva Categoría'}
               </h2>
-              <button onClick={handleClose} className="text-muted-foreground hover:text-slate-600">
+              <button onClick={handleClose} className="text-muted-foreground hover:text-foreground">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -225,7 +225,7 @@ export default function CustomerCategories() {
                   type="text"
                   value={form.name}
                   onChange={e => update('name', e.target.value)}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                   placeholder="Nombre de la categoría"
                 />
               </div>
@@ -236,7 +236,7 @@ export default function CustomerCategories() {
                   value={form.description}
                   onChange={e => update('description', e.target.value)}
                   rows={2}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                   placeholder="Descripción de la categoría..."
                 />
               </div>
@@ -249,7 +249,7 @@ export default function CustomerCategories() {
                       key={opt.value}
                       onClick={() => update('color', opt.value)}
                       className={`w-8 h-8 rounded-full border-2 transition-colors flex-shrink-0 ${
-                        form.color === opt.value ? 'border-slate-900 scale-110' : 'border-border hover:border-slate-400'
+                        form.color === opt.value ? 'border-border scale-110' : 'border-border hover:border-border'
                       }`}
                       style={{ backgroundColor: opt.value }}
                       title={opt.label}
@@ -268,7 +268,7 @@ export default function CustomerCategories() {
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button
                 onClick={handleClose}
-                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>

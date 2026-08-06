@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useMemo } from 'react';
 import { TrendingUp, TrendingDown, DollarSign, BarChart3, Download } from 'lucide-react';
@@ -138,27 +138,27 @@ export default function RentabilidadReport({ project, costs, expenses, timesheet
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-foreground">Reporte de Rentabilidad</h3>
-        <button onClick={handleExportPDF} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+        <button onClick={handleExportPDF} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Download className="w-4 h-4" /> Exportar PDF
         </button>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Presupuesto</p>
           <p className="text-xl font-bold text-foreground mt-1">{formatCurrency(data.budget)}</p>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Costo Total</p>
           <p className="text-xl font-bold text-rose-600 mt-1">{formatCurrency(data.totalCost)}</p>
           <p className="text-[9px] text-muted-foreground mt-0.5">{data.totalCosts > 0 ? `Compras/Inv: ${formatCurrency(data.totalCosts)}` : ''} {data.totalExpenses > 0 ? `Gastos: ${formatCurrency(data.totalExpenses)}` : ''}</p>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Margen</p>
           <p className={`text-xl font-bold mt-1 ${data.margin >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{formatCurrency(data.margin)}</p>
           <p className="text-[9px] text-muted-foreground mt-0.5">{data.marginPercent}% del presupuesto</p>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Costo/Hora</p>
           <p className="text-xl font-bold text-foreground mt-1">{formatCurrency(data.costPerHour)}</p>
           <p className="text-[9px] text-muted-foreground mt-0.5">{data.billableHours}h facturables</p>
@@ -166,7 +166,7 @@ export default function RentabilidadReport({ project, costs, expenses, timesheet
       </div>
 
       {/* Margin bar */}
-      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             {data.margin >= 0 ? <TrendingUp className="w-5 h-5 text-emerald-600" /> : <TrendingDown className="w-5 h-5 text-red-600" />}
@@ -191,7 +191,7 @@ export default function RentabilidadReport({ project, costs, expenses, timesheet
       </div>
 
       {/* Breakdown */}
-      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <h4 className="text-sm font-semibold text-foreground mb-4">Desglose de Costos</h4>
         <div className="space-y-3">
           {[
@@ -200,8 +200,8 @@ export default function RentabilidadReport({ project, costs, expenses, timesheet
             { label: 'Horas Trabajadas', value: data.totalHours, unit: 'h', icon: BarChart3 },
             { label: 'Horas Facturables', value: data.billableHours, unit: 'h', icon: BarChart3 },
           ].map((item, i) => (
-            <div key={i} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
-              <span className="text-sm text-slate-600">{item.label}</span>
+            <div key={i} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+              <span className="text-sm text-foreground">{item.label}</span>
               <span className="text-sm font-semibold text-foreground">
                 {item.unit ? `${Number(item.value).toFixed(1)}${item.unit}` : formatCurrency(Number(item.value))}
               </span>

@@ -71,7 +71,7 @@ export default function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps)
             <ScanBarcode className="w-5 h-5" />
             Escanear Codigo
           </h2>
-          <button onClick={onClose} className="text-muted-foreground hover:text-slate-600">
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -79,7 +79,7 @@ export default function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps)
         <div className="p-6">
           {error ? (
             <div className="text-center py-8">
-              <Camera className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+              <Camera className="w-12 h-12 text-foreground mx-auto mb-4" />
               <p className="text-sm text-muted-foreground mb-4">{error}</p>
               <button
                 onClick={onClose}

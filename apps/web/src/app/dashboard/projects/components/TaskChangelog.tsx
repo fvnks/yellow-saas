@@ -21,8 +21,8 @@ const changeTypeConfig: Record<string, { icon: any; color: string; label: string
   create: { icon: Plus, color: 'text-emerald-500', label: 'Creado' },
   update: { icon: ArrowRight, color: 'text-blue-500', label: 'Actualizado' },
   delete: { icon: Trash2, color: 'text-red-500', label: 'Eliminado' },
-  comment: { icon: MessageCircle, color: 'text-purple-500', label: 'Comentario' },
-  status: { icon: CheckCircle2, color: 'text-indigo-500', label: 'Estado' },
+  comment: { icon: MessageCircle, color: 'text-blue-600', label: 'Comentario' },
+  status: { icon: CheckCircle2, color: 'text-primary', label: 'Estado' },
 };
 
 const fieldLabels: Record<string, string> = {
@@ -109,7 +109,7 @@ export default function TaskChangelog({ taskId }: TaskChangelogProps) {
                       <>agrego un comentario</>
                     )}
                     {entry.change_type === 'status' && (
-                      <>cambio estado de <span className="font-medium text-muted-foreground">{entry.old_value}</span> a <span className="font-medium text-indigo-600">{entry.new_value}</span></>
+                      <>cambio estado de <span className="font-medium text-muted-foreground">{entry.old_value}</span> a <span className="font-medium text-primary">{entry.new_value}</span></>
                     )}
                     {entry.change_type === 'update' && (
                       <>
@@ -118,7 +118,7 @@ export default function TaskChangelog({ taskId }: TaskChangelogProps) {
                           <span className="text-muted-foreground"> de <span className="line-through">{entry.old_value}</span></span>
                         )}
                         {entry.new_value && (
-                          <span> a <span className="text-indigo-600 font-medium">{entry.new_value}</span></span>
+                          <span> a <span className="text-primary font-medium">{entry.new_value}</span></span>
                         )}
                       </>
                     )}

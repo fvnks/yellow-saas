@@ -32,7 +32,7 @@ const columns = [
 ];
 
 const priorityConfig: Record<string, { label: string; color: string }> = {
-  low: { label: 'Baja', color: 'bg-muted text-slate-600' },
+  low: { label: 'Baja', color: 'bg-muted text-foreground' },
   medium: { label: 'Media', color: 'bg-blue-100 text-blue-700' },
   high: { label: 'Alta', color: 'bg-amber-100 text-amber-700' },
   urgent: { label: 'Urgente', color: 'bg-red-100 text-red-700' },
@@ -56,7 +56,7 @@ function TaskCard({ task, onEdit, onDelete, onDragStart }: {
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-          <GripVertical className="w-3.5 h-3.5 text-slate-300" />
+          <GripVertical className="w-3.5 h-3.5 text-foreground" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-xs font-semibold text-foreground truncate">{task.name}</p>
@@ -74,7 +74,7 @@ function TaskCard({ task, onEdit, onDelete, onDragStart }: {
           {showMenu && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
-              <div className="absolute right-0 top-7 bg-card border border-border rounded-lg shadow-lg z-20 dark:bg-primary dark:border-slate-800 py-1 min-w-[120px]">
+              <div className="absolute right-0 top-7 bg-card border border-border rounded-lg shadow-lg z-20 dark:bg-primary dark:border-border py-1 min-w-[120px]">
                 <button onClick={(e) => { e.stopPropagation(); onEdit(); setShowMenu(false); }}
                   className="w-full px-3 py-1.5 text-left text-xs text-foreground hover:bg-muted flex items-center gap-2">
                   <Edit className="w-3 h-3" /> Editar
@@ -100,12 +100,12 @@ function TaskCard({ task, onEdit, onDelete, onDragStart }: {
         )}
       </div>
 
-      <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100">
+      <div className="flex items-center justify-between mt-2 pt-2 border-t border-border">
         <div className="flex items-center gap-2">
           {task.assignee_name && (
             <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-              <div className="w-4 h-4 bg-indigo-100 rounded-full flex items-center justify-center">
-                <span className="text-[8px] font-bold text-indigo-600">
+              <div className="w-4 h-4 bg-blue-50 rounded-full flex items-center justify-center">
+                <span className="text-[8px] font-bold text-primary">
                   {task.assignee_name.charAt(0).toUpperCase()}
                 </span>
               </div>
@@ -174,7 +174,7 @@ export default function KanbanBoard({ tasks, onStatusChange, onEdit, onDelete, o
         <div
           key={col.id}
           className={`flex-1 min-w-[280px] max-w-[350px] rounded-xl transition-all ${
-            dragOverColumn === col.id ? 'ring-2 ring-indigo-300 ring-offset-2' : ''
+            dragOverColumn === col.id ? 'ring-2 ring-primary/30 ring-offset-2' : ''
           }`}
           onDragOver={(e) => handleDragOver(e, col.id)}
           onDragLeave={handleDragLeave}

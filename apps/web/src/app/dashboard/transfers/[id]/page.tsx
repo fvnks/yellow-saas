@@ -83,10 +83,10 @@ export default function TransferDetailPage({ params }: { params: { id: string } 
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <div className="w-9 h-9 bg-slate-200 rounded-lg animate-pulse" />
-          <div className="h-6 w-48 bg-slate-200 rounded animate-pulse" />
+          <div className="w-9 h-9 bg-muted rounded-lg animate-pulse" />
+          <div className="h-6 w-48 bg-muted rounded animate-pulse" />
         </div>
-        <div className="h-64 bg-slate-200 rounded-xl animate-pulse" />
+        <div className="h-64 bg-muted rounded-xl animate-pulse" />
       </div>
     );
   }
@@ -94,11 +94,11 @@ export default function TransferDetailPage({ params }: { params: { id: string } 
   if (!transfer) {
     return (
       <div className="space-y-6">
-        <Link href="/dashboard/transfers" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700">
+        <Link href="/dashboard/transfers" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="w-4 h-4" /> Volver
         </Link>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-12 dark:bg-slate-900 dark:border-slate-800 text-center">
-          <p className="text-sm text-slate-500">Transferencia no encontrada</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-12 dark:bg-primary dark:border-border text-center">
+          <p className="text-sm text-muted-foreground">Transferencia no encontrada</p>
         </div>
       </div>
     );
@@ -112,15 +112,15 @@ export default function TransferDetailPage({ params }: { params: { id: string } 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-        <Link href="/dashboard/transfers" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href="/dashboard/transfers" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold text-slate-900">{transfer.transfer_number}</h1>
+            <h1 className="text-xl font-bold text-foreground">{transfer.transfer_number}</h1>
             <Badge variant={st.variant}>{st.label}</Badge>
           </div>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             {new Date(transfer.created_at).toLocaleDateString('es-CL')} {new Date(transfer.created_at).toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })}
           </p>
         </div>
@@ -141,28 +141,28 @@ export default function TransferDetailPage({ params }: { params: { id: string } 
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
               <Truck className="w-5 h-5 text-blue-600" />
             </div>
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Origen</p>
-              <p className="text-sm font-bold text-slate-900">{transfer.source_warehouse?.name}</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Origen</p>
+              <p className="text-sm font-bold text-foreground">{transfer.source_warehouse?.name}</p>
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 flex items-center justify-center">
-          <ArrowRight className="w-8 h-8 text-slate-300" />
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border flex items-center justify-center">
+          <ArrowRight className="w-8 h-8 text-foreground" />
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
               <Package className="w-5 h-5 text-emerald-600" />
             </div>
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Destino</p>
-              <p className="text-sm font-bold text-slate-900">{transfer.destination_warehouse?.name}</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Destino</p>
+              <p className="text-sm font-bold text-foreground">{transfer.destination_warehouse?.name}</p>
             </div>
           </div>
         </div>
@@ -176,24 +176,24 @@ export default function TransferDetailPage({ params }: { params: { id: string } 
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left px-6 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
-                  <th className="text-left px-6 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">SKU</th>
-                  <th className="text-right px-6 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cantidad</th>
-                  <th className="text-right px-6 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Costo Unit.</th>
-                  <th className="text-right px-6 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total</th>
+                <tr className="border-b border-border">
+                  <th className="text-left px-6 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th>
+                  <th className="text-left px-6 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">SKU</th>
+                  <th className="text-right px-6 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cantidad</th>
+                  <th className="text-right px-6 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Costo Unit.</th>
+                  <th className="text-right px-6 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total</th>
                 </tr>
               </thead>
               <tbody>
                 {transfer.items.map((item) => (
-                  <tr key={item.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                    <td className="px-6 py-3 text-xs font-medium text-slate-900">{item.product?.name}</td>
-                    <td className="px-6 py-3 text-xs font-mono text-slate-500">{item.product?.sku}</td>
-                    <td className="px-6 py-3 text-right text-xs font-bold text-slate-900">{Number(item.quantity)}</td>
-                    <td className="px-6 py-3 text-right text-xs text-slate-500">
+                  <tr key={item.id} className="border-b border-border hover:bg-muted transition-colors">
+                    <td className="px-6 py-3 text-xs font-medium text-foreground">{item.product?.name}</td>
+                    <td className="px-6 py-3 text-xs font-mono text-muted-foreground">{item.product?.sku}</td>
+                    <td className="px-6 py-3 text-right text-xs font-bold text-foreground">{Number(item.quantity)}</td>
+                    <td className="px-6 py-3 text-right text-xs text-muted-foreground">
                       {Number(item.unit_cost) > 0 ? `$${Number(item.unit_cost).toLocaleString('es-CL')}` : '—'}
                     </td>
-                    <td className="px-6 py-3 text-right text-xs font-medium text-slate-900">
+                    <td className="px-6 py-3 text-right text-xs font-medium text-foreground">
                       {Number(item.unit_cost) > 0 ? `$${(Number(item.quantity) * Number(item.unit_cost)).toLocaleString('es-CL')}` : '—'}
                     </td>
                   </tr>
@@ -210,7 +210,7 @@ export default function TransferDetailPage({ params }: { params: { id: string } 
             <CardTitle>Notas</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-slate-700">{transfer.notes}</p>
+            <p className="text-sm text-foreground">{transfer.notes}</p>
           </CardContent>
         </Card>
       )}

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 interface UOM { id: string; code: string; name: string; type: string; base_unit: string | null; conversion_factor: number; is_active: boolean; }
 
 const typeLabels: Record<string, string> = { weight: 'Peso', volume: 'Volumen', length: 'Longitud', area: 'Area', piece: 'Pieza', time: 'Tiempo' };
-const typeColors: Record<string, string> = { weight: 'bg-blue-50 text-blue-700 border-blue-200', volume: 'bg-cyan-50 text-cyan-700 border-cyan-200', length: 'bg-amber-50 text-amber-700 border-amber-200', area: 'bg-purple-50 text-purple-700 border-purple-200', piece: 'bg-emerald-50 text-emerald-700 border-emerald-200', time: 'bg-rose-50 text-rose-700 border-rose-200' };
+const typeColors: Record<string, string> = { weight: 'bg-blue-50 text-blue-700 border-blue-200', volume: 'bg-teal-50 text-teal-700 border-teal-200', length: 'bg-amber-50 text-amber-700 border-amber-200', area: 'bg-blue-50 text-blue-700 border-blue-200', piece: 'bg-emerald-50 text-emerald-700 border-emerald-200', time: 'bg-rose-50 text-rose-700 border-rose-200' };
 
 export default function UOMPage() {
   const router = useRouter();
@@ -64,7 +64,7 @@ export default function UOMPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.back()} className="p-2 hover:bg-muted rounded-lg transition-colors"><ArrowLeft className="w-5 h-5 text-slate-600" /></button>
+          <button onClick={() => router.back()} className="p-2 hover:bg-muted rounded-lg transition-colors"><ArrowLeft className="w-5 h-5 text-foreground" /></button>
           <div>
             <h1 className="text-xl font-bold text-foreground">Unidades de Medida</h1>
             <p className="text-sm text-muted-foreground mt-1">Tabla de referencia para productos</p>
@@ -76,27 +76,27 @@ export default function UOMPage() {
         </button>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input type="text" placeholder="Buscar unidad..." value={search} onChange={e => setSearch(e.target.value)}
-            className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+            className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
         </div>
       </div>
 
       {showNew && (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <h3 className="text-sm font-semibold text-foreground mb-4">{editItem ? 'Editar Unidad' : 'Nueva Unidad'}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Codigo *</label>
               <input type="text" value={form.code} onChange={e => setForm({...form, code: e.target.value})}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="kg, lt, m..." />
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="kg, lt, m..." />
             </div>
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Nombre *</label>
               <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="Kilogramo..." />
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="Kilogramo..." />
             </div>
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Tipo *</label>
@@ -112,13 +112,13 @@ export default function UOMPage() {
             </div>
           </div>
           <div className="flex justify-end gap-3 mt-4">
-            <button onClick={() => { setShowNew(false); setEditItem(null); }} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+            <button onClick={() => { setShowNew(false); setEditItem(null); }} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
             <button onClick={handleSave} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">{editItem ? 'Guardar' : 'Crear'}</button>
           </div>
         </div>
       )}
 
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -135,17 +135,17 @@ export default function UOMPage() {
               {loading ? (
                 [1,2,3].map(i => <tr key={i}><td colSpan={6} className="px-4 py-3"><div className="h-10 bg-muted rounded-lg animate-pulse" /></td></tr>)
               ) : filtered.map(u => (
-                <tr key={u.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <tr key={u.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3 text-xs font-mono font-semibold text-foreground">{u.code}</td>
                   <td className="px-4 py-3 text-xs font-medium text-foreground">{u.name}</td>
-                  <td className="px-4 py-3"><span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border ${typeColors[u.type] || 'bg-muted text-slate-600 border-border'}`}>{typeLabels[u.type] || u.type}</span></td>
+                  <td className="px-4 py-3"><span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border ${typeColors[u.type] || 'bg-muted text-foreground border-border'}`}>{typeLabels[u.type] || u.type}</span></td>
                   <td className="px-4 py-3 text-center text-xs text-foreground">{u.conversion_factor}</td>
                   <td className="px-4 py-3 text-center">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${u.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-muted text-slate-600 border border-border'}`}>{u.is_active ? 'Activa' : 'Inactiva'}</span>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${u.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-muted text-foreground border border-border'}`}>{u.is_active ? 'Activa' : 'Inactiva'}</span>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-1">
-                      <button onClick={() => handleEdit(u)} className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Edit className="w-4 h-4" /></button>
+                      <button onClick={() => handleEdit(u)} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"><Edit className="w-4 h-4" /></button>
                       <button onClick={() => handleDelete(u.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-4 h-4" /></button>
                     </div>
                   </td>

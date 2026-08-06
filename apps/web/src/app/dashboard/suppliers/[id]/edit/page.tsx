@@ -104,10 +104,10 @@ export default function EditSupplierPage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <div className="w-9 h-9 bg-slate-200 rounded-lg animate-pulse" />
-          <div className="h-6 w-48 bg-slate-200 rounded animate-pulse" />
+          <div className="w-9 h-9 bg-muted rounded-lg animate-pulse" />
+          <div className="h-6 w-48 bg-muted rounded animate-pulse" />
         </div>
-        <Card><CardContent><div className="h-96 bg-slate-100 rounded animate-pulse" /></CardContent></Card>
+        <Card><CardContent><div className="h-96 bg-muted rounded animate-pulse" /></CardContent></Card>
       </div>
     );
   }
@@ -115,12 +115,12 @@ export default function EditSupplierPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href={`/dashboard/suppliers/${id}`} className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href={`/dashboard/suppliers/${id}`} className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Editar Proveedor</h1>
-          <p className="text-sm text-slate-500 mt-1">Actualizar datos del proveedor</p>
+          <h1 className="text-xl font-bold text-foreground">Editar Proveedor</h1>
+          <p className="text-sm text-muted-foreground mt-1">Actualizar datos del proveedor</p>
         </div>
       </div>
 
@@ -131,7 +131,7 @@ export default function EditSupplierPage() {
           <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader className="flex items-center gap-2">
-                <Building2 className="w-5 h-5 text-slate-500" />
+                <Building2 className="w-5 h-5 text-muted-foreground" />
                 <CardTitle>Datos de la Empresa</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -168,13 +168,13 @@ export default function EditSupplierPage() {
               <CardContent className="space-y-4">
                 <div className="space-y-3 text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Estado</span>
+                    <span className="text-muted-foreground">Estado</span>
                     <Badge variant={formData.is_active ? 'success' : 'neutral'}>
                       {formData.is_active ? 'Activo' : 'Inactivo'}
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Moneda</span>
+                    <span className="text-muted-foreground">Moneda</span>
                     <span className="font-medium">CLP</span>
                   </div>
                 </div>

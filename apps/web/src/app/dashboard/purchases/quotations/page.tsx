@@ -77,7 +77,7 @@ export default function PurchasesQuotationsPage() {
       </div>
 
       {/* Filters */}
-      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -86,7 +86,7 @@ export default function PurchasesQuotationsPage() {
               placeholder="Buscar por N° cotización, proveedor..."
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-              className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+              className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
             />
           </div>
           <Select
@@ -108,7 +108,7 @@ export default function PurchasesQuotationsPage() {
 
       {/* Table */}
       {loading ? (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-8 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-8 dark:bg-primary dark:border-border">
           <div className="space-y-3">
             {[1, 2, 3].map(i => (
               <div key={i} className="h-12 bg-muted rounded animate-pulse" />
@@ -116,7 +116,7 @@ export default function PurchasesQuotationsPage() {
           </div>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-12 dark:bg-primary dark:border-slate-800 text-center">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-12 dark:bg-primary dark:border-border text-center">
           <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
             <FileText className="w-8 h-8 text-muted-foreground" />
           </div>
@@ -131,7 +131,7 @@ export default function PurchasesQuotationsPage() {
         </div>
       ) : (
         <>
-          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
@@ -168,7 +168,7 @@ export default function PurchasesQuotationsPage() {
                         <TableCell>
                           <div className="flex items-center justify-center gap-1">
                             <Link href={`/dashboard/purchases/quotations/${quote.id}`}>
-                              <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors" aria-label="Ver">
+                              <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors" aria-label="Ver">
                                 <Eye className="w-4 h-4" />
                               </button>
                             </Link>
@@ -192,7 +192,7 @@ export default function PurchasesQuotationsPage() {
               <button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="px-3 py-1.5 bg-card border border-border rounded-lg text-sm font-medium text-foreground dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-3 py-1.5 bg-card border border-border rounded-lg text-sm font-medium text-foreground dark:bg-card dark:border-border dark:text-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 Anterior
               </button>
@@ -212,7 +212,7 @@ export default function PurchasesQuotationsPage() {
               <button
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="px-3 py-1.5 bg-card border border-border rounded-lg text-sm font-medium text-foreground dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-3 py-1.5 bg-card border border-border rounded-lg text-sm font-medium text-foreground dark:bg-card dark:border-border dark:text-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 Siguiente
               </button>

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, Minus, AlertTriangle, Package, ArrowDown, BarChart3 } from 'lucide-react';
@@ -67,7 +67,7 @@ export default function StockForecasting() {
         </div>
         <div className="flex items-center gap-2">
           <select value={days} onChange={e => setDays(Number(e.target.value))}
-            className="bg-card border border-border rounded-lg px-3 py-1.5 text-xs focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20">
+            className="bg-card border border-border rounded-lg px-3 py-1.5 text-xs focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-2 focus:ring-primary/20">
             <option value={15}>15 dias</option>
             <option value={30}>30 dias</option>
             <option value={60}>60 dias</option>
@@ -92,8 +92,8 @@ export default function StockForecasting() {
           {[1, 2, 3].map(i => <div key={i} className="h-20 bg-muted rounded-xl animate-pulse" />)}
         </div>
       ) : forecasts.length === 0 ? (
-        <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
-          <BarChart3 className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+        <div className="text-center py-12 bg-muted border border-dashed border-border rounded-xl">
+          <BarChart3 className="w-8 h-8 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">Sin datos suficientes para pronosticar</p>
         </div>
       ) : (
@@ -103,7 +103,7 @@ export default function StockForecasting() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">
-                    <Package className="w-5 h-5 text-slate-600" />
+                    <Package className="w-5 h-5 text-foreground" />
                   </div>
                   <div>
                     <p className="text-sm font-medium text-foreground">{f.name}</p>
@@ -145,7 +145,7 @@ export default function StockForecasting() {
                     return (
                       <div key={i} className="flex-1 flex flex-col items-center">
                         <div
-                          className={`w-full rounded-sm transition-all ${isLow ? 'bg-red-400' : 'bg-indigo-300'}`}
+                          className={`w-full rounded-sm transition-all ${isLow ? 'bg-red-400' : 'bg-primary/30'}`}
                           style={{ height: `${height}%` }}
                         />
                       </div>
