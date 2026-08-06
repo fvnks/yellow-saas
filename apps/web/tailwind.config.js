@@ -14,6 +14,9 @@ module.exports = {
       }
     },
     extend: {
+      fontFamily: {
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -130,8 +133,8 @@ module.exports = {
           to: { opacity: '1', transform: 'translateY(0)' }
         },
         'pulse-glow': {
-          '0%, 100%': { boxShadow: '0 0 0 0 rgba(234, 179, 8, 0.4)' },
-          '50%': { boxShadow: '0 0 20px 4px rgba(234, 179, 8, 0.2)' }
+          '0%, 100%': { boxShadow: '0 0 0 0 rgba(37, 99, 235, 0.4)' },
+          '50%': { boxShadow: '0 0 20px 4px rgba(37, 99, 235, 0.2)' }
         },
       },
       backgroundImage: {

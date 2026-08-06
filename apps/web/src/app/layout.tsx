@@ -1,10 +1,13 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import Providers from './providers';
 import { SupportWidget } from '@/components/support/support-widget';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-sans',
+});
 
 export const metadata: Metadata = {
   title: 'Yellow ERP',
@@ -17,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className={`${inter.variable} antialiased`} suppressHydrationWarning>
+    <html lang="es" className={`${plusJakartaSans.variable} antialiased`} suppressHydrationWarning>
       <body className="bg-slate-50 text-slate-900">
         <Providers>
           {children}

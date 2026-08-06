@@ -1,15 +1,14 @@
 'use client';
 
 import { Suspense, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Building2, Mail, Lock, User, Eye, EyeOff, AlertCircle, CheckCircle, Phone } from 'lucide-react';
-import { Button, Input, Card, CardContent } from '@yellow-erp/ui';
+import { Building2, Eye, EyeOff, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Button, Input } from '@yellow-erp/ui';
+import AuthPanel from '@/components/auth/AuthPanel';
 
 function RegisterForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const redirect = searchParams.get('redirect') || '/dashboard';
   const [formData, setFormData] = useState({
     companyName: '',
     email: '',
@@ -22,6 +21,7 @@ function RegisterForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [registered, setRegistered] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const validateForm = () => {
@@ -88,7 +88,7 @@ function RegisterForm() {
         throw new Error(data.error || 'Error en el registro');
       }
 
-      router.push('/login?registered=true');
+      setRegistered(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
     } finally {
@@ -103,155 +103,184 @@ function RegisterForm() {
     }
   };
 
+  if (registered) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-md text-center">
+          <div className="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <CheckCircle2 className="w-8 h-8 text-emerald-600" />
+          </div>
+          <h1 className="text-2xl font-bold text-slate-900">¡Cuenta creada!</h1>
+          <p className="text-slate-500 mt-3">
+            Tu cuenta fue creada exitosamente. Ahora puedes iniciar sesión con tu correo y contraseña.
+          </p>
+          <button
+            onClick={() => router.push('/login')}
+            className="mt-8 w-full rounded-lg bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 text-sm font-medium transition-colors"
+          >
+            Ir a Iniciar Sesión
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl">
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="w-12 h-12 bg-slate-900 rounded-xl flex items-center justify-center">
-              <Building2 className="w-7 h-7 text-white" />
-            </div>
-            <span className="text-2xl font-bold text-slate-900">Yellow ERP</span>
-          </Link>
-          <h1 className="text-2xl font-bold text-slate-900">Crear Cuenta</h1>
-          <p className="text-slate-500 mt-2">Comienza tu prueba gratuita de 14 días</p>
+    <div className="flex min-h-screen w-full bg-white font-sans text-slate-900 antialiased lg:flex-row">
+      {/* Left Image Panel */}
+      <AuthPanel />
+
+      {/* Right Form Panel */}
+      <div className="flex w-full flex-col items-center justify-center p-6 sm:p-12 lg:w-1/2">
+        {/* Mobile logo */}
+        <div className="lg:hidden mb-8 flex items-center gap-3">
+          <div className="w-10 h-10 bg-slate-950 rounded-xl flex items-center justify-center border border-slate-800">
+            <Building2 className="w-6 h-6 text-white" />
+          </div>
+          <span className="text-xl font-bold text-slate-900">Yellow ERP</span>
         </div>
 
-        <Card>
-          <CardContent className="p-8">
-            {error && (
-              <div className="mb-6 flex items-center gap-2 p-3 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-sm" role="alert">
-                <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                {error}
-              </div>
-            )}
+        <div className="w-full max-w-[440px]">
+          {/* Title */}
+          <div className="mb-8">
+            <h1 className="mb-3 text-[36px] font-bold leading-[1.05] tracking-tight text-slate-950">
+              Crea tu cuenta
+            </h1>
+            <p className="text-[15px] text-slate-500 text-balance">
+              Comienza tu prueba gratuita de 14 días. Sin tarjeta de crédito.
+            </p>
+          </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input
-                  label="Nombre de la Empresa"
-                  type="text"
-                  value={formData.companyName}
-                  onChange={handleInputChange('companyName')}
-                  placeholder="Acme SpA"
-                  required
-                  error={fieldErrors.companyName}
-                />
-
-                <Input
-                  label="Nombre Completo"
-                  type="text"
-                  value={formData.fullName}
-                  onChange={handleInputChange('fullName')}
-                  placeholder="Juan Pérez"
-                  required
-                  error={fieldErrors.fullName}
-                />
-
-                <Input
-                  label="Correo Electrónico"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleInputChange('email')}
-                  placeholder="tu@empresa.cl"
-                  required
-                  error={fieldErrors.email}
-                />
-
-                <Input
-                  label="Teléfono (opcional)"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={handleInputChange('phone')}
-                  placeholder="+56 2 1234 5678"
-                />
-
-                <div className="relative md:col-span-2">
-                  <Input
-                    label="Contraseña"
-                    type={showPassword ? 'text' : 'password'}
-                    value={formData.password}
-                    onChange={handleInputChange('password')}
-                    placeholder="••••••••"
-                    required
-                    error={fieldErrors.password}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-[38px] text-slate-400 hover:text-slate-600"
-                    aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                  >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
-
-                <div className="relative md:col-span-2">
-                  <Input
-                    label="Confirmar Contraseña"
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange('confirmPassword')}
-                    placeholder="••••••••"
-                    required
-                    error={fieldErrors.confirmPassword}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-[38px] text-slate-400 hover:text-slate-600"
-                    aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                  >
-                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="bg-slate-50 p-4 rounded-lg">
-                <p className="text-sm text-slate-600 font-medium mb-2">La contraseña debe incluir:</p>
-                <ul className="text-xs text-slate-500 space-y-1">
-                  <li>• Al menos 8 caracteres</li>
-                  <li>• Una letra mayúscula y una minúscula</li>
-                  <li>• Al menos un número</li>
-                  <li>• Al menos un carácter especial (@$!%*?&)</li>
-                </ul>
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="terms"
-                  className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500"
-                  required
-                />
-                <label htmlFor="terms" className="ml-2 text-sm text-slate-700">
-                  Acepto los{' '}
-                  <a href="/terms" className="text-indigo-600 hover:text-indigo-500 font-medium">
-                    Términos de Servicio
-                  </a>
-                  {' '}y la{' '}
-                  <a href="/privacy" className="text-indigo-600 hover:text-indigo-500 font-medium">
-                    Política de Privacidad
-                  </a>
-                </label>
-              </div>
-
-              <Button type="submit" className="w-full" loading={loading}>
-                Crear Cuenta Gratuita
-              </Button>
-            </form>
-
-            <div className="mt-8 p-4 bg-slate-50 rounded-lg">
-              <p className="text-xs text-slate-600 text-center mb-2">Planeas iniciar sesión?</p>
-              <p className="text-sm text-slate-500 text-center">
-                Si ya tienes una cuenta, puedes{' '}
-                <Link href="/login" className="text-indigo-600 hover:text-indigo-500 font-medium">
-                  Iniciar Sesión
-                </Link>
-              </p>
+          {error && (
+            <div className="mb-5 flex items-center gap-2 p-3 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-sm" role="alert">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              {error}
             </div>
-          </CardContent>
-        </Card>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                label="Nombre de la Empresa"
+                type="text"
+                value={formData.companyName}
+                onChange={handleInputChange('companyName')}
+                placeholder="Acme SpA"
+                required
+                error={fieldErrors.companyName}
+              />
+
+              <Input
+                label="Nombre Completo"
+                type="text"
+                value={formData.fullName}
+                onChange={handleInputChange('fullName')}
+                placeholder="Juan Pérez"
+                required
+                error={fieldErrors.fullName}
+              />
+
+              <Input
+                label="Correo Electrónico"
+                type="email"
+                value={formData.email}
+                onChange={handleInputChange('email')}
+                placeholder="tu@empresa.cl"
+                required
+                error={fieldErrors.email}
+              />
+
+              <Input
+                label="Teléfono (opcional)"
+                type="tel"
+                value={formData.phone}
+                onChange={handleInputChange('phone')}
+                placeholder="+56 2 1234 5678"
+              />
+
+              <div className="relative sm:col-span-2">
+                <Input
+                  label="Contraseña"
+                  type={showPassword ? 'text' : 'password'}
+                  value={formData.password}
+                  onChange={handleInputChange('password')}
+                  placeholder="••••••••"
+                  required
+                  error={fieldErrors.password}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-[38px] text-slate-400 hover:text-slate-600"
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+
+              <div className="relative sm:col-span-2">
+                <Input
+                  label="Confirmar Contraseña"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange('confirmPassword')}
+                  placeholder="••••••••"
+                  required
+                  error={fieldErrors.confirmPassword}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-[38px] text-slate-400 hover:text-slate-600"
+                  aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
+              <p className="text-sm text-slate-600 font-medium mb-2">La contraseña debe incluir:</p>
+              <ul className="text-xs text-slate-500 space-y-1">
+                <li>• Al menos 8 caracteres</li>
+                <li>• Una letra mayúscula y una minúscula</li>
+                <li>• Al menos un número</li>
+                <li>• Al menos un carácter especial (@$!%*?&)</li>
+              </ul>
+            </div>
+
+            <div className="flex items-start">
+              <input
+                type="checkbox"
+                id="terms"
+                className="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-600 mt-0.5"
+                required
+              />
+              <label htmlFor="terms" className="ml-2 text-sm text-slate-700">
+                Acepto los{' '}
+                <a href="/terms" className="text-blue-600 hover:text-blue-700 font-medium">
+                  Términos de Servicio
+                </a>
+                {' '}y la{' '}
+                <a href="/privacy" className="text-blue-600 hover:text-blue-700 font-medium">
+                  Política de Privacidad
+                </a>
+              </label>
+            </div>
+
+            <Button type="submit" className="w-full" loading={loading}>
+              Crear Cuenta Gratuita
+            </Button>
+          </form>
+
+          {/* Footer */}
+          <div className="mt-8 text-center text-[14px] text-slate-500">
+            ¿Ya tienes una cuenta?{' '}
+            <Link href="/login" className="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+              Iniciar Sesión
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );
