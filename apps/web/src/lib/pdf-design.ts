@@ -301,16 +301,15 @@ async function buildDocumentHeader(doc: jsPDF, data: DocumentData): Promise<numb
     const docLabel = getDocumentTitle(settings, data.type);
     doc.setFillColor(...C.accent);
     const badgeWidth = doc.getTextWidth(docLabel) + 16;
-    const badgeX = (pageWidth - badgeWidth) / 2;
-    doc.roundedRect(badgeX, y - 4, badgeWidth, 10, 2, 2, 'F');
+    doc.roundedRect(15, y - 4, badgeWidth, 10, 2, 2, 'F');
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(10);
     doc.setTextColor(255, 255, 255);
-    doc.text(docLabel, badgeX + badgeWidth / 2, y + 2, { align: 'center' });
+    doc.text(docLabel, 15 + badgeWidth / 2, y + 2, { align: 'center' });
 
     doc.setTextColor(...C.textDark);
     doc.setFontSize(9);
-    doc.text(`N°: ${data.number}`, 15 + badgeWidth + 10, y + 2);
+    doc.text(`N°: ${data.number}`, 15 + badgeWidth + 8, y + 2);
     doc.setTextColor(...C.textMuted);
     doc.text(`Fecha: ${formatDate(data.date, settings)}`, pageWidth - 15, y + 2, { align: 'right' });
 
