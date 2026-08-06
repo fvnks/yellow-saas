@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
+import { getJwtSecret } from '@/lib/env';
 
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'yellow-erp-secret-key-change-in-production');
+const JWT_SECRET = getJwtSecret();
 const isDemoMode = !process.env.DATABASE_URL || process.env.DATABASE_URL === 'postgresql://demo:demo@localhost:5432/demo';
 
 async function verifyToken(token: string) {

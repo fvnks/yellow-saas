@@ -3,6 +3,9 @@ import { query } from '@/api/lib/db';
 import bcrypt from 'bcryptjs';
 
 const MIGRATION_SECRET = process.env.JWT_SECRET;
+if (!MIGRATION_SECRET) {
+  throw new Error('La variable de entorno JWT_SECRET es requerida. Configúrala antes de iniciar la aplicación.');
+}
 
 export async function POST(request: Request) {
   try {

@@ -1,6 +1,12 @@
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'yellow-erp-secret-key-change-in-production';
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('La variable de entorno JWT_SECRET es requerida. Configúrala antes de iniciar la aplicación.');
+  }
+  return secret;
+}
 
 interface UserPayload {
   id: string;
@@ -22,7 +28,7 @@ export function getSessionFromCookie(): UserPayload | null {
   const token = authCookie.split('=')[1];
 
   try {
-    return jwt.verify(token, JWT_SECRET) as UserPayload;
+    return jwt.verify(token, getJwtSecret()) as UserPayload;
   } catch {
     return null;
   }

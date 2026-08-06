@@ -3,8 +3,9 @@ import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { SignJWT } from 'jose';
+import { getJwtSecret } from '@/lib/env';
 
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'yellow-erp-secret-key-change-in-production');
+const JWT_SECRET = getJwtSecret();
 
 export async function POST(request: NextRequest) {
   try {

@@ -2,7 +2,11 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { query } from '../../db/src/client';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'yellow-erp-secret-key-change-in-production';
+const jwtSecret = process.env.JWT_SECRET;
+if (!jwtSecret) {
+  throw new Error('La variable de entorno JWT_SECRET es requerida. Configúrala antes de iniciar la aplicación.');
+}
+const JWT_SECRET: string = jwtSecret;
 const JWT_EXPIRES_IN = '7d';
 
 export interface User {
