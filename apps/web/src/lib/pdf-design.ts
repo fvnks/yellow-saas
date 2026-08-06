@@ -306,7 +306,7 @@ async function buildDocumentHeader(doc: jsPDF, data: DocumentData): Promise<numb
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(10);
     doc.setTextColor(255, 255, 255);
-    doc.text(docLabel, badgeX + 8, y + 2);
+    doc.text(docLabel, badgeX + badgeWidth / 2, y + 2, { align: 'center' });
 
     doc.setTextColor(...C.textDark);
     doc.setFontSize(9);
@@ -385,7 +385,7 @@ async function buildDocumentHeader(doc: jsPDF, data: DocumentData): Promise<numb
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
     doc.setTextColor(255, 255, 255);
-    doc.text(docLabel, badgeX + 6, y + 1);
+    doc.text(docLabel, badgeX + badgeWidth / 2, y + 1, { align: 'center' });
 
     doc.setTextColor(...C.textDark);
     doc.setFontSize(9);
@@ -926,6 +926,7 @@ export async function generateDeliveryGuidePDF(data: DeliveryGuideData): Promise
   const settings = resolveSettings(data);
   const C = resolvePalette(settings);
   const doc = new jsPDF('p', 'mm', 'a4');
+  const pageWidth = doc.internal.pageSize.getWidth();
 
   // Header - reuse similar structure to buildDocumentHeader but adapted for guide
   let y = 15;
@@ -975,11 +976,12 @@ export async function generateDeliveryGuidePDF(data: DeliveryGuideData): Promise
   const docLabel = settings.document_titles?.orden_venta || 'GUÍA DE DESPACHO';
   doc.setFillColor(...C.primary);
   const badgeWidth = doc.getTextWidth(docLabel) + 12;
-  doc.roundedRect(15, y - 4, badgeWidth, 8, 2, 2, 'F');
+  const badgeX = (pageWidth - badgeWidth) / 2;
+  doc.roundedRect(badgeX, y - 4, badgeWidth, 8, 2, 2, 'F');
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9);
   doc.setTextColor(255, 255, 255);
-  doc.text(docLabel, 21, y + 1);
+  doc.text(docLabel, badgeX + badgeWidth / 2, y + 1, { align: 'center' });
 
   doc.setTextColor(...C.textDark);
   doc.setFontSize(9);
@@ -1092,7 +1094,6 @@ export async function generateDeliveryGuidePDF(data: DeliveryGuideData): Promise
   }
 
   // Footer with custom footer text
-  const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   doc.setDrawColor(...C.border);
   doc.setLineWidth(0.3);
