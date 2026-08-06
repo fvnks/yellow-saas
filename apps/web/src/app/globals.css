@@ -21,67 +21,124 @@ html {
   }
 }
 
+/* ============================================
+   DESIGN TOKENS - Modern Neutral Flat Design
+   ============================================ */
+
 @layer base {
   :root {
+    /* Background */
     --background: 0 0% 98%;
-    --foreground: 240 10% 3.9%;
+    --foreground: 222.2 47.4% 11.2%;
+
+    /* Cards */
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 222.2 47.4% 11.2%;
+
+    /* Popovers */
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+
+    /* Primary - Slate 900 */
+    --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+
+    /* Secondary - Slate 100 */
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    /* Muted */
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    /* Accent */
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    /* Destructive */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
+
+    /* Success */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 98%;
+
+    /* Warning */
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 98%;
+
+    /* Info */
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 98%;
+
+    /* Borders & Inputs */
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 47.4% 11.2%;
+
+    /* Radius */
     --radius: 0.5rem;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
+
+    /* Sidebar */
+    --sidebar-background: 222.2 47.4% 11.2%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 210 40% 98%;
+    --sidebar-primary-foreground: 222.2 47.4% 11.2%;
+    --sidebar-accent: 217.2 32.6% 17.5%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217.2 32.6% 17.5%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Brand */
     --brand-yellow: 45 93% 47%;
     --brand-amber: 38 92% 50%;
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    --background: 222.2 47.4% 11.2%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 47.4% 11.2%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 47.4% 11.2%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
+    --destructive-foreground: 210 40% 98%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 98%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 98%;
+
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+
+    --sidebar-background: 222.2 47.4% 11.2%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 210 40% 98%;
+    --sidebar-primary-foreground: 222.2 47.4% 11.2%;
+    --sidebar-accent: 217.2 32.6% 17.5%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217.2 32.6% 17.5%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
@@ -91,7 +148,7 @@ html {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
   }
   select {
     @apply rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-colors duration-150;
@@ -102,67 +159,64 @@ html {
 }
 
 /* ============================================
-   GLOBAL UI MODERNIZATION OVERRIDES
+   GLOBAL UI OVERRIDES - Flat Design System
    ============================================ */
 
-/* Card containers - modern shadow and hover */
+/* --- Cards --- */
 .bg-white.border.border-slate-200.rounded-xl.shadow-sm {
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.04);
-  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.03);
+  transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 .bg-white.border.border-slate-200.rounded-xl.shadow-sm:hover {
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.06);
-  border-color: rgb(226 232 240);
+  box-shadow: 0 2px 8px -2px rgb(0 0 0 / 0.06);
+  border-color: rgb(203 213 225 / 0.8);
 }
 
-/* Primary buttons - modern style */
+/* --- Primary Buttons --- */
 .bg-slate-900.hover\:bg-black.text-white {
-  background-color: rgb(15 23 42) !important;
   transition: all 0.15s ease;
 }
 .bg-slate-900.hover\:bg-black.text-white:hover {
-  background-color: rgb(30 41 59) !important;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  box-shadow: 0 2px 8px -2px rgb(15 23 42 / 0.3);
 }
 .bg-slate-900.hover\:bg-black.text-white:active {
   transform: scale(0.98);
 }
 
-/* Secondary buttons - modern style */
+/* --- Secondary Buttons --- */
 .bg-white.border.border-slate-200.hover\:bg-slate-50.text-slate-700 {
   transition: all 0.15s ease;
 }
 .bg-white.border.border-slate-200.hover\:bg-slate-50.text-slate-700:hover {
-  background-color: rgb(248 250 252);
   border-color: rgb(203 213 225);
 }
 .bg-white.border.border-slate-200.hover\:bg-slate-50.text-slate-700:active {
   transform: scale(0.98);
 }
 
-/* Success buttons */
+/* --- Success Buttons --- */
 .bg-emerald-600.hover\:bg-emerald-700.text-white {
   transition: all 0.15s ease;
 }
 .bg-emerald-600.hover\:bg-emerald-700.text-white:hover {
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  box-shadow: 0 2px 8px -2px rgb(5 150 105 / 0.3);
 }
 .bg-emerald-600.hover\:bg-emerald-700.text-white:active {
   transform: scale(0.98);
 }
 
-/* Danger buttons */
+/* --- Danger Buttons --- */
 .bg-rose-600.hover\:bg-rose-700.text-white {
   transition: all 0.15s ease;
 }
 .bg-rose-600.hover\:bg-rose-700.text-white:hover {
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  box-shadow: 0 2px 8px -2px rgb(225 29 72 / 0.3);
 }
 .bg-rose-600.hover\:bg-rose-700.text-white:active {
   transform: scale(0.98);
 }
 
-/* Table rows - subtle hover */
+/* --- Table Rows --- */
 tr.border-b.border-slate-100.hover\:bg-slate-50 {
   transition: background-color 0.1s ease;
 }
@@ -170,7 +224,7 @@ tr.border-b.border-slate-100.hover\:bg-slate-50:hover {
   background-color: rgb(248 250 252);
 }
 
-/* Inputs - modern focus ring */
+/* --- Inputs Focus --- */
 input.w-full.bg-slate-50.border.border-slate-200,
 select.w-full.bg-slate-50.border.border-slate-200,
 textarea.w-full.bg-slate-50.border.border-slate-200 {
@@ -179,31 +233,31 @@ textarea.w-full.bg-slate-50.border.border-slate-200 {
 input.w-full.bg-slate-50.border.border-slate-200:focus,
 select.w-full.bg-slate-50.border.border-slate-200:focus,
 textarea.w-full.bg-slate-50.border.border-slate-200:focus {
-  border-color: rgb(99 102 241);
-  box-shadow: 0 0 0 3px rgb(99 102 241 / 0.1);
+  border-color: rgb(30 41 59);
+  box-shadow: 0 0 0 3px rgb(30 41 59 / 0.08);
 }
 
-/* Badges - refined */
+/* --- Badges --- */
 span.inline-flex.items-center.px-2.py-0\.5.rounded-full {
   letter-spacing: 0.01em;
 }
 
-/* Modal backdrop - blur effect */
+/* --- Modal Backdrop --- */
 .fixed.inset-0.bg-black\/50 {
   backdrop-filter: blur(4px);
 }
 
-/* Section headers - tighter */
+/* --- Section Headers --- */
 h1.text-xl.font-bold.text-slate-900 {
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
-/* KPI cards - subtle animation */
+/* --- KPI Cards Hover --- */
 .bg-white.border.border-slate-200.rounded-xl.shadow-sm.p-6 {
   transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
 .bg-white.border.border-slate-200.rounded-xl.shadow-sm.p-6:hover {
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.06);
+  box-shadow: 0 4px 12px -4px rgb(0 0 0 / 0.08);
   transform: translateY(-1px);
 }
 
@@ -212,10 +266,10 @@ h1.text-xl.font-bold.text-slate-900 {
     text-wrap: balance;
   }
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-slate-700 via-slate-900 to-slate-700;
   }
   .text-gradient-dark {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-slate-300 via-white to-slate-300;
   }
   .bg-glass {
     @apply bg-white/80 backdrop-blur-xl;
@@ -228,13 +282,16 @@ h1.text-xl.font-bold.text-slate-900 {
   }
   .bg-grid {
     background-image:
-      linear-gradient(to right, rgba(148, 163, 184, 0.12) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+      linear-gradient(to right, rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
     background-size: 48px 48px;
   }
 }
 
-/* Modern scrollbar */
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -253,7 +310,6 @@ h1.text-xl.font-bold.text-slate-900 {
   background: #9ca3af;
 }
 
-/* Dark mode scrollbar */
 .dark ::-webkit-scrollbar-thumb {
   background: #4b5563;
 }
@@ -262,14 +318,13 @@ h1.text-xl.font-bold.text-slate-900 {
   background: #6b7280;
 }
 
-/* Marquee animation */
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
 @keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 .animate-marquee {
@@ -280,14 +335,9 @@ h1.text-xl.font-bold.text-slate-900 {
   animation-play-state: paused;
 }
 
-/* Shimmer effect */
 @keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 .animate-shimmer {
@@ -295,28 +345,18 @@ h1.text-xl.font-bold.text-slate-900 {
   animation: shimmer 2s linear infinite;
 }
 
-/* Float animation */
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
 
-/* Gradient animation */
 @keyframes gradient-shift {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 .animate-gradient {
@@ -324,44 +364,38 @@ h1.text-xl.font-bold.text-slate-900 {
   animation: gradient-shift 3s ease infinite;
 }
 
-/* Visible focus states for keyboard navigation (landing page only) */
-.landing-page :focus-visible {
-  outline: 2px solid #2563eb;
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-/* Fade in up */
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.5s ease-out forwards;
+  animation: fadeInUp 0.4s ease-out forwards;
 }
 
-/* Pulse glow */
 @keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 20px 4px rgba(37, 99, 235, 0.2);
-  }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(30, 41, 59, 0.2); }
+  50% { box-shadow: 0 0 16px 4px rgba(30, 41, 59, 0.1); }
 }
 
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
-/* Print styles */
+/* ============================================
+   FOCUS STATES
+   ============================================ */
+
+.landing-page :focus-visible {
+  outline: 2px solid #0f172a;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+
 @media print {
   @page {
     size: letter;
@@ -395,43 +429,36 @@ h1.text-xl.font-bold.text-slate-900 {
   .print\:bg-white {
     background: white !important;
   }
-  /* Hide sidebar, header, nav on print */
   [data-sidebar="sidebar"],
   header,
   nav,
   .sidebar-wrapper {
     display: none !important;
   }
-  /* Reset main content area for print */
   main {
     margin: 0 !important;
     padding: 0 !important;
     max-width: 100% !important;
   }
-  /* Clean up document for print */
   #print-area {
     border: none !important;
     box-shadow: none !important;
     border-radius: 0 !important;
     background: white !important;
   }
-  /* Force white background on all cards for print */
   .bg-white, .bg-slate-50, .bg-slate-900 {
     background: white !important;
     color: #1a1a1a !important;
   }
-  /* Ensure text is dark for print */
   .text-slate-900, .text-white, .text-slate-700, .text-slate-500, .text-slate-400 {
     color: #374151 !important;
   }
-  /* Table print optimization */
   table {
     page-break-inside: avoid;
   }
   tr {
     page-break-inside: avoid;
   }
-  /* No print backgrounds for dark mode */
   .dark\:bg-slate-900, .dark\:bg-slate-800 {
     background: white !important;
   }
