@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { Star } from 'lucide-react';
+import { Stars } from './Stars';
 
 interface TestimonialCardProps {
   quote: string;
@@ -20,16 +20,12 @@ export function TestimonialCard({ quote, author, role, company, rating = 5, clas
         className
       )}
     >
-      <div className="flex gap-1 mb-4">
-        {Array.from({ length: rating }).map((_, i) => (
-          <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-        ))}
-      </div>
+      <Stars rating={rating} className="mb-4" />
       <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
         &ldquo;{quote}&rdquo;
       </p>
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center text-white font-bold text-sm">
+        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
           {author.charAt(0)}
         </div>
         <div>

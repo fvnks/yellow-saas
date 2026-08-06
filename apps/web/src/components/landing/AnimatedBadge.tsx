@@ -13,7 +13,7 @@ export function AnimatedBadge({ children, className, icon }: AnimatedBadgeProps)
   return (
     <div
       className={cn(
-        'inline-flex items-center gap-2 rounded-full border border-amber-200/50 bg-amber-50/80 px-4 py-2 text-sm font-medium text-amber-700 backdrop-blur-sm dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-400',
+        'inline-flex items-center gap-2 rounded-full border border-blue-200/50 bg-blue-50/10 px-4 py-2 text-sm font-medium text-blue-300 backdrop-blur-sm dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-300',
         'animate-fade-in-up',
         className
       )}

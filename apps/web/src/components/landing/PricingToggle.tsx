@@ -26,9 +26,10 @@ export function PricingToggle({ monthlyLabel = 'Mensual', yearlyLabel = 'Anual',
       </span>
       <button
         onClick={handleToggle}
+        aria-pressed={isYearly}
         className={cn(
-          'relative w-12 h-6 rounded-full transition-colors duration-300',
-          isYearly ? 'bg-amber-500' : 'bg-slate-300 dark:bg-slate-600'
+          'relative w-12 h-6 rounded-full cursor-pointer transition-colors duration-300',
+          isYearly ? 'bg-blue-600' : 'bg-slate-300 dark:bg-slate-600'
         )}
       >
         <div

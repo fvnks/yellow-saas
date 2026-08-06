@@ -4,7 +4,7 @@ import Link from 'next/link';
 import {
   Package, ShoppingCart, Users, BarChart3, Shield, Settings,
   Truck, Calculator, Briefcase, ChevronRight, Check, Zap,
-  Building2, FileText, Globe, Lock, Eye, ArrowRight, Star,
+  Building2, FileText, Globe, Lock, Eye, ArrowRight,
   CreditCard, Wallet, TrendingUp, Bell
 } from 'lucide-react';
 import { Marquee } from '@/components/landing/Marquee';
@@ -13,18 +13,20 @@ import { GradientText } from '@/components/landing/GradientText';
 import { TestimonialCard } from '@/components/landing/TestimonialCard';
 import { FaqAccordion } from '@/components/landing/FaqAccordion';
 import { PricingToggle } from '@/components/landing/PricingToggle';
+import { StatsCounter } from '@/components/landing/StatsCounter';
+import { Stars } from '@/components/landing/Stars';
 import { Navbar } from './components/navbar';
 import { Footer } from './components/footer';
 
 const modules = [
-  { icon: Package, title: 'Inventario', description: 'Control completo de stock, trazabilidad por lote y serie, alertas de reorden automáticas.', color: 'from-blue-500 to-cyan-500' },
-  { icon: ShoppingCart, title: 'Ventas', description: 'Cotizaciones, órdenes de venta, facturación electrónica SII, despacho y seguimiento.', color: 'from-emerald-500 to-teal-500' },
-  { icon: Truck, title: 'Compras', description: 'Órdenes de compra, recepción, proveedores, facturas y notas de crédito.', color: 'from-violet-500 to-purple-500' },
-  { icon: Users, title: 'CRM & Clientes', description: '360° del cliente, actividades, pipeline de ventas y segmentación avanzada.', color: 'from-rose-500 to-pink-500' },
-  { icon: BarChart3, title: 'Contabilidad', description: 'Plan de cuentas, asientos automáticos, balance general y estados financieros.', color: 'from-amber-500 to-orange-500' },
-  { icon: Briefcase, title: 'Proyectos', description: 'Gantt, Kanban, gestión de horas, presupuestos y plantillas reutilizables.', color: 'from-indigo-500 to-blue-500' },
-  { icon: Wallet, title: 'Nómina', description: 'Cálculo automático AFP, ISAPRE, licencias, finiquitos y boletas electrónicas.', color: 'from-pink-500 to-rose-500' },
-  { icon: Calculator, title: 'Costos', description: 'Costeo FIFO, Kardex, márgenes por producto y análisis de rentabilidad.', color: 'from-teal-500 to-emerald-500' },
+  { icon: Package, title: 'Inventario', description: 'Control completo de stock, trazabilidad por lote y serie, alertas de reorden automáticas.', color: 'from-sky-500 to-blue-600' },
+  { icon: ShoppingCart, title: 'Ventas', description: 'Cotizaciones, órdenes de venta, facturación electrónica SII, despacho y seguimiento.', color: 'from-blue-500 to-indigo-600' },
+  { icon: Truck, title: 'Compras', description: 'Órdenes de compra, recepción, proveedores, facturas y notas de crédito.', color: 'from-indigo-500 to-violet-600' },
+  { icon: Users, title: 'CRM & Clientes', description: '360° del cliente, actividades, pipeline de ventas y segmentación avanzada.', color: 'from-cyan-500 to-sky-600' },
+  { icon: BarChart3, title: 'Contabilidad', description: 'Plan de cuentas, asientos automáticos, balance general y estados financieros.', color: 'from-blue-600 to-sky-600' },
+  { icon: Briefcase, title: 'Proyectos', description: 'Gantt, Kanban, gestión de horas, presupuestos y plantillas reutilizables.', color: 'from-violet-500 to-indigo-600' },
+  { icon: Wallet, title: 'Nómina', description: 'Cálculo automático AFP, ISAPRE, licencias, finiquitos y boletas electrónicas.', color: 'from-sky-600 to-blue-700' },
+  { icon: Calculator, title: 'Costos', description: 'Costeo FIFO, Kardex, márgenes por producto y análisis de rentabilidad.', color: 'from-indigo-600 to-violet-600' },
 ];
 
 const features = [
@@ -112,14 +114,20 @@ function formatPrice(price: number) {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950">
+    <div className="landing-page min-h-screen bg-white dark:bg-slate-950">
       {/* ─── 1. NAVBAR ─── */}
       <Navbar />
 
       {/* ─── 2. HERO ─── */}
-      <section className="relative pt-32 pb-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-amber-50/50 via-white to-white dark:from-amber-500/5 dark:via-slate-950 dark:to-slate-950" />
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-r from-yellow-400/20 via-amber-400/20 to-orange-400/20 rounded-full blur-3xl" />
+      <section className="relative pt-36 pb-28 overflow-hidden bg-slate-950">
+        {/* Grid pattern */}
+        <div className="absolute inset-0 bg-grid opacity-[0.15]" />
+        {/* Ambient glows */}
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-gradient-to-r from-blue-600/25 via-indigo-600/20 to-sky-500/25 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-10 w-96 h-96 bg-blue-700/15 rounded-full blur-3xl" />
+        <div className="absolute bottom-10 right-10 w-80 h-80 bg-indigo-700/15 rounded-full blur-3xl" />
+        {/* Fade to page bg */}
+        <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-b from-transparent to-white dark:to-slate-950" />
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 text-center">
           <AnimatedBadge
@@ -129,27 +137,27 @@ export default function HomePage() {
             Multi-tenant ERP para PyMEs chilenas
           </AnimatedBadge>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-slate-900 dark:text-white leading-tight mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-            El <GradientText>ERP todo-en-uno</GradientText>
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white leading-[1.08] tracking-tight mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+            El <GradientText className="text-gradient-dark">ERP todo-en-uno</GradientText>
             <br />
             para tu empresa
           </h1>
 
-          <p className="text-lg sm:text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mb-10 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
             Gestiona inventario, ventas, compras, contabilidad y más. Facturación electrónica SII, nómina chilena y multi-tenant nativo.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
             <Link
               href="/register"
-              className="group relative overflow-hidden rounded-xl bg-slate-900 px-8 py-4 text-base font-semibold text-white transition-all duration-300 hover:bg-black hover:shadow-lg hover:shadow-slate-900/25 active:scale-[0.98] dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100"
+              className="group relative overflow-hidden rounded-xl bg-blue-600 px-8 py-4 text-base font-semibold text-white transition-all duration-300 hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-600/30 active:scale-[0.98]"
             >
               Empezar Gratis — 14 días
               <ChevronRight className="inline-block ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
             </Link>
             <Link
               href="#modules"
-              className="group rounded-xl border border-slate-200 bg-white px-8 py-4 text-base font-semibold text-slate-900 transition-all duration-300 hover:bg-slate-50 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
+              className="group rounded-xl border border-slate-700 bg-slate-900/60 px-8 py-4 text-base font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:bg-slate-800 hover:border-slate-600"
             >
               Ver Módulos
               <ArrowRight className="inline-block ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -157,25 +165,84 @@ export default function HomePage() {
           </div>
 
           {/* Social proof */}
-          <div className="mt-16 flex items-center justify-center gap-8 text-sm text-slate-400">
+          <div className="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-slate-400">
             <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4" />
+              <Shield className="w-4 h-4 text-blue-400" />
               <span>SOC 2 Type II</span>
             </div>
             <div className="flex items-center gap-2">
-              <Lock className="w-4 h-4" />
+              <Lock className="w-4 h-4 text-blue-400" />
               <span>Encriptación AES-256</span>
             </div>
             <div className="flex items-center gap-2">
-              <Globe className="w-4 h-4" />
+              <Globe className="w-4 h-4 text-blue-400" />
               <span>SII Certificado</span>
             </div>
           </div>
         </div>
+
+        {/* Dashboard mockup */}
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 mt-16 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+          <div className="relative rounded-2xl border border-slate-700/60 bg-slate-900/80 shadow-2xl shadow-blue-950/40 backdrop-blur-xl overflow-hidden">
+            {/* Window bar */}
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-800">
+              <div className="w-3 h-3 rounded-full bg-rose-500/80" />
+              <div className="w-3 h-3 rounded-full bg-amber-500/80" />
+              <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
+              <div className="ml-4 text-xs text-slate-500">app.yellow-erp.cl/dashboard</div>
+            </div>
+            {/* Mock content */}
+            <div className="p-6 sm:p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div className="text-sm font-semibold text-slate-300">Panel de Control</div>
+                <div className="flex items-center gap-3 text-xs text-slate-500">
+                  <span className="px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700">Semana</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-blue-600/20 border border-blue-500/40 text-blue-300">Mes</span>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                {[
+                  { label: 'Ventas Hoy', value: '$12.4M', change: '+12%' },
+                  { label: 'Clientes', value: '1,247', change: '+5%' },
+                  { label: 'Stock Items', value: '3,891', change: '-2%' },
+                  { label: 'Órdenes', value: '89', change: '+18%' },
+                ].map((kpi) => (
+                  <div key={kpi.label} className="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+                    <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">{kpi.label}</p>
+                    <p className="text-xl font-bold text-white mt-1">{kpi.value}</p>
+                    <p className={`text-xs mt-1 ${kpi.change.startsWith('+') ? 'text-emerald-400' : 'text-rose-400'}`}>{kpi.change}</p>
+                  </div>
+                ))}
+              </div>
+              {/* Fake chart bars */}
+              <div className="flex items-end gap-2 h-32">
+                {[35, 55, 40, 70, 50, 85, 65, 95, 75, 60, 88, 100].map((h, i) => (
+                  <div
+                    key={i}
+                    className="flex-1 rounded-t-lg bg-gradient-to-t from-blue-600/70 to-sky-400/70"
+                    style={{ height: `${h}%` }}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+          {/* Glow under mockup */}
+          <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-3/4 h-16 bg-blue-600/30 rounded-full blur-3xl" />
+        </div>
       </section>
 
-      {/* ─── 3. SOCIAL PROOF / LOGOS ─── */}
-      <section className="py-12 border-y border-slate-100 dark:border-slate-800">
+      {/* ─── 3. STATS (count-up social proof) ─── */}
+      <section className="py-16 px-4 sm:px-6 border-b border-slate-100 dark:border-slate-800">
+        <div className="max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-10">
+          <StatsCounter value={200} suffix="+" label="Empresas activas" />
+          <StatsCounter value={10} suffix="k+" label="Usuarios gestionando" />
+          <StatsCounter value={99.9} decimals={1} suffix="%" label="Disponibilidad" />
+          <StatsCounter value={1} suffix="M+" label="Documentos emitidos" />
+        </div>
+      </section>
+
+      {/* ─── 4. SOCIAL PROOF / LOGOS ─── */}
+      <section className="py-12 border-b border-slate-100 dark:border-slate-800">
         <p className="text-center text-xs font-semibold text-slate-400 uppercase tracking-wider mb-8">
           Powered by las mejores tecnologías
         </p>
@@ -191,7 +258,7 @@ export default function HomePage() {
         </Marquee>
       </section>
 
-      {/* ─── 4. MODULES ─── */}
+      {/* ─── 5. MODULES ─── */}
       <section id="modules" className="py-24 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -220,7 +287,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── 5. FEATURES ─── */}
+      {/* ─── 6. FEATURES ─── */}
       <section className="py-24 px-4 sm:px-6 bg-slate-50 dark:bg-slate-900/50">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -236,8 +303,8 @@ export default function HomePage() {
               <div className="space-y-4">
                 {features.map((f) => (
                   <div key={f.title} className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-                      <f.icon className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                    <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+                      <f.icon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
                       <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{f.title}</h3>
@@ -249,14 +316,14 @@ export default function HomePage() {
             </div>
 
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-amber-400/20 rounded-3xl blur-2xl" />
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/15 to-indigo-500/15 rounded-3xl blur-2xl" />
               <div className="relative rounded-2xl border border-slate-200 bg-white p-8 shadow-xl dark:border-slate-700 dark:bg-slate-800">
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   {[
-                    { label: 'Ventas Hoy', value: '$12.4M', change: '+12%' },
-                    { label: 'Clientes', value: '1,247', change: '+5%' },
-                    { label: 'Stock Items', value: '3,891', change: '-2%' },
-                    { label: 'Órdenes', value: '89', change: '+18%' },
+                    { label: 'Ingresos Mes', value: '$38.2M', change: '+22%' },
+                    { label: 'Facturas', value: '312', change: '+9%' },
+                    { label: 'Almacenes', value: '4', change: '+1' },
+                    { label: 'Proveedores', value: '56', change: '+7%' },
                   ].map((kpi) => (
                     <div key={kpi.label} className="rounded-xl border border-slate-100 dark:border-slate-700 p-4">
                       <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{kpi.label}</p>
@@ -275,7 +342,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── 6. TESTIMONIALS ─── */}
+      {/* ─── 7. TESTIMONIALS ─── */}
       <section className="py-24 overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 mb-12">
           <div className="text-center">
@@ -285,6 +352,17 @@ export default function HomePage() {
             <p className="text-lg text-slate-500 dark:text-slate-400">
               Más de 200 empresas chilenas ya gestionan su operación con nosotros.
             </p>
+
+            {/* Aggregate rating */}
+            <div
+              className="mt-6 inline-flex items-center gap-3 rounded-full border border-slate-200 bg-white px-5 py-2.5 shadow-sm dark:border-slate-700 dark:bg-slate-800/50"
+              role="img"
+              aria-label="Calificación promedio 4.9 de 5, más de 200 reseñas verificadas"
+            >
+              <Stars />
+              <span className="text-sm font-semibold text-slate-900 dark:text-white">4.9/5</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400">· 200+ reseñas verificadas</span>
+            </div>
           </div>
         </div>
 
@@ -301,7 +379,7 @@ export default function HomePage() {
         </Marquee>
       </section>
 
-      {/* ─── 7. PRICING ─── */}
+      {/* ─── 8. PRICING ─── */}
       <section id="pricing" className="py-24 px-4 sm:px-6 bg-slate-50 dark:bg-slate-900/50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
@@ -320,12 +398,12 @@ export default function HomePage() {
                 key={plan.name}
                 className={`relative rounded-2xl border p-8 transition-all duration-300 hover:shadow-lg ${
                   plan.popular
-                    ? 'border-amber-300 bg-white shadow-xl dark:border-amber-500/50 dark:bg-slate-800'
+                    ? 'border-blue-300 bg-white shadow-xl dark:border-blue-500/50 dark:bg-slate-800'
                     : 'border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800/50'
                 }`}
               >
                 {plan.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 px-4 py-1 text-xs font-bold text-white shadow-sm">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-1 text-xs font-bold text-white shadow-sm">
                     Más Popular
                   </div>
                 )}
@@ -359,7 +437,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── 8. FAQ ─── */}
+      {/* ─── 9. FAQ ─── */}
       <section id="faq" className="py-24 px-4 sm:px-6">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
@@ -374,12 +452,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── 9. CTA ─── */}
+      {/* ─── 10. CTA ─── */}
       <section className="py-24 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="relative rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 p-12 sm:p-16 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/10 via-amber-500/10 to-orange-500/10" />
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-gradient-to-r from-yellow-400/20 to-amber-400/20 rounded-full blur-3xl" />
+          <div className="relative rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950 p-12 sm:p-16 overflow-hidden">
+            <div className="absolute inset-0 bg-grid opacity-[0.1]" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-gradient-to-r from-blue-600/25 to-indigo-600/25 rounded-full blur-3xl" />
             <div className="relative">
               <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
                 Empieza a transformar tu empresa hoy
@@ -390,7 +468,7 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link
                   href="/register"
-                  className="group rounded-xl bg-gradient-to-r from-yellow-400 to-amber-500 px-8 py-4 text-base font-bold text-slate-900 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/25 active:scale-[0.98]"
+                  className="group rounded-xl bg-blue-600 px-8 py-4 text-base font-bold text-white transition-all duration-300 hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-600/30 active:scale-[0.98]"
                 >
                   Empezar Gratis
                   <ChevronRight className="inline-block ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -407,7 +485,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── 10. FOOTER ─── */}
+      {/* ─── 11. FOOTER ─── */}
       <Footer />
     </div>
   );

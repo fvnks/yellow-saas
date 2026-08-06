@@ -309,7 +309,7 @@ export default function SelectPage() {
                         {activated ? (
                           <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all duration-200 flex-shrink-0" />
                         ) : (
-                          <Lock className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                          <Lock className="w-4 h-4 text-blue-400 flex-shrink-0" />
                         )}
                       </div>
                       <div className="flex flex-wrap gap-1.5 mt-3">
@@ -357,7 +357,7 @@ export default function SelectPage() {
             >
               <div className="p-6 text-center">
                 <div className={`w-16 h-16 ${selectedModule.iconBg} rounded-2xl flex items-center justify-center mx-auto mb-4`}>
-                  <Lock className="w-8 h-8 text-amber-500" />
+                  <Lock className="w-8 h-8 text-blue-500" />
                 </div>
                 <h2 className="text-lg font-bold text-slate-900">Módulo no activado</h2>
                 <p className="text-sm text-slate-500 mt-2">

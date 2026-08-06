@@ -4,7 +4,8 @@ import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion, type Variants } from 'motion/react';
-import { Eye, EyeOff, Building2, Mail, Lock, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, Building2, Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
+import AuthPanel from '@/components/auth/AuthPanel';
 
 function LoginForm() {
   const router = useRouter();
@@ -74,36 +75,13 @@ function LoginForm() {
   return (
     <div className="flex min-h-screen w-full bg-white font-sans text-slate-900 antialiased selection:bg-slate-900/10 lg:flex-row">
       {/* Left Image Panel */}
-      <div className="relative hidden w-full flex-col p-4 lg:flex lg:min-h-screen lg:w-1/2">
-        <div className="relative h-full w-full overflow-hidden rounded-[24px] bg-slate-900 shadow-xl">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
-          <div className="absolute inset-0 opacity-20">
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500 rounded-full blur-[128px]" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-500 rounded-full blur-[128px]" />
-          </div>
-          {/* Logo overlay */}
-          <div className="absolute top-8 left-8">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/20">
-                <Building2 className="w-7 h-7 text-white" />
-              </div>
-              <span className="text-2xl font-bold text-white">Yellow ERP</span>
-            </div>
-          </div>
-          {/* Bottom text */}
-          <div className="absolute bottom-8 left-8 right-8">
-            <p className="text-white/60 text-sm">
-              Gestión empresarial integral para PyMEs chilenas
-            </p>
-          </div>
-        </div>
-      </div>
+      <AuthPanel />
 
       {/* Right Form Panel */}
       <div className="flex w-full flex-col items-center justify-center p-6 sm:p-12 lg:w-1/2">
         {/* Mobile logo */}
         <div className="lg:hidden mb-8 flex items-center gap-3">
-          <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-slate-950 rounded-xl flex items-center justify-center border border-slate-800">
             <Building2 className="w-6 h-6 text-white" />
           </div>
           <span className="text-xl font-bold text-slate-900">Yellow ERP</span>
@@ -117,7 +95,7 @@ function LoginForm() {
         >
           {/* Title */}
           <motion.div variants={itemVariants} className="mb-10">
-            <h1 className="mb-4 text-[48px] font-semibold leading-[1.05] tracking-tight text-slate-900">
+            <h1 className="mb-4 text-[40px] font-bold leading-[1.05] tracking-tight text-slate-950 sm:text-[48px]">
               Bienvenido
               <br />
               de vuelta
@@ -131,6 +109,7 @@ function LoginForm() {
           {error && (
             <motion.div
               variants={itemVariants}
+              role="alert"
               className="mb-4 flex items-center gap-2 p-3 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-sm"
             >
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
@@ -154,7 +133,7 @@ function LoginForm() {
                   placeholder="admin@yellow-erp.cl"
                   autoComplete="email"
                   required
-                  className="w-full rounded-lg border border-slate-200 bg-white pl-10 pr-4 py-3 text-[14px] text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 transition-colors"
+                  className="w-full rounded-lg border border-slate-200 bg-white pl-10 pr-4 py-3 text-[14px] text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-colors"
                 />
               </div>
             </motion.div>
@@ -174,11 +153,12 @@ function LoginForm() {
                   placeholder="••••••••"
                   autoComplete="current-password"
                   required
-                  className="w-full rounded-lg border border-slate-200 bg-white pl-10 pr-12 py-3 text-[14px] font-mono text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 transition-colors"
+                  className="w-full rounded-lg border border-slate-200 bg-white pl-10 pr-12 py-3 text-[14px] font-mono text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -194,15 +174,18 @@ function LoginForm() {
                   type="checkbox"
                   checked={remember}
                   onChange={(e) => setRemember(e.target.checked)}
-                  className="size-[18px] rounded border-slate-300 text-slate-900 focus:ring-slate-900 transition-colors"
+                  className="size-[18px] rounded border-slate-300 text-blue-600 focus:ring-blue-600 focus:ring-2 transition-colors"
                 />
-                <label htmlFor="remember" className="text-[14px] text-slate-600">
+                <label htmlFor="remember" className="text-[14px] text-slate-600 cursor-pointer">
                   Mantener sesión
                 </label>
               </div>
-              <a href="#" className="text-[14px] font-medium text-slate-800 underline decoration-slate-800 underline-offset-4 transition-colors hover:text-black hover:decoration-black">
+              <Link
+                href="/forgot-password"
+                className="text-[14px] font-medium text-blue-600 hover:text-blue-700 transition-colors"
+              >
                 ¿Olvidaste tu contraseña?
-              </a>
+              </Link>
             </motion.div>
 
             {/* Sign in Button */}
@@ -210,8 +193,9 @@ function LoginForm() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-lg bg-slate-900 py-3 text-[14px] font-medium text-white transition-transform active:scale-[0.98] hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full rounded-lg bg-blue-600 py-3 text-[14px] font-medium text-white transition-all hover:bg-blue-700 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
+                {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
               </button>
             </motion.div>
@@ -227,7 +211,7 @@ function LoginForm() {
           {/* Footer */}
           <motion.div variants={itemVariants} className="mt-8 text-center text-[14px] text-slate-500">
             ¿No tienes cuenta?{' '}
-            <Link href="/register" className="font-semibold text-slate-800 underline decoration-slate-800 underline-offset-4 transition-colors hover:text-black hover:decoration-black">
+            <Link href="/register" className="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
               Regístrate
             </Link>
           </motion.div>
