@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, Search, Hash, Package } from 'lucide-react';
@@ -63,88 +63,88 @@ export default function SerialsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Link href="/dashboard/inventory" className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+          <Link href="/dashboard/inventory" className="p-2 hover:bg-muted rounded-lg transition-colors">
             <ArrowLeft className="w-5 h-5 text-slate-600" />
           </Link>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">Seriales de Productos</h1>
-            <p className="text-sm text-slate-500 mt-1">Gestion de numeros de serie por producto</p>
+            <h1 className="text-xl font-bold text-foreground">Seriales de Productos</h1>
+            <p className="text-sm text-muted-foreground mt-1">Gestion de numeros de serie por producto</p>
           </div>
         </div>
         <button onClick={() => setShowForm(true)}
-          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" /> Nuevo Serial
         </button>
       </div>
 
       {/* Form */}
       {showForm && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-slate-900">Nuevo Serial</h3>
+            <h3 className="text-sm font-semibold text-foreground">Nuevo Serial</h3>
             <button onClick={() => { setShowForm(false); setForm({ product_id: '', warehouse_id: '', serial_number: '', notes: '' }); setProductSearch(''); }}
-              className="text-slate-400 hover:text-slate-600 text-sm">Cancelar</button>
+              className="text-muted-foreground hover:text-slate-600 text-sm">Cancelar</button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Producto</label>
+              <label className="block text-xs font-medium text-foreground">Producto</label>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <input type="text" placeholder="Buscar producto..." value={productSearch} onChange={e => setProductSearch(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               {productSearch && (
-                <div className="border border-slate-200 rounded-lg max-h-40 overflow-y-auto bg-white dark:bg-slate-900 dark:border-slate-800">
+                <div className="border border-border rounded-lg max-h-40 overflow-y-auto bg-card dark:bg-primary dark:border-slate-800">
                   {filteredProducts.slice(0, 10).map((p: any) => (
                     <button key={p.id} onClick={() => { setForm({ ...form, product_id: p.id }); setProductSearch(p.name); }}
-                      className="w-full text-left px-3 py-2 text-sm hover:bg-slate-50 border-b border-slate-100 last:border-0">
-                      <span className="font-medium text-slate-900">{p.name}</span>
-                      <span className="text-slate-500 ml-2">{p.sku}</span>
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-muted border-b border-slate-100 last:border-0">
+                      <span className="font-medium text-foreground">{p.name}</span>
+                      <span className="text-muted-foreground ml-2">{p.sku}</span>
                     </button>
                   ))}
-                  {filteredProducts.length === 0 && <div className="px-3 py-2 text-sm text-slate-500">Sin resultados</div>}
+                  {filteredProducts.length === 0 && <div className="px-3 py-2 text-sm text-muted-foreground">Sin resultados</div>}
                 </div>
               )}
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Bodega</label>
+              <label className="block text-xs font-medium text-foreground">Bodega</label>
               <select value={form.warehouse_id} onChange={e => setForm({ ...form, warehouse_id: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                 <option value="">Seleccionar bodega...</option>
                 {warehouses.map((w: any) => <option key={w.id} value={w.id}>{w.name}</option>)}
               </select>
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Numero de Serie</label>
+              <label className="block text-xs font-medium text-foreground">Numero de Serie</label>
               <input type="text" value={form.serial_number} onChange={e => setForm({ ...form, serial_number: e.target.value })} placeholder="SN-00001"
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Notas</label>
+              <label className="block text-xs font-medium text-foreground">Notas</label>
               <input type="text" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} placeholder="Notas opcionales..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
             </div>
           </div>
           <div className="flex justify-end gap-2 mt-4">
             <button onClick={() => { setShowForm(false); setForm({ product_id: '', warehouse_id: '', serial_number: '', notes: '' }); setProductSearch(''); }}
-              className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
-            <button onClick={saveSerial} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
+              className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+            <button onClick={saveSerial} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
           </div>
         </div>
       )}
 
       {/* Filters */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input type="text" placeholder="Buscar por serial, producto..." value={search} onChange={e => setSearch(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+              className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
           <div className="flex gap-2 flex-wrap">
             {['all', 'in_stock', 'sold', 'damaged', 'returned'].map(s => (
               <button key={s} onClick={() => setStatusFilter(s)}
-                className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors ${statusFilter === s ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+                className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors ${statusFilter === s ? 'bg-primary text-white' : 'bg-muted text-slate-600 hover:bg-slate-200'}`}>
                 {s === 'all' ? 'Todos' : STATUS_MAP[s]?.label || s}
               </button>
             ))}
@@ -153,41 +153,41 @@ export default function SerialsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
         {loading ? (
-          <div className="p-6 space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-12 bg-slate-100 rounded-lg animate-pulse" />)}</div>
+          <div className="p-6 space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-12 bg-muted rounded-lg animate-pulse" />)}</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Serial</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Bodega</th>
-                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
+                <tr className="border-b border-border">
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Serial</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Bodega</th>
+                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
                 </tr>
               </thead>
               <tbody>
                 {serials.map(s => (
-                  <tr key={s.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                  <tr key={s.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
                     <td className="px-4 py-3">
-                      <p className="text-xs font-medium text-slate-900">{s.product?.name}</p>
-                      <p className="text-[9px] text-slate-500">{s.product?.sku}</p>
+                      <p className="text-xs font-medium text-foreground">{s.product?.name}</p>
+                      <p className="text-[9px] text-muted-foreground">{s.product?.sku}</p>
                     </td>
-                    <td className="px-4 py-3 text-xs font-mono font-semibold text-slate-900">{s.serial_number}</td>
-                    <td className="px-4 py-3 text-xs text-slate-700">{s.warehouse?.name || '-'}</td>
+                    <td className="px-4 py-3 text-xs font-mono font-semibold text-foreground">{s.serial_number}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{s.warehouse?.name || '-'}</td>
                     <td className="px-4 py-3 text-center">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${STATUS_MAP[s.status]?.className || 'bg-slate-100 text-slate-600 border border-slate-200'}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${STATUS_MAP[s.status]?.className || 'bg-muted text-slate-600 border border-border'}`}>
                         {STATUS_MAP[s.status]?.label || s.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{new Date(s.created_at).toLocaleDateString('es-CL')}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{new Date(s.created_at).toLocaleDateString('es-CL')}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            {serials.length === 0 && <div className="p-8 text-center text-sm text-slate-500">No hay seriales registrados</div>}
+            {serials.length === 0 && <div className="p-8 text-center text-sm text-muted-foreground">No hay seriales registrados</div>}
           </div>
         )}
       </div>

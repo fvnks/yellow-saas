@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { Users, Search, Building2, Mail, Calendar, Shield, Pencil, X, AlertCircle, CheckCircle } from 'lucide-react';
@@ -81,8 +81,8 @@ export default function AdminUsersPage() {
     owner: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
     admin: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
     manager: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    member: 'bg-slate-500/10 text-slate-400 border-slate-500/20',
-    viewer: 'bg-slate-500/10 text-slate-400 border-slate-500/20',
+    member: 'bg-muted0/10 text-muted-foreground border-slate-500/20',
+    viewer: 'bg-muted0/10 text-muted-foreground border-slate-500/20',
   };
 
   const statusColors: Record<string, string> = {
@@ -96,7 +96,7 @@ export default function AdminUsersPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-white">Usuarios</h1>
-        <p className="text-sm text-slate-400 mt-1">Gestiona usuarios de todas las empresas</p>
+        <p className="text-sm text-muted-foreground mt-1">Gestiona usuarios de todas las empresas</p>
       </div>
 
       {/* Message */}
@@ -111,30 +111,30 @@ export default function AdminUsersPage() {
       )}
 
       {/* Search */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+      <div className="bg-primary border border-slate-800 rounded-xl p-4">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             placeholder="Buscar por nombre, email o empresa..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-slate-800/50 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full bg-slate-800/50 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-indigo-500"
           />
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+      <div className="bg-primary border border-slate-800 rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
             <tr className="border-b border-slate-800">
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Usuario</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Empresa</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Rol</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Estado</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Registro</th>
-              <th className="text-right px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Acciones</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Usuario</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Empresa</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Rol</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Estado</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Registro</th>
+              <th className="text-right px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -148,13 +148,13 @@ export default function AdminUsersPage() {
               ))
             ) : filtered.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-sm text-slate-500">
+                <td colSpan={6} className="px-6 py-12 text-center text-sm text-muted-foreground">
                   No se encontraron usuarios
                 </td>
               </tr>
             ) : (
               filtered.map((user) => (
-                <tr key={user.id} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+                <tr key={user.id} className="border-b border-slate-800/50 hover:bg-primary/90/30 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 bg-slate-800 rounded-lg flex items-center justify-center">
@@ -162,7 +162,7 @@ export default function AdminUsersPage() {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-white">{user.full_name}</p>
-                        <p className="text-xs text-slate-500 flex items-center gap-1">
+                        <p className="text-xs text-muted-foreground flex items-center gap-1">
                           <Mail className="w-3 h-3" /> {user.email}
                         </p>
                       </div>
@@ -170,7 +170,7 @@ export default function AdminUsersPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-1.5 text-sm text-slate-300">
-                      <Building2 className="w-3.5 h-3.5 text-slate-500" />
+                      <Building2 className="w-3.5 h-3.5 text-muted-foreground" />
                       {user.company_name || '—'}
                     </div>
                   </td>
@@ -184,7 +184,7 @@ export default function AdminUsersPage() {
                       {user.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-xs text-slate-400">
+                  <td className="px-6 py-4 text-xs text-muted-foreground">
                     {new Date(user.created_at).toLocaleDateString('es-CL')}
                   </td>
                   <td className="px-6 py-4 text-right">
@@ -194,7 +194,7 @@ export default function AdminUsersPage() {
                         setEditForm({ role: user.role, status: user.status });
                         setMessage({ type: '', text: '' });
                       }}
-                      className="p-1.5 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors"
+                      className="p-1.5 text-muted-foreground hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors"
                       title="Editar"
                     >
                       <Pencil className="w-4 h-4" />
@@ -210,23 +210,23 @@ export default function AdminUsersPage() {
       {/* Edit Modal */}
       {editUser && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-slate-900 border border-slate-700 rounded-xl shadow-xl w-full max-w-md mx-4">
+          <div className="bg-primary border border-slate-700 rounded-xl shadow-xl w-full max-w-md mx-4">
             <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-semibold text-white">Editar Usuario</h2>
-                <p className="text-xs text-slate-400 mt-0.5">{editUser.full_name} — {editUser.email}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{editUser.full_name} — {editUser.email}</p>
               </div>
-              <button onClick={() => setEditUser(null)} className="text-slate-400 hover:text-white">
+              <button onClick={() => setEditUser(null)} className="text-muted-foreground hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleUpdate} className="p-6 space-y-4">
               <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-400">Rol</label>
+                <label className="text-xs font-medium text-muted-foreground">Rol</label>
                 <select
                   value={editForm.role}
                   onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                 >
                   <option value="owner">Owner</option>
                   <option value="admin">Admin</option>
@@ -236,11 +236,11 @@ export default function AdminUsersPage() {
                 </select>
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-400">Estado</label>
+                <label className="text-xs font-medium text-muted-foreground">Estado</label>
                 <select
                   value={editForm.status}
                   onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                 >
                   <option value="active">Activo</option>
                   <option value="invited">Invitado</option>

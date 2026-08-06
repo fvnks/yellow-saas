@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { DollarSign, ShoppingCart, TrendingUp, Clock, CreditCard, AlertTriangle, FileText, BarChart3, Calendar } from 'lucide-react';
@@ -119,13 +119,13 @@ export default function CustomerAnalytics({ customerId }: Props) {
 
   if (loading) {
     return (
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
         <div className="px-6 py-4 border-b border-slate-100">
           <div className="h-4 w-36 bg-slate-200 rounded animate-pulse" />
         </div>
         <div className="p-6 grid grid-cols-2 gap-4">
           {[1, 2, 3, 4, 5, 6].map(i => (
-            <div key={i} className="h-24 bg-slate-100 rounded animate-pulse" />
+            <div key={i} className="h-24 bg-muted rounded animate-pulse" />
           ))}
         </div>
       </div>
@@ -136,13 +136,13 @@ export default function CustomerAnalytics({ customerId }: Props) {
 
   if (!metrics) {
     return (
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
         <div className="px-6 py-4 border-b border-slate-100">
-          <h3 className="text-sm font-semibold text-slate-900">Analytics</h3>
+          <h3 className="text-sm font-semibold text-foreground">Analytics</h3>
         </div>
         <div className="text-center py-12">
           <BarChart3 className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-          <p className="text-sm text-slate-500">Sin datos suficientes para analytics</p>
+          <p className="text-sm text-muted-foreground">Sin datos suficientes para analytics</p>
         </div>
       </div>
     );
@@ -157,18 +157,18 @@ export default function CustomerAnalytics({ customerId }: Props) {
   const maxRevenue = Math.max(...monthlyEntries.map(([, v]) => v), 1);
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+    <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
       <div className="px-6 py-4 border-b border-slate-100">
-        <h3 className="text-sm font-semibold text-slate-900">Analytics</h3>
+        <h3 className="text-sm font-semibold text-foreground">Analytics</h3>
       </div>
 
       <div className="p-6 space-y-6">
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Valor de Vida (LTV)</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">{formatCurrency(metrics.ltv)}</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Valor de Vida (LTV)</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{formatCurrency(metrics.ltv)}</p>
               </div>
               <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
                 <DollarSign className="w-6 h-6 text-indigo-600" />
@@ -176,11 +176,11 @@ export default function CustomerAnalytics({ customerId }: Props) {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Ticket Promedio</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">{formatCurrency(metrics.ticketPromedio)}</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Ticket Promedio</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{formatCurrency(metrics.ticketPromedio)}</p>
               </div>
               <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">
                 <TrendingUp className="w-6 h-6 text-emerald-600" />
@@ -188,11 +188,11 @@ export default function CustomerAnalytics({ customerId }: Props) {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Frecuencia de Compra</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">{formatDays(metrics.frecuenciaCompra)}</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Frecuencia de Compra</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{formatDays(metrics.frecuenciaCompra)}</p>
               </div>
               <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
                 <Clock className="w-6 h-6 text-amber-600" />
@@ -200,11 +200,11 @@ export default function CustomerAnalytics({ customerId }: Props) {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Pedidos Totales</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">{metrics.pedidosTotales}</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Pedidos Totales</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{metrics.pedidosTotales}</p>
               </div>
               <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
                 <ShoppingCart className="w-6 h-6 text-blue-600" />
@@ -212,35 +212,35 @@ export default function CustomerAnalytics({ customerId }: Props) {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Primera Compra</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">{formatDate(metrics.primeraCompra)}</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Primera Compra</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{formatDate(metrics.primeraCompra)}</p>
               </div>
-              <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
                 <Calendar className="w-6 h-6 text-slate-600" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Última Compra</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">{formatDate(metrics.ultimaCompra)}</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Última Compra</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{formatDate(metrics.ultimaCompra)}</p>
               </div>
-              <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
                 <Calendar className="w-6 h-6 text-slate-600" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Facturas Pagadas</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">{metrics.facturasPagadas}</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Facturas Pagadas</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{metrics.facturasPagadas}</p>
               </div>
               <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">
                 <CreditCard className="w-6 h-6 text-emerald-600" />
@@ -248,11 +248,11 @@ export default function CustomerAnalytics({ customerId }: Props) {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Facturas Pendientes</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">{metrics.facturasPendientes}</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Facturas Pendientes</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{metrics.facturasPendientes}</p>
                 <p className="text-xs text-amber-600 mt-1">{formatCurrency(metrics.montoPendiente)}</p>
               </div>
               <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
@@ -262,9 +262,9 @@ export default function CustomerAnalytics({ customerId }: Props) {
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
           <div className="px-6 py-4 border-b border-slate-100">
-            <h4 className="text-sm font-semibold text-slate-900">Ingresos Mensuales (Últimos 12 meses)</h4>
+            <h4 className="text-sm font-semibold text-foreground">Ingresos Mensuales (Últimos 12 meses)</h4>
           </div>
           <div className="p-6">
             <div className="flex items-end gap-2 h-40">
@@ -273,14 +273,14 @@ export default function CustomerAnalytics({ customerId }: Props) {
                 const height = value > 0 ? Math.max((value / maxRevenue) * 100, 4) : 0;
                 return (
                   <div key={key} className="flex-1 flex flex-col items-center gap-1">
-                    <span className="text-[8px] text-slate-500">{value > 0 ? formatCurrency(value) : ''}</span>
+                    <span className="text-[8px] text-muted-foreground">{value > 0 ? formatCurrency(value) : ''}</span>
                     <div className="w-full flex justify-center">
                       <div
                         className="w-full max-w-[40px] bg-indigo-500 rounded-t transition-all"
                         style={{ height: `${height}%` }}
                       />
                     </div>
-                    <span className="text-[8px] text-slate-500">{monthLabels[month]}</span>
+                    <span className="text-[8px] text-muted-foreground">{monthLabels[month]}</span>
                   </div>
                 );
               })}

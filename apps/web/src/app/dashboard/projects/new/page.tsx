@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -54,53 +54,53 @@ export default function NewProjectPage() {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Link href="/dashboard/projects">
-          <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+          <button className="p-2 hover:bg-muted rounded-lg transition-colors">
             <ArrowLeft className="w-5 h-5 text-slate-600" />
           </button>
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Nuevo Proyecto</h1>
-          <p className="text-sm text-slate-500 mt-1">Crear un nuevo proyecto</p>
+          <h1 className="text-xl font-bold text-foreground">Nuevo Proyecto</h1>
+          <p className="text-sm text-muted-foreground mt-1">Crear un nuevo proyecto</p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 space-y-6">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Nombre *</label>
+              <label className="block text-xs font-medium text-foreground">Nombre *</label>
               <input type="text" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="Nombre del proyecto" />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Codigo *</label>
+              <label className="block text-xs font-medium text-foreground">Codigo *</label>
               <input type="text" required value={form.code} onChange={e => setForm({ ...form, code: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="PRJ-001" />
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Descripcion</label>
+            <label className="block text-xs font-medium text-foreground">Descripcion</label>
             <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Descripcion del proyecto..." />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Cliente</label>
+              <label className="block text-xs font-medium text-foreground">Cliente</label>
               <select value={form.customer_id} onChange={e => setForm({ ...form, customer_id: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                 <option value="">Sin cliente</option>
                 {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Gerente del Proyecto</label>
+              <label className="block text-xs font-medium text-foreground">Gerente del Proyecto</label>
               <select value={form.project_manager_id} onChange={e => setForm({ ...form, project_manager_id: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                 <option value="">Sin asignar</option>
                 {users.map(u => <option key={u.id} value={u.id}>{u.full_name}</option>)}
               </select>
@@ -109,9 +109,9 @@ export default function NewProjectPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Centro de Costo</label>
+              <label className="block text-xs font-medium text-foreground">Centro de Costo</label>
               <select value={form.cost_center_id} onChange={e => setForm({ ...form, cost_center_id: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                 <option value="">Sin centro de costo</option>
                 {costCenters.map(cc => <option key={cc.id} value={cc.id}>{cc.code} - {cc.name}</option>)}
               </select>
@@ -120,25 +120,25 @@ export default function NewProjectPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Fecha Inicio</label>
+              <label className="block text-xs font-medium text-foreground">Fecha Inicio</label>
               <input type="date" value={form.start_date} onChange={e => setForm({ ...form, start_date: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Fecha Fin</label>
+              <label className="block text-xs font-medium text-foreground">Fecha Fin</label>
               <input type="date" value={form.end_date} onChange={e => setForm({ ...form, end_date: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Presupuesto (CLP)</label>
+              <label className="block text-xs font-medium text-foreground">Presupuesto (CLP)</label>
               <input type="number" value={form.budget} onChange={e => setForm({ ...form, budget: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="0" />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Estado</label>
+              <label className="block text-xs font-medium text-foreground">Estado</label>
               <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                 {PROJECT_STATUSES.map(s => (
                   <option key={s.value} value={s.value}>{s.label}</option>
                 ))}
@@ -149,12 +149,12 @@ export default function NewProjectPage() {
 
         <div className="flex items-center justify-end gap-3 mt-6">
           <Link href="/dashboard/projects">
-            <button type="button" className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            <button type="button" className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
               Cancelar
             </button>
           </Link>
           <button type="submit" disabled={saving || !form.name || !form.code}
-            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+            className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
             <Save className="w-4 h-4" />
             {saving ? 'Guardando...' : 'Crear Proyecto'}
           </button>

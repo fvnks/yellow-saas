@@ -117,12 +117,12 @@ export default function NewPurchaseOrderPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/purchases" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href="/dashboard/purchases" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Nueva Orden de Compra</h1>
-          <p className="text-sm text-slate-500 mt-1">Crear una nueva orden de compra a proveedor</p>
+          <h1 className="text-xl font-bold text-foreground">Nueva Orden de Compra</h1>
+          <p className="text-sm text-muted-foreground mt-1">Crear una nueva orden de compra a proveedor</p>
         </div>
       </div>
 
@@ -194,24 +194,24 @@ export default function NewPurchaseOrderPage() {
                 <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-slate-200">
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-8">#</th>
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
-                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-24">Cantidad</th>
-                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-32">Precio Unit.</th>
-                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-32">Total</th>
+                    <tr className="border-b border-border">
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider w-8">#</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th>
+                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider w-24">Cantidad</th>
+                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider w-32">Precio Unit.</th>
+                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider w-32">Total</th>
                       <th className="w-12 px-4 py-3"></th>
                     </tr>
                   </thead>
                   <tbody>
                     {items.map((item, index) => (
-                      <tr key={index} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                        <td className="px-4 py-3 text-xs text-slate-500">{index + 1}</td>
+                      <tr key={index} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                        <td className="px-4 py-3 text-xs text-muted-foreground">{index + 1}</td>
                         <td className="px-4 py-3">
                           <select
                             value={item.productId}
                             onChange={(e) => handleItemChange(index, 'productId', e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                            className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                           >
                             <option value="">Seleccionar producto...</option>
                             {products.map(p => (
@@ -225,7 +225,7 @@ export default function NewPurchaseOrderPage() {
                             min="1"
                             value={item.quantity}
                             onChange={(e) => handleItemChange(index, 'quantity', parseInt(e.target.value) || 1)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                            className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                           />
                         </td>
                         <td className="px-4 py-3">
@@ -234,17 +234,17 @@ export default function NewPurchaseOrderPage() {
                             min="0"
                             value={item.unitPrice}
                             onChange={(e) => handleItemChange(index, 'unitPrice', parseFloat(e.target.value) || 0)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 text-right focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                            className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground text-right focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                           />
                         </td>
-                        <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">
+                        <td className="px-4 py-3 text-sm text-foreground text-right font-medium">
                           ${(item.quantity * item.unitPrice).toLocaleString('es-CL')}
                         </td>
                         <td className="px-4 py-3">
                           <button
                             type="button"
                             onClick={() => removeItem(index)}
-                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                            className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
                             aria-label="Eliminar item"
                             disabled={items.length === 1}
                           >
@@ -266,22 +266,22 @@ export default function NewPurchaseOrderPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Notas para el Proveedor</label>
+                  <label className="block text-xs font-medium text-foreground">Notas para el Proveedor</label>
                   <textarea
                     value={formData.notes}
                     onChange={handleFormChange('notes')}
                     rows={3}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors resize-none"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
                     placeholder="Instrucciones especiales para el proveedor..."
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Notas Internas</label>
+                  <label className="block text-xs font-medium text-foreground">Notas Internas</label>
                   <textarea
                     value={formData.internalNotes}
                     onChange={handleFormChange('internalNotes')}
                     rows={2}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors resize-none"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
                     placeholder="Notas internas (no se ven en el documento)..."
                   />
                 </div>
@@ -298,21 +298,21 @@ export default function NewPurchaseOrderPage() {
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">Subtotal</span>
-                    <span className="font-medium text-slate-900">${subtotal.toLocaleString('es-CL')}</span>
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span className="font-medium text-foreground">${subtotal.toLocaleString('es-CL')}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">IVA (19%)</span>
-                    <span className="font-medium text-slate-900">${taxAmount.toLocaleString('es-CL')}</span>
+                    <span className="text-muted-foreground">IVA (19%)</span>
+                    <span className="font-medium text-foreground">${taxAmount.toLocaleString('es-CL')}</span>
                   </div>
-                  <hr className="border-slate-200" />
+                  <hr className="border-border" />
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold text-slate-900">Total</span>
-                    <span className="text-xl font-bold text-slate-900">${total.toLocaleString('es-CL')}</span>
+                    <span className="text-sm font-semibold text-foreground">Total</span>
+                    <span className="text-xl font-bold text-foreground">${total.toLocaleString('es-CL')}</span>
                   </div>
                 </div>
 
-                <div className="space-y-2 text-xs text-slate-500">
+                <div className="space-y-2 text-xs text-muted-foreground">
                   <div className="flex items-center justify-between">
                     <span>Items:</span>
                     <span className="font-medium">{items.filter(i => i.productId).length}</span>

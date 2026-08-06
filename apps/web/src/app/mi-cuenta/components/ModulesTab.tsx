@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Puzzle, Check, Plus } from 'lucide-react';
@@ -105,18 +105,18 @@ export default function ModulesTab() {
   const filteredModules = catalog.filter(m => m.category === activeCategory);
 
   if (loading) {
-    return <div className="space-y-4">{[1, 2, 3].map(i => <div key={i} className="h-40 bg-slate-100 rounded-xl animate-pulse" />)}</div>;
+    return <div className="space-y-4">{[1, 2, 3].map(i => <div key={i} className="h-40 bg-muted rounded-xl animate-pulse" />)}</div>;
   }
 
   return (
     <div className="space-y-5">
       <div>
-        <h3 className="text-lg font-semibold text-slate-900">Módulos Adicionales</h3>
-        <p className="text-sm text-slate-500">Activa módulos extra para potenciar tu ERP</p>
+        <h3 className="text-lg font-semibold text-foreground">Módulos Adicionales</h3>
+        <p className="text-sm text-muted-foreground">Activa módulos extra para potenciar tu ERP</p>
       </div>
 
       {/* Category Tabs */}
-      <div className="flex items-center gap-1 bg-slate-100 rounded-xl p-1 overflow-x-auto">
+      <div className="flex items-center gap-1 bg-muted rounded-xl p-1 overflow-x-auto">
         {categories.map(category => {
           const isActive = activeCategory === category;
           const categoryCount = catalog.filter(m => m.category === category).length;
@@ -127,14 +127,14 @@ export default function ModulesTab() {
               className={cn(
                 "flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-all whitespace-nowrap",
                 isActive
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
+                  ? "bg-card text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground hover:bg-card/50"
               )}
             >
               {CATEGORY_LABELS[category] || category}
               <span className={cn(
                 "px-1.5 py-0.5 rounded-full text-[9px] font-semibold",
-                isActive ? "bg-indigo-50 text-indigo-600" : "bg-slate-200 text-slate-500"
+                isActive ? "bg-indigo-50 text-indigo-600" : "bg-slate-200 text-muted-foreground"
               )}>
                 {categoryCount}
               </span>
@@ -148,33 +148,33 @@ export default function ModulesTab() {
         {filteredModules.map(module => {
           const active = isActivated(module.name);
           return (
-            <div key={module.id} className={`bg-white border rounded-xl p-6 transition-all ${active ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 hover:border-slate-300 hover:shadow-md'}`}>
+            <div key={module.id} className={`bg-card border rounded-xl p-6 transition-all ${active ? 'border-emerald-200 bg-emerald-50/30' : 'border-border hover:border-slate-300 hover:shadow-md'}`}>
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${active ? 'bg-emerald-100' : 'bg-indigo-50'}`}>
                     <Puzzle className={`w-5 h-5 ${active ? 'text-emerald-600' : 'text-indigo-600'}`} />
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-slate-900">{module.label}</h4>
-                    <p className="text-xs text-slate-500 mt-0.5">{module.description}</p>
+                    <h4 className="text-sm font-semibold text-foreground">{module.label}</h4>
+                    <p className="text-xs text-muted-foreground mt-0.5">{module.description}</p>
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-4 mb-4">
-                <div className="text-center flex-1 py-2 bg-slate-50 rounded-lg">
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase">Mensual</p>
-                  <p className="text-sm font-bold text-slate-900 mt-0.5">{formatPrice(module.price_monthly)}<span className="text-xs font-normal text-slate-400">/mes</span></p>
+                <div className="text-center flex-1 py-2 bg-muted rounded-lg">
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase">Mensual</p>
+                  <p className="text-sm font-bold text-foreground mt-0.5">{formatPrice(module.price_monthly)}<span className="text-xs font-normal text-muted-foreground">/mes</span></p>
                 </div>
-                <div className="text-center flex-1 py-2 bg-slate-50 rounded-lg">
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase">Anual</p>
-                  <p className="text-sm font-bold text-slate-900 mt-0.5">{formatPrice(module.price_yearly)}<span className="text-xs font-normal text-slate-400">/año</span></p>
+                <div className="text-center flex-1 py-2 bg-muted rounded-lg">
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase">Anual</p>
+                  <p className="text-sm font-bold text-foreground mt-0.5">{formatPrice(module.price_yearly)}<span className="text-xs font-normal text-muted-foreground">/año</span></p>
                 </div>
               </div>
 
               <div className="flex flex-wrap gap-1.5 mb-5">
                 {module.features.map((feature, i) => (
-                  <span key={i} className="inline-flex items-center px-2 py-0.5 bg-slate-50 text-slate-600 text-[10px] font-medium rounded-md border border-slate-100">
+                  <span key={i} className="inline-flex items-center px-2 py-0.5 bg-muted text-slate-600 text-[10px] font-medium rounded-md border border-slate-100">
                     {feature}
                   </span>
                 ))}
@@ -188,7 +188,7 @@ export default function ModulesTab() {
                 <button
                   onClick={() => handleActivate(module.name)}
                   disabled={activating === module.name}
-                  className="w-full bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50"
+                  className="w-full bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50"
                 >
                   {activating === module.name ? 'Activando...' : <><Plus className="w-3.5 h-3.5" /> Activar Módulo</>}
                 </button>

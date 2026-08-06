@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Hash, Plus, Search, XCircle, CheckCircle, AlertTriangle, Package, Trash2, X } from 'lucide-react';
@@ -119,26 +119,26 @@ export default function ProductSerialNumbers() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Hash className="w-4 h-4 text-slate-500" />
-          <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Numeros de Serie ({serials.length})</span>
+          <Hash className="w-4 h-4 text-muted-foreground" />
+          <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Numeros de Serie ({serials.length})</span>
         </div>
         <button onClick={() => setShowCreate(!showCreate)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-medium transition-colors">
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary hover:bg-primary/90 text-white rounded-lg text-xs font-medium transition-colors">
           <Plus className="w-3.5 h-3.5" /> Registrar
         </button>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl p-3 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl p-3 dark:bg-primary dark:border-slate-800">
         <div className="flex items-center gap-3">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input type="text" value={search} onChange={e => setSearch(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && loadSerials()}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
               placeholder="Buscar por serial..." />
           </div>
           <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            className="bg-muted border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20">
             <option value="">Todos</option>
             {Object.entries(statusConfig).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
           </select>
@@ -146,36 +146,36 @@ export default function ProductSerialNumbers() {
       </div>
 
       {showCreate && (
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+        <div className="bg-muted border border-border rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-700">Registrar Serial</span>
+            <span className="text-xs font-medium text-foreground">Registrar Serial</span>
             <button onClick={() => setShowCreate(false)} className="p-1 hover:bg-slate-200 rounded">
-              <X className="w-3 h-3 text-slate-400" />
+              <X className="w-3 h-3 text-muted-foreground" />
             </button>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <select value={form.product_id} onChange={e => setForm({ ...form, product_id: e.target.value })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
               <option value="">Producto...</option>
               {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
             <select value={form.warehouse_id} onChange={e => setForm({ ...form, warehouse_id: e.target.value })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
               <option value="">Bodega...</option>
               {warehouses.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}
             </select>
             <input type="text" value={form.serial_number} onChange={e => setForm({ ...form, serial_number: e.target.value })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
               placeholder="Numero de serie" />
             <input type="text" value={form.batch_number} onChange={e => setForm({ ...form, batch_number: e.target.value })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
               placeholder="Lote (opcional)" />
             <input type="text" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })}
-              className="col-span-2 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+              className="col-span-2 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
               placeholder="Notas" />
           </div>
           <button onClick={handleCreate}
-            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Registrar
           </button>
         </div>
@@ -183,12 +183,12 @@ export default function ProductSerialNumbers() {
 
       {loading ? (
         <div className="space-y-2">
-          {[1, 2, 3].map(i => <div key={i} className="h-16 bg-slate-100 rounded-xl animate-pulse" />)}
+          {[1, 2, 3].map(i => <div key={i} className="h-16 bg-muted rounded-xl animate-pulse" />)}
         </div>
       ) : serials.length === 0 ? (
-        <div className="text-center py-12 bg-slate-50 border border-dashed border-slate-300 rounded-xl">
+        <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
           <Hash className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-          <p className="text-xs text-slate-400">Sin numeros de serie registrados</p>
+          <p className="text-xs text-muted-foreground">Sin numeros de serie registrados</p>
         </div>
       ) : (
         <div className="space-y-1">
@@ -197,16 +197,16 @@ export default function ProductSerialNumbers() {
             return (
               <div key={s.id} className={`flex items-center justify-between p-3 rounded-xl border ${cfg.bg}`}>
                 <div className="flex items-center gap-3">
-                  <Hash className="w-4 h-4 text-slate-500" />
+                  <Hash className="w-4 h-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm font-mono font-medium text-slate-900">{s.serial_number}</p>
-                    <p className="text-[9px] text-slate-500">{s.product_name} | {s.warehouse_name}</p>
+                    <p className="text-sm font-mono font-medium text-foreground">{s.serial_number}</p>
+                    <p className="text-[9px] text-muted-foreground">{s.product_name} | {s.warehouse_name}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className={`text-[9px] font-semibold ${cfg.color}`}>{cfg.label}</span>
                   <select value={s.status} onChange={e => handleStatus(s.id, e.target.value)}
-                    className="bg-white border border-slate-200 rounded px-2 py-1 text-[9px] focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    className="bg-card border border-border rounded px-2 py-1 text-[9px] focus:outline-none focus:ring-2 focus:ring-primary/20">
                     {Object.entries(statusConfig).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
                   </select>
                   <button onClick={() => handleDelete(s.id)}

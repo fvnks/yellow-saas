@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -74,7 +74,7 @@ function ResetPasswordForm() {
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-white font-sans text-slate-900 antialiased lg:flex-row">
+    <div className="flex min-h-screen w-full bg-card font-sans text-foreground antialiased lg:flex-row">
       {/* Left Image Panel */}
       <AuthPanel />
 
@@ -85,7 +85,7 @@ function ResetPasswordForm() {
           <div className="w-10 h-10 bg-slate-950 rounded-xl flex items-center justify-center border border-slate-800">
             <Building2 className="w-6 h-6 text-white" />
           </div>
-          <span className="text-xl font-bold text-slate-900">Yellow ERP</span>
+          <span className="text-xl font-bold text-foreground">Yellow ERP</span>
         </div>
 
         <motion.div
@@ -100,7 +100,7 @@ function ResetPasswordForm() {
               <motion.div variants={itemVariants} className="mb-8">
                 <Link
                   href="/login"
-                  className="inline-flex items-center gap-2 text-[14px] text-slate-500 hover:text-slate-700 transition-colors"
+                  className="inline-flex items-center gap-2 text-[14px] text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Volver a iniciar sesión
@@ -117,7 +117,7 @@ function ResetPasswordForm() {
                   <br />
                   contraseña
                 </h1>
-                <p className="text-[15px] text-slate-500 text-balance">
+                <p className="text-[15px] text-muted-foreground text-balance">
                   Define una nueva contraseña para tu cuenta.
                 </p>
               </motion.div>
@@ -141,7 +141,7 @@ function ResetPasswordForm() {
                     Nueva contraseña
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <input
                       id="password"
                       type={showPassword ? 'text' : 'password'}
@@ -150,13 +150,13 @@ function ResetPasswordForm() {
                       placeholder="••••••••"
                       autoComplete="new-password"
                       required
-                      className="w-full rounded-lg border border-slate-200 bg-white pl-10 pr-12 py-3 text-[14px] font-mono text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-colors"
+                      className="w-full rounded-lg border border-border bg-card pl-10 pr-12 py-3 text-[14px] font-mono text-foreground placeholder:text-muted-foreground focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-colors"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 transition-colors"
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-slate-600 transition-colors"
                     >
                       {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
@@ -169,7 +169,7 @@ function ResetPasswordForm() {
                     Confirmar contraseña
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <input
                       id="confirmPassword"
                       type={showConfirmPassword ? 'text' : 'password'}
@@ -178,22 +178,22 @@ function ResetPasswordForm() {
                       placeholder="••••••••"
                       autoComplete="new-password"
                       required
-                      className="w-full rounded-lg border border-slate-200 bg-white pl-10 pr-12 py-3 text-[14px] font-mono text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-colors"
+                      className="w-full rounded-lg border border-border bg-card pl-10 pr-12 py-3 text-[14px] font-mono text-foreground placeholder:text-muted-foreground focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-colors"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 transition-colors"
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-slate-600 transition-colors"
                     >
                       {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
                   </div>
                 </motion.div>
 
-                <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                <div className="bg-muted p-4 rounded-lg border border-slate-100">
                   <p className="text-sm text-slate-600 font-medium mb-2">La contraseña debe incluir:</p>
-                  <ul className="text-xs text-slate-500 space-y-1">
+                  <ul className="text-xs text-muted-foreground space-y-1">
                     <li>• Al menos 8 caracteres</li>
                     <li>• Una letra mayúscula y una minúscula</li>
                     <li>• Al menos un número</li>
@@ -206,7 +206,7 @@ function ResetPasswordForm() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full rounded-lg bg-slate-900 hover:bg-slate-800 py-3 text-[14px] font-medium text-white transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full rounded-lg bg-primary hover:bg-primary/90 py-3 text-[14px] font-medium text-white transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                     {loading ? 'Guardando...' : 'Restablecer contraseña'}
@@ -229,12 +229,12 @@ function ResetPasswordForm() {
                 <h1 className="mb-3 text-2xl font-bold tracking-tight text-slate-950">
                   ¡Contraseña actualizada!
                 </h1>
-                <p className="text-[15px] text-slate-500 text-balance">
+                <p className="text-[15px] text-muted-foreground text-balance">
                   Tu contraseña fue restablecida correctamente. Ahora puedes iniciar sesión con tu nueva contraseña.
                 </p>
                 <button
                   onClick={() => router.push('/login')}
-                  className="mt-8 w-full rounded-lg bg-slate-900 hover:bg-slate-800 text-white px-4 py-3 text-sm font-medium transition-all duration-150 active:scale-[0.98]"
+                  className="mt-8 w-full rounded-lg bg-primary hover:bg-primary/90 text-white px-4 py-3 text-sm font-medium transition-all duration-150 active:scale-[0.98]"
                 >
                   Ir a Iniciar Sesión
                 </button>
@@ -249,7 +249,7 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center"><p className="text-slate-500">Cargando...</p></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-muted flex items-center justify-center"><p className="text-muted-foreground">Cargando...</p></div>}>
       <ResetPasswordForm />
     </Suspense>
   );

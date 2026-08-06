@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Plus, Trash2, Zap, ZapOff, Play } from 'lucide-react';
@@ -108,7 +108,7 @@ export default function AutomationManager({ projectId }: AutomationManagerProps)
   if (loading) {
     return (
       <div className="space-y-3">
-        {[1, 2].map(i => <div key={i} className="h-16 bg-slate-100 rounded-xl animate-pulse" />)}
+        {[1, 2].map(i => <div key={i} className="h-16 bg-muted rounded-xl animate-pulse" />)}
       </div>
     );
   }
@@ -118,30 +118,30 @@ export default function AutomationManager({ projectId }: AutomationManagerProps)
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Zap className="w-4 h-4 text-amber-500" />
-          <h3 className="text-sm font-semibold text-slate-900">Automatización</h3>
-          <span className="text-[10px] text-slate-400">{rules.length} reglas</span>
+          <h3 className="text-sm font-semibold text-foreground">Automatización</h3>
+          <span className="text-[10px] text-muted-foreground">{rules.length} reglas</span>
         </div>
         <button onClick={() => setShowCreate(true)}
-          className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
+          className="bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
           <Plus className="w-3.5 h-3.5" /> Nueva Regla
         </button>
       </div>
 
       {showCreate && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 space-y-3">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 space-y-3">
           <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20"
             placeholder="Nombre de la regla..." />
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="block text-[10px] font-semibold text-slate-500 uppercase">Cuando...</label>
+              <label className="block text-[10px] font-semibold text-muted-foreground uppercase">Cuando...</label>
               <select value={form.trigger_type} onChange={e => setForm({ ...form, trigger_type: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20">
                 {Object.entries(triggerLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
               </select>
               {(form.trigger_type === 'status_change') && (
                 <select value={form.trigger_value} onChange={e => setForm({ ...form, trigger_value: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20">
                   <option value="">Cualquier estado</option>
                   <option value="todo">Por Hacer</option>
                   <option value="in_progress">En Progreso</option>
@@ -151,22 +151,22 @@ export default function AutomationManager({ projectId }: AutomationManagerProps)
               )}
             </div>
             <div className="space-y-1">
-              <label className="block text-[10px] font-semibold text-slate-500 uppercase">Entonces...</label>
+              <label className="block text-[10px] font-semibold text-muted-foreground uppercase">Entonces...</label>
               <select value={form.action_type} onChange={e => setForm({ ...form, action_type: e.target.value, action_config: getPresetConfig(e.target.value) })}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20">
                 {Object.entries(actionLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
               </select>
             </div>
           </div>
           <div className="space-y-1">
-            <label className="block text-[10px] font-semibold text-slate-500 uppercase">Configuración (JSON)</label>
+            <label className="block text-[10px] font-semibold text-muted-foreground uppercase">Configuración (JSON)</label>
             <textarea value={form.action_config} onChange={e => setForm({ ...form, action_config: e.target.value })} rows={4}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-xs text-foreground font-mono focus:outline-none focus:ring-2 focus:ring-primary/20" />
           </div>
           <div className="flex justify-end gap-2">
-            <button onClick={() => setShowCreate(false)} className="px-3 py-1.5 text-xs text-slate-600 hover:text-slate-900">Cancelar</button>
+            <button onClick={() => setShowCreate(false)} className="px-3 py-1.5 text-xs text-slate-600 hover:text-foreground">Cancelar</button>
             <button onClick={handleCreate} disabled={saving || !form.name}
-              className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50">
+              className="bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50">
               {saving ? 'Creando...' : 'Crear Regla'}
             </button>
           </div>
@@ -174,32 +174,32 @@ export default function AutomationManager({ projectId }: AutomationManagerProps)
       )}
 
       {rules.length === 0 ? (
-        <div className="text-center py-8 bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+        <div className="text-center py-8 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
           <Zap className="w-10 h-10 text-slate-200 mx-auto mb-2" />
-          <p className="text-xs text-slate-500">Sin reglas de automatización</p>
-          <p className="text-[10px] text-slate-400 mt-1">Crea reglas para automatizar flujos de trabajo</p>
+          <p className="text-xs text-muted-foreground">Sin reglas de automatización</p>
+          <p className="text-[10px] text-muted-foreground mt-1">Crea reglas para automatizar flujos de trabajo</p>
         </div>
       ) : (
         <div className="space-y-2">
           {rules.map(rule => (
-            <div key={rule.id} className={`bg-white border rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 hover:shadow-md dark:bg-slate-900 dark:border-slate-800 transition-shadow ${rule.is_active ? 'border-slate-200' : 'border-slate-100 opacity-60'}`}>
+            <div key={rule.id} className={`bg-card border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 hover:shadow-md dark:bg-primary dark:border-slate-800 transition-shadow ${rule.is_active ? 'border-border' : 'border-slate-100 opacity-60'}`}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${rule.is_active ? 'bg-amber-50' : 'bg-slate-100'}`}>
-                    {rule.is_active ? <Zap className="w-4 h-4 text-amber-500" /> : <ZapOff className="w-4 h-4 text-slate-400" />}
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${rule.is_active ? 'bg-amber-50' : 'bg-muted'}`}>
+                    {rule.is_active ? <Zap className="w-4 h-4 text-amber-500" /> : <ZapOff className="w-4 h-4 text-muted-foreground" />}
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-slate-900">{rule.name}</h4>
-                    <p className="text-[10px] text-slate-400">
+                    <h4 className="text-sm font-semibold text-foreground">{rule.name}</h4>
+                    <p className="text-[10px] text-muted-foreground">
                       {triggerLabels[rule.trigger_type]}{rule.trigger_value ? ` → ${rule.trigger_value}` : ''} → {actionLabels[rule.action_type]}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-slate-400">{rule.trigger_count}x ejecutado</span>
+                  <span className="text-[10px] text-muted-foreground">{rule.trigger_count}x ejecutado</span>
                   <button onClick={() => handleToggle(rule)}
-                    className={`p-1.5 rounded-lg transition-colors ${rule.is_active ? 'hover:bg-amber-50' : 'hover:bg-slate-100'}`}>
-                    {rule.is_active ? <Zap className="w-3.5 h-3.5 text-amber-500" /> : <ZapOff className="w-3.5 h-3.5 text-slate-400" />}
+                    className={`p-1.5 rounded-lg transition-colors ${rule.is_active ? 'hover:bg-amber-50' : 'hover:bg-muted'}`}>
+                    {rule.is_active ? <Zap className="w-3.5 h-3.5 text-amber-500" /> : <ZapOff className="w-3.5 h-3.5 text-muted-foreground" />}
                   </button>
                   <button onClick={() => handleDelete(rule.id)} className="p-1.5 hover:bg-red-50 rounded-lg transition-colors">
                     <Trash2 className="w-3.5 h-3.5 text-red-500" />

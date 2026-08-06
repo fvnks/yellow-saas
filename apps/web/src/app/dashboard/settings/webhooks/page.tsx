@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge, Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@yellow-erp/ui';
@@ -142,8 +142,8 @@ export default function WebhooksPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Webhooks</h1>
-          <p className="text-sm text-slate-500 mt-1">Configura endpoints HTTP para recibir eventos en tiempo real</p>
+          <h1 className="text-xl font-bold text-foreground">Webhooks</h1>
+          <p className="text-sm text-muted-foreground mt-1">Configura endpoints HTTP para recibir eventos en tiempo real</p>
         </div>
         <Button onClick={() => { resetForm(); setShowForm(true); }}><Plus className="w-4 h-4 mr-2" /> Nuevo Webhook</Button>
       </div>
@@ -159,8 +159,8 @@ export default function WebhooksPage() {
           {endpoints.length === 0 ? (
             <div className="text-center py-12">
               <Zap className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <p className="text-sm text-slate-500">No hay webhooks configurados</p>
-              <p className="text-xs text-slate-400 mt-1">Crea tu primer webhook para recibir eventos en tiempo real</p>
+              <p className="text-sm text-muted-foreground">No hay webhooks configurados</p>
+              <p className="text-xs text-muted-foreground mt-1">Crea tu primer webhook para recibir eventos en tiempo real</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -178,20 +178,20 @@ export default function WebhooksPage() {
                 </TableHeader>
                 <TableBody>
                   {endpoints.map(ep => (
-                    <TableRow key={ep.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                    <TableRow key={ep.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
                       <TableCell>
                         <div>
-                          <p className="text-xs font-medium text-slate-900">{ep.name}</p>
-                          <p className="text-[9px] text-slate-400">{ep.id.slice(0,8)}...</p>
+                          <p className="text-xs font-medium text-foreground">{ep.name}</p>
+                          <p className="text-[9px] text-muted-foreground">{ep.id.slice(0,8)}...</p>
                         </div>
                       </TableCell>
-                      <TableCell className="text-xs font-mono text-slate-500 max-w-[200px] truncate">{ep.url}</TableCell>
+                      <TableCell className="text-xs font-mono text-muted-foreground max-w-[200px] truncate">{ep.url}</TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
                           {ep.events.slice(0,3).map(ev => (
                             <Badge key={ev} variant="secondary" className="text-[8px] px-1.5 py-0.5">{ev}</Badge>
                           ))}
-                          {ep.events.length > 3 && <Badge variant="secondary" className="text-[8px] px-1.5 py-0.5 text-slate-500">+{ep.events.length - 3}</Badge>}
+                          {ep.events.length > 3 && <Badge variant="secondary" className="text-[8px] px-1.5 py-0.5 text-muted-foreground">+{ep.events.length - 3}</Badge>}
                         </div>
                       </TableCell>
                       <TableCell>
@@ -203,7 +203,7 @@ export default function WebhooksPage() {
                           {ep.consecutive_failures}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-xs text-slate-500">
+                      <TableCell className="text-xs text-muted-foreground">
                         {ep.last_success_at ? new Date(ep.last_success_at).toLocaleString('es-CL') : '—'}
                       </TableCell>
                       <TableCell className="text-right">
@@ -233,16 +233,16 @@ export default function WebhooksPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">Nombre *</label>
+                  <label className="block text-xs font-medium text-foreground mb-1">Nombre *</label>
                   <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Mi Webhook" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">URL *</label>
+                  <label className="block text-xs font-medium text-foreground mb-1">URL *</label>
                   <Input value={formData.url} onChange={e => setFormData({...formData, url: e.target.value})} placeholder="https://mi-app.com/webhook" required />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">Eventos *</label>
+                <label className="block text-xs font-medium text-foreground mb-1">Eventos *</label>
                 <div className="flex flex-wrap gap-2">
                   {VALID_EVENTS.map(ev => (
                     <label key={ev} className="flex items-center gap-1.5 cursor-pointer">
@@ -252,18 +252,18 @@ export default function WebhooksPage() {
                         onChange={e => setFormData({...formData, events: e.target.checked ? [...formData.events, ev] : formData.events.filter(x => x !== ev)})}
                         className="rounded border-slate-300"
                       />
-                      <span className="text-xs text-slate-700">{ev}</span>
+                      <span className="text-xs text-foreground">{ev}</span>
                     </label>
                   ))}
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">Secret (opcional)</label>
+                  <label className="block text-xs font-medium text-foreground mb-1">Secret (opcional)</label>
                   <Input value={formData.secret} onChange={e => setFormData({...formData, secret: e.target.value})} placeholder="Dejar vacío para generar automático" type="password" />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">Reintentos máximos</label>
+                  <label className="block text-xs font-medium text-foreground mb-1">Reintentos máximos</label>
                   <Input type="number" min="1" max="10" value={formData.retry_policy?.max_retries || 5} onChange={e => setFormData({...formData, retry_policy: {...formData.retry_policy, max_retries: Number(e.target.value)}}) } />
                 </div>
                 <div>
@@ -273,7 +273,7 @@ export default function WebhooksPage() {
                   </label>
                 </div>
               </div>
-              <div className="flex justify-end gap-2 pt-4 border-t border-slate-200">
+              <div className="flex justify-end gap-2 pt-4 border-t border-border">
                 <Button type="button" variant="secondary" onClick={resetForm}>Cancelar</Button>
                 <Button type="submit">{editingId ? 'Actualizar' : 'Crear'}</Button>
               </div>
@@ -290,7 +290,7 @@ export default function WebhooksPage() {
           </CardHeader>
           <CardContent>
             {deliveries.length === 0 ? (
-              <p className="text-center text-slate-500 py-8">No hay entregas registradas</p>
+              <p className="text-center text-muted-foreground py-8">No hay entregas registradas</p>
             ) : (
               <div className="overflow-x-auto">
                 <Table>
@@ -306,7 +306,7 @@ export default function WebhooksPage() {
                   </TableHeader>
                   <TableBody>
                     {deliveries.map(d => (
-                      <TableRow key={d.id} className="border-b border-slate-100 hover:bg-slate-50">
+                      <TableRow key={d.id} className="border-b border-slate-100 hover:bg-muted">
                         <TableCell className="text-xs font-mono">{d.event_type}</TableCell>
                         <TableCell>
                           <Badge variant={
@@ -317,8 +317,8 @@ export default function WebhooksPage() {
                         </TableCell>
                         <TableCell className="text-center text-xs">{d.attempt}</TableCell>
                         <TableCell className="text-center text-xs">{d.response_status || '—'}</TableCell>
-                        <TableCell className="text-xs text-slate-500 max-w-[200px] truncate">{d.error_message || '—'}</TableCell>
-                        <TableCell className="text-xs text-slate-500">{new Date(d.created_at).toLocaleString('es-CL')}</TableCell>
+                        <TableCell className="text-xs text-muted-foreground max-w-[200px] truncate">{d.error_message || '—'}</TableCell>
+                        <TableCell className="text-xs text-muted-foreground">{new Date(d.created_at).toLocaleString('es-CL')}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

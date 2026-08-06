@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { Button, Badge, Input, Select, Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@yellow-erp/ui';
@@ -103,7 +103,7 @@ export default function ContractsTab() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input placeholder="Buscar contrato..." value={search} onChange={e => setSearch(e.target.value)} className="w-64 pl-9" />
           </div>
         </div>
@@ -118,17 +118,17 @@ export default function ContractsTab() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Empleado</label>
+                <label className="block text-xs font-medium text-foreground">Empleado</label>
                 <select value={form.employee_id} onChange={e => setForm({ ...form, employee_id: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm">
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm">
                   <option value="">Seleccionar...</option>
                   {employees.map((e: any) => <option key={e.id} value={e.id}>{e.first_name} {e.last_name}</option>)}
                 </select>
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Tipo de Contrato</label>
+                <label className="block text-xs font-medium text-foreground">Tipo de Contrato</label>
                 <select value={form.contract_type} onChange={e => setForm({ ...form, contract_type: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm">
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm">
                   {Object.entries(contractTypeLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                 </select>
               </div>
@@ -164,14 +164,14 @@ export default function ContractsTab() {
             </TableHeader>
             <TableBody>
               {loading ? (
-                <TableRow><TableCell colSpan={9} className="text-center py-8 text-sm text-slate-400">Cargando...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={9} className="text-center py-8 text-sm text-muted-foreground">Cargando...</TableCell></TableRow>
               ) : filtered.length === 0 ? (
-                <TableRow><TableCell colSpan={9} className="text-center py-8 text-sm text-slate-400">Sin contratos registrados</TableCell></TableRow>
+                <TableRow><TableCell colSpan={9} className="text-center py-8 text-sm text-muted-foreground">Sin contratos registrados</TableCell></TableRow>
               ) : filtered.map(c => (
                 <TableRow key={c.id}>
                   <TableCell>
-                    <p className="text-xs font-medium text-slate-900">{c.employee_name}</p>
-                    <p className="text-[10px] text-slate-400">{c.employee_rut}</p>
+                    <p className="text-xs font-medium text-foreground">{c.employee_name}</p>
+                    <p className="text-[10px] text-muted-foreground">{c.employee_rut}</p>
                   </TableCell>
                   <TableCell><span className="text-xs">{contractTypeLabels[c.contract_type] || c.contract_type}</span></TableCell>
                   <TableCell className="text-xs">{c.position || '—'}</TableCell>
@@ -186,7 +186,7 @@ export default function ContractsTab() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <button onClick={() => { setEditingId(c.id); setForm({ employee_id: '', contract_type: c.contract_type, position: c.position || '', department: c.department || '', start_date: c.start_date, end_date: c.end_date || '', base_salary: String(c.base_salary || ''), status: c.status }); setShowForm(true); }} className="p-1 hover:bg-slate-100 rounded"><Edit className="w-3.5 h-3.5 text-slate-500" /></button>
+                      <button onClick={() => { setEditingId(c.id); setForm({ employee_id: '', contract_type: c.contract_type, position: c.position || '', department: c.department || '', start_date: c.start_date, end_date: c.end_date || '', base_salary: String(c.base_salary || ''), status: c.status }); setShowForm(true); }} className="p-1 hover:bg-muted rounded"><Edit className="w-3.5 h-3.5 text-muted-foreground" /></button>
                       <button onClick={() => handleDelete(c.id)} className="p-1 hover:bg-red-50 rounded"><Trash2 className="w-3.5 h-3.5 text-red-500" /></button>
                     </div>
                   </TableCell>

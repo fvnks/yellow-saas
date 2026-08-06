@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { UserPlus, Trash2, Shield, MoreVertical } from 'lucide-react';
@@ -23,7 +23,7 @@ const ROLE_OPTIONS = [
   { value: 'owner', label: 'Propietario', color: 'bg-amber-50 text-amber-700 border-amber-200' },
   { value: 'admin', label: 'Administrador', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
   { value: 'member', label: 'Miembro', color: 'bg-blue-50 text-blue-700 border-blue-200' },
-  { value: 'viewer', label: 'Observador', color: 'bg-slate-100 text-slate-600 border-slate-200' },
+  { value: 'viewer', label: 'Observador', color: 'bg-muted text-slate-600 border-border' },
 ];
 
 export default function ProjectMembers({ projectId, members, onRefresh }: ProjectMembersProps) {
@@ -67,21 +67,21 @@ export default function ProjectMembers({ projectId, members, onRefresh }: Projec
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-slate-700">{members.length} miembro{members.length !== 1 ? 's' : ''}</p>
+        <p className="text-sm font-medium text-foreground">{members.length} miembro{members.length !== 1 ? 's' : ''}</p>
         <button onClick={() => { setShowAdd(true); loadUsers(); }}
-          className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+          className="bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
           <UserPlus className="w-3.5 h-3.5" /> Agregar Miembro
         </button>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-200">
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Miembro</th>
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Email</th>
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Rol</th>
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Desde</th>
+            <tr className="border-b border-border">
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Miembro</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Email</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Rol</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Desde</th>
               <th className="w-12 px-4 py-3"></th>
             </tr>
           </thead>
@@ -89,7 +89,7 @@ export default function ProjectMembers({ projectId, members, onRefresh }: Projec
             {members.map(member => {
               const role = getRole(member.role);
               return (
-                <tr key={member.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                <tr key={member.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
@@ -97,10 +97,10 @@ export default function ProjectMembers({ projectId, members, onRefresh }: Projec
                           {(member.user_name || member.email || '?')[0].toUpperCase()}
                         </span>
                       </div>
-                      <span className="text-xs font-medium text-slate-900">{member.user_name || 'Usuario'}</span>
+                      <span className="text-xs font-medium text-foreground">{member.user_name || 'Usuario'}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-500">{member.email || '—'}</td>
+                  <td className="px-4 py-3 text-xs text-muted-foreground">{member.email || '—'}</td>
                   <td className="px-4 py-3">
                     <select value={member.role} onChange={e => handleRoleChange(member.user_id, e.target.value)}
                       className="bg-transparent border-0 text-[10px] font-semibold cursor-pointer focus:outline-none">
@@ -111,7 +111,7 @@ export default function ProjectMembers({ projectId, members, onRefresh }: Projec
                   <td className="px-4 py-3">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                        <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded-lg transition-colors">
                           <MoreVertical className="w-4 h-4" />
                         </button>
                       </DropdownMenuTrigger>
@@ -126,7 +126,7 @@ export default function ProjectMembers({ projectId, members, onRefresh }: Projec
               );
             })}
             {members.length === 0 && (
-              <tr><td colSpan={5} className="text-center py-8 text-xs text-slate-400">No hay miembros asignados</td></tr>
+              <tr><td colSpan={5} className="text-center py-8 text-xs text-muted-foreground">No hay miembros asignados</td></tr>
             )}
           </tbody>
         </table>
@@ -134,31 +134,31 @@ export default function ProjectMembers({ projectId, members, onRefresh }: Projec
 
       {showAdd && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowAdd(false)}>
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md" onClick={e => e.stopPropagation()}>
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900">Agregar Miembro</h2>
-              <button onClick={() => setShowAdd(false)} className="text-slate-400 hover:text-slate-600 text-xl">&times;</button>
+          <div className="bg-card rounded-xl shadow-xl w-full max-w-md" onClick={e => e.stopPropagation()}>
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">Agregar Miembro</h2>
+              <button onClick={() => setShowAdd(false)} className="text-muted-foreground hover:text-slate-600 text-xl">&times;</button>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">Usuario</label>
+                <label className="block text-xs font-medium text-foreground mb-1">Usuario</label>
                 <select value={selectedUserId} onChange={e => setSelectedUserId(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                   <option value="">Seleccionar usuario...</option>
                   {availableUsers.map((u: any) => <option key={u.id} value={u.id}>{u.full_name || u.email}</option>)}
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">Rol</label>
+                <label className="block text-xs font-medium text-foreground mb-1">Rol</label>
                 <select value={selectedRole} onChange={e => setSelectedRole(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                   {ROLE_OPTIONS.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
                 </select>
               </div>
             </div>
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
-              <button onClick={() => setShowAdd(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
-              <button onClick={handleAdd} disabled={!selectedUserId} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">Agregar</button>
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
+              <button onClick={() => setShowAdd(false)} className="bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={handleAdd} disabled={!selectedUserId} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">Agregar</button>
             </div>
           </div>
         </div>

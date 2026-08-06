@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -43,31 +43,31 @@ export default function AyudaPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Centro de Ayuda</h1>
-          <p className="text-sm text-slate-500 mt-1">Encuentra respuestas a tus preguntas frecuentes</p>
+          <h1 className="text-xl font-bold text-foreground">Centro de Ayuda</h1>
+          <p className="text-sm text-muted-foreground mt-1">Encuentra respuestas a tus preguntas frecuentes</p>
         </div>
         <Link href="/ayuda/tickets"
-          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98]">
+          className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98]">
           <Ticket className="w-4 h-4" />
           Crear Ticket
         </Link>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6">
         <div className="flex flex-col items-center text-center mb-6">
-          <div className="w-14 h-14 bg-slate-100 rounded-xl flex items-center justify-center mb-4">
+          <div className="w-14 h-14 bg-muted rounded-xl flex items-center justify-center mb-4">
             <LifeBuoy className="w-7 h-7 text-slate-600" />
           </div>
-          <h2 className="text-lg font-bold text-slate-900">¿En qué podemos ayudarte?</h2>
-          <p className="text-sm text-slate-500 mt-1 max-w-lg">Busca entre nuestras preguntas frecuentes o crea un ticket de soporte</p>
+          <h2 className="text-lg font-bold text-foreground">¿En qué podemos ayudarte?</h2>
+          <p className="text-sm text-muted-foreground mt-1 max-w-lg">Busca entre nuestras preguntas frecuentes o crea un ticket de soporte</p>
           <div className="relative w-full max-w-lg mt-4">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Buscar una pregunta..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+              className="w-full bg-muted border border-border rounded-lg pl-10 pr-4 py-2.5 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
             />
           </div>
         </div>
@@ -79,8 +79,8 @@ export default function AyudaPage() {
               onClick={() => setCategory(cat)}
               className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
                 category === cat
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-primary text-white'
+                  : 'bg-muted text-slate-600 hover:bg-slate-200'
               }`}
             >
               {cat}
@@ -89,7 +89,7 @@ export default function AyudaPage() {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="divide-y divide-slate-100">
             {[1, 2, 3, 4].map(i => (
@@ -101,10 +101,10 @@ export default function AyudaPage() {
         ) : filtered.length === 0 ? (
           <div className="p-12 text-center">
             <BookOpen className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-            <p className="text-sm text-slate-500">No se encontraron resultados</p>
-            <p className="text-xs text-slate-400 mt-1">Prueba con otra búsqueda o crea un ticket de soporte</p>
+            <p className="text-sm text-muted-foreground">No se encontraron resultados</p>
+            <p className="text-xs text-muted-foreground mt-1">Prueba con otra búsqueda o crea un ticket de soporte</p>
             <Link href="/ayuda/tickets"
-              className="inline-flex items-center gap-2 mt-4 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 active:scale-[0.98]">
+              className="inline-flex items-center gap-2 mt-4 bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 active:scale-[0.98]">
               <MessageSquare className="w-4 h-4" />
               Crear Ticket
             </Link>
@@ -117,23 +117,23 @@ export default function AyudaPage() {
                 <button
                   onClick={() => setOpenId(isOpen ? null : item.id)}
                   className={`w-full flex items-center justify-between px-6 py-4 text-left transition-colors ${
-                    isOpen ? 'bg-slate-50/80' : 'hover:bg-slate-50'
+                    isOpen ? 'bg-muted/80' : 'hover:bg-muted'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border transition-colors ${
-                      isOpen ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-slate-100 text-slate-600 border-slate-200'
+                      isOpen ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-muted text-slate-600 border-border'
                     }`}>
                       {item.category}
                     </span>
-                    <span className={`text-sm font-medium transition-colors ${isOpen ? 'text-blue-700' : 'text-slate-900'}`}>{item.question}</span>
+                    <span className={`text-sm font-medium transition-colors ${isOpen ? 'text-blue-700' : 'text-foreground'}`}>{item.question}</span>
                   </div>
                   <motion.span
                     animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.3, ease: 'easeInOut' }}
                     className="flex-shrink-0"
                   >
-                    <ChevronDown className={`w-4 h-4 ${isOpen ? 'text-blue-600' : 'text-slate-400'}`} />
+                    <ChevronDown className={`w-4 h-4 ${isOpen ? 'text-blue-600' : 'text-muted-foreground'}`} />
                   </motion.span>
                 </button>
                 <AnimatePresence initial={false}>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { BarChart3, TrendingUp, Users, Package, DollarSign, ShoppingCart, FileText } from 'lucide-react';
@@ -55,11 +55,11 @@ export default function SalesReportsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Informes de Ventas</h1>
-          <p className="text-sm text-slate-500 mt-1">Análisis de ventas, clientes y productos</p>
+          <h1 className="text-xl font-bold text-foreground">Informes de Ventas</h1>
+          <p className="text-sm text-muted-foreground mt-1">Análisis de ventas, clientes y productos</p>
         </div>
         <select value={year} onChange={e => setYear(e.target.value)}
-          className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+          className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
           <option value="2026">2026</option>
           <option value="2025">2025</option>
           <option value="2024">2024</option>
@@ -68,40 +68,40 @@ export default function SalesReportsPage() {
 
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {[1,2,3,4].map(i => <div key={i} className="bg-white border border-slate-200 rounded-xl p-6 animate-pulse"><div className="h-16 bg-slate-100 rounded" /></div>)}
+          {[1,2,3,4].map(i => <div key={i} className="bg-card border border-border rounded-xl p-6 animate-pulse"><div className="h-16 bg-muted rounded" /></div>)}
         </div>
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+            <div className="bg-card border border-border rounded-xl shadow-sm p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Ventas</p>
-                  <p className="text-2xl font-bold text-slate-900 mt-1">${totalSales.toLocaleString('es-CL')}</p>
-                  <p className="text-xs text-slate-500 mt-1">{totalOrders} órdenes</p>
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Ventas</p>
+                  <p className="text-2xl font-bold text-foreground mt-1">${totalSales.toLocaleString('es-CL')}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{totalOrders} órdenes</p>
                 </div>
                 <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
                   <ShoppingCart className="w-6 h-6 text-indigo-600" />
                 </div>
               </div>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+            <div className="bg-card border border-border rounded-xl shadow-sm p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Promedio por Orden</p>
-                  <p className="text-2xl font-bold text-slate-900 mt-1">${avgOrder.toLocaleString('es-CL')}</p>
-                  <p className="text-xs text-slate-500 mt-1">CLP</p>
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Promedio por Orden</p>
+                  <p className="text-2xl font-bold text-foreground mt-1">${avgOrder.toLocaleString('es-CL')}</p>
+                  <p className="text-xs text-muted-foreground mt-1">CLP</p>
                 </div>
                 <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">
                   <TrendingUp className="w-6 h-6 text-emerald-600" />
                 </div>
               </div>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+            <div className="bg-card border border-border rounded-xl shadow-sm p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Facturado</p>
-                  <p className="text-2xl font-bold text-slate-900 mt-1">${totalInvoiced.toLocaleString('es-CL')}</p>
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Facturado</p>
+                  <p className="text-2xl font-bold text-foreground mt-1">${totalInvoiced.toLocaleString('es-CL')}</p>
                   <p className="text-xs text-emerald-600 mt-1">${totalPaid.toLocaleString('es-CL')} cobrado</p>
                 </div>
                 <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
@@ -109,11 +109,11 @@ export default function SalesReportsPage() {
                 </div>
               </div>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+            <div className="bg-card border border-border rounded-xl shadow-sm p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Por Cobrar</p>
-                  <p className="text-2xl font-bold text-slate-900 mt-1">${Math.max(0, totalInvoiced - totalPaid).toLocaleString('es-CL')}</p>
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Por Cobrar</p>
+                  <p className="text-2xl font-bold text-foreground mt-1">${Math.max(0, totalInvoiced - totalPaid).toLocaleString('es-CL')}</p>
                   <p className="text-xs text-rose-600 mt-1">Pendiente</p>
                 </div>
                 <div className="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center">
@@ -124,13 +124,13 @@ export default function SalesReportsPage() {
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2">
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+            <div className="bg-card border border-border rounded-xl shadow-sm">
               <div className="px-6 py-4 border-b border-slate-100">
-                <h3 className="text-sm font-semibold text-slate-900">Ventas Mensuales</h3>
+                <h3 className="text-sm font-semibold text-foreground">Ventas Mensuales</h3>
               </div>
               <div className="p-6">
                 {monthly.length === 0 ? (
-                  <p className="text-xs text-slate-400 text-center py-8">Sin datos</p>
+                  <p className="text-xs text-muted-foreground text-center py-8">Sin datos</p>
                 ) : (
                   <div className="space-y-3">
                     {monthly.map((m: any) => {
@@ -138,11 +138,11 @@ export default function SalesReportsPage() {
                       const pct = maxVal > 0 ? ((parseFloat(m.total) || 0) / maxVal) * 100 : 0;
                       return (
                         <div key={m.month} className="flex items-center gap-3">
-                          <span className="text-xs text-slate-500 w-8">{monthNames[parseInt(m.month) - 1]}</span>
-                          <div className="flex-1 h-6 bg-slate-100 rounded-full overflow-hidden">
+                          <span className="text-xs text-muted-foreground w-8">{monthNames[parseInt(m.month) - 1]}</span>
+                          <div className="flex-1 h-6 bg-muted rounded-full overflow-hidden">
                             <div className="h-full bg-indigo-500 rounded-full transition-all" style={{ width: `${pct}%` }} />
                           </div>
-                          <span className="text-xs font-medium text-slate-900 w-24 text-right">${(parseFloat(m.total) || 0).toLocaleString('es-CL')}</span>
+                          <span className="text-xs font-medium text-foreground w-24 text-right">${(parseFloat(m.total) || 0).toLocaleString('es-CL')}</span>
                         </div>
                       );
                     })}
@@ -151,13 +151,13 @@ export default function SalesReportsPage() {
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+            <div className="bg-card border border-border rounded-xl shadow-sm">
               <div className="px-6 py-4 border-b border-slate-100">
-                <h3 className="text-sm font-semibold text-slate-900">Distribución por Estado</h3>
+                <h3 className="text-sm font-semibold text-foreground">Distribución por Estado</h3>
               </div>
               <div className="p-6">
                 {statusBreakdown.length === 0 ? (
-                  <p className="text-xs text-slate-400 text-center py-8">Sin datos</p>
+                  <p className="text-xs text-muted-foreground text-center py-8">Sin datos</p>
                 ) : (
                   <div className="space-y-3">
                     {statusBreakdown.map((s: any) => {
@@ -165,11 +165,11 @@ export default function SalesReportsPage() {
                       const pct = maxVal > 0 ? ((parseInt(s.count) || 0) / maxVal) * 100 : 0;
                       return (
                         <div key={s.status} className="flex items-center gap-3">
-                          <span className="text-xs text-slate-500 w-24">{statusLabels[s.status] || s.status}</span>
-                          <div className="flex-1 h-6 bg-slate-100 rounded-full overflow-hidden">
+                          <span className="text-xs text-muted-foreground w-24">{statusLabels[s.status] || s.status}</span>
+                          <div className="flex-1 h-6 bg-muted rounded-full overflow-hidden">
                             <div className="h-full bg-emerald-500 rounded-full transition-all" style={{ width: `${pct}%` }} />
                           </div>
-                          <span className="text-xs font-medium text-slate-900 w-16 text-right">{s.count}</span>
+                          <span className="text-xs font-medium text-foreground w-16 text-right">{s.count}</span>
                         </div>
                       );
                     })}
@@ -180,27 +180,27 @@ export default function SalesReportsPage() {
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2">
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+            <div className="bg-card border border-border rounded-xl shadow-sm">
               <div className="px-6 py-4 border-b border-slate-100">
-                <h3 className="text-sm font-semibold text-slate-900">Top Clientes</h3>
+                <h3 className="text-sm font-semibold text-foreground">Top Clientes</h3>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-slate-200">
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</th>
-                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Órdenes</th>
-                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total</th>
+                    <tr className="border-b border-border">
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cliente</th>
+                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Órdenes</th>
+                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total</th>
                     </tr>
                   </thead>
                   <tbody>
                     {topCustomers.length === 0 ? (
-                      <tr><td colSpan={3} className="px-4 py-8 text-center text-xs text-slate-400">Sin datos</td></tr>
+                      <tr><td colSpan={3} className="px-4 py-8 text-center text-xs text-muted-foreground">Sin datos</td></tr>
                     ) : topCustomers.map((c: any, i: number) => (
-                      <tr key={i} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                        <td className="px-4 py-3 text-xs font-medium text-slate-900">{c.name}</td>
-                        <td className="px-4 py-3 text-xs text-slate-700 text-center">{c.count}</td>
-                        <td className="px-4 py-3 text-xs text-slate-900 text-right font-medium">${(parseFloat(c.total) || 0).toLocaleString('es-CL')}</td>
+                      <tr key={i} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                        <td className="px-4 py-3 text-xs font-medium text-foreground">{c.name}</td>
+                        <td className="px-4 py-3 text-xs text-foreground text-center">{c.count}</td>
+                        <td className="px-4 py-3 text-xs text-foreground text-right font-medium">${(parseFloat(c.total) || 0).toLocaleString('es-CL')}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -208,27 +208,27 @@ export default function SalesReportsPage() {
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+            <div className="bg-card border border-border rounded-xl shadow-sm">
               <div className="px-6 py-4 border-b border-slate-100">
-                <h3 className="text-sm font-semibold text-slate-900">Top Productos</h3>
+                <h3 className="text-sm font-semibold text-foreground">Top Productos</h3>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-slate-200">
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
-                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Unidades</th>
-                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total</th>
+                    <tr className="border-b border-border">
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th>
+                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Unidades</th>
+                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total</th>
                     </tr>
                   </thead>
                   <tbody>
                     {topProducts.length === 0 ? (
-                      <tr><td colSpan={3} className="px-4 py-8 text-center text-xs text-slate-400">Sin datos</td></tr>
+                      <tr><td colSpan={3} className="px-4 py-8 text-center text-xs text-muted-foreground">Sin datos</td></tr>
                     ) : topProducts.map((p: any, i: number) => (
-                      <tr key={i} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                        <td className="px-4 py-3 text-xs font-medium text-slate-900">{p.name}</td>
-                        <td className="px-4 py-3 text-xs text-slate-700 text-center">{p.qty}</td>
-                        <td className="px-4 py-3 text-xs text-slate-900 text-right font-medium">${(parseFloat(p.total) || 0).toLocaleString('es-CL')}</td>
+                      <tr key={i} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                        <td className="px-4 py-3 text-xs font-medium text-foreground">{p.name}</td>
+                        <td className="px-4 py-3 text-xs text-foreground text-center">{p.qty}</td>
+                        <td className="px-4 py-3 text-xs text-foreground text-right font-medium">${(parseFloat(p.total) || 0).toLocaleString('es-CL')}</td>
                       </tr>
                     ))}
                   </tbody>

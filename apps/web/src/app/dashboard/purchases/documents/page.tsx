@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { ContinuousTabs } from '@/components/ui/continuous-tabs';
@@ -21,12 +21,12 @@ export default function PurchaseDocumentsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Documentos de Compra</h1>
-          <p className="text-sm text-slate-500 mt-1">Documentos recibidos de proveedores desde el SII</p>
+          <h1 className="text-xl font-bold text-foreground">Documentos de Compra</h1>
+          <p className="text-sm text-muted-foreground mt-1">Documentos recibidos de proveedores desde el SII</p>
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-card border border-border rounded-xl shadow-sm">
         <ContinuousTabs
           tabs={tabs}
           defaultActiveId={activeTab}

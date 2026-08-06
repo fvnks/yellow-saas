@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -94,18 +94,18 @@ export default function PedidosImportPage() {
 
   return (
     <div className="space-y-6">
-      <button onClick={() => router.push('/dashboard/sales/pedidos')} className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700">
+      <button onClick={() => router.push('/dashboard/sales/pedidos')} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
         <ArrowLeft className="w-4 h-4" /> Volver a Pedidos
       </button>
 
       {result ? (
-        <div className="bg-white border border-slate-200 rounded-xl p-8 text-center">
+        <div className="bg-card border border-border rounded-xl p-8 text-center">
           <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-4" />
-          <h2 className="text-lg font-bold text-slate-900">Importación Completada</h2>
-          <p className="text-sm text-slate-500 mt-2">Pedido {result.order?.order_number} creado</p>
+          <h2 className="text-lg font-bold text-foreground">Importación Completada</h2>
+          <p className="text-sm text-muted-foreground mt-2">Pedido {result.order?.order_number} creado</p>
           <div className="mt-4 flex items-center justify-center gap-4 text-sm">
             <span className="text-emerald-600">{result.imported} importados</span>
-            <span className="text-slate-400">de {result.total} filas</span>
+            <span className="text-muted-foreground">de {result.total} filas</span>
             {result.errors?.length > 0 && <span className="text-rose-600">{result.errors.length} errores</span>}
           </div>
           {result.errors?.length > 0 && (
@@ -113,22 +113,22 @@ export default function PedidosImportPage() {
               {result.errors.map((e: string, i: number) => (<p key={i} className="text-xs text-rose-600">{e}</p>))}
             </div>
           )}
-          <button onClick={() => router.push('/dashboard/sales/pedidos')} className="mt-6 bg-slate-900 hover:bg-slate-800 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">
+          <button onClick={() => router.push('/dashboard/sales/pedidos')} className="mt-6 bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">
             Ver Pedidos
           </button>
         </div>
       ) : (
         <>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">Importar Pedidos</h1>
-            <p className="text-sm text-slate-500 mt-1">Importa pedidos internos desde un archivo CSV</p>
+            <h1 className="text-xl font-bold text-foreground">Importar Pedidos</h1>
+            <p className="text-sm text-muted-foreground mt-1">Importa pedidos internos desde un archivo CSV</p>
           </div>
-          <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4">
+          <div className="bg-card border border-border rounded-xl p-6 space-y-4">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-700">Bodega Destino</label>
+                <label className="text-xs font-medium text-foreground">Bodega Destino</label>
                 <select value={selectedWarehouse} onChange={e => setSelectedWarehouse(e.target.value)}
-                  className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                  className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                   <option value="">Seleccionar bodega...</option>
                   {warehouses.map((w: any) => <option key={w.id} value={w.id}>{w.name}</option>)}
                 </select>
@@ -137,25 +137,25 @@ export default function PedidosImportPage() {
                 <Download className="w-4 h-4" /> Descargar Plantilla
               </button>
             </div>
-            <div className="border-2 border-dashed border-slate-200 rounded-xl p-8 text-center hover:border-indigo-300 transition-colors">
-              <Upload className="w-8 h-8 text-slate-400 mx-auto mb-3" />
+            <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-indigo-300 transition-colors">
+              <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
               <p className="text-sm text-slate-600">
                 <label className="text-indigo-600 hover:text-indigo-700 cursor-pointer font-medium">Seleccionar archivo</label> o arrastra un CSV
               </p>
               <input type="file" accept=".csv,.tsv,.txt" onChange={handleFile} className="hidden" />
-              {fileName && <p className="text-xs text-slate-500 mt-2">{fileName}</p>}
+              {fileName && <p className="text-xs text-muted-foreground mt-2">{fileName}</p>}
             </div>
             {rows.length > 0 && (
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">{rows.length} filas detectadas</p>
-                <div className="border border-slate-200 rounded-lg overflow-hidden max-h-64 overflow-y-auto">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">{rows.length} filas detectadas</p>
+                <div className="border border-border rounded-lg overflow-hidden max-h-64 overflow-y-auto">
                   <table className="w-full text-xs">
-                    <thead className="bg-slate-50 sticky top-0">
+                    <thead className="bg-muted sticky top-0">
                       <tr>
-                        <th className="text-left px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">SKU</th>
-                        <th className="text-left px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Producto</th>
-                        <th className="text-right px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Cantidad</th>
-                        <th className="text-left px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Estado</th>
+                        <th className="text-left px-3 py-2 text-[9px] font-semibold text-muted-foreground uppercase">SKU</th>
+                        <th className="text-left px-3 py-2 text-[9px] font-semibold text-muted-foreground uppercase">Producto</th>
+                        <th className="text-right px-3 py-2 text-[9px] font-semibold text-muted-foreground uppercase">Cantidad</th>
+                        <th className="text-left px-3 py-2 text-[9px] font-semibold text-muted-foreground uppercase">Estado</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -163,9 +163,9 @@ export default function PedidosImportPage() {
                         const found = !!resolveProduct(r);
                         return (
                           <tr key={i} className="border-t border-slate-100">
-                            <td className="px-3 py-2 font-mono text-slate-700">{r.sku || '—'}</td>
-                            <td className="px-3 py-2 text-slate-700">{r.product_name || '—'}</td>
-                            <td className="px-3 py-2 text-right text-slate-900">{r.quantity}</td>
+                            <td className="px-3 py-2 font-mono text-foreground">{r.sku || '—'}</td>
+                            <td className="px-3 py-2 text-foreground">{r.product_name || '—'}</td>
+                            <td className="px-3 py-2 text-right text-foreground">{r.quantity}</td>
                             <td className="px-3 py-2">
                               {found ? <span className="text-emerald-600 flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> OK</span> : <span className="text-rose-600 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> No encontrado</span>}
                             </td>
@@ -176,7 +176,7 @@ export default function PedidosImportPage() {
                   </table>
                 </div>
                 <button onClick={handleImport} disabled={!selectedWarehouse || importing}
-                  className="mt-4 bg-slate-900 hover:bg-slate-800 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                  className="mt-4 bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                   {importing ? 'Importando...' : `Importar ${rows.filter(r => resolveProduct(r)).length} items`}
                 </button>
               </div>

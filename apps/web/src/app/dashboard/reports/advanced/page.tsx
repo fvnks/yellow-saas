@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { BarChart3, TrendingUp, Package, Users, DollarSign, Calendar, Download, Filter } from 'lucide-react';
@@ -106,28 +106,28 @@ export default function ReportsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Reportes</h1>
-          <p className="text-sm text-slate-500 mt-1">Analisis y metricas del negocio</p>
+          <h1 className="text-xl font-bold text-foreground">Reportes</h1>
+          <p className="text-sm text-muted-foreground mt-1">Analisis y metricas del negocio</p>
         </div>
         <div className="flex items-center gap-2">
           <select
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
           >
             <option value="week">Ultima semana</option>
             <option value="month">Ultimo mes</option>
             <option value="quarter">Ultimo trimestre</option>
             <option value="year">Ultimo año</option>
           </select>
-          <button className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+          <button className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
             <Download className="w-4 h-4" /> Exportar
           </button>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         <ContinuousTabs
           tabs={tabs.map(t => ({ id: t.id, label: t.label }))}
           defaultActiveId={activeTab}
@@ -138,13 +138,13 @@ export default function ReportsPage() {
           {loading ? (
             <div className="space-y-4">
               {[1, 2, 3].map(i => (
-                <div key={i} className="h-12 bg-slate-100 rounded-lg animate-pulse" />
+                <div key={i} className="h-12 bg-muted rounded-lg animate-pulse" />
               ))}
             </div>
           ) : !data ? (
             <div className="text-center py-12">
               <BarChart3 className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-              <p className="text-sm text-slate-500">No hay datos disponibles</p>
+              <p className="text-sm text-muted-foreground">No hay datos disponibles</p>
             </div>
           ) : (
             <>
@@ -174,20 +174,20 @@ export default function ReportsPage() {
                     </div>
                   </div>
 
-                  <div className="bg-slate-50 rounded-xl p-4">
-                    <p className="text-xs font-medium text-slate-700 mb-3">Ventas por mes</p>
+                  <div className="bg-muted rounded-xl p-4">
+                    <p className="text-xs font-medium text-foreground mb-3">Ventas por mes</p>
                     <div className="flex items-end gap-2 h-40">
                       {data.sales_by_month.map((item) => {
                         const maxVal = Math.max(...data.sales_by_month.map(m => m.total));
                         const height = maxVal > 0 ? (item.total / maxVal) * 100 : 0;
                         return (
                           <div key={item.month} className="flex-1 flex flex-col items-center gap-1">
-                            <span className="text-[8px] text-slate-500">{formatCurrency(item.total)}</span>
+                            <span className="text-[8px] text-muted-foreground">{formatCurrency(item.total)}</span>
                             <div
                               className="w-full bg-indigo-500 rounded-t transition-all hover:bg-indigo-600"
                               style={{ height: `${Math.max(height, 4)}%` }}
                             />
-                            <span className="text-[8px] text-slate-500">{item.month.slice(5)}</span>
+                            <span className="text-[8px] text-muted-foreground">{item.month.slice(5)}</span>
                           </div>
                         );
                       })}
@@ -199,26 +199,26 @@ export default function ReportsPage() {
               {/* Products Tab */}
               {activeTab === 'products' && (
                 <div className="space-y-4">
-                  <p className="text-xs font-medium text-slate-700">Top productos por valor en inventario</p>
+                  <p className="text-xs font-medium text-foreground">Top productos por valor en inventario</p>
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead>
-                        <tr className="border-b border-slate-200">
-                          <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">#</th>
-                          <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
-                          <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">SKU</th>
-                          <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Stock</th>
-                          <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Valor</th>
+                        <tr className="border-b border-border">
+                          <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">#</th>
+                          <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th>
+                          <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">SKU</th>
+                          <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Stock</th>
+                          <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Valor</th>
                         </tr>
                       </thead>
                       <tbody>
                         {data.top_products.map((product, idx) => (
-                          <tr key={idx} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                            <td className="px-4 py-3 text-xs text-slate-500">{idx + 1}</td>
-                            <td className="px-4 py-3 text-xs font-medium text-slate-900">{product.name}</td>
-                            <td className="px-4 py-3 text-[9px] font-mono text-slate-500">{product.sku}</td>
-                            <td className="px-4 py-3 text-xs text-slate-700 text-right">{product.quantity}</td>
-                            <td className="px-4 py-3 text-xs text-slate-700 text-right">{formatCurrency(product.revenue)}</td>
+                          <tr key={idx} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                            <td className="px-4 py-3 text-xs text-muted-foreground">{idx + 1}</td>
+                            <td className="px-4 py-3 text-xs font-medium text-foreground">{product.name}</td>
+                            <td className="px-4 py-3 text-[9px] font-mono text-muted-foreground">{product.sku}</td>
+                            <td className="px-4 py-3 text-xs text-foreground text-right">{product.quantity}</td>
+                            <td className="px-4 py-3 text-xs text-foreground text-right">{formatCurrency(product.revenue)}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -230,13 +230,13 @@ export default function ReportsPage() {
               {/* Inventory Tab */}
               {activeTab === 'inventory' && (
                 <div className="space-y-4">
-                  <p className="text-xs font-medium text-slate-700">Valor de inventario por bodega</p>
+                  <p className="text-xs font-medium text-foreground">Valor de inventario por bodega</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {data.inventory_value.map((wh, idx) => (
-                      <div key={idx} className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-                        <p className="text-sm font-medium text-slate-900">{wh.warehouse}</p>
-                        <p className="text-xl font-bold text-slate-900 mt-2">{formatCurrency(wh.total_cost)}</p>
-                        <p className="text-xs text-slate-500 mt-1">{wh.items} productos</p>
+                      <div key={idx} className="bg-muted border border-border rounded-xl p-4">
+                        <p className="text-sm font-medium text-foreground">{wh.warehouse}</p>
+                        <p className="text-xl font-bold text-foreground mt-2">{formatCurrency(wh.total_cost)}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{wh.items} productos</p>
                       </div>
                     ))}
                   </div>
@@ -246,27 +246,27 @@ export default function ReportsPage() {
               {/* Customers Tab */}
               {activeTab === 'customers' && (
                 <div className="space-y-4">
-                  <p className="text-xs font-medium text-slate-700">Clientes con saldo pendiente</p>
+                  <p className="text-xs font-medium text-foreground">Clientes con saldo pendiente</p>
                   {data.customer_balances.length === 0 ? (
                     <div className="text-center py-8">
                       <Users className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-                      <p className="text-xs text-slate-500">No hay saldos pendientes</p>
+                      <p className="text-xs text-muted-foreground">No hay saldos pendientes</p>
                     </div>
                   ) : (
                     <div className="overflow-x-auto">
                       <table className="w-full">
                         <thead>
-                          <tr className="border-b border-slate-200">
-                            <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</th>
-                            <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Saldo</th>
-                            <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
+                          <tr className="border-b border-border">
+                            <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cliente</th>
+                            <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Saldo</th>
+                            <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
                           </tr>
                         </thead>
                         <tbody>
                           {data.customer_balances.map((customer, idx) => (
-                            <tr key={idx} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                              <td className="px-4 py-3 text-xs font-medium text-slate-900">{customer.name}</td>
-                              <td className="px-4 py-3 text-xs text-slate-700 text-right">{formatCurrency(customer.balance)}</td>
+                            <tr key={idx} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                              <td className="px-4 py-3 text-xs font-medium text-foreground">{customer.name}</td>
+                              <td className="px-4 py-3 text-xs text-foreground text-right">{formatCurrency(customer.balance)}</td>
                               <td className="px-4 py-3">
                                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                   {customer.aging}

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { History, ArrowDownCircle, ArrowUpCircle, ArrowRightLeft, Settings, RefreshCw, Filter, Calendar, Package } from 'lucide-react';
@@ -25,7 +25,7 @@ const typeConfig: Record<string, { label: string; icon: typeof ArrowUpCircle; co
   transfer_in: { label: 'Transferencia Entrante', icon: ArrowRightLeft, color: 'text-blue-700', bg: 'bg-blue-50 border-blue-200' },
   transfer_out: { label: 'Transferencia Saliente', icon: ArrowRightLeft, color: 'text-amber-700', bg: 'bg-amber-50 border-amber-200' },
   adjustment: { label: 'Ajuste', icon: Settings, color: 'text-purple-700', bg: 'bg-purple-50 border-purple-200' },
-  initial: { label: 'Inicial', icon: Package, color: 'text-slate-700', bg: 'bg-slate-50 border-slate-200' },
+  initial: { label: 'Inicial', icon: Package, color: 'text-foreground', bg: 'bg-muted border-border' },
 };
 
 export default function InventoryMovementHistory() {
@@ -84,35 +84,35 @@ export default function InventoryMovementHistory() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <History className="w-4 h-4 text-slate-500" />
-          <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">
+          <History className="w-4 h-4 text-muted-foreground" />
+          <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
             Historial de Movimientos ({total})
           </span>
         </div>
         <button onClick={() => loadMovements()}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium transition-colors">
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium transition-colors">
           <RefreshCw className="w-3.5 h-3.5" /> Actualizar
         </button>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl p-3 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl p-3 dark:bg-primary dark:border-slate-800">
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-1.5">
-            <Filter className="w-3.5 h-3.5 text-slate-400" />
-            <span className="text-xs text-slate-500">Filtros:</span>
+            <Filter className="w-3.5 h-3.5 text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">Filtros:</span>
           </div>
           <select value={typeFilter} onChange={e => { setTypeFilter(e.target.value); setPage(0); }}
-            className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            className="bg-muted border border-border rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-primary/20">
             <option value="">Todos los tipos</option>
             {Object.entries(typeConfig).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
           </select>
           <select value={productFilter} onChange={e => { setProductFilter(e.target.value); setPage(0); }}
-            className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 max-w-[200px]">
+            className="bg-muted border border-border rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 max-w-[200px]">
             <option value="">Todos los productos</option>
             {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
           </select>
           <select value={warehouseFilter} onChange={e => { setWarehouseFilter(e.target.value); setPage(0); }}
-            className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            className="bg-muted border border-border rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-primary/20">
             <option value="">Todas las bodegas</option>
             {warehouses.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}
           </select>
@@ -122,13 +122,13 @@ export default function InventoryMovementHistory() {
       {loading ? (
         <div className="space-y-2">
           {[1, 2, 3, 4, 5].map(i => (
-            <div key={i} className="h-16 bg-slate-100 rounded-xl animate-pulse" />
+            <div key={i} className="h-16 bg-muted rounded-xl animate-pulse" />
           ))}
         </div>
       ) : movements.length === 0 ? (
-        <div className="text-center py-12 bg-slate-50 border border-dashed border-slate-300 rounded-xl">
+        <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
           <History className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-          <p className="text-xs text-slate-400">Sin movimientos registrados</p>
+          <p className="text-xs text-muted-foreground">Sin movimientos registrados</p>
         </div>
       ) : (
         <div className="space-y-1">
@@ -142,8 +142,8 @@ export default function InventoryMovementHistory() {
                     <config.icon className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-slate-900">{m.product_name}</p>
-                    <p className="text-[9px] text-slate-500">{m.sku} | {m.warehouse_name}</p>
+                    <p className="text-sm font-medium text-foreground">{m.product_name}</p>
+                    <p className="text-[9px] text-muted-foreground">{m.sku} | {m.warehouse_name}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -151,18 +151,18 @@ export default function InventoryMovementHistory() {
                     <p className={`text-sm font-bold ${isPositive ? 'text-emerald-700' : 'text-red-700'}`}>
                       {isPositive ? '+' : '-'}{m.quantity}
                     </p>
-                    <p className="text-[9px] text-slate-500">{config.label}</p>
+                    <p className="text-[9px] text-muted-foreground">{config.label}</p>
                   </div>
                   <div className="text-right min-w-[60px]">
-                    <p className="text-xs font-medium text-slate-700">{formatCost(m.unit_cost)}</p>
-                    <p className="text-[9px] text-slate-500">{formatCost(m.total_cost)}</p>
+                    <p className="text-xs font-medium text-foreground">{formatCost(m.unit_cost)}</p>
+                    <p className="text-[9px] text-muted-foreground">{formatCost(m.total_cost)}</p>
                   </div>
                   <div className="text-right min-w-[100px]">
-                    <p className="text-[9px] text-slate-500 flex items-center gap-1 justify-end">
+                    <p className="text-[9px] text-muted-foreground flex items-center gap-1 justify-end">
                       <Calendar className="w-3 h-3" />
                       {new Date(m.created_at).toLocaleDateString('es-CL')}
                     </p>
-                    {m.notes && <p className="text-[9px] text-slate-400 truncate max-w-[120px]">{m.notes}</p>}
+                    {m.notes && <p className="text-[9px] text-muted-foreground truncate max-w-[120px]">{m.notes}</p>}
                   </div>
                 </div>
               </div>
@@ -172,15 +172,15 @@ export default function InventoryMovementHistory() {
       )}
 
       {total > 50 && (
-        <div className="flex items-center justify-between text-xs text-slate-500">
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
           <p>Mostrando {page * 50 + 1}-{Math.min((page + 1) * 50, total)} de {total}</p>
           <div className="flex items-center gap-2">
             <button onClick={() => setPage(Math.max(0, page - 1))} disabled={page === 0}
-              className="px-3 py-1 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 disabled:opacity-50 transition-colors">
+              className="px-3 py-1 bg-card border border-border rounded-lg hover:bg-muted dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 disabled:opacity-50 transition-colors">
               Anterior
             </button>
             <button onClick={() => setPage(page + 1)} disabled={(page + 1) * 50 >= total}
-              className="px-3 py-1 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 disabled:opacity-50 transition-colors">
+              className="px-3 py-1 bg-card border border-border rounded-lg hover:bg-muted dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 disabled:opacity-50 transition-colors">
               Siguiente
             </button>
           </div>

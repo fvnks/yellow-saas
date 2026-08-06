@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select } from '@yellow-erp/ui';
@@ -120,12 +120,12 @@ export default function NewAdjustmentPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-        <Link href="/dashboard/inventory/adjustments" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href="/dashboard/inventory/adjustments" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">
-          <h1 className="text-xl font-bold text-slate-900">Nuevo Ajuste de Stock</h1>
-          <p className="text-sm text-slate-500 mt-1">Ajustar inventario de un producto en una bodega</p>
+          <h1 className="text-xl font-bold text-foreground">Nuevo Ajuste de Stock</h1>
+          <p className="text-sm text-muted-foreground mt-1">Ajustar inventario de un producto en una bodega</p>
         </div>
         <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto justify-center">
           <Save className="w-4 h-4 mr-2" />
@@ -174,9 +174,9 @@ export default function NewAdjustmentPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="p-4 bg-slate-50 rounded-lg text-center">
-                    <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Stock Actual</p>
-                    <p className="text-2xl font-bold text-slate-900 mt-1">{currentStock}</p>
+                  <div className="p-4 bg-muted rounded-lg text-center">
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Stock Actual</p>
+                    <p className="text-2xl font-bold text-foreground mt-1">{currentStock}</p>
                   </div>
                   <div className="p-4 bg-indigo-50 rounded-lg text-center">
                     <p className="text-[9px] font-semibold text-indigo-600 uppercase tracking-wider">Stock Nuevo</p>
@@ -187,11 +187,11 @@ export default function NewAdjustmentPage() {
                       className="text-2xl font-bold text-indigo-700 mt-1 bg-transparent text-center w-full focus:outline-none"
                     />
                   </div>
-                  <div className={`p-4 rounded-lg text-center ${difference > 0 ? 'bg-emerald-50' : difference < 0 ? 'bg-rose-50' : 'bg-slate-50'}`}>
-                    <p className={`text-[9px] font-semibold uppercase tracking-wider ${difference > 0 ? 'text-emerald-600' : difference < 0 ? 'text-rose-600' : 'text-slate-500'}`}>
+                  <div className={`p-4 rounded-lg text-center ${difference > 0 ? 'bg-emerald-50' : difference < 0 ? 'bg-rose-50' : 'bg-muted'}`}>
+                    <p className={`text-[9px] font-semibold uppercase tracking-wider ${difference > 0 ? 'text-emerald-600' : difference < 0 ? 'text-rose-600' : 'text-muted-foreground'}`}>
                       Diferencia
                     </p>
-                    <p className={`text-2xl font-bold mt-1 ${difference > 0 ? 'text-emerald-700' : difference < 0 ? 'text-rose-700' : 'text-slate-700'}`}>
+                    <p className={`text-2xl font-bold mt-1 ${difference > 0 ? 'text-emerald-700' : difference < 0 ? 'text-rose-700' : 'text-foreground'}`}>
                       {difference > 0 ? '+' : ''}{difference}
                     </p>
                   </div>
@@ -212,12 +212,12 @@ export default function NewAdjustmentPage() {
                 options={ADJUSTMENT_REASONS}
               />
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Notas</label>
+                <label className="block text-xs font-medium text-foreground">Notas</label>
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   rows={3}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Descripcion adicional del ajuste..."
                 />
               </div>
@@ -236,8 +236,8 @@ export default function NewAdjustmentPage() {
                   <Package className="w-4 h-4 text-indigo-600" />
                 </div>
                 <div>
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</p>
-                  <p className="font-medium text-slate-900">{selectedProductName || '—'}</p>
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</p>
+                  <p className="font-medium text-foreground">{selectedProductName || '—'}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -245,27 +245,27 @@ export default function NewAdjustmentPage() {
                   <Warehouse className="w-4 h-4 text-indigo-600" />
                 </div>
                 <div>
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Bodega</p>
-                  <p className="font-medium text-slate-900">{selectedWarehouseName || '—'}</p>
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Bodega</p>
+                  <p className="font-medium text-foreground">{selectedWarehouseName || '—'}</p>
                 </div>
               </div>
               <hr className="border-slate-100" />
               <div className="flex justify-between">
-                <span className="text-slate-500">Stock Actual</span>
+                <span className="text-muted-foreground">Stock Actual</span>
                 <span className="font-medium">{currentStock ?? '—'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Stock Nuevo</span>
+                <span className="text-muted-foreground">Stock Nuevo</span>
                 <span className="font-medium">{currentStock !== null ? newQuantity : '—'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Diferencia</span>
+                <span className="text-muted-foreground">Diferencia</span>
                 <span className={`font-bold ${difference > 0 ? 'text-emerald-600' : difference < 0 ? 'text-rose-600' : 'text-slate-600'}`}>
                   {currentStock !== null ? `${difference > 0 ? '+' : ''}${difference}` : '—'}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Motivo</span>
+                <span className="text-muted-foreground">Motivo</span>
                 <span className="font-medium">{ADJUSTMENT_REASONS.find(r => r.value === reason)?.label}</span>
               </div>
             </CardContent>

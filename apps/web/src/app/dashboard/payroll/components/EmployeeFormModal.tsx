@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Button, Input, Select } from '@yellow-erp/ui';
@@ -102,12 +102,12 @@ export default function EmployeeFormModal({ employee, onClose, onSave }: Props) 
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-9003xl mx-4 max-h-[90vh] overflow-y-auto">
-        <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between sticky top-0 bg-white dark:bg-slate-900 z-10">
-          <h2 className="text-lg font-semibold text-slate-900">
+      <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primary3xl mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between sticky top-0 bg-card dark:bg-primary z-10">
+          <h2 className="text-lg font-semibold text-foreground">
             {employee ? 'Editar Empleado' : 'Nuevo Empleado'}
           </h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+          <button onClick={onClose} className="text-muted-foreground hover:text-slate-600">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -119,7 +119,7 @@ export default function EmployeeFormModal({ employee, onClose, onSave }: Props) 
 
           {/* Datos Personales */}
           <div>
-            <h3 className="text-sm font-semibold text-slate-900 mb-3">Datos Personales</h3>
+            <h3 className="text-sm font-semibold text-foreground mb-3">Datos Personales</h3>
             <div className="grid grid-cols-2 gap-4">
               <Input label="Nombre *" value={form.first_name} onChange={(e: any) => update('first_name', e.target.value)} placeholder="Juan" />
               <Input label="Apellido *" value={form.last_name} onChange={(e: any) => update('last_name', e.target.value)} placeholder="Pérez" />
@@ -134,7 +134,7 @@ export default function EmployeeFormModal({ employee, onClose, onSave }: Props) 
 
           {/* Datos Laborales */}
           <div>
-            <h3 className="text-sm font-semibold text-slate-900 mb-3">Datos Laborales</h3>
+            <h3 className="text-sm font-semibold text-foreground mb-3">Datos Laborales</h3>
             <div className="grid grid-cols-2 gap-4">
               <Input label="Cargo" value={form.position} onChange={(e: any) => update('position', e.target.value)} placeholder="Gerente" />
               <Input label="Departamento" value={form.department} onChange={(e: any) => update('department', e.target.value)} placeholder="Ventas" />
@@ -167,7 +167,7 @@ export default function EmployeeFormModal({ employee, onClose, onSave }: Props) 
 
           {/* Prevision */}
           <div>
-            <h3 className="text-sm font-semibold text-slate-900 mb-3">Previsión Social</h3>
+            <h3 className="text-sm font-semibold text-foreground mb-3">Previsión Social</h3>
             <div className="grid grid-cols-2 gap-4">
               <Select
                 label="AFP"
@@ -212,7 +212,7 @@ export default function EmployeeFormModal({ employee, onClose, onSave }: Props) 
 
           {/* Datos Bancarios */}
           <div>
-            <h3 className="text-sm font-semibold text-slate-900 mb-3">Datos Bancarios</h3>
+            <h3 className="text-sm font-semibold text-foreground mb-3">Datos Bancarios</h3>
             <div className="grid grid-cols-2 gap-4">
               <Input label="Banco" value={form.bank_name} onChange={(e: any) => update('bank_name', e.target.value)} placeholder="Banco Estado" />
               <Input label="Cuenta" value={form.bank_account} onChange={(e: any) => update('bank_account', e.target.value)} placeholder="12345678" />
@@ -220,18 +220,18 @@ export default function EmployeeFormModal({ employee, onClose, onSave }: Props) 
           </div>
 
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Notas</label>
+            <label className="block text-xs font-medium text-foreground">Notas</label>
             <textarea
               value={form.notes}
               onChange={(e: any) => update('notes', e.target.value)}
               rows={2}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Notas adicionales..."
             />
           </div>
         </div>
 
-        <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3 sticky dark:bg-slate-900 bottom-0 bg-white">
+        <div className="px-6 py-4 border-t border-border flex justify-end gap-3 sticky dark:bg-primary bottom-0 bg-card">
           <Button variant="secondary" onClick={onClose}>Cancelar</Button>
           <Button onClick={handleSave} disabled={saving}>
             <Save className="w-4 h-4 mr-2" />

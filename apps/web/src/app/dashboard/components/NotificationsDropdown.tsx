@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { Bell, Check, CheckCheck, Clock, AlertTriangle, FolderKanban } from 'lucide-react';
@@ -106,8 +106,8 @@ export default function NotificationsDropdown() {
   return (
     <div className="relative" ref={ref}>
       <button onClick={() => setOpen(!open)}
-        className="relative p-2 hover:bg-slate-100 rounded-lg transition-colors">
-        <Bell className="w-5 h-5 text-slate-500" />
+        className="relative p-2 hover:bg-muted rounded-lg transition-colors">
+        <Bell className="w-5 h-5 text-muted-foreground" />
         {unreadCount > 0 && (
           <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
             {unreadCount > 9 ? '9+' : unreadCount}
@@ -116,16 +116,16 @@ export default function NotificationsDropdown() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-80 bg-white border border-slate-200 rounded-xl shadow-xl z-50 dark:bg-slate-900 dark:border-slate-800">
-          <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-slate-900">Notificaciones</h3>
+        <div className="absolute right-0 top-full mt-2 w-80 bg-card border border-border rounded-xl shadow-xl z-50 dark:bg-primary dark:border-slate-800">
+          <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-foreground">Notificaciones</h3>
             <div className="flex items-center gap-2">
               <button onClick={handleCheckDeadlines} disabled={loading}
                 className="text-[10px] text-indigo-600 hover:text-indigo-800 disabled:opacity-50">
                 {loading ? 'Verificando...' : 'Verificar plazos'}
               </button>
               {unreadCount > 0 && (
-                <button onClick={handleMarkAllRead} className="text-[10px] text-slate-400 hover:text-slate-600">
+                <button onClick={handleMarkAllRead} className="text-[10px] text-muted-foreground hover:text-slate-600">
                   <CheckCheck className="w-3.5 h-3.5" />
                 </button>
               )}
@@ -136,27 +136,27 @@ export default function NotificationsDropdown() {
             {notifications.length === 0 ? (
               <div className="px-4 py-8 text-center">
                 <Bell className="w-8 h-8 text-slate-200 mx-auto mb-2" />
-                <p className="text-xs text-slate-400">Sin notificaciones</p>
+                <p className="text-xs text-muted-foreground">Sin notificaciones</p>
               </div>
             ) : (
               notifications.map(n => {
                 const Icon = (n.entity_type && entityIcons[n.entity_type]) || Bell;
                 return (
                   <div key={n.id}
-                    className={`px-4 py-3 border-b border-slate-100 hover:bg-slate-50 transition-colors ${!n.read_at ? 'bg-indigo-50/30' : ''}`}>
+                    className={`px-4 py-3 border-b border-slate-100 hover:bg-muted transition-colors ${!n.read_at ? 'bg-indigo-50/30' : ''}`}>
                     <div className="flex items-start gap-3">
-                      <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${!n.read_at ? 'bg-indigo-100' : 'bg-slate-100'}`}>
-                        <Icon className={`w-3.5 h-3.5 ${!n.read_at ? 'text-indigo-600' : 'text-slate-400'}`} />
+                      <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${!n.read_at ? 'bg-indigo-100' : 'bg-muted'}`}>
+                        <Icon className={`w-3.5 h-3.5 ${!n.read_at ? 'text-indigo-600' : 'text-muted-foreground'}`} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium text-slate-900">{n.title}</p>
-                        <p className="text-[10px] text-slate-500 mt-0.5 line-clamp-2">{n.message}</p>
-                        <p className="text-[10px] text-slate-400 mt-1">{formatTime(n.created_at)}</p>
+                        <p className="text-xs font-medium text-foreground">{n.title}</p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-2">{n.message}</p>
+                        <p className="text-[10px] text-muted-foreground mt-1">{formatTime(n.created_at)}</p>
                       </div>
                       {!n.read_at && (
                         <button onClick={() => handleMarkRead(n.id)}
                           className="p-1 hover:bg-slate-200 rounded transition-colors flex-shrink-0">
-                          <Check className="w-3 h-3 text-slate-400" />
+                          <Check className="w-3 h-3 text-muted-foreground" />
                         </button>
                       )}
                     </div>

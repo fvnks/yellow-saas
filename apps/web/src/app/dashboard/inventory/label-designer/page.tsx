@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
@@ -382,8 +382,8 @@ export default function LabelDesignerPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Diseñador de Etiquetas</h1>
-          <p className="text-sm text-slate-500 mt-1">Editor visual drag & drop para plantillas de etiquetas</p>
+          <h1 className="text-xl font-bold text-foreground">Diseñador de Etiquetas</h1>
+          <p className="text-sm text-muted-foreground mt-1">Editor visual drag & drop para plantillas de etiquetas</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm" onClick={exportTemplate} disabled={!activeTemplate}><Download className="w-4 h-4 mr-2" /> Exportar</Button>
@@ -395,7 +395,7 @@ export default function LabelDesignerPage() {
         </div>
       </div>
 
-      {loading && <div className="fixed inset-0 bg-white/80 z-50 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" /></div>}
+      {loading && <div className="fixed inset-0 bg-card/80 z-50 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" /></div>}
 
       <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr_320px] gap-6">
         {/* Sidebar: Templates & Elements */}
@@ -410,13 +410,13 @@ export default function LabelDesignerPage() {
                   className={`w-full text-left p-3 rounded-lg border transition-colors ${
                     activeTemplate?.id === tpl.id
                       ? 'border-indigo-500 bg-indigo-50'
-                      : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                      : 'border-border hover:border-slate-300 hover:bg-muted'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-sm text-slate-900">{tpl.name}</p>
-                      <p className="text-xs text-slate-500">{tpl.width_mm}×{tpl.height_mm}mm</p>
+                      <p className="font-medium text-sm text-foreground">{tpl.name}</p>
+                      <p className="text-xs text-muted-foreground">{tpl.width_mm}×{tpl.height_mm}mm</p>
                     </div>
                     {tpl.is_default && <Badge variant="success" className="text-[9px]">Default</Badge>}
                   </div>
@@ -428,7 +428,7 @@ export default function LabelDesignerPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="flex items-center gap-2"><Grid className="w-4 h-4" /> Elementos</CardTitle>
-              <select value={tool} onChange={e => setTool(e.target.value as any)} className="text-xs border border-slate-200 rounded px-2 py-1">
+              <select value={tool} onChange={e => setTool(e.target.value as any)} className="text-xs border border-border rounded px-2 py-1">
                 <option value="select">Seleccionar</option>
                 <option value="text">Texto</option>
                 <option value="barcode">Código de barras</option>
@@ -440,7 +440,7 @@ export default function LabelDesignerPage() {
             </CardHeader>
             <CardContent className="space-y-2 max-h-[300px] overflow-y-auto">
               {elements.length === 0 ? (
-                <p className="text-center text-slate-500 text-sm py-8">Sin elementos. Selecciona una herramienta para agregar.</p>
+                <p className="text-center text-muted-foreground text-sm py-8">Sin elementos. Selecciona una herramienta para agregar.</p>
               ) : (
                 elements.map(el => (
                   <div
@@ -448,12 +448,12 @@ export default function LabelDesignerPage() {
                     className={`flex items-center gap-2 p-2 rounded border ${
                       selectedElementId === el.id
                         ? 'border-indigo-500 bg-indigo-50'
-                        : 'border-slate-200 hover:border-slate-300'
+                        : 'border-border hover:border-slate-300'
                     }`}
                   >
-                    <span className="text-xs text-slate-500 capitalize">{el.type}</span>
-                    <span className="text-xs text-slate-400 flex-1 text-right">{Math.round(el.x)}×{Math.round(el.y)}</span>
-                    <button onClick={() => duplicateElement(el.id)} className="p-1 hover:bg-slate-100 rounded" title="Duplicar"><Copy className="w-3 h-3" /></button>
+                    <span className="text-xs text-muted-foreground capitalize">{el.type}</span>
+                    <span className="text-xs text-muted-foreground flex-1 text-right">{Math.round(el.x)}×{Math.round(el.y)}</span>
+                    <button onClick={() => duplicateElement(el.id)} className="p-1 hover:bg-muted rounded" title="Duplicar"><Copy className="w-3 h-3" /></button>
                     <button onClick={() => deleteElement(el.id)} className="p-1 hover:bg-rose-50 rounded text-rose-500" title="Eliminar"><Trash2 className="w-3 h-3" /></button>
 </div>
                 )
@@ -468,7 +468,7 @@ export default function LabelDesignerPage() {
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="flex items-center gap-2"><Eye className="w-4 h-4" /> Lienzo</CardTitle>
               <div className="flex items-center gap-2">
-                <select value={zoom} onChange={e => setZoom(Number(e.target.value))} className="text-xs border border-slate-200 rounded px-2 py-1 w-20">
+                <select value={zoom} onChange={e => setZoom(Number(e.target.value))} className="text-xs border border-border rounded px-2 py-1 w-20">
                   <option value={0.5}>50%</option>
                   <option value={0.75}>75%</option>
                   <option value={1}>100%</option>
@@ -480,7 +480,7 @@ export default function LabelDesignerPage() {
             <CardContent className="flex-1 flex items-center justify-center p-0 relative">
               <div
                 ref={canvasRef}
-                className="relative bg-white"
+                className="relative bg-card"
                 style={{ width: canvasWidth * zoom, height: canvasHeight * zoom }}
                 onMouseDown={e => handleCanvasMouseDown(e as any)}
                 onMouseMove={handleCanvasMouseMove}
@@ -565,8 +565,8 @@ export default function LabelDesignerPage() {
             <CardHeader><CardTitle className="flex items-center gap-2"><Settings className="w-4 h-4" /> Propiedades</CardTitle></CardHeader>
             <CardContent className="space-y-4">
 {activeTemplate && (
-                  <div className="space-y-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                    <h4 className="font-medium text-sm text-slate-700">Plantilla</h4>
+                  <div className="space-y-3 p-3 bg-muted rounded-lg border border-border">
+                    <h4 className="font-medium text-sm text-foreground">Plantilla</h4>
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       <Input label="Ancho (mm)" value={activeTemplate.width_mm} onChange={e => { if (activeTemplate) { activeTemplate.width_mm = Number(e.target.value); } }} />
                       <Input label="Alto (mm)" value={activeTemplate.height_mm} onChange={e => { if (activeTemplate) { activeTemplate.height_mm = Number(e.target.value); } }} />
@@ -577,7 +577,7 @@ export default function LabelDesignerPage() {
                 )}
 
               <div className="space-y-3">
-                <h4 className="font-medium text-sm text-slate-700">Grid</h4>
+                <h4 className="font-medium text-sm text-foreground">Grid</h4>
                 <div className="flex items-center gap-2">
                   <label className="flex items-center gap-2 text-sm">
                     <input type="checkbox" checked={gridSettings.show} onChange={e => setGridSettings(s => ({ ...s, show: e.target.checked }))} className="rounded border-slate-300" />
@@ -591,14 +591,14 @@ export default function LabelDesignerPage() {
                   </label>
                 </div>
                 <div className="flex items-center gap-2">
-                  <label className="text-xs text-slate-500">Tamaño:</label>
+                  <label className="text-xs text-muted-foreground">Tamaño:</label>
                   <Input type="number" min="1" max="50" value={gridSettings.size} onChange={e => setGridSettings(s => ({ ...s, size: Number(e.target.value) }))} className="w-20" />
                 </div>
               </div>
 
               {selectedElement && (
-                <div className="border-t border-slate-200 pt-4 space-y-3">
-                  <h4 className="font-medium text-sm text-slate-700">Elemento: {selectedElement.type}</h4>
+                <div className="border-t border-border pt-4 space-y-3">
+                  <h4 className="font-medium text-sm text-foreground">Elemento: {selectedElement.type}</h4>
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <Input label="X" value={Math.round(selectedElement.x)} onChange={e => updateElement(selectedElement.id, { x: Number(e.target.value) })} />
                     <Input label="Y" value={Math.round(selectedElement.y)} onChange={e => updateElement(selectedElement.id, { y: Number(e.target.value) })} />
@@ -655,7 +655,7 @@ export default function LabelDesignerPage() {
                     </div>
                   )}
 
-                  <div className="flex gap-2 pt-2 border-t border-slate-200">
+                  <div className="flex gap-2 pt-2 border-t border-border">
                     <Button variant="secondary" size="sm" onClick={() => duplicateElement(selectedElement.id)}><Copy className="w-4 h-4 mr-1" /> Duplicar</Button>
                     <Button variant="secondary" size="sm" onClick={() => deleteElement(selectedElement.id)} className="text-rose-600 hover:bg-rose-50"><Trash2 className="w-4 h-4 mr-1" /> Eliminar</Button>
                   </div>
@@ -664,7 +664,7 @@ export default function LabelDesignerPage() {
             }
 
               {!selectedElement && !activeTemplate && (
-                <p className="text-center text-slate-500 text-sm py-8">Selecciona una plantilla y un elemento para editar propiedades</p>
+                <p className="text-center text-muted-foreground text-sm py-8">Selecciona una plantilla y un elemento para editar propiedades</p>
               )}
             </CardContent>
           </Card>
@@ -820,7 +820,7 @@ function LabelElementRenderer({
           {['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'].map(dir => (
             <div
               key={dir}
-              className="absolute w-2 h-2 bg-white border border-indigo-500 rounded"
+              className="absolute w-2 h-2 bg-card border border-indigo-500 rounded"
               style={{
                 left: dir.includes('w') ? -4 : dir.includes('e') ? 'calc(100% - 4px)' : 'calc(50% - 4px)',
                 top: dir.includes('n') ? -4 : dir.includes('s') ? 'calc(100% - 4px)' : 'calc(50% - 4px)',

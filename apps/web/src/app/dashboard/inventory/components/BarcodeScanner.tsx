@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import { Camera, X, ScanBarcode, Keyboard, AlertCircle } from 'lucide-react';
@@ -50,25 +50,25 @@ export default function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps)
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900md">
-        <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+      <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <ScanBarcode className="w-5 h-5 text-slate-700" />
-            <h2 className="text-lg font-semibold text-slate-900">Escanear Codigo</h2>
+            <ScanBarcode className="w-5 h-5 text-foreground" />
+            <h2 className="text-lg font-semibold text-foreground">Escanear Codigo</h2>
           </div>
-          <button onClick={onClose} className="p-1 hover:bg-slate-100 rounded-lg transition-colors">
-            <X className="w-5 h-5 text-slate-400" />
+          <button onClick={onClose} className="p-1 hover:bg-muted rounded-lg transition-colors">
+            <X className="w-5 h-5 text-muted-foreground" />
           </button>
         </div>
 
         <div className="p-6 space-y-4">
           <div className="flex gap-2">
             <button onClick={() => setMode('manual')}
-              className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'manual' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+              className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'manual' ? 'bg-primary text-white' : 'bg-muted text-slate-600 hover:bg-slate-200'}`}>
               <Keyboard className="w-4 h-4" /> Manual
             </button>
             <button onClick={() => setMode('camera')}
-              className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'camera' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+              className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'camera' ? 'bg-primary text-white' : 'bg-muted text-slate-600 hover:bg-slate-200'}`}>
               <Camera className="w-4 h-4" /> Camara
             </button>
           </div>
@@ -77,10 +77,10 @@ export default function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps)
             <div className="space-y-3">
               <input type="text" value={manualCode} onChange={e => setManualCode(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleSubmitManual()}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="Ingrese o pegue el codigo de barras" autoFocus />
               <button onClick={handleSubmitManual} disabled={!manualCode.trim()}
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                className="w-full bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                 Buscar Producto
               </button>
             </div>
@@ -94,13 +94,13 @@ export default function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps)
                   <span className="text-xs text-red-700">{error}</span>
                 </div>
               )}
-              <div className="relative bg-slate-900 rounded-xl overflow-hidden">
+              <div className="relative bg-primary rounded-xl overflow-hidden">
                 <video ref={videoRef} autoPlay playsInline className="w-full h-64 object-cover" />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-48 h-1 border-t-2 border-red-500 animate-pulse" />
                 </div>
               </div>
-              <p className="text-xs text-slate-500 text-center">
+              <p className="text-xs text-muted-foreground text-center">
                 Apunte la camara al codigo de barras
               </p>
             </div>

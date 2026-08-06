@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -21,7 +21,7 @@ export function PricingToggle({ monthlyLabel = 'Mensual', yearlyLabel = 'Anual',
 
   return (
     <div className={cn('flex items-center justify-center gap-3', className)}>
-      <span className={cn('text-sm font-medium transition-colors', !isYearly ? 'text-slate-900 dark:text-white' : 'text-slate-400')}>
+      <span className={cn('text-sm font-medium transition-colors', !isYearly ? 'text-foreground dark:text-white' : 'text-muted-foreground')}>
         {monthlyLabel}
       </span>
       <button
@@ -34,12 +34,12 @@ export function PricingToggle({ monthlyLabel = 'Mensual', yearlyLabel = 'Anual',
       >
         <div
           className={cn(
-            'absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300',
+            'absolute top-0.5 w-5 h-5 rounded-full bg-card shadow-sm transition-transform duration-300',
             isYearly ? 'translate-x-[26px]' : 'translate-x-0.5'
           )}
         />
       </button>
-      <span className={cn('text-sm font-medium transition-colors', isYearly ? 'text-slate-900 dark:text-white' : 'text-slate-400')}>
+      <span className={cn('text-sm font-medium transition-colors', isYearly ? 'text-foreground dark:text-white' : 'text-muted-foreground')}>
         {yearlyLabel}
         <span className="ml-1.5 inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">
           -20%

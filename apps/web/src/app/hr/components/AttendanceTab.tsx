@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { Button, Badge, Input } from '@yellow-erp/ui';
@@ -101,16 +101,16 @@ export default function AttendanceTab() {
           <p className="text-2xl font-bold text-amber-700">{summary.late}</p>
           <p className="text-xs text-amber-600">Tardanzas</p>
         </div>
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-center">
-          <p className="text-2xl font-bold text-slate-700">{summary.total}</p>
-          <p className="text-xs text-slate-500">Total Registros</p>
+        <div className="bg-muted border border-border rounded-xl p-4 text-center">
+          <p className="text-2xl font-bold text-foreground">{summary.total}</p>
+          <p className="text-xs text-muted-foreground">Total Registros</p>
         </div>
       </div>
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input placeholder="Buscar empleado..." value={search} onChange={e => setSearch(e.target.value)} className="w-64 pl-9" />
           </div>
           <Input type="date" value={dateFilter} onChange={e => setDateFilter(e.target.value)} className="w-40" />
@@ -122,16 +122,16 @@ export default function AttendanceTab() {
 
       {showForm && (
         <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 space-y-3">
-          <h4 className="text-sm font-medium text-slate-900">Registrar Asistencia</h4>
+          <h4 className="text-sm font-medium text-foreground">Registrar Asistencia</h4>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
             <select value={form.employee_id} onChange={e => setForm({ ...form, employee_id: e.target.value })}
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm">
+              className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm">
               <option value="">Seleccionar empleado...</option>
               {employees.map((e: any) => <option key={e.id} value={e.id}>{e.first_name} {e.last_name}</option>)}
             </select>
             <Input type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} />
             <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm">
+              className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm">
               {Object.entries(statusConfig).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
             </select>
             <Input type="time" value={form.check_in} onChange={e => setForm({ ...form, check_in: e.target.value })} placeholder="Hora entrada" />
@@ -143,29 +143,29 @@ export default function AttendanceTab() {
         </div>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-card border border-border rounded-xl shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Empleado</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Entrada</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Salida</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Horas</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Empleado</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Entrada</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Salida</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Horas</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={6} className="text-center py-8 text-sm text-slate-400">Cargando...</td></tr>
+                <tr><td colSpan={6} className="text-center py-8 text-sm text-muted-foreground">Cargando...</td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={6} className="text-center py-8 text-sm text-slate-400">Sin registros de asistencia</td></tr>
+                <tr><td colSpan={6} className="text-center py-8 text-sm text-muted-foreground">Sin registros de asistencia</td></tr>
               ) : filtered.map(r => (
-                <tr key={r.id} className="border-b border-slate-100 hover:bg-slate-50">
+                <tr key={r.id} className="border-b border-slate-100 hover:bg-muted">
                   <td className="px-4 py-3">
-                    <p className="text-xs font-medium text-slate-900">{r.employee_name}</p>
-                    <p className="text-[10px] text-slate-400">{r.employee_rut}</p>
+                    <p className="text-xs font-medium text-foreground">{r.employee_name}</p>
+                    <p className="text-[10px] text-muted-foreground">{r.employee_rut}</p>
                   </td>
                   <td className="px-4 py-3 text-xs">{r.date}</td>
                   <td className="px-4 py-3 text-xs">{r.check_in || '—'}</td>

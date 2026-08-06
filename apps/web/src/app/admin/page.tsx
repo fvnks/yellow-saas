@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { Building2, Users, TrendingUp, DollarSign, Shield, Activity } from 'lucide-react';
@@ -56,7 +56,7 @@ export default function AdminDashboard() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-        <p className="text-sm text-slate-400 mt-1">Vista general de la plataforma Yellow ERP</p>
+        <p className="text-sm text-muted-foreground mt-1">Vista general de la plataforma Yellow ERP</p>
       </div>
 
       {/* Metrics Grid */}
@@ -64,10 +64,10 @@ export default function AdminDashboard() {
         {cards.map((card) => {
           const Icon = card.icon;
           return (
-            <div key={card.label} className="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-slate-700 transition-colors">
+            <div key={card.label} className="bg-primary border border-slate-800 rounded-xl p-6 hover:border-slate-700 transition-colors">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{card.label}</p>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{card.label}</p>
                   <p className="text-3xl font-bold text-white mt-2">
                     {loading ? (
                       <span className="inline-block w-16 h-8 bg-slate-800 rounded animate-pulse" />
@@ -87,29 +87,29 @@ export default function AdminDashboard() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+        <div className="bg-primary border border-slate-800 rounded-xl p-6">
           <h3 className="text-sm font-semibold text-white mb-4">Acciones Rápidas</h3>
           <div className="space-y-3">
-            <a href="/admin/companies" className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 transition-colors">
+            <a href="/admin/companies" className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-primary/90 transition-colors">
               <Building2 className="w-4 h-4 text-indigo-400" />
               <span className="text-sm text-slate-300">Gestionar Empresas</span>
             </a>
-            <a href="/admin/users" className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 transition-colors">
+            <a href="/admin/users" className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-primary/90 transition-colors">
               <Users className="w-4 h-4 text-emerald-400" />
               <span className="text-sm text-slate-300">Gestionar Usuarios</span>
             </a>
-            <a href="/admin/grants" className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 transition-colors">
+            <a href="/admin/grants" className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-primary/90 transition-colors">
               <Shield className="w-4 h-4 text-amber-400" />
               <span className="text-sm text-slate-300">Solicitudes de Acceso</span>
             </a>
           </div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+        <div className="bg-primary border border-slate-800 rounded-xl p-6">
           <h3 className="text-sm font-semibold text-white mb-4">Estado del Sistema</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-400">Base de datos</span>
+              <span className="text-sm text-muted-foreground">Base de datos</span>
               <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold border ${
                 metrics.dbStatus === 'connected'
                   ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
@@ -127,15 +127,15 @@ export default function AdminDashboard() {
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-400">Super Admins</span>
+              <span className="text-sm text-muted-foreground">Super Admins</span>
               <span className="text-sm font-medium text-white">{loading ? '—' : metrics.superAdmins}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-400">Empresas Totales</span>
+              <span className="text-sm text-muted-foreground">Empresas Totales</span>
               <span className="text-sm font-medium text-white">{loading ? '—' : metrics.totalCompanies}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-400">Usuarios Totales</span>
+              <span className="text-sm text-muted-foreground">Usuarios Totales</span>
               <span className="text-sm font-medium text-white">{loading ? '—' : metrics.totalUsers}</span>
             </div>
           </div>

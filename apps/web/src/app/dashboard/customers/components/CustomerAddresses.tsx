@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, X, Save, MapPin } from 'lucide-react';
@@ -165,13 +165,13 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
 
   if (loading) {
     return (
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
         <div className="px-6 py-4 border-b border-slate-100">
           <div className="h-4 w-36 bg-slate-200 rounded animate-pulse" />
         </div>
         <div className="p-6 space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-12 bg-slate-100 rounded animate-pulse" />
+            <div key={i} className="h-12 bg-muted rounded animate-pulse" />
           ))}
         </div>
       </div>
@@ -179,12 +179,12 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+    <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
       <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-900">Direcciones</h3>
+        <h3 className="text-sm font-semibold text-foreground">Direcciones</h3>
         <button
           onClick={handleOpenNew}
-          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+          className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
         >
           <Plus className="w-4 h-4" />
           Nueva Dirección
@@ -194,64 +194,64 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
       {addresses.length === 0 ? (
         <div className="text-center py-12">
           <MapPin className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-          <p className="text-sm text-slate-500">No hay direcciones registradas</p>
+          <p className="text-sm text-muted-foreground">No hay direcciones registradas</p>
         </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Etiqueta</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tipo</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Dirección Completa</th>
-                <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Principal</th>
-                <th className="text-center w-24 px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Etiqueta</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tipo</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Dirección Completa</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Principal</th>
+                <th className="text-center w-24 px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {addresses.map(addr => {
                 const typeCfg = addressTypeConfig[addr.address_type] || addressTypeConfig.other;
                 return (
-                  <tr key={addr.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                  <tr key={addr.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
                           <MapPin className="w-4 h-4 text-indigo-600" />
                         </div>
-                        <span className="text-xs font-medium text-slate-900">{addr.label || 'Sin etiqueta'}</span>
+                        <span className="text-xs font-medium text-foreground">{addr.label || 'Sin etiqueta'}</span>
                       </div>
                     </td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
                         typeCfg.variant === 'info' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
                         typeCfg.variant === 'warning' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                        'bg-slate-100 text-slate-600 border border-slate-200'
+                        'bg-muted text-slate-600 border border-border'
                       }`}>
                         {typeCfg.label}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-xs text-slate-700">{formatFullAddress(addr)}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{formatFullAddress(addr)}</td>
                     <td className="px-4 py-3 text-center">
                       {addr.is_default ? (
                         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                           Principal
                         </span>
                       ) : (
-                        <span className="text-xs text-slate-400">—</span>
+                        <span className="text-xs text-muted-foreground">—</span>
                       )}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-center gap-1">
                         <button
                           onClick={() => handleOpenEdit(addr)}
-                          className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"
+                          className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"
                           aria-label="Editar"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(addr.id, addr.label || 'dirección')}
-                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                          className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
                           aria-label="Eliminar"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -268,12 +268,12 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
 
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900lg mx-4">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900">
+          <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarylg mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">
                 {editingId ? 'Editar Dirección' : 'Nueva Dirección'}
               </h2>
-              <button onClick={handleClose} className="text-slate-400 hover:text-slate-600">
+              <button onClick={handleClose} className="text-muted-foreground hover:text-slate-600">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -281,21 +281,21 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Etiqueta</label>
+                  <label className="block text-xs font-medium text-foreground">Etiqueta</label>
                   <input
                     type="text"
                     value={form.label}
                     onChange={e => update('label', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="Ej: Sede Principal"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Tipo</label>
+                  <label className="block text-xs font-medium text-foreground">Tipo</label>
                   <select
                     value={form.address_type}
                     onChange={e => update('address_type', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                   >
                     <option value="billing">Facturación</option>
                     <option value="shipping">Envío</option>
@@ -306,22 +306,22 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
 
               <div className="grid grid-cols-3 gap-4">
                 <div className="col-span-2 space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Calle *</label>
+                  <label className="block text-xs font-medium text-foreground">Calle *</label>
                   <input
                     type="text"
                     value={form.street}
                     onChange={e => update('street', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="Av. Principal"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Número</label>
+                  <label className="block text-xs font-medium text-foreground">Número</label>
                   <input
                     type="text"
                     value={form.number}
                     onChange={e => update('number', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="1234"
                   />
                 </div>
@@ -329,22 +329,22 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Comuna</label>
+                  <label className="block text-xs font-medium text-foreground">Comuna</label>
                   <input
                     type="text"
                     value={form.commune}
                     onChange={e => update('commune', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="Las Condes"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Ciudad</label>
+                  <label className="block text-xs font-medium text-foreground">Ciudad</label>
                   <input
                     type="text"
                     value={form.city}
                     onChange={e => update('city', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="Santiago"
                   />
                 </div>
@@ -352,32 +352,32 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
 
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Región</label>
+                  <label className="block text-xs font-medium text-foreground">Región</label>
                   <input
                     type="text"
                     value={form.region}
                     onChange={e => update('region', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="Región Metropolitana"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">País</label>
+                  <label className="block text-xs font-medium text-foreground">País</label>
                   <input
                     type="text"
                     value={form.country}
                     onChange={e => update('country', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="Chile"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Código Postal</label>
+                  <label className="block text-xs font-medium text-foreground">Código Postal</label>
                   <input
                     type="text"
                     value={form.postal_code}
                     onChange={e => update('postal_code', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="7550000"
                   />
                 </div>
@@ -391,23 +391,23 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
                     onChange={e => update('is_default', e.target.checked)}
                     className="sr-only peer"
                   />
-                  <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                  <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
                 </label>
-                <span className="text-xs font-medium text-slate-700">Dirección por defecto</span>
+                <span className="text-xs font-medium text-foreground">Dirección por defecto</span>
               </div>
             </div>
 
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button
                 onClick={handleClose}
-                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"
+                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 {saving ? 'Guardando...' : 'Guardar'}

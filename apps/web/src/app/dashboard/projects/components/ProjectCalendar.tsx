@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Calendar, Grid3X3, Rows3 } from 'lucide-react';
@@ -12,7 +12,7 @@ const DAYS = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
 const MONTHS = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
 const priorityColors: Record<string, string> = {
-  low: 'bg-slate-100 text-slate-600',
+  low: 'bg-muted text-slate-600',
   medium: 'bg-blue-50 text-blue-700',
   high: 'bg-amber-50 text-amber-700',
   urgent: 'bg-red-50 text-red-700',
@@ -60,7 +60,7 @@ export default function ProjectCalendar({ tasks, milestones }: ProjectCalendarPr
 
     for (const task of tasks) {
       if (task.due_date === dateStr) {
-        dayEvents.push({ type: 'task', name: task.name, color: priorityColors[task.priority] || 'bg-slate-100 text-slate-600', status: task.status });
+        dayEvents.push({ type: 'task', name: task.name, color: priorityColors[task.priority] || 'bg-muted text-slate-600', status: task.status });
       }
       if (task.start_date === dateStr && task.start_date !== task.due_date) {
         dayEvents.push({ type: 'task-start', name: `▶ ${task.name}`, color: 'bg-indigo-50 text-indigo-700', status: task.status });
@@ -86,55 +86,55 @@ export default function ProjectCalendar({ tasks, milestones }: ProjectCalendarPr
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-slate-500" />
-          <h3 className="text-sm font-semibold text-slate-900">Calendario</h3>
+          <Calendar className="w-4 h-4 text-muted-foreground" />
+          <h3 className="text-sm font-semibold text-foreground">Calendario</h3>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex bg-slate-100 rounded-lg p-0.5">
+          <div className="flex bg-muted rounded-lg p-0.5">
             <button onClick={() => setViewMode('month')}
-              className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${viewMode === 'month' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
+              className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${viewMode === 'month' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>
               <Grid3X3 className="w-3.5 h-3.5 inline mr-1" />Mes
             </button>
             <button onClick={() => setViewMode('week')}
-              className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${viewMode === 'week' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
+              className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${viewMode === 'week' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>
               <Rows3 className="w-3.5 h-3.5 inline mr-1" />Semana
             </button>
           </div>
-          <button onClick={goToday} className="px-2 py-1 bg-white border border-slate-200 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50">
+          <button onClick={goToday} className="px-2 py-1 bg-card border border-border rounded-lg text-xs font-medium text-slate-600 hover:bg-muted">
             Hoy
           </button>
           <div className="flex items-center gap-1">
-            <button onClick={viewMode === 'month' ? prevMonth : prevWeek} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
+            <button onClick={viewMode === 'month' ? prevMonth : prevWeek} className="p-1.5 hover:bg-muted rounded-lg transition-colors">
               <ChevronLeft className="w-4 h-4 text-slate-600" />
             </button>
-            <span className="text-sm font-semibold text-slate-900 min-w-[180px] text-center">
+            <span className="text-sm font-semibold text-foreground min-w-[180px] text-center">
               {viewMode === 'month' ? `${MONTHS[month]} ${year}` : formatWeekRange()}
             </span>
-            <button onClick={viewMode === 'month' ? nextMonth : nextWeek} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
+            <button onClick={viewMode === 'month' ? nextMonth : nextWeek} className="p-1.5 hover:bg-muted rounded-lg transition-colors">
               <ChevronRight className="w-4 h-4 text-slate-600" />
             </button>
           </div>
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         {viewMode === 'month' ? (
           <div className="grid grid-cols-7">
             {DAYS.map(day => (
-              <div key={day} className="px-2 py-2 text-center text-[10px] font-semibold text-slate-500 uppercase border-b border-slate-200 bg-slate-50">
+              <div key={day} className="px-2 py-2 text-center text-[10px] font-semibold text-muted-foreground uppercase border-b border-border bg-muted">
                 {day}
               </div>
             ))}
             {Array.from({ length: firstDay }).map((_, i) => (
-              <div key={`empty-${i}`} className="min-h-[100px] border-b border-r border-slate-100 bg-slate-50/50" />
+              <div key={`empty-${i}`} className="min-h-[100px] border-b border-r border-slate-100 bg-muted/50" />
             ))}
             {Array.from({ length: daysInMonth }).map((_, i) => {
               const day = i + 1;
               const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === day;
               const events = getEventsForDay(new Date(year, month, day));
               return (
-                <div key={day} className={`min-h-[100px] border-b border-r border-slate-100 p-1.5 ${isToday ? 'bg-indigo-50/30' : 'hover:bg-slate-50'} transition-colors`}>
-                  <div className={`text-xs font-medium mb-1 ${isToday ? 'text-indigo-600 font-bold' : 'text-slate-700'}`}>
+                <div key={day} className={`min-h-[100px] border-b border-r border-slate-100 p-1.5 ${isToday ? 'bg-indigo-50/30' : 'hover:bg-muted'} transition-colors`}>
+                  <div className={`text-xs font-medium mb-1 ${isToday ? 'text-indigo-600 font-bold' : 'text-foreground'}`}>
                     {isToday && <span className="inline-flex items-center justify-center w-5 h-5 bg-indigo-600 text-white rounded-full text-[10px]">{day}</span>}
                     {!isToday && day}
                   </div>
@@ -145,7 +145,7 @@ export default function ProjectCalendar({ tasks, milestones }: ProjectCalendarPr
                         {event.name}
                       </div>
                     ))}
-                    {events.length > 3 && <span className="text-[9px] text-slate-400">+{events.length - 3} mas</span>}
+                    {events.length > 3 && <span className="text-[9px] text-muted-foreground">+{events.length - 3} mas</span>}
                   </div>
                 </div>
               );
@@ -153,13 +153,13 @@ export default function ProjectCalendar({ tasks, milestones }: ProjectCalendarPr
           </div>
         ) : (
           <div>
-            <div className="grid grid-cols-7 border-b border-slate-200">
+            <div className="grid grid-cols-7 border-b border-border">
               {weekDays.map((day, i) => {
                 const isToday = day.toDateString() === today.toDateString();
                 return (
                   <div key={i} className={`px-2 py-3 text-center border-r border-slate-100 last:border-r-0 ${isToday ? 'bg-indigo-50/50' : ''}`}>
-                    <div className="text-[9px] font-semibold text-slate-500 uppercase">{DAYS[day.getDay()]}</div>
-                    <div className={`text-lg font-bold mt-0.5 ${isToday ? 'text-indigo-600' : 'text-slate-900'}`}>{day.getDate()}</div>
+                    <div className="text-[9px] font-semibold text-muted-foreground uppercase">{DAYS[day.getDay()]}</div>
+                    <div className={`text-lg font-bold mt-0.5 ${isToday ? 'text-indigo-600' : 'text-foreground'}`}>{day.getDate()}</div>
                   </div>
                 );
               })}
@@ -186,7 +186,7 @@ export default function ProjectCalendar({ tasks, milestones }: ProjectCalendarPr
         )}
       </div>
 
-      <div className="flex items-center gap-4 text-[10px] text-slate-500">
+      <div className="flex items-center gap-4 text-[10px] text-muted-foreground">
         <span className="flex items-center gap-1"><span className="w-2 h-2 bg-indigo-50 border-l-2 border-l-indigo-500 rounded" /> Inicio tarea</span>
         <span className="flex items-center gap-1"><span className="w-2 h-2 bg-blue-50 border-l-2 border-l-blue-500 rounded" /> Fin tarea</span>
         <span className="flex items-center gap-1"><span className="w-2 h-2 bg-purple-50 border-l-2 border-l-purple-500 rounded" /> Hito</span>

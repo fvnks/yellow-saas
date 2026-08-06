@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { AlertTriangle, Clock, DollarSign, Users, TrendingDown } from 'lucide-react';
@@ -82,8 +82,8 @@ export default function CreditControl() {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <AlertTriangle className="w-4 h-4 text-slate-500" />
-        <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Control de Crédito</span>
+        <AlertTriangle className="w-4 h-4 text-muted-foreground" />
+        <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Control de Crédito</span>
       </div>
 
       {summary && (
@@ -91,9 +91,9 @@ export default function CreditControl() {
           {(['current', '1-30', '31-60', '61-90', '90+'] as const).map(bucket => {
             const cfg = bucketConfig[bucket];
             return (
-              <div key={bucket} className={`${cfg.bg} border border-slate-200 rounded-xl p-4`}>
+              <div key={bucket} className={`${cfg.bg} border border-border rounded-xl p-4`}>
                 <p className={`text-[9px] font-semibold ${cfg.color} uppercase`}>{cfg.label}</p>
-                <p className="text-lg font-bold text-slate-900 mt-1">{formatMoney(summary[bucket])}</p>
+                <p className="text-lg font-bold text-foreground mt-1">{formatMoney(summary[bucket])}</p>
               </div>
             );
           })}
@@ -101,7 +101,7 @@ export default function CreditControl() {
       )}
 
       {summary && (
-        <div className="bg-slate-900 text-white rounded-xl p-4 flex items-center justify-between">
+        <div className="bg-primary text-white rounded-xl p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <DollarSign className="w-5 h-5 text-slate-300" />
             <span className="text-sm font-medium">Total por Cobrar</span>
@@ -111,9 +111,9 @@ export default function CreditControl() {
       )}
 
       {customerTotals.length === 0 ? (
-        <div className="text-center py-12 bg-slate-50 border border-dashed border-slate-300 rounded-xl">
+        <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
           <AlertTriangle className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-          <p className="text-xs text-slate-400">Sin facturas pendientes</p>
+          <p className="text-xs text-muted-foreground">Sin facturas pendientes</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -123,14 +123,14 @@ export default function CreditControl() {
             const isOverLimit = c.credit_limit > 0 && c.total_balance > c.credit_limit;
 
             return (
-              <div key={c.id} className={`bg-white border rounded-xl overflow-hidden transition-colors ${isOverLimit ? 'border-red-300' : 'border-slate-200'}`}>
-                <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50"
+              <div key={c.id} className={`bg-card border rounded-xl overflow-hidden transition-colors ${isOverLimit ? 'border-red-300' : 'border-border'}`}>
+                <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-muted"
                   onClick={() => handleExpandCustomer(c.id)}>
                   <div className="flex items-center gap-3">
-                    <Users className="w-5 h-5 text-slate-500" />
+                    <Users className="w-5 h-5 text-muted-foreground" />
                     <div>
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-medium text-slate-900">{c.name}</p>
+                        <p className="text-sm font-medium text-foreground">{c.name}</p>
                         {isOverLimit && (
                           <span className="px-1.5 py-0.5 bg-red-100 text-red-700 text-[8px] font-semibold rounded">LÍMITE EXCEDIDO</span>
                         )}
@@ -138,18 +138,18 @@ export default function CreditControl() {
                           <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[8px] font-semibold rounded">{c.overdue_count} VENCIDAS</span>
                         )}
                       </div>
-                      <p className="text-[9px] text-slate-500">{c.tax_id}</p>
+                      <p className="text-[9px] text-muted-foreground">{c.tax_id}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-6">
                     <div className="text-right">
-                      <p className="text-sm font-bold text-slate-900">{formatMoney(c.total_balance)}</p>
-                      <p className="text-[9px] text-slate-500">Saldo total</p>
+                      <p className="text-sm font-bold text-foreground">{formatMoney(c.total_balance)}</p>
+                      <p className="text-[9px] text-muted-foreground">Saldo total</p>
                     </div>
                     {c.credit_limit > 0 && (
                       <div className="text-right">
                         <p className="text-xs text-slate-600">{formatMoney(c.credit_limit)}</p>
-                        <p className="text-[9px] text-slate-500">Límite</p>
+                        <p className="text-[9px] text-muted-foreground">Límite</p>
                       </div>
                     )}
                     {c.overdue_amount > 0 && (
@@ -165,13 +165,13 @@ export default function CreditControl() {
                   <div className="border-t border-slate-100 px-4 pb-4">
                     <table className="w-full mt-2">
                       <thead>
-                        <tr className="border-b border-slate-200">
-                          <th className="text-left px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Factura</th>
-                          <th className="text-right px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Monto</th>
-                          <th className="text-right px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Pagado</th>
-                          <th className="text-right px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Saldo</th>
-                          <th className="text-right px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Vencimiento</th>
-                          <th className="text-right px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Días</th>
+                        <tr className="border-b border-border">
+                          <th className="text-left px-3 py-2 text-[9px] font-semibold text-muted-foreground uppercase">Factura</th>
+                          <th className="text-right px-3 py-2 text-[9px] font-semibold text-muted-foreground uppercase">Monto</th>
+                          <th className="text-right px-3 py-2 text-[9px] font-semibold text-muted-foreground uppercase">Pagado</th>
+                          <th className="text-right px-3 py-2 text-[9px] font-semibold text-muted-foreground uppercase">Saldo</th>
+                          <th className="text-right px-3 py-2 text-[9px] font-semibold text-muted-foreground uppercase">Vencimiento</th>
+                          <th className="text-right px-3 py-2 text-[9px] font-semibold text-muted-foreground uppercase">Días</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -179,10 +179,10 @@ export default function CreditControl() {
                           const cfg = bucketConfig[d.aging_bucket] || bucketConfig.current;
                           return (
                             <tr key={d.invoice_id} className="border-b border-slate-50">
-                              <td className="px-3 py-2 text-xs text-slate-900">{d.invoice_number}</td>
+                              <td className="px-3 py-2 text-xs text-foreground">{d.invoice_number}</td>
                               <td className="px-3 py-2 text-xs text-right text-slate-600">{formatMoney(d.total_amount)}</td>
                               <td className="px-3 py-2 text-xs text-right text-emerald-600">{formatMoney(d.paid_amount)}</td>
-                              <td className="px-3 py-2 text-xs text-right font-bold text-slate-900">{formatMoney(d.balance)}</td>
+                              <td className="px-3 py-2 text-xs text-right font-bold text-foreground">{formatMoney(d.balance)}</td>
                               <td className="px-3 py-2 text-xs text-right text-slate-600">{new Date(d.due_date).toLocaleDateString('es-CL')}</td>
                               <td className="px-3 py-2 text-right">
                                 <span className={`px-2 py-0.5 rounded-full text-[9px] font-semibold ${cfg.bg} ${cfg.color}`}>

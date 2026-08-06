@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
@@ -114,7 +114,7 @@ export default function AccountingPage() {
   };
 
   const getBalanceColor = (balance: number) => {
-    if (balance >= 0) return 'text-slate-900';
+    if (balance >= 0) return 'text-foreground';
     return 'text-rose-600';
   };
 
@@ -130,8 +130,8 @@ export default function AccountingPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Contabilidad</h1>
-          <p className="text-sm text-slate-500 mt-1">Libro mayor, asientos contables y configuraci�n fiscal</p>
+          <h1 className="text-xl font-bold text-foreground">Contabilidad</h1>
+          <p className="text-sm text-muted-foreground mt-1">Libro mayor, asientos contables y configuraci�n fiscal</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm">
@@ -155,10 +155,10 @@ export default function AccountingPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Activos</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Activos</p>
                 <p className="text-xl font-bold text-emerald-600 mt-1">${totalAssets.toLocaleString('es-CL')}</p>
               </div>
-              <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">
                 <TrendingUp className="w-5 h-5 text-slate-600" />
               </div>
             </div>
@@ -168,10 +168,10 @@ export default function AccountingPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Pasivos</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Pasivos</p>
                 <p className="text-xl font-bold text-blue-600 mt-1">${totalLiabilities.toLocaleString('es-CL')}</p>
               </div>
-              <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">
                 <CreditCard className="w-5 h-5 text-slate-600" />
               </div>
             </div>
@@ -181,10 +181,10 @@ export default function AccountingPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Patrimonio</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Patrimonio</p>
                 <p className="text-xl font-bold text-amber-600 mt-1">${totalEquity.toLocaleString('es-CL')}</p>
               </div>
-              <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">
                 <Building2 className="w-5 h-5 text-slate-600" />
               </div>
             </div>
@@ -194,10 +194,10 @@ export default function AccountingPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Ingresos</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Ingresos</p>
                 <p className="text-xl font-bold text-indigo-600 mt-1">${totalIncome.toLocaleString('es-CL')}</p>
               </div>
-              <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">
                 <DollarSign className="w-5 h-5 text-slate-600" />
               </div>
             </div>
@@ -207,10 +207,10 @@ export default function AccountingPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Gastos</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Gastos</p>
                 <p className="text-xl font-bold text-rose-600 mt-1">${totalExpenses.toLocaleString('es-CL')}</p>
               </div>
-              <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">
                 <Calculator className="w-5 h-5 text-slate-600" />
               </div>
             </div>
@@ -273,13 +273,13 @@ export default function AccountingPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-1">
-                        <button disabled className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Ver">
+                        <button disabled className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Ver">
                           <Eye className="w-4 h-4" />
                         </button>
-                        <button onClick={() => handleEditAccount(account)} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Editar">
+                        <button onClick={() => handleEditAccount(account)} className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors" aria-label="Editar">
                           <Edit className="w-4 h-4" />
                         </button>
-                        <button disabled className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Eliminar">
+                        <button disabled className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Eliminar">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -297,7 +297,7 @@ export default function AccountingPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Impuestos Configurados</CardTitle>
-          <Link href="/dashboard/inventory/taxes" className="text-sm text-slate-500 hover:text-slate-700 font-medium">
+          <Link href="/dashboard/inventory/taxes" className="text-sm text-muted-foreground hover:text-foreground font-medium">
             Ver todos
           </Link>
         </CardHeader>
@@ -326,16 +326,16 @@ export default function AccountingPage() {
                       <Badge variant={typeConfig.variant} className="text-[9px]">{typeConfig.label}</Badge>
                     </TableCell>
                     <TableCell className="text-center font-medium">% {tax.rate}</TableCell>
-                    <TableCell className="text-center text-slate-500 font-mono text-[9px]">{tax.sriCode}</TableCell>
+                    <TableCell className="text-center text-muted-foreground font-mono text-[9px]">{tax.sriCode}</TableCell>
                     <TableCell className="text-center">
-                      {tax.isDefault ? (<Badge variant="success" className="text-[9px]">S</Badge>) : (<span className="text-xs text-slate-400">No</span>)}
+                      {tax.isDefault ? (<Badge variant="success" className="text-[9px]">S</Badge>) : (<span className="text-xs text-muted-foreground">No</span>)}
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-1">
-                        <button disabled className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Ver">
+                        <button disabled className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Ver">
                           <Eye className="w-4 h-4" />
                         </button>
-                        <button disabled className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Editar">
+                        <button disabled className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors opacity-50 cursor-not-allowed" aria-label="Editar">
                           <Edit className="w-4 h-4" />
                         </button>
                       </div>
@@ -353,7 +353,7 @@ export default function AccountingPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Ultimos Asientos Contables</CardTitle>
-          <Link href="/dashboard/accounting/journal-entries" className="text-sm text-slate-500 hover:text-slate-700 font-medium">
+          <Link href="/dashboard/accounting/journal-entries" className="text-sm text-muted-foreground hover:text-foreground font-medium">
             Ver todos
           </Link>
         </CardHeader>
@@ -373,7 +373,7 @@ export default function AccountingPage() {
             <TableBody>
               {recentEntries.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-6 text-sm text-slate-500">
+                  <TableCell colSpan={6} className="text-center py-6 text-sm text-muted-foreground">
                     No hay asientos registrados
                   </TableCell>
                 </TableRow>
@@ -399,26 +399,26 @@ export default function AccountingPage() {
 
       {editingAccount && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900md mx-4">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900">Editar Cuenta</h2>
-              <button onClick={() => setEditingAccount(null)} className="text-slate-400 hover:text-slate-600">X</button>
+          <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">Editar Cuenta</h2>
+              <button onClick={() => setEditingAccount(null)} className="text-muted-foreground hover:text-slate-600">X</button>
             </div>
             <div className="p-6 space-y-4">
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Codigo</label>
+                <label className="block text-xs font-medium text-foreground">Codigo</label>
                 <input type="text" value={editingAccount.code} disabled
-                  className="w-full bg-slate-100 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-muted-foreground" />
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Nombre *</label>
+                <label className="block text-xs font-medium text-foreground">Nombre *</label>
                 <input type="text" value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Tipo</label>
+                <label className="block text-xs font-medium text-foreground">Tipo</label>
                 <select value={editForm.type} onChange={e => setEditForm({ ...editForm, type: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                   <option value="asset">Activo</option>
                   <option value="liability">Pasivo</option>
                   <option value="equity">Patrimonio</option>
@@ -427,11 +427,11 @@ export default function AccountingPage() {
                 </select>
               </div>
             </div>
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button onClick={() => setEditingAccount(null)}
-                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSaveAccount} disabled={saving || !editForm.name}
-                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                 {saving ? 'Guardando...' : 'Guardar'}
               </button>
             </div>

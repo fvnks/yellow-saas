@@ -159,12 +159,12 @@ export default function NewInvoicePage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/sales" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href="/dashboard/sales" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Nueva Factura de Venta</h1>
-          <p className="text-sm text-slate-500 mt-1">Emitir factura para una orden de venta</p>
+          <h1 className="text-xl font-bold text-foreground">Nueva Factura de Venta</h1>
+          <p className="text-sm text-muted-foreground mt-1">Emitir factura para una orden de venta</p>
         </div>
       </div>
 
@@ -226,22 +226,22 @@ export default function NewInvoicePage() {
                   options={[{ value: '', label: 'Seleccionar cliente...' }, ...customers.map(c => ({ value: c.id, label: c.name }))]}
                 />
                 {selectedCustomer && (
-                  <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-2">
+                  <div className="bg-muted border border-border rounded-lg p-4 space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500">Nombre</span>
-                      <span className="text-sm text-slate-900 font-medium">{selectedCustomer.name}</span>
+                      <span className="text-xs font-medium text-muted-foreground">Nombre</span>
+                      <span className="text-sm text-foreground font-medium">{selectedCustomer.name}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500">RUT</span>
-                      <span className="text-sm text-slate-900">{selectedCustomer.tax_id}</span>
+                      <span className="text-xs font-medium text-muted-foreground">RUT</span>
+                      <span className="text-sm text-foreground">{selectedCustomer.tax_id}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500">Email</span>
-                      <span className="text-sm text-slate-900">{selectedCustomer.email}</span>
+                      <span className="text-xs font-medium text-muted-foreground">Email</span>
+                      <span className="text-sm text-foreground">{selectedCustomer.email}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500">Dirección</span>
-                      <span className="text-sm text-slate-900">{selectedCustomer.address}</span>
+                      <span className="text-xs font-medium text-muted-foreground">Dirección</span>
+                      <span className="text-sm text-foreground">{selectedCustomer.address}</span>
                     </div>
                   </div>
                 )}
@@ -260,13 +260,13 @@ export default function NewInvoicePage() {
                 <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-slate-200">
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-8">#</th>
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
-                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-20">Cantidad</th>
-                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-28">Precio Unit.</th>
-                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-20">Dto %</th>
-                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-28">Total</th>
+                    <tr className="border-b border-border">
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider w-8">#</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th>
+                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider w-20">Cantidad</th>
+                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider w-28">Precio Unit.</th>
+                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider w-20">Dto %</th>
+                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider w-28">Total</th>
                       <th className="w-12 px-4 py-3"></th>
                     </tr>
                   </thead>
@@ -274,13 +274,13 @@ export default function NewInvoicePage() {
                     {items.map((item, index) => {
                       const lineTotal = getLineTotal(item);
                       return (
-                        <tr key={index} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                          <td className="px-4 py-3 text-xs text-slate-500">{index + 1}</td>
+                        <tr key={index} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                          <td className="px-4 py-3 text-xs text-muted-foreground">{index + 1}</td>
                           <td className="px-4 py-3">
                             <select
                               value={item.productId}
                               onChange={(e) => handleItemChange(index, 'productId', e.target.value)}
-                              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                             >
                               <option value="">Seleccionar producto...</option>
                               {products.map(p => (
@@ -294,7 +294,7 @@ export default function NewInvoicePage() {
                               min="1"
                               value={item.quantity}
                               onChange={(e) => handleItemChange(index, 'quantity', parseInt(e.target.value) || 1)}
-                              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                             />
                           </td>
                           <td className="px-4 py-3">
@@ -303,7 +303,7 @@ export default function NewInvoicePage() {
                               min="0"
                               value={item.unitPrice}
                               onChange={(e) => handleItemChange(index, 'unitPrice', parseFloat(e.target.value) || 0)}
-                              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 text-right focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground text-right focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                             />
                           </td>
                           <td className="px-4 py-3">
@@ -313,17 +313,17 @@ export default function NewInvoicePage() {
                               max="100"
                               value={item.discount}
                               onChange={(e) => handleItemChange(index, 'discount', parseFloat(e.target.value) || 0)}
-                              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                             />
                           </td>
-                          <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">
+                          <td className="px-4 py-3 text-sm text-foreground text-right font-medium">
                             ${lineTotal.toLocaleString('es-CL')}
                           </td>
                           <td className="px-4 py-3">
                             <button
                               type="button"
                               onClick={() => removeItem(index)}
-                              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                              className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
                               aria-label="Eliminar item"
                               disabled={items.length <= 1}
                             >
@@ -335,7 +335,7 @@ export default function NewInvoicePage() {
                     })}
                     {items.length === 0 && (
                       <tr>
-                        <td colSpan={7} className="px-4 py-8 text-center text-sm text-slate-400">
+                        <td colSpan={7} className="px-4 py-8 text-center text-sm text-muted-foreground">
                           No hay items. Haz clic en &quot;Agregar Item&quot; para comenzar.
                         </td>
                       </tr>
@@ -355,17 +355,17 @@ export default function NewInvoicePage() {
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">Subtotal</span>
-                    <span className="font-medium text-slate-900">${subtotal.toLocaleString('es-CL')}</span>
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span className="font-medium text-foreground">${subtotal.toLocaleString('es-CL')}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">IVA (19%)</span>
-                    <span className="font-medium text-slate-900">${taxAmount.toLocaleString('es-CL')}</span>
+                    <span className="text-muted-foreground">IVA (19%)</span>
+                    <span className="font-medium text-foreground">${taxAmount.toLocaleString('es-CL')}</span>
                   </div>
-                  <hr className="border-slate-200" />
+                  <hr className="border-border" />
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold text-slate-900">Total</span>
-                    <span className="text-xl font-bold text-slate-900">${total.toLocaleString('es-CL')}</span>
+                    <span className="text-sm font-semibold text-foreground">Total</span>
+                    <span className="text-xl font-bold text-foreground">${total.toLocaleString('es-CL')}</span>
                   </div>
                 </div>
 
@@ -378,7 +378,7 @@ export default function NewInvoicePage() {
                     onChange={(e) => setPaidAmount(parseInt(e.target.value) || 0)}
                   />
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">Saldo</span>
+                    <span className="text-muted-foreground">Saldo</span>
                     <span className={`font-medium ${balance > 0 ? 'text-amber-600' : 'text-emerald-600'}`}>
                       ${balance.toLocaleString('es-CL')}
                     </span>

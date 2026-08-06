@@ -23,10 +23,10 @@ export function Modal({ isOpen, onClose, title, children, footer, size = 'md', c
   if (!isOpen) return null;
 
   const modalContent = (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
       <div
         className={cn(
-          'bg-white rounded-xl shadow-xl w-full animate-slide-up dark:bg-slate-900',
+          'bg-white rounded-2xl shadow-xl w-full animate-slide-up dark:bg-slate-900',
           sizes[size],
           className
         )}
@@ -34,13 +34,13 @@ export function Modal({ isOpen, onClose, title, children, footer, size = 'md', c
         aria-modal="true"
         aria-labelledby="modal-title"
       >
-        <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-          <h2 id="modal-title" className="text-lg font-semibold text-slate-900 dark:text-white">
+        <div className="px-6 py-4 border-b border-[#E6EFF5] flex items-center justify-between">
+          <h2 id="modal-title" className="text-lg font-semibold text-[#232323] dark:text-white">
             {title}
           </h2>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors"
             aria-label="Cerrar modal"
           >
             <X className="w-5 h-5" />
@@ -48,7 +48,7 @@ export function Modal({ isOpen, onClose, title, children, footer, size = 'md', c
         </div>
         <div className="p-6">{children}</div>
         {footer && (
-          <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+          <div className="px-6 py-4 border-t border-[#E6EFF5] flex justify-end gap-3">
             {footer}
           </div>
         )}

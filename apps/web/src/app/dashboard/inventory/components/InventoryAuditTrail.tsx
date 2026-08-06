@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { ScrollText, Plus, Trash2, Edit3, Eye, Filter, RefreshCw } from 'lucide-react';
@@ -67,7 +67,7 @@ export default function InventoryAuditTrail() {
       <div className="space-y-1 mt-2">
         {Object.entries(changes).map(([key, value]) => (
           <div key={key} className="flex items-center gap-2 text-xs">
-            <span className="font-medium text-slate-700">{key}:</span>
+            <span className="font-medium text-foreground">{key}:</span>
             {typeof value === 'object' && value !== null && 'old' in (value as any) ? (
               <span>
                 <span className="text-red-600 line-through">{String((value as any).old)}</span>
@@ -87,20 +87,20 @@ export default function InventoryAuditTrail() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <ScrollText className="w-4 h-4 text-slate-500" />
-          <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Auditoria de Inventario</span>
+          <ScrollText className="w-4 h-4 text-muted-foreground" />
+          <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Auditoria de Inventario</span>
         </div>
         <button onClick={loadEntries}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium transition-colors">
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium transition-colors">
           <RefreshCw className="w-3.5 h-3.5" /> Actualizar
         </button>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl p-3 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl p-3 dark:bg-primary dark:border-slate-800">
         <div className="flex items-center gap-2">
-          <Filter className="w-3.5 h-3.5 text-slate-400" />
+          <Filter className="w-3.5 h-3.5 text-muted-foreground" />
           <select value={entityFilter} onChange={e => setEntityFilter(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            className="bg-muted border border-border rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-primary/20">
             <option value="">Todas las entidades</option>
             {Object.entries(entityLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
           </select>
@@ -109,12 +109,12 @@ export default function InventoryAuditTrail() {
 
       {loading ? (
         <div className="space-y-2">
-          {[1, 2, 3, 4, 5].map(i => <div key={i} className="h-16 bg-slate-100 rounded-xl animate-pulse" />)}
+          {[1, 2, 3, 4, 5].map(i => <div key={i} className="h-16 bg-muted rounded-xl animate-pulse" />)}
         </div>
       ) : entries.length === 0 ? (
-        <div className="text-center py-12 bg-slate-50 border border-dashed border-slate-300 rounded-xl">
+        <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
           <ScrollText className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-          <p className="text-xs text-slate-400">Sin registros de auditoria</p>
+          <p className="text-xs text-muted-foreground">Sin registros de auditoria</p>
         </div>
       ) : (
         <div className="space-y-1">
@@ -124,19 +124,19 @@ export default function InventoryAuditTrail() {
             const isExpanded = expandedId === entry.id;
 
             return (
-              <div key={entry.id} className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                <div className="flex items-center justify-between p-3 cursor-pointer hover:bg-slate-50 transition-colors"
+              <div key={entry.id} className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
+                <div className="flex items-center justify-between p-3 cursor-pointer hover:bg-muted transition-colors"
                   onClick={() => setExpandedId(isExpanded ? null : entry.id)}>
                   <div className="flex items-center gap-3">
                     <Icon className={`w-4 h-4 ${cfg.color}`} />
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-medium text-slate-900">{entry.entity_name || entry.entity_id}</span>
-                        <span className="px-1.5 py-0.5 bg-slate-100 text-slate-600 text-[8px] font-semibold rounded">
+                        <span className="text-xs font-medium text-foreground">{entry.entity_name || entry.entity_id}</span>
+                        <span className="px-1.5 py-0.5 bg-muted text-slate-600 text-[8px] font-semibold rounded">
                           {entityLabels[entry.entity_type] || entry.entity_type}
                         </span>
                       </div>
-                      <p className="text-[9px] text-slate-500">
+                      <p className="text-[9px] text-muted-foreground">
                         {entry.performed_by_name || 'Sistema'} | {new Date(entry.created_at).toLocaleString('es-CL')}
                       </p>
                     </div>

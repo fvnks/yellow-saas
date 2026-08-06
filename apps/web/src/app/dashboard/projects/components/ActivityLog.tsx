@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Clock, User, ArrowRight, ChevronDown } from 'lucide-react';
@@ -86,12 +86,12 @@ export default function ActivityLog({ projectId }: { projectId: string }) {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-sm font-semibold text-slate-900">Actividad del Proyecto</h3>
+      <h3 className="text-sm font-semibold text-foreground">Actividad del Proyecto</h3>
 
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
+            <div key={i} className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
               <div className="animate-pulse flex items-center gap-3">
                 <div className="w-8 h-8 bg-slate-200 rounded-full" />
                 <div className="flex-1 space-y-2">
@@ -103,28 +103,28 @@ export default function ActivityLog({ projectId }: { projectId: string }) {
           ))}
         </div>
       ) : activities.length === 0 ? (
-        <div className="text-center py-8 bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+        <div className="text-center py-8 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
           <Clock className="w-10 h-10 text-slate-200 mx-auto mb-2" />
-          <p className="text-sm text-slate-500">No hay actividad registrada</p>
+          <p className="text-sm text-muted-foreground">No hay actividad registrada</p>
         </div>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="divide-y divide-slate-100">
             {activities.map(a => (
-              <div key={a.id} className="px-4 py-3 hover:bg-slate-50 transition-colors">
+              <div key={a.id} className="px-4 py-3 hover:bg-muted transition-colors">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <User className="w-4 h-4 text-slate-400" />
+                  <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <User className="w-4 h-4 text-muted-foreground" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-slate-700">
+                    <p className="text-xs text-foreground">
                       <span className="font-medium">{a.actor_name || 'Sistema'}</span>
                       {' '}{actionLabels[a.action] || a.action}{' '}
                       <span className="font-medium">{entityLabels[a.entity_type] || a.entity_type}</span>
-                      {a.entity_name && <span className="text-slate-500"> &quot;{a.entity_name}&quot;</span>}
+                      {a.entity_name && <span className="text-muted-foreground"> &quot;{a.entity_name}&quot;</span>}
                     </p>
                     {a.old_value && a.new_value && (
-                      <div className="mt-1 text-[10px] text-slate-400">
+                      <div className="mt-1 text-[10px] text-muted-foreground">
                         {getDiffDisplay(a.old_value, a.new_value)?.map(key => (
                           <span key={key} className="inline-flex items-center gap-1 mr-2">
                             {key}: <span className="text-red-400 line-through">{String(a.old_value[key] || '—')}</span>
@@ -134,7 +134,7 @@ export default function ActivityLog({ projectId }: { projectId: string }) {
                         ))}
                       </div>
                     )}
-                    <p className="text-[10px] text-slate-400 mt-1">{formatTime(a.created_at)}</p>
+                    <p className="text-[10px] text-muted-foreground mt-1">{formatTime(a.created_at)}</p>
                   </div>
                 </div>
               </div>
@@ -146,12 +146,12 @@ export default function ActivityLog({ projectId }: { projectId: string }) {
       {total > limit && (
         <div className="flex items-center justify-center gap-2">
           <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-            className="px-3 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-500 hover:bg-slate-200 disabled:opacity-50">
+            className="px-3 py-1 rounded-lg text-xs font-medium bg-muted text-muted-foreground hover:bg-slate-200 disabled:opacity-50">
             Anterior
           </button>
-          <span className="text-xs text-slate-500">Pagina {page} de {Math.ceil(total / limit)}</span>
+          <span className="text-xs text-muted-foreground">Pagina {page} de {Math.ceil(total / limit)}</span>
           <button onClick={() => setPage(p => p + 1)} disabled={page >= Math.ceil(total / limit)}
-            className="px-3 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-500 hover:bg-slate-200 disabled:opacity-50">
+            className="px-3 py-1 rounded-lg text-xs font-medium bg-muted text-muted-foreground hover:bg-slate-200 disabled:opacity-50">
             Siguiente
           </button>
         </div>

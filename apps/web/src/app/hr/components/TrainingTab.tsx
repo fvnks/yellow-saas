@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { Button, Badge, Input } from '@yellow-erp/ui';
@@ -82,7 +82,7 @@ export default function TrainingTab() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Buscar capacitación..." value={search} onChange={e => setSearch(e.target.value)} className="w-64 pl-9" />
         </div>
         <Button onClick={() => setShowForm(true)}>
@@ -92,14 +92,14 @@ export default function TrainingTab() {
 
       {showForm && (
         <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 space-y-3">
-          <h4 className="text-sm font-medium text-slate-900">Nueva Capacitación</h4>
+          <h4 className="text-sm font-medium text-foreground">Nueva Capacitación</h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <Input label="Título" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Ej: Seguridad Industrial" />
             <Input label="Capacitador" value={form.trainer} onChange={e => setForm({ ...form, trainer: e.target.value })} placeholder="Nombre del capacitador" />
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Tipo</label>
+              <label className="block text-xs font-medium text-foreground">Tipo</label>
               <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}
-                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm">
+                className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm">
                 {Object.entries(typeLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
               </select>
             </div>
@@ -108,9 +108,9 @@ export default function TrainingTab() {
             <Input label="Máx. Participantes" type="number" value={form.max_participants} onChange={e => setForm({ ...form, max_participants: e.target.value })} placeholder="20" />
           </div>
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Descripción</label>
+            <label className="block text-xs font-medium text-foreground">Descripción</label>
             <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm h-20 resize-none" placeholder="Descripción de la capacitación..." />
+              className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm h-20 resize-none" placeholder="Descripción de la capacitación..." />
           </div>
           <div className="flex justify-end gap-2">
             <Button variant="secondary" onClick={() => setShowForm(false)}>Cancelar</Button>
@@ -121,11 +121,11 @@ export default function TrainingTab() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {loading ? (
-          <div className="col-span-full text-center py-8 text-sm text-slate-400">Cargando...</div>
+          <div className="col-span-full text-center py-8 text-sm text-muted-foreground">Cargando...</div>
         ) : filtered.length === 0 ? (
-          <div className="col-span-full text-center py-8 text-sm text-slate-400">Sin capacitaciones registradas</div>
+          <div className="col-span-full text-center py-8 text-sm text-muted-foreground">Sin capacitaciones registradas</div>
         ) : filtered.map(t => (
-          <div key={t.id} className="bg-white border border-slate-200 rounded-xl p-5 hover:shadow-md transition-shadow">
+          <div key={t.id} className="bg-card border border-border rounded-xl p-5 hover:shadow-md transition-shadow">
             <div className="flex items-start justify-between mb-3">
               <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
                 <GraduationCap className="w-5 h-5 text-indigo-600" />
@@ -134,16 +134,16 @@ export default function TrainingTab() {
                 {statusConfig[t.status]?.label || t.status}
               </Badge>
             </div>
-            <h3 className="text-sm font-semibold text-slate-900">{t.title}</h3>
-            <p className="text-xs text-slate-500 mt-1">{typeLabels[t.type] || t.type}</p>
+            <h3 className="text-sm font-semibold text-foreground">{t.title}</h3>
+            <p className="text-xs text-muted-foreground mt-1">{typeLabels[t.type] || t.type}</p>
             <div className="mt-3 space-y-1">
-              <div className="flex items-center gap-2 text-xs text-slate-500">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <Calendar className="w-3 h-3" /> {t.start_date} {t.end_date ? `- ${t.end_date}` : ''}
               </div>
-              <div className="flex items-center gap-2 text-xs text-slate-500">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <Users className="w-3 h-3" /> {t.current_participants || 0}/{t.max_participants || '∞'} participantes
               </div>
-              {t.trainer && <p className="text-xs text-slate-400">Capacitador: {t.trainer}</p>}
+              {t.trainer && <p className="text-xs text-muted-foreground">Capacitador: {t.trainer}</p>}
             </div>
           </div>
         ))}

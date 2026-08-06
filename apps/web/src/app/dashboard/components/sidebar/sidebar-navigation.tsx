@@ -148,19 +148,19 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
             className="group/collapsible-group"
           >
             <div className={cn(
-              "rounded-lg transition-all duration-150",
-              groupOpen && "bg-white/5"
+              "rounded-xl transition-all duration-150",
+              groupOpen && "bg-background"
             )}>
               {navGroup.label && (
                 <CollapsibleTrigger asChild>
                   <button className={cn(
-                    "flex w-full items-center gap-2 px-3 py-2 rounded-lg",
+                    "flex w-full items-center gap-2 px-3 py-2.5 rounded-xl",
                     "text-[11px] font-semibold uppercase tracking-wider",
                     "transition-all duration-150 cursor-pointer",
                     groupActive
-                      ? "text-white/90"
-                      : "text-white/40 hover:text-white/70",
-                    "hover:bg-white/5"
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground",
+                    "hover:bg-muted"
                   )}>
                     <ChevronDown className={cn(
                       "h-3 w-3 flex-shrink-0 transition-transform duration-200",
@@ -168,7 +168,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                     )} />
                     <span className="truncate">{navGroup.label}</span>
                     {groupActive && !groupOpen && (
-                      <div className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400 flex-shrink-0" />
+                      <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
                     )}
                   </button>
                 </CollapsibleTrigger>
@@ -194,8 +194,10 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                                   isActive={itemActive}
                                   tooltip={item.title}
                                   className={cn(
-                                    "whitespace-nowrap rounded-lg transition-all duration-150",
-                                    itemActive && "bg-white/10 font-medium text-white"
+                                    "whitespace-nowrap rounded-xl transition-all duration-150",
+                                    itemActive 
+                                      ? "bg-secondary text-primary font-medium border-l-3 border-primary"
+                                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
                                   )}
                                 >
                                   {renderIcon(item.icon)}
@@ -213,8 +215,10 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                                     isActive={itemActive}
                                     tooltip={item.title}
                                     className={cn(
-                                      "rounded-lg transition-all duration-150",
-                                      itemActive && "bg-white/10 font-medium text-white"
+                                      "rounded-xl transition-all duration-150",
+                                      itemActive 
+                                        ? "bg-secondary text-primary font-medium border-l-3 border-primary"
+                                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
                                     )}
                                   >
                                     {renderIcon(item.icon)}
@@ -237,7 +241,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                                           <CollapsibleTrigger asChild>
                                             <SidebarMenuSubButton
                                               isActive={isActive(subItem.path, subItem.subItems)}
-                                              className="rounded-lg justify-between"
+                                              className="rounded-xl justify-between"
                                             >
                                               <div className="flex items-center gap-2">
                                                 {renderIcon(subItem.icon)}
@@ -255,7 +259,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                                                 <SidebarMenuSubItem key={nestedItem.title}>
                                                   <SidebarMenuSubButton
                                                     asChild
-                                                    className="rounded-lg"
+                                                    className="rounded-xl"
                                                     isActive={isActive(nestedItem.path)}
                                                   >
                                                     <a href={nestedItem.path}>
@@ -273,7 +277,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                                           aria-disabled={subItem.comingSoon}
                                           isActive={isActive(subItem.path)}
                                           asChild
-                                          className="rounded-lg"
+                                          className="rounded-xl"
                                         >
                                           <a href={subItem.path}>
                                             {renderIcon(subItem.icon)}
@@ -297,7 +301,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
             </div>
 
             {groupIndex < sidebarItems.length - 1 && (
-              <div className="my-2 mx-3 h-px bg-white/10" />
+              <div className="my-2 mx-3 h-px bg-border" />
             )}
           </Collapsible>
         );

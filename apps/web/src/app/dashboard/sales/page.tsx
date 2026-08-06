@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Suspense, useEffect, useState } from 'react';
 import { Card, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Select, Input } from '@yellow-erp/ui';
@@ -244,8 +244,8 @@ function SalesPageContent() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Ventas</h1>
-          <p className="text-sm text-slate-500 mt-1">�rdenes, gu�as de despacho, facturaci�n y POS</p>
+          <h1 className="text-xl font-bold text-foreground">Ventas</h1>
+          <p className="text-sm text-muted-foreground mt-1">�rdenes, gu�as de despacho, facturaci�n y POS</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm" onClick={handleExport}>
@@ -291,8 +291,8 @@ function SalesPageContent() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Ventas del Mes</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">${(totalSales / 1000000).toFixed(1)}M</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Ventas del Mes</p>
+                <p className="text-2xl font-bold text-foreground mt-1">${(totalSales / 1000000).toFixed(1)}M</p>
               </div>
               <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
                 <DollarSign className="w-5 h-5 text-indigo-600" />
@@ -304,8 +304,8 @@ function SalesPageContent() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Facturado</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">${(totalInvoiced / 1000000).toFixed(1)}M</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Facturado</p>
+                <p className="text-2xl font-bold text-foreground mt-1">${(totalInvoiced / 1000000).toFixed(1)}M</p>
               </div>
               <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
                 <FileText className="w-5 h-5 text-emerald-600" />
@@ -317,8 +317,8 @@ function SalesPageContent() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Despachos Pendientes</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">{pendingDelivery}</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Despachos Pendientes</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{pendingDelivery}</p>
               </div>
               <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
                 <Truck className="w-5 h-5 text-amber-600" />
@@ -330,8 +330,8 @@ function SalesPageContent() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Por Cobrar</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">${(pendingPayment / 1000000).toFixed(1)}M</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Por Cobrar</p>
+                <p className="text-2xl font-bold text-foreground mt-1">${(pendingPayment / 1000000).toFixed(1)}M</p>
               </div>
               <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center">
                 <CreditCard className="w-5 h-5 text-rose-600" />
@@ -342,7 +342,7 @@ function SalesPageContent() {
       </div>
 
       {/* Module Navigation */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         <div className="flex items-center gap-1 flex-wrap">
           {salesModules.map(m => {
             const isActive = activeModule === m.id;
@@ -353,7 +353,7 @@ function SalesPageContent() {
                 const firstTab = m.tabs[0];
                 if (firstTab) { setActiveTab(firstTab.id); setSearch(''); setStatusFilter('all'); }
               }}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-50'}`}>
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive ? 'bg-primary text-white' : 'text-slate-600 hover:bg-muted'}`}>
                 <Icon className="w-4 h-4" /> {m.label}
               </button>
             );
@@ -362,11 +362,11 @@ function SalesPageContent() {
       </div>
 
       {/* Sub-tabs for active module */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         <div className="flex items-center gap-1 flex-wrap">
           {salesModules.find(m => m.id === activeModule)?.tabs.map(t => (
             <button key={t.id} onClick={() => { setActiveTab(t.id); setSearch(''); setStatusFilter('all'); }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${activeTab === t.id ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-50 border border-slate-200'}`}>
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${activeTab === t.id ? 'bg-primary text-white' : 'text-slate-600 hover:bg-muted border border-border'}`}>
               {t.label}
             </button>
           ))}
@@ -374,19 +374,19 @@ function SalesPageContent() {
       </div>
 
       {/* Content area */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         {/* Filters - hidden for POS tab */}
         {activeTab !== 'pos' && (
           <div className="p-4 border-b border-slate-100">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <input
                   type="search"
                   placeholder="Buscar por n�mero, cliente..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                  className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                 />
               </div>
               <Select
@@ -434,26 +434,26 @@ function SalesPageContent() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">N� Orden</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
-                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Items</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Proyecto</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                <tr className="border-b border-border">
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">N� Orden</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cliente</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
+                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Items</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Proyecto</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredOrders.map(order => (
-                  <tr key={order.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3 text-xs font-mono font-medium text-slate-900">{order.number}</td>
-                    <td className="px-4 py-3 text-xs text-slate-700">{order.customer}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{order.date}</td>
-                    <td className="px-4 py-3 text-xs text-slate-700 text-center">{order.items}</td>
-                    <td className="px-4 py-3 text-xs font-medium text-slate-900 text-right">${(order.total || 0).toLocaleString('es-CL')}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{order.project || <span className="text-slate-300">�</span>}</td>
+                  <tr key={order.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <td className="px-4 py-3 text-xs font-mono font-medium text-foreground">{order.number}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{order.customer}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{order.date}</td>
+                    <td className="px-4 py-3 text-xs text-foreground text-center">{order.items}</td>
+                    <td className="px-4 py-3 text-xs font-medium text-foreground text-right">${(order.total || 0).toLocaleString('es-CL')}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{order.project || <span className="text-slate-300">�</span>}</td>
                     <td className="px-4 py-3">
                       <Badge variant={orderStatusConfig[order.status]?.variant || 'neutral'}>
                         {orderStatusConfig[order.status]?.label || order.status}
@@ -462,10 +462,10 @@ function SalesPageContent() {
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <Link href={`/dashboard/sales/${order.id}`}>
-                          <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"><Eye className="w-4 h-4" /></button>
+                          <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
                         </Link>
                         <Link href={`/dashboard/sales/${order.id}/edit`}>
-                          <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"><Edit className="w-4 h-4" /></button>
+                          <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Edit className="w-4 h-4" /></button>
                         </Link>
                       </div>
                     </td>
@@ -481,24 +481,24 @@ function SalesPageContent() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">N� Gu�a</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Orden Ref.</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Transporte</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Proyecto</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                <tr className="border-b border-border">
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">N� Gu�a</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Orden Ref.</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Transporte</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Proyecto</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredGuides.map(guide => (
-                  <tr key={guide.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3 text-xs font-mono font-medium text-slate-900">{guide.number}</td>
+                  <tr key={guide.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <td className="px-4 py-3 text-xs font-mono font-medium text-foreground">{guide.number}</td>
                     <td className="px-4 py-3 text-xs text-indigo-600 font-medium">{guide.orderId}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{guide.date}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{guide.date}</td>
                     <td className="px-4 py-3 text-xs text-slate-600">{guide.transport}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{guide.project || <span className="text-slate-300">�</span>}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{guide.project || <span className="text-slate-300">�</span>}</td>
                     <td className="px-4 py-3">
                       <Badge variant={deliveryStatusConfig[guide.status]?.variant || 'neutral'}>
                         {deliveryStatusConfig[guide.status]?.label || guide.status}
@@ -506,7 +506,7 @@ function SalesPageContent() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <Link href={`/dashboard/sales/delivery/${guide.id}`}>
-                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"><Eye className="w-4 h-4" /></button>
+                        <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
                       </Link>
                     </td>
                   </tr>
@@ -521,24 +521,24 @@ function SalesPageContent() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">N� Factura</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Orden Ref.</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Proyecto</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                <tr className="border-b border-border">
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">N� Factura</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Orden Ref.</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Proyecto</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredInvoices.map(invoice => (
-                  <tr key={invoice.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3 text-xs font-mono font-medium text-slate-900">{invoice.number}</td>
+                  <tr key={invoice.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <td className="px-4 py-3 text-xs font-mono font-medium text-foreground">{invoice.number}</td>
                     <td className="px-4 py-3 text-xs text-indigo-600 font-medium">{invoice.orderId}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{invoice.date}</td>
-                    <td className="px-4 py-3 text-xs font-medium text-slate-900 text-right">${(invoice.total || 0).toLocaleString('es-CL')}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{invoice.project || <span className="text-slate-300">�</span>}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{invoice.date}</td>
+                    <td className="px-4 py-3 text-xs font-medium text-foreground text-right">${(invoice.total || 0).toLocaleString('es-CL')}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{invoice.project || <span className="text-slate-300">�</span>}</td>
                     <td className="px-4 py-3">
                       <Badge variant={invoiceStatusConfig[invoice.status]?.variant || 'neutral'}>
                         {invoiceStatusConfig[invoice.status]?.label || invoice.status}
@@ -547,7 +547,7 @@ function SalesPageContent() {
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <Link href={`/dashboard/sales/invoices/${invoice.id}`}>
-                          <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"><Eye className="w-4 h-4" /></button>
+                          <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
                         </Link>
                         <button onClick={async () => {
                           try {
@@ -579,7 +579,7 @@ function SalesPageContent() {
                             });
                             doc.save(`${inv.invoice_number || invoice.number}.pdf`);
                            } catch { toast.error('Error al descargar factura'); }
-                        }} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors">
+                        }} className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors">
                           <Download className="w-4 h-4" />
                         </button>
                       </div>
@@ -596,31 +596,31 @@ function SalesPageContent() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">RUT</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Email</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tel�fono</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Direcci�n</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                <tr className="border-b border-border">
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cliente</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">RUT</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Email</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tel�fono</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Direcci�n</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredCustomers.map(customer => (
-                  <tr key={customer.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                  <tr key={customer.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center">
                           <Users className="w-4 h-4 text-indigo-600" />
                         </div>
-                        <span className="text-xs font-medium text-slate-900">{customer.name}</span>
+                        <span className="text-xs font-medium text-foreground">{customer.name}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-xs font-mono text-slate-500">{customer.tax_id}</td>
+                    <td className="px-4 py-3 text-xs font-mono text-muted-foreground">{customer.tax_id}</td>
                     <td className="px-4 py-3 text-xs text-slate-600">{customer.email}</td>
                     <td className="px-4 py-3 text-xs text-slate-600">{customer.phone}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500 max-w-[200px] truncate">{customer.address}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground max-w-[200px] truncate">{customer.address}</td>
                     <td className="px-4 py-3">
                       <Badge variant={customer.active ? 'success' : 'neutral'}>
                         {customer.active ? 'Activo' : 'Inactivo'}
@@ -629,10 +629,10 @@ function SalesPageContent() {
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <Link href={`/dashboard/customers/${customer.id}`}>
-                          <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"><Eye className="w-4 h-4" /></button>
+                          <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
                         </Link>
                         <Link href={`/dashboard/customers/${customer.id}/edit`}>
-                          <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"><Edit className="w-4 h-4" /></button>
+                          <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Edit className="w-4 h-4" /></button>
                         </Link>
                       </div>
                     </td>
@@ -648,14 +648,14 @@ function SalesPageContent() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">N� Cotizaci�n</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">V�lido Hasta</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                <tr className="border-b border-border">
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">N� Cotizaci�n</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cliente</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">V�lido Hasta</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -664,12 +664,12 @@ function SalesPageContent() {
                   const matchesStatus = statusFilter === 'all' || q.status === statusFilter;
                   return matchesSearch && matchesStatus;
                 }).map(q => (
-                  <tr key={q.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3 text-xs font-mono font-medium text-slate-900">{q.number}</td>
-                    <td className="px-4 py-3 text-xs text-slate-700">{q.customer}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{q.date}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{q.valid_until || '�'}</td>
-                    <td className="px-4 py-3 text-xs font-medium text-slate-900 text-right">${(q.total || 0).toLocaleString('es-CL')}</td>
+                  <tr key={q.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <td className="px-4 py-3 text-xs font-mono font-medium text-foreground">{q.number}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{q.customer}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{q.date}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{q.valid_until || '�'}</td>
+                    <td className="px-4 py-3 text-xs font-medium text-foreground text-right">${(q.total || 0).toLocaleString('es-CL')}</td>
                     <td className="px-4 py-3">
                       <Badge variant={q.status === 'accepted' ? 'success' : q.status === 'rejected' ? 'danger' : q.status === 'sent' ? 'info' : 'neutral'}>
                         {q.status === 'draft' ? 'Borrador' : q.status === 'sent' ? 'Enviada' : q.status === 'accepted' ? 'Aceptada' : q.status === 'rejected' ? 'Rechazada' : q.status}
@@ -677,7 +677,7 @@ function SalesPageContent() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <Link href={`/dashboard/sales/quotations/${q.id}`}>
-                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"><Eye className="w-4 h-4" /></button>
+                        <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
                       </Link>
                     </td>
                   </tr>
@@ -692,14 +692,14 @@ function SalesPageContent() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">N� Devoluci�n</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Bodega</th>
-                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Items</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                <tr className="border-b border-border">
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">N� Devoluci�n</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cliente</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Bodega</th>
+                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Items</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -708,12 +708,12 @@ function SalesPageContent() {
                   const matchesStatus = statusFilter === 'all' || r.status === statusFilter;
                   return matchesSearch && matchesStatus;
                 }).map(r => (
-                  <tr key={r.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3 text-xs font-mono font-medium text-slate-900">{r.number}</td>
-                    <td className="px-4 py-3 text-xs text-slate-700">{r.customer}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{r.warehouse}</td>
-                    <td className="px-4 py-3 text-xs text-slate-700 text-center">{r.items}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{r.date}</td>
+                  <tr key={r.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <td className="px-4 py-3 text-xs font-mono font-medium text-foreground">{r.number}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{r.customer}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{r.warehouse}</td>
+                    <td className="px-4 py-3 text-xs text-foreground text-center">{r.items}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{r.date}</td>
                     <td className="px-4 py-3">
                       <Badge variant={r.status === 'completed' ? 'success' : r.status === 'cancelled' ? 'danger' : 'warning'}>
                         {r.status === 'pending' ? 'Pendiente' : r.status === 'completed' ? 'Completada' : r.status === 'cancelled' ? 'Cancelada' : r.status}
@@ -721,7 +721,7 @@ function SalesPageContent() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <Link href={`/dashboard/sales/returns`}>
-                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"><Eye className="w-4 h-4" /></button>
+                        <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
                       </Link>
                     </td>
                   </tr>
@@ -814,10 +814,10 @@ function SalesPageContent() {
 
         {activeTab === 'pos' && (
           <div className="p-6">
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 dark:bg-slate-900 dark:border-slate-800 text-center">
+            <div className="bg-card border border-border rounded-xl shadow-sm p-8 dark:bg-primary dark:border-slate-800 text-center">
               <Monitor className="w-12 h-12 text-indigo-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">Punto de Venta</h3>
-              <p className="text-sm text-slate-500 mb-4">Utiliza el POS dedicado para una mejor experiencia</p>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Punto de Venta</h3>
+              <p className="text-sm text-muted-foreground mb-4">Utiliza el POS dedicado para una mejor experiencia</p>
               <Link href="/dashboard/pos">
                 <Button>
                   <Monitor className="w-4 h-4 mr-2" /> Abrir POS
@@ -837,7 +837,7 @@ function SalesPageContent() {
       ) && (
         <div className="text-center py-12">
           <ShoppingCart className="w-12 h-12 text-slate-200 mx-auto mb-3" />
-          <p className="text-sm text-slate-500">No se encontraron resultados</p>
+          <p className="text-sm text-muted-foreground">No se encontraron resultados</p>
         </div>
       )}
     </div>

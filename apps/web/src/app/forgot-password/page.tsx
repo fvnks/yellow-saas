@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Suspense, useState } from 'react';
 import Link from 'next/link';
@@ -54,7 +54,7 @@ function ForgotPasswordForm() {
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-white font-sans text-slate-900 antialiased lg:flex-row">
+    <div className="flex min-h-screen w-full bg-card font-sans text-foreground antialiased lg:flex-row">
       {/* Left Image Panel */}
       <AuthPanel />
 
@@ -65,7 +65,7 @@ function ForgotPasswordForm() {
           <div className="w-10 h-10 bg-slate-950 rounded-xl flex items-center justify-center border border-slate-800">
             <Building2 className="w-6 h-6 text-white" />
           </div>
-          <span className="text-xl font-bold text-slate-900">Yellow ERP</span>
+          <span className="text-xl font-bold text-foreground">Yellow ERP</span>
         </div>
 
         <motion.div
@@ -80,7 +80,7 @@ function ForgotPasswordForm() {
               <motion.div variants={itemVariants} className="mb-8">
                 <Link
                   href="/login"
-                  className="inline-flex items-center gap-2 text-[14px] text-slate-500 hover:text-slate-700 transition-colors"
+                  className="inline-flex items-center gap-2 text-[14px] text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Volver a iniciar sesión
@@ -97,7 +97,7 @@ function ForgotPasswordForm() {
                   <br />
                   contraseña?
                 </h1>
-                <p className="text-[15px] text-slate-500 text-balance">
+                <p className="text-[15px] text-muted-foreground text-balance">
                   Ingresa tu correo electrónico y te enviaremos instrucciones para restablecerla.
                 </p>
               </motion.div>
@@ -121,7 +121,7 @@ function ForgotPasswordForm() {
                     Correo electrónico
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <input
                       id="email"
                       type="email"
@@ -130,7 +130,7 @@ function ForgotPasswordForm() {
                       placeholder="admin@yellow-erp.cl"
                       autoComplete="email"
                       required
-                      className="w-full rounded-lg border border-slate-200 bg-white pl-10 pr-4 py-3 text-[14px] text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-colors"
+                      className="w-full rounded-lg border border-border bg-card pl-10 pr-4 py-3 text-[14px] text-foreground placeholder:text-muted-foreground focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-colors"
                     />
                   </div>
                 </motion.div>
@@ -140,7 +140,7 @@ function ForgotPasswordForm() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full rounded-lg bg-slate-900 hover:bg-slate-800 py-3 text-[14px] font-medium text-white transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full rounded-lg bg-primary hover:bg-primary/90 py-3 text-[14px] font-medium text-white transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                     {loading ? 'Enviando...' : 'Enviar instrucciones'}
@@ -163,8 +163,8 @@ function ForgotPasswordForm() {
                 <h1 className="mb-3 text-2xl font-bold tracking-tight text-slate-950">
                   Revisa tu correo
                 </h1>
-                <p className="text-[15px] text-slate-500 text-balance">
-                  Si existe una cuenta con <span className="font-medium text-slate-700">{email}</span>,
+                <p className="text-[15px] text-muted-foreground text-balance">
+                  Si existe una cuenta con <span className="font-medium text-foreground">{email}</span>,
                   recibirás un enlace para restablecer tu contraseña.
                 </p>
 
@@ -203,7 +203,7 @@ function ForgotPasswordForm() {
 
 export default function ForgotPasswordPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center"><p className="text-slate-500">Cargando...</p></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-muted flex items-center justify-center"><p className="text-muted-foreground">Cargando...</p></div>}>
       <ForgotPasswordForm />
     </Suspense>
   );

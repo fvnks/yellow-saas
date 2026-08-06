@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { ReactNode } from 'react';
 import {
@@ -132,11 +132,11 @@ interface ChartCardProps {
 
 export function ChartCard({ title, subtitle, action, children }: ChartCardProps) {
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
+    <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{title}</h3>
-          {subtitle && <p className="text-[10px] text-slate-500 mt-0.5">{subtitle}</p>}
+          <h3 className="text-sm font-semibold text-foreground dark:text-white">{title}</h3>
+          {subtitle && <p className="text-[10px] text-muted-foreground mt-0.5">{subtitle}</p>}
         </div>
         {action}
       </div>

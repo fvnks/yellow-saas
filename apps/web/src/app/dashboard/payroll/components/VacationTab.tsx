@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { Button, Badge, Input, Select } from '@yellow-erp/ui';
@@ -125,46 +125,46 @@ export default function VacationTab() {
     <div className="space-y-6">
       {/* KPIs */}
       <div className="grid gap-4 md:grid-cols-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Días Ganados</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">{totalDaysEarned}</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Días Ganados</p>
+              <p className="text-2xl font-bold text-foreground mt-1">{totalDaysEarned}</p>
             </div>
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
               <Calendar className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Días Usados</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">{totalDaysUsed}</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Días Usados</p>
+              <p className="text-2xl font-bold text-foreground mt-1">{totalDaysUsed}</p>
             </div>
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
               <Plane className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Disponibles</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Disponibles</p>
               <p className="text-2xl font-bold text-emerald-600 mt-1">{totalDaysAvailable}</p>
             </div>
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
               <Check className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Pendientes</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Pendientes</p>
               <p className="text-2xl font-bold text-amber-600 mt-1">{pendingRequests}</p>
             </div>
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
               <Clock className="w-6 h-6 text-slate-600" />
             </div>
           </div>
@@ -172,8 +172,8 @@ export default function VacationTab() {
       </div>
 
       {/* Sub-tabs */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
-        <div className="border-b border-slate-200">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+        <div className="border-b border-border">
           <div className="flex items-center justify-between px-4">
             <div className="flex">
               {[
@@ -184,12 +184,12 @@ export default function VacationTab() {
                   key={tab.id}
                   onClick={() => setSubTab(tab.id)}
                   className={`px-6 py-3 text-sm font-medium transition-colors flex items-center gap-2 ${
-                    subTab === tab.id ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-slate-500 hover:text-slate-700'
+                    subTab === tab.id ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   {tab.label}
                   {'count' in tab && (
-                    <span className="ml-1 bg-slate-100 text-slate-600 text-[9px] font-semibold px-1.5 py-0.5 rounded-full">{tab.count}</span>
+                    <span className="ml-1 bg-muted text-slate-600 text-[9px] font-semibold px-1.5 py-0.5 rounded-full">{tab.count}</span>
                   )}
                 </button>
               ))}
@@ -224,35 +224,35 @@ export default function VacationTab() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Empleado</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cargo</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Ingreso</th>
-                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Ganados</th>
-                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Usados</th>
-                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Pendientes</th>
-                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Disponibles</th>
+                <tr className="border-b border-border">
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Empleado</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cargo</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Ingreso</th>
+                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Ganados</th>
+                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Usados</th>
+                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Pendientes</th>
+                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Disponibles</th>
                 </tr>
               </thead>
               <tbody>
                 {balances.map(b => (
-                  <tr key={b.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                  <tr key={b.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
                     <td className="px-4 py-3">
                       <div>
-                        <p className="text-sm font-medium text-slate-900">{b.first_name} {b.last_name}</p>
-                        <p className="text-[9px] text-slate-500">{b.rut}</p>
+                        <p className="text-sm font-medium text-foreground">{b.first_name} {b.last_name}</p>
+                        <p className="text-[9px] text-muted-foreground">{b.rut}</p>
                       </div>
                     </td>
                     <td className="px-4 py-3 text-xs text-slate-600">{b.position || '—'}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{b.hire_date ? new Date(b.hire_date).toLocaleDateString('es-CL') : '—'}</td>
-                    <td className="px-4 py-3 text-xs text-center font-medium text-slate-700">{b.days_earned}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{b.hire_date ? new Date(b.hire_date).toLocaleDateString('es-CL') : '—'}</td>
+                    <td className="px-4 py-3 text-xs text-center font-medium text-foreground">{b.days_earned}</td>
                     <td className="px-4 py-3 text-xs text-center text-rose-600">{b.days_used}</td>
                     <td className="px-4 py-3 text-xs text-center text-amber-600">{b.days_pending}</td>
                     <td className="px-4 py-3 text-center">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
                         b.days_available > 0
                           ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                          : 'bg-slate-100 text-slate-600 border border-slate-200'
+                          : 'bg-muted text-slate-600 border border-border'
                       }`}>
                         {b.days_available} días
                       </span>
@@ -264,8 +264,8 @@ export default function VacationTab() {
             {balances.length === 0 && (
               <div className="p-12 text-center">
                 <Calendar className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-                <p className="text-sm text-slate-500">No hay saldos de vacaciones para {yearFilter}</p>
-                <p className="text-xs text-slate-400 mt-1">Asigna saldos a los empleados para comenzar</p>
+                <p className="text-sm text-muted-foreground">No hay saldos de vacaciones para {yearFilter}</p>
+                <p className="text-xs text-muted-foreground mt-1">Asigna saldos a los empleados para comenzar</p>
               </div>
             )}
           </div>
@@ -292,29 +292,29 @@ export default function VacationTab() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-slate-200">
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Empleado</th>
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Desde</th>
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Hasta</th>
-                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Días</th>
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Motivo</th>
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                  <tr className="border-b border-border">
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Empleado</th>
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Desde</th>
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Hasta</th>
+                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Días</th>
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Motivo</th>
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredRequests.map(r => (
-                    <tr key={r.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                    <tr key={r.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
                       <td className="px-4 py-3">
                         <div>
-                          <p className="text-sm font-medium text-slate-900">{r.first_name} {r.last_name}</p>
-                          <p className="text-[9px] text-slate-500">{r.department || '—'}</p>
+                          <p className="text-sm font-medium text-foreground">{r.first_name} {r.last_name}</p>
+                          <p className="text-[9px] text-muted-foreground">{r.department || '—'}</p>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-xs text-slate-700">{new Date(r.start_date).toLocaleDateString('es-CL')}</td>
-                      <td className="px-4 py-3 text-xs text-slate-700">{new Date(r.end_date).toLocaleDateString('es-CL')}</td>
-                      <td className="px-4 py-3 text-xs text-center font-bold text-slate-900">{r.days}</td>
-                      <td className="px-4 py-3 text-xs text-slate-500 max-w-[200px] truncate">{r.reason || '—'}</td>
+                      <td className="px-4 py-3 text-xs text-foreground">{new Date(r.start_date).toLocaleDateString('es-CL')}</td>
+                      <td className="px-4 py-3 text-xs text-foreground">{new Date(r.end_date).toLocaleDateString('es-CL')}</td>
+                      <td className="px-4 py-3 text-xs text-center font-bold text-foreground">{r.days}</td>
+                      <td className="px-4 py-3 text-xs text-muted-foreground max-w-[200px] truncate">{r.reason || '—'}</td>
                       <td className="px-4 py-3">
                         <Badge variant={statusConfig[r.status]?.variant || 'neutral'}>
                           {statusConfig[r.status]?.label || r.status}
@@ -326,21 +326,21 @@ export default function VacationTab() {
                             <>
                               <button
                                 onClick={() => handleApprove(r.id)}
-                                className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                                className="p-1.5 text-muted-foreground hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
                                 title="Aprobar"
                               >
                                 <Check className="w-3.5 h-3.5" />
                               </button>
                               <button
                                 onClick={() => handleReject(r.id)}
-                                className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                                className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
                                 title="Rechazar"
                               >
                                 <X className="w-3.5 h-3.5" />
                               </button>
                               <button
                                 onClick={() => handleCancel(r.id)}
-                                className="p-1.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                                className="p-1.5 text-muted-foreground hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
                                 title="Cancelar"
                               >
                                 <AlertTriangle className="w-3.5 h-3.5" />
@@ -349,7 +349,7 @@ export default function VacationTab() {
                           )}
                           <button
                             onClick={() => handleDelete(r.id)}
-                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                            className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
                             title="Eliminar"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -363,7 +363,7 @@ export default function VacationTab() {
               {filteredRequests.length === 0 && (
                 <div className="p-12 text-center">
                   <Plane className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-                  <p className="text-sm text-slate-500">No hay solicitudes de vacaciones</p>
+                  <p className="text-sm text-muted-foreground">No hay solicitudes de vacaciones</p>
                 </div>
               )}
             </div>
@@ -428,10 +428,10 @@ function VacationRequestModal({ employees, balances, onClose, onSave }: {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900md mx-4">
-        <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-900">Nueva Solicitud de Vacación</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
+      <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-foreground">Nueva Solicitud de Vacación</h2>
+          <button onClick={onClose} className="text-muted-foreground hover:text-slate-600"><X className="w-5 h-5" /></button>
         </div>
         <div className="p-6 space-y-4">
           {error && <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-sm text-rose-700">{error}</div>}
@@ -449,17 +449,17 @@ function VacationRequestModal({ employees, balances, onClose, onSave }: {
           <Input label="Fecha Inicio" type="date" value={startDate} onChange={(e: any) => setStartDate(e.target.value)} />
           <Input label="Fecha Término" type="date" value={endDate} onChange={(e: any) => setEndDate(e.target.value)} />
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Motivo</label>
+            <label className="block text-xs font-medium text-foreground">Motivo</label>
             <textarea
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               rows={2}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Motivo de la solicitud..."
             />
           </div>
         </div>
-        <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+        <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
           <Button variant="secondary" onClick={onClose}>Cancelar</Button>
           <Button onClick={handleSave} disabled={saving}>
             <Plus className="w-4 h-4 mr-2" />
@@ -502,10 +502,10 @@ function VacationBalanceModal({ employees, year, onClose, onSave }: {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900md mx-4">
-        <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-900">Asignar Saldo de Vacaciones</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
+      <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-foreground">Asignar Saldo de Vacaciones</h2>
+          <button onClick={onClose} className="text-muted-foreground hover:text-slate-600"><X className="w-5 h-5" /></button>
         </div>
         <div className="p-6 space-y-4">
           {error && <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-sm text-rose-700">{error}</div>}
@@ -520,17 +520,17 @@ function VacationBalanceModal({ employees, year, onClose, onSave }: {
           />
           <Input label="Días a Asignar" type="number" value={daysEarned} onChange={(e: any) => setDaysEarned(parseInt(e.target.value) || 0)} />
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Notas</label>
+            <label className="block text-xs font-medium text-foreground">Notas</label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Notas adicionales..."
             />
           </div>
         </div>
-        <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+        <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
           <Button variant="secondary" onClick={onClose}>Cancelar</Button>
           <Button onClick={handleSave} disabled={saving}>
             <Plus className="w-4 h-4 mr-2" />

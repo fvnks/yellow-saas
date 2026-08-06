@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Search, Eye, Download, FileText, Filter, X, ChevronDown } from 'lucide-react';
@@ -45,7 +45,7 @@ const SII_STATUS_CONFIG: Record<string, { label: string; color: 'green' | 'red' 
   rejected: { label: 'Rechazado', color: 'red', badge: 'bg-rose-500' },
   sent: { label: 'Enviado', color: 'gray', badge: 'bg-blue-500' },
   pending: { label: 'Pendiente', color: 'gray', badge: 'bg-slate-400' },
-  cancelled: { label: 'Anulado', color: 'gray', badge: 'bg-slate-500' },
+  cancelled: { label: 'Anulado', color: 'gray', badge: 'bg-muted0' },
 };
 
 const STATUS_CONFIG: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
@@ -405,30 +405,30 @@ export default function SalesDocumentsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Documentos de Venta</h1>
-          <p className="text-sm text-slate-500 mt-1">Facturas, Notas de Crédito/Débito y Guías de Despacho</p>
+          <h1 className="text-xl font-bold text-foreground">Documentos de Venta</h1>
+          <p className="text-sm text-muted-foreground mt-1">Facturas, Notas de Crédito/Débito y Guías de Despacho</p>
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4">
         <div className="flex items-center gap-4 flex-wrap">
           <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               type="text"
               placeholder="Buscar por número, cliente, RUT, factura ref, motivo..."
               value={search}
               onChange={e => { setSearch(e.target.value); setPage(1); }}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
             />
           </div>
 
           <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-slate-400" />
+            <Filter className="w-4 h-4 text-muted-foreground" />
             <select
               value={typeFilter}
               onChange={e => { setTypeFilter(e.target.value as any); setPage(1); }}
-              className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
             >
               <option value="all">Todos los tipos</option>
               <option value="invoice">Facturas</option>
@@ -442,7 +442,7 @@ export default function SalesDocumentsPage() {
             <select
               value={siiFilter}
               onChange={e => { setSiiFilter(e.target.value as any); setPage(1); }}
-              className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
             >
               <option value="all">Todos SII</option>
               <option value="accepted">Aceptados</option>
@@ -455,7 +455,7 @@ export default function SalesDocumentsPage() {
           {(search || typeFilter !== 'all' || siiFilter !== 'all') && (
             <button
               onClick={() => { setSearch(''); setTypeFilter('all'); setSiiFilter('all'); setPage(1); }}
-              className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-200 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2 bg-muted border border-border rounded-lg text-sm text-slate-600 hover:bg-slate-200 transition-colors"
             >
               <X className="w-3.5 h-3.5" /> Limpiar filtros
             </button>
@@ -464,61 +464,61 @@ export default function SalesDocumentsPage() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl p-5">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Documentos</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">{filteredDocs.length}</p>
+        <div className="bg-card border border-border rounded-xl p-5">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Documentos</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{filteredDocs.length}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-5">
+        <div className="bg-card border border-border rounded-xl p-5">
           <p className="text-[9px] font-semibold text-emerald-500 uppercase tracking-wider">Aceptados SII</p>
           <p className="text-2xl font-bold text-emerald-600 mt-1">{filteredDocs.filter(d => d.siiStatus === 'accepted').length}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-5">
+        <div className="bg-card border border-border rounded-xl p-5">
           <p className="text-[9px] font-semibold text-rose-500 uppercase tracking-wider">Rechazados SII</p>
           <p className="text-2xl font-bold text-rose-600 mt-1">{filteredDocs.filter(d => d.siiStatus === 'rejected').length}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-5">
+        <div className="bg-card border border-border rounded-xl p-5">
           <p className="text-[9px] font-semibold text-blue-500 uppercase tracking-wider">Monto Total</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">{fmtCurrency(filteredDocs.reduce((sum, d) => sum + d.amount, 0), settings)}</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{fmtCurrency(filteredDocs.reduce((sum, d) => sum + d.amount, 0), settings)}</p>
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-card border border-border rounded-xl shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tipo</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">N° Documento</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Monto</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">SII</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tipo</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">N° Documento</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cliente</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Monto</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">SII</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={8} className="px-4 py-12 text-center text-sm text-slate-400">Cargando...</td></tr>
+                <tr><td colSpan={8} className="px-4 py-12 text-center text-sm text-muted-foreground">Cargando...</td></tr>
               ) : filteredDocs.length === 0 ? (
-                <tr><td colSpan={8} className="px-4 py-12 text-center text-sm text-slate-400">No se encontraron documentos</td></tr>
+                <tr><td colSpan={8} className="px-4 py-12 text-center text-sm text-muted-foreground">No se encontraron documentos</td></tr>
               ) : filteredDocs.map(doc => {
                 const typeConfig = DOC_TYPE_CONFIG[doc.type];
                 const statusConfig = STATUS_CONFIG[doc.status] || { label: doc.status, variant: 'neutral' as const };
                 return (
-                  <tr key={doc.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                  <tr key={doc.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${typeConfig.color}`}>{typeConfig.label}</span>
                     </td>
-                    <td className="px-4 py-3 text-xs font-mono font-medium text-slate-900">{doc.number}</td>
-                    <td className="px-4 py-3 text-xs text-slate-700">
+                    <td className="px-4 py-3 text-xs font-mono font-medium text-foreground">{doc.number}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">
                       {doc.customerName}
-                      {doc.customerRut && <span className="text-slate-400 ml-1 font-mono">({doc.customerRut})</span>}
-                      {doc.referenceInvoice && <div className="text-[10px] text-slate-500 mt-0.5">Ref: {doc.referenceInvoice}</div>}
-                      {doc.reason && <div className="text-[10px] text-slate-500 mt-0.5 truncate max-w-[200px]">{doc.reason}</div>}
+                      {doc.customerRut && <span className="text-muted-foreground ml-1 font-mono">({doc.customerRut})</span>}
+                      {doc.referenceInvoice && <div className="text-[10px] text-muted-foreground mt-0.5">Ref: {doc.referenceInvoice}</div>}
+                      {doc.reason && <div className="text-[10px] text-muted-foreground mt-0.5 truncate max-w-[200px]">{doc.reason}</div>}
                     </td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{fmtDate(doc.date, settings)}</td>
-                    <td className="px-4 py-3 text-xs text-slate-900 text-right font-medium">{fmtCurrency(doc.amount, settings)}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{fmtDate(doc.date, settings)}</td>
+                    <td className="px-4 py-3 text-xs text-foreground text-right font-medium">{fmtCurrency(doc.amount, settings)}</td>
                     <td className="px-4 py-3">
                       <Badge variant={statusConfig.variant}>{statusConfig.label}</Badge>
                     </td>
@@ -526,13 +526,13 @@ export default function SalesDocumentsPage() {
                     <td className="px-4 py-3 text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                          <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded-lg transition-colors">
                             <ChevronDown className="w-4 h-4" />
                           </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-56">
                           <DropdownMenuItem className="flex items-center gap-2" onClick={() => handlePrintDoc(doc)}>
-                            <Eye className="w-4 h-4 text-slate-500" />
+                            <Eye className="w-4 h-4 text-muted-foreground" />
                             Vista previa PDF
                           </DropdownMenuItem>
                           <DropdownMenuItem
@@ -546,7 +546,7 @@ export default function SalesDocumentsPage() {
                               downloadXml(`${doc.number}.xml`, xml);
                             }}
                           >
-                            <FileText className="w-4 h-4 text-slate-500" />
+                            <FileText className="w-4 h-4 text-muted-foreground" />
                             Descargar XML (local)
                           </DropdownMenuItem>
                           {doc.siiXml && (
@@ -556,7 +556,7 @@ export default function SalesDocumentsPage() {
                             </DropdownMenuItem>
                           )}
                           {doc.siiTrackId && (
-                            <DropdownMenuItem className="flex items-center gap-2 text-slate-500">
+                            <DropdownMenuItem className="flex items-center gap-2 text-muted-foreground">
                               <span className="w-4 h-4" />
                               Track ID: {doc.siiTrackId}
                             </DropdownMenuItem>
@@ -580,13 +580,13 @@ export default function SalesDocumentsPage() {
         </div>
 
         {filteredDocs.length > ITEMS_PER_PAGE && (
-          <div className="px-4 py-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+          <div className="px-4 py-3 border-t border-slate-100 flex items-center justify-between text-xs text-muted-foreground">
             <p>Mostrando {(page - 1) * ITEMS_PER_PAGE + 1}-{Math.min(page * ITEMS_PER_PAGE, filteredDocs.length)} de {filteredDocs.length}</p>
             <div className="flex items-center gap-2">
               <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-                className="px-3 py-1 rounded border border-slate-200 hover:bg-slate-50 disabled:opacity-40">Anterior</button>
+                className="px-3 py-1 rounded border border-border hover:bg-muted disabled:opacity-40">Anterior</button>
               <button onClick={() => setPage(p => p + 1)} disabled={page * ITEMS_PER_PAGE >= filteredDocs.length}
-                className="px-3 py-1 rounded border border-slate-200 hover:bg-slate-50 disabled:opacity-40">Siguiente</button>
+                className="px-3 py-1 rounded border border-border hover:bg-muted disabled:opacity-40">Siguiente</button>
             </div>
           </div>
         )}

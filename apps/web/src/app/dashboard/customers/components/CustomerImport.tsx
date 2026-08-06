@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useRef } from 'react';
 import { Upload, X, FileText, CheckCircle, AlertCircle, ChevronDown } from 'lucide-react';
@@ -167,10 +167,10 @@ export default function CustomerImport({ open, onClose, onComplete }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-9004xl mx-4 max-h-[90vh] overflow-hidden flex flex-col">
-        <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-900">Importar Clientes</h2>
-          <button onClick={handleClose} className="text-slate-400 hover:text-slate-600">
+      <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primary4xl mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-foreground">Importar Clientes</h2>
+          <button onClick={handleClose} className="text-muted-foreground hover:text-slate-600">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -181,9 +181,9 @@ export default function CustomerImport({ open, onClose, onComplete }: Props) {
               onClick={() => fileInputRef.current?.click()}
               className="border-2 border-dashed border-slate-300 rounded-xl p-12 text-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition-colors"
             >
-              <Upload className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-              <p className="text-sm font-medium text-slate-700">Arrastra un archivo CSV aquí o haz clic para seleccionar</p>
-              <p className="text-xs text-slate-500 mt-2">Formatos aceptados: .csv</p>
+              <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-sm font-medium text-foreground">Arrastra un archivo CSV aquí o haz clic para seleccionar</p>
+              <p className="text-xs text-muted-foreground mt-2">Formatos aceptados: .csv</p>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -230,8 +230,8 @@ export default function CustomerImport({ open, onClose, onComplete }: Props) {
               <div className="flex items-center gap-3">
                 <FileText className="w-5 h-5 text-slate-600" />
                 <div>
-                  <p className="text-sm font-medium text-slate-900">{file.name}</p>
-                  <p className="text-xs text-slate-500">{headers.length} columnas detectadas</p>
+                  <p className="text-sm font-medium text-foreground">{file.name}</p>
+                  <p className="text-xs text-muted-foreground">{headers.length} columnas detectadas</p>
                 </div>
                 <button
                   onClick={() => {
@@ -247,21 +247,21 @@ export default function CustomerImport({ open, onClose, onComplete }: Props) {
               </div>
 
               <div>
-                <h4 className="text-sm font-semibold text-slate-900 mb-3">Mapeo de Columnas</h4>
+                <h4 className="text-sm font-semibold text-foreground mb-3">Mapeo de Columnas</h4>
                 <div className="space-y-3">
                   {headers.map((header, index) => (
                     <div key={index} className="flex items-center gap-4">
                       <div className="flex-1">
-                        <span className="text-xs font-medium text-slate-700 bg-slate-100 px-2 py-1 rounded">
+                        <span className="text-xs font-medium text-foreground bg-muted px-2 py-1 rounded">
                           {header}
                         </span>
                       </div>
-                      <ChevronDown className="w-4 h-4 text-slate-400" />
+                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
                       <div className="flex-1">
                         <select
                           value={mapping[header] || ''}
                           onChange={e => handleMappingChange(header, e.target.value)}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                          className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                         >
                           <option value="">No importar</option>
                           {customerFields.map(field => (
@@ -277,13 +277,13 @@ export default function CustomerImport({ open, onClose, onComplete }: Props) {
               </div>
 
               <div>
-                <h4 className="text-sm font-semibold text-slate-900 mb-3">Vista Previa (primeras 5 filas)</h4>
-                <div className="overflow-x-auto border border-slate-200 rounded-lg">
+                <h4 className="text-sm font-semibold text-foreground mb-3">Vista Previa (primeras 5 filas)</h4>
+                <div className="overflow-x-auto border border-border rounded-lg">
                   <table className="w-full">
                     <thead>
-                      <tr className="border-b border-slate-200 bg-slate-50">
+                      <tr className="border-b border-border bg-muted">
                         {headers.map((header, index) => (
-                          <th key={index} className="text-left px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">
+                          <th key={index} className="text-left px-3 py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
                             {header}
                           </th>
                         ))}
@@ -293,7 +293,7 @@ export default function CustomerImport({ open, onClose, onComplete }: Props) {
                       {preview.map((row, rowIndex) => (
                         <tr key={rowIndex} className="border-b border-slate-100">
                           {row.map((cell, cellIndex) => (
-                            <td key={cellIndex} className="px-3 py-2 text-xs text-slate-700">
+                            <td key={cellIndex} className="px-3 py-2 text-xs text-foreground">
                               {cell || '—'}
                             </td>
                           ))}
@@ -307,10 +307,10 @@ export default function CustomerImport({ open, onClose, onComplete }: Props) {
           )}
         </div>
 
-        <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+        <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
           <button
             onClick={handleClose}
-            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           >
             {result ? 'Cerrar' : 'Cancelar'}
           </button>
@@ -318,7 +318,7 @@ export default function CustomerImport({ open, onClose, onComplete }: Props) {
             <button
               onClick={handleImport}
               disabled={importing}
-              className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"
+              className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"
             >
               <Upload className="w-4 h-4" />
               {importing ? 'Importando...' : 'Importar'}

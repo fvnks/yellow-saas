@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -126,12 +126,12 @@ export default function ImportProductsPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center gap-3">
-        <button onClick={() => router.push('/dashboard/inventory')} className="p-1 hover:bg-slate-100 rounded transition-colors">
+        <button onClick={() => router.push('/dashboard/inventory')} className="p-1 hover:bg-muted rounded transition-colors">
           <ArrowLeft className="w-5 h-5 text-slate-600" />
         </button>
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Importar Productos</h1>
-          <p className="text-sm text-slate-500 mt-1">Carga masiva desde archivo CSV</p>
+          <h1 className="text-xl font-bold text-foreground">Importar Productos</h1>
+          <p className="text-sm text-muted-foreground mt-1">Carga masiva desde archivo CSV</p>
         </div>
       </div>
 
@@ -141,13 +141,13 @@ export default function ImportProductsPage() {
           <p className="text-sm font-medium text-blue-800">Descarga la plantilla CSV</p>
           <p className="text-xs text-blue-600 mt-0.5">Columnas requeridas: name, sku</p>
         </div>
-        <button onClick={downloadTemplate} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all duration-150 active:scale-[0.98]">
+        <button onClick={downloadTemplate} className="bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all duration-150 active:scale-[0.98]">
           <Download className="w-3.5 h-3.5" /> Plantilla
         </button>
       </div>
 
       {/* Upload area */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         <input
           ref={fileInputRef}
           type="file"
@@ -162,40 +162,40 @@ export default function ImportProductsPage() {
             className="w-full border-2 border-dashed border-slate-300 rounded-xl p-12 text-center hover:border-indigo-400 hover:bg-indigo-50/50 transition-colors"
           >
             <FileSpreadsheet className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-            <p className="text-sm font-medium text-slate-700">Seleccionar archivo CSV</p>
-            <p className="text-xs text-slate-500 mt-1">Maximo 500 productos por importacion</p>
+            <p className="text-sm font-medium text-foreground">Seleccionar archivo CSV</p>
+            <p className="text-xs text-muted-foreground mt-1">Maximo 500 productos por importacion</p>
           </button>
         ) : (
           <div className="space-y-4">
-            <div className="flex items-center justify-between bg-slate-50 rounded-lg p-3">
+            <div className="flex items-center justify-between bg-muted rounded-lg p-3">
               <div className="flex items-center gap-3">
                 <FileSpreadsheet className="w-5 h-5 text-emerald-600" />
                 <div>
-                  <p className="text-sm font-medium text-slate-900">{file.name}</p>
-                  <p className="text-xs text-slate-500">{preview.length} filas de vista previa</p>
+                  <p className="text-sm font-medium text-foreground">{file.name}</p>
+                  <p className="text-xs text-muted-foreground">{preview.length} filas de vista previa</p>
                 </div>
               </div>
-              <button onClick={() => { setFile(null); setPreview([]); setResult(null); }} className="text-slate-400 hover:text-slate-600 text-xs">
+              <button onClick={() => { setFile(null); setPreview([]); setResult(null); }} className="text-muted-foreground hover:text-slate-600 text-xs">
                 Cambiar archivo
               </button>
             </div>
 
             {preview.length > 0 && (
-              <div className="overflow-x-auto border border-slate-200 rounded-lg">
+              <div className="overflow-x-auto border border-border rounded-lg">
                 <table className="w-full text-xs">
                   <thead>
-                    <tr className="bg-slate-50 border-b border-slate-200">
-                      <th className="text-left px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Nombre</th>
-                      <th className="text-left px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">SKU</th>
-                      <th className="text-left px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Precio</th>
+                    <tr className="bg-muted border-b border-border">
+                      <th className="text-left px-3 py-2 text-[9px] font-semibold text-muted-foreground uppercase">Nombre</th>
+                      <th className="text-left px-3 py-2 text-[9px] font-semibold text-muted-foreground uppercase">SKU</th>
+                      <th className="text-left px-3 py-2 text-[9px] font-semibold text-muted-foreground uppercase">Precio</th>
                     </tr>
                   </thead>
                   <tbody>
                     {preview.map((row, i) => (
                       <tr key={i} className="border-b border-slate-100">
-                        <td className="px-3 py-2 text-slate-700">{row.name || '-'}</td>
-                        <td className="px-3 py-2 text-slate-500 font-mono">{row.sku || '-'}</td>
-                        <td className="px-3 py-2 text-slate-700">${row.sale_price || '0'}</td>
+                        <td className="px-3 py-2 text-foreground">{row.name || '-'}</td>
+                        <td className="px-3 py-2 text-muted-foreground font-mono">{row.sku || '-'}</td>
+                        <td className="px-3 py-2 text-foreground">${row.sale_price || '0'}</td>
                       </tr>
                     ))}
                   </tbody>

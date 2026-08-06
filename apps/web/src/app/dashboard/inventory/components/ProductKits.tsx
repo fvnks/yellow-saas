@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Layers, Plus, Trash2, Package, DollarSign, X } from 'lucide-react';
@@ -126,53 +126,53 @@ export default function ProductKits({ productId }: ProductKitsProps) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Layers className="w-4 h-4 text-slate-500" />
-          <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">
+          <Layers className="w-4 h-4 text-muted-foreground" />
+          <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
             Kits / Combos ({kits.length})
           </span>
         </div>
         <button onClick={() => setShowCreate(!showCreate)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-medium transition-colors">
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary hover:bg-primary/90 text-white rounded-lg text-xs font-medium transition-colors">
           <Plus className="w-3.5 h-3.5" /> Nuevo Kit
         </button>
       </div>
 
       {showCreate && (
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+        <div className="bg-muted border border-border rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-700">Crear Kit</span>
+            <span className="text-xs font-medium text-foreground">Crear Kit</span>
             <button onClick={() => setShowCreate(false)} className="p-1 hover:bg-slate-200 rounded">
-              <X className="w-3 h-3 text-slate-400" />
+              <X className="w-3 h-3 text-muted-foreground" />
             </button>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
               placeholder="Nombre del kit" />
             {!productId && (
               <select value={form.product_id} onChange={e => setForm({ ...form, product_id: e.target.value })}
-                className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+                className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                 <option value="">Producto padre...</option>
                 {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
               </select>
             )}
             <input type="text" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
-              className="col-span-2 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+              className="col-span-2 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
               placeholder="Descripcion (opcional)" />
           </div>
 
           <div className="space-y-2">
-            <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Componentes</span>
+            <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Componentes</span>
             {form.items.map((item, idx) => (
               <div key={idx} className="flex items-center gap-2">
                 <select value={item.product_id} onChange={e => updateItem(idx, 'product_id', e.target.value)}
-                  className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+                  className="flex-1 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                   <option value="">Componente...</option>
                   {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                 </select>
                 <input type="number" value={item.quantity} onChange={e => updateItem(idx, 'quantity', Number(e.target.value))}
                   min={0.01} step={0.01}
-                  className="w-24 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+                  className="w-24 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
                   placeholder="Cant." />
                 <button onClick={() => removeItem(idx)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg">
                   <Trash2 className="w-4 h-4" />
@@ -185,32 +185,32 @@ export default function ProductKits({ productId }: ProductKitsProps) {
           </div>
 
           <button onClick={handleCreate}
-            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Crear Kit
           </button>
         </div>
       )}
 
       {kits.length === 0 ? (
-        <div className="text-center py-8 bg-slate-50 border border-dashed border-slate-300 rounded-xl">
+        <div className="text-center py-8 bg-muted border border-dashed border-slate-300 rounded-xl">
           <Layers className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-          <p className="text-xs text-slate-400">Sin kits configurados</p>
+          <p className="text-xs text-muted-foreground">Sin kits configurados</p>
         </div>
       ) : (
         <div className="space-y-2">
           {kits.map(kit => {
             const totalCost = kit.items?.reduce((sum, item) => sum + (item.cost_price * item.quantity), 0) || 0;
             return (
-              <div key={kit.id} className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
+              <div key={kit.id} className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
                 <div className="flex items-center justify-between mb-2">
                   <div>
-                    <p className="text-sm font-medium text-slate-900">{kit.name}</p>
-                    <p className="text-[9px] text-slate-500">{kit.product_name} | {kit.items?.length || 0} componentes</p>
+                    <p className="text-sm font-medium text-foreground">{kit.name}</p>
+                    <p className="text-[9px] text-muted-foreground">{kit.product_name} | {kit.items?.length || 0} componentes</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1 text-xs">
-                      <DollarSign className="w-3.5 h-3.5 text-slate-400" />
-                      <span className="font-medium text-slate-700">${totalCost.toFixed(2)}</span>
+                      <DollarSign className="w-3.5 h-3.5 text-muted-foreground" />
+                      <span className="font-medium text-foreground">${totalCost.toFixed(2)}</span>
                     </div>
                     <button onClick={() => handleDelete(kit.id)}
                       className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
@@ -221,7 +221,7 @@ export default function ProductKits({ productId }: ProductKitsProps) {
                 {kit.items && kit.items.length > 0 && (
                   <div className="mt-2 space-y-1">
                     {kit.items.map((item, idx) => (
-                      <div key={idx} className="flex items-center justify-between text-xs text-slate-600 bg-slate-50 rounded-lg px-3 py-1.5">
+                      <div key={idx} className="flex items-center justify-between text-xs text-slate-600 bg-muted rounded-lg px-3 py-1.5">
                         <span>{item.product_name}</span>
                         <span className="font-medium">{item.quantity} x ${item.cost_price}</span>
                       </div>

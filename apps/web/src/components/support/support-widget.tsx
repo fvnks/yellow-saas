@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
@@ -50,11 +50,11 @@ const statusConfig: Record<string, { label: string; classes: string; icon: any }
   open: { label: 'Abierto', classes: 'bg-blue-50 text-blue-700 border-blue-200', icon: Inbox },
   in_progress: { label: 'En progreso', classes: 'bg-amber-50 text-amber-700 border-amber-200', icon: Loader2 },
   resolved: { label: 'Resuelto', classes: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: CheckCircle2 },
-  closed: { label: 'Cerrado', classes: 'bg-slate-100 text-slate-600 border-slate-200', icon: CheckCircle2 },
+  closed: { label: 'Cerrado', classes: 'bg-muted text-slate-600 border-border', icon: CheckCircle2 },
 };
 
 const priorityConfig: Record<string, { label: string; classes: string }> = {
-  low: { label: 'Baja', classes: 'bg-slate-100 text-slate-600 border-slate-200' },
+  low: { label: 'Baja', classes: 'bg-muted text-slate-600 border-border' },
   medium: { label: 'Media', classes: 'bg-blue-50 text-blue-700 border-blue-200' },
   high: { label: 'Alta', classes: 'bg-amber-50 text-amber-700 border-amber-200' },
   urgent: { label: 'Urgente', classes: 'bg-rose-50 text-rose-700 border-rose-200' },
@@ -262,7 +262,7 @@ export function SupportWidget() {
 
       {/* Panel */}
       {open && (
-        <div className="fixed bottom-24 right-6 z-[60] w-[380px] max-w-[calc(100vw-2rem)] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xl flex flex-col overflow-hidden">
+        <div className="fixed bottom-24 right-6 z-[60] w-[380px] max-w-[calc(100vw-2rem)] bg-card dark:bg-primary border border-border dark:border-slate-800 rounded-xl shadow-2xl flex flex-col overflow-hidden">
           {/* Header */}
           <div className="px-5 py-4 bg-blue-600 text-white flex items-center justify-between">
             <div className="flex items-center gap-2.5">
@@ -283,26 +283,26 @@ export function SupportWidget() {
               <div className="p-4 space-y-3">
                 <button
                   onClick={() => { setView('create'); }}
-                  className="w-full flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800 transition-colors text-left"
+                  className="w-full flex items-center gap-3 p-4 rounded-xl border border-border hover:bg-muted dark:border-slate-700 dark:hover:bg-primary/90 transition-colors text-left"
                 >
                   <div className="w-10 h-10 bg-blue-50 dark:bg-blue-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
                     <Plus className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-900 dark:text-white">Nuevo ticket</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Crea una solicitud de soporte</p>
+                    <p className="text-sm font-semibold text-foreground dark:text-white">Nuevo ticket</p>
+                    <p className="text-xs text-muted-foreground dark:text-muted-foreground">Crea una solicitud de soporte</p>
                   </div>
                 </button>
                 <button
                   onClick={() => { setView('list'); fetchTickets(); }}
-                  className="w-full flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800 transition-colors text-left"
+                  className="w-full flex items-center gap-3 p-4 rounded-xl border border-border hover:bg-muted dark:border-slate-700 dark:hover:bg-primary/90 transition-colors text-left"
                 >
                   <div className="w-10 h-10 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
                     <MessageSquare className="w-5 h-5 text-indigo-600" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-semibold text-slate-900 dark:text-white">Mis tickets</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Conversa con nuestro equipo</p>
+                    <p className="text-sm font-semibold text-foreground dark:text-white">Mis tickets</p>
+                    <p className="text-xs text-muted-foreground dark:text-muted-foreground">Conversa con nuestro equipo</p>
                   </div>
                   {unread > 0 && (
                     <span className="min-w-5 h-5 px-1.5 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center">
@@ -312,14 +312,14 @@ export function SupportWidget() {
                 </button>
                 <button
                   onClick={() => router.push('/ayuda')}
-                  className="w-full flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800 transition-colors text-left"
+                  className="w-full flex items-center gap-3 p-4 rounded-xl border border-border hover:bg-muted dark:border-slate-700 dark:hover:bg-primary/90 transition-colors text-left"
                 >
                   <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
                     <BookOpen className="w-5 h-5 text-emerald-600" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-900 dark:text-white">Centro de Ayuda</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Preguntas frecuentes y guías</p>
+                    <p className="text-sm font-semibold text-foreground dark:text-white">Centro de Ayuda</p>
+                    <p className="text-xs text-muted-foreground dark:text-muted-foreground">Preguntas frecuentes y guías</p>
                   </div>
                 </button>
               </div>
@@ -329,28 +329,28 @@ export function SupportWidget() {
               <div className="p-4">
                 <button
                   onClick={() => setView('menu')}
-                  className="flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 mb-3 transition-colors"
+                  className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground dark:text-muted-foreground dark:hover:text-slate-200 mb-3 transition-colors"
                 >
                   <ChevronLeft className="w-3.5 h-3.5" />
                   Volver
                 </button>
                 <form onSubmit={handleCreate} className="space-y-3">
                   <div className="space-y-1">
-                    <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">Asunto *</label>
+                    <label className="block text-xs font-medium text-foreground dark:text-slate-300">Asunto *</label>
                     <input
                       type="text"
                       value={form.subject}
                       onChange={e => setForm({ ...form, subject: e.target.value })}
                       placeholder="Describe el problema en pocas palabras"
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full bg-muted dark:bg-slate-800 border border-border dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-foreground dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">Prioridad</label>
+                    <label className="block text-xs font-medium text-foreground dark:text-slate-300">Prioridad</label>
                     <select
                       value={form.priority}
                       onChange={e => setForm({ ...form, priority: e.target.value })}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full bg-muted dark:bg-slate-800 border border-border dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-foreground dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="low">Baja</option>
                       <option value="medium">Media</option>
@@ -359,13 +359,13 @@ export function SupportWidget() {
                     </select>
                   </div>
                   <div className="space-y-1">
-                    <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">Mensaje</label>
+                    <label className="block text-xs font-medium text-foreground dark:text-slate-300">Mensaje</label>
                     <textarea
                       value={form.message}
                       onChange={e => setForm({ ...form, message: e.target.value })}
                       placeholder="Explica qué sucede..."
                       rows={3}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                      className="w-full bg-muted dark:bg-slate-800 border border-border dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-foreground dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                     />
                   </div>
                   <button
@@ -383,19 +383,19 @@ export function SupportWidget() {
               <div className="p-4">
                 <button
                   onClick={() => setView('menu')}
-                  className="flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 mb-3 transition-colors"
+                  className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground dark:text-muted-foreground dark:hover:text-slate-200 mb-3 transition-colors"
                 >
                   <ChevronLeft className="w-3.5 h-3.5" />
                   Volver
                 </button>
                 {loadingTickets ? (
                   <div className="space-y-2">
-                    {[1, 2, 3].map(i => <div key={i} className="h-16 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse" />)}
+                    {[1, 2, 3].map(i => <div key={i} className="h-16 bg-muted dark:bg-slate-800 rounded-lg animate-pulse" />)}
                   </div>
                 ) : tickets.length === 0 ? (
                   <div className="text-center py-8">
                     <MessageSquare className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-                    <p className="text-sm text-slate-500 dark:text-slate-400">No tienes tickets de soporte</p>
+                    <p className="text-sm text-muted-foreground dark:text-muted-foreground">No tienes tickets de soporte</p>
                     <button
                       onClick={() => setView('create')}
                       className="mt-3 inline-flex items-center gap-1.5 text-sm text-blue-600 hover:underline font-medium"
@@ -415,11 +415,11 @@ export function SupportWidget() {
                         <button
                           key={t.id}
                           onClick={() => openTicket(t.id)}
-                          className="w-full flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800 transition-colors text-left"
+                          className="w-full flex items-center gap-3 p-3 rounded-xl border border-border hover:bg-muted dark:border-slate-700 dark:hover:bg-primary/90 transition-colors text-left"
                         >
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                              <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{t.subject}</p>
+                              <p className="text-sm font-medium text-foreground dark:text-white truncate">{t.subject}</p>
                               <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold border flex-shrink-0 ${st.classes}`}>
                                 <StatusIcon className="w-3 h-3" />
                                 {st.label}
@@ -429,12 +429,12 @@ export function SupportWidget() {
                               <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border ${pr.classes}`}>
                                 {pr.label}
                               </span>
-                              <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                              <span className="text-[10px] text-muted-foreground flex items-center gap-1">
                                 <Clock className="w-3 h-3" />
                                 {new Date(t.updated_at).toLocaleString('es-CL')}
                               </span>
                               {openStatus && t.message_count > 0 && (
-                                <span className="inline-flex items-center gap-0.5 text-[10px] text-slate-400">
+                                <span className="inline-flex items-center gap-0.5 text-[10px] text-muted-foreground">
                                   <MessageSquare className="w-3 h-3" />
                                   {t.message_count}
                                 </span>
@@ -457,28 +457,28 @@ export function SupportWidget() {
 
             {view === 'chat' && (
               <div className="flex flex-col h-[420px]">
-                <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                <div className="px-4 py-3 border-b border-border dark:border-slate-800 flex items-center gap-2">
                   <button
                     onClick={() => { setView('list'); setTicket(null); fetchTickets(); }}
-                    className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                    className="p-1.5 hover:bg-muted dark:hover:bg-primary/90 rounded-lg transition-colors"
                   >
-                    <ChevronLeft className="w-4 h-4 text-slate-500" />
+                    <ChevronLeft className="w-4 h-4 text-muted-foreground" />
                   </button>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{ticket?.subject}</p>
+                    <p className="text-sm font-semibold text-foreground dark:text-white truncate">{ticket?.subject}</p>
                     {ticket?.assigned_to_name && (
-                      <p className="text-[10px] text-slate-400">Atendido por {ticket.assigned_to_name}</p>
+                      <p className="text-[10px] text-muted-foreground">Atendido por {ticket.assigned_to_name}</p>
                     )}
                   </div>
                 </div>
 
-                <div ref={chatBottomRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50 dark:bg-slate-950/40">
+                <div ref={chatBottomRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-muted dark:bg-slate-950/40">
                   {loadingChat ? (
                     <div className="space-y-2">
-                      {[1, 2].map(i => <div key={i} className="h-12 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse" />)}
+                      {[1, 2].map(i => <div key={i} className="h-12 bg-muted dark:bg-slate-800 rounded-lg animate-pulse" />)}
                     </div>
                   ) : ticket && ticket.messages.length === 0 ? (
-                    <p className="text-center text-sm text-slate-400 py-8">Aún no hay mensajes</p>
+                    <p className="text-center text-sm text-muted-foreground py-8">Aún no hay mensajes</p>
                   ) : (
                     ticket?.messages.map((msg, index) => {
                       const isSupport = msg.sender_type === 'super_admin';
@@ -486,18 +486,18 @@ export function SupportWidget() {
                         <div key={msg.id || index} className={`flex ${isSupport ? 'justify-start' : 'justify-end'}`}>
                           <div className={`max-w-[80%] rounded-xl px-3.5 py-2.5 border ${
                             isSupport
-                              ? 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'
+                              ? 'bg-card dark:bg-slate-800 border-border dark:border-slate-700'
                               : 'bg-blue-600 border-blue-600'
                           }`}>
                             <div className="flex items-center gap-2 mb-0.5">
                               <span className={`text-[10px] font-bold ${isSupport ? 'text-blue-600' : 'text-blue-100'}`}>
                                 {isSupport ? (msg.sender_name || 'Soporte') : 'Tú'}
                               </span>
-                              <span className={`text-[9px] ${isSupport ? 'text-slate-400' : 'text-blue-200'}`}>
+                              <span className={`text-[9px] ${isSupport ? 'text-muted-foreground' : 'text-blue-200'}`}>
                                 {new Date(msg.created_at).toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })}
                               </span>
                             </div>
-                            <p className={`text-sm leading-relaxed ${isSupport ? 'text-slate-700 dark:text-slate-200' : 'text-white'}`}>
+                            <p className={`text-sm leading-relaxed ${isSupport ? 'text-foreground dark:text-slate-200' : 'text-white'}`}>
                               {msg.message}
                             </p>
                             {msg.attachments?.length ? (
@@ -510,7 +510,7 @@ export function SupportWidget() {
                                     rel="noopener noreferrer"
                                     className={`flex items-center gap-2 px-2 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
                                       isSupport
-                                        ? 'bg-slate-100 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600'
+                                        ? 'bg-muted dark:bg-slate-700/50 border-border dark:border-slate-600 text-foreground dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600'
                                         : 'bg-blue-700/30 border-blue-400/40 text-white hover:bg-blue-700/40'
                                     }`}
                                   >
@@ -530,22 +530,22 @@ export function SupportWidget() {
                 </div>
 
                 {ticket && (ticket.status === 'resolved' || ticket.status === 'closed') ? (
-                  <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-800">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 text-center">
+                  <div className="px-4 py-3 border-t border-border dark:border-slate-800">
+                    <p className="text-xs text-muted-foreground dark:text-muted-foreground text-center">
                       Este ticket está {ticket.status === 'closed' ? 'cerrado' : 'resuelto'}
                     </p>
                   </div>
                 ) : (
-                  <div className="px-3 py-3 border-t border-slate-200 dark:border-slate-800">
+                  <div className="px-3 py-3 border-t border-border dark:border-slate-800">
                     {pendingFiles.length > 0 && (
                       <div className="flex flex-wrap gap-2 mb-2">
                         {pendingFiles.map((f, i) => (
-                          <div key={i} className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1">
+                          <div key={i} className="flex items-center gap-1.5 bg-muted dark:bg-slate-800 border border-border dark:border-slate-700 rounded-lg px-2 py-1">
                             {f.type.startsWith('image/')
-                              ? <ImageIcon className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />
-                              : <FileText className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />}
+                              ? <ImageIcon className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                              : <FileText className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />}
                             <span className="text-xs text-slate-600 dark:text-slate-300 max-w-[120px] truncate">{f.name}</span>
-                            <button onClick={() => setPendingFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-slate-400 hover:text-slate-600">
+                            <button onClick={() => setPendingFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-muted-foreground hover:text-slate-600">
                               <X className="w-3.5 h-3.5" />
                             </button>
                           </div>
@@ -563,7 +563,7 @@ export function SupportWidget() {
                       <button
                         onClick={() => fileInputRef.current?.click()}
                         disabled={sending || pendingFiles.length >= 5}
-                        className="w-9 h-9 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-500 dark:text-slate-300 flex items-center justify-center transition-colors flex-shrink-0 disabled:opacity-50"
+                        className="w-9 h-9 bg-muted dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-border dark:border-slate-700 rounded-lg text-muted-foreground dark:text-slate-300 flex items-center justify-center transition-colors flex-shrink-0 disabled:opacity-50"
                         title="Adjuntar archivo"
                       >
                         <Paperclip className="w-4 h-4" />
@@ -574,7 +574,7 @@ export function SupportWidget() {
                         onChange={e => setReplyText(e.target.value)}
                         onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
                         placeholder="Escribe un mensaje..."
-                        className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="flex-1 bg-muted dark:bg-slate-800 border border-border dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-foreground dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                       <button
                         onClick={handleSend}

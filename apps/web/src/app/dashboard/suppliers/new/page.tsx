@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -99,12 +99,12 @@ export default function NewSupplierPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/suppliers" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href="/dashboard/suppliers" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Nuevo Proveedor</h1>
-          <p className="text-sm text-slate-500 mt-1">Registrar un nuevo proveedor en el sistema</p>
+          <h1 className="text-xl font-bold text-foreground">Nuevo Proveedor</h1>
+          <p className="text-sm text-muted-foreground mt-1">Registrar un nuevo proveedor en el sistema</p>
         </div>
       </div>
 
@@ -116,7 +116,7 @@ export default function NewSupplierPage() {
             {/* Company Data */}
             <Card>
               <CardHeader className="flex items-center gap-2">
-                <Building2 className="w-5 h-5 text-slate-500" />
+                <Building2 className="w-5 h-5 text-muted-foreground" />
                 <CardTitle>Datos de la Empresa</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -149,7 +149,7 @@ export default function NewSupplierPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <UserPlus className="w-5 h-5 text-slate-500" />
+                  <UserPlus className="w-5 h-5 text-muted-foreground" />
                   <CardTitle>Contactos</CardTitle>
                 </div>
                 <Button type="button" variant="secondary" size="sm" onClick={addContact}>
@@ -159,13 +159,13 @@ export default function NewSupplierPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {contacts.map((contact, index) => (
-                  <div key={index} className="p-4 bg-slate-50 rounded-lg border border-slate-200 space-y-3">
+                  <div key={index} className="p-4 bg-muted rounded-lg border border-border space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500">Contacto {index + 1}</span>
+                      <span className="text-xs font-medium text-muted-foreground">Contacto {index + 1}</span>
                       <button
                         type="button"
                         onClick={() => removeContact(index)}
-                        className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                        className="p-1 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
                         disabled={contacts.length === 1}
                       >
                         <Trash2 className="w-4 h-4" />
@@ -192,7 +192,7 @@ export default function NewSupplierPage() {
                   value={formData.notes}
                   onChange={handleFormChange('notes')}
                   rows={3}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors resize-none"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
                   placeholder="Notas sobre el proveedor, condiciones especiales, etc."
                 />
               </CardContent>
@@ -208,15 +208,15 @@ export default function NewSupplierPage() {
               <CardContent className="space-y-4">
                 <div className="space-y-3 text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Estado</span>
+                    <span className="text-muted-foreground">Estado</span>
                     <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Activo</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Contactos</span>
+                    <span className="text-muted-foreground">Contactos</span>
                     <span className="font-medium">{contacts.filter(c => c.name).length}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Moneda</span>
+                    <span className="text-muted-foreground">Moneda</span>
                     <span className="font-medium">CLP</span>
                   </div>
                 </div>

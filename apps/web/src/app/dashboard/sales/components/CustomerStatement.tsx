@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { FileText, Download, User, DollarSign, CreditCard, ArrowRight } from 'lucide-react';
@@ -90,11 +90,11 @@ export default function CustomerStatement() {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <FileText className="w-4 h-4 text-slate-500" />
-        <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado de Cuenta</span>
+        <FileText className="w-4 h-4 text-muted-foreground" />
+        <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado de Cuenta</span>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
         <div className="flex items-center gap-4">
           <div className="relative flex-1">
             <input
@@ -102,13 +102,13 @@ export default function CustomerStatement() {
               placeholder="Buscar cliente..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
             />
           </div>
           <select
             value={selectedCustomer}
             onChange={(e) => setSelectedCustomer(e.target.value)}
-            className="w-72 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="w-72 bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
           >
             <option value="">Seleccionar cliente...</option>
             {filteredCustomers.map(c => (
@@ -119,79 +119,79 @@ export default function CustomerStatement() {
       </div>
 
       {!statement && (
-        <div className="text-center py-12 bg-slate-50 border border-dashed border-slate-300 rounded-xl">
+        <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
           <User className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-          <p className="text-xs text-slate-400">Selecciona un cliente para ver su estado de cuenta</p>
+          <p className="text-xs text-muted-foreground">Selecciona un cliente para ver su estado de cuenta</p>
         </div>
       )}
 
       {statement && (
         <>
-          <div className="bg-white border border-slate-200 rounded-xl p-6 dark:bg-slate-900 dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl p-6 dark:bg-primary dark:border-slate-800">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="text-lg font-bold text-slate-900">{statement.customer.name}</h3>
-                <p className="text-xs text-slate-500">RUT: {statement.customer.tax_id}</p>
-                {statement.customer.email && <p className="text-xs text-slate-500">{statement.customer.email}</p>}
+                <h3 className="text-lg font-bold text-foreground">{statement.customer.name}</h3>
+                <p className="text-xs text-muted-foreground">RUT: {statement.customer.tax_id}</p>
+                {statement.customer.email && <p className="text-xs text-muted-foreground">{statement.customer.email}</p>}
               </div>
               <div className="text-right">
-                <p className="text-[9px] font-semibold text-slate-500 uppercase">Saldo Actual</p>
-                <p className="text-2xl font-bold text-slate-900">{formatMoney(statement.summary.totalBalance)}</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase">Saldo Actual</p>
+                <p className="text-2xl font-bold text-foreground">{formatMoney(statement.summary.totalBalance)}</p>
               </div>
             </div>
 
             <div className="grid grid-cols-4 gap-3">
               <div className="bg-blue-50 rounded-lg p-3">
                 <p className="text-[9px] font-semibold text-blue-700 uppercase">Facturado</p>
-                <p className="text-sm font-bold text-slate-900">{formatMoney(statement.summary.totalInvoiced)}</p>
+                <p className="text-sm font-bold text-foreground">{formatMoney(statement.summary.totalInvoiced)}</p>
               </div>
               <div className="bg-emerald-50 rounded-lg p-3">
                 <p className="text-[9px] font-semibold text-emerald-700 uppercase">Pagado</p>
-                <p className="text-sm font-bold text-slate-900">{formatMoney(statement.summary.totalPaid)}</p>
+                <p className="text-sm font-bold text-foreground">{formatMoney(statement.summary.totalPaid)}</p>
               </div>
               <div className="bg-amber-50 rounded-lg p-3">
                 <p className="text-[9px] font-semibold text-amber-700 uppercase">N. Crédito</p>
-                <p className="text-sm font-bold text-slate-900">{formatMoney(statement.summary.totalCreditNotes)}</p>
+                <p className="text-sm font-bold text-foreground">{formatMoney(statement.summary.totalCreditNotes)}</p>
               </div>
               <div className="bg-orange-50 rounded-lg p-3">
                 <p className="text-[9px] font-semibold text-orange-700 uppercase">N. Débito</p>
-                <p className="text-sm font-bold text-slate-900">{formatMoney(statement.summary.totalDebitNotes)}</p>
+                <p className="text-sm font-bold text-foreground">{formatMoney(statement.summary.totalDebitNotes)}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl dark:bg-slate-900 dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl dark:bg-primary dark:border-slate-800">
             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-slate-900">Movimientos</h3>
-              <span className="text-[9px] font-semibold text-slate-500">{statement.transactions.length} registros</span>
+              <h3 className="text-sm font-semibold text-foreground">Movimientos</h3>
+              <span className="text-[9px] font-semibold text-muted-foreground">{statement.transactions.length} registros</span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-slate-200">
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Tipo</th>
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Referencia</th>
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Fecha</th>
-                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Monto</th>
-                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Pagado</th>
-                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Saldo</th>
-                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Estado</th>
+                  <tr className="border-b border-border">
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Tipo</th>
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Referencia</th>
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Fecha</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Monto</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Pagado</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Saldo</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Estado</th>
                   </tr>
                 </thead>
                 <tbody>
                   {statement.transactions.map((tx, idx) => {
                     const txCfg = txTypeConfig[tx.type] || txTypeConfig.invoice;
-                    const stCfg = statusConfig[tx.status] || { label: tx.status, color: 'text-slate-700', bg: 'bg-slate-100' };
+                    const stCfg = statusConfig[tx.status] || { label: tx.status, color: 'text-foreground', bg: 'bg-muted' };
                     return (
-                      <tr key={idx} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                      <tr key={idx} className="border-b border-slate-50 hover:bg-muted transition-colors">
                         <td className="px-4 py-3">
                           <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${txCfg.bg} ${txCfg.color}`}>
                             {txCfg.label}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-xs font-medium text-slate-900">{tx.reference}</td>
+                        <td className="px-4 py-3 text-xs font-medium text-foreground">{tx.reference}</td>
                         <td className="px-4 py-3 text-xs text-slate-600">{new Date(tx.date).toLocaleDateString('es-CL')}</td>
-                        <td className={`px-4 py-3 text-xs text-right font-medium ${tx.amount >= 0 ? 'text-slate-900' : 'text-emerald-600'}`}>
+                        <td className={`px-4 py-3 text-xs text-right font-medium ${tx.amount >= 0 ? 'text-foreground' : 'text-emerald-600'}`}>
                           {tx.amount >= 0 ? formatMoney(tx.amount) : `-${formatMoney(tx.amount)}`}
                         </td>
                         <td className="px-4 py-3 text-xs text-right text-slate-600">{tx.paid > 0 ? formatMoney(tx.paid) : '-'}</td>

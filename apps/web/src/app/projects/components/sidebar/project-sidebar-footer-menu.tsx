@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { LogOut, Settings, User, ChevronsUpDown, Building2 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -18,8 +18,8 @@ const ROLE_CONFIG: Record<string, { label: string; classes: string }> = {
   owner: { label: 'Propietario', classes: 'bg-amber-50 text-amber-700 border border-amber-200' },
   admin: { label: 'Administrador', classes: 'bg-indigo-50 text-indigo-700 border border-indigo-200' },
   manager: { label: 'Gerente', classes: 'bg-blue-50 text-blue-700 border border-blue-200' },
-  member: { label: 'Miembro', classes: 'bg-slate-100 text-slate-600 border border-slate-200' },
-  viewer: { label: 'Observador', classes: 'bg-slate-100 text-slate-500 border border-slate-200' },
+  member: { label: 'Miembro', classes: 'bg-muted text-slate-600 border border-border' },
+  viewer: { label: 'Observador', classes: 'bg-muted text-muted-foreground border border-border' },
 };
 
 interface ProjectSidebarFooterMenuProps {
@@ -46,13 +46,13 @@ export default function ProjectSidebarFooterMenu({ user }: ProjectSidebarFooterM
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-1 flex-col group-data-[collapsible=icon]:hidden min-w-0">
-                <span className="font-semibold text-slate-900 text-sm truncate dark:text-white">{user.name}</span>
-                <span className="text-[11px] text-slate-400 truncate dark:text-slate-500">{user.email}</span>
+                <span className="font-semibold text-foreground text-sm truncate dark:text-white">{user.name}</span>
+                <span className="text-[11px] text-muted-foreground truncate dark:text-muted-foreground">{user.email}</span>
                 <span className={`inline-flex items-center mt-1 px-1.5 py-0 rounded-full text-[8px] font-semibold w-fit ${roleConfig.classes}`}>
                   {roleConfig.label}
                 </span>
               </div>
-              <ChevronsUpDown className="h-4 w-4 text-slate-400 group-data-[collapsible=icon]:hidden flex-shrink-0" />
+              <ChevronsUpDown className="h-4 w-4 text-muted-foreground group-data-[collapsible=icon]:hidden flex-shrink-0" />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent side="top" align="start" className="w-56">

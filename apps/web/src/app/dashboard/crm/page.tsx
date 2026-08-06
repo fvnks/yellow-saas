@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Users, Plus, Search, Eye, Edit, Trash2, Phone, Mail, Calendar, Star, Filter, X, Save } from 'lucide-react';
@@ -86,11 +86,11 @@ export default function CRMPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">CRM</h1>
-          <p className="text-sm text-slate-500 mt-1">Gestion de contactos y oportunidades</p>
+          <h1 className="text-xl font-bold text-foreground">CRM</h1>
+          <p className="text-sm text-muted-foreground mt-1">Gestion de contactos y oportunidades</p>
         </div>
         <button onClick={() => { setShowForm(true); setEditingLead(null); setForm({ name: '', email: '', phone: '', source: 'web', status: 'new', estimated_value: '', notes: '' }); }}
-          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" /> Nuevo Contacto
         </button>
       </div>
@@ -98,63 +98,63 @@ export default function CRMPage() {
       {error && <NotificationAlert variant="warning" title={error} dismissible onDismiss={() => setError('')} />}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Leads</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">{leads.length}</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Leads</p>
+              <p className="text-2xl font-bold text-foreground mt-1">{leads.length}</p>
             </div>
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
               <Users className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Activos</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">{activeLeads.length}</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Activos</p>
+              <p className="text-2xl font-bold text-foreground mt-1">{activeLeads.length}</p>
             </div>
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
               <Star className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Ganados</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Ganados</p>
               <p className="text-2xl font-bold text-emerald-600 mt-1">{wonLeads.length}</p>
             </div>
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
               <Calendar className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Valor Pipeline</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">${(totalValue / 1000000).toFixed(1)}M</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Valor Pipeline</p>
+              <p className="text-2xl font-bold text-foreground mt-1">${(totalValue / 1000000).toFixed(1)}M</p>
             </div>
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
               <Star className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         <div className="flex items-center gap-4">
           <div className="flex-1 relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input type="text" value={search} onChange={e => setSearch(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSearch()}
               placeholder="Buscar por nombre, email o telefono..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-10 pr-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+              className="w-full bg-muted border border-border rounded-lg pl-10 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
           <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+            className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
             <option value="all">Todos los estados</option>
             {Object.entries(statusConfig).map(([key, cfg]) => (
               <option key={key} value={key}>{cfg.label}</option>
@@ -163,41 +163,41 @@ export default function CRMPage() {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Contacto</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fuente</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Valor</th>
-                <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nombre</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Contacto</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fuente</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Valor</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={6} className="px-4 py-12 text-center text-sm text-slate-500">Cargando...</td></tr>
+                <tr><td colSpan={6} className="px-4 py-12 text-center text-sm text-muted-foreground">Cargando...</td></tr>
               ) : leads.length === 0 ? (
                 <tr><td colSpan={6} className="px-4 py-12 text-center">
                   <Users className="w-12 h-12 text-slate-200 mx-auto mb-3" />
-                  <p className="text-sm text-slate-500">No hay leads registrados</p>
+                  <p className="text-sm text-muted-foreground">No hay leads registrados</p>
                 </td></tr>
               ) : leads.map(lead => {
                 const st = statusConfig[lead.status] || statusConfig.new;
                 return (
-                  <tr key={lead.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                  <tr key={lead.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
                     <td className="px-4 py-3">
-                      <p className="text-sm font-medium text-slate-900">{lead.name}</p>
-                      {lead.notes && <p className="text-[10px] text-slate-400 truncate max-w-xs">{lead.notes}</p>}
+                      <p className="text-sm font-medium text-foreground">{lead.name}</p>
+                      {lead.notes && <p className="text-[10px] text-muted-foreground truncate max-w-xs">{lead.notes}</p>}
                     </td>
                     <td className="px-4 py-3">
-                      {lead.email && <p className="text-xs text-slate-700 flex items-center gap-1"><Mail className="w-3 h-3" />{lead.email}</p>}
-                      {lead.phone && <p className="text-xs text-slate-700 flex items-center gap-1"><Phone className="w-3 h-3" />{lead.phone}</p>}
+                      {lead.email && <p className="text-xs text-foreground flex items-center gap-1"><Mail className="w-3 h-3" />{lead.email}</p>}
+                      {lead.phone && <p className="text-xs text-foreground flex items-center gap-1"><Phone className="w-3 h-3" />{lead.phone}</p>}
                     </td>
                     <td className="px-4 py-3 text-xs text-slate-600">{sourceOptions.find(s => s.value === lead.source)?.label || lead.source || '�'}</td>
-                    <td className="px-4 py-3 text-xs text-right font-medium text-slate-900">
+                    <td className="px-4 py-3 text-xs text-right font-medium text-foreground">
                       {lead.estimated_value ? `$${Number(lead.estimated_value).toLocaleString('es-CL')}` : '�'}
                     </td>
                     <td className="px-4 py-3 text-center">
@@ -205,8 +205,8 @@ export default function CRMPage() {
                     </td>
                     <td className="px-4 py-3 text-center">
                       <div className="flex items-center justify-center gap-1">
-                        <button onClick={() => handleEdit(lead)} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
-                          <Edit className="w-3.5 h-3.5 text-slate-500" />
+                        <button onClick={() => handleEdit(lead)} className="p-1.5 hover:bg-muted rounded-lg transition-colors">
+                          <Edit className="w-3.5 h-3.5 text-muted-foreground" />
                         </button>
                         <button onClick={() => handleDelete(lead.id)} className="p-1.5 hover:bg-red-50 rounded-lg transition-colors">
                           <Trash2 className="w-3.5 h-3.5 text-red-500" />
@@ -223,62 +223,62 @@ export default function CRMPage() {
 
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900lg mx-4">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900">{editingLead ? 'Editar Lead' : 'Nuevo Lead'}</h2>
-              <button onClick={() => { setShowForm(false); setEditingLead(null); }} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
+          <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarylg mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">{editingLead ? 'Editar Lead' : 'Nuevo Lead'}</h2>
+              <button onClick={() => { setShowForm(false); setEditingLead(null); }} className="text-muted-foreground hover:text-slate-600"><X className="w-5 h-5" /></button>
             </div>
             <div className="p-6 space-y-4">
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Nombre *</label>
+                <label className="block text-xs font-medium text-foreground">Nombre *</label>
                 <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Email</label>
+                  <label className="block text-xs font-medium text-foreground">Email</label>
                   <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Telefono</label>
+                  <label className="block text-xs font-medium text-foreground">Telefono</label>
                   <input type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Fuente</label>
+                  <label className="block text-xs font-medium text-foreground">Fuente</label>
                   <select value={form.source} onChange={e => setForm({ ...form, source: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                     {sourceOptions.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Estado</label>
+                  <label className="block text-xs font-medium text-foreground">Estado</label>
                   <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                     {Object.entries(statusConfig).map(([key, cfg]) => <option key={key} value={key}>{cfg.label}</option>)}
                   </select>
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Valor Estimado (CLP)</label>
+                <label className="block text-xs font-medium text-foreground">Valor Estimado (CLP)</label>
                 <input type="number" value={form.estimated_value} onChange={e => setForm({ ...form, estimated_value: e.target.value })}
                   placeholder="0"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Notas</label>
+                <label className="block text-xs font-medium text-foreground">Notas</label>
                 <textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} rows={3}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
             </div>
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button onClick={() => { setShowForm(false); setEditingLead(null); }}
-                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={saving || !form.name}
-                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
                 <Save className="w-4 h-4" /> {saving ? 'Guardando...' : editingLead ? 'Actualizar' : 'Crear Lead'}
               </button>
             </div>

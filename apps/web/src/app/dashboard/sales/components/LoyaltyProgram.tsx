@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Star, Gift, TrendingUp, Award, Plus, X, Save, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
@@ -74,42 +74,42 @@ export default function LoyaltyProgram() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Star className="w-4 h-4 text-slate-500" />
-          <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Programa de Lealtad</span>
+          <Star className="w-4 h-4 text-muted-foreground" />
+          <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Programa de Lealtad</span>
         </div>
         <button onClick={() => setShowForm(true)}
-          className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+          className="bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
           <Plus className="w-3.5 h-3.5" /> Registrar Puntos
         </button>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase">Puntos Totales</p>
-              <p className="text-xl font-bold text-slate-900 mt-1">{totalPoints.toLocaleString()}</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase">Puntos Totales</p>
+              <p className="text-xl font-bold text-foreground mt-1">{totalPoints.toLocaleString()}</p>
             </div>
             <div className="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center">
               <Star className="w-5 h-5 text-amber-500" />
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase">Clientes Activos</p>
-              <p className="text-xl font-bold text-slate-900 mt-1">{activeCustomers}</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase">Clientes Activos</p>
+              <p className="text-xl font-bold text-foreground mt-1">{activeCustomers}</p>
             </div>
             <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center">
               <Award className="w-5 h-5 text-indigo-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase">Total Canjeado</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase">Total Canjeado</p>
               <p className="text-xl font-bold text-emerald-600 mt-1">{customers.reduce((s, c) => s + c.total_redeemed, 0).toLocaleString()}</p>
             </div>
             <div className="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center">
@@ -121,44 +121,44 @@ export default function LoyaltyProgram() {
 
       <div className="flex gap-2">
         <button onClick={() => setActiveView('summary')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${activeView === 'summary' ? 'bg-slate-900 text-white' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
+          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${activeView === 'summary' ? 'bg-primary text-white' : 'bg-card border border-border text-slate-600 hover:bg-muted'}`}>
           Resumen
         </button>
         <button onClick={() => setActiveView('transactions')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${activeView === 'transactions' ? 'bg-slate-900 text-white' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
+          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${activeView === 'transactions' ? 'bg-primary text-white' : 'bg-card border border-border text-slate-600 hover:bg-muted'}`}>
           Movimientos
         </button>
       </div>
 
       {activeView === 'summary' && (
-        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Cliente</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Ganados</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Canjeados</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Saldo</th>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Cliente</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Ganados</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Canjeados</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Saldo</th>
               </tr>
             </thead>
             <tbody>
               {customers.map(c => (
-                <tr key={c.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                <tr key={c.id} className="border-b border-slate-50 hover:bg-muted transition-colors">
                   <td className="px-4 py-3">
-                    <p className="text-xs font-medium text-slate-900">{c.name}</p>
-                    <p className="text-[9px] text-slate-500">{c.tax_id}</p>
+                    <p className="text-xs font-medium text-foreground">{c.name}</p>
+                    <p className="text-[9px] text-muted-foreground">{c.tax_id}</p>
                   </td>
                   <td className="px-4 py-3 text-xs text-right text-slate-600">{c.total_earned.toLocaleString()}</td>
                   <td className="px-4 py-3 text-xs text-right text-red-500">-{c.total_redeemed.toLocaleString()}</td>
                   <td className="px-4 py-3 text-right">
-                    <span className={`inline-flex items-center gap-1 text-xs font-bold ${c.balance > 0 ? 'text-emerald-600' : 'text-slate-400'}`}>
+                    <span className={`inline-flex items-center gap-1 text-xs font-bold ${c.balance > 0 ? 'text-emerald-600' : 'text-muted-foreground'}`}>
                       <Star className="w-3 h-3" /> {c.balance.toLocaleString()}
                     </span>
                   </td>
                 </tr>
               ))}
               {customers.length === 0 && (
-                <tr><td colSpan={4} className="text-center py-8 text-xs text-slate-400">Sin clientes registrados</td></tr>
+                <tr><td colSpan={4} className="text-center py-8 text-xs text-muted-foreground">Sin clientes registrados</td></tr>
               )}
             </tbody>
           </table>
@@ -166,20 +166,20 @@ export default function LoyaltyProgram() {
       )}
 
       {activeView === 'transactions' && (
-        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Tipo</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Cliente</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Descripción</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Puntos</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase">Fecha</th>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Tipo</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Cliente</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Descripción</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Puntos</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Fecha</th>
               </tr>
             </thead>
             <tbody>
               {transactions.map(t => (
-                <tr key={t.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                <tr key={t.id} className="border-b border-slate-50 hover:bg-muted transition-colors">
                   <td className="px-4 py-3">
                     {t.type === 'earned' ? (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700">
@@ -191,16 +191,16 @@ export default function LoyaltyProgram() {
                       </span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-900">{t.customer_name}</td>
+                  <td className="px-4 py-3 text-xs text-foreground">{t.customer_name}</td>
                   <td className="px-4 py-3 text-xs text-slate-600">{t.description}</td>
                   <td className={`px-4 py-3 text-xs text-right font-bold ${t.type === 'earned' ? 'text-emerald-600' : 'text-red-600'}`}>
                     {t.type === 'earned' ? '+' : '-'}{t.points.toLocaleString()}
                   </td>
-                  <td className="px-4 py-3 text-xs text-right text-slate-500">{new Date(t.created_at).toLocaleDateString('es-CL')}</td>
+                  <td className="px-4 py-3 text-xs text-right text-muted-foreground">{new Date(t.created_at).toLocaleDateString('es-CL')}</td>
                 </tr>
               ))}
               {transactions.length === 0 && (
-                <tr><td colSpan={5} className="text-center py-8 text-xs text-slate-400">Sin movimientos</td></tr>
+                <tr><td colSpan={5} className="text-center py-8 text-xs text-muted-foreground">Sin movimientos</td></tr>
               )}
             </tbody>
           </table>
@@ -209,48 +209,48 @@ export default function LoyaltyProgram() {
 
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900md mx-4">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900">Registrar Puntos</h2>
-              <button onClick={() => setShowForm(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
+          <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">Registrar Puntos</h2>
+              <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-slate-600"><X className="w-5 h-5" /></button>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">Acción</label>
+                <label className="block text-xs font-medium text-foreground mb-1">Acción</label>
                 <div className="flex gap-2">
                   <button onClick={() => setForm({ ...form, action: 'earn' })}
-                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${form.action === 'earn' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
+                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${form.action === 'earn' ? 'bg-emerald-600 text-white' : 'bg-muted text-slate-600'}`}>
                     <ArrowUpCircle className="w-4 h-4 inline mr-1" /> Ganar
                   </button>
                   <button onClick={() => setForm({ ...form, action: 'redeem' })}
-                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${form.action === 'redeem' ? 'bg-red-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
+                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${form.action === 'redeem' ? 'bg-red-600 text-white' : 'bg-muted text-slate-600'}`}>
                     <ArrowDownCircle className="w-4 h-4 inline mr-1" /> Canjear
                   </button>
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">Cliente</label>
+                <label className="block text-xs font-medium text-foreground mb-1">Cliente</label>
                 <select value={form.customer_id} onChange={e => setForm({ ...form, customer_id: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                   <option value="">Seleccionar...</option>
                   {allCustomers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">Puntos</label>
+                <label className="block text-xs font-medium text-foreground mb-1">Puntos</label>
                 <input type="number" value={form.points} onChange={e => setForm({ ...form, points: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="100" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="100" />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">Descripción</label>
+                <label className="block text-xs font-medium text-foreground mb-1">Descripción</label>
                 <input type="text" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Compra #1234" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="Compra #1234" />
               </div>
             </div>
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
-              <button onClick={() => setShowForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
+              <button onClick={() => setShowForm(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={!form.customer_id || !form.points}
-                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors disabled:opacity-50">
+                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors disabled:opacity-50">
                 <Save className="w-3.5 h-3.5" /> Guardar
               </button>
             </div>

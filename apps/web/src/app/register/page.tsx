@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Suspense, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -105,18 +105,18 @@ function RegisterForm() {
 
   if (registered) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-muted flex items-center justify-center p-4">
         <div className="w-full max-w-md text-center">
           <div className="w-16 h-16 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="w-8 h-8 text-emerald-600" />
           </div>
-          <h1 className="text-2xl font-bold text-slate-900">¡Cuenta creada!</h1>
-          <p className="text-slate-500 mt-3">
+          <h1 className="text-2xl font-bold text-foreground">¡Cuenta creada!</h1>
+          <p className="text-muted-foreground mt-3">
             Tu cuenta fue creada exitosamente. Ahora puedes iniciar sesión con tu correo y contraseña.
           </p>
           <button
             onClick={() => router.push('/login')}
-            className="mt-8 w-full rounded-lg bg-slate-900 hover:bg-slate-800 text-white px-4 py-3 text-sm font-medium transition-all duration-150 active:scale-[0.98]"
+            className="mt-8 w-full rounded-lg bg-primary hover:bg-primary/90 text-white px-4 py-3 text-sm font-medium transition-all duration-150 active:scale-[0.98]"
           >
             Ir a Iniciar Sesión
           </button>
@@ -126,7 +126,7 @@ function RegisterForm() {
   }
 
   return (
-    <div className="flex min-h-screen w-full bg-white font-sans text-slate-900 antialiased lg:flex-row">
+    <div className="flex min-h-screen w-full bg-card font-sans text-foreground antialiased lg:flex-row">
       {/* Left Image Panel */}
       <AuthPanel />
 
@@ -137,7 +137,7 @@ function RegisterForm() {
           <div className="w-10 h-10 bg-slate-950 rounded-xl flex items-center justify-center border border-slate-800">
             <Building2 className="w-6 h-6 text-white" />
           </div>
-          <span className="text-xl font-bold text-slate-900">Yellow ERP</span>
+          <span className="text-xl font-bold text-foreground">Yellow ERP</span>
         </div>
 
         <div className="w-full max-w-[440px]">
@@ -146,7 +146,7 @@ function RegisterForm() {
             <h1 className="mb-3 text-[36px] font-bold leading-[1.05] tracking-tight text-slate-950">
               Crea tu cuenta
             </h1>
-            <p className="text-[15px] text-slate-500 text-balance">
+            <p className="text-[15px] text-muted-foreground text-balance">
               Comienza tu prueba gratuita de 14 días. Sin tarjeta de crédito.
             </p>
           </div>
@@ -211,7 +211,7 @@ function RegisterForm() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-[38px] text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-[38px] text-muted-foreground hover:text-slate-600"
                   aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -231,7 +231,7 @@ function RegisterForm() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-[38px] text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-[38px] text-muted-foreground hover:text-slate-600"
                   aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 >
                   {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -239,9 +239,9 @@ function RegisterForm() {
               </div>
             </div>
 
-            <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
+            <div className="bg-muted p-4 rounded-lg border border-slate-100">
               <p className="text-sm text-slate-600 font-medium mb-2">La contraseña debe incluir:</p>
-              <ul className="text-xs text-slate-500 space-y-1">
+              <ul className="text-xs text-muted-foreground space-y-1">
                 <li>• Al menos 8 caracteres</li>
                 <li>• Una letra mayúscula y una minúscula</li>
                 <li>• Al menos un número</li>
@@ -256,7 +256,7 @@ function RegisterForm() {
                 className="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-600 mt-0.5"
                 required
               />
-              <label htmlFor="terms" className="ml-2 text-sm text-slate-700">
+              <label htmlFor="terms" className="ml-2 text-sm text-foreground">
                 Acepto los{' '}
                 <a href="/terms" className="text-blue-600 hover:text-blue-700 font-medium">
                   Términos de Servicio
@@ -274,7 +274,7 @@ function RegisterForm() {
           </form>
 
           {/* Footer */}
-          <div className="mt-8 text-center text-[14px] text-slate-500">
+          <div className="mt-8 text-center text-[14px] text-muted-foreground">
             ¿Ya tienes una cuenta?{' '}
             <Link href="/login" className="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
               Iniciar Sesión
@@ -288,7 +288,7 @@ function RegisterForm() {
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center"><p className="text-slate-500">Cargando...</p></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-muted flex items-center justify-center"><p className="text-muted-foreground">Cargando...</p></div>}>
       <RegisterForm />
     </Suspense>
   );

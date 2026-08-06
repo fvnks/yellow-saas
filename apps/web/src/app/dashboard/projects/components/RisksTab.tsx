@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Badge } from '@yellow-erp/ui';
@@ -98,47 +98,47 @@ export default function RisksTab({ projectId, risks, employees, onRefresh }: {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-semibold text-slate-900">Gestion de Riesgos</h3>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h3 className="text-sm font-semibold text-foreground">Gestion de Riesgos</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">
             {openCount} abiertos · {mitigatingCount} mitigando
             {highRiskCount > 0 && <span className="ml-2 text-red-600 font-medium">· {highRiskCount} de alto riesgo</span>}
           </p>
         </div>
-        <button onClick={openCreate} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+        <button onClick={openCreate} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" /> Nuevo Riesgo
         </button>
       </div>
 
       {risks.length === 0 ? (
-        <div className="text-center py-12 bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <Shield className="w-12 h-12 text-slate-200 mx-auto mb-3" />
-          <p className="text-sm text-slate-500">No hay riesgos registrados</p>
+          <p className="text-sm text-muted-foreground">No hay riesgos registrados</p>
         </div>
       ) : (
         <div className="space-y-3">
           {risks.map(r => {
             const level = getRiskLevel(r.probability, r.impact);
             return (
-              <div key={r.id} className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 hover:bg-slate-50 transition-colors">
+              <div key={r.id} className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 hover:bg-muted transition-colors">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <h4 className="text-sm font-medium text-slate-900">{r.name}</h4>
+                      <h4 className="text-sm font-medium text-foreground">{r.name}</h4>
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border ${level.color}`}>
                         Riesgo {level.label}
                       </span>
                       <Badge variant={statusVariants[r.status] as any}>{statusLabels[r.status]}</Badge>
                     </div>
-                    {r.description && <p className="text-xs text-slate-500 mt-1">{r.description}</p>}
-                    <div className="flex items-center gap-4 mt-2 text-[10px] text-slate-400">
+                    {r.description && <p className="text-xs text-muted-foreground mt-1">{r.description}</p>}
+                    <div className="flex items-center gap-4 mt-2 text-[10px] text-muted-foreground">
                       <span>Prob: {probLabels[r.probability]}</span>
                       <span>Impacto: {impactLabels[r.impact]}</span>
                       {r.owner_name && <span>Responsable: {r.owner_name}</span>}
                       {r.identified_date && <span>Identificado: {new Date(r.identified_date).toLocaleDateString('es-CL')}</span>}
                     </div>
                     {r.mitigation_plan && (
-                      <div className="mt-2 p-2 bg-slate-50 rounded-lg">
-                        <p className="text-[10px] font-medium text-slate-500 uppercase">Plan de mitigacion</p>
+                      <div className="mt-2 p-2 bg-muted rounded-lg">
+                        <p className="text-[10px] font-medium text-muted-foreground uppercase">Plan de mitigacion</p>
                         <p className="text-xs text-slate-600 mt-0.5">{r.mitigation_plan}</p>
                       </div>
                     )}
@@ -154,8 +154,8 @@ export default function RisksTab({ projectId, risks, employees, onRefresh }: {
                         <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
                       </button>
                     )}
-                    <button onClick={() => openEdit(r)} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
-                      <Edit className="w-3.5 h-3.5 text-slate-400" />
+                    <button onClick={() => openEdit(r)} className="p-1.5 hover:bg-muted rounded-lg transition-colors">
+                      <Edit className="w-3.5 h-3.5 text-muted-foreground" />
                     </button>
                     <button onClick={() => handleDelete(r.id)} className="p-1.5 hover:bg-red-50 rounded-lg transition-colors">
                       <Trash2 className="w-3.5 h-3.5 text-red-500" />
@@ -170,37 +170,37 @@ export default function RisksTab({ projectId, risks, employees, onRefresh }: {
 
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900lg mx-4">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900">{editing ? 'Editar Riesgo' : 'Nuevo Riesgo'}</h2>
-              <button onClick={() => { setShowForm(false); setEditing(null); }} className="text-slate-400 hover:text-slate-600">X</button>
+          <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarylg mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">{editing ? 'Editar Riesgo' : 'Nuevo Riesgo'}</h2>
+              <button onClick={() => { setShowForm(false); setEditing(null); }} className="text-muted-foreground hover:text-slate-600">X</button>
             </div>
             <div className="p-6 space-y-4">
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Nombre *</label>
+                <label className="block text-xs font-medium text-foreground">Nombre *</label>
                 <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Descripcion del riesgo" />
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Descripcion</label>
+                <label className="block text-xs font-medium text-foreground">Descripcion</label>
                 <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={2}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Probabilidad</label>
+                  <label className="block text-xs font-medium text-foreground">Probabilidad</label>
                   <select value={form.probability} onChange={e => setForm({ ...form, probability: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                     <option value="low">Baja</option>
                     <option value="medium">Media</option>
                     <option value="high">Alta</option>
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Impacto</label>
+                  <label className="block text-xs font-medium text-foreground">Impacto</label>
                   <select value={form.impact} onChange={e => setForm({ ...form, impact: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                     <option value="low">Bajo</option>
                     <option value="medium">Medio</option>
                     <option value="high">Alto</option>
@@ -208,16 +208,16 @@ export default function RisksTab({ projectId, risks, employees, onRefresh }: {
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Plan de Mitigacion</label>
+                <label className="block text-xs font-medium text-foreground">Plan de Mitigacion</label>
                 <textarea value={form.mitigation_plan} onChange={e => setForm({ ...form, mitigation_plan: e.target.value })} rows={2}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Acciones para mitigar el riesgo..." />
               </div>
             </div>
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
-              <button onClick={() => { setShowForm(false); setEditing(null); }} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
+              <button onClick={() => { setShowForm(false); setEditing(null); }} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={saving || !form.name}
-                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                 {saving ? 'Guardando...' : editing ? 'Actualizar' : 'Crear'}
               </button>
             </div>

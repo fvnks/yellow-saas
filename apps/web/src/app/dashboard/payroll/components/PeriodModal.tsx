@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Button, Input } from '@yellow-erp/ui';
@@ -47,10 +47,10 @@ export default function PeriodModal({ onClose, onSave }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900md mx-4">
-        <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-900">Nuevo Período de Nómina</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+      <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-foreground">Nuevo Período de Nómina</h2>
+          <button onClick={onClose} className="text-muted-foreground hover:text-slate-600">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -68,18 +68,18 @@ export default function PeriodModal({ onClose, onSave }: Props) {
           <Input label="Fecha de Inicio" type="date" value={periodStart} onChange={(e: any) => setPeriodStart(e.target.value)} />
           <Input label="Fecha de Término" type="date" value={periodEnd} onChange={(e: any) => setPeriodEnd(e.target.value)} />
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Notas (opcional)</label>
+            <label className="block text-xs font-medium text-foreground">Notas (opcional)</label>
             <textarea
               value={notes}
               onChange={(e: any) => setNotes(e.target.value)}
               rows={2}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Ej: Nómina julio 2026..."
             />
           </div>
         </div>
 
-        <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+        <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
           <Button variant="secondary" onClick={onClose}>Cancelar</Button>
           <Button onClick={handleSave} disabled={saving}>
             <Plus className="w-4 h-4 mr-2" />

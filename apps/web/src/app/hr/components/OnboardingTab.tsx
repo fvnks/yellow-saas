@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { Button, Badge, Input } from '@yellow-erp/ui';
@@ -78,7 +78,7 @@ export default function OnboardingTab() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Buscar onboarding..." value={search} onChange={e => setSearch(e.target.value)} className="w-64 pl-9" />
         </div>
         <Button onClick={() => setShowForm(true)}>
@@ -88,10 +88,10 @@ export default function OnboardingTab() {
 
       {showForm && (
         <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 space-y-3">
-          <h4 className="text-sm font-medium text-slate-900">Nuevo Proceso de Onboarding</h4>
+          <h4 className="text-sm font-medium text-foreground">Nuevo Proceso de Onboarding</h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <select value={form.employee_id} onChange={e => setForm({ ...form, employee_id: e.target.value })}
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm">
+              className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm">
               <option value="">Seleccionar empleado...</option>
               {employees.map((e: any) => <option key={e.id} value={e.id}>{e.first_name} {e.last_name}</option>)}
             </select>
@@ -99,9 +99,9 @@ export default function OnboardingTab() {
             <Input label="Mentor" value={form.mentor_name} onChange={e => setForm({ ...form, mentor_name: e.target.value })} placeholder="Nombre del mentor" />
           </div>
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Notas</label>
+            <label className="block text-xs font-medium text-foreground">Notas</label>
             <textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })}
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm h-20 resize-none" placeholder="Notas del proceso..." />
+              className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm h-20 resize-none" placeholder="Notas del proceso..." />
           </div>
           <div className="flex justify-end gap-2">
             <Button variant="secondary" onClick={() => setShowForm(false)}>Cancelar</Button>
@@ -110,29 +110,29 @@ export default function OnboardingTab() {
         </div>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-card border border-border rounded-xl shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Empleado</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Inicio</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Mentor</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Progreso</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tareas</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Empleado</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Inicio</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Mentor</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Progreso</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tareas</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={6} className="text-center py-8 text-sm text-slate-400">Cargando...</td></tr>
+                <tr><td colSpan={6} className="text-center py-8 text-sm text-muted-foreground">Cargando...</td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={6} className="text-center py-8 text-sm text-slate-400">Sin procesos de onboarding</td></tr>
+                <tr><td colSpan={6} className="text-center py-8 text-sm text-muted-foreground">Sin procesos de onboarding</td></tr>
               ) : filtered.map(o => (
-                <tr key={o.id} className="border-b border-slate-100 hover:bg-slate-50">
+                <tr key={o.id} className="border-b border-slate-100 hover:bg-muted">
                   <td className="px-4 py-3">
-                    <p className="text-xs font-medium text-slate-900">{o.employee_name}</p>
-                    <p className="text-[10px] text-slate-400">{o.employee_rut}</p>
+                    <p className="text-xs font-medium text-foreground">{o.employee_name}</p>
+                    <p className="text-[10px] text-muted-foreground">{o.employee_rut}</p>
                   </td>
                   <td className="px-4 py-3 text-xs">{o.start_date}</td>
                   <td className="px-4 py-3 text-xs">{o.mentor_name || '—'}</td>

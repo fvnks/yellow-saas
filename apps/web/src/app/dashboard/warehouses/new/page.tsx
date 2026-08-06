@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select } from '@yellow-erp/ui';
@@ -71,12 +71,12 @@ export default function NewWarehousePage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/warehouses" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href="/dashboard/warehouses" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">
-          <h1 className="text-xl font-bold text-slate-900">Nueva Bodega</h1>
-          <p className="text-sm text-slate-500 mt-1">Registrar una nueva bodega en el sistema</p>
+          <h1 className="text-xl font-bold text-foreground">Nueva Bodega</h1>
+          <p className="text-sm text-muted-foreground mt-1">Registrar una nueva bodega en el sistema</p>
         </div>
         <Button onClick={handleSave} disabled={saving}>
           <Save className="w-4 h-4 mr-2" />
@@ -127,14 +127,14 @@ export default function NewWarehousePage() {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <label className="text-sm font-medium text-slate-700">Bodega por Defecto</label>
-                  <p className="text-xs text-slate-500">Se usará automáticamente en nuevas órdenes</p>
+                  <label className="text-sm font-medium text-foreground">Bodega por Defecto</label>
+                  <p className="text-xs text-muted-foreground">Se usará automáticamente en nuevas órdenes</p>
                 </div>
                 <button
                   onClick={() => setIsDefault(!isDefault)}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isDefault ? 'bg-indigo-600' : 'bg-slate-200'}`}
                 >
-                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isDefault ? 'translate-x-6' : 'translate-x-1'}`} />
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-card transition-transform ${isDefault ? 'translate-x-6' : 'translate-x-1'}`} />
                 </button>
               </div>
             </CardContent>
@@ -150,24 +150,24 @@ export default function NewWarehousePage() {
                   <Warehouse className="w-4 h-4 text-indigo-600" />
                 </div>
                 <div>
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Código</p>
-                  <p className="font-medium text-slate-900">{code || '—'}</p>
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Código</p>
+                  <p className="font-medium text-foreground">{code || '—'}</p>
                 </div>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Nombre</span>
+                <span className="text-muted-foreground">Nombre</span>
                 <span className="font-medium">{name || '—'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Ciudad</span>
+                <span className="text-muted-foreground">Ciudad</span>
                 <span className="font-medium">{city || '—'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Región</span>
+                <span className="text-muted-foreground">Región</span>
                 <span className="font-medium">{region || '—'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Default</span>
+                <span className="text-muted-foreground">Default</span>
                 <span className="font-medium">{isDefault ? 'Sí' : 'No'}</span>
               </div>
             </CardContent>

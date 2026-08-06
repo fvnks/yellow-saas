@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -17,13 +17,13 @@ export default function Pagination({ page, totalPages, total, limit, onPageChang
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-between text-xs text-slate-500 px-4 py-3 border-t border-slate-100">
+    <div className="flex items-center justify-between text-xs text-muted-foreground px-4 py-3 border-t border-slate-100">
       <p>Mostrando {start} a {end} de {total}</p>
       <div className="flex items-center gap-1">
         <button
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1}
-          className="px-2 py-1 rounded border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="px-2 py-1 rounded border border-border text-slate-600 hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           <ChevronLeft className="w-3 h-3" />
         </button>
@@ -44,8 +44,8 @@ export default function Pagination({ page, totalPages, total, limit, onPageChang
               onClick={() => onPageChange(pageNum)}
               className={`px-2 py-1 rounded border text-[10px] font-medium transition-colors ${
                 pageNum === page
-                  ? 'bg-slate-900 text-white border-slate-900'
-                  : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                  ? 'bg-primary text-white border-slate-900'
+                  : 'border-border text-slate-600 hover:bg-muted'
               }`}
             >
               {pageNum}
@@ -55,7 +55,7 @@ export default function Pagination({ page, totalPages, total, limit, onPageChang
         <button
           onClick={() => onPageChange(page + 1)}
           disabled={page >= totalPages}
-          className="px-2 py-1 rounded border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="px-2 py-1 rounded border border-border text-slate-600 hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           <ChevronRight className="w-3 h-3" />
         </button>

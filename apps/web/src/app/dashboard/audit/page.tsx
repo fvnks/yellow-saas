@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Badge, Input, Select, KPICard } from '@yellow-erp/ui';
@@ -22,7 +22,7 @@ const moduleColors: Record<string, string> = {
   'Clientes': 'bg-indigo-50 text-indigo-700 border-indigo-200',
   'Compras': 'bg-amber-50 text-amber-700 border-amber-200',
   'Facturación': 'bg-purple-50 text-purple-700 border-purple-200',
-  'Configuración': 'bg-slate-100 text-slate-700 border-slate-200',
+  'Configuración': 'bg-muted text-foreground border-border',
   'Reportes': 'bg-cyan-50 text-cyan-700 border-cyan-200',
   'Nómina': 'bg-pink-50 text-pink-700 border-pink-200',
   'Almacenes': 'bg-orange-50 text-orange-700 border-orange-200',
@@ -75,8 +75,8 @@ useEffect(() => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Auditoría</h1>
-          <p className="text-sm text-slate-500 mt-1">Registro de actividades y cambios del sistema</p>
+          <h1 className="text-xl font-bold text-foreground">Auditoría</h1>
+          <p className="text-sm text-muted-foreground mt-1">Registro de actividades y cambios del sistema</p>
         </div>
         <Button variant="secondary">
           <Download className="w-4 h-4 mr-2" />
@@ -91,15 +91,15 @@ useEffect(() => {
         <KPICard label="Módulos Afectados" value={modules.length} icon={ScrollText} trend="Diferentes módulos" trendUp={true} />
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         <div className="flex flex-wrap items-center gap-4">
           <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full pl-9 pr-4 py-2 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Buscar en detalles, usuario o entidad..."
             />
           </div>
@@ -127,18 +127,18 @@ useEffect(() => {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha/Hora</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Usuario</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acción</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Módulo</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Entidad</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Detalles</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">IP</th>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha/Hora</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Usuario</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acción</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Módulo</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Entidad</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Detalles</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">IP</th>
                 <th className="w-12 px-4 py-3"></th>
               </tr>
             </thead>
@@ -147,9 +147,9 @@ useEffect(() => {
                 const actionInfo = actionConfig[log.action] || actionConfig.update;
                 const ActionIcon = actionInfo.icon;
                 return (
-                  <tr key={log.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3 text-xs font-mono text-slate-500 whitespace-nowrap">{log.timestamp}</td>
-                    <td className="px-4 py-3 text-xs text-slate-700">{log.user}</td>
+                  <tr key={log.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <td className="px-4 py-3 text-xs font-mono text-muted-foreground whitespace-nowrap">{log.timestamp}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{log.user}</td>
                     <td className="px-4 py-3">
                       <div className={`flex items-center gap-1.5 text-xs font-medium ${actionInfo.color}`}>
                         <ActionIcon className="w-3.5 h-3.5" />
@@ -157,13 +157,13 @@ useEffect(() => {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border ${moduleColors[log.module] || 'bg-slate-100 text-slate-600 border-slate-200'}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border ${moduleColors[log.module] || 'bg-muted text-slate-600 border-border'}`}>
                         {log.module}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-xs text-slate-700">{log.entity}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500 max-w-xs truncate">{log.details}</td>
-                    <td className="px-4 py-3 text-xs text-slate-400 text-right font-mono">{log.ip}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{log.entity}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground max-w-xs truncate">{log.details}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground text-right font-mono">{log.ip}</td>
                     <td className="px-4 py-3">
                       <Button variant="secondary" size="sm"><Eye className="w-4 h-4" /></Button>
                     </td>
@@ -178,7 +178,7 @@ useEffect(() => {
       {filteredLogs.length === 0 && (
         <div className="text-center py-12">
           <ScrollText className="w-12 h-12 text-slate-200 mx-auto mb-3" />
-          <p className="text-sm text-slate-500">No se encontraron registros de auditoría</p>
+          <p className="text-sm text-muted-foreground">No se encontraron registros de auditoría</p>
         </div>
       )}
     </div>

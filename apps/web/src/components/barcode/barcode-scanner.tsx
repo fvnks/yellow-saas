@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Camera, X, ScanBarcode } from 'lucide-react';
@@ -65,13 +65,13 @@ export default function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps)
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
+      <div className="bg-card rounded-xl shadow-xl w-full max-w-md mx-4 overflow-hidden">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
             <ScanBarcode className="w-5 h-5" />
             Escanear Codigo
           </h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+          <button onClick={onClose} className="text-muted-foreground hover:text-slate-600">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -80,10 +80,10 @@ export default function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps)
           {error ? (
             <div className="text-center py-8">
               <Camera className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-              <p className="text-sm text-slate-500 mb-4">{error}</p>
+              <p className="text-sm text-muted-foreground mb-4">{error}</p>
               <button
                 onClick={onClose}
-                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cerrar
               </button>
@@ -91,7 +91,7 @@ export default function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps)
           ) : (
             <>
               <div ref={containerRef} id="barcode-reader" className="rounded-lg overflow-hidden" />
-              <p className="text-xs text-slate-500 text-center mt-4">
+              <p className="text-xs text-muted-foreground text-center mt-4">
                 Apunta la camara al codigo de barras
               </p>
             </>

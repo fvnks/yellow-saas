@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Plus, Phone, Mail, Calendar, CheckSquare, StickyNote, X, Save, Clock } from 'lucide-react';
@@ -121,13 +121,13 @@ export default function CustomerActivities({ customerId }: Props) {
 
   if (loading) {
     return (
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
         <div className="px-6 py-4 border-b border-slate-100">
           <div className="h-4 w-36 bg-slate-200 rounded animate-pulse" />
         </div>
         <div className="p-6 space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-12 bg-slate-100 rounded animate-pulse" />
+            <div key={i} className="h-12 bg-muted rounded animate-pulse" />
           ))}
         </div>
       </div>
@@ -135,12 +135,12 @@ export default function CustomerActivities({ customerId }: Props) {
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+    <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
       <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-900">Actividades</h3>
+        <h3 className="text-sm font-semibold text-foreground">Actividades</h3>
         <button
           onClick={handleOpenNew}
-          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+          className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
         >
           <Plus className="w-4 h-4" />
           Nueva Actividad
@@ -153,8 +153,8 @@ export default function CustomerActivities({ customerId }: Props) {
             onClick={() => setFilterType('all')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               filterType === 'all'
-                ? 'bg-slate-900 text-white'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                ? 'bg-primary text-white'
+                : 'bg-muted text-slate-600 hover:bg-slate-200'
             }`}
           >
             Todas
@@ -165,8 +165,8 @@ export default function CustomerActivities({ customerId }: Props) {
               onClick={() => setFilterType(key)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 ${
                 filterType === key
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-primary text-white'
+                  : 'bg-muted text-slate-600 hover:bg-slate-200'
               }`}
             >
               {config.icon}
@@ -179,7 +179,7 @@ export default function CustomerActivities({ customerId }: Props) {
       {filteredActivities.length === 0 ? (
         <div className="text-center py-12">
           <Clock className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-          <p className="text-sm text-slate-500">No hay actividades registradas</p>
+          <p className="text-sm text-muted-foreground">No hay actividades registradas</p>
         </div>
       ) : (
         <div className="p-6">
@@ -195,11 +195,11 @@ export default function CustomerActivities({ customerId }: Props) {
                       config.variant === 'warning' ? 'bg-amber-100 text-amber-600' :
                       config.variant === 'success' ? 'bg-emerald-100 text-emerald-600' :
                       config.variant === 'danger' ? 'bg-rose-100 text-rose-600' :
-                      'bg-slate-100 text-slate-600'
+                      'bg-muted text-slate-600'
                     }`}>
                       {config.icon}
                     </div>
-                    <div className="flex-1 bg-slate-50 rounded-lg p-4 border border-slate-200">
+                    <div className="flex-1 bg-muted rounded-lg p-4 border border-border">
                       <div className="flex items-start justify-between">
                         <div>
                           <div className="flex items-center gap-2">
@@ -208,17 +208,17 @@ export default function CustomerActivities({ customerId }: Props) {
                               config.variant === 'warning' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
                               config.variant === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
                               config.variant === 'danger' ? 'bg-rose-50 text-rose-700 border border-rose-200' :
-                              'bg-slate-100 text-slate-600 border border-slate-200'
+                              'bg-muted text-slate-600 border border-border'
                             }`}>
                               {config.label}
                             </span>
-                            <h4 className="text-sm font-medium text-slate-900">{activity.subject}</h4>
+                            <h4 className="text-sm font-medium text-foreground">{activity.subject}</h4>
                           </div>
                           {activity.description && (
-                            <p className="text-xs text-slate-500 mt-1 whitespace-pre-wrap">{activity.description}</p>
+                            <p className="text-xs text-muted-foreground mt-1 whitespace-pre-wrap">{activity.description}</p>
                           )}
                         </div>
-                        <span className="text-[9px] text-slate-400 flex-shrink-0">{getRelativeDate(activity.created_at)}</span>
+                        <span className="text-[9px] text-muted-foreground flex-shrink-0">{getRelativeDate(activity.created_at)}</span>
                       </div>
                       {activity.assigned_to && (
                         <div className="mt-2 flex items-center gap-1.5">
@@ -227,7 +227,7 @@ export default function CustomerActivities({ customerId }: Props) {
                               {activity.assigned_to.charAt(0).toUpperCase()}
                             </span>
                           </div>
-                          <span className="text-[9px] text-slate-500">{activity.assigned_to}</span>
+                          <span className="text-[9px] text-muted-foreground">{activity.assigned_to}</span>
                         </div>
                       )}
                     </div>
@@ -241,21 +241,21 @@ export default function CustomerActivities({ customerId }: Props) {
 
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900lg mx-4">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900">Nueva Actividad</h2>
-              <button onClick={handleClose} className="text-slate-400 hover:text-slate-600">
+          <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarylg mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">Nueva Actividad</h2>
+              <button onClick={handleClose} className="text-muted-foreground hover:text-slate-600">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="p-6 space-y-4">
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Tipo</label>
+                <label className="block text-xs font-medium text-foreground">Tipo</label>
                 <select
                   value={form.type}
                   onChange={e => update('type', e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                 >
                   {Object.entries(activityTypeConfig).map(([key, config]) => (
                     <option key={key} value={key}>{config.label}</option>
@@ -264,49 +264,49 @@ export default function CustomerActivities({ customerId }: Props) {
               </div>
 
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Asunto *</label>
+                <label className="block text-xs font-medium text-foreground">Asunto *</label>
                 <input
                   type="text"
                   value={form.subject}
                   onChange={e => update('subject', e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                   placeholder="Asunto de la actividad"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Descripción</label>
+                <label className="block text-xs font-medium text-foreground">Descripción</label>
                 <textarea
                   value={form.description}
                   onChange={e => update('description', e.target.value)}
                   rows={3}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors resize-none"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
                   placeholder="Descripción de la actividad"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Fecha de Vencimiento</label>
+                <label className="block text-xs font-medium text-foreground">Fecha de Vencimiento</label>
                 <input
                   type="datetime-local"
                   value={form.due_date}
                   onChange={e => update('due_date', e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                 />
               </div>
             </div>
 
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button
                 onClick={handleClose}
-                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"
+                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 {saving ? 'Guardando...' : 'Guardar'}

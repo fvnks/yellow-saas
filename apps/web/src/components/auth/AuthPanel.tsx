@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { motion } from 'motion/react';
 import { Building2, TrendingUp, Package, UsersRound, ShieldCheck } from 'lucide-react';
@@ -40,7 +40,7 @@ export default function AuthPanel() {
         <div className="relative z-10 flex flex-col h-full p-10">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/15">
+            <div className="w-12 h-12 bg-card/10 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/15">
               <Building2 className="w-7 h-7 text-white" />
             </div>
             <span className="text-2xl font-bold text-white tracking-tight">Yellow ERP</span>
@@ -63,7 +63,7 @@ export default function AuthPanel() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-white">{item.title}</p>
-                    <p className="text-sm text-slate-400 mt-0.5">{item.desc}</p>
+                    <p className="text-sm text-muted-foreground mt-0.5">{item.desc}</p>
                   </div>
                 </motion.div>
               );
@@ -75,29 +75,29 @@ export default function AuthPanel() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-12 rounded-xl bg-slate-900/80 backdrop-blur border border-slate-800 overflow-hidden shadow-2xl"
+            className="mt-12 rounded-xl bg-primary/80 backdrop-blur border border-slate-800 overflow-hidden shadow-2xl"
           >
             <div className="flex items-center gap-1.5 px-4 py-3 border-b border-slate-800">
               <div className="w-2.5 h-2.5 rounded-full bg-rose-500/70" />
               <div className="w-2.5 h-2.5 rounded-full bg-amber-500/70" />
               <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/70" />
               <div className="ml-4 flex-1 h-6 rounded-md bg-slate-800/80 flex items-center px-3">
-                <span className="text-[10px] text-slate-500">app.yellow-erp.cl/dashboard</span>
+                <span className="text-[10px] text-muted-foreground">app.yellow-erp.cl/dashboard</span>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-3 p-4">
               <div className="rounded-xl bg-slate-800/60 border border-slate-700/60 p-3">
-                <p className="text-[9px] text-slate-500 uppercase tracking-wider">Ventas hoy</p>
+                <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Ventas hoy</p>
                 <p className="text-lg font-bold text-white mt-1">$2,4M</p>
                 <p className="text-[10px] text-emerald-400 mt-0.5">+18,2%</p>
               </div>
               <div className="rounded-xl bg-slate-800/60 border border-slate-700/60 p-3">
-                <p className="text-[9px] text-slate-500 uppercase tracking-wider">Facturas</p>
+                <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Facturas</p>
                 <p className="text-lg font-bold text-white mt-1">128</p>
                 <p className="text-[10px] text-emerald-400 mt-0.5">+9</p>
               </div>
               <div className="rounded-xl bg-slate-800/60 border border-slate-700/60 p-3">
-                <p className="text-[9px] text-slate-500 uppercase tracking-wider">Stock</p>
+                <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Stock</p>
                 <p className="text-lg font-bold text-white mt-1">4.312</p>
                 <p className="text-[10px] text-blue-400 mt-0.5">Óptimo</p>
               </div>
@@ -122,10 +122,10 @@ export default function AuthPanel() {
               {stats.map((s) => (
                 <div key={s.label}>
                   <p className="text-lg font-bold text-white">{s.value}</p>
-                  <p className="text-[11px] text-slate-500">{s.label}</p>
+                  <p className="text-[11px] text-muted-foreground">{s.label}</p>
                 </div>
               ))}
-              <div className="ml-auto flex items-center gap-2 text-slate-500">
+              <div className="ml-auto flex items-center gap-2 text-muted-foreground">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
                 <span className="text-[11px]">Datos seguros</span>
               </div>

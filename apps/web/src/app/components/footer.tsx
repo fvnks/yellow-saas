@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 
 const footerLinks = {
   Producto: [
@@ -27,7 +27,7 @@ const footerLinks = {
 
 export function Footer() {
   return (
-    <footer className="border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+    <footer className="border-t border-slate-100 dark:border-slate-800 bg-muted dark:bg-primary/50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           {/* Brand */}
@@ -36,11 +36,11 @@ export function Footer() {
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-sm">
                 <span className="text-white font-bold text-sm">Y</span>
               </div>
-              <span className="text-lg font-bold text-slate-900 dark:text-white">
-                Yellow <span className="text-slate-400 font-normal dark:text-slate-500">ERP</span>
+              <span className="text-lg font-bold text-foreground dark:text-white">
+                Yellow <span className="text-muted-foreground font-normal dark:text-muted-foreground">ERP</span>
               </span>
             </Link>
-            <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+            <p className="text-sm text-muted-foreground dark:text-muted-foreground leading-relaxed">
               ERP multi-tenant para PyMEs chilenas. Facturación electrónica SII, nómina y más.
             </p>
           </div>
@@ -48,7 +48,7 @@ export function Footer() {
           {/* Links */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-4">
+              <h3 className="text-xs font-semibold text-foreground dark:text-white uppercase tracking-wider mb-4">
                 {category}
               </h3>
               <ul className="space-y-2">
@@ -56,7 +56,7 @@ export function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-slate-500 hover:text-slate-900 transition-colors dark:text-slate-400 dark:hover:text-white"
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors dark:text-muted-foreground dark:hover:text-white"
                     >
                       {link.label}
                     </Link>
@@ -68,11 +68,11 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-slate-400 dark:text-slate-500">
+        <div className="mt-12 pt-8 border-t border-border dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-muted-foreground dark:text-muted-foreground">
             &copy; {new Date().getFullYear()} Yellow ERP. Todos los derechos reservados.
           </p>
-          <p className="text-xs text-slate-400 dark:text-slate-500">
+          <p className="text-xs text-muted-foreground dark:text-muted-foreground">
             Hecho con dedicación en Chile
           </p>
         </div>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Select } from '@yellow-erp/ui';
@@ -110,12 +110,12 @@ export default function StockReportPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-4">
-          <Link href="/dashboard/bodega" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+          <Link href="/dashboard/bodega" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">Valorización de Stock</h1>
-            <p className="text-sm text-slate-500 mt-1">Reporte de valor de inventario por bodega</p>
+            <h1 className="text-xl font-bold text-foreground">Valorización de Stock</h1>
+            <p className="text-sm text-muted-foreground mt-1">Reporte de valor de inventario por bodega</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -129,40 +129,40 @@ export default function StockReportPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Valor Total</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">${totalValue.toLocaleString('es-CL')}</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Valor Total</p>
+              <p className="text-2xl font-bold text-foreground mt-1">${totalValue.toLocaleString('es-CL')}</p>
             </div>
             <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">
               <Package className="w-6 h-6 text-emerald-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Productos con Stock</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">{productCount}</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Productos con Stock</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{productCount}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Unidades Totales</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">{totalQuantity.toLocaleString('es-CL')}</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Unidades Totales</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{totalQuantity.toLocaleString('es-CL')}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Bodegas</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">{byWarehouse.length}</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Bodegas</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{byWarehouse.length}</p>
         </div>
       </div>
 
       {byWarehouse.length > 0 && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
-          <h3 className="text-sm font-semibold text-slate-900 mb-4">Por Bodega</h3>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+          <h3 className="text-sm font-semibold text-foreground mb-4">Por Bodega</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {byWarehouse.map(w => (
-              <div key={w.name} className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                <p className="text-xs text-slate-500">{w.name}</p>
-                <p className="text-lg font-bold text-slate-900 mt-1">${w.value.toLocaleString('es-CL')}</p>
-                <p className="text-xs text-slate-400 mt-1">{w.count} movimientos</p>
+              <div key={w.name} className="bg-muted rounded-lg p-4 border border-border">
+                <p className="text-xs text-muted-foreground">{w.name}</p>
+                <p className="text-lg font-bold text-foreground mt-1">${w.value.toLocaleString('es-CL')}</p>
+                <p className="text-xs text-muted-foreground mt-1">{w.count} movimientos</p>
               </div>
             ))}
           </div>
@@ -196,7 +196,7 @@ export default function StockReportPage() {
               <TableBody>
                 {filtered.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-slate-500 text-xs">
+                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground text-xs">
                       No hay datos de stock
                     </TableCell>
                   </TableRow>
@@ -204,7 +204,7 @@ export default function StockReportPage() {
                   filtered.map((row, i) => (
                     <TableRow key={i}>
                       <TableCell className="font-medium text-xs">{row.product_name}</TableCell>
-                      <TableCell className="font-mono text-xs text-slate-500">{row.product_sku}</TableCell>
+                      <TableCell className="font-mono text-xs text-muted-foreground">{row.product_sku}</TableCell>
                       <TableCell className="text-xs">{row.warehouse_name}</TableCell>
                       <TableCell className="text-center text-xs font-bold">{row.quantity}</TableCell>
                       <TableCell className="text-right text-xs">${row.cost_price.toLocaleString('es-CL')}</TableCell>

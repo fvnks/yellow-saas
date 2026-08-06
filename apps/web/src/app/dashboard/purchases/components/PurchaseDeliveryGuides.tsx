@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Search, Truck, MoreVertical, Download, Printer } from 'lucide-react';
@@ -123,22 +123,22 @@ export default function PurchaseDeliveryGuides() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Truck className="w-4 h-4 text-violet-500" />
-          <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Guías de Despacho</span>
+          <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Guías de Despacho</span>
         </div>
         <div className="text-right">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase">Total Guías</p>
-          <p className="text-sm font-bold text-slate-900">{filtered.length}</p>
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase">Total Guías</p>
+          <p className="text-sm font-bold text-foreground">{filtered.length}</p>
         </div>
       </div>
 
       <div className="flex items-center gap-3">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input type="search" placeholder="Buscar por N° guía, chofer o bodega..." value={search} onChange={e => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+            className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
         </div>
         <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
-          className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+          className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
           <option value="all">Todos</option>
           <option value="pending">Pendiente</option>
           <option value="in_transit">En Tránsito</option>
@@ -147,18 +147,18 @@ export default function PurchaseDeliveryGuides() {
         </select>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-200">
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">N° Guía</th>
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Bodega</th>
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Transporte</th>
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Chofer</th>
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Destino</th>
-              <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Items</th>
-              <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
+            <tr className="border-b border-border">
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">N° Guía</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Bodega</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Transporte</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Chofer</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Destino</th>
+              <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Items</th>
+              <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
               <th className="w-12 px-4 py-3"></th>
             </tr>
           </thead>
@@ -166,9 +166,9 @@ export default function PurchaseDeliveryGuides() {
             {filtered.map(g => {
               const st = STATUS_CFG[g.status] || STATUS_CFG.pending;
               return (
-                <tr key={g.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3 text-xs font-medium text-slate-900 font-mono">{g.guide_number}</td>
-                  <td className="px-4 py-3 text-xs text-slate-700">{g.warehouse?.name || 'N/A'}</td>
+                <tr key={g.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <td className="px-4 py-3 text-xs font-medium text-foreground font-mono">{g.guide_number}</td>
+                  <td className="px-4 py-3 text-xs text-foreground">{g.warehouse?.name || 'N/A'}</td>
                   <td className="px-4 py-3 text-xs text-slate-600">{g.shipping_date}</td>
                   <td className="px-4 py-3 text-xs text-slate-600">{g.transport || 'N/A'}</td>
                   <td className="px-4 py-3 text-xs text-slate-600">{g.driver_name || 'N/A'}</td>
@@ -180,17 +180,17 @@ export default function PurchaseDeliveryGuides() {
                   <td className="px-4 py-3">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                        <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded-lg transition-colors">
                           <MoreVertical className="w-4 h-4" />
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-44">
                         <DropdownMenuItem onClick={() => handlePrintGuide(g)}>
-                          <Printer className="w-4 h-4 mr-2 text-slate-500" />
+                          <Printer className="w-4 h-4 mr-2 text-muted-foreground" />
                           Vista previa PDF
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => downloadXml(`${g.guide_number}.xml`, generateGuideXml(g))}>
-                          <Download className="w-4 h-4 mr-2 text-slate-500" />
+                          <Download className="w-4 h-4 mr-2 text-muted-foreground" />
                           Descargar XML
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -200,7 +200,7 @@ export default function PurchaseDeliveryGuides() {
               );
             })}
             {filtered.length === 0 && (
-              <tr><td colSpan={9} className="text-center py-8 text-xs text-slate-400">No se encontraron guías de despacho</td></tr>
+              <tr><td colSpan={9} className="text-center py-8 text-xs text-muted-foreground">No se encontraron guías de despacho</td></tr>
             )}
           </tbody>
         </table>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { CreditCard, Building2, Users, Edit3, CheckCircle, AlertTriangle, Save, Plus, Trash2, GripVertical } from 'lucide-react';
@@ -168,7 +168,7 @@ export default function AdminBillingPage() {
   };
 
   const planColors: Record<string, string> = {
-    free: 'bg-slate-500/10 text-slate-400 border-slate-500/20',
+    free: 'bg-muted0/10 text-muted-foreground border-slate-500/20',
     starter: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
     professional: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
     enterprise: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
@@ -178,16 +178,16 @@ export default function AdminBillingPage() {
     active: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     trial: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
     suspended: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-    cancelled: 'bg-slate-500/10 text-slate-400 border-slate-500/20',
+    cancelled: 'bg-muted0/10 text-muted-foreground border-slate-500/20',
   };
 
-  const getPlanColor = (planName: string) => planColors[planName] || 'bg-slate-500/10 text-slate-400 border-slate-500/20';
+  const getPlanColor = (planName: string) => planColors[planName] || 'bg-muted0/10 text-muted-foreground border-slate-500/20';
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white">Planes y Billing</h1>
-        <p className="text-sm text-slate-400 mt-1">Gestiona los planes, precios y estados de las empresas</p>
+        <p className="text-sm text-muted-foreground mt-1">Gestiona los planes, precios y estados de las empresas</p>
       </div>
 
       {message.text && (
@@ -200,7 +200,7 @@ export default function AdminBillingPage() {
       )}
 
       {/* Plans Management */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+      <div className="bg-primary border border-slate-800 rounded-xl overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
           <h3 className="text-sm font-semibold text-white">Planes de la Plataforma</h3>
           <button
@@ -214,57 +214,57 @@ export default function AdminBillingPage() {
 
         {showPlanForm && (
           <div className="px-6 py-4 border-b border-slate-800 bg-slate-800/30">
-            <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
               {editingPlan ? 'Editar Plan' : 'Crear Plan'}
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
               {!editingPlan && (
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-400">Nombre (ID)</label>
+                  <label className="text-xs font-medium text-muted-foreground">Nombre (ID)</label>
                   <input
                     type="text"
                     value={planForm.name}
                     onChange={(e) => setPlanForm({ ...planForm, name: e.target.value })}
                     placeholder="ej: premium"
-                    className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
                   />
                 </div>
               )}
               <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-400">Etiqueta</label>
+                <label className="text-xs font-medium text-muted-foreground">Etiqueta</label>
                 <input
                   type="text"
                   value={planForm.label}
                   onChange={(e) => setPlanForm({ ...planForm, label: e.target.value })}
                   placeholder="ej: Premium"
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-400">Max Usuarios (-1 = ilimitado)</label>
+                <label className="text-xs font-medium text-muted-foreground">Max Usuarios (-1 = ilimitado)</label>
                 <input
                   type="number"
                   value={planForm.max_users}
                   onChange={(e) => setPlanForm({ ...planForm, max_users: parseInt(e.target.value) || -1 })}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-400">Precio Mensual (CLP)</label>
+                <label className="text-xs font-medium text-muted-foreground">Precio Mensual (CLP)</label>
                 <input
                   type="number"
                   value={planForm.price_monthly}
                   onChange={(e) => setPlanForm({ ...planForm, price_monthly: parseInt(e.target.value) || 0 })}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-400">Precio Anual (CLP)</label>
+                <label className="text-xs font-medium text-muted-foreground">Precio Anual (CLP)</label>
                 <input
                   type="number"
                   value={planForm.price_yearly}
                   onChange={(e) => setPlanForm({ ...planForm, price_yearly: parseInt(e.target.value) || 0 })}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                 />
               </div>
               <div className="flex items-end gap-2">
@@ -284,13 +284,13 @@ export default function AdminBillingPage() {
               </div>
             </div>
             <div className="mt-3 space-y-1">
-              <label className="text-xs font-medium text-slate-400">Features (separados por coma)</label>
+              <label className="text-xs font-medium text-muted-foreground">Features (separados por coma)</label>
               <input
                 type="text"
                 value={planForm.features}
                 onChange={(e) => setPlanForm({ ...planForm, features: e.target.value })}
                 placeholder="Inventario completo, CRM, Soporte 24/7"
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
               />
             </div>
           </div>
@@ -304,10 +304,10 @@ export default function AdminBillingPage() {
                   {plan.label}
                 </span>
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button onClick={() => startEditPlan(plan)} className="p-1 hover:bg-slate-700 rounded text-slate-400 hover:text-white transition-colors">
+                  <button onClick={() => startEditPlan(plan)} className="p-1 hover:bg-slate-700 rounded text-muted-foreground hover:text-white transition-colors">
                     <Edit3 className="w-3.5 h-3.5" />
                   </button>
-                  <button onClick={() => handleDeletePlan(plan.id)} className="p-1 hover:bg-rose-500/20 rounded text-slate-400 hover:text-rose-400 transition-colors">
+                  <button onClick={() => handleDeletePlan(plan.id)} className="p-1 hover:bg-rose-500/20 rounded text-muted-foreground hover:text-rose-400 transition-colors">
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -315,14 +315,14 @@ export default function AdminBillingPage() {
               <p className="text-2xl font-bold text-white">
                 {plan.price_monthly === 0 ? 'Gratis' : `$${plan.price_monthly.toLocaleString('es-CL')}`}
               </p>
-              {plan.price_monthly > 0 && <p className="text-xs text-slate-500">/mes</p>}
-              <p className="text-xs text-slate-400 mt-2">
+              {plan.price_monthly > 0 && <p className="text-xs text-muted-foreground">/mes</p>}
+              <p className="text-xs text-muted-foreground mt-2">
                 {plan.max_users === -1 ? 'Usuarios ilimitados' : `Hasta ${plan.max_users} usuarios`}
               </p>
               {plan.features && plan.features.length > 0 && (
                 <ul className="mt-3 space-y-1">
                   {plan.features.slice(0, 3).map((f: string, i: number) => (
-                    <li key={i} className="text-[10px] text-slate-500 flex items-center gap-1">
+                    <li key={i} className="text-[10px] text-muted-foreground flex items-center gap-1">
                       <CheckCircle className="w-3 h-3 text-emerald-500" />
                       {f}
                     </li>
@@ -338,19 +338,19 @@ export default function AdminBillingPage() {
       </div>
 
       {/* Companies Table */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+      <div className="bg-primary border border-slate-800 rounded-xl overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-800">
           <h3 className="text-sm font-semibold text-white">Empresas ({companies.length})</h3>
         </div>
         <table className="w-full">
           <thead>
             <tr className="border-b border-slate-800">
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Empresa</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Plan</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Estado</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Usuarios</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Trial</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Acciones</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Empresa</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Plan</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Estado</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Usuarios</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Trial</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -362,19 +362,19 @@ export default function AdminBillingPage() {
               ))
             ) : companies.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-sm text-slate-500">No hay empresas</td>
+                <td colSpan={6} className="px-6 py-12 text-center text-sm text-muted-foreground">No hay empresas</td>
               </tr>
             ) : (
               companies.map((company) => (
-                <tr key={company.id} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+                <tr key={company.id} className="border-b border-slate-800/50 hover:bg-primary/90/30 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 bg-slate-800 rounded-lg flex items-center justify-center">
-                        <Building2 className="w-4 h-4 text-slate-400" />
+                        <Building2 className="w-4 h-4 text-muted-foreground" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-white">{company.name}</p>
-                        <p className="text-xs text-slate-500">{company.slug}</p>
+                        <p className="text-xs text-muted-foreground">{company.slug}</p>
                       </div>
                     </div>
                   </td>
@@ -383,7 +383,7 @@ export default function AdminBillingPage() {
                       <select
                         value={editForm.plan}
                         onChange={(e) => setEditForm({ ...editForm, plan: e.target.value })}
-                        className="bg-slate-800/50 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                        className="bg-slate-800/50 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                       >
                         {plans.map((p) => <option key={p.id} value={p.name}>{p.label}</option>)}
                       </select>
@@ -398,7 +398,7 @@ export default function AdminBillingPage() {
                       <select
                         value={editForm.status}
                         onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-                        className="bg-slate-800/50 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                        className="bg-slate-800/50 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                       >
                         <option value="active">Activo</option>
                         <option value="trial">Prueba</option>
@@ -413,7 +413,7 @@ export default function AdminBillingPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-1.5 text-sm text-slate-300">
-                      <Users className="w-3.5 h-3.5 text-slate-500" />
+                      <Users className="w-3.5 h-3.5 text-muted-foreground" />
                       {company.user_count}
                     </div>
                   </td>
@@ -423,10 +423,10 @@ export default function AdminBillingPage() {
                         type="date"
                         value={editForm.trial_ends_at ? editForm.trial_ends_at.split('T')[0] : ''}
                         onChange={(e) => setEditForm({ ...editForm, trial_ends_at: e.target.value })}
-                        className="bg-slate-800/50 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                        className="bg-slate-800/50 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                       />
                     ) : (
-                      <span className="text-xs text-slate-400">
+                      <span className="text-xs text-muted-foreground">
                         {company.trial_ends_at ? new Date(company.trial_ends_at).toLocaleDateString('es-CL') : '—'}
                       </span>
                     )}
