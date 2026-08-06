@@ -89,8 +89,10 @@ export default function SettingsPage() {
     email: '', phone: '', address: '', city: '', region: '', logo_url: '',
     plan: 'free', status: 'active', userRole: 'member', canManageSettings: false,
   });
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const params = new URLSearchParams(window.location.search);
     const tab = params.get('tab');
     if (tab) setActiveTab(tab);
@@ -131,6 +133,20 @@ export default function SettingsPage() {
       prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
     );
   };
+
+  if (!mounted) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-xl font-bold text-slate-900">Configuración</h1>
+          <p className="text-sm text-slate-500 mt-1">Administra la configuración de tu empresa</p>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 text-center">
+          <div className="animate-pulse bg-slate-200 h-6 w-48 rounded mx-auto" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
