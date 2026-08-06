@@ -87,7 +87,7 @@ export default function PhasesTab({ projectId, phases, onRefresh }: PhasesTabPro
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-slate-900">Fases del Proyecto</h3>
         <button onClick={() => { setShowForm(true); setEditingPhase(null); setForm({ name: '', description: '', budget: '', start_date: '', end_date: '' }); }}
-          className="bg-slate-900 hover:bg-black text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
+          className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
           <Plus className="w-3.5 h-3.5" /> Nueva Fase
         </button>
       </div>
@@ -144,7 +144,7 @@ export default function PhasesTab({ projectId, phases, onRefresh }: PhasesTabPro
           <div className="flex justify-end gap-2">
             <button onClick={() => { setShowForm(false); setEditingPhase(null); }} className="px-3 py-1.5 text-xs text-slate-600 hover:text-slate-900">Cancelar</button>
             <button onClick={handleSave} disabled={saving || !form.name}
-              className="bg-slate-900 hover:bg-black text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50">
+              className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50">
               {saving ? 'Guardando...' : editingPhase ? 'Actualizar' : 'Crear'}
             </button>
           </div>

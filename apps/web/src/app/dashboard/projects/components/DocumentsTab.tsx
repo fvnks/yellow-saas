@@ -122,7 +122,7 @@ export default function DocumentsTab({ projectId, documents, onRefresh }: { proj
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-slate-900">Documentos del Proyecto</h3>
-        <button onClick={() => { setShowForm(true); setSelectedFile(null); }} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+        <button onClick={() => { setShowForm(true); setSelectedFile(null); }} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" /> Subir Documento
         </button>
       </div>
@@ -243,12 +243,12 @@ export default function DocumentsTab({ projectId, documents, onRefresh }: { proj
                 className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               {selectedFile ? (
                 <button onClick={handleUpload} disabled={uploading}
-                  className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+                  className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
                   <Upload className="w-4 h-4" /> {uploading ? 'Subiendo...' : 'Subir Archivo'}
                 </button>
               ) : (
                 <button onClick={handleCreate} disabled={saving || !form.name || !form.file_url}
-                  className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                  className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                   {saving ? 'Guardando...' : 'Crear Documento'}
                 </button>
               )}

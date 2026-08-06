@@ -130,7 +130,7 @@ export default function StockTransfers() {
           </span>
         </div>
         <button onClick={() => setShowCreate(!showCreate)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-black text-white rounded-lg text-xs font-medium transition-colors">
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-medium transition-colors">
           <Plus className="w-3.5 h-3.5" /> Nueva Transferencia
         </button>
       </div>
@@ -168,7 +168,7 @@ export default function StockTransfers() {
               className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" placeholder="Notas (opcional)" />
           </div>
           <button onClick={handleCreate}
-            className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Crear Transferencia
           </button>
         </div>

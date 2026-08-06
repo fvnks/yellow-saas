@@ -115,7 +115,7 @@ export default function MisTicketsPage() {
           <p className="text-sm text-slate-500 mt-1">Gestiona tus solicitudes de soporte</p>
         </div>
         <button onClick={() => setShowCreate(!showCreate)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98]">
           <Plus className="w-4 h-4" />
           {showCreate ? 'Cancelar' : 'Nuevo Ticket'}
         </button>
@@ -160,7 +160,7 @@ export default function MisTicketsPage() {
             </div>
             <div className="flex justify-end">
               <button type="submit" disabled={saving}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 active:scale-[0.98] disabled:opacity-50">
                 {saving ? 'Creando...' : 'Crear Ticket'}
               </button>
             </div>
@@ -186,7 +186,7 @@ export default function MisTicketsPage() {
                 key={f}
                 onClick={() => { setFilter(f); setPage(1); }}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                  filter === f ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  filter === f ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
                 {f === 'all' ? 'Todos' : f === 'in_progress' ? 'En progreso' : f === 'open' ? 'Abiertos' : f === 'resolved' ? 'Resueltos' : 'Cerrados'}

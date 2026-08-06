@@ -69,7 +69,7 @@ export default function PurchasesQuotationsPage() {
           <p className="text-sm text-slate-500 mt-1">Gestión de cotizaciones con proveedores</p>
         </div>
         <Link href="/dashboard/purchases/quotations/new">
-          <button className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          <button className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <Plus className="w-4 h-4" />
             Nueva Cotización
           </button>
@@ -123,7 +123,7 @@ export default function PurchasesQuotationsPage() {
           <h3 className="text-lg font-semibold text-slate-900 mb-2">No hay cotizaciones</h3>
           <p className="text-sm text-slate-500 mb-4">Crea una nueva cotización para comenzar</p>
           <Link href="/dashboard/purchases/quotations/new">
-            <button className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            <button className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
               <Plus className="w-4 h-4 mr-2 inline" />
               Nueva Cotización
             </button>

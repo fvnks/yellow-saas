@@ -161,7 +161,7 @@ export default function BudgetAlerts({ projectId, budget, costs, expenses }: Bud
             </select>
             <span className="text-xs text-slate-600">del presupuesto</span>
             <button onClick={createAlert}
-              className="bg-slate-900 hover:bg-black text-white px-3 py-1 rounded-lg text-xs font-medium transition-colors">
+              className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1 rounded-lg text-xs font-medium transition-colors">
               Crear
             </button>
           </div>

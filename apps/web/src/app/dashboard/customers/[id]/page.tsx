@@ -153,8 +153,8 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Órdenes</p>
               <p className="text-2xl font-bold text-slate-900 mt-1">{totalOrders}</p>
             </div>
-            <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
-              <ShoppingCart className="w-6 h-6 text-indigo-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <ShoppingCart className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
@@ -164,8 +164,8 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Facturado</p>
               <p className="text-2xl font-bold text-slate-900 mt-1">${totalInvoiced.toLocaleString('es-CL')}</p>
             </div>
-            <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">
-              <DollarSign className="w-6 h-6 text-emerald-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <DollarSign className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
@@ -175,8 +175,8 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Saldo Pendiente</p>
               <p className="text-2xl font-bold text-slate-900 mt-1">${pendingBalance.toLocaleString('es-CL')}</p>
             </div>
-            <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
-              <CreditCard className="w-6 h-6 text-amber-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <CreditCard className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
@@ -186,8 +186,8 @@ export default function CustomerDetailPage({ params }: { params: { id: string } 
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Límite Crédito</p>
               <p className="text-2xl font-bold text-slate-900 mt-1">${(customer.credit_limit || 0).toLocaleString('es-CL')}</p>
             </div>
-            <div className="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center">
-              <CreditCard className="w-6 h-6 text-rose-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <CreditCard className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>

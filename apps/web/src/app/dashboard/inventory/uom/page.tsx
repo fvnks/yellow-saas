@@ -71,7 +71,7 @@ export default function UOMPage() {
           </div>
         </div>
         <button onClick={() => { setShowNew(true); setEditItem(null); setForm({ code: '', name: '', type: 'piece', base_unit: '', conversion_factor: '1' }); }}
-          className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" /> Nueva Unidad
         </button>
       </div>
@@ -113,7 +113,7 @@ export default function UOMPage() {
           </div>
           <div className="flex justify-end gap-3 mt-4">
             <button onClick={() => { setShowNew(false); setEditItem(null); }} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
-            <button onClick={handleSave} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">{editItem ? 'Guardar' : 'Crear'}</button>
+            <button onClick={handleSave} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">{editItem ? 'Guardar' : 'Crear'}</button>
           </div>
         </div>
       )}

@@ -58,7 +58,7 @@ export default function SupplierContracts() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2"><FileSignature className="w-4 h-4 text-slate-500" /><span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Contratos de Proveedor</span></div>
-        <button onClick={() => setShowForm(true)} className="bg-slate-900 hover:bg-black text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors"><Plus className="w-3.5 h-3.5" /> Nuevo</button>
+        <button onClick={() => setShowForm(true)} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors"><Plus className="w-3.5 h-3.5" /> Nuevo</button>
       </div>
       {contracts.length === 0 ? (
         <div className="text-center py-12 bg-slate-50 border border-dashed border-slate-300 rounded-xl"><FileSignature className="w-8 h-8 text-slate-300 mx-auto mb-2" /><p className="text-xs text-slate-400">Sin contratos</p></div>
@@ -116,7 +116,7 @@ export default function SupplierContracts() {
             </div>
             <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
               <button onClick={() => setShowForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
-              <button onClick={handleSave} disabled={!form.supplier_id || !form.title} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors disabled:opacity-50"><Save className="w-3.5 h-3.5" /> Guardar</button>
+              <button onClick={handleSave} disabled={!form.supplier_id || !form.title} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors disabled:opacity-50"><Save className="w-3.5 h-3.5" /> Guardar</button>
             </div>
           </div>
         </div>

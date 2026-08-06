@@ -133,7 +133,7 @@ export default function ProjectTasks({ projectId, tasks, members, onRefresh }: P
             })}
           </div>
         </div>
-        <button onClick={openCreate} className="bg-slate-900 hover:bg-black text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+        <button onClick={openCreate} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
           <Plus className="w-3.5 h-3.5" /> Nueva Tarea
         </button>
       </div>
@@ -249,7 +249,7 @@ export default function ProjectTasks({ projectId, tasks, members, onRefresh }: P
             </div>
             <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
               <button onClick={() => setShowForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
-              <button onClick={handleSave} disabled={!form.name.trim()} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">{editingTask ? 'Guardar' : 'Crear'}</button>
+              <button onClick={handleSave} disabled={!form.name.trim()} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">{editingTask ? 'Guardar' : 'Crear'}</button>
             </div>
           </div>
         </div>

@@ -215,23 +215,23 @@ export default function BodegaPage() {
               <button onClick={() => setShowScanner(true)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
                 <Search className="w-4 h-4" /> Escanear
               </button>
-              <Link href="/dashboard/inventory/new" className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              <Link href="/dashboard/inventory/new" className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
                 <Plus className="w-4 h-4" /> Nuevo Producto
               </Link>
             </>
           )}
           {activeTab === 'warehouses' && (
-            <Link href="/dashboard/warehouses/new" className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            <Link href="/dashboard/warehouses/new" className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
               <Plus className="w-4 h-4" /> Nueva Bodega
             </Link>
           )}
           {activeTab === 'counts' && (
-            <Link href="/dashboard/inventory/counts/new" className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            <Link href="/dashboard/inventory/counts/new" className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
               <Plus className="w-4 h-4" /> Nuevo Conteo
             </Link>
           )}
           {activeTab === 'transfers' && (
-            <Link href="/dashboard/transfers/new" className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            <Link href="/dashboard/transfers/new" className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
               <Plus className="w-4 h-4" /> Nueva Transferencia
             </Link>
           )}
@@ -251,7 +251,7 @@ export default function BodegaPage() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Productos</p>
               <p className="text-2xl font-bold text-slate-900 mt-1">{products.length}</p>
             </div>
-            <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center"><Package className="w-5 h-5 text-indigo-600" /></div>
+            <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center"><Package className="w-5 h-5 text-slate-600" /></div>
           </div>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
@@ -260,7 +260,7 @@ export default function BodegaPage() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Bodegas</p>
               <p className="text-2xl font-bold text-slate-900 mt-1">{warehouses.length}</p>
             </div>
-            <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center"><Warehouse className="w-5 h-5 text-emerald-600" /></div>
+            <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center"><Warehouse className="w-5 h-5 text-slate-600" /></div>
           </div>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
@@ -269,7 +269,7 @@ export default function BodegaPage() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Conteos</p>
               <p className="text-2xl font-bold text-slate-900 mt-1">{counts.length}</p>
             </div>
-            <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center"><ClipboardCheck className="w-5 h-5 text-amber-600" /></div>
+            <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center"><ClipboardCheck className="w-5 h-5 text-slate-600" /></div>
           </div>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
@@ -278,7 +278,7 @@ export default function BodegaPage() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Alertas</p>
               <p className="text-2xl font-bold text-rose-600 mt-1">{alerts.length}</p>
             </div>
-            <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center"><AlertTriangle className="w-5 h-5 text-rose-600" /></div>
+            <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center"><AlertTriangle className="w-5 h-5 text-slate-600" /></div>
           </div>
         </div>
       </div>

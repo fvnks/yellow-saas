@@ -284,7 +284,7 @@ export default function ValuationPage() {
                     Por defecto
                   </label>
                   <button type="submit"
-                    className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors ml-auto">
+                    className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors ml-auto">
                     <Plus className="w-4 h-4" /> {editingMethod ? 'Actualizar' : 'Crear'}
                   </button>
                 </div>
@@ -389,7 +389,7 @@ export default function ValuationPage() {
                 </div>
                 <div className="flex items-end">
                   <button type="submit" disabled={running || methods.length === 0}
-                    className="w-full bg-slate-900 hover:bg-black disabled:bg-slate-400 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors">
+                    className="w-full bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors">
                     {running ? (
                       <><RefreshCw className="w-4 h-4 animate-spin" /> Calculando...</>
                     ) : (

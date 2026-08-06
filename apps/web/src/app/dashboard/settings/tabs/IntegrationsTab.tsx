@@ -283,7 +283,7 @@ export default function IntegrationsTab() {
                           Cancelar
                         </button>
                         <button onClick={() => handleSave(integration.id)} disabled={saving === integration.id}
-                          className="bg-slate-900 hover:bg-black text-white px-4 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors disabled:opacity-50">
+                          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors disabled:opacity-50">
                           <Check className="w-3.5 h-3.5" /> {saving === integration.id ? 'Guardando...' : 'Guardar'}
                         </button>
                       </div>

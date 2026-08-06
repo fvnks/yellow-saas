@@ -188,7 +188,7 @@ export default function ModulesTab() {
                 <button
                   onClick={() => handleActivate(module.name)}
                   disabled={activating === module.name}
-                  className="w-full bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50"
+                  className="w-full bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50"
                 >
                   {activating === module.name ? 'Activando...' : <><Plus className="w-3.5 h-3.5" /> Activar Módulo</>}
                 </button>

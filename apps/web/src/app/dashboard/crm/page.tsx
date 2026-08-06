@@ -90,7 +90,7 @@ export default function CRMPage() {
           <p className="text-sm text-slate-500 mt-1">Gestion de contactos y oportunidades</p>
         </div>
         <button onClick={() => { setShowForm(true); setEditingLead(null); setForm({ name: '', email: '', phone: '', source: 'web', status: 'new', estimated_value: '', notes: '' }); }}
-          className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" /> Nuevo Contacto
         </button>
       </div>
@@ -104,8 +104,8 @@ export default function CRMPage() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Leads</p>
               <p className="text-2xl font-bold text-slate-900 mt-1">{leads.length}</p>
             </div>
-            <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
-              <Users className="w-6 h-6 text-indigo-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <Users className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
@@ -115,8 +115,8 @@ export default function CRMPage() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Activos</p>
               <p className="text-2xl font-bold text-slate-900 mt-1">{activeLeads.length}</p>
             </div>
-            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
-              <Star className="w-6 h-6 text-blue-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <Star className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
@@ -126,8 +126,8 @@ export default function CRMPage() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Ganados</p>
               <p className="text-2xl font-bold text-emerald-600 mt-1">{wonLeads.length}</p>
             </div>
-            <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-emerald-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <Calendar className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
@@ -137,8 +137,8 @@ export default function CRMPage() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Valor Pipeline</p>
               <p className="text-2xl font-bold text-slate-900 mt-1">${(totalValue / 1000000).toFixed(1)}M</p>
             </div>
-            <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
-              <Star className="w-6 h-6 text-amber-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <Star className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
@@ -278,7 +278,7 @@ export default function CRMPage() {
               <button onClick={() => { setShowForm(false); setEditingLead(null); }}
                 className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={saving || !form.name}
-                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
                 <Save className="w-4 h-4" /> {saving ? 'Guardando...' : editingLead ? 'Actualizar' : 'Crear Lead'}
               </button>
             </div>

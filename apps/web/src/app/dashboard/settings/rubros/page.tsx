@@ -91,7 +91,7 @@ export default function RubrosPage() {
           <p className="text-sm text-slate-500 mt-1">Clasificación de clientes por sector o giro</p>
         </div>
         <button onClick={openCreate}
-          className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" /> Nuevo Rubro
         </button>
       </div>
@@ -208,7 +208,7 @@ export default function RubrosPage() {
                 Cancelar
               </button>
               <button onClick={handleSave} disabled={saving || !form.name.trim()}
-                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                 {saving ? 'Guardando...' : editing ? 'Actualizar' : 'Crear Rubro'}
               </button>
             </div>

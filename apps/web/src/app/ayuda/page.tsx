@@ -47,7 +47,7 @@ export default function AyudaPage() {
           <p className="text-sm text-slate-500 mt-1">Encuentra respuestas a tus preguntas frecuentes</p>
         </div>
         <Link href="/ayuda/tickets"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98]">
           <Ticket className="w-4 h-4" />
           Crear Ticket
         </Link>
@@ -55,8 +55,8 @@ export default function AyudaPage() {
 
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
         <div className="flex flex-col items-center text-center mb-6">
-          <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center mb-4">
-            <LifeBuoy className="w-7 h-7 text-blue-600" />
+          <div className="w-14 h-14 bg-slate-100 rounded-xl flex items-center justify-center mb-4">
+            <LifeBuoy className="w-7 h-7 text-slate-600" />
           </div>
           <h2 className="text-lg font-bold text-slate-900">¿En qué podemos ayudarte?</h2>
           <p className="text-sm text-slate-500 mt-1 max-w-lg">Busca entre nuestras preguntas frecuentes o crea un ticket de soporte</p>
@@ -79,7 +79,7 @@ export default function AyudaPage() {
               onClick={() => setCategory(cat)}
               className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
                 category === cat
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-slate-900 text-white'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
@@ -104,7 +104,7 @@ export default function AyudaPage() {
             <p className="text-sm text-slate-500">No se encontraron resultados</p>
             <p className="text-xs text-slate-400 mt-1">Prueba con otra búsqueda o crea un ticket de soporte</p>
             <Link href="/ayuda/tickets"
-              className="inline-flex items-center gap-2 mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+              className="inline-flex items-center gap-2 mt-4 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 active:scale-[0.98]">
               <MessageSquare className="w-4 h-4" />
               Crear Ticket
             </Link>

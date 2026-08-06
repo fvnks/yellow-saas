@@ -170,7 +170,7 @@ export default function CustomFields({ projectId, fields, values, onChange, onRe
                 <span className="text-[10px] text-slate-600">Requerido</span>
               </label>
               <button onClick={handleCreate}
-                className="bg-slate-900 hover:bg-black text-white px-3 py-1 rounded-lg text-xs font-medium transition-colors flex items-center gap-1">
+                className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1 rounded-lg text-xs font-medium transition-colors flex items-center gap-1">
                 <Plus className="w-3 h-3" /> Agregar
               </button>
             </div>

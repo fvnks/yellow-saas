@@ -304,7 +304,7 @@ export default function QuickSellModal({ open, onClose, productName, productId, 
                 Cancelar
               </button>
               <button onClick={handlePay} disabled={processing || qty <= 0 || (paymentMethod === 'cash' && amountPaid < total) || (documentType === 'factura' && !selectedCustomer)}
-                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
                 {processing ? (
                   <span className="flex items-center gap-2">
                     <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -340,7 +340,7 @@ export default function QuickSellModal({ open, onClose, productName, productId, 
               </button>
             </div>
             <button onClick={onClose}
-              className="w-full bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+              className="w-full bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
               Cerrar
             </button>
           </div>

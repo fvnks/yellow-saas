@@ -63,7 +63,7 @@ function AyudaSidebar() {
     <div className="w-60 bg-white border-r border-slate-200 h-screen fixed left-0 top-0 z-40 flex flex-col">
       <div className="p-4 border-b border-slate-200">
         <Link href="/ayuda" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center">
             <LifeBuoy className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -91,7 +91,7 @@ function AyudaSidebar() {
               <Icon className="w-4 h-4" />
               {item.label}
               {item.href === '/ayuda/tickets' && unread > 0 && (
-                <span className="ml-auto inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-[9px] font-bold bg-blue-600 text-white">
+                <span className="ml-auto inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-[9px] font-bold bg-slate-900 text-white">
                   {unread}
                 </span>
               )}

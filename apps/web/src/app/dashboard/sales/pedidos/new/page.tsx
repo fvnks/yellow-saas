@@ -184,7 +184,7 @@ export default function NuevoPedidoPage() {
             Cancelar
           </button>
           <button type="submit" disabled={loading}
-            className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
             <Save className="w-4 h-4" /> {loading ? 'Creando...' : 'Crear Pedido'}
           </button>
         </div>

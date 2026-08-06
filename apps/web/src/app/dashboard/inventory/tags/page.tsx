@@ -72,7 +72,7 @@ export default function TagsPage() {
           </div>
         </div>
         <button onClick={() => { setShowForm(true); setEditingTag(null); setForm({ name: '', color: COLORS[0].value }); }}
-          className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" /> Nuevo Tag
         </button>
       </div>
@@ -94,7 +94,7 @@ export default function TagsPage() {
                   style={{ backgroundColor: c.value }} title={c.name} />
               ))}
             </div>
-            <button onClick={saveTag} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            <button onClick={saveTag} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
               {editingTag ? 'Actualizar' : 'Guardar'}
             </button>
           </div>

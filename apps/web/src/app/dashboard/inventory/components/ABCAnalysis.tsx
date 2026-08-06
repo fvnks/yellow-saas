@@ -98,7 +98,7 @@ export default function ABCAnalysis() {
             <Settings className="w-3.5 h-3.5" /> Configurar
           </button>
           <button onClick={handleRun} disabled={running}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-black text-white rounded-lg text-xs font-medium transition-colors disabled:opacity-50">
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-medium transition-colors disabled:opacity-50">
             <Play className="w-3.5 h-3.5" /> {running ? 'Ejecutando...' : 'Ejecutar'}
           </button>
         </div>

@@ -48,13 +48,13 @@ export function DocumentsTab() {
       {/* Editor */}
       <div className="lg:col-span-2 space-y-5">
         {loading ? (
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 text-center">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 text-center">
             <div className="animate-pulse bg-slate-200 h-6 w-48 rounded-xl mx-auto" />
           </div>
         ) : (
           <>
             {/* Template Selection */}
-            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
                   <LayoutTemplate className="w-4 h-4 text-indigo-600" />
@@ -99,7 +99,7 @@ export function DocumentsTab() {
             </div>
 
             {/* Colors */}
-            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center">
                   <Palette className="w-4 h-4 text-purple-600" />
@@ -149,7 +149,7 @@ export function DocumentsTab() {
             </div>
 
             {/* Localization */}
-            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
                   <Hash className="w-4 h-4 text-emerald-600" />
@@ -192,7 +192,7 @@ export function DocumentsTab() {
             </div>
 
             {/* Texts */}
-            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
                   <Type className="w-4 h-4 text-amber-600" />
@@ -219,7 +219,7 @@ export function DocumentsTab() {
             </div>
 
             {/* Document Titles */}
-            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-cyan-50 flex items-center justify-center">
                   <FileText className="w-4 h-4 text-cyan-600" />
@@ -251,7 +251,7 @@ export function DocumentsTab() {
 
       {/* Preview */}
       <div className="lg:col-span-3">
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden sticky top-20">
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden sticky top-20">
           <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
@@ -276,7 +276,7 @@ export function DocumentsTab() {
             <button
               onClick={handleSave}
               disabled={savingStatus === 'saving'}
-              className="bg-slate-900 hover:bg-black text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 disabled:opacity-50 flex items-center gap-2 shadow-lg shadow-slate-900/20 hover:shadow-xl hover:shadow-slate-900/25 active:scale-[0.98]"
+              className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 disabled:opacity-50 flex items-center gap-2 shadow-lg shadow-slate-900/20 hover:shadow-xl hover:shadow-slate-900/25 active:scale-[0.98]"
             >
               {savingStatus === 'saving' ? (
                 <>
@@ -428,13 +428,13 @@ function DocumentPreview({ settings }: { settings: DocumentSettings }) {
           </button>
         ))}
       </div>
-      <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl overflow-hidden h-[520px] shadow-inner">
+      <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl overflow-hidden h-[520px] shadow-inner">
         {pdfUrl ? (
           <iframe src={pdfUrl} title={`Vista previa ${activeType}`} className="w-full h-full border-0" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <div className="flex flex-col items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-white/80 flex items-center justify-center animate-pulse">
+              <div className="w-12 h-12 rounded-xl bg-white/80 flex items-center justify-center animate-pulse">
                 <Sparkles className="w-6 h-6 text-slate-400" />
               </div>
               <div className="animate-pulse bg-white/60 h-4 w-32 rounded-lg" />

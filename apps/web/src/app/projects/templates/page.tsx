@@ -73,7 +73,7 @@ export default function ProjectTemplatesPage() {
         </div>
         <button
           onClick={() => setShowNew(true)}
-          className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
         >
           <Plus className="w-4 h-4" /> Nueva Plantilla
         </button>
@@ -108,7 +108,7 @@ export default function ProjectTemplatesPage() {
             <button onClick={() => setShowNew(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
               Cancelar
             </button>
-            <button onClick={handleCreate} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            <button onClick={handleCreate} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
               Crear
             </button>
           </div>

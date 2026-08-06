@@ -363,7 +363,7 @@ export default function TicketDetailPage() {
               <button
                 onClick={handleSubmitFeedback}
                 disabled={submittingFeedback}
-                className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                className="mt-4 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 active:scale-[0.98] disabled:opacity-50"
               >
                 {submittingFeedback ? 'Enviando...' : 'Enviar valoración'}
               </button>
@@ -416,7 +416,7 @@ export default function TicketDetailPage() {
             <button
               onClick={handleSend}
               disabled={sending || (!replyText.trim() && pendingFiles.length === 0)}
-              className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 rounded-lg text-sm font-medium text-white transition-all duration-150 active:scale-[0.98] disabled:opacity-50 flex items-center gap-2"
             >
               {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
               Enviar

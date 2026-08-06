@@ -297,7 +297,7 @@ export default function NewGoodsReceiptPage() {
                 Volver
               </button>
               <button onClick={handleSubmit} disabled={saving || totalItemsToReceive === 0}
-                className="flex-1 bg-slate-900 hover:bg-black disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors">
+                className="flex-1 bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors">
                 <Save className="w-4 h-4" />
                 {saving ? 'Guardando...' : 'Guardar Recepción'}
               </button>

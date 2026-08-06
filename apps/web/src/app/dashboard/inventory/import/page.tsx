@@ -141,7 +141,7 @@ export default function ImportProductsPage() {
           <p className="text-sm font-medium text-blue-800">Descarga la plantilla CSV</p>
           <p className="text-xs text-blue-600 mt-0.5">Columnas requeridas: name, sku</p>
         </div>
-        <button onClick={downloadTemplate} className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
+        <button onClick={downloadTemplate} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all duration-150 active:scale-[0.98]">
           <Download className="w-3.5 h-3.5" /> Plantilla
         </button>
       </div>

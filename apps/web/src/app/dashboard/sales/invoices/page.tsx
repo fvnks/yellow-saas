@@ -62,7 +62,7 @@ export default function InvoicesListPage() {
           <p className="text-sm text-slate-500 mt-1">Facturas, boletas y documentos de venta</p>
         </div>
         <Link href="/dashboard/sales/invoices/new">
-          <button className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          <button className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <Plus className="w-4 h-4" /> Nuevo Documento
           </button>
         </Link>

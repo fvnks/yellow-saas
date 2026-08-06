@@ -325,19 +325,19 @@ export default function PurchaseBookPage() {
           </button>
           {siiStatus === 'draft' && (
             <button onClick={handleGenerateXml} disabled={records.length === 0}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+              className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98] disabled:opacity-50">
               <FileText className="w-4 h-4" /> Generar XML
             </button>
           )}
           {siiStatus === 'generated' && (
             <button onClick={handleSubmitToSii} disabled={submitting}
-              className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+              className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
               <Send className="w-4 h-4" /> {submitting ? 'Enviando...' : 'Enviar al SII'}
             </button>
           )}
           {(siiStatus === 'accepted' || siiStatus === 'rejected') && (
             <button onClick={handleReset}
-              className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
               <RefreshCw className="w-4 h-4" /> Nuevo Período
             </button>
           )}
@@ -364,7 +364,7 @@ export default function PurchaseBookPage() {
                 Cerrar
               </button>
               <button onClick={() => { navigator.clipboard.writeText(generateXml()); toast.success('XML copiado al portapapeles'); }}
-                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium">
+                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium">
                 Copiar XML
               </button>
             </div>

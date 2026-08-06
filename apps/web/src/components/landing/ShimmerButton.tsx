@@ -14,7 +14,7 @@ export function ShimmerButton({ children, className, variant = 'primary' }: Shim
     <button
       className={cn(
         'relative overflow-hidden rounded-xl px-8 py-4 font-semibold text-base cursor-pointer transition-all duration-300 active:scale-[0.98]',
-        variant === 'primary' && 'bg-slate-900 text-white hover:bg-black hover:shadow-lg hover:shadow-slate-900/25',
+        variant === 'primary' && 'bg-slate-900 text-white hover:bg-slate-800 hover:shadow-lg hover:shadow-slate-900/25',
         variant === 'secondary' && 'border border-slate-200 bg-white text-slate-900 hover:bg-slate-50 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700',
         className
       )}

@@ -281,7 +281,7 @@ export default function SelectPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {modules.filter(mod => isModuleActivated(mod)).length === 0 ? (
               <div className="col-span-full text-center py-16">
-                <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                   <Lock className="w-7 h-7 text-slate-400" />
                 </div>
                 <p className="text-sm font-medium text-slate-600">No hay módulos activos</p>

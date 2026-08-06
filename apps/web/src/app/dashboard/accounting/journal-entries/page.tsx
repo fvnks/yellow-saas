@@ -71,7 +71,7 @@ export default function JournalEntriesPage() {
           <p className="text-sm text-slate-500 mt-1">Registro contable de operaciones financieras</p>
         </div>
         <Link href="/dashboard/accounting/journal-entries/new">
-          <button className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          <button className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <Plus className="w-4 h-4" /> Nuevo Asiento
           </button>
         </Link>

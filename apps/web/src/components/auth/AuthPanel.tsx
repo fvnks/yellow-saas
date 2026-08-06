@@ -75,7 +75,7 @@ export default function AuthPanel() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-12 rounded-2xl bg-slate-900/80 backdrop-blur border border-slate-800 overflow-hidden shadow-2xl"
+            className="mt-12 rounded-xl bg-slate-900/80 backdrop-blur border border-slate-800 overflow-hidden shadow-2xl"
           >
             <div className="flex items-center gap-1.5 px-4 py-3 border-b border-slate-800">
               <div className="w-2.5 h-2.5 rounded-full bg-rose-500/70" />

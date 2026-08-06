@@ -128,7 +128,7 @@ export default function InvoiceDetailPage() {
           </button>
           {invoice.status === 'draft' && (
             <button onClick={() => handleStatus('sent')}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98]">
               <Send className="w-4 h-4" /> Enviar
             </button>
           )}

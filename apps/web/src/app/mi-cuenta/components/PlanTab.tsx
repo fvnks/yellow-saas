@@ -137,7 +137,7 @@ export default function PlanTab() {
                 <button
                   onClick={() => handleUpgrade(plan.name)}
                   disabled={checkoutLoading}
-                  className="w-full bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                  className="w-full bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
                 >
                   {checkoutLoading ? 'Procesando...' : 'Upgrade'}
                   <ArrowRight className="w-4 h-4" />

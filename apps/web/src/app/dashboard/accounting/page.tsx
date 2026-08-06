@@ -158,8 +158,8 @@ export default function AccountingPage() {
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Activos</p>
                 <p className="text-xl font-bold text-emerald-600 mt-1">${totalAssets.toLocaleString('es-CL')}</p>
               </div>
-              <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-emerald-600" />
+              <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-slate-600" />
               </div>
             </div>
           </CardContent>
@@ -171,8 +171,8 @@ export default function AccountingPage() {
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Pasivos</p>
                 <p className="text-xl font-bold text-blue-600 mt-1">${totalLiabilities.toLocaleString('es-CL')}</p>
               </div>
-              <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
-                <CreditCard className="w-5 h-5 text-blue-600" />
+              <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+                <CreditCard className="w-5 h-5 text-slate-600" />
               </div>
             </div>
           </CardContent>
@@ -184,8 +184,8 @@ export default function AccountingPage() {
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Patrimonio</p>
                 <p className="text-xl font-bold text-amber-600 mt-1">${totalEquity.toLocaleString('es-CL')}</p>
               </div>
-              <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
-                <Building2 className="w-5 h-5 text-amber-600" />
+              <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+                <Building2 className="w-5 h-5 text-slate-600" />
               </div>
             </div>
           </CardContent>
@@ -197,8 +197,8 @@ export default function AccountingPage() {
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Ingresos</p>
                 <p className="text-xl font-bold text-indigo-600 mt-1">${totalIncome.toLocaleString('es-CL')}</p>
               </div>
-              <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-indigo-600" />
+              <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+                <DollarSign className="w-5 h-5 text-slate-600" />
               </div>
             </div>
           </CardContent>
@@ -210,8 +210,8 @@ export default function AccountingPage() {
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Gastos</p>
                 <p className="text-xl font-bold text-rose-600 mt-1">${totalExpenses.toLocaleString('es-CL')}</p>
               </div>
-              <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center">
-                <Calculator className="w-5 h-5 text-rose-600" />
+              <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+                <Calculator className="w-5 h-5 text-slate-600" />
               </div>
             </div>
           </CardContent>
@@ -431,7 +431,7 @@ export default function AccountingPage() {
               <button onClick={() => setEditingAccount(null)}
                 className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSaveAccount} disabled={saving || !editForm.name}
-                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                 {saving ? 'Guardando...' : 'Guardar'}
               </button>
             </div>

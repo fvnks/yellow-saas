@@ -125,7 +125,7 @@ export default function InventoryCountDetailPage({ params }: { params: { id: str
           <p className="text-sm text-slate-500">{count.warehouse.name} &middot; {statusLabels[count.status]}</p>
         </div>
         {count.status === 'draft' && (
-          <button onClick={handleStart} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          <button onClick={handleStart} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98]">
             <Play className="w-4 h-4" /> Iniciar Conteo
           </button>
         )}

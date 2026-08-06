@@ -171,7 +171,7 @@ export default function RecipeExpensesPage() {
           <p className="text-sm text-slate-500 mt-1">Gastos generales de la receta (luz, agua, gas, etc.)</p>
         </div>
         <button onClick={openCreate}
-          className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" /> Nuevo Gasto
         </button>
       </div>
@@ -380,7 +380,7 @@ export default function RecipeExpensesPage() {
                 Cancelar
               </button>
               <button onClick={handleSave} disabled={saving}
-                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
                 {saving ? 'Guardando...' : editingExpense ? 'Guardar Cambios' : 'Crear Gasto'}
               </button>
             </div>

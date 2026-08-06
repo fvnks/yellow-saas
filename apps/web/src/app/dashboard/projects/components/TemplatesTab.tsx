@@ -86,7 +86,7 @@ export default function TemplatesTab({ onApply }: TemplatesTabProps) {
         <h3 className="text-sm font-semibold text-slate-900">Plantillas de Proyecto</h3>
         <button
           onClick={() => setShowCreateForm(true)}
-          className="bg-slate-900 hover:bg-black text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors"
+          className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors"
         >
           <Plus className="w-3.5 h-3.5" /> Nueva Plantilla
         </button>
@@ -119,7 +119,7 @@ export default function TemplatesTab({ onApply }: TemplatesTabProps) {
             <button
               onClick={handleCreate}
               disabled={saving || !newTemplate.name}
-              className="bg-slate-900 hover:bg-black text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
+              className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
             >
               {saving ? 'Creando...' : 'Crear'}
             </button>

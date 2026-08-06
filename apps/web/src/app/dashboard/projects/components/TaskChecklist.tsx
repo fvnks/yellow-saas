@@ -120,7 +120,7 @@ export default function TaskChecklist({ taskId, onUpdate }: TaskChecklistProps) 
           className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
           placeholder="Agregar item..." />
         <button onClick={addItem} disabled={!newItem.trim()}
-          className="bg-slate-900 hover:bg-black text-white px-2 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50">
+          className="bg-slate-900 hover:bg-slate-800 text-white px-2 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50">
           <Plus className="w-3.5 h-3.5" />
         </button>
       </div>

@@ -131,8 +131,8 @@ export default function AlertsPage() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Sin Stock</p>
               <p className="text-2xl font-bold text-rose-600 mt-1">{outOfStockCount}</p>
             </div>
-            <div className="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center">
-              <Package className="w-6 h-6 text-rose-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <Package className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
@@ -142,8 +142,8 @@ export default function AlertsPage() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Stock Bajo</p>
               <p className="text-2xl font-bold text-amber-600 mt-1">{lowStockCount}</p>
             </div>
-            <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
-              <AlertTriangle className="w-6 h-6 text-amber-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <AlertTriangle className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
@@ -153,8 +153,8 @@ export default function AlertsPage() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Alertas</p>
               <p className="text-2xl font-bold text-slate-900 mt-1">{lowStockItems.length}</p>
             </div>
-            <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
-              <Bell className="w-6 h-6 text-indigo-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <Bell className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
@@ -164,8 +164,8 @@ export default function AlertsPage() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Lotes Vencidos</p>
               <p className="text-2xl font-bold text-rose-600 mt-1">{expiredBatches.length}</p>
             </div>
-            <div className="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center">
-              <Clock className="w-6 h-6 text-rose-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <Clock className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>

@@ -102,7 +102,7 @@ export default function ProductImages({ productId, onRefresh }: ProductImagesPro
           </span>
         </div>
         <button onClick={() => setShowUpload(!showUpload)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-black text-white rounded-lg text-xs font-medium transition-colors">
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-medium transition-colors">
           <Plus className="w-3.5 h-3.5" /> Agregar
         </button>
       </div>
@@ -122,7 +122,7 @@ export default function ProductImages({ productId, onRefresh }: ProductImagesPro
             className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white dark:placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             placeholder="Texto alternativo (opcional)" />
           <button onClick={handleUpload} disabled={uploading || !newUrl}
-            className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
             {uploading ? 'Agregando...' : 'Agregar Imagen'}
           </button>
         </div>
@@ -138,7 +138,7 @@ export default function ProductImages({ productId, onRefresh }: ProductImagesPro
           {images.map(image => (
             <div key={image.id} className={`relative group rounded-xl overflow-hidden border-2 transition-colors ${image.is_primary ? 'border-indigo-500' : 'border-slate-200 hover:border-slate-300'}`}>
               <img src={image.url} alt={image.alt_text} className="w-full h-32 object-cover" />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-slate-800/40 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
                 <button onClick={() => handleSetPrimary(image.id)}
                   className={`p-1.5 rounded-lg transition-colors ${image.is_primary ? 'bg-indigo-500 text-white' : 'bg-white/90 text-slate-700 hover:bg-white'}`}
                   title="Imagen principal">

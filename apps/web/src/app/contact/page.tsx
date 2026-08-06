@@ -111,7 +111,7 @@ export default function ContactPage() {
               <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8">
                 {sent ? (
                   <div className="text-center py-12">
-                    <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <div className="w-16 h-16 bg-emerald-50 rounded-xl flex items-center justify-center mx-auto mb-4">
                       <CheckCircle className="w-8 h-8 text-emerald-500" />
                     </div>
                     <h2 className="text-lg font-semibold text-slate-900">Mensaje enviado</h2>
@@ -194,7 +194,7 @@ export default function ContactPage() {
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="w-full bg-slate-900 hover:bg-black text-white px-4 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                      className="w-full bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
                     >
                       {submitting ? (
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

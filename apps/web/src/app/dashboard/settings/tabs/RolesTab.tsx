@@ -193,7 +193,7 @@ export default function RolesTab() {
               </button>
             )}
             <button onClick={() => setShowNewRole(true)}
-              className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
               <Plus className="w-4 h-4" /> Nuevo Rol
             </button>
           </div>
@@ -349,7 +349,7 @@ export default function RolesTab() {
                   Cancelar
                 </button>
                 <button onClick={handleCreateRole} disabled={saving || !newRoleName.trim()}
-                  className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+                  className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
                   <Plus className="w-4 h-4" /> {saving ? 'Creando...' : 'Crear Rol'}
                 </button>
               </div>

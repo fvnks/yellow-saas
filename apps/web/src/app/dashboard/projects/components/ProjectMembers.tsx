@@ -89,7 +89,7 @@ export default function ProjectMembers({ projectId, users }: ProjectMembersProps
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-slate-900">Equipo del Proyecto</h3>
         <button onClick={() => setShowAdd(true)}
-          className="bg-slate-900 hover:bg-black text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
+          className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
           <Plus className="w-3.5 h-3.5" /> Agregar
         </button>
       </div>
@@ -112,7 +112,7 @@ export default function ProjectMembers({ projectId, users }: ProjectMembersProps
           <div className="flex justify-end gap-2">
             <button onClick={() => setShowAdd(false)} className="px-3 py-1.5 text-xs text-slate-600 hover:text-slate-900">Cancelar</button>
             <button onClick={handleAdd} disabled={!selectedUser}
-              className="bg-slate-900 hover:bg-black text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50">
+              className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50">
               Agregar
             </button>
           </div>

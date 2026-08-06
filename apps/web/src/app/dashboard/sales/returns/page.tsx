@@ -200,7 +200,7 @@ export default function SalesReturnsPage() {
         </div>
         <button
           onClick={() => setShowNewModal(true)}
-          className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
         >
           <Plus className="w-4 h-4" />
           Nueva Devolución
