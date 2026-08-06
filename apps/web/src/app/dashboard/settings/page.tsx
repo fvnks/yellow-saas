@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
 import { Settings, Building2, Users, CreditCard, Bell, Shield, Globe, Save, Plus, Trash2, Mail, Key, ShieldCheck, Zap, Pencil, X, Check, ChevronRight, Webhook, FileText } from 'lucide-react';
 import { toast } from 'sonner';
@@ -82,7 +83,9 @@ const settingsCategories: Category[] = [
 ];
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState('empresa');
+  const searchParams = useSearchParams();
+  const urlTab = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState(urlTab || 'empresa');
   const [expandedCategories, setExpandedCategories] = useState<string[]>(['general']);
   const [company, setCompany] = useState({
     id: '', name: '', tax_id: '', razon_social: '', giro: '',
