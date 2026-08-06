@@ -132,7 +132,7 @@ export default function NewWarehousePage() {
                 </div>
                 <button
                   onClick={() => setIsDefault(!isDefault)}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isDefault ? 'bg-indigo-600' : 'bg-slate-200'}`}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isDefault ? 'bg-primary' : 'bg-muted'}`}
                 >
                   <span className={`inline-block h-4 w-4 transform rounded-full bg-card transition-transform ${isDefault ? 'translate-x-6' : 'translate-x-1'}`} />
                 </button>
@@ -146,8 +146,8 @@ export default function NewWarehousePage() {
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
-                  <Warehouse className="w-4 h-4 text-indigo-600" />
+                <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <Warehouse className="w-4 h-4 text-primary" />
                 </div>
                 <div>
                   <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Código</p>

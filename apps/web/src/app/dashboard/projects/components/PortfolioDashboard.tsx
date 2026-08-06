@@ -94,20 +94,20 @@ export default function PortfolioDashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Proyectos</p>
               <p className="text-2xl font-bold text-foreground mt-1">{data.total_projects}</p>
               <p className="text-xs text-emerald-600 mt-1">{data.active_projects} activos</p>
             </div>
-            <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
-              <FolderKanban className="w-6 h-6 text-indigo-600" />
+            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+              <FolderKanban className="w-6 h-6 text-primary" />
             </div>
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tareas Completadas</p>
@@ -120,7 +120,7 @@ export default function PortfolioDashboard() {
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Uso Presupuesto</p>
@@ -133,7 +133,7 @@ export default function PortfolioDashboard() {
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tareas Vencidas</p>
@@ -147,8 +147,8 @@ export default function PortfolioDashboard() {
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-        <div className="px-6 py-4 border-b border-slate-100">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+        <div className="px-6 py-4 border-b border-border">
           <h3 className="text-sm font-semibold text-foreground">Proyectos</h3>
         </div>
         <div className="overflow-x-auto">
@@ -166,7 +166,7 @@ export default function PortfolioDashboard() {
               {data.projects.map((project: any) => {
                 const progress = project.progress || 0;
                 return (
-                  <tr key={project.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={project.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3">
                       <p className="text-xs font-medium text-foreground">{project.name}</p>
                       <p className="text-[10px] text-muted-foreground">{project.code}</p>
@@ -174,16 +174,16 @@ export default function PortfolioDashboard() {
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
                         project.status === 'active' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
-                        project.status === 'completed' ? 'bg-muted text-slate-600 border border-border' :
+                        project.status === 'completed' ? 'bg-muted text-foreground border border-border' :
                         project.status === 'on_hold' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                        'bg-muted text-slate-600 border border-border'
+                        'bg-muted text-foreground border border-border'
                       }`}>
                         {project.status}
                       </span>
                     </td>
                     <td className="px-4 py-3">
                       <div className="w-24 bg-muted rounded-full h-1.5">
-                        <div className="bg-indigo-600 h-1.5 rounded-full" style={{ width: `${progress}%` }} />
+                        <div className="bg-primary h-1.5 rounded-full" style={{ width: `${progress}%` }} />
                       </div>
                       <p className="text-[10px] text-muted-foreground mt-1">{progress}%</p>
                     </td>

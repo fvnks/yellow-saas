@@ -91,7 +91,7 @@ export default function TrainingTab() {
       </div>
 
       {showForm && (
-        <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 space-y-3">
+        <div className="bg-blue-50 border border-primary/20 rounded-xl p-4 space-y-3">
           <h4 className="text-sm font-medium text-foreground">Nueva Capacitación</h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <Input label="Título" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Ej: Seguridad Industrial" />
@@ -127,8 +127,8 @@ export default function TrainingTab() {
         ) : filtered.map(t => (
           <div key={t.id} className="bg-card border border-border rounded-xl p-5 hover:shadow-md transition-shadow">
             <div className="flex items-start justify-between mb-3">
-              <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-                <GraduationCap className="w-5 h-5 text-indigo-600" />
+              <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                <GraduationCap className="w-5 h-5 text-primary" />
               </div>
               <Badge variant={statusConfig[t.status]?.variant || 'neutral'}>
                 {statusConfig[t.status]?.label || t.status}

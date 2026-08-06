@@ -44,11 +44,11 @@ const statusConfig: Record<string, { label: string; classes: string; icon: any }
   open: { label: 'Abierto', classes: 'bg-blue-50 text-blue-700 border-blue-200', icon: Inbox },
   in_progress: { label: 'En progreso', classes: 'bg-amber-50 text-amber-700 border-amber-200', icon: Loader2 },
   resolved: { label: 'Resuelto', classes: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: CheckCircle2 },
-  closed: { label: 'Cerrado', classes: 'bg-slate-100 text-slate-600 border-slate-200', icon: XCircle },
+  closed: { label: 'Cerrado', classes: 'bg-muted text-foreground border-border', icon: XCircle },
 };
 
 const priorityConfig: Record<string, { label: string; classes: string }> = {
-  low: { label: 'Baja', classes: 'bg-slate-100 text-slate-600 border-slate-200' },
+  low: { label: 'Baja', classes: 'bg-muted text-foreground border-border' },
   medium: { label: 'Media', classes: 'bg-blue-50 text-blue-700 border-blue-200' },
   high: { label: 'Alta', classes: 'bg-amber-50 text-amber-700 border-amber-200' },
   urgent: { label: 'Urgente', classes: 'bg-rose-50 text-rose-700 border-rose-200' },
@@ -199,9 +199,9 @@ export default function TicketDetailPage() {
   if (loading) {
     return (
       <div className="space-y-6 max-w-4xl">
-        <div className="h-8 w-64 bg-slate-200 rounded animate-pulse" />
-        <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-3">
-          {[1, 2, 3].map(i => <div key={i} className="h-16 bg-slate-100 rounded-lg animate-pulse" />)}
+        <div className="h-8 w-64 bg-muted rounded animate-pulse" />
+        <div className="bg-card border border-border rounded-xl p-6 space-y-3">
+          {[1, 2, 3].map(i => <div key={i} className="h-16 bg-muted rounded-lg animate-pulse" />)}
         </div>
       </div>
     );
@@ -210,7 +210,7 @@ export default function TicketDetailPage() {
   if (!ticket) {
     return (
       <div className="text-center py-12">
-        <p className="text-sm text-slate-500">Ticket no encontrado</p>
+        <p className="text-sm text-muted-foreground">Ticket no encontrado</p>
         <button onClick={() => router.push('/ayuda/tickets')}
           className="mt-4 text-sm text-blue-600 hover:underline">
           Volver a Mis Tickets
@@ -230,12 +230,12 @@ export default function TicketDetailPage() {
     <div className="space-y-6 max-w-4xl">
       <div className="flex items-center gap-4">
         <button onClick={() => router.push('/ayuda/tickets')}
-          className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-          <ArrowLeft className="w-5 h-5 text-slate-500" />
+          className="p-2 hover:bg-muted rounded-lg transition-colors">
+          <ArrowLeft className="w-5 h-5 text-muted-foreground" />
         </button>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-xl font-bold text-slate-900 truncate">{ticket.subject}</h1>
+            <h1 className="text-xl font-bold text-foreground truncate">{ticket.subject}</h1>
             <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border ${pr.classes}`}>
               {pr.label}
             </span>
@@ -244,23 +244,23 @@ export default function TicketDetailPage() {
               {st.label}
             </span>
           </div>
-          <p className="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
+          <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1.5">
             <Clock className="w-3.5 h-3.5" />
             Creado el {new Date(ticket.created_at).toLocaleString('es-CL')}
-            {ticket.assigned_to_name && <span className="text-slate-400">· Atendido por {ticket.assigned_to_name}</span>}
+            {ticket.assigned_to_name && <span className="text-muted-foreground">· Atendido por {ticket.assigned_to_name}</span>}
           </p>
         </div>
       </div>
 
       {!canReply && (
-        <div className="flex items-center justify-between bg-white border border-slate-200 rounded-xl p-4">
-          <p className="text-sm text-slate-500">
+        <div className="flex items-center justify-between bg-card border border-border rounded-xl p-4">
+          <p className="text-sm text-muted-foreground">
             Este ticket está {isClosed ? 'cerrado' : 'resuelto'}. Si necesitas más ayuda, puedes reabrirlo.
           </p>
           <button
             onClick={() => handleChangeStatus('open')}
             disabled={changingStatus}
-            className="inline-flex items-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
           >
             <RotateCcw className="w-4 h-4" />
             Reabrir ticket
@@ -268,9 +268,9 @@ export default function TicketDetailPage() {
         </div>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-4 max-h-[480px] overflow-y-auto">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 space-y-4 max-h-[480px] overflow-y-auto">
         {ticket.messages.length === 0 ? (
-          <p className="text-center text-sm text-slate-400 py-8">No hay mensajes aún</p>
+          <p className="text-center text-sm text-muted-foreground py-8">No hay mensajes aún</p>
         ) : (
           ticket.messages.map((msg, index) => {
             const isSupport = msg.sender_type === 'super_admin';
@@ -279,10 +279,10 @@ export default function TicketDetailPage() {
                 <div className={`max-w-[75%] rounded-xl px-4 py-3 border ${
                   isSupport
                     ? 'bg-blue-50 border-blue-200'
-                    : 'bg-slate-900 border-slate-800'
+                    : 'bg-primary border-border'
                 }`}>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className={`text-[10px] font-bold ${isSupport ? 'text-blue-700' : 'text-slate-300'}`}>
+                    <span className={`text-[10px] font-bold ${isSupport ? 'text-blue-700' : 'text-foreground'}`}>
                       {isSupport ? (
                         <span className="inline-flex items-center gap-1">
                           <Headphones className="w-3 h-3" />
@@ -292,11 +292,11 @@ export default function TicketDetailPage() {
                         msg.sender_name || 'Tú'
                       )}
                     </span>
-                    <span className={`text-[9px] ${isSupport ? 'text-blue-400' : 'text-slate-500'}`}>
+                    <span className={`text-[9px] ${isSupport ? 'text-blue-400' : 'text-muted-foreground'}`}>
                       {new Date(msg.created_at).toLocaleString('es-CL')}
                     </span>
                   </div>
-                  <p className={`text-sm leading-relaxed ${isSupport ? 'text-slate-700' : 'text-white'}`}>{msg.message}</p>
+                  <p className={`text-sm leading-relaxed ${isSupport ? 'text-foreground' : 'text-white'}`}>{msg.message}</p>
                   {msg.attachments?.length ? (
                     <div className="mt-2 space-y-1.5">
                       {msg.attachments.map(att => (
@@ -307,8 +307,8 @@ export default function TicketDetailPage() {
                           rel="noopener noreferrer"
                           className={`flex items-center gap-2 px-2 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
                             isSupport
-                              ? 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                              : 'bg-slate-700/30 border-slate-500/40 text-white hover:bg-slate-700/40'
+                              ? 'bg-white border-border text-foreground hover:bg-muted'
+                              : 'bg-muted/30 border-border/40 text-white hover:bg-primary/90/40'
                           }`}
                         >
                           {(att.mime_type || '').startsWith('image/')
@@ -327,27 +327,27 @@ export default function TicketDetailPage() {
       </div>
 
       {isResolved && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6">
           {feedback ? (
             <div className="text-center">
-              <p className="text-sm font-semibold text-slate-900 mb-2">¡Gracias por tu valoración!</p>
+              <p className="text-sm font-semibold text-foreground mb-2">¡Gracias por tu valoración!</p>
               <div className="flex items-center justify-center gap-1 mb-2">
                 {[1, 2, 3, 4, 5].map(i => (
-                  <Star key={i} className={`w-5 h-5 ${i <= feedback.rating ? 'text-amber-400 fill-amber-400' : 'text-slate-200'}`} />
+                  <Star key={i} className={`w-5 h-5 ${i <= feedback.rating ? 'text-amber-400 fill-amber-400' : 'text-foreground'}`} />
                 ))}
               </div>
-              {feedback.comment && <p className="text-sm text-slate-500">{feedback.comment}</p>}
+              {feedback.comment && <p className="text-sm text-muted-foreground">{feedback.comment}</p>}
             </div>
           ) : (
             <div className="text-center">
-              <p className="text-sm font-semibold text-slate-900 mb-1">¿Cómo calificas la atención recibida?</p>
-              <p className="text-xs text-slate-500 mb-4">Tu opinión nos ayuda a mejorar</p>
+              <p className="text-sm font-semibold text-foreground mb-1">¿Cómo calificas la atención recibida?</p>
+              <p className="text-xs text-muted-foreground mb-4">Tu opinión nos ayuda a mejorar</p>
               <div className="flex items-center justify-center gap-2 mb-4">
                 {[1, 2, 3, 4, 5].map(i => (
                   <button
                     key={i}
                     onClick={() => setRating(i)}
-                    className={`p-1.5 rounded-lg transition-colors ${rating >= i ? 'text-amber-400' : 'text-slate-300 hover:text-slate-400'}`}
+                    className={`p-1.5 rounded-lg transition-colors ${rating >= i ? 'text-amber-400' : 'text-foreground hover:text-muted-foreground'}`}
                   >
                     <Star className={`w-7 h-7 ${rating >= i ? 'fill-amber-400' : ''}`} />
                   </button>
@@ -358,12 +358,12 @@ export default function TicketDetailPage() {
                 onChange={e => setFeedbackComment(e.target.value)}
                 placeholder="Cuéntanos tu experiencia (opcional)..."
                 rows={2}
-                className="w-full max-w-md mx-auto block bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full max-w-md mx-auto block bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
               <button
                 onClick={handleSubmitFeedback}
                 disabled={submittingFeedback}
-                className="mt-4 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 active:scale-[0.98] disabled:opacity-50"
+                className="mt-4 bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 active:scale-[0.98] disabled:opacity-50"
               >
                 {submittingFeedback ? 'Enviando...' : 'Enviar valoración'}
               </button>
@@ -373,16 +373,16 @@ export default function TicketDetailPage() {
       )}
 
       {canReply ? (
-        <div className="bg-white border border-slate-200 rounded-xl p-4">
+        <div className="bg-card border border-border rounded-xl p-4">
           {pendingFiles.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-3">
               {pendingFiles.map((f, i) => (
-                <div key={i} className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1">
+                <div key={i} className="flex items-center gap-1.5 bg-muted border border-border rounded-lg px-2 py-1">
                   {f.type.startsWith('image/')
-                    ? <ImageIcon className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />
-                    : <FileText className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />}
-                  <span className="text-xs text-slate-600 max-w-[120px] truncate">{f.name}</span>
-                  <button onClick={() => setPendingFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-slate-400 hover:text-slate-600">
+                    ? <ImageIcon className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                    : <FileText className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />}
+                  <span className="text-xs text-foreground max-w-[120px] truncate">{f.name}</span>
+                  <button onClick={() => setPendingFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-muted-foreground hover:text-foreground">
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -400,7 +400,7 @@ export default function TicketDetailPage() {
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={sending || pendingFiles.length >= 5}
-              className="w-10 h-10 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-slate-500 flex items-center justify-center transition-colors disabled:opacity-50 flex-shrink-0"
+              className="w-10 h-10 bg-muted hover:bg-muted border border-border rounded-lg text-muted-foreground flex items-center justify-center transition-colors disabled:opacity-50 flex-shrink-0"
               title="Adjuntar archivo"
             >
               <Paperclip className="w-4 h-4" />
@@ -411,12 +411,12 @@ export default function TicketDetailPage() {
               onChange={e => setReplyText(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
               placeholder="Escribe tu mensaje..."
-              className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="flex-1 bg-muted border border-border rounded-lg px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             <button
               onClick={handleSend}
               disabled={sending || (!replyText.trim() && pendingFiles.length === 0)}
-              className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 rounded-lg text-sm font-medium text-white transition-all duration-150 active:scale-[0.98] disabled:opacity-50 flex items-center gap-2"
+              className="px-4 py-2.5 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-all duration-150 active:scale-[0.98] disabled:opacity-50 flex items-center gap-2"
             >
               {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
               Enviar
@@ -424,7 +424,7 @@ export default function TicketDetailPage() {
             <button
               onClick={() => handleChangeStatus('resolved')}
               disabled={changingStatus}
-              className="px-4 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-sm font-medium text-slate-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="px-4 py-2.5 bg-card border border-border hover:bg-muted rounded-lg text-sm font-medium text-foreground transition-colors disabled:opacity-50 flex items-center gap-2"
             >
               <CheckCircle2 className="w-4 h-4 text-emerald-600" />
               Marcar resuelto
@@ -432,8 +432,8 @@ export default function TicketDetailPage() {
           </div>
         </div>
       ) : isClosed ? (
-        <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
-          <p className="text-sm text-slate-500">Este ticket está cerrado. Si necesitas más ayuda, crea un nuevo ticket.</p>
+        <div className="bg-card border border-border rounded-xl p-4 text-center">
+          <p className="text-sm text-muted-foreground">Este ticket está cerrado. Si necesitas más ayuda, crea un nuevo ticket.</p>
         </div>
       ) : null}
     </div>

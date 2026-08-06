@@ -122,7 +122,7 @@ export default function PurchaseDeliveryGuides() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Truck className="w-4 h-4 text-violet-500" />
+          <Truck className="w-4 h-4 text-blue-600" />
           <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Guías de Despacho</span>
         </div>
         <div className="text-right">
@@ -135,7 +135,7 @@ export default function PurchaseDeliveryGuides() {
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input type="search" placeholder="Buscar por N° guía, chofer o bodega..." value={search} onChange={e => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+            className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
         </div>
         <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
           className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
@@ -166,21 +166,21 @@ export default function PurchaseDeliveryGuides() {
             {filtered.map(g => {
               const st = STATUS_CFG[g.status] || STATUS_CFG.pending;
               return (
-                <tr key={g.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <tr key={g.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3 text-xs font-medium text-foreground font-mono">{g.guide_number}</td>
                   <td className="px-4 py-3 text-xs text-foreground">{g.warehouse?.name || 'N/A'}</td>
-                  <td className="px-4 py-3 text-xs text-slate-600">{g.shipping_date}</td>
-                  <td className="px-4 py-3 text-xs text-slate-600">{g.transport || 'N/A'}</td>
-                  <td className="px-4 py-3 text-xs text-slate-600">{g.driver_name || 'N/A'}</td>
-                  <td className="px-4 py-3 text-xs text-slate-600 max-w-xs truncate">{g.shipping_address || 'N/A'}</td>
-                  <td className="px-4 py-3 text-xs text-right text-slate-600">{(g.items || []).length}</td>
+                  <td className="px-4 py-3 text-xs text-foreground">{g.shipping_date}</td>
+                  <td className="px-4 py-3 text-xs text-foreground">{g.transport || 'N/A'}</td>
+                  <td className="px-4 py-3 text-xs text-foreground">{g.driver_name || 'N/A'}</td>
+                  <td className="px-4 py-3 text-xs text-foreground max-w-xs truncate">{g.shipping_address || 'N/A'}</td>
+                  <td className="px-4 py-3 text-xs text-right text-foreground">{(g.items || []).length}</td>
                   <td className="px-4 py-3 text-center">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${st.bg} ${st.color} border ${st.border}`}>{st.label}</span>
                   </td>
                   <td className="px-4 py-3">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded-lg transition-colors">
+                        <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
                           <MoreVertical className="w-4 h-4" />
                         </button>
                       </DropdownMenuTrigger>

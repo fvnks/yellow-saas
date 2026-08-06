@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Button, Input, Select } from '@yellow-erp/ui';
@@ -147,8 +147,8 @@ export default function EmpresaPage() {
           <p className="text-sm text-muted-foreground mt-1">Cargando información...</p>
         </div>
         <div className="bg-card border border-border rounded-xl shadow-sm p-8 text-center">
-          <div className="animate-pulse bg-slate-200 h-6 w-48 rounded mx-auto mb-4" />
-          <div className="animate-pulse bg-slate-200 h-4 w-32 rounded mx-auto" />
+          <div className="animate-pulse bg-muted h-6 w-48 rounded mx-auto mb-4" />
+          <div className="animate-pulse bg-muted h-4 w-32 rounded mx-auto" />
         </div>
       </div>
     );
@@ -227,7 +227,7 @@ export default function EmpresaPage() {
             />
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
             {saved && <span className="text-sm text-emerald-600">Guardado correctamente</span>}
             <Button onClick={handleSaveCompany} disabled={saving}>
               <Save className="w-4 h-4 mr-2" /> {saving ? 'Guardando...' : 'Guardar Cambios'}
@@ -275,7 +275,7 @@ export default function EmpresaPage() {
             />
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
             {saved && <span className="text-sm text-emerald-600">Guardado correctamente</span>}
             <Button onClick={handleSaveRepresentative} disabled={saving}>
               <Save className="w-4 h-4 mr-2" /> {saving ? 'Guardando...' : 'Guardar Cambios'}
@@ -321,12 +321,12 @@ export default function EmpresaPage() {
               Logo que aparecerá en los documentos electrónicos y en la interfaz del sistema.
             </p>
             <div className="flex items-start gap-6">
-              <div className="w-32 h-32 border-2 border-dashed border-slate-300 rounded-xl flex items-center justify-center bg-muted hover:bg-muted transition-colors cursor-pointer">
+              <div className="w-32 h-32 border-2 border-dashed border-border rounded-xl flex items-center justify-center bg-muted hover:bg-muted transition-colors cursor-pointer">
                 {company.logo_url ? (
                   <img src={company.logo_url} alt="Logo empresa" className="w-full h-full object-contain rounded-xl" />
                 ) : (
                   <div className="text-center">
-                    <Upload className="w-8 h-8 text-slate-300 mx-auto mb-1" />
+                    <Upload className="w-8 h-8 text-foreground mx-auto mb-1" />
                     <p className="text-[9px] text-muted-foreground">Subir logo</p>
                   </div>
                 )}

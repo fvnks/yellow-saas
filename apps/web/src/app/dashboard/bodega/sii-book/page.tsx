@@ -35,7 +35,7 @@ export default function SIIBookPage() {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Link href="/dashboard/bodega" className="p-2 hover:bg-muted rounded-lg transition-colors">
-          <ArrowLeft className="w-5 h-5 text-slate-600" />
+          <ArrowLeft className="w-5 h-5 text-foreground" />
         </Link>
         <div className="flex-1">
           <h1 className="text-xl font-bold text-foreground">Libro Inventario SII</h1>
@@ -43,7 +43,7 @@ export default function SIIBookPage() {
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="flex items-center gap-4">
           <div className="space-y-1">
             <label className="block text-xs font-medium text-foreground">Periodo Inicio</label>
@@ -63,25 +63,25 @@ export default function SIIBookPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Saldo Inicial</p>
           <p className="text-lg font-bold text-foreground mt-1">${totalOpeningValue.toLocaleString('es-CL')}</p>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Entradas</p>
           <p className="text-lg font-bold text-emerald-600 mt-1">${totalEntriesValue.toLocaleString('es-CL')}</p>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Salidas</p>
           <p className="text-lg font-bold text-rose-600 mt-1">${totalExitsValue.toLocaleString('es-CL')}</p>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Saldo Final</p>
           <p className="text-lg font-bold text-foreground mt-1">${totalClosingValue.toLocaleString('es-CL')}</p>
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -104,14 +104,14 @@ export default function SIIBookPage() {
                 <tr><td colSpan={11} className="px-4 py-12 text-center text-sm text-muted-foreground">Cargando...</td></tr>
               ) : entries.length === 0 ? (
                 <tr><td colSpan={11} className="px-4 py-12 text-center">
-                  <BookOpen className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+                  <BookOpen className="w-12 h-12 text-foreground mx-auto mb-3" />
                   <p className="text-sm text-muted-foreground">No hay registros en el libro de inventario</p>
                 </td></tr>
               ) : entries.map((e, i) => (
-                <tr key={i} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <tr key={i} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3 text-xs font-medium text-foreground">{e.product_name || '—'}</td>
                   <td className="px-4 py-3 text-xs text-foreground">{e.warehouse_name || '—'}</td>
-                  <td className="px-4 py-3 text-xs text-center text-slate-600">{e.cost_method || 'FIFO'}</td>
+                  <td className="px-4 py-3 text-xs text-center text-foreground">{e.cost_method || 'FIFO'}</td>
                   <td className="px-4 py-3 text-xs text-right text-foreground">{e.opening_qty || 0}</td>
                   <td className="px-4 py-3 text-xs text-right text-foreground">${Number(e.opening_value || 0).toLocaleString('es-CL')}</td>
                   <td className="px-4 py-3 text-xs text-right text-foreground">{e.entries_qty || 0}</td>

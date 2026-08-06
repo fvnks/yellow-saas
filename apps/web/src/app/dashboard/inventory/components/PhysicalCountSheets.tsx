@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { ClipboardList, Plus, Play, CheckCircle, Clock, Printer, X } from 'lucide-react';
@@ -119,7 +119,7 @@ export default function PhysicalCountSheets() {
   };
 
   const statusConfig: Record<string, { label: string; color: string; bg: string }> = {
-    draft: { label: 'Borrador', color: 'text-slate-600', bg: 'bg-muted border-border' },
+    draft: { label: 'Borrador', color: 'text-foreground', bg: 'bg-muted border-border' },
     in_progress: { label: 'En Progreso', color: 'text-blue-700', bg: 'bg-blue-50 border-blue-200' },
     completed: { label: 'Completado', color: 'text-emerald-700', bg: 'bg-emerald-50 border-emerald-200' },
     cancelled: { label: 'Cancelado', color: 'text-red-700', bg: 'bg-red-50 border-red-200' },
@@ -146,21 +146,21 @@ export default function PhysicalCountSheets() {
         <div className="bg-muted border border-border rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-foreground">Crear Conteo Fisico</span>
-            <button onClick={() => setShowCreate(false)} className="p-1 hover:bg-slate-200 rounded">
+            <button onClick={() => setShowCreate(false)} className="p-1 hover:bg-muted rounded">
               <X className="w-3 h-3 text-muted-foreground" />
             </button>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <select value={form.warehouse_id} onChange={e => setForm({ ...form, warehouse_id: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white">
               <option value="">Bodega...</option>
               {warehouses.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}
             </select>
             <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white"
               placeholder="Nombre del conteo" />
             <input type="text" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })}
-              className="col-span-2 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+              className="col-span-2 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white"
               placeholder="Notas (opcional)" />
           </div>
           <button onClick={handleCreate}
@@ -171,7 +171,7 @@ export default function PhysicalCountSheets() {
       )}
 
       {selectedCount && (
-        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-border">
           <div className="px-6 py-4 border-b border-border flex items-center justify-between">
             <div>
               <h3 className="text-sm font-semibold text-foreground">{selectedCount.name}</h3>
@@ -191,7 +191,7 @@ export default function PhysicalCountSheets() {
                 </button>
               )}
               <button onClick={() => setSelectedCount(null)}
-                className="px-3 py-1.5 bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium transition-colors">
+                className="px-3 py-1.5 bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground rounded-lg text-xs font-medium transition-colors">
                 Cerrar
               </button>
             </div>
@@ -209,10 +209,10 @@ export default function PhysicalCountSheets() {
               </thead>
               <tbody>
                 {selectedCount.items?.map(item => (
-                  <tr key={item.id} className="border-b border-slate-100 hover:bg-muted">
+                  <tr key={item.id} className="border-b border-border hover:bg-muted">
                     <td className="px-4 py-3 text-xs font-medium text-foreground">{item.product_name}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{item.sku}</td>
-                    <td className="px-4 py-3 text-xs text-right text-slate-600">{item.expected_quantity}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{item.sku}</td>
+                    <td className="px-4 py-3 text-xs text-right text-foreground">{item.expected_quantity}</td>
                     <td className="px-4 py-3 text-xs text-right">
                       {selectedCount.status === 'in_progress' ? (
                         <input type="number" defaultValue={item.counted_quantity ?? ''}
@@ -235,8 +235,8 @@ export default function PhysicalCountSheets() {
 
       {!selectedCount && (
         counts.length === 0 ? (
-          <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
-            <ClipboardList className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+          <div className="text-center py-12 bg-muted border border-dashed border-border rounded-xl">
+            <ClipboardList className="w-8 h-8 text-foreground mx-auto mb-2" />
             <p className="text-xs text-muted-foreground">Sin conteos fisicos registrados</p>
           </div>
         ) : (

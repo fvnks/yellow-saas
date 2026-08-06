@@ -20,7 +20,7 @@ interface CountItem {
 }
 
 const statusConfig: Record<string, { bg: string; text: string; border: string; label: string }> = {
-  draft: { bg: 'bg-muted', text: 'text-slate-600', border: 'border-border', label: 'Borrador' },
+  draft: { bg: 'bg-muted', text: 'text-foreground', border: 'border-border', label: 'Borrador' },
   in_progress: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200', label: 'En Progreso' },
   completed: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', label: 'Completado' },
   cancelled: { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200', label: 'Cancelado' },
@@ -84,7 +84,7 @@ export default function InventoryCountsPage() {
         </button>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -93,7 +93,7 @@ export default function InventoryCountsPage() {
               placeholder="Buscar por numero o bodega..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
             />
           </div>
           <select
@@ -110,30 +110,30 @@ export default function InventoryCountsPage() {
       </div>
 
       {loading ? (
-        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
           {[1, 2, 3].map(i => (
-            <div key={i} className="p-4 border-b border-slate-100">
+            <div key={i} className="p-4 border-b border-border">
               <div className="animate-pulse flex gap-4">
-                <div className="h-4 bg-slate-200 rounded w-32"></div>
-                <div className="h-4 bg-slate-200 rounded w-24"></div>
-                <div className="h-4 bg-slate-200 rounded w-20"></div>
+                <div className="h-4 bg-muted rounded w-32"></div>
+                <div className="h-4 bg-muted rounded w-24"></div>
+                <div className="h-4 bg-muted rounded w-20"></div>
               </div>
             </div>
           ))}
         </div>
       ) : counts.length === 0 ? (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-12 dark:bg-primary dark:border-slate-800 text-center">
-          <ClipboardCheck className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+        <div className="bg-card border border-border rounded-xl shadow-sm p-12 dark:bg-primary dark:border-border text-center">
+          <ClipboardCheck className="w-12 h-12 text-foreground mx-auto mb-4" />
           <p className="text-muted-foreground text-sm">No hay conteos de inventario</p>
           <button
             onClick={() => router.push('/dashboard/inventory/counts/new')}
-            className="mt-4 text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+            className="mt-4 text-primary hover:text-primary text-sm font-medium"
           >
             Crear primer conteo
           </button>
         </div>
       ) : (
-        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -152,7 +152,7 @@ export default function InventoryCountsPage() {
                   const status = statusConfig[count.status] || statusConfig.draft;
                   const progress = getProgress(count);
                   return (
-                    <tr key={count.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <tr key={count.id} className="border-b border-border hover:bg-muted transition-colors">
                       <td className="px-4 py-3">
                         <span className="text-xs font-mono font-semibold text-foreground">{count.count_number}</span>
                       </td>
@@ -160,12 +160,12 @@ export default function InventoryCountsPage() {
                         <span className="text-xs text-foreground">{count.warehouse.name}</span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-xs text-slate-600">{typeLabels[count.count_type] || count.count_type}</span>
+                        <span className="text-xs text-foreground">{typeLabels[count.count_type] || count.count_type}</span>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           <div className="w-20 bg-muted rounded-full h-1.5">
-                            <div className="bg-indigo-500 h-1.5 rounded-full transition-all" style={{ width: `${progress}%` }} />
+                            <div className="bg-primary h-1.5 rounded-full transition-all" style={{ width: `${progress}%` }} />
                           </div>
                           <span className="text-[9px] text-muted-foreground">{count.counted_items}/{count.items_count}</span>
                         </div>
@@ -184,7 +184,7 @@ export default function InventoryCountsPage() {
                         <div className="flex justify-end gap-2">
                           <button
                             onClick={() => router.push(`/dashboard/inventory/counts/${count.id}`)}
-                            className="text-slate-600 hover:text-foreground p-1 rounded transition-colors"
+                            className="text-foreground hover:text-foreground p-1 rounded transition-colors"
                             title="Ver detalle"
                           >
                             <Eye className="w-4 h-4" />

@@ -29,7 +29,7 @@ export default function PurchaseDashboard() {
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase">Gasto Mensual</p>
@@ -39,7 +39,7 @@ export default function PurchaseDashboard() {
             <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center"><ShoppingCart className="w-5 h-5 text-blue-600" /></div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase">Órdenes Abiertas</p>
@@ -48,19 +48,19 @@ export default function PurchaseDashboard() {
             <div className="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center"><Clock className="w-5 h-5 text-amber-600" /></div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase">Recepciones Pendientes</p>
-              <p className="text-xl font-bold text-indigo-600 mt-1">{kpis.pendingReceipts || 0}</p>
+              <p className="text-xl font-bold text-primary mt-1">{kpis.pendingReceipts || 0}</p>
             </div>
-            <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center"><Package className="w-5 h-5 text-indigo-600" /></div>
+            <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center"><Package className="w-5 h-5 text-primary" /></div>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase">Por Pagar</p>
@@ -70,7 +70,7 @@ export default function PurchaseDashboard() {
             <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center"><DollarSign className="w-5 h-5 text-red-600" /></div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase">Gasto Anual</p>
@@ -82,7 +82,7 @@ export default function PurchaseDashboard() {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <h3 className="text-xs font-semibold text-foreground mb-3">Tendencia Mensual</h3>
           <div className="flex items-end gap-1 h-32">
             {(data?.monthlyTrend || []).slice(-12).map((t: any, i: number) => (
@@ -93,11 +93,11 @@ export default function PurchaseDashboard() {
             ))}
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <h3 className="text-xs font-semibold text-foreground mb-3">Top Proveedores</h3>
           <div className="space-y-2">
             {(data?.topSuppliers || []).slice(0, 5).map((s: any, i: number) => (
-              <div key={i} className="flex items-center justify-between py-1.5 border-b border-slate-50 last:border-0">
+              <div key={i} className="flex items-center justify-between py-1.5 border-b border-border last:border-0">
                 <span className="text-xs text-foreground">{s.name}</span>
                 <span className="text-xs font-bold text-foreground">{fmt(parseFloat(s.total_value))}</span>
               </div>

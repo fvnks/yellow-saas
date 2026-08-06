@@ -80,7 +80,7 @@ export default function AdjustmentsPage() {
                 placeholder="Buscar por producto, SKU, notas..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               />
             </div>
             {warehouses.length > 0 && (
@@ -100,13 +100,13 @@ export default function AdjustmentsPage() {
           <div className="overflow-x-auto">
             {loading ? (
               <div className="p-12 text-center">
-                <div className="animate-pulse bg-slate-200 h-8 w-48 mx-auto rounded" />
+                <div className="animate-pulse bg-muted h-8 w-48 mx-auto rounded" />
               </div>
             ) : filtered.length === 0 ? (
               <div className="p-12 text-center">
-                <RefreshCw className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+                <RefreshCw className="w-10 h-10 text-foreground mx-auto mb-3" />
                 <p className="text-sm text-muted-foreground">Sin ajustes registrados</p>
-                <Link href="/dashboard/inventory/adjustments/new" className="inline-flex items-center gap-2 mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+                <Link href="/dashboard/inventory/adjustments/new" className="inline-flex items-center gap-2 mt-4 text-sm text-primary hover:text-primary font-medium">
                   <Plus className="w-4 h-4" /> Crear primer ajuste
                 </Link>
               </div>
@@ -128,7 +128,7 @@ export default function AdjustmentsPage() {
                     const qty = Number(a.quantity);
                     const isPositive = qty > 0;
                     return (
-                      <tr key={a.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                      <tr key={a.id} className="border-b border-border hover:bg-muted transition-colors">
                         <td className="px-6 py-3 text-xs text-foreground">
                           {new Date(a.created_at).toLocaleDateString('es-CL')} {new Date(a.created_at).toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })}
                         </td>

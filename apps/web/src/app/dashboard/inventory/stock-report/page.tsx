@@ -103,7 +103,7 @@ export default function StockReportPage() {
   };
 
   if (loading) {
-    return <div className="space-y-6">{[1, 2, 3].map(i => <div key={i} className="animate-pulse bg-slate-200 h-32 rounded-xl" />)}</div>;
+    return <div className="space-y-6">{[1, 2, 3].map(i => <div key={i} className="animate-pulse bg-muted h-32 rounded-xl" />)}</div>;
   }
 
   return (
@@ -129,7 +129,7 @@ export default function StockReportPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Valor Total</p>
@@ -140,22 +140,22 @@ export default function StockReportPage() {
             </div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Productos con Stock</p>
           <p className="text-2xl font-bold text-foreground mt-1">{productCount}</p>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Unidades Totales</p>
           <p className="text-2xl font-bold text-foreground mt-1">{totalQuantity.toLocaleString('es-CL')}</p>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Bodegas</p>
           <p className="text-2xl font-bold text-foreground mt-1">{byWarehouse.length}</p>
         </div>
       </div>
 
       {byWarehouse.length > 0 && (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <h3 className="text-sm font-semibold text-foreground mb-4">Por Bodega</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {byWarehouse.map(w => (

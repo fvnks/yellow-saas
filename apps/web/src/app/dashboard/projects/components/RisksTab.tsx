@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { Badge } from '@yellow-erp/ui';
@@ -110,8 +110,8 @@ export default function RisksTab({ projectId, risks, employees, onRefresh }: {
       </div>
 
       {risks.length === 0 ? (
-        <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
-          <Shield className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+        <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+          <Shield className="w-12 h-12 text-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">No hay riesgos registrados</p>
         </div>
       ) : (
@@ -119,7 +119,7 @@ export default function RisksTab({ projectId, risks, employees, onRefresh }: {
           {risks.map(r => {
             const level = getRiskLevel(r.probability, r.impact);
             return (
-              <div key={r.id} className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 hover:bg-muted transition-colors">
+              <div key={r.id} className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border hover:bg-muted transition-colors">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
@@ -139,7 +139,7 @@ export default function RisksTab({ projectId, risks, employees, onRefresh }: {
                     {r.mitigation_plan && (
                       <div className="mt-2 p-2 bg-muted rounded-lg">
                         <p className="text-[10px] font-medium text-muted-foreground uppercase">Plan de mitigacion</p>
-                        <p className="text-xs text-slate-600 mt-0.5">{r.mitigation_plan}</p>
+                        <p className="text-xs text-foreground mt-0.5">{r.mitigation_plan}</p>
                       </div>
                     )}
                   </div>
@@ -173,19 +173,19 @@ export default function RisksTab({ projectId, risks, employees, onRefresh }: {
           <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarylg mx-4">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">{editing ? 'Editar Riesgo' : 'Nuevo Riesgo'}</h2>
-              <button onClick={() => { setShowForm(false); setEditing(null); }} className="text-muted-foreground hover:text-slate-600">X</button>
+              <button onClick={() => { setShowForm(false); setEditing(null); }} className="text-muted-foreground hover:text-foreground">X</button>
             </div>
             <div className="p-6 space-y-4">
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">Nombre *</label>
                 <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Descripcion del riesgo" />
               </div>
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">Descripcion</label>
                 <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={2}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
@@ -210,12 +210,12 @@ export default function RisksTab({ projectId, risks, employees, onRefresh }: {
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">Plan de Mitigacion</label>
                 <textarea value={form.mitigation_plan} onChange={e => setForm({ ...form, mitigation_plan: e.target.value })} rows={2}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Acciones para mitigar el riesgo..." />
               </div>
             </div>
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
-              <button onClick={() => { setShowForm(false); setEditing(null); }} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={() => { setShowForm(false); setEditing(null); }} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={saving || !form.name}
                 className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                 {saving ? 'Guardando...' : editing ? 'Actualizar' : 'Crear'}

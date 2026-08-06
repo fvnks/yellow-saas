@@ -34,7 +34,7 @@ interface UnifiedDocument {
 }
 
 const DOC_TYPE_CONFIG = {
-  invoice: { label: 'Factura', color: 'bg-violet-50 text-violet-700 border border-violet-200' },
+  invoice: { label: 'Factura', color: 'bg-blue-50 text-blue-700 border border-blue-200' },
   credit_note: { label: 'Nota Crédito', color: 'bg-emerald-50 text-emerald-700 border border-emerald-200' },
   debit_note: { label: 'Nota Débito', color: 'bg-amber-50 text-amber-700 border border-amber-200' },
   delivery_guide: { label: 'Guía Despacho', color: 'bg-blue-50 text-blue-700 border border-blue-200' },
@@ -44,7 +44,7 @@ const SII_STATUS_CONFIG: Record<string, { label: string; color: 'green' | 'red' 
   accepted: { label: 'Aceptado', color: 'green', badge: 'bg-emerald-500' },
   rejected: { label: 'Rechazado', color: 'red', badge: 'bg-rose-500' },
   sent: { label: 'Enviado', color: 'gray', badge: 'bg-blue-500' },
-  pending: { label: 'Pendiente', color: 'gray', badge: 'bg-slate-400' },
+  pending: { label: 'Pendiente', color: 'gray', badge: 'bg-muted' },
   cancelled: { label: 'Anulado', color: 'gray', badge: 'bg-muted0' },
 };
 
@@ -65,7 +65,7 @@ function getSiiSemaphore(siiStatus: string) {
   const config = SII_STATUS_CONFIG[siiStatus] || SII_STATUS_CONFIG.pending;
   return (
     <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-semibold ${config.badge} text-white`}>
-      <span className={`w-1.5 h-1.5 rounded-full ${config.color === 'green' ? 'bg-emerald-300' : config.color === 'red' ? 'bg-rose-300' : 'bg-slate-300'}`} />
+      <span className={`w-1.5 h-1.5 rounded-full ${config.color === 'green' ? 'bg-emerald-300' : config.color === 'red' ? 'bg-rose-300' : 'bg-muted'}`} />
       {config.label}
     </span>
   );
@@ -419,7 +419,7 @@ export default function SalesDocumentsPage() {
               placeholder="Buscar por número, cliente, RUT, factura ref, motivo..."
               value={search}
               onChange={e => { setSearch(e.target.value); setPage(1); }}
-              className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
             />
           </div>
 
@@ -455,7 +455,7 @@ export default function SalesDocumentsPage() {
           {(search || typeFilter !== 'all' || siiFilter !== 'all') && (
             <button
               onClick={() => { setSearch(''); setTypeFilter('all'); setSiiFilter('all'); setPage(1); }}
-              className="flex items-center gap-1.5 px-3 py-2 bg-muted border border-border rounded-lg text-sm text-slate-600 hover:bg-slate-200 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2 bg-muted border border-border rounded-lg text-sm text-foreground hover:bg-muted transition-colors"
             >
               <X className="w-3.5 h-3.5" /> Limpiar filtros
             </button>
@@ -506,7 +506,7 @@ export default function SalesDocumentsPage() {
                 const typeConfig = DOC_TYPE_CONFIG[doc.type];
                 const statusConfig = STATUS_CONFIG[doc.status] || { label: doc.status, variant: 'neutral' as const };
                 return (
-                  <tr key={doc.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={doc.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${typeConfig.color}`}>{typeConfig.label}</span>
                     </td>
@@ -526,7 +526,7 @@ export default function SalesDocumentsPage() {
                     <td className="px-4 py-3 text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded-lg transition-colors">
+                          <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
                             <ChevronDown className="w-4 h-4" />
                           </button>
                         </DropdownMenuTrigger>
@@ -580,7 +580,7 @@ export default function SalesDocumentsPage() {
         </div>
 
         {filteredDocs.length > ITEMS_PER_PAGE && (
-          <div className="px-4 py-3 border-t border-slate-100 flex items-center justify-between text-xs text-muted-foreground">
+          <div className="px-4 py-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
             <p>Mostrando {(page - 1) * ITEMS_PER_PAGE + 1}-{Math.min(page * ITEMS_PER_PAGE, filteredDocs.length)} de {filteredDocs.length}</p>
             <div className="flex items-center gap-2">
               <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}

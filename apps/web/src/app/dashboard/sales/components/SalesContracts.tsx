@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { FileSignature, Plus, X, Save, Calendar, DollarSign, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
@@ -22,7 +22,7 @@ interface Contract {
 }
 
 const statusConfig: Record<string, { label: string; color: string; bg: string; icon: any }> = {
-  draft: { label: 'Borrador', color: 'text-slate-600', bg: 'bg-muted', icon: Clock },
+  draft: { label: 'Borrador', color: 'text-foreground', bg: 'bg-muted', icon: Clock },
   active: { label: 'Activo', color: 'text-emerald-700', bg: 'bg-emerald-50', icon: CheckCircle },
   completed: { label: 'Completado', color: 'text-blue-700', bg: 'bg-blue-50', icon: CheckCircle },
   cancelled: { label: 'Cancelado', color: 'text-red-700', bg: 'bg-red-50', icon: AlertTriangle },
@@ -96,8 +96,8 @@ export default function SalesContracts() {
       </div>
 
       {contracts.length === 0 ? (
-        <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
-          <FileSignature className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+        <div className="text-center py-12 bg-muted border border-dashed border-border rounded-xl">
+          <FileSignature className="w-8 h-8 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">Sin contratos registrados</p>
         </div>
       ) : (
@@ -106,7 +106,7 @@ export default function SalesContracts() {
             const cfg = statusConfig[c.status] || statusConfig.draft;
             const Icon = cfg.icon;
             return (
-              <div key={c.id} className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800 hover:bg-muted transition-colors">
+              <div key={c.id} className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border hover:bg-muted transition-colors">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center">
@@ -129,12 +129,12 @@ export default function SalesContracts() {
                     </div>
                     <div>
                       <p className="text-[9px] text-muted-foreground">Inicio</p>
-                      <p className="text-xs text-slate-600">{new Date(c.start_date).toLocaleDateString('es-CL')}</p>
+                      <p className="text-xs text-foreground">{new Date(c.start_date).toLocaleDateString('es-CL')}</p>
                     </div>
                     {c.end_date && (
                       <div>
                         <p className="text-[9px] text-muted-foreground">Término</p>
-                        <p className="text-xs text-slate-600">{new Date(c.end_date).toLocaleDateString('es-CL')}</p>
+                        <p className="text-xs text-foreground">{new Date(c.end_date).toLocaleDateString('es-CL')}</p>
                       </div>
                     )}
                   </div>
@@ -150,7 +150,7 @@ export default function SalesContracts() {
           <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primary2xl mx-4 max-h-[90vh] overflow-y-auto">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">Nuevo Contrato</h2>
-              <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-slate-600"><X className="w-5 h-5" /></button>
+              <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-3">
@@ -198,17 +198,17 @@ export default function SalesContracts() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-xs font-medium text-foreground">Items</label>
-                  <button onClick={addItem} className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"><Plus className="w-3 h-3 inline" /> Agregar</button>
+                  <button onClick={addItem} className="text-xs text-primary hover:text-primary font-medium"><Plus className="w-3 h-3 inline" /> Agregar</button>
                 </div>
                 <div className="space-y-2">
                   {form.items.map((item, i) => (
                     <div key={i} className="flex items-center gap-2 bg-muted rounded-lg p-2">
                       <input type="text" value={item.description} onChange={e => updateItem(i, 'description', e.target.value)}
-                        className="flex-1 bg-card border border-border rounded px-2 py-1 text-xs text-foreground dark:bg-slate-800 dark:border-slate-700 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-primary/20" placeholder="Descripción" />
+                        className="flex-1 bg-card border border-border rounded px-2 py-1 text-xs text-foreground dark:bg-card dark:border-border dark:text-white placeholder-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20" placeholder="Descripción" />
                       <input type="number" value={item.quantity} onChange={e => updateItem(i, 'quantity', e.target.value)}
-                        className="w-16 bg-card border border-border rounded px-2 py-1 text-xs text-foreground dark:bg-slate-800 dark:border-slate-700 dark:text-white text-center focus:outline-none focus:ring-1 focus:ring-primary/20" />
+                        className="w-16 bg-card border border-border rounded px-2 py-1 text-xs text-foreground dark:bg-card dark:border-border dark:text-white text-center focus:outline-none focus:ring-1 focus:ring-primary/20" />
                       <input type="number" value={item.unit_price} onChange={e => updateItem(i, 'unit_price', e.target.value)}
-                        className="w-24 bg-card border border-border rounded px-2 py-1 text-xs text-foreground dark:bg-slate-800 dark:border-slate-700 dark:text-white text-right focus:outline-none focus:ring-1 focus:ring-primary/20" placeholder="$0" />
+                        className="w-24 bg-card border border-border rounded px-2 py-1 text-xs text-foreground dark:bg-card dark:border-border dark:text-white text-right focus:outline-none focus:ring-1 focus:ring-primary/20" placeholder="$0" />
                       {form.items.length > 1 && <button onClick={() => removeItem(i)} className="text-red-400 hover:text-red-600"><X className="w-3.5 h-3.5" /></button>}
                     </div>
                   ))}
@@ -216,7 +216,7 @@ export default function SalesContracts() {
               </div>
             </div>
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
-              <button onClick={() => setShowForm(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={() => setShowForm(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={!form.customer_id || !form.title}
                 className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors disabled:opacity-50">
                 <Save className="w-3.5 h-3.5" /> Guardar

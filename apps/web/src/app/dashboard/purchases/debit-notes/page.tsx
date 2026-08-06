@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Search, FileText, Plus, Download, Filter } from 'lucide-react';
@@ -58,7 +58,7 @@ export default function PurchaseDebitNotesPage() {
         </div>
         <div className="bg-card border border-border rounded-xl p-5">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Promedio</p>
-          <p className="text-2xl font-bold text-indigo-600 mt-1">${notes.length > 0 ? Math.round(totalAmount / notes.length).toLocaleString('es-CL') : '0'}</p>
+          <p className="text-2xl font-bold text-primary mt-1">${notes.length > 0 ? Math.round(totalAmount / notes.length).toLocaleString('es-CL') : '0'}</p>
         </div>
         <div className="bg-card border border-border rounded-xl p-5">
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Este Mes</p>
@@ -76,7 +76,7 @@ export default function PurchaseDebitNotesPage() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input type="text" placeholder="Buscar por proveedor, número o razón..." value={search} onChange={e => setSearch(e.target.value)}
-              className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+              className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
         </div>
       </div>
@@ -101,7 +101,7 @@ export default function PurchaseDebitNotesPage() {
               ) : notes.length === 0 ? (
                 <tr><td colSpan={6} className="px-4 py-12 text-center text-sm text-muted-foreground">No hay notas de débito registradas</td></tr>
               ) : notes.map(n => (
-                <tr key={n.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <tr key={n.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3 text-xs text-foreground">{n.issue_date || '—'}</td>
                   <td className="px-4 py-3 text-xs font-medium text-foreground">{n.supplier_name}</td>
                   <td className="px-4 py-3 text-xs text-muted-foreground font-mono">{n.supplier_tax_id || '—'}</td>
@@ -113,7 +113,7 @@ export default function PurchaseDebitNotesPage() {
             </tbody>
             {notes.length > 0 && (
               <tfoot>
-                <tr className="border-t-2 border-slate-300 bg-muted">
+                <tr className="border-t-2 border-border bg-muted">
                   <td colSpan={5} className="px-4 py-3 text-xs font-semibold text-foreground">Total</td>
                   <td className="px-4 py-3 text-xs font-bold text-foreground text-right font-mono">${totalAmount.toLocaleString('es-CL')}</td>
                 </tr>

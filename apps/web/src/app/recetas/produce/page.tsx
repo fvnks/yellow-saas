@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Play, FlaskConical, Package, CheckCircle2, AlertTriangle, ShoppingCart } from 'lucide-react';
@@ -77,7 +77,7 @@ export default function ProducePage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-6 w-48 bg-slate-200 rounded animate-pulse" />
+        <div className="h-6 w-48 bg-muted rounded animate-pulse" />
         <div className="grid grid-cols-3 gap-4">
           {[1,2,3].map(i => <div key={i} className="h-32 bg-muted rounded-xl animate-pulse" />)}
         </div>
@@ -104,7 +104,7 @@ export default function ProducePage() {
                 className={`p-4 rounded-xl border-2 text-left transition-colors ${
                   selectedFormula?.id === f.id
                     ? 'border-amber-500 bg-amber-50'
-                    : 'border-border hover:border-slate-300'
+                    : 'border-border hover:border-border'
                 }`}>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center">
@@ -160,7 +160,7 @@ export default function ProducePage() {
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Notas</label>
               <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="Notas..." />
             </div>
             <button onClick={handleProduce} disabled={producing}
@@ -183,7 +183,7 @@ export default function ProducePage() {
                       <span className="text-xs font-medium text-foreground">{ing.product?.name}</span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="text-xs text-slate-600">
+                      <span className="text-xs text-foreground">
                         {formatQuantity(required, ing.unit)} <span className="text-muted-foreground">de {formatQuantity(ing.current_stock, ing.unit)}</span>
                       </span>
                       {hasEnough ? (

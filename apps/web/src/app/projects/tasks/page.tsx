@@ -87,7 +87,7 @@ export default function ProjectTasksPage() {
               <button
                 key={tab.id}
                 onClick={() => setStatusFilter(tab.id)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${statusFilter === tab.id ? 'bg-primary text-white' : 'bg-muted text-slate-600 hover:bg-slate-200'}`}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${statusFilter === tab.id ? 'bg-primary text-white' : 'bg-muted text-foreground hover:bg-muted'}`}
               >
                 {tab.label}
               </button>
@@ -101,8 +101,8 @@ export default function ProjectTasksPage() {
           {[1, 2, 3].map(i => (
             <div key={i} className="bg-card border border-border rounded-xl shadow-sm p-6">
               <div className="animate-pulse space-y-4">
-                <div className="h-4 bg-slate-200 rounded w-1/3" />
-                <div className="h-3 bg-slate-200 rounded w-2/3" />
+                <div className="h-4 bg-muted rounded w-1/3" />
+                <div className="h-3 bg-muted rounded w-2/3" />
               </div>
             </div>
           ))}
@@ -122,25 +122,25 @@ export default function ProjectTasksPage() {
               </thead>
               <tbody>
                 {filteredTasks.map((task, i) => (
-                  <tr key={i} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={i} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         {getStatusIcon(task.status)}
                         <span className="text-xs font-medium text-foreground">{task.title}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{task.project_name}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{task.project_name}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${task.status === 'completed' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : task.status === 'in_progress' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-muted text-slate-600 border border-border'}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${task.status === 'completed' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : task.status === 'in_progress' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-muted text-foreground border border-border'}`}>
                         {task.status === 'completed' ? 'Completada' : task.status === 'in_progress' ? 'En Progreso' : 'Pendiente'}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${task.priority === 'high' ? 'bg-red-50 text-red-700 border border-red-200' : task.priority === 'medium' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-muted text-slate-600 border border-border'}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${task.priority === 'high' ? 'bg-red-50 text-red-700 border border-red-200' : task.priority === 'medium' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-muted text-foreground border border-border'}`}>
                         {task.priority === 'high' ? 'Alta' : task.priority === 'medium' ? 'Media' : 'Baja'}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{task.due_date || '—'}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{task.due_date || '—'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -151,7 +151,7 @@ export default function ProjectTasksPage() {
 
       {!loading && filteredTasks.length === 0 && (
         <div className="text-center py-12">
-          <ListTodo className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+          <ListTodo className="w-12 h-12 text-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">No se encontraron tareas</p>
         </div>
       )}

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge, Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@yellow-erp/ui';
@@ -136,7 +136,7 @@ export default function WebhooksPage() {
     setShowForm(false);
   };
 
-  if (loading) return <div className="space-y-6">{[1,2,3].map(i => <div key={i} className="animate-pulse bg-slate-200 h-32 rounded-xl" />)}</div>;
+  if (loading) return <div className="space-y-6">{[1,2,3].map(i => <div key={i} className="animate-pulse bg-muted h-32 rounded-xl" />)}</div>;
 
   return (
     <div className="space-y-6">
@@ -158,7 +158,7 @@ export default function WebhooksPage() {
         <CardContent>
           {endpoints.length === 0 ? (
             <div className="text-center py-12">
-              <Zap className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+              <Zap className="w-12 h-12 text-foreground mx-auto mb-3" />
               <p className="text-sm text-muted-foreground">No hay webhooks configurados</p>
               <p className="text-xs text-muted-foreground mt-1">Crea tu primer webhook para recibir eventos en tiempo real</p>
             </div>
@@ -178,7 +178,7 @@ export default function WebhooksPage() {
                 </TableHeader>
                 <TableBody>
                   {endpoints.map(ep => (
-                    <TableRow key={ep.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <TableRow key={ep.id} className="border-b border-border hover:bg-muted transition-colors">
                       <TableCell>
                         <div>
                           <p className="text-xs font-medium text-foreground">{ep.name}</p>
@@ -224,7 +224,7 @@ export default function WebhooksPage() {
       </Card>
 
       {showForm && (
-        <Card className="border-indigo-200">
+        <Card className="border-primary/20">
           <CardHeader>
             <CardTitle>{editingId ? 'Editar Webhook' : 'Nuevo Webhook'}</CardTitle>
           </CardHeader>
@@ -250,7 +250,7 @@ export default function WebhooksPage() {
                         type="checkbox"
                         checked={formData.events.includes(ev)}
                         onChange={e => setFormData({...formData, events: e.target.checked ? [...formData.events, ev] : formData.events.filter(x => x !== ev)})}
-                        className="rounded border-slate-300"
+                        className="rounded border-border"
                       />
                       <span className="text-xs text-foreground">{ev}</span>
                     </label>
@@ -268,7 +268,7 @@ export default function WebhooksPage() {
                 </div>
                 <div>
                   <label className="flex items-center gap-2 text-sm cursor-pointer">
-                    <input type="checkbox" checked={formData.is_active} onChange={e => setFormData({...formData, is_active: e.target.checked})} className="rounded border-slate-300" />
+                    <input type="checkbox" checked={formData.is_active} onChange={e => setFormData({...formData, is_active: e.target.checked})} className="rounded border-border" />
                     Activo
                   </label>
                 </div>
@@ -306,7 +306,7 @@ export default function WebhooksPage() {
                   </TableHeader>
                   <TableBody>
                     {deliveries.map(d => (
-                      <TableRow key={d.id} className="border-b border-slate-100 hover:bg-muted">
+                      <TableRow key={d.id} className="border-b border-border hover:bg-muted">
                         <TableCell className="text-xs font-mono">{d.event_type}</TableCell>
                         <TableCell>
                           <Badge variant={

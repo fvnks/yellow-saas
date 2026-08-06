@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { Globe, Copy, Check, ExternalLink } from 'lucide-react';
@@ -45,9 +45,9 @@ export default function PortalTab({ projectId, project, onRefresh }: PortalTabPr
 
   return (
     <div className="space-y-6">
-      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="flex items-center gap-3 mb-4">
-          <Globe className="w-5 h-5 text-indigo-600" />
+          <Globe className="w-5 h-5 text-primary" />
           <h3 className="text-sm font-semibold text-foreground">Portal del Cliente</h3>
         </div>
         <p className="text-xs text-muted-foreground mb-6">
@@ -57,20 +57,20 @@ export default function PortalTab({ projectId, project, onRefresh }: PortalTabPr
         <div className="space-y-4">
           <label className="flex items-center gap-3 cursor-pointer">
             <input type="checkbox" checked={enabled} onChange={e => setEnabled(e.target.checked)}
-              className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-primary/20" />
+              className="w-4 h-4 rounded border-border text-primary focus:ring-primary/20" />
             <span className="text-sm text-foreground">Habilitar portal publico</span>
           </label>
 
           {enabled && (
-            <div className="ml-7 space-y-3 border-l-2 border-indigo-200 pl-4">
+            <div className="ml-7 space-y-3 border-l-2 border-primary/20 pl-4">
               <label className="flex items-center gap-3 cursor-pointer">
                 <input type="checkbox" checked={showBudget} onChange={e => setShowBudget(e.target.checked)}
-                  className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-primary/20" />
+                  className="w-4 h-4 rounded border-border text-primary focus:ring-primary/20" />
                 <span className="text-sm text-foreground">Mostrar presupuesto</span>
               </label>
               <label className="flex items-center gap-3 cursor-pointer">
                 <input type="checkbox" checked={showCosts} onChange={e => setShowCosts(e.target.checked)}
-                  className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-primary/20" />
+                  className="w-4 h-4 rounded border-border text-primary focus:ring-primary/20" />
                 <span className="text-sm text-foreground">Mostrar costos</span>
               </label>
             </div>
@@ -86,17 +86,17 @@ export default function PortalTab({ projectId, project, onRefresh }: PortalTabPr
       </div>
 
       {enabled && portalToken && (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <h3 className="text-sm font-semibold text-foreground mb-3">Enlace Publico</h3>
           <div className="flex items-center gap-3 bg-muted border border-border rounded-lg p-3">
-            <span className="text-xs text-slate-600 truncate flex-1 font-mono">{fullUrl}</span>
+            <span className="text-xs text-foreground truncate flex-1 font-mono">{fullUrl}</span>
             <button onClick={handleCopy}
               className="flex items-center gap-1 px-3 py-1.5 bg-card border border-border hover:bg-muted rounded-lg text-xs font-medium text-foreground transition-colors">
               {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
               {copied ? 'Copiado' : 'Copiar'}
             </button>
             <a href={fullUrl} target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1 px-3 py-1.5 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 rounded-lg text-xs font-medium text-indigo-700 transition-colors">
+              className="flex items-center gap-1 px-3 py-1.5 bg-blue-50 border border-primary/20 hover:bg-blue-50 rounded-lg text-xs font-medium text-primary transition-colors">
               <ExternalLink className="w-3.5 h-3.5" /> Abrir
             </a>
           </div>

@@ -32,7 +32,7 @@ const contractTypeLabels: Record<string, string> = {
 
 export default function PayrollPageWrapper() {
   return (
-    <Suspense fallback={<div className="space-y-6"><div className="h-8 w-48 bg-slate-200 rounded animate-pulse" /></div>}>
+    <Suspense fallback={<div className="space-y-6"><div className="h-8 w-48 bg-muted rounded animate-pulse" /></div>}>
       <PayrollPage />
     </Suspense>
   );
@@ -184,19 +184,19 @@ function PayrollPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="space-y-2">
-            <div className="h-8 w-48 bg-slate-200 rounded animate-pulse" />
-            <div className="h-4 w-64 bg-slate-200 rounded animate-pulse" />
+            <div className="h-8 w-48 bg-muted rounded animate-pulse" />
+            <div className="h-4 w-64 bg-muted rounded animate-pulse" />
           </div>
-          <div className="h-9 w-32 bg-slate-200 rounded-lg animate-pulse" />
+          <div className="h-9 w-32 bg-muted rounded-lg animate-pulse" />
         </div>
         <div className="grid gap-4 md:grid-cols-4">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="h-28 bg-slate-200 rounded-xl animate-pulse" />
+            <div key={i} className="h-28 bg-muted rounded-xl animate-pulse" />
           ))}
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="space-y-4">
-            <div className="h-10 w-full bg-slate-200 rounded-lg animate-pulse" />
+            <div className="h-10 w-full bg-muted rounded-lg animate-pulse" />
             {[1, 2, 3].map(i => (
               <div key={i} className="h-12 w-full bg-muted rounded-lg animate-pulse" />
             ))}
@@ -216,7 +216,7 @@ function PayrollPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => { setUFInput(ufValue.toLocaleString('es-CL')); setShowUFModal(true); }}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-slate-600 bg-muted border border-border rounded-lg hover:bg-muted transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-foreground bg-muted border border-border rounded-lg hover:bg-muted transition-colors"
             title="Configurar valor UF"
           >
             <DollarSign className="w-3.5 h-3.5" />
@@ -249,7 +249,7 @@ function PayrollPage() {
         <KPICard label="Costo Total Empleador" value={`$${((totalPayroll * 1.35) / 1000000).toFixed(1)}M`} icon={DollarSign} trend="Incluye cargas" trendUp={true} />
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <ContinuousTabs
           tabs={[
             { id: 'employees', label: `Empleados (${employees.length})` },
@@ -262,7 +262,7 @@ function PayrollPage() {
 
         {activeTab === 'employees' && (
           <>
-            <div className="p-4 border-b border-slate-100">
+            <div className="p-4 border-b border-border">
               <div className="flex items-center gap-4">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -299,11 +299,11 @@ function PayrollPage() {
                 </div>
               ) : filteredEmployees.length === 0 ? (
                 <div className="p-12 text-center">
-                  <Search className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+                  <Search className="w-10 h-10 text-foreground mx-auto mb-3" />
                   <p className="text-sm text-muted-foreground">No se encontraron empleados con esos filtros</p>
                   <button
                     onClick={() => { setSearchTerm(''); setDepartmentFilter('all'); }}
-                    className="text-xs text-indigo-600 hover:text-indigo-800 mt-2"
+                    className="text-xs text-primary hover:text-primary mt-2"
                   >
                     Limpiar filtros
                   </button>
@@ -326,14 +326,14 @@ function PayrollPage() {
                   </thead>
                   <tbody>
                     {filteredEmployees.map(employee => (
-                      <tr key={employee.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                      <tr key={employee.id} className="border-b border-border hover:bg-muted transition-colors">
                         <td className="px-4 py-3 text-sm font-medium text-foreground">{employee.first_name} {employee.last_name}</td>
                         <td className="px-4 py-3 text-xs font-mono text-muted-foreground">{employee.rut || '�'}</td>
-                        <td className="px-4 py-3 text-xs text-slate-600">{employee.position || '�'}</td>
-                        <td className="px-4 py-3 text-xs text-slate-600">{employee.department || '�'}</td>
-                        <td className="px-4 py-3 text-xs text-slate-600">{contractTypeLabels[employee.contract_type] || employee.contract_type || '�'}</td>
-                        <td className="px-4 py-3 text-xs text-slate-600">{employee.afp_fund || '�'}</td>
-                        <td className="px-4 py-3 text-xs text-slate-600">{employee.health_type === 'isapre' ? 'Isapre' : 'FONASA'}</td>
+                        <td className="px-4 py-3 text-xs text-foreground">{employee.position || '�'}</td>
+                        <td className="px-4 py-3 text-xs text-foreground">{employee.department || '�'}</td>
+                        <td className="px-4 py-3 text-xs text-foreground">{contractTypeLabels[employee.contract_type] || employee.contract_type || '�'}</td>
+                        <td className="px-4 py-3 text-xs text-foreground">{employee.afp_fund || '�'}</td>
+                        <td className="px-4 py-3 text-xs text-foreground">{employee.health_type === 'isapre' ? 'Isapre' : 'FONASA'}</td>
                         <td className="px-4 py-3 text-xs text-right font-medium text-foreground">${(employee.base_salary || 0).toLocaleString('es-CL')}</td>
                         <td className="px-4 py-3">
                           <Badge variant={statusConfig[employee.status]?.variant || 'neutral'}>
@@ -344,7 +344,7 @@ function PayrollPage() {
                           <div className="flex items-center justify-end gap-1">
                             <button
                               onClick={() => { setEditingEmployee(employee); setShowEmployeeModal(true); }}
-                              className="p-1.5 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                              className="p-1.5 text-muted-foreground hover:text-primary hover:bg-blue-50 rounded-lg transition-colors"
                               title="Editar"
                             >
                               <Edit className="w-3.5 h-3.5" />
@@ -402,7 +402,7 @@ function PayrollPage() {
                 </thead>
                 <tbody>
                   {runs.map(run => (
-                    <tr key={run.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <tr key={run.id} className="border-b border-border hover:bg-muted transition-colors">
                       <td className="px-4 py-3 text-sm font-medium text-foreground">{run.period_label}</td>
                       <td className="px-4 py-3 text-xs text-center text-foreground">{run.employee_count || 0}</td>
                       <td className="px-4 py-3 text-xs text-right text-foreground">${(run.gross_amount || 0).toLocaleString('es-CL')}</td>
@@ -418,7 +418,7 @@ function PayrollPage() {
                         <div className="flex items-center justify-end gap-1">
                           <a
                             href={`/dashboard/payroll/${run.id}`}
-                            className="p-1.5 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                            className="p-1.5 text-muted-foreground hover:text-primary hover:bg-blue-50 rounded-lg transition-colors"
                             title="Ver detalle"
                           >
                             <Eye className="w-3.5 h-3.5" />
@@ -428,11 +428,11 @@ function PayrollPage() {
                               <button
                                 onClick={() => handleCalculate(run.id)}
                                 disabled={calculatingRun === run.id}
-                                className="p-1.5 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors disabled:opacity-50"
+                                className="p-1.5 text-muted-foreground hover:text-primary hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
                                 title="Calcular nomina"
                               >
                                 {calculatingRun === run.id ? (
-                                  <div className="w-3.5 h-3.5 border-2 border-indigo-300 border-t-transparent rounded-full animate-spin" />
+                                  <div className="w-3.5 h-3.5 border-2 border-primary/30 border-t-transparent rounded-full animate-spin" />
                                 ) : (
                                   <Calculator className="w-3.5 h-3.5" />
                                 )}

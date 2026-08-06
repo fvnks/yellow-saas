@@ -133,14 +133,14 @@ export default function PedidosImportPage() {
                   {warehouses.map((w: any) => <option key={w.id} value={w.id}>{w.name}</option>)}
                 </select>
               </div>
-              <button onClick={downloadTemplate} className="flex items-center gap-2 text-sm text-indigo-600 hover:text-indigo-700">
+              <button onClick={downloadTemplate} className="flex items-center gap-2 text-sm text-primary hover:text-primary">
                 <Download className="w-4 h-4" /> Descargar Plantilla
               </button>
             </div>
-            <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-indigo-300 transition-colors">
+            <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/30 transition-colors">
               <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-              <p className="text-sm text-slate-600">
-                <label className="text-indigo-600 hover:text-indigo-700 cursor-pointer font-medium">Seleccionar archivo</label> o arrastra un CSV
+              <p className="text-sm text-foreground">
+                <label className="text-primary hover:text-primary cursor-pointer font-medium">Seleccionar archivo</label> o arrastra un CSV
               </p>
               <input type="file" accept=".csv,.tsv,.txt" onChange={handleFile} className="hidden" />
               {fileName && <p className="text-xs text-muted-foreground mt-2">{fileName}</p>}
@@ -162,7 +162,7 @@ export default function PedidosImportPage() {
                       {rows.map((r, i) => {
                         const found = !!resolveProduct(r);
                         return (
-                          <tr key={i} className="border-t border-slate-100">
+                          <tr key={i} className="border-t border-border">
                             <td className="px-3 py-2 font-mono text-foreground">{r.sku || '—'}</td>
                             <td className="px-3 py-2 text-foreground">{r.product_name || '—'}</td>
                             <td className="px-3 py-2 text-right text-foreground">{r.quantity}</td>

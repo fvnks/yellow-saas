@@ -26,9 +26,9 @@ const actionConfig: Record<string, { icon: any; color: string; label: string }> 
   update: { icon: Edit, color: 'text-blue-500', label: 'Actualizó' },
   delete: { icon: Trash2, color: 'text-red-500', label: 'Eliminó' },
   status_change: { icon: ArrowRight, color: 'text-amber-500', label: 'Cambió estado' },
-  comment: { icon: MessageCircle, color: 'text-indigo-500', label: 'Comentó' },
-  assign: { icon: UserPlus, color: 'text-purple-500', label: 'Asignó' },
-  tag_add: { icon: Tag, color: 'text-cyan-500', label: 'Agregó tag' },
+  comment: { icon: MessageCircle, color: 'text-primary', label: 'Comentó' },
+  assign: { icon: UserPlus, color: 'text-blue-600', label: 'Asignó' },
+  tag_add: { icon: Tag, color: 'text-teal-600', label: 'Agregó tag' },
   tag_remove: { icon: Tag, color: 'text-orange-500', label: 'Quitó tag' },
 };
 
@@ -106,13 +106,13 @@ export default function AuditLog({ projectId }: AuditLogProps) {
       </div>
 
       {entries.length === 0 ? (
-        <div className="text-center py-8 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-          <Clock className="w-10 h-10 text-slate-200 mx-auto mb-2" />
+        <div className="text-center py-8 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+          <Clock className="w-10 h-10 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">Sin actividad registrada</p>
         </div>
       ) : (
         <div className="relative">
-          <div className="absolute left-4 top-0 bottom-0 w-px bg-slate-200" />
+          <div className="absolute left-4 top-0 bottom-0 w-px bg-muted" />
           <div className="space-y-1">
             {entries.map(entry => {
               const config = actionConfig[entry.action] || { icon: Clock, color: 'text-muted-foreground', label: entry.action };
@@ -122,7 +122,7 @@ export default function AuditLog({ projectId }: AuditLogProps) {
                   <div className={`absolute left-2.5 top-2.5 w-3 h-3 rounded-full bg-card border-2 ${config.color.replace('text-', 'border-')} flex items-center justify-center`}>
                     <Icon className={`w-2 h-2 ${config.color}`} />
                   </div>
-                  <div className="bg-card border border-slate-100 rounded-lg p-3 hover:shadow-sm transition-shadow">
+                  <div className="bg-card border border-border rounded-lg p-3 hover:shadow-sm transition-shadow">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-semibold text-foreground">{entry.user_name || 'Sistema'}</span>

@@ -113,7 +113,7 @@ export default function ResourceAllocationForm({ projectId, employees, onRefresh
       </div>
 
       {showAdd && (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 space-y-3">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <select value={form.employee_id} onChange={e => setForm({ ...form, employee_id: e.target.value })}
               className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20">
@@ -128,14 +128,14 @@ export default function ResourceAllocationForm({ projectId, employees, onRefresh
           </div>
           <div className="grid grid-cols-2 gap-3">
             <input type="text" value={form.role_in_project} onChange={e => setForm({ ...form, role_in_project: e.target.value })}
-              className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
               placeholder="Rol en proyecto..." />
             <input type="number" step="0.01" value={form.hourly_rate} onChange={e => setForm({ ...form, hourly_rate: e.target.value })}
-              className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
               placeholder="Tarifa hora..." />
           </div>
           <div className="flex justify-end gap-2">
-            <button onClick={() => setShowAdd(false)} className="px-3 py-1.5 text-xs text-slate-600 hover:text-foreground">Cancelar</button>
+            <button onClick={() => setShowAdd(false)} className="px-3 py-1.5 text-xs text-foreground hover:text-foreground">Cancelar</button>
             <button onClick={handleAdd} disabled={saving || !form.employee_id}
               className="bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50">
               {saving ? 'Guardando...' : 'Asignar'}
@@ -145,18 +145,18 @@ export default function ResourceAllocationForm({ projectId, employees, onRefresh
       )}
 
       {allocations.length === 0 ? (
-        <div className="text-center py-8 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-          <Users className="w-10 h-10 text-slate-200 mx-auto mb-2" />
+        <div className="text-center py-8 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+          <Users className="w-10 h-10 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">Sin recursos asignados</p>
         </div>
       ) : (
         <div className="space-y-2">
           {allocations.map(alloc => (
-            <div key={alloc.id} className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 hover:shadow-md transition-shadow">
+            <div key={alloc.id} className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                    <span className="text-xs font-semibold text-indigo-600">
+                  <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
+                    <span className="text-xs font-semibold text-primary">
                       {alloc.employee_name?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
                     </span>
                   </div>
@@ -185,7 +185,7 @@ export default function ResourceAllocationForm({ projectId, employees, onRefresh
               </div>
               <div className="mt-2">
                 <div className="w-full bg-muted rounded-full h-1.5">
-                  <div className={`h-1.5 rounded-full transition-all ${alloc.allocation_percent > 100 ? 'bg-red-500' : alloc.allocation_percent > 80 ? 'bg-amber-500' : 'bg-indigo-600'}`}
+                  <div className={`h-1.5 rounded-full transition-all ${alloc.allocation_percent > 100 ? 'bg-red-500' : alloc.allocation_percent > 80 ? 'bg-amber-500' : 'bg-primary'}`}
                     style={{ width: `${Math.min(alloc.allocation_percent, 100)}%` }} />
                 </div>
               </div>

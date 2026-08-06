@@ -97,29 +97,29 @@ export default function NotificationSettings({ projectId }: NotificationSettings
       </div>
 
       {/* Slack Configuration */}
-      <div className="bg-card border border-border rounded-xl p-5 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl p-5 dark:bg-primary dark:border-border">
         <div className="flex items-center gap-2 mb-4">
-          <Hash className="w-4 h-4 text-purple-600" />
+          <Hash className="w-4 h-4 text-blue-700" />
           <h4 className="text-sm font-semibold text-foreground">Slack</h4>
         </div>
         <div className="space-y-3">
           <div className="space-y-1">
             <label className="block text-xs font-medium text-foreground">Webhook URL</label>
             <input type="url" value={settings.slack_webhook_url} onChange={e => setSettings({ ...settings, slack_webhook_url: e.target.value })}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="https://hooks.slack.com/services/..." />
           </div>
           <div className="space-y-1">
             <label className="block text-xs font-medium text-foreground">Canal</label>
             <input type="text" value={settings.slack_channel} onChange={e => setSettings({ ...settings, slack_channel: e.target.value })}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="#proyectos" />
           </div>
         </div>
       </div>
 
       {/* Email Configuration */}
-      <div className="bg-card border border-border rounded-xl p-5 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl p-5 dark:bg-primary dark:border-border">
         <div className="flex items-center gap-2 mb-4">
           <Mail className="w-4 h-4 text-blue-600" />
           <h4 className="text-sm font-semibold text-foreground">Email</h4>
@@ -128,7 +128,7 @@ export default function NotificationSettings({ projectId }: NotificationSettings
           <div className="flex items-center gap-2">
             <input type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && addEmail()}
-              className="flex-1 bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="flex-1 bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="correo@empresa.cl" />
             <button onClick={addEmail} className="bg-primary hover:bg-primary/90 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
               <Plus className="w-4 h-4" />
@@ -148,7 +148,7 @@ export default function NotificationSettings({ projectId }: NotificationSettings
       </div>
 
       {/* Event Toggles */}
-      <div className="bg-card border border-border rounded-xl p-5 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl p-5 dark:bg-primary dark:border-border">
         <h4 className="text-sm font-semibold text-foreground mb-4">Eventos a Notificar</h4>
         <div className="space-y-3">
           {[
@@ -162,7 +162,7 @@ export default function NotificationSettings({ projectId }: NotificationSettings
             <label key={item.key} className="flex items-center justify-between cursor-pointer">
               <span className="text-xs text-foreground">{item.label}</span>
               <button onClick={() => toggle(item.key)}
-                className={`w-10 h-5 rounded-full transition-colors relative ${settings[item.key] ? 'bg-indigo-600' : 'bg-slate-300'}`}>
+                className={`w-10 h-5 rounded-full transition-colors relative ${settings[item.key] ? 'bg-primary' : 'bg-muted'}`}>
                 <div className={`absolute top-0.5 w-4 h-4 bg-card rounded-full shadow transition-transform ${settings[item.key] ? 'translate-x-5' : 'translate-x-0.5'}`} />
               </button>
             </label>

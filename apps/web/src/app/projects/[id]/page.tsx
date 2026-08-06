@@ -88,12 +88,12 @@ export default function ProjectDetailPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <div className="h-6 w-48 bg-slate-200 rounded animate-pulse" />
-            <div className="h-4 w-32 bg-slate-100 rounded animate-pulse mt-2" />
+            <div className="h-6 w-48 bg-muted rounded animate-pulse" />
+            <div className="h-4 w-32 bg-muted rounded animate-pulse mt-2" />
           </div>
         </div>
         <div className="grid grid-cols-4 gap-4">
-          {[1,2,3,4].map(i => <div key={i} className="h-28 bg-slate-100 rounded-xl animate-pulse" />)}
+          {[1,2,3,4].map(i => <div key={i} className="h-28 bg-muted rounded-xl animate-pulse" />)}
         </div>
       </div>
     );
@@ -102,8 +102,8 @@ export default function ProjectDetailPage() {
   if (!project) {
     return (
       <div className="text-center py-16">
-        <p className="text-sm text-slate-500">Proyecto no encontrado</p>
-        <Link href="/projects" className="text-sm text-indigo-600 hover:underline mt-2 inline-block">Volver a proyectos</Link>
+        <p className="text-sm text-muted-foreground">Proyecto no encontrado</p>
+        <Link href="/projects" className="text-sm text-primary hover:underline mt-2 inline-block">Volver a proyectos</Link>
       </div>
     );
   }
@@ -114,7 +114,7 @@ export default function ProjectDetailPage() {
     warning: 'bg-amber-50 text-amber-700 border-amber-200',
     danger: 'bg-rose-50 text-rose-700 border-rose-200',
     info: 'bg-blue-50 text-blue-700 border-blue-200',
-    neutral: 'bg-slate-100 text-slate-600 border-slate-200',
+    neutral: 'bg-muted text-foreground border-border',
   };
 
   return (
@@ -123,18 +123,18 @@ export default function ProjectDetailPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link href="/projects"
-            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+            className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-xl font-bold text-slate-900">{project.name}</h1>
+              <h1 className="text-xl font-bold text-foreground">{project.name}</h1>
               <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border ${variantColors[statusCfg.variant]}`}>
                 {statusCfg.label}
               </span>
             </div>
-            <p className="text-sm text-slate-500 mt-0.5">
-              <span className="font-mono text-xs text-slate-400">{project.code}</span>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              <span className="font-mono text-xs text-muted-foreground">{project.code}</span>
               {project.customer_name && <span className="ml-2">· {project.customer_name}</span>}
             </p>
           </div>
@@ -142,18 +142,18 @@ export default function ProjectDetailPage() {
 
         <div className="flex items-center gap-2">
           <Link href={`/projects/${projectId}/edit`}
-            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+            className="bg-card border border-border hover:bg-muted text-foreground px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
             <Edit className="w-3.5 h-3.5" /> Editar
           </Link>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+              <button className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
                 <MoreVertical className="w-4 h-4" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-44">
               <DropdownMenuItem onClick={handleClone}>
-                <Copy className="w-4 h-4 mr-2 text-slate-500" /> Clonar Proyecto
+                <Copy className="w-4 h-4 mr-2 text-muted-foreground" /> Clonar Proyecto
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleDelete} disabled={deleting} className="text-red-600">
@@ -165,7 +165,7 @@ export default function ProjectDetailPage() {
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-slate-200">
+      <div className="border-b border-border">
         <div className="flex gap-0">
           {TABS.map(tab => (
             <button
@@ -173,16 +173,16 @@ export default function ProjectDetailPage() {
               onClick={() => setActiveTab(tab.id)}
               className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === tab.id
-                  ? 'border-slate-900 text-slate-900'
-                  : 'border-transparent text-slate-500 hover:text-slate-700'
+                  ? 'border-border text-foreground'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
               }`}
             >
               {tab.label}
               {tab.id === 'tasks' && tasks.length > 0 && (
-                <span className="ml-1.5 px-1.5 py-0.5 text-[9px] font-semibold bg-slate-100 text-slate-500 rounded-full">{tasks.length}</span>
+                <span className="ml-1.5 px-1.5 py-0.5 text-[9px] font-semibold bg-muted text-muted-foreground rounded-full">{tasks.length}</span>
               )}
               {tab.id === 'members' && members.length > 0 && (
-                <span className="ml-1.5 px-1.5 py-0.5 text-[9px] font-semibold bg-slate-100 text-slate-500 rounded-full">{members.length}</span>
+                <span className="ml-1.5 px-1.5 py-0.5 text-[9px] font-semibold bg-muted text-muted-foreground rounded-full">{members.length}</span>
               )}
             </button>
           ))}

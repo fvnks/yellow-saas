@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Check, Star, ArrowRight, CreditCard, Zap } from 'lucide-react';
@@ -103,9 +103,9 @@ export default function PlanTab() {
           const monthlyPrice = billingPeriod === 'yearly' ? Math.round(plan.price_yearly / 12) : plan.price_monthly;
 
           return (
-            <div key={plan.name} className={`relative bg-card border-2 rounded-xl p-6 transition-all ${isCurrent ? 'border-indigo-500 shadow-md shadow-indigo-100' : 'border-border hover:border-slate-300'}`}>
+            <div key={plan.name} className={`relative bg-card border-2 rounded-xl p-6 transition-all ${isCurrent ? 'border-primary shadow-md shadow-indigo-100' : 'border-border hover:border-border'}`}>
               {isCurrent && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-500 text-white px-3 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white px-3 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider">
                   Plan Actual
                 </div>
               )}
@@ -122,12 +122,12 @@ export default function PlanTab() {
 
               <ul className="space-y-2 mb-6">
                 {plan.features.map((feature, i) => (
-                  <li key={i} className="flex items-start gap-2 text-xs text-slate-600">
+                  <li key={i} className="flex items-start gap-2 text-xs text-foreground">
                     <Check className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" />
                     {feature}
                   </li>
                 ))}
-                <li className="flex items-start gap-2 text-xs text-slate-600">
+                <li className="flex items-start gap-2 text-xs text-foreground">
                   <Check className="w-3.5 h-500 mt-0.5 flex-shrink-0" />
                   {plan.max_users === -1 ? 'Usuarios ilimitados' : `Hasta ${plan.max_users} usuarios`}
                 </li>

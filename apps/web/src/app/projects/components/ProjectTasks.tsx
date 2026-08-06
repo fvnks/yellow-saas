@@ -33,7 +33,7 @@ const STATUS_OPTIONS = [
 ];
 
 const PRIORITY_OPTIONS = [
-  { value: 'low', label: 'Baja', color: 'bg-muted text-slate-600 border-border' },
+  { value: 'low', label: 'Baja', color: 'bg-muted text-foreground border-border' },
   { value: 'medium', label: 'Media', color: 'bg-blue-50 text-blue-700 border-blue-200' },
   { value: 'high', label: 'Alta', color: 'bg-amber-50 text-amber-700 border-amber-200' },
   { value: 'urgent', label: 'Urgente', color: 'bg-rose-50 text-rose-700 border-rose-200' },
@@ -119,7 +119,7 @@ export default function ProjectTasks({ projectId, tasks, members, onRefresh }: P
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input type="search" placeholder="Buscar tarea..." value={search} onChange={e => setSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+              className="w-full pl-9 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
           <div className="flex gap-1">
             {STATUS_OPTIONS.map(s => {
@@ -156,14 +156,14 @@ export default function ProjectTasks({ projectId, tasks, members, onRefresh }: P
               const pr = getPriority(task.priority);
               const StIcon = st.icon;
               return (
-                <tr key={task.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <tr key={task.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3">
                     <p className="text-xs font-medium text-foreground">{task.name}</p>
                     {task.description && <p className="text-[10px] text-muted-foreground mt-0.5 truncate max-w-xs">{task.description}</p>}
                   </td>
                   <td className="px-4 py-3"><span className={`inline-flex items-center px-2 py-0.5 rounded text-[9px] font-semibold border ${pr.color}`}>{pr.label}</span></td>
                   <td className="px-4 py-3 text-xs text-foreground">{task.assignee_name || '—'}</td>
-                  <td className="px-4 py-3 text-xs text-slate-600">{task.due_date || '—'}</td>
+                  <td className="px-4 py-3 text-xs text-foreground">{task.due_date || '—'}</td>
                   <td className="px-4 py-3 text-center">
                     <select value={task.status} onChange={e => handleStatusChange(task.id, e.target.value)}
                       className="bg-transparent border-0 text-[10px] font-semibold cursor-pointer focus:outline-none">
@@ -173,7 +173,7 @@ export default function ProjectTasks({ projectId, tasks, members, onRefresh }: P
                   <td className="px-4 py-3">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded-lg transition-colors">
+                        <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
                           <MoreVertical className="w-4 h-4" />
                         </button>
                       </DropdownMenuTrigger>
@@ -204,7 +204,7 @@ export default function ProjectTasks({ projectId, tasks, members, onRefresh }: P
           <div className="bg-card rounded-xl shadow-xl w-full max-w-lg" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">{editingTask ? 'Editar Tarea' : 'Nueva Tarea'}</h2>
-              <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-slate-600 text-xl">&times;</button>
+              <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-foreground text-xl">&times;</button>
             </div>
             <div className="p-6 space-y-4">
               <div>
@@ -243,7 +243,7 @@ export default function ProjectTasks({ projectId, tasks, members, onRefresh }: P
                 <div>
                   <label className="block text-xs font-medium text-foreground mb-1">Horas Estimadas</label>
                   <input type="number" value={form.estimated_hours} onChange={e => setForm(p => ({ ...p, estimated_hours: e.target.value }))} placeholder="0"
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
               </div>
             </div>

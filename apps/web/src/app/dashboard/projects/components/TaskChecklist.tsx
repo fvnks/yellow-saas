@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Check, Plus, Trash2, ListChecks } from 'lucide-react';
@@ -99,7 +99,7 @@ export default function TaskChecklist({ taskId, onUpdate }: TaskChecklistProps) 
           <div key={item.id} className="flex items-center gap-2 group">
             <button onClick={() => toggleItem(item)}
               className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
-                item.is_checked ? 'bg-emerald-500 border-emerald-500' : 'border-slate-300 hover:border-indigo-400'
+                item.is_checked ? 'bg-emerald-500 border-emerald-500' : 'border-border hover:border-primary/40'
               }`}>
               {item.is_checked && <Check className="w-2.5 h-2.5 text-white" />}
             </button>
@@ -117,7 +117,7 @@ export default function TaskChecklist({ taskId, onUpdate }: TaskChecklistProps) 
       <div className="flex items-center gap-2">
         <input type="text" value={newItem} onChange={e => setNewItem(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && addItem()}
-          className="flex-1 bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-primary/20"
+          className="flex-1 bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
           placeholder="Agregar item..." />
         <button onClick={addItem} disabled={!newItem.trim()}
           className="bg-primary hover:bg-primary/90 text-white px-2 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50">

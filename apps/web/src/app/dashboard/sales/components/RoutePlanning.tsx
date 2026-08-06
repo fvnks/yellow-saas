@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { MapPin, Plus, Truck, Clock, CheckCircle, Circle, X, Save, GripVertical } from 'lucide-react';
@@ -109,13 +109,13 @@ export default function RoutePlanning() {
       </div>
 
       {route && (
-        <div className="bg-card border border-border rounded-xl p-6 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-6 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-lg font-bold text-foreground">{route.name}</h3>
               <p className="text-xs text-muted-foreground">{route.employee_name} — {new Date(route.route_date).toLocaleDateString('es-CL')}</p>
             </div>
-            <button onClick={() => setSelectedRoute(null)} className="text-muted-foreground hover:text-slate-600"><X className="w-5 h-5" /></button>
+            <button onClick={() => setSelectedRoute(null)} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
           </div>
           <div className="space-y-3">
             {route.stops.map((stop, i) => {
@@ -125,7 +125,7 @@ export default function RoutePlanning() {
                 <div key={i} className="flex items-start gap-3 p-3 bg-muted rounded-lg">
                   <div className="flex flex-col items-center">
                     <span className="w-6 h-6 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center">{i + 1}</span>
-                    {i < route.stops.length - 1 && <div className="w-px h-6 bg-slate-300 mt-1"></div>}
+                    {i < route.stops.length - 1 && <div className="w-px h-6 bg-muted mt-1"></div>}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
@@ -150,7 +150,7 @@ export default function RoutePlanning() {
           const cfg = statusConfig[r.status] || statusConfig.pending;
           const completedStops = r.stops.filter(s => s.status === 'completed').length;
           return (
-            <div key={r.id} className={`bg-card border rounded-xl p-4 cursor-pointer transition-colors hover:bg-muted ${selectedRoute === r.id ? 'border-slate-900' : 'border-border'}`}
+            <div key={r.id} className={`bg-card border rounded-xl p-4 cursor-pointer transition-colors hover:bg-muted ${selectedRoute === r.id ? 'border-border' : 'border-border'}`}
               onClick={() => setSelectedRoute(r.id)}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -162,8 +162,8 @@ export default function RoutePlanning() {
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="text-right">
-                    <p className="text-xs text-slate-600">{completedStops}/{r.stops.length} paradas</p>
-                    <div className="w-20 h-1.5 bg-slate-200 rounded-full mt-1">
+                    <p className="text-xs text-foreground">{completedStops}/{r.stops.length} paradas</p>
+                    <div className="w-20 h-1.5 bg-muted rounded-full mt-1">
                       <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${r.stops.length > 0 ? (completedStops / r.stops.length) * 100 : 0}%` }}></div>
                     </div>
                   </div>
@@ -174,8 +174,8 @@ export default function RoutePlanning() {
           );
         })}
         {routes.length === 0 && (
-          <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
-            <MapPin className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+          <div className="text-center py-12 bg-muted border border-dashed border-border rounded-xl">
+            <MapPin className="w-8 h-8 text-foreground mx-auto mb-2" />
             <p className="text-xs text-muted-foreground">Sin rutas planificadas</p>
           </div>
         )}
@@ -186,7 +186,7 @@ export default function RoutePlanning() {
           <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primary2xl mx-4 max-h-[90vh] overflow-y-auto">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">Nueva Ruta</h2>
-              <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-slate-600"><X className="w-5 h-5" /></button>
+              <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-3">
@@ -213,7 +213,7 @@ export default function RoutePlanning() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-xs font-medium text-foreground">Paradas</label>
-                  <button onClick={addStop} className="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1"><Plus className="w-3 h-3" /> Agregar</button>
+                  <button onClick={addStop} className="text-xs text-primary hover:text-primary font-medium flex items-center gap-1"><Plus className="w-3 h-3" /> Agregar</button>
                 </div>
                 <div className="space-y-3">
                   {form.stops.map((stop, i) => (
@@ -224,17 +224,17 @@ export default function RoutePlanning() {
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         <input type="text" value={stop.customer_name} onChange={e => updateStop(i, 'customer_name', e.target.value)}
-                          className="bg-card border border-border rounded px-2 py-1.5 text-xs text-foreground placeholder-slate-400 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-1 focus:ring-primary/20" placeholder="Cliente" />
+                          className="bg-card border border-border rounded px-2 py-1.5 text-xs text-foreground placeholder-muted-foreground focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-1 focus:ring-primary/20" placeholder="Cliente" />
                         <input type="text" value={stop.address} onChange={e => updateStop(i, 'address', e.target.value)}
-                          className="bg-card border border-border rounded px-2 py-1.5 text-xs text-foreground placeholder-slate-400 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-1 focus:ring-primary/20" placeholder="Dirección" />
+                          className="bg-card border border-border rounded px-2 py-1.5 text-xs text-foreground placeholder-muted-foreground focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-1 focus:ring-primary/20" placeholder="Dirección" />
                         <input type="text" value={stop.city} onChange={e => updateStop(i, 'city', e.target.value)}
-                          className="bg-card border border-border rounded px-2 py-1.5 text-xs text-foreground placeholder-slate-400 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-1 focus:ring-primary/20" placeholder="Ciudad" />
+                          className="bg-card border border-border rounded px-2 py-1.5 text-xs text-foreground placeholder-muted-foreground focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-1 focus:ring-primary/20" placeholder="Ciudad" />
                         <input type="text" value={stop.order_number} onChange={e => updateStop(i, 'order_number', e.target.value)}
-                          className="bg-card border border-border rounded px-2 py-1.5 text-xs text-foreground placeholder-slate-400 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-1 focus:ring-primary/20" placeholder="OV #" />
+                          className="bg-card border border-border rounded px-2 py-1.5 text-xs text-foreground placeholder-muted-foreground focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-1 focus:ring-primary/20" placeholder="OV #" />
                         <input type="text" value={stop.estimated_time} onChange={e => updateStop(i, 'estimated_time', e.target.value)}
-                          className="bg-card border border-border rounded px-2 py-1.5 text-xs text-foreground placeholder-slate-400 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-1 focus:ring-primary/20" placeholder="09:00 - 09:30" />
+                          className="bg-card border border-border rounded px-2 py-1.5 text-xs text-foreground placeholder-muted-foreground focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-1 focus:ring-primary/20" placeholder="09:00 - 09:30" />
                         <input type="text" value={stop.notes} onChange={e => updateStop(i, 'notes', e.target.value)}
-                          className="bg-card border border-border rounded px-2 py-1.5 text-xs text-foreground placeholder-slate-400 focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-1 focus:ring-primary/20" placeholder="Notas" />
+                          className="bg-card border border-border rounded px-2 py-1.5 text-xs text-foreground placeholder-muted-foreground focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-1 focus:ring-primary/20" placeholder="Notas" />
                       </div>
                     </div>
                   ))}
@@ -242,7 +242,7 @@ export default function RoutePlanning() {
               </div>
             </div>
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
-              <button onClick={() => setShowForm(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={() => setShowForm(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={!form.name || !form.employee_id}
                 className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors disabled:opacity-50">
                 <Save className="w-3.5 h-3.5" /> Guardar

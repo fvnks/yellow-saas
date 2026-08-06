@@ -80,8 +80,8 @@ export default function SalesReportsPage() {
                   <p className="text-2xl font-bold text-foreground mt-1">${totalSales.toLocaleString('es-CL')}</p>
                   <p className="text-xs text-muted-foreground mt-1">{totalOrders} órdenes</p>
                 </div>
-                <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
-                  <ShoppingCart className="w-6 h-6 text-indigo-600" />
+                <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                  <ShoppingCart className="w-6 h-6 text-primary" />
                 </div>
               </div>
             </div>
@@ -125,7 +125,7 @@ export default function SalesReportsPage() {
 
           <div className="grid gap-6 lg:grid-cols-2">
             <div className="bg-card border border-border rounded-xl shadow-sm">
-              <div className="px-6 py-4 border-b border-slate-100">
+              <div className="px-6 py-4 border-b border-border">
                 <h3 className="text-sm font-semibold text-foreground">Ventas Mensuales</h3>
               </div>
               <div className="p-6">
@@ -140,7 +140,7 @@ export default function SalesReportsPage() {
                         <div key={m.month} className="flex items-center gap-3">
                           <span className="text-xs text-muted-foreground w-8">{monthNames[parseInt(m.month) - 1]}</span>
                           <div className="flex-1 h-6 bg-muted rounded-full overflow-hidden">
-                            <div className="h-full bg-indigo-500 rounded-full transition-all" style={{ width: `${pct}%` }} />
+                            <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${pct}%` }} />
                           </div>
                           <span className="text-xs font-medium text-foreground w-24 text-right">${(parseFloat(m.total) || 0).toLocaleString('es-CL')}</span>
                         </div>
@@ -152,7 +152,7 @@ export default function SalesReportsPage() {
             </div>
 
             <div className="bg-card border border-border rounded-xl shadow-sm">
-              <div className="px-6 py-4 border-b border-slate-100">
+              <div className="px-6 py-4 border-b border-border">
                 <h3 className="text-sm font-semibold text-foreground">Distribución por Estado</h3>
               </div>
               <div className="p-6">
@@ -181,7 +181,7 @@ export default function SalesReportsPage() {
 
           <div className="grid gap-6 lg:grid-cols-2">
             <div className="bg-card border border-border rounded-xl shadow-sm">
-              <div className="px-6 py-4 border-b border-slate-100">
+              <div className="px-6 py-4 border-b border-border">
                 <h3 className="text-sm font-semibold text-foreground">Top Clientes</h3>
               </div>
               <div className="overflow-x-auto">
@@ -197,7 +197,7 @@ export default function SalesReportsPage() {
                     {topCustomers.length === 0 ? (
                       <tr><td colSpan={3} className="px-4 py-8 text-center text-xs text-muted-foreground">Sin datos</td></tr>
                     ) : topCustomers.map((c: any, i: number) => (
-                      <tr key={i} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                      <tr key={i} className="border-b border-border hover:bg-muted transition-colors">
                         <td className="px-4 py-3 text-xs font-medium text-foreground">{c.name}</td>
                         <td className="px-4 py-3 text-xs text-foreground text-center">{c.count}</td>
                         <td className="px-4 py-3 text-xs text-foreground text-right font-medium">${(parseFloat(c.total) || 0).toLocaleString('es-CL')}</td>
@@ -209,7 +209,7 @@ export default function SalesReportsPage() {
             </div>
 
             <div className="bg-card border border-border rounded-xl shadow-sm">
-              <div className="px-6 py-4 border-b border-slate-100">
+              <div className="px-6 py-4 border-b border-border">
                 <h3 className="text-sm font-semibold text-foreground">Top Productos</h3>
               </div>
               <div className="overflow-x-auto">
@@ -225,7 +225,7 @@ export default function SalesReportsPage() {
                     {topProducts.length === 0 ? (
                       <tr><td colSpan={3} className="px-4 py-8 text-center text-xs text-muted-foreground">Sin datos</td></tr>
                     ) : topProducts.map((p: any, i: number) => (
-                      <tr key={i} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                      <tr key={i} className="border-b border-border hover:bg-muted transition-colors">
                         <td className="px-4 py-3 text-xs font-medium text-foreground">{p.name}</td>
                         <td className="px-4 py-3 text-xs text-foreground text-center">{p.qty}</td>
                         <td className="px-4 py-3 text-xs text-foreground text-right font-medium">${(parseFloat(p.total) || 0).toLocaleString('es-CL')}</td>

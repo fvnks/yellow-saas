@@ -41,7 +41,7 @@ export default function SalesReports() {
     delivered: 'bg-emerald-50 text-emerald-700',
     shipped: 'bg-blue-50 text-blue-700',
     processing: 'bg-amber-50 text-amber-700',
-    confirmed: 'bg-muted text-slate-600',
+    confirmed: 'bg-muted text-foreground',
     draft: 'bg-muted text-muted-foreground',
     cancelled: 'bg-red-50 text-red-700',
   };
@@ -65,7 +65,7 @@ export default function SalesReports() {
         {reportTypes.map(rt => (
           <button key={rt.id} onClick={() => setReportType(rt.id)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-              reportType === rt.id ? 'bg-primary text-white' : 'bg-card border border-border text-slate-600 hover:bg-muted'
+              reportType === rt.id ? 'bg-primary text-white' : 'bg-card border border-border text-foreground hover:bg-muted'
             }`}>
             <rt.icon className="w-3.5 h-3.5" /> {rt.label}
           </button>
@@ -77,43 +77,43 @@ export default function SalesReports() {
       {!loading && reportType === 'summary' && data && (
         <div className="space-y-4">
           <div className="grid grid-cols-4 gap-3">
-            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
               <p className="text-[9px] font-semibold text-muted-foreground uppercase">Total Ventas {selectedYear}</p>
               <p className="text-xl font-bold text-foreground mt-1">{formatMoney(parseFloat(data.summary?.total || 0))}</p>
               <p className="text-xs text-muted-foreground mt-1">{data.summary?.count || 0} órdenes</p>
             </div>
-            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
               <p className="text-[9px] font-semibold text-muted-foregrounduppercase">Ticket Promedio</p>
               <p className="text-xl font-bold text-foreground mt-1">{formatMoney(parseFloat(data.summary?.avg_order || 0))}</p>
             </div>
-            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
               <p className="text-[9px] font-semibold text-muted-foreground uppercase">Facturado</p>
               <p className="text-xl font-bold text-emerald-600 mt-1">{formatMoney(parseFloat(data.invoicing?.total || 0))}</p>
               <p className="text-xs text-emerald-500 mt-1">Cobrado: {formatMoney(parseFloat(data.invoicing?.paid || 0))}</p>
             </div>
-            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
               <p className="text-[9px] font-semibold text-muted-foreground uppercase">Por Cobrar</p>
               <p className="text-xl font-bold text-red-600 mt-1">{formatMoney((parseFloat(data.invoicing?.total || 0)) - (parseFloat(data.invoicing?.paid || 0)))}</p>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
               <h3 className="text-xs font-semibold text-foreground mb-3">Top Productos</h3>
               <div className="space-y-2">
                 {(data.topProducts || []).map((p: any, i: number) => (
-                  <div key={i} className="flex items-center justify-between py-1.5 border-b border-slate-50 last:border-0">
+                  <div key={i} className="flex items-center justify-between py-1.5 border-b border-border last:border-0">
                     <span className="text-xs text-foreground">{p.name}</span>
                     <span className="text-xs font-bold text-foreground">{formatMoney(parseFloat(p.total))}</span>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
               <h3 className="text-xs font-semibold text-foreground mb-3">Top Clientes</h3>
               <div className="space-y-2">
                 {(data.topCustomers || []).map((c: any, i: number) => (
-                  <div key={i} className="flex items-center justify-between py-1.5 border-b border-slate-50 last:border-0">
+                  <div key={i} className="flex items-center justify-between py-1.5 border-b border-border last:border-0">
                     <span className="text-xs text-foreground">{c.name}</span>
                     <span className="text-xs font-bold text-foreground">{formatMoney(parseFloat(c.total))}</span>
                   </div>
@@ -123,11 +123,11 @@ export default function SalesReports() {
           </div>
 
           {data.statusBreakdown && data.statusBreakdown.length > 0 && (
-            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+            <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
               <h3 className="text-xs font-semibold text-foreground mb-3">Por Estado</h3>
               <div className="flex gap-3 flex-wrap">
                 {data.statusBreakdown.map((s: any, i: number) => (
-                  <div key={i} className={`px-3 py-2 rounded-lg ${statusColors[s.status] || 'bg-muted text-slate-600'}`}>
+                  <div key={i} className={`px-3 py-2 rounded-lg ${statusColors[s.status] || 'bg-muted text-foreground'}`}>
                     <p className="text-[9px] font-semibold uppercase">{s.status}</p>
                     <p className="text-sm font-bold">{s.count} — {formatMoney(parseFloat(s.total))}</p>
                   </div>
@@ -139,7 +139,7 @@ export default function SalesReports() {
       )}
 
       {!loading && reportType === 'monthly' && data && (
-        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-border">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border">
@@ -151,11 +151,11 @@ export default function SalesReports() {
             </thead>
             <tbody>
               {data.map((row: any) => (
-                <tr key={row.month} className="border-b border-slate-50 hover:bg-muted transition-colors">
+                <tr key={row.month} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3 text-xs font-medium text-foreground">{monthNames[parseInt(row.month) - 1]}</td>
                   <td className="px-4 py-3 text-xs text-right font-bold text-foreground">{formatMoney(parseFloat(row.total))}</td>
-                  <td className="px-4 py-3 text-xs text-center text-slate-600">{row.order_count}</td>
-                  <td className="px-4 py-3 text-xs text-right text-slate-600">{formatMoney(parseFloat(row.avg_order))}</td>
+                  <td className="px-4 py-3 text-xs text-center text-foreground">{row.order_count}</td>
+                  <td className="px-4 py-3 text-xs text-right text-foreground">{formatMoney(parseFloat(row.avg_order))}</td>
                 </tr>
               ))}
             </tbody>
@@ -164,7 +164,7 @@ export default function SalesReports() {
       )}
 
       {!loading && (reportType === 'by-customer' || reportType === 'by-product' || reportType === 'by-employee') && data && (
-        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-border">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border">
@@ -177,10 +177,10 @@ export default function SalesReports() {
             </thead>
             <tbody>
               {data.map((row: any, i: number) => (
-                <tr key={i} className="border-b border-slate-50 hover:bg-muted transition-colors">
+                <tr key={i} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3 text-xs font-medium text-foreground">{row.name}</td>
                   <td className="px-4 py-3 text-xs text-right font-bold text-foreground">{formatMoney(parseFloat(row.total))}</td>
-                  <td className="px-4 py-3 text-xs text-center text-slate-600">{row.order_count || row.qty || row.count}</td>
+                  <td className="px-4 py-3 text-xs text-center text-foreground">{row.order_count || row.qty || row.count}</td>
                 </tr>
               ))}
               {data.length === 0 && (

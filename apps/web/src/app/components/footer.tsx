@@ -27,13 +27,13 @@ const footerLinks = {
 
 export function Footer() {
   return (
-    <footer className="border-t border-slate-100 dark:border-slate-800 bg-muted dark:bg-primary/50">
+    <footer className="border-t border-border dark:border-border bg-muted dark:bg-primary/50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-sm">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-primary flex items-center justify-center shadow-sm">
                 <span className="text-white font-bold text-sm">Y</span>
               </div>
               <span className="text-lg font-bold text-foreground dark:text-white">
@@ -68,7 +68,7 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="mt-12 pt-8 border-t border-border dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-12 pt-8 border-t border-border dark:border-border flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground dark:text-muted-foreground">
             &copy; {new Date().getFullYear()} Yellow ERP. Todos los derechos reservados.
           </p>

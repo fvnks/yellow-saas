@@ -165,18 +165,18 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <div className="w-9 h-9 bg-slate-200 rounded-lg animate-pulse" />
+          <div className="w-9 h-9 bg-muted rounded-lg animate-pulse" />
           <div className="space-y-2">
-            <div className="h-6 w-48 bg-slate-200 rounded animate-pulse" />
-            <div className="h-4 w-32 bg-slate-200 rounded animate-pulse" />
+            <div className="h-6 w-48 bg-muted rounded animate-pulse" />
+            <div className="h-4 w-32 bg-muted rounded animate-pulse" />
           </div>
         </div>
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
-            <Card><CardContent><div className="h-48 bg-slate-100 rounded animate-pulse" /></CardContent></Card>
-            <Card><CardContent><div className="h-32 bg-slate-100 rounded animate-pulse" /></CardContent></Card>
+            <Card><CardContent><div className="h-48 bg-muted rounded animate-pulse" /></CardContent></Card>
+            <Card><CardContent><div className="h-32 bg-muted rounded animate-pulse" /></CardContent></Card>
           </div>
-          <Card><CardContent><div className="h-32 bg-slate-100 rounded animate-pulse" /></CardContent></Card>
+          <Card><CardContent><div className="h-32 bg-muted rounded animate-pulse" /></CardContent></Card>
         </div>
       </div>
     );
@@ -186,14 +186,14 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Link href="/dashboard/purchases/quotations" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+          <Link href="/dashboard/purchases/quotations" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <h1 className="text-xl font-bold text-slate-900">Cotización no encontrada</h1>
+          <h1 className="text-xl font-bold text-foreground">Cotización no encontrada</h1>
         </div>
         <Card>
           <CardContent className="text-center py-12">
-            <p className="text-sm text-slate-500">{error || 'La cotización solicitada no existe.'}</p>
+            <p className="text-sm text-muted-foreground">{error || 'La cotización solicitada no existe.'}</p>
             <Link href="/dashboard/purchases/quotations">
               <Button className="mt-4">Volver a Cotizaciones</Button>
             </Link>
@@ -214,13 +214,13 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/purchases/quotations" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href="/dashboard/purchases/quotations" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold text-slate-900">Detalle de Cotización</h1>
-            <span className="text-sm font-mono text-slate-500">{quotation.number}</span>
+            <h1 className="text-xl font-bold text-foreground">Detalle de Cotización</h1>
+            <span className="text-sm font-mono text-muted-foreground">{quotation.number}</span>
           </div>
           <div className="flex items-center gap-2 mt-1">
             <Badge variant={status.variant}>
@@ -234,7 +234,7 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
         </div>
         <div className="flex items-center gap-2">
           <Link href={`/dashboard/purchases/quotations/${id}/edit`}>
-            <button className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            <button className="bg-primary hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
               <Pencil className="w-4 h-4" />
               Editar
             </button>
@@ -264,7 +264,7 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
           {quotation.status === 'accepted' && (
             <button
               onClick={handleConvertToPO}
-              className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+              className="bg-primary hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
             >
               <ArrowRight className="w-4 h-4" />
               Convertir a Orden de Compra
@@ -291,59 +291,59 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Truck className="w-4 h-4 text-indigo-600" />
+                  <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Truck className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Proveedor</p>
-                    <p className="text-sm font-medium text-slate-900">{quotation.supplier?.name || '—'}</p>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Proveedor</p>
+                    <p className="text-sm font-medium text-foreground">{quotation.supplier?.name || '—'}</p>
                     {quotation.supplier?.email && (
-                      <p className="text-xs text-slate-400">{quotation.supplier.email}</p>
+                      <p className="text-xs text-muted-foreground">{quotation.supplier.email}</p>
                     )}
                     {quotation.supplier?.phone && (
-                      <p className="text-xs text-slate-400">{quotation.supplier.phone}</p>
+                      <p className="text-xs text-muted-foreground">{quotation.supplier.phone}</p>
                     )}
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Calendar className="w-4 h-4 text-indigo-600" />
+                  <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Calendar className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha de Cotización</p>
-                    <p className="text-sm font-medium text-slate-900">{quotation.quote_date?.split('T')[0] || '—'}</p>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha de Cotización</p>
+                    <p className="text-sm font-medium text-foreground">{quotation.quote_date?.split('T')[0] || '—'}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Calendar className="w-4 h-4 text-indigo-600" />
+                  <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Calendar className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha de Vencimiento</p>
-                    <p className={`text-sm font-medium ${isExpired ? 'text-rose-600' : 'text-slate-900'}`}>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha de Vencimiento</p>
+                    <p className={`text-sm font-medium ${isExpired ? 'text-rose-600' : 'text-foreground'}`}>
                       {quotation.expiry_date || '—'}
                     </p>
                   </div>
                 </div>
                 {quotation.valid_until && (
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Clock className="w-4 h-4 text-indigo-600" />
+                    <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Clock className="w-4 h-4 text-primary" />
                     </div>
                     <div>
-                      <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Válido Hasta</p>
-                      <p className="text-sm font-medium text-slate-900">{quotation.valid_until}</p>
+                      <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Válido Hasta</p>
+                      <p className="text-sm font-medium text-foreground">{quotation.valid_until}</p>
                     </div>
                   </div>
                 )}
                 {quotation.supplier?.tax_id && (
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <span className="text-xs font-bold text-indigo-600">RUT</span>
+                    <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <span className="text-xs font-bold text-primary">RUT</span>
                     </div>
                     <div>
-                      <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">RUT Proveedor</p>
-                      <p className="text-sm font-medium text-slate-900">{quotation.supplier.tax_id}</p>
+                      <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">RUT Proveedor</p>
+                      <p className="text-sm font-medium text-foreground">{quotation.supplier.tax_id}</p>
                     </div>
                   </div>
                 )}
@@ -373,8 +373,8 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
                     <TableRow key={index}>
                       <TableCell>
                         <div>
-                          <p className="font-medium text-slate-900">{item.product?.name || 'Producto'}</p>
-                          <p className="text-[9px] text-slate-400 font-mono">{item.product?.sku || item.product_id}</p>
+                          <p className="font-medium text-foreground">{item.product?.name || 'Producto'}</p>
+                          <p className="text-[9px] text-muted-foreground font-mono">{item.product?.sku || item.product_id}</p>
                         </div>
                       </TableCell>
                       <TableCell className="text-center">{item.quantity}</TableCell>
@@ -383,14 +383,14 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
                         {item.discount_percent > 0 ? (
                           <Badge variant="warning">{item.discount_percent}%</Badge>
                         ) : (
-                          <span className="text-xs text-slate-400">-</span>
+                          <span className="text-xs text-muted-foreground">-</span>
                         )}
                       </TableCell>
                       <TableCell className="text-right">
                         {item.tax_amount > 0 ? (
-                          <span className="text-xs text-slate-600">${item.tax_amount.toLocaleString('es-CL')}</span>
+                          <span className="text-xs text-foreground">${item.tax_amount.toLocaleString('es-CL')}</span>
                         ) : (
-                          <span className="text-xs text-slate-400">Exento</span>
+                          <span className="text-xs text-muted-foreground">Exento</span>
                         )}
                       </TableCell>
                       <TableCell className="text-right font-medium">${(item.line_total || item.quantity * item.unit_price).toLocaleString('es-CL')}</TableCell>
@@ -410,26 +410,26 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
               <CardContent className="space-y-4">
                 {quotation.payment_terms && (
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Condiciones de Pago</p>
-                    <p className="text-sm text-slate-700">{quotation.payment_terms}</p>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Condiciones de Pago</p>
+                    <p className="text-sm text-foreground">{quotation.payment_terms}</p>
                   </div>
                 )}
                 {quotation.delivery_terms && (
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Condiciones de Entrega</p>
-                    <p className="text-sm text-slate-700">{quotation.delivery_terms}</p>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Condiciones de Entrega</p>
+                    <p className="text-sm text-foreground">{quotation.delivery_terms}</p>
                   </div>
                 )}
                 {quotation.notes && (
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Notas</p>
-                    <p className="text-sm text-slate-700">{quotation.notes}</p>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Notas</p>
+                    <p className="text-sm text-foreground">{quotation.notes}</p>
                   </div>
                 )}
                 {quotation.internal_notes && (
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Notas Internas</p>
-                    <p className="text-sm text-slate-500 italic">{quotation.internal_notes}</p>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Notas Internas</p>
+                    <p className="text-sm text-muted-foreground italic">{quotation.internal_notes}</p>
                   </div>
                 )}
               </CardContent>
@@ -445,27 +445,27 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
             <CardContent className="space-y-4">
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-500">Subtotal</span>
-                  <span className="font-medium text-slate-900">${subtotal.toLocaleString('es-CL')}</span>
+                  <span className="text-muted-foreground">Subtotal</span>
+                  <span className="font-medium text-foreground">${subtotal.toLocaleString('es-CL')}</span>
                 </div>
                 {quotation.discount_amount > 0 && (
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">Descuento</span>
+                    <span className="text-muted-foreground">Descuento</span>
                     <span className="font-medium text-rose-600">-${quotation.discount_amount.toLocaleString('es-CL')}</span>
                   </div>
                 )}
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-500">IVA (19%)</span>
-                  <span className="font-medium text-slate-900">${taxAmount.toLocaleString('es-CL')}</span>
+                  <span className="text-muted-foreground">IVA (19%)</span>
+                  <span className="font-medium text-foreground">${taxAmount.toLocaleString('es-CL')}</span>
                 </div>
-                <hr className="border-slate-200" />
+                <hr className="border-border" />
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold text-slate-900">Total</span>
-                  <span className="text-xl font-bold text-slate-900">${total.toLocaleString('es-CL')}</span>
+                  <span className="text-sm font-semibold text-foreground">Total</span>
+                  <span className="text-xl font-bold text-foreground">${total.toLocaleString('es-CL')}</span>
                 </div>
               </div>
 
-              <div className="space-y-2 text-xs text-slate-500">
+              <div className="space-y-2 text-xs text-muted-foreground">
                 <div className="flex items-center justify-between">
                   <span>Items:</span>
                   <span className="font-medium">{items.length}</span>
@@ -477,7 +477,7 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
                 {quotation.expiry_date && (
                   <div className="flex items-center justify-between">
                     <span>Vence:</span>
-                    <span className={`font-medium ${isExpired ? 'text-rose-600' : 'text-slate-900'}`}>
+                    <span className={`font-medium ${isExpired ? 'text-rose-600' : 'text-foreground'}`}>
                       {quotation.expiry_date}
                     </span>
                   </div>
@@ -497,16 +497,16 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
 
       {showWarehouseModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w- dark:bg-slate-900md mx-4">
-            <div className="px-6 py-4 border-b border-slate-200">
-              <h2 className="text-lg font-semibold text-slate-900">Seleccionar Bodega</h2>
-              <p className="text-sm text-slate-500 mt-1">Elige la bodega de destino para la orden de compra</p>
+          <div className="bg-white rounded-xl shadow-xl w-full max-w- dark:bg-primarymd mx-4">
+            <div className="px-6 py-4 border-b border-border">
+              <h2 className="text-lg font-semibold text-foreground">Seleccionar Bodega</h2>
+              <p className="text-sm text-muted-foreground mt-1">Elige la bodega de destino para la orden de compra</p>
             </div>
             <div className="p-6">
               <select
                 value={warehouseId}
                 onChange={(e) => setWarehouseId(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               >
                 <option value="">Seleccionar bodega...</option>
                 {warehouses.map(w => (
@@ -514,17 +514,17 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
                 ))}
               </select>
             </div>
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button
                 onClick={() => { setShowWarehouseModal(false); setWarehouseId(''); }}
-                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>
               <button
                 onClick={confirmConvertToPO}
                 disabled={!warehouseId}
-                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                className="bg-primary hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
               >
                 Convertir
               </button>

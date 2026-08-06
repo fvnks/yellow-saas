@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Target, TrendingUp, TrendingDown, Plus, X, Save } from 'lucide-react';
@@ -46,11 +46,11 @@ export default function PurchaseBudgets() {
         </div>
       </div>
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800"><p className="text-[9px] font-semibold text-muted-foreground uppercase">Presupuesto Total</p><p className="text-xl font-bold text-foreground mt-1">{fmt(totalBudget)}</p></div>
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800"><p className="text-[9px] font-semibold text-muted-foreground uppercase">Ejecutado</p><p className="text-xl font-bold text-blue-600 mt-1">{fmt(totalActual)}</p></div>
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800"><p className="text-[9px] font-semibold text-muted-foreground uppercase">Varianza</p><p className={`text-xl font-bold mt-1 ${totalVariance >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{fmt(Math.abs(totalVariance))}</p></div>
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border"><p className="text-[9px] font-semibold text-muted-foreground uppercase">Presupuesto Total</p><p className="text-xl font-bold text-foreground mt-1">{fmt(totalBudget)}</p></div>
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border"><p className="text-[9px] font-semibold text-muted-foreground uppercase">Ejecutado</p><p className="text-xl font-bold text-blue-600 mt-1">{fmt(totalActual)}</p></div>
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border"><p className="text-[9px] font-semibold text-muted-foreground uppercase">Varianza</p><p className={`text-xl font-bold mt-1 ${totalVariance >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{fmt(Math.abs(totalVariance))}</p></div>
       </div>
-      <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-border">
         <table className="w-full">
           <thead><tr className="border-b border-border">
             <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Categoría</th>
@@ -63,9 +63,9 @@ export default function PurchaseBudgets() {
             {budgets.map(b => {
               const pct = b.budget_amount > 0 ? (b.actual_amount / b.budget_amount) * 100 : 0;
               return (
-                <tr key={b.id} className="border-b border-slate-50 hover:bg-muted transition-colors">
+                <tr key={b.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3 text-xs font-medium text-foreground">{b.category}</td>
-                  <td className="px-4 py-3 text-xs text-right text-slate-600">{fmt(b.budget_amount)}</td>
+                  <td className="px-4 py-3 text-xs text-right text-foreground">{fmt(b.budget_amount)}</td>
                   <td className="px-4 py-3 text-xs text-right font-bold text-foreground">{fmt(b.actual_amount)}</td>
                   <td className="px-4 py-3 text-xs text-right"><span className={`font-bold ${b.variance >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{b.variance >= 0 ? '+' : ''}{fmt(b.variance)}</span></td>
                   <td className="px-4 py-3 text-center"><span className={`inline-flex px-2 py-0.5 rounded-full text-[9px] font-semibold ${pct > 100 ? 'bg-red-50 text-red-700' : pct > 80 ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>{pct.toFixed(0)}%</span></td>
@@ -79,7 +79,7 @@ export default function PurchaseBudgets() {
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
-            <div className="px-6 py-4 border-b border-border flex items-center justify-between"><h2 className="text-lg font-semibold text-foreground">Nuevo Presupuesto</h2><button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-slate-600"><X className="w-5 h-5" /></button></div>
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between"><h2 className="text-lg font-semibold text-foreground">Nuevo Presupuesto</h2><button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button></div>
             <div className="p-6 space-y-4">
               <div><label className="block text-xs font-medium text-foreground mb-1">Categoría</label><input type="text" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="Materia Prima, Logística..." /></div>
               <div className="grid grid-cols-2 gap-3">
@@ -89,7 +89,7 @@ export default function PurchaseBudgets() {
               <div><label className="block text-xs font-medium text-foreground mb-1">Monto ($)</label><input type="number" value={form.budget_amount} onChange={e => setForm({ ...form, budget_amount: e.target.value })} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="5000000" /></div>
             </div>
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
-              <button onClick={() => setShowForm(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={() => setShowForm(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={!form.category} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors disabled:opacity-50"><Save className="w-3.5 h-3.5" /> Guardar</button>
             </div>
           </div>

@@ -7,9 +7,9 @@ import { getApiClient } from '@/lib/api-client';
 
 const costTypeConfig: Record<string, { label: string; color: string }> = {
   freight: { label: 'Flete', color: 'bg-blue-100 text-blue-700' },
-  insurance: { label: 'Seguro', color: 'bg-indigo-100 text-indigo-700' },
+  insurance: { label: 'Seguro', color: 'bg-blue-50 text-primary' },
   customs_duty: { label: 'Arancel', color: 'bg-amber-100 text-amber-700' },
-  handling: { label: 'Manipuleo', color: 'bg-purple-100 text-purple-700' },
+  handling: { label: 'Manipuleo', color: 'bg-blue-50 text-blue-700' },
   other: { label: 'Otro', color: 'bg-muted text-foreground' },
 };
 
@@ -48,7 +48,7 @@ export default function LandedCostPage() {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Link href="/dashboard/bodega" className="p-2 hover:bg-muted rounded-lg transition-colors">
-          <ArrowLeft className="w-5 h-5 text-slate-600" />
+          <ArrowLeft className="w-5 h-5 text-foreground" />
         </Link>
         <div className="flex-1">
           <h1 className="text-xl font-bold text-foreground">Costos Aterrizados</h1>
@@ -56,7 +56,7 @@ export default function LandedCostPage() {
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -75,11 +75,11 @@ export default function LandedCostPage() {
                 <tr><td colSpan={7} className="px-4 py-12 text-center text-sm text-muted-foreground">Cargando...</td></tr>
               ) : allocations.length === 0 ? (
                 <tr><td colSpan={7} className="px-4 py-12 text-center">
-                  <Package className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+                  <Package className="w-12 h-12 text-foreground mx-auto mb-3" />
                   <p className="text-sm text-muted-foreground">No hay costos aterrizados registrados</p>
                 </td></tr>
               ) : allocations.map(a => (
-                <tr key={a.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <tr key={a.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3 text-xs font-mono text-foreground">{a.id?.slice(0, 8)}...</td>
                   <td className="px-4 py-3 text-xs text-foreground">{a.purchase_order_number || '—'}</td>
                   <td className="px-4 py-3">
@@ -88,7 +88,7 @@ export default function LandedCostPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-xs text-right font-medium text-foreground">${Number(a.amount || 0).toLocaleString('es-CL')}</td>
-                  <td className="px-4 py-3 text-xs text-center text-slate-600 capitalize">{a.allocation_method || 'value'}</td>
+                  <td className="px-4 py-3 text-xs text-center text-foreground capitalize">{a.allocation_method || 'value'}</td>
                   <td className="px-4 py-3 text-center">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${statusColors[a.status] || 'bg-muted text-foreground'}`}>
                       {a.status || 'draft'}

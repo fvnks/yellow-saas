@@ -110,9 +110,9 @@ export default function EditRecetaPage() {
   if (loading) {
     return (
       <div className="space-y-6 max-w-4xl">
-        <div className="h-6 w-48 bg-slate-200 rounded animate-pulse" />
-        <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4">
-          {[1,2,3].map(i => <div key={i} className="h-10 bg-slate-100 rounded-lg animate-pulse" />)}
+        <div className="h-6 w-48 bg-muted rounded animate-pulse" />
+        <div className="bg-card border border-border rounded-xl p-6 space-y-4">
+          {[1,2,3].map(i => <div key={i} className="h-10 bg-muted rounded-lg animate-pulse" />)}
         </div>
       </div>
     );
@@ -122,42 +122,42 @@ export default function EditRecetaPage() {
     <div className="space-y-6 max-w-4xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Editar Receta</h1>
-          <p className="text-sm text-slate-500 mt-1">Modificar ingredientes, rendimiento y márgenes</p>
+          <h1 className="text-xl font-bold text-foreground">Editar Receta</h1>
+          <p className="text-sm text-muted-foreground mt-1">Modificar ingredientes, rendimiento y márgenes</p>
         </div>
         <Link href={`/recetas/${formulaId}`}
-          className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          className="bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <ArrowLeft className="w-4 h-4" /> Volver
         </Link>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Info */}
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
-          <h3 className="text-sm font-semibold text-slate-900 mb-4">Información General</h3>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6">
+          <h3 className="text-sm font-semibold text-foreground mb-4">Información General</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Nombre *</label>
+              <label className="block text-xs font-medium text-foreground">Nombre *</label>
               <input type="text" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="Ej: Torta de Manjar" />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Producto de Salida</label>
+              <label className="block text-xs font-medium text-foreground">Producto de Salida</label>
               <select value={form.output_product_id} onChange={e => setForm(p => ({ ...p, output_product_id: e.target.value }))}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                 <option value="">Ninguno (solo descontar)</option>
                 {outputProducts.map(p => <option key={p.id} value={p.id}>{p.name} ({p.sku})</option>)}
               </select>
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Rendimiento</label>
+              <label className="block text-xs font-medium text-foreground">Rendimiento</label>
               <div className="flex gap-2">
                 <input type="number" step="0.01" value={form.yield_quantity} onChange={e => setForm(p => ({ ...p, yield_quantity: e.target.value }))}
-                  className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="flex-1 bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="1" />
                 <select value={form.yield_unit} onChange={e => setForm(p => ({ ...p, yield_unit: e.target.value }))}
-                  className="w-24 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                  className="w-24 bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                   <option value="un">un</option>
                   <option value="kg">kg</option>
                   <option value="g">g</option>
@@ -168,38 +168,38 @@ export default function EditRecetaPage() {
               </div>
             </div>
             <div className="space-y-1 md:col-span-2">
-              <label className="block text-xs font-medium text-slate-700">Descripción</label>
+              <label className="block text-xs font-medium text-foreground">Descripción</label>
               <textarea value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} rows={2}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="Descripción de la receta..." />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Margen Mínimo (%)</label>
+              <label className="block text-xs font-medium text-foreground">Margen Mínimo (%)</label>
               <input type="number" step="0.01" min="0" max="100" value={form.min_margin_pct} onChange={e => setForm(p => ({ ...p, min_margin_pct: e.target.value }))}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="Ej: 10" />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Margen Máximo (%)</label>
+              <label className="block text-xs font-medium text-foreground">Margen Máximo (%)</label>
               <input type="number" step="0.01" min="0" max="100" value={form.max_margin_pct} onChange={e => setForm(p => ({ ...p, max_margin_pct: e.target.value }))}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="Ej: 60" />
             </div>
           </div>
         </div>
 
         {/* Ingredients */}
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-slate-900">Ingredientes</h3>
+            <h3 className="text-sm font-semibold text-foreground">Ingredientes</h3>
             <button type="button" onClick={addIngredient}
-              className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
+              className="bg-card border border-border hover:bg-muted text-foreground px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
               <Plus className="w-3.5 h-3.5" /> Agregar
             </button>
           </div>
 
           <div className="space-y-3">
-            <div className="grid grid-cols-12 gap-2 text-[9px] font-semibold text-slate-500 uppercase tracking-wider px-1">
+            <div className="grid grid-cols-12 gap-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider px-1">
               <div className="col-span-5">Producto</div>
               <div className="col-span-3">Cantidad</div>
               <div className="col-span-2">Unidad</div>
@@ -209,19 +209,19 @@ export default function EditRecetaPage() {
               <div key={i} className="grid grid-cols-12 gap-2 items-center">
                 <div className="col-span-5">
                   <select value={ing.product_id} onChange={e => updateIngredient(i, 'product_id', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                     <option value="">Seleccionar...</option>
                     {ingredientProducts.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                   </select>
                 </div>
                 <div className="col-span-3">
                   <input type="number" step="0.001" value={ing.quantity} onChange={e => updateIngredient(i, 'quantity', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                     placeholder="0.000" />
                 </div>
                 <div className="col-span-2">
                   <select value={ing.unit} onChange={e => updateIngredient(i, 'unit', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                     <option value="un">un</option>
                     <option value="kg">kg</option>
                     <option value="g">g</option>
@@ -231,7 +231,7 @@ export default function EditRecetaPage() {
                 </div>
                 <div className="col-span-2 flex justify-center">
                   <button type="button" onClick={() => removeIngredient(i)}
-                    className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-2 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                     disabled={ingredients.length <= 1}>
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -244,11 +244,11 @@ export default function EditRecetaPage() {
         {/* Submit */}
         <div className="flex justify-end gap-3">
           <Link href={`/recetas/${formulaId}`}
-            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            className="bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Cancelar
           </Link>
           <button type="submit" disabled={saving}
-            className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+            className="bg-primary hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
             <Save className="w-4 h-4" /> {saving ? 'Guardando...' : 'Guardar Cambios'}
           </button>
         </div>

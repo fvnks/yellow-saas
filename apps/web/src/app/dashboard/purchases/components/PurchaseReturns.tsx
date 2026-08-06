@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Plus, Search, X, Save, RotateCcw } from 'lucide-react';
@@ -44,7 +44,7 @@ export default function PurchaseReturns() {
   const statusCfg: Record<string, { label: string; color: string; bg: string }> = {
     pending: { label: 'Pendiente', color: 'text-amber-700', bg: 'bg-amber-50' },
     approved: { label: 'Aprobada', color: 'text-blue-700', bg: 'bg-blue-50' },
-    shipped: { label: 'Enviada', color: 'text-indigo-700', bg: 'bg-indigo-50' },
+    shipped: { label: 'Enviada', color: 'text-primary', bg: 'bg-blue-50' },
     received: { label: 'Recibida', color: 'text-emerald-700', bg: 'bg-emerald-50' },
     cancelled: { label: 'Cancelada', color: 'text-red-700', bg: 'bg-red-50' },
   };
@@ -68,10 +68,10 @@ export default function PurchaseReturns() {
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <input type="search" placeholder="Buscar..." value={search} onChange={e => setSearch(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+          className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
       </div>
 
-      <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-border">
         <table className="w-full">
           <thead><tr className="border-b border-border">
             <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">N° Devolución</th>
@@ -84,10 +84,10 @@ export default function PurchaseReturns() {
             {filtered.map(r => {
               const cfg = statusCfg[r.status] || statusCfg.pending;
               return (
-                <tr key={r.id} className="border-b border-slate-50 hover:bg-muted transition-colors">
+                <tr key={r.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3 text-xs font-medium text-foreground">{r.return_number}</td>
                   <td className="px-4 py-3 text-xs text-foreground">{r.supplier_name}</td>
-                  <td className="px-4 py-3 text-xs text-slate-600">{r.return_date?.split('T')[0]}</td>
+                  <td className="px-4 py-3 text-xs text-foreground">{r.return_date?.split('T')[0]}</td>
                   <td className="px-4 py-3 text-xs text-right font-medium text-foreground">{fmt(parseFloat(r.total_amount))}</td>
                   <td className="px-4 py-3 text-center"><span className={`inline-flex px-2 py-0.5 rounded-full text-[9px] font-semibold ${cfg.bg} ${cfg.color}`}>{cfg.label}</span></td>
                 </tr>
@@ -103,7 +103,7 @@ export default function PurchaseReturns() {
           <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primary2xl mx-4 max-h-[90vh] overflow-y-auto">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">Nueva Devolución</h2>
-              <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-slate-600"><X className="w-5 h-5" /></button>
+              <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-3">
@@ -122,16 +122,16 @@ export default function PurchaseReturns() {
                   className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="Producto defectuoso, error..." /></div>
               <div>
                 <div className="flex items-center justify-between mb-2"><label className="text-xs font-medium text-foreground">Items</label>
-                  <button onClick={addItem} className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"><Plus className="w-3 h-3 inline" /> Agregar</button></div>
+                  <button onClick={addItem} className="text-xs text-primary hover:text-primary font-medium"><Plus className="w-3 h-3 inline" /> Agregar</button></div>
                 <div className="space-y-2">
                   {form.items.map((item, i) => (
                     <div key={i} className="flex items-center gap-2 bg-muted rounded-lg p-2">
                       <input type="text" value={item.product_name} onChange={e => updateItem(i, 'product_name', e.target.value)} placeholder="Producto"
-                        className="flex-1 bg-card border border-border rounded px-2 py-1 text-xs text-foreground dark:bg-slate-800 dark:border-slate-700 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-primary/20" />
+                        className="flex-1 bg-card border border-border rounded px-2 py-1 text-xs text-foreground dark:bg-card dark:border-border dark:text-white placeholder-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20" />
                       <input type="number" value={item.quantity} onChange={e => updateItem(i, 'quantity', e.target.value)} placeholder="Cant."
-                        className="w-16 bg-card border border-border rounded px-2 py-1 text-xs text-foreground dark:bg-slate-800 dark:border-slate-700 dark:text-white text-center focus:outline-none focus:ring-1 focus:ring-primary/20" />
+                        className="w-16 bg-card border border-border rounded px-2 py-1 text-xs text-foreground dark:bg-card dark:border-border dark:text-white text-center focus:outline-none focus:ring-1 focus:ring-primary/20" />
                       <input type="number" value={item.unit_price} onChange={e => updateItem(i, 'unit_price', e.target.value)} placeholder="$0"
-                        className="w-24 bg-card border border-border rounded px-2 py-1 text-xs text-foreground dark:bg-slate-800 dark:border-slate-700 dark:text-white text-right focus:outline-none focus:ring-1 focus:ring-primary/20" />
+                        className="w-24 bg-card border border-border rounded px-2 py-1 text-xs text-foreground dark:bg-card dark:border-border dark:text-white text-right focus:outline-none focus:ring-1 focus:ring-primary/20" />
                       {form.items.length > 1 && <button onClick={() => removeItem(i)} className="text-red-400 hover:text-red-600"><X className="w-3.5 h-3.5" /></button>}
                     </div>
                   ))}
@@ -139,7 +139,7 @@ export default function PurchaseReturns() {
               </div>
             </div>
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
-              <button onClick={() => setShowForm(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={() => setShowForm(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={!form.supplier_id}
                 className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors disabled:opacity-50">
                 <Save className="w-3.5 h-3.5" /> Guardar</button>

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { Users, Search, Building2, Mail, Calendar, Shield, Pencil, X, AlertCircle, CheckCircle } from 'lucide-react';
@@ -79,10 +79,10 @@ export default function AdminUsersPage() {
 
   const roleColors: Record<string, string> = {
     owner: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-    admin: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
+    admin: 'bg-primary/10 text-primary/70 border-primary/20',
     manager: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    member: 'bg-muted0/10 text-muted-foreground border-slate-500/20',
-    viewer: 'bg-muted0/10 text-muted-foreground border-slate-500/20',
+    member: 'bg-muted0/10 text-muted-foreground border-border/20',
+    viewer: 'bg-muted0/10 text-muted-foreground border-border/20',
   };
 
   const statusColors: Record<string, string> = {
@@ -111,7 +111,7 @@ export default function AdminUsersPage() {
       )}
 
       {/* Search */}
-      <div className="bg-primary border border-slate-800 rounded-xl p-4">
+      <div className="bg-primary border border-border rounded-xl p-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
@@ -119,16 +119,16 @@ export default function AdminUsersPage() {
             placeholder="Buscar por nombre, email o empresa..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-slate-800/50 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-indigo-500"
+            className="w-full bg-card/50 border border-border rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary"
           />
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-primary border border-slate-800 rounded-xl overflow-hidden">
+      <div className="bg-primary border border-border rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-800">
+            <tr className="border-b border-border">
               <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Usuario</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Empresa</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Rol</th>
@@ -140,9 +140,9 @@ export default function AdminUsersPage() {
           <tbody>
             {loading ? (
               Array.from({ length: 5 }).map((_, i) => (
-                <tr key={i} className="border-b border-slate-800/50">
+                <tr key={i} className="border-b border-border/50">
                   <td colSpan={6} className="px-6 py-4">
-                    <div className="h-4 bg-slate-800 rounded animate-pulse" />
+                    <div className="h-4 bg-card rounded animate-pulse" />
                   </td>
                 </tr>
               ))
@@ -154,10 +154,10 @@ export default function AdminUsersPage() {
               </tr>
             ) : (
               filtered.map((user) => (
-                <tr key={user.id} className="border-b border-slate-800/50 hover:bg-primary/90/30 transition-colors">
+                <tr key={user.id} className="border-b border-border/50 hover:bg-primary/90/30 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 bg-slate-800 rounded-lg flex items-center justify-center">
+                      <div className="w-9 h-9 bg-card rounded-lg flex items-center justify-center">
                         <span className="text-xs font-bold text-white">{user.full_name?.charAt(0) || 'U'}</span>
                       </div>
                       <div>
@@ -169,7 +169,7 @@ export default function AdminUsersPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-1.5 text-sm text-slate-300">
+                    <div className="flex items-center gap-1.5 text-sm text-foreground">
                       <Building2 className="w-3.5 h-3.5 text-muted-foreground" />
                       {user.company_name || '—'}
                     </div>
@@ -194,7 +194,7 @@ export default function AdminUsersPage() {
                         setEditForm({ role: user.role, status: user.status });
                         setMessage({ type: '', text: '' });
                       }}
-                      className="p-1.5 text-muted-foreground hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors"
+                      className="p-1.5 text-muted-foreground hover:text-primary/70 hover:bg-primary/90/10 rounded-lg transition-colors"
                       title="Editar"
                     >
                       <Pencil className="w-4 h-4" />
@@ -210,8 +210,8 @@ export default function AdminUsersPage() {
       {/* Edit Modal */}
       {editUser && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-primary border border-slate-700 rounded-xl shadow-xl w-full max-w-md mx-4">
-            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+          <div className="bg-primary border border-border rounded-xl shadow-xl w-full max-w-md mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-semibold text-white">Editar Usuario</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">{editUser.full_name} — {editUser.email}</p>
@@ -226,7 +226,7 @@ export default function AdminUsersPage() {
                 <select
                   value={editForm.role}
                   onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                 >
                   <option value="owner">Owner</option>
                   <option value="admin">Admin</option>
@@ -240,7 +240,7 @@ export default function AdminUsersPage() {
                 <select
                   value={editForm.status}
                   onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                 >
                   <option value="active">Activo</option>
                   <option value="invited">Invitado</option>
@@ -251,14 +251,14 @@ export default function AdminUsersPage() {
                 <button
                   type="button"
                   onClick={() => setEditUser(null)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm font-medium text-slate-300 transition-colors"
+                  className="px-4 py-2 bg-card hover:bg-primary/90 rounded-lg text-sm font-medium text-foreground transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={editSaving}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
+                  className="px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
                 >
                   {editSaving ? 'Guardando...' : 'Guardar'}
                 </button>

@@ -94,8 +94,8 @@ export default function WarehousesPage() {
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Bodegas</p>
                 <p className="text-2xl font-bold text-foreground mt-1">{warehouses.length}</p>
               </div>
-              <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-                <Warehouse className="w-5 h-5 text-indigo-600" />
+              <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                <Warehouse className="w-5 h-5 text-primary" />
               </div>
             </div>
           </CardContent>
@@ -152,7 +152,7 @@ export default function WarehousesPage() {
                 placeholder="Buscar por nombre, código, ciudad..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
               />
             </div>
             <Select
@@ -231,12 +231,12 @@ export default function WarehousesPage() {
                     <TableCell>
                       <div className="flex items-center justify-center gap-1">
                         <Link href={`/dashboard/bodega/${warehouse.id}/detail`}>
-                          <button className="p-1.5 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors" aria-label="Layout">
+                          <button className="p-1.5 text-muted-foreground hover:text-primary hover:bg-blue-50 rounded transition-colors" aria-label="Layout">
                             <LayoutGrid className="w-4 h-4" />
                           </button>
                         </Link>
                         <Link href={`/dashboard/warehouses/${warehouse.id}/edit`}>
-                          <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors" aria-label="Editar">
+                          <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors" aria-label="Editar">
                             <Edit className="w-4 h-4" />
                           </button>
                         </Link>

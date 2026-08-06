@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select } from '@yellow-erp/ui';
@@ -224,7 +224,7 @@ export default function NewProductPage() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={3}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Descripción del producto..."
                 />
               </div>
@@ -282,13 +282,13 @@ export default function NewProductPage() {
                   <button
                     type="button"
                     onClick={() => setImageUrl('')}
-                    className="absolute top-2 right-2 bg-card rounded-full p-1 shadow-sm border border-border hover:bg-muted dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700"
+                    className="absolute top-2 right-2 bg-card rounded-full p-1 shadow-sm border border-border hover:bg-muted dark:bg-card dark:border-border dark:hover:bg-primary/90"
                   >
                     <X className="w-4 h-4 text-muted-foreground" />
                   </button>
                 </div>
               ) : (
-                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/50 transition-colors">
+                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-primary/40 hover:bg-blue-50/50 transition-colors">
                   <Upload className="w-6 h-6 text-muted-foreground mb-2" />
                   <span className="text-xs text-muted-foreground">{uploadingImage ? 'Subiendo...' : 'Click para subir imagen'}</span>
                   <input
@@ -399,7 +399,7 @@ export default function NewProductPage() {
                 <label className="text-sm font-medium text-foreground">Rastrear Stock</label>
                 <button
                   onClick={() => setTrackStock(!trackStock)}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${trackStock ? 'bg-indigo-600' : 'bg-slate-200'}`}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${trackStock ? 'bg-primary' : 'bg-muted'}`}
                 >
                   <span className={`inline-block h-4 w-4 transform rounded-full bg-card transition-transform ${trackStock ? 'translate-x-6' : 'translate-x-1'}`} />
                 </button>
@@ -414,7 +414,7 @@ export default function NewProductPage() {
                 <label className="text-sm font-medium text-foreground">Activo</label>
                 <button
                   onClick={() => setIsActive(!isActive)}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isActive ? 'bg-indigo-600' : 'bg-slate-200'}`}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isActive ? 'bg-primary' : 'bg-muted'}`}
                 >
                   <span className={`inline-block h-4 w-4 transform rounded-full bg-card transition-transform ${isActive ? 'translate-x-6' : 'translate-x-1'}`} />
                 </button>
@@ -428,8 +428,8 @@ export default function NewProductPage() {
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
-                  <Package className="w-4 h-4 text-indigo-600" />
+                <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <Package className="w-4 h-4 text-primary" />
                 </div>
                 <div>
                   <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">SKU</p>
@@ -451,9 +451,9 @@ export default function NewProductPage() {
                 </span>
               </div>
               {selectedWarehouse && (
-                <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
-                  <Warehouse className="w-4 h-4 text-indigo-600" />
-                  <span className="text-xs text-slate-600">
+                <div className="flex items-center gap-2 pt-2 border-t border-border">
+                  <Warehouse className="w-4 h-4 text-primary" />
+                  <span className="text-xs text-foreground">
                     {warehouses.find(w => w.id === selectedWarehouse)?.name}
                     {selectedZone && ` > ${zones.find(z => z.id === selectedZone)?.name}`}
                     {selectedShelf && ` > ${shelves.find(s => s.id === selectedShelf)?.name}`}

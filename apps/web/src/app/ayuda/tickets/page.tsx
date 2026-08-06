@@ -22,11 +22,11 @@ const statusConfig: Record<string, { label: string; classes: string; icon: any }
   open: { label: 'Abierto', classes: 'bg-blue-50 text-blue-700 border-blue-200', icon: Inbox },
   in_progress: { label: 'En progreso', classes: 'bg-amber-50 text-amber-700 border-amber-200', icon: Loader2 },
   resolved: { label: 'Resuelto', classes: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: CheckCircle2 },
-  closed: { label: 'Cerrado', classes: 'bg-muted text-slate-600 border-border', icon: XCircle },
+  closed: { label: 'Cerrado', classes: 'bg-muted text-foreground border-border', icon: XCircle },
 };
 
 const priorityConfig: Record<string, { label: string; classes: string }> = {
-  low: { label: 'Baja', classes: 'bg-muted text-slate-600 border-border' },
+  low: { label: 'Baja', classes: 'bg-muted text-foreground border-border' },
   medium: { label: 'Media', classes: 'bg-blue-50 text-blue-700 border-blue-200' },
   high: { label: 'Alta', classes: 'bg-amber-50 text-amber-700 border-amber-200' },
   urgent: { label: 'Urgente', classes: 'bg-rose-50 text-rose-700 border-rose-200' },
@@ -132,7 +132,7 @@ export default function MisTicketsPage() {
                 value={form.subject}
                 onChange={e => setForm({ ...form, subject: e.target.value })}
                 placeholder="Describe el problema en pocas palabras"
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
             <div className="space-y-1">
@@ -155,7 +155,7 @@ export default function MisTicketsPage() {
                 onChange={e => setForm({ ...form, message: e.target.value })}
                 placeholder="Explica con detalle qué sucede, qué acción realizabas y qué esperabas..."
                 rows={4}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
             </div>
             <div className="flex justify-end">
@@ -177,7 +177,7 @@ export default function MisTicketsPage() {
               placeholder="Buscar tickets..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full bg-muted border border-border rounded-lg pl-10 pr-4 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg pl-10 pr-4 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -186,7 +186,7 @@ export default function MisTicketsPage() {
                 key={f}
                 onClick={() => { setFilter(f); setPage(1); }}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                  filter === f ? 'bg-primary text-white' : 'bg-muted text-slate-600 hover:bg-slate-200'
+                  filter === f ? 'bg-primary text-white' : 'bg-muted text-foreground hover:bg-muted'
                 }`}
               >
                 {f === 'all' ? 'Todos' : f === 'in_progress' ? 'En progreso' : f === 'open' ? 'Abiertos' : f === 'resolved' ? 'Resueltos' : 'Cerrados'}
@@ -210,14 +210,14 @@ export default function MisTicketsPage() {
           <tbody>
             {loading ? (
               Array.from({ length: 3 }).map((_, i) => (
-                <tr key={i} className="border-b border-slate-100">
-                  <td colSpan={5} className="px-6 py-4"><div className="h-4 bg-slate-200 rounded animate-pulse" /></td>
+                <tr key={i} className="border-b border-border">
+                  <td colSpan={5} className="px-6 py-4"><div className="h-4 bg-muted rounded animate-pulse" /></td>
                 </tr>
               ))
             ) : tickets.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-12 text-center">
-                  <Ticket className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                  <Ticket className="w-12 h-12 text-foreground mx-auto mb-3" />
                   <p className="text-sm text-muted-foreground font-medium">{search || filter !== 'all' ? 'No hay tickets que coincidan' : 'No tienes tickets de soporte'}</p>
                   <p className="text-xs text-muted-foreground mt-1">{openCount > 0 ? 'Puedes crear uno cuando lo necesites' : 'Cuando crees un ticket aparecerá aquí'}</p>
                 </td>
@@ -228,7 +228,7 @@ export default function MisTicketsPage() {
                 const pr = priorityConfig[ticket.priority] || priorityConfig.medium;
                 const StatusIcon = st.icon;
                 return (
-                  <tr key={ticket.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={ticket.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-6 py-4">
                       <p className="text-sm font-medium text-foreground">{ticket.subject}</p>
                       <p className="text-[10px] text-muted-foreground mt-0.5 flex items-center gap-1">
@@ -277,7 +277,7 @@ export default function MisTicketsPage() {
           <button
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page <= 1}
-            className="p-1.5 rounded-lg border border-border text-slate-600 hover:bg-muted transition-colors disabled:opacity-40 disabled:hover:bg-transparent"
+            className="p-1.5 rounded-lg border border-border text-foreground hover:bg-muted transition-colors disabled:opacity-40 disabled:hover:bg-transparent"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
@@ -285,7 +285,7 @@ export default function MisTicketsPage() {
           <button
             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
             disabled={page >= totalPages}
-            className="p-1.5 rounded-lg border border-border text-slate-600 hover:bg-muted transition-colors disabled:opacity-40 disabled:hover:bg-transparent"
+            className="p-1.5 rounded-lg border border-border text-foreground hover:bg-muted transition-colors disabled:opacity-40 disabled:hover:bg-transparent"
           >
             <ChevronRight className="w-4 h-4" />
           </button>

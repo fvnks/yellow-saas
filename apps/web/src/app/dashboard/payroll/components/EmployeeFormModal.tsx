@@ -107,7 +107,7 @@ export default function EmployeeFormModal({ employee, onClose, onSave }: Props) 
           <h2 className="text-lg font-semibold text-foreground">
             {employee ? 'Editar Empleado' : 'Nuevo Empleado'}
           </h2>
-          <button onClick={onClose} className="text-muted-foreground hover:text-slate-600">
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -225,7 +225,7 @@ export default function EmployeeFormModal({ employee, onClose, onSave }: Props) 
               value={form.notes}
               onChange={(e: any) => update('notes', e.target.value)}
               rows={2}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Notas adicionales..."
             />
           </div>

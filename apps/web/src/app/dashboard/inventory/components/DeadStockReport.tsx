@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Skull, Calendar, Package, DollarSign, AlertTriangle, Download } from 'lucide-react';
@@ -67,7 +67,7 @@ export default function DeadStockReport() {
         </div>
         <div className="flex items-center gap-2">
           <select value={days} onChange={e => setDays(Number(e.target.value))}
-            className="bg-card border border-border rounded-lg px-3 py-1.5 text-xs focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20">
+            className="bg-card border border-border rounded-lg px-3 py-1.5 text-xs focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-2 focus:ring-primary/20">
             <option value={30}>30 dias</option>
             <option value={60}>60 dias</option>
             <option value={90}>90 dias</option>
@@ -76,7 +76,7 @@ export default function DeadStockReport() {
           </select>
           {report && report.products.length > 0 && (
             <button onClick={handleExport}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium transition-colors">
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground rounded-lg text-xs font-medium transition-colors">
               <Download className="w-3.5 h-3.5" /> Exportar
             </button>
           )}
@@ -119,12 +119,12 @@ export default function DeadStockReport() {
           {[1, 2, 3].map(i => <div key={i} className="h-16 bg-muted rounded-xl animate-pulse" />)}
         </div>
       ) : !report || report.products.length === 0 ? (
-        <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
-          <Skull className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+        <div className="text-center py-12 bg-muted border border-dashed border-border rounded-xl">
+          <Skull className="w-8 h-8 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">Sin stock muerto en los ultimos {days} dias</p>
         </div>
       ) : (
-        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-border">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -139,11 +139,11 @@ export default function DeadStockReport() {
               </thead>
               <tbody>
                 {report.products.map(p => (
-                  <tr key={p.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={p.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-medium text-foreground">{p.name}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{p.sku}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{p.sku}</td>
                     <td className="px-4 py-3 text-xs text-right font-bold text-foreground">{p.current_stock}</td>
-                    <td className="px-4 py-3 text-xs text-right text-slate-600">${p.cost_price}</td>
+                    <td className="px-4 py-3 text-xs text-right text-foreground">${p.cost_price}</td>
                     <td className="px-4 py-3 text-xs text-right font-medium text-red-700">
                       ${(p.current_stock * p.cost_price).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                     </td>

@@ -119,9 +119,9 @@ export default function CustomerAnalytics({ customerId }: Props) {
 
   if (loading) {
     return (
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-        <div className="px-6 py-4 border-b border-slate-100">
-          <div className="h-4 w-36 bg-slate-200 rounded animate-pulse" />
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+        <div className="px-6 py-4 border-b border-border">
+          <div className="h-4 w-36 bg-muted rounded animate-pulse" />
         </div>
         <div className="p-6 grid grid-cols-2 gap-4">
           {[1, 2, 3, 4, 5, 6].map(i => (
@@ -136,12 +136,12 @@ export default function CustomerAnalytics({ customerId }: Props) {
 
   if (!metrics) {
     return (
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-        <div className="px-6 py-4 border-b border-slate-100">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+        <div className="px-6 py-4 border-b border-border">
           <h3 className="text-sm font-semibold text-foreground">Analytics</h3>
         </div>
         <div className="text-center py-12">
-          <BarChart3 className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+          <BarChart3 className="w-8 h-8 text-foreground mx-auto mb-2" />
           <p className="text-sm text-muted-foreground">Sin datos suficientes para analytics</p>
         </div>
       </div>
@@ -157,26 +157,26 @@ export default function CustomerAnalytics({ customerId }: Props) {
   const maxRevenue = Math.max(...monthlyEntries.map(([, v]) => v), 1);
 
   return (
-    <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-      <div className="px-6 py-4 border-b border-slate-100">
+    <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+      <div className="px-6 py-4 border-b border-border">
         <h3 className="text-sm font-semibold text-foreground">Analytics</h3>
       </div>
 
       <div className="p-6 space-y-6">
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Valor de Vida (LTV)</p>
                 <p className="text-2xl font-bold text-foreground mt-1">{formatCurrency(metrics.ltv)}</p>
               </div>
-              <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-indigo-600" />
+              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                <DollarSign className="w-6 h-6 text-primary" />
               </div>
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Ticket Promedio</p>
@@ -188,7 +188,7 @@ export default function CustomerAnalytics({ customerId }: Props) {
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Frecuencia de Compra</p>
@@ -200,7 +200,7 @@ export default function CustomerAnalytics({ customerId }: Props) {
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Pedidos Totales</p>
@@ -212,31 +212,31 @@ export default function CustomerAnalytics({ customerId }: Props) {
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Primera Compra</p>
                 <p className="text-2xl font-bold text-foreground mt-1">{formatDate(metrics.primeraCompra)}</p>
               </div>
               <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-slate-600" />
+                <Calendar className="w-6 h-6 text-foreground" />
               </div>
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Última Compra</p>
                 <p className="text-2xl font-bold text-foreground mt-1">{formatDate(metrics.ultimaCompra)}</p>
               </div>
               <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-slate-600" />
+                <Calendar className="w-6 h-6 text-foreground" />
               </div>
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Facturas Pagadas</p>
@@ -248,7 +248,7 @@ export default function CustomerAnalytics({ customerId }: Props) {
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Facturas Pendientes</p>
@@ -262,8 +262,8 @@ export default function CustomerAnalytics({ customerId }: Props) {
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-          <div className="px-6 py-4 border-b border-slate-100">
+        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+          <div className="px-6 py-4 border-b border-border">
             <h4 className="text-sm font-semibold text-foreground">Ingresos Mensuales (Últimos 12 meses)</h4>
           </div>
           <div className="p-6">
@@ -276,7 +276,7 @@ export default function CustomerAnalytics({ customerId }: Props) {
                     <span className="text-[8px] text-muted-foreground">{value > 0 ? formatCurrency(value) : ''}</span>
                     <div className="w-full flex justify-center">
                       <div
-                        className="w-full max-w-[40px] bg-indigo-500 rounded-t transition-all"
+                        className="w-full max-w-[40px] bg-primary rounded-t transition-all"
                         style={{ height: `${height}%` }}
                       />
                     </div>

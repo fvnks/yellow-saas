@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
@@ -44,13 +44,13 @@ interface AlertItem {
 }
 
 const countStatus: Record<string, { bg: string; text: string; border: string; label: string }> = {
-  draft: { bg: 'bg-muted', text: 'text-slate-600', border: 'border-border', label: 'Borrador' },
+  draft: { bg: 'bg-muted', text: 'text-foreground', border: 'border-border', label: 'Borrador' },
   in_progress: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200', label: 'En Progreso' },
   completed: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', label: 'Completado' },
   cancelled: { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200', label: 'Cancelado' },
 };
 const transferStatus: Record<string, { bg: string; text: string; border: string; label: string }> = {
-  draft: { bg: 'bg-muted', text: 'text-slate-600', border: 'border-border', label: 'Borrador' },
+  draft: { bg: 'bg-muted', text: 'text-foreground', border: 'border-border', label: 'Borrador' },
   in_transit: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200', label: 'En Transito' },
   delivered: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', label: 'Entregada' },
   cancelled: { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200', label: 'Cancelada' },
@@ -204,15 +204,15 @@ export default function BodegaPage() {
           <p className="text-sm text-muted-foreground mt-1">Gestion completa de inventario</p>
         </div>
         <div className="flex items-center gap-2">
-          <Link href="/dashboard/inventory/stock-report" className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+          <Link href="/dashboard/inventory/stock-report" className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
             <Package className="w-4 h-4" /> Valorizaci�n
           </Link>
-          <Link href="/dashboard/inventory/config" className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+          <Link href="/dashboard/inventory/config" className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
             <Settings className="w-4 h-4" /> Configurar
           </Link>
           {activeTab === 'products' && (
             <>
-              <button onClick={() => setShowScanner(true)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+              <button onClick={() => setShowScanner(true)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
                 <Search className="w-4 h-4" /> Escanear
               </button>
               <Link href="/dashboard/inventory/new" className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
@@ -236,7 +236,7 @@ export default function BodegaPage() {
             </Link>
           )}
           {activeTab === 'alerts' && (
-            <button onClick={loadAll} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            <button onClick={loadAll} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
               <Download className="w-4 h-4" /> Actualizar
             </button>
           )}
@@ -245,46 +245,46 @@ export default function BodegaPage() {
 
       {/* KPIs */}
       <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Productos</p>
               <p className="text-2xl font-bold text-foreground mt-1">{products.length}</p>
             </div>
-            <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center"><Package className="w-5 h-5 text-slate-600" /></div>
+            <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center"><Package className="w-5 h-5 text-foreground" /></div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Bodegas</p>
               <p className="text-2xl font-bold text-foreground mt-1">{warehouses.length}</p>
             </div>
-            <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center"><Warehouse className="w-5 h-5 text-slate-600" /></div>
+            <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center"><Warehouse className="w-5 h-5 text-foreground" /></div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Conteos</p>
               <p className="text-2xl font-bold text-foreground mt-1">{counts.length}</p>
             </div>
-            <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center"><ClipboardCheck className="w-5 h-5 text-slate-600" /></div>
+            <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center"><ClipboardCheck className="w-5 h-5 text-foreground" /></div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Alertas</p>
               <p className="text-2xl font-bold text-rose-600 mt-1">{alerts.length}</p>
             </div>
-            <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center"><AlertTriangle className="w-5 h-5 text-slate-600" /></div>
+            <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center"><AlertTriangle className="w-5 h-5 text-foreground" /></div>
           </div>
         </div>
       </div>
 
       {/* Tabs + Content */}
-      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <ContinuousTabs
           tabs={tabs.map(t => ({ id: t.id, label: t.count > 0 ? `${t.label} (${t.count})` : t.label }))}
           defaultActiveId={activeTab}
@@ -293,7 +293,7 @@ export default function BodegaPage() {
 
         {/* Search bar (except import) */}
         {activeTab !== 'import' && (
-          <div className="p-4 border-b border-slate-100">
+          <div className="p-4 border-b border-border">
             <div className="relative max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input
@@ -307,7 +307,7 @@ export default function BodegaPage() {
                 }
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               />
             </div>
           </div>
@@ -340,10 +340,10 @@ export default function BodegaPage() {
                       {filteredProducts.map(p => {
                         const ss = getStockStatus(p.stock, p.minStock);
                         return (
-                          <tr key={p.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                          <tr key={p.id} className="border-b border-border hover:bg-muted transition-colors">
                             <td className="px-4 py-3 text-xs font-medium text-foreground">{p.name}</td>
                             <td className="px-4 py-3 text-[9px] font-mono text-muted-foreground">{p.sku}</td>
-                            <td className="px-4 py-3 text-xs text-slate-600">{p.category || '-'}</td>
+                            <td className="px-4 py-3 text-xs text-foreground">{p.category || '-'}</td>
                             <td className="px-4 py-3 text-center text-xs font-bold" style={{ color: ss.variant === 'danger' ? '#e11d48' : ss.variant === 'warning' ? '#f59e0b' : '#059669' }}>{p.stock}</td>
                             <td className="px-4 py-3 text-right text-xs text-foreground">{formatCurrency(p.cost)}</td>
                             <td className="px-4 py-3 text-right text-xs text-foreground">{formatCurrency(p.price)}</td>
@@ -356,8 +356,8 @@ export default function BodegaPage() {
                             </td>
                             <td className="px-4 py-3">
                               <div className="flex justify-end gap-1">
-                                <Link href={`/dashboard/inventory/${p.id}`} className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></Link>
-                                <Link href={`/dashboard/inventory/${p.id}/edit`} className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Edit className="w-4 h-4" /></Link>
+                                <Link href={`/dashboard/inventory/${p.id}`} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></Link>
+                                <Link href={`/dashboard/inventory/${p.id}/edit`} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"><Edit className="w-4 h-4" /></Link>
                                 <button onClick={() => handleDeleteProduct(p.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-4 h-4" /></button>
                               </div>
                             </td>
@@ -391,20 +391,20 @@ export default function BodegaPage() {
                     </thead>
                     <tbody>
                       {filteredWarehouses.map(w => (
-                        <tr key={w.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                        <tr key={w.id} className="border-b border-border hover:bg-muted transition-colors">
                           <td className="px-4 py-3 text-xs font-medium text-foreground">{w.name}</td>
                           <td className="px-4 py-3 text-[9px] font-mono text-muted-foreground">{w.code}</td>
                           <td className="px-4 py-3 text-xs text-foreground">{w.city || '-'}</td>
                           <td className="px-4 py-3 text-center text-xs text-foreground">{w.total_products || 0}</td>
                           <td className="px-4 py-3 text-center">
                             <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
-                              w.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-muted text-slate-600 border border-border'
+                              w.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-muted text-foreground border border-border'
                             }`}>{w.is_active ? 'Activa' : 'Inactiva'}</span>
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex justify-end gap-1">
-                              <Link href={`/dashboard/bodega/${w.id}/detail`} className="p-1.5 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"><Grid className="w-4 h-4" /></Link>
-                              <Link href={`/dashboard/warehouses/${w.id}/edit`} className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Edit className="w-4 h-4" /></Link>
+                              <Link href={`/dashboard/bodega/${w.id}/detail`} className="p-1.5 text-muted-foreground hover:text-primary hover:bg-blue-50 rounded transition-colors"><Grid className="w-4 h-4" /></Link>
+                              <Link href={`/dashboard/warehouses/${w.id}/edit`} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"><Edit className="w-4 h-4" /></Link>
                               <button onClick={() => handleDeleteWarehouse(w.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-4 h-4" /></button>
                             </div>
                           </td>
@@ -435,12 +435,12 @@ export default function BodegaPage() {
                         const st = countStatus[c.status] || countStatus.draft;
                         const pct = c.items_count ? Math.round((c.counted_items / c.items_count) * 100) : 0;
                         return (
-                          <tr key={c.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                          <tr key={c.id} className="border-b border-border hover:bg-muted transition-colors">
                             <td className="px-4 py-3 text-xs font-mono font-semibold text-foreground">{c.count_number}</td>
                             <td className="px-4 py-3 text-xs text-foreground">{c.warehouse?.name}</td>
                             <td className="px-4 py-3">
                               <div className="flex items-center gap-2">
-                                <div className="w-16 bg-muted rounded-full h-1.5"><div className="bg-indigo-500 h-1.5 rounded-full" style={{ width: `${pct}%` }} /></div>
+                                <div className="w-16 bg-muted rounded-full h-1.5"><div className="bg-primary h-1.5 rounded-full" style={{ width: `${pct}%` }} /></div>
                                 <span className="text-[9px] text-muted-foreground">{c.counted_items}/{c.items_count}</span>
                               </div>
                             </td>
@@ -448,7 +448,7 @@ export default function BodegaPage() {
                             <td className="px-4 py-3 text-xs text-muted-foreground">{new Date(c.created_at).toLocaleDateString('es-CL')}</td>
                             <td className="px-4 py-3">
                               <div className="flex justify-end">
-                                <Link href={`/dashboard/inventory/counts/${c.id}`} className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></Link>
+                                <Link href={`/dashboard/inventory/counts/${c.id}`} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></Link>
                               </div>
                             </td>
                           </tr>
@@ -479,7 +479,7 @@ export default function BodegaPage() {
                       {filteredTransfers.map(t => {
                         const st = transferStatus[t.status] || transferStatus.draft;
                         return (
-                          <tr key={t.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                          <tr key={t.id} className="border-b border-border hover:bg-muted transition-colors">
                             <td className="px-4 py-3 text-xs font-mono font-semibold text-foreground">{t.transfer_number}</td>
                             <td className="px-4 py-3 text-xs text-foreground">{t.source_warehouse?.name}</td>
                             <td className="px-4 py-3 text-center"><ArrowRight className="w-4 h-4 text-muted-foreground mx-auto" /></td>
@@ -488,7 +488,7 @@ export default function BodegaPage() {
                             <td className="px-4 py-3 text-xs text-muted-foreground">{new Date(t.created_at).toLocaleDateString('es-CL')}</td>
                             <td className="px-4 py-3">
                               <div className="flex justify-end">
-                                <Link href={`/dashboard/transfers/${t.id}`} className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></Link>
+                                <Link href={`/dashboard/transfers/${t.id}`} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></Link>
                               </div>
                             </td>
                           </tr>
@@ -516,7 +516,7 @@ export default function BodegaPage() {
                     </thead>
                     <tbody>
                       {alerts.map((a, i) => (
-                        <tr key={i} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                        <tr key={i} className="border-b border-border hover:bg-muted transition-colors">
                           <td className="px-4 py-3 text-xs font-medium text-foreground">{a.product_name}</td>
                           <td className="px-4 py-3 text-[9px] font-mono text-muted-foreground">{a.product_sku}</td>
                           <td className="px-4 py-3 text-xs text-foreground">{a.warehouse_name}</td>
@@ -543,7 +543,7 @@ export default function BodegaPage() {
                       <p className="text-sm font-medium text-blue-800">Importa productos desde un archivo CSV</p>
                       <p className="text-xs text-blue-600 mt-1">Columnas requeridas: name, sku</p>
                     </div>
-                    <Link href="/dashboard/inventory/import" className="block bg-muted border border-border rounded-xl p-8 text-center hover:border-indigo-400 hover:bg-indigo-50/50 transition-colors">
+                    <Link href="/dashboard/inventory/import" className="block bg-muted border border-border rounded-xl p-8 text-center hover:border-primary/40 hover:bg-blue-50/50 transition-colors">
                       <Upload className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
                       <p className="text-sm font-medium text-foreground">Ir a importar productos</p>
                       <p className="text-xs text-muted-foreground mt-1">Carga masiva con CSV</p>
@@ -556,7 +556,7 @@ export default function BodegaPage() {
               {activeTab === 'valuation' && (
                 <div className="p-6">
                   <div className="max-w-4xl mx-auto">
-                    <Link href="/dashboard/inventory/valuation" className="block bg-muted border border-border rounded-xl p-8 text-center hover:border-indigo-400 hover:bg-indigo-50/50 transition-colors">
+                    <Link href="/dashboard/inventory/valuation" className="block bg-muted border border-border rounded-xl p-8 text-center hover:border-primary/40 hover:bg-blue-50/50 transition-colors">
                       <Calculator className="w-10 h-10 text-emerald-600 mx-auto mb-3" />
                       <p className="text-sm font-medium text-foreground">Valoraci�n de Inventario</p>
                       <p className="text-xs text-muted-foreground mt-1">M�todos FIFO/LIFO/WAC, capas de stock valorizado</p>
@@ -569,7 +569,7 @@ export default function BodegaPage() {
               {activeTab === 'landed-cost' && (
                 <div className="p-6">
                   <div className="max-w-4xl mx-auto">
-                    <Link href="/dashboard/bodega/landed-cost" className="block bg-muted border border-border rounded-xl p-8 text-center hover:border-indigo-400 hover:bg-indigo-50/50 transition-colors">
+                    <Link href="/dashboard/bodega/landed-cost" className="block bg-muted border border-border rounded-xl p-8 text-center hover:border-primary/40 hover:bg-blue-50/50 transition-colors">
                       <Ship className="w-10 h-10 text-blue-600 mx-auto mb-3" />
                       <p className="text-sm font-medium text-foreground">Costos Aterrizados</p>
                       <p className="text-xs text-muted-foreground mt-1">Fletes, seguros, aranceles??? productos</p>
@@ -582,8 +582,8 @@ export default function BodegaPage() {
               {activeTab === 'consignment' && (
                 <div className="p-6">
                   <div className="max-w-4xl mx-auto">
-                    <Link href="/dashboard/bodega/consignment" className="block bg-muted border border-border rounded-xl p-8 text-center hover:border-indigo-400 hover:bg-indigo-50/50 transition-colors">
-                      <Handshake className="w-10 h-10 text-purple-600 mx-auto mb-3" />
+                    <Link href="/dashboard/bodega/consignment" className="block bg-muted border border-border rounded-xl p-8 text-center hover:border-primary/40 hover:bg-blue-50/50 transition-colors">
+                      <Handshake className="w-10 h-10 text-blue-700 mx-auto mb-3" />
                       <p className="text-sm font-medium text-foreground">Consignacion / VMI</p>
                       <p className="text-xs text-muted-foreground mt-1">Acuerdos con proveedores, stock consignado, liquidaciones</p>
                     </Link>
@@ -595,7 +595,7 @@ export default function BodegaPage() {
               {activeTab === 'sii-book' && (
                 <div className="p-6">
                   <div className="max-w-4xl mx-auto">
-                    <Link href="/dashboard/bodega/sii-book" className="block bg-muted border border-border rounded-xl p-8 text-center hover:border-indigo-400 hover:bg-indigo-50/50 transition-colors">
+                    <Link href="/dashboard/bodega/sii-book" className="block bg-muted border border-border rounded-xl p-8 text-center hover:border-primary/40 hover:bg-blue-50/50 transition-colors">
                       <FileText className="w-10 h-10 text-red-600 mx-auto mb-3" />
                       <p className="text-sm font-medium text-foreground">Libro Inventario SII</p>
                       <p className="text-xs text-muted-foreground mt-1">Formato oficial SII Chile mensual/anual</p>

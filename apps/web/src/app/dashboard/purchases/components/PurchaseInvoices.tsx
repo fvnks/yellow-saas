@@ -243,7 +243,7 @@ export default function PurchaseInvoices() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <FileText className="w-4 h-4 text-indigo-500" />
+          <FileText className="w-4 h-4 text-primary" />
           <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Facturas de Compra</span>
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
             <Zap className="w-2.5 h-2.5" /> SII
@@ -257,10 +257,10 @@ export default function PurchaseInvoices() {
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input type="search" placeholder="Buscar por N° factura, proveedor o RUT..." value={search} onChange={e => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+              className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
           <button onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border transition-colors ${showFilters || activeFilterCount > 0 ? 'bg-primary text-white border-slate-900' : 'bg-card border-border text-foreground hover:bg-muted'}`}>
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border transition-colors ${showFilters || activeFilterCount > 0 ? 'bg-primary text-white border-border' : 'bg-card border-border text-foreground hover:bg-muted'}`}>
             <SlidersHorizontal className="w-4 h-4" />
             Filtros
             {activeFilterCount > 0 && (
@@ -302,14 +302,14 @@ export default function PurchaseInvoices() {
               <div>
                 <label className="block text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">N° Desde</label>
                 <input type="text" placeholder="Ej: 1000" value={filters.numberFrom} onChange={e => setFilters(prev => ({ ...prev, numberFrom: e.target.value }))}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
 
               {/* N° factura hasta */}
               <div>
                 <label className="block text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">N° Hasta</label>
                 <input type="text" placeholder="Ej: 9999" value={filters.numberTo} onChange={e => setFilters(prev => ({ ...prev, numberTo: e.target.value }))}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
 
               {/* Estado */}
@@ -359,14 +359,14 @@ export default function PurchaseInvoices() {
             {filtered.map(inv => {
               const st = STATUS_CFG[inv.status] || STATUS_CFG.pending;
               return (
-                <tr key={inv.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <tr key={inv.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3 text-xs font-medium text-foreground font-mono">{inv.invoice_number}</td>
-                  <td className="px-4 py-3"><span className="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">{inv.doc_type || '30'} - {DOC_TYPE_LABELS[inv.doc_type || ''] || 'Factura'}</span></td>
+                  <td className="px-4 py-3"><span className="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-semibold bg-blue-50 text-primary border border-primary/20">{inv.doc_type || '30'} - {DOC_TYPE_LABELS[inv.doc_type || ''] || 'Factura'}</span></td>
                   <td className="px-4 py-3 text-xs text-foreground">{inv.supplier_name}</td>
                   <td className="px-4 py-3 text-xs text-muted-foreground font-mono">{inv.supplier_tax_id}</td>
-                  <td className="px-4 py-3 text-xs text-slate-600">{inv.invoice_date}</td>
-                  <td className="px-4 py-3 text-xs text-right text-slate-600 font-mono">{fmt(inv.subtotal)}</td>
-                  <td className="px-4 py-3 text-xs text-right text-indigo-600 font-mono">{fmt(inv.tax_amount)}</td>
+                  <td className="px-4 py-3 text-xs text-foreground">{inv.invoice_date}</td>
+                  <td className="px-4 py-3 text-xs text-right text-foreground font-mono">{fmt(inv.subtotal)}</td>
+                  <td className="px-4 py-3 text-xs text-right text-primary font-mono">{fmt(inv.tax_amount)}</td>
                   <td className="px-4 py-3 text-xs text-right font-semibold text-foreground font-mono">{fmt(inv.total_amount)}</td>
                   <td className="px-4 py-3 text-center">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${st.bg} ${st.color} border ${st.border}`}>{st.label}</span>
@@ -374,7 +374,7 @@ export default function PurchaseInvoices() {
                   <td className="px-4 py-3">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded-lg transition-colors">
+                        <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
                           <MoreVertical className="w-4 h-4" />
                         </button>
                       </DropdownMenuTrigger>
@@ -386,7 +386,7 @@ export default function PurchaseInvoices() {
                               Recepcionar ante SII
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => openIntegrateModal(inv)}>
-                              <Save className="w-4 h-4 mr-2 text-indigo-500" />
+                              <Save className="w-4 h-4 mr-2 text-primary" />
                               Integrar
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
@@ -425,7 +425,7 @@ export default function PurchaseInvoices() {
                 <h2 className="text-lg font-semibold text-foreground">Integrar Factura #{selectedInvoice.invoice_number}</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">{selectedInvoice.supplier_name} — {selectedInvoice.supplier_tax_id}</p>
               </div>
-              <button onClick={() => setShowIntegrateModal(false)} className="text-muted-foreground hover:text-slate-600"><X className="w-5 h-5" /></button>
+              <button onClick={() => setShowIntegrateModal(false)} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
             </div>
 
             {/* Body */}
@@ -438,7 +438,7 @@ export default function PurchaseInvoices() {
                 </div>
                 <div className="bg-muted border border-border rounded-lg p-3">
                   <p className="text-[9px] font-semibold text-muted-foreground uppercase">IVA</p>
-                  <p className="text-lg font-bold text-indigo-600">{fmt(selectedInvoice.tax_amount)}</p>
+                  <p className="text-lg font-bold text-primary">{fmt(selectedInvoice.tax_amount)}</p>
                 </div>
                 <div className="bg-muted border border-border rounded-lg p-3">
                   <p className="text-[9px] font-semibold text-muted-foreground uppercase">Total</p>
@@ -480,7 +480,7 @@ export default function PurchaseInvoices() {
                     </thead>
                     <tbody>
                       {(selectedInvoice.items || []).map((item, i) => (
-                        <tr key={i} className="border-b border-slate-100">
+                        <tr key={i} className="border-b border-border">
                           <td className="px-4 py-3 text-xs text-foreground">{item.description}</td>
                           <td className="px-4 py-3 text-xs text-right font-medium text-foreground font-mono">{fmt(item.line_total)}</td>
                           <td className="px-4 py-3">

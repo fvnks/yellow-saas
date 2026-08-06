@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { BarChart3, TrendingUp, Package, Users, DollarSign, Calendar, Download, Filter } from 'lucide-react';
@@ -120,14 +120,14 @@ export default function ReportsPage() {
             <option value="quarter">Ultimo trimestre</option>
             <option value="year">Ultimo año</option>
           </select>
-          <button className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+          <button className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
             <Download className="w-4 h-4" /> Exportar
           </button>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <ContinuousTabs
           tabs={tabs.map(t => ({ id: t.id, label: t.label }))}
           defaultActiveId={activeTab}
@@ -143,7 +143,7 @@ export default function ReportsPage() {
             </div>
           ) : !data ? (
             <div className="text-center py-12">
-              <BarChart3 className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+              <BarChart3 className="w-12 h-12 text-foreground mx-auto mb-4" />
               <p className="text-sm text-muted-foreground">No hay datos disponibles</p>
             </div>
           ) : (
@@ -166,9 +166,9 @@ export default function ReportsPage() {
                         )}
                       </p>
                     </div>
-                    <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4">
-                      <p className="text-[9px] font-semibold text-indigo-600 uppercase tracking-wider">Total Periodo</p>
-                      <p className="text-2xl font-bold text-indigo-800 mt-1">
+                    <div className="bg-blue-50 border border-primary/20 rounded-xl p-4">
+                      <p className="text-[9px] font-semibold text-primary uppercase tracking-wider">Total Periodo</p>
+                      <p className="text-2xl font-bold text-primary mt-1">
                         {formatCurrency(data.sales_by_month.reduce((sum, m) => sum + m.total, 0))}
                       </p>
                     </div>
@@ -184,7 +184,7 @@ export default function ReportsPage() {
                           <div key={item.month} className="flex-1 flex flex-col items-center gap-1">
                             <span className="text-[8px] text-muted-foreground">{formatCurrency(item.total)}</span>
                             <div
-                              className="w-full bg-indigo-500 rounded-t transition-all hover:bg-indigo-600"
+                              className="w-full bg-primary rounded-t transition-all hover:bg-primary/90"
                               style={{ height: `${Math.max(height, 4)}%` }}
                             />
                             <span className="text-[8px] text-muted-foreground">{item.month.slice(5)}</span>
@@ -213,7 +213,7 @@ export default function ReportsPage() {
                       </thead>
                       <tbody>
                         {data.top_products.map((product, idx) => (
-                          <tr key={idx} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                          <tr key={idx} className="border-b border-border hover:bg-muted transition-colors">
                             <td className="px-4 py-3 text-xs text-muted-foreground">{idx + 1}</td>
                             <td className="px-4 py-3 text-xs font-medium text-foreground">{product.name}</td>
                             <td className="px-4 py-3 text-[9px] font-mono text-muted-foreground">{product.sku}</td>
@@ -249,7 +249,7 @@ export default function ReportsPage() {
                   <p className="text-xs font-medium text-foreground">Clientes con saldo pendiente</p>
                   {data.customer_balances.length === 0 ? (
                     <div className="text-center py-8">
-                      <Users className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                      <Users className="w-8 h-8 text-foreground mx-auto mb-2" />
                       <p className="text-xs text-muted-foreground">No hay saldos pendientes</p>
                     </div>
                   ) : (
@@ -264,7 +264,7 @@ export default function ReportsPage() {
                         </thead>
                         <tbody>
                           {data.customer_balances.map((customer, idx) => (
-                            <tr key={idx} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                            <tr key={idx} className="border-b border-border hover:bg-muted transition-colors">
                               <td className="px-4 py-3 text-xs font-medium text-foreground">{customer.name}</td>
                               <td className="px-4 py-3 text-xs text-foreground text-right">{formatCurrency(customer.balance)}</td>
                               <td className="px-4 py-3">

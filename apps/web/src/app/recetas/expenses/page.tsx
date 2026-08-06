@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Plus, Search, Trash2, Edit, X, Zap, Droplets, Flame, Home, Shirt, Wrench, Receipt, RefreshCw } from 'lucide-react';
@@ -10,11 +10,11 @@ const EXPENSE_CATEGORIES = [
   { value: 'luz', label: 'Luz', icon: Zap, color: 'text-amber-600 bg-amber-50 border-amber-200' },
   { value: 'agua', label: 'Agua', icon: Droplets, color: 'text-blue-600 bg-blue-50 border-blue-200' },
   { value: 'gas', label: 'Gas', icon: Flame, color: 'text-orange-600 bg-orange-50 border-orange-200' },
-  { value: 'arriendo', label: 'Arriendo', icon: Home, color: 'text-violet-600 bg-violet-50 border-violet-200' },
-  { value: 'ropa', label: 'Ropa/Mantención', icon: Shirt, color: 'text-pink-600 bg-pink-50 border-pink-200' },
+  { value: 'arriendo', label: 'Arriendo', icon: Home, color: 'text-blue-700 bg-blue-50 border-blue-200' },
+  { value: 'ropa', label: 'Ropa/Mantención', icon: Shirt, color: 'text-rose-600 bg-rose-50 border-rose-200' },
   { value: 'herramientas', label: 'Herramientas', icon: Wrench, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
-  { value: 'servicios', label: 'Servicios', icon: Receipt, color: 'text-indigo-600 bg-indigo-50 border-indigo-200' },
-  { value: 'otro', label: 'Otro', icon: Receipt, color: 'text-slate-600 bg-muted border-border' },
+  { value: 'servicios', label: 'Servicios', icon: Receipt, color: 'text-primary bg-blue-50 border-primary/20' },
+  { value: 'otro', label: 'Otro', icon: Receipt, color: 'text-foreground bg-muted border-border' },
 ];
 
 const getCategoryInfo = (cat: string) => EXPENSE_CATEGORIES.find(c => c.value === cat) || EXPENSE_CATEGORIES[EXPENSE_CATEGORIES.length - 1];
@@ -200,7 +200,7 @@ export default function RecipeExpensesPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input type="text" placeholder="Buscar gasto..." value={search} onChange={e => { setSearch(e.target.value); setPage(1); }}
-            className="w-full bg-muted border border-border rounded-lg pl-10 pr-4 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+            className="w-full bg-muted border border-border rounded-lg pl-10 pr-4 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
         </div>
         <select value={categoryFilter} onChange={e => { setCategoryFilter(e.target.value); setPage(1); }}
           className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
@@ -227,7 +227,7 @@ export default function RecipeExpensesPage() {
             <tbody>
               {loading ? (
                 Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i} className="border-b border-slate-100">
+                  <tr key={i} className="border-b border-border">
                     <td colSpan={7} className="px-4 py-3"><div className="h-4 bg-muted rounded animate-pulse" /></td>
                   </tr>
                 ))
@@ -238,8 +238,8 @@ export default function RecipeExpensesPage() {
                   const catInfo = getCategoryInfo(expense.category);
                   const CatIcon = catInfo.icon;
                   return (
-                    <tr key={expense.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
-                      <td className="px-4 py-3 text-xs text-slate-600">
+                    <tr key={expense.id} className="border-b border-border hover:bg-muted transition-colors">
+                      <td className="px-4 py-3 text-xs text-foreground">
                         {new Date(expense.expense_date).toLocaleDateString('es-CL')}
                       </td>
                       <td className="px-4 py-3">
@@ -248,7 +248,7 @@ export default function RecipeExpensesPage() {
                         </span>
                       </td>
                       <td className="px-4 py-3 text-xs font-medium text-foreground">{expense.description}</td>
-                      <td className="px-4 py-3 text-xs text-slate-600">{expense.formula?.name || '—'}</td>
+                      <td className="px-4 py-3 text-xs text-foreground">{expense.formula?.name || '—'}</td>
                       <td className="px-4 py-3">
                         {expense.is_recurring ? (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
@@ -264,7 +264,7 @@ export default function RecipeExpensesPage() {
                       <td className="px-4 py-3 text-right">
                         <div className="flex items-center justify-end gap-1">
                           <button onClick={() => openEdit(expense)}
-                            className="p-1.5 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                            className="p-1.5 text-muted-foreground hover:text-primary hover:bg-blue-50 rounded-lg transition-colors">
                             <Edit className="w-3.5 h-3.5" />
                           </button>
                           <button onClick={() => handleDelete(expense.id)}
@@ -304,7 +304,7 @@ export default function RecipeExpensesPage() {
           <div className="bg-card rounded-xl shadow-xl w-full max-w-lg" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">{editingExpense ? 'Editar Gasto' : 'Nuevo Gasto'}</h2>
-              <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-slate-600">
+              <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -318,7 +318,7 @@ export default function RecipeExpensesPage() {
                     return (
                       <button key={cat.value} type="button" onClick={() => setForm(p => ({ ...p, category: cat.value }))}
                         className={`p-2 rounded-lg border-2 flex flex-col items-center gap-1 transition-all ${
-                          active ? `${cat.color} border-current` : 'border-border text-muted-foreground hover:border-slate-300'
+                          active ? `${cat.color} border-current` : 'border-border text-muted-foreground hover:border-border'
                         }`}>
                         <Icon className="w-4 h-4" />
                         <span className="text-[9px] font-medium">{cat.label}</span>
@@ -330,14 +330,14 @@ export default function RecipeExpensesPage() {
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">Descripción *</label>
                 <input type="text" value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Ej: Factura luz julio" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-foreground">Monto (CLP) *</label>
                   <input type="number" min="0" value={form.amount} onChange={e => setForm(p => ({ ...p, amount: e.target.value }))}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                     placeholder="0" />
                 </div>
                 <div className="space-y-1">
@@ -357,7 +357,7 @@ export default function RecipeExpensesPage() {
               <div className="flex items-center gap-4">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" checked={form.is_recurring} onChange={e => setForm(p => ({ ...p, is_recurring: e.target.checked, recurring_period: e.target.checked ? 'monthly' : '' }))}
-                    className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-primary/20" />
+                    className="w-4 h-4 text-primary rounded border-border focus:ring-primary/20" />
                   <span className="text-xs font-medium text-foreground">Gasto recurrente</span>
                 </label>
                 {form.is_recurring && (
@@ -370,7 +370,7 @@ export default function RecipeExpensesPage() {
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">Notas</label>
                 <textarea value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} rows={2}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Notas adicionales..." />
               </div>
             </div>

@@ -59,10 +59,10 @@ export default function SupplierDetailPage({ params }: { params: { id: string } 
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <div className="w-9 h-9 bg-slate-200 rounded-lg animate-pulse" />
-          <div className="h-6 w-48 bg-slate-200 rounded animate-pulse" />
+          <div className="w-9 h-9 bg-muted rounded-lg animate-pulse" />
+          <div className="h-6 w-48 bg-muted rounded animate-pulse" />
         </div>
-        <Card><CardContent><div className="h-48 bg-slate-100 rounded animate-pulse" /></CardContent></Card>
+        <Card><CardContent><div className="h-48 bg-muted rounded animate-pulse" /></CardContent></Card>
       </div>
     );
   }
@@ -71,14 +71,14 @@ export default function SupplierDetailPage({ params }: { params: { id: string } 
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Link href="/dashboard/suppliers" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+          <Link href="/dashboard/suppliers" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <h1 className="text-xl font-bold text-slate-900">Proveedor no encontrado</h1>
+          <h1 className="text-xl font-bold text-foreground">Proveedor no encontrado</h1>
         </div>
         <Card>
           <CardContent className="text-center py-12">
-            <p className="text-sm text-slate-500">{error || 'El proveedor solicitado no existe.'}</p>
+            <p className="text-sm text-muted-foreground">{error || 'El proveedor solicitado no existe.'}</p>
             <Link href="/dashboard/suppliers">
               <Button className="mt-4">Volver a Proveedores</Button>
             </Link>
@@ -91,21 +91,21 @@ export default function SupplierDetailPage({ params }: { params: { id: string } 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/suppliers" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href="/dashboard/suppliers" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold text-slate-900">{supplier.name}</h1>
+            <h1 className="text-xl font-bold text-foreground">{supplier.name}</h1>
             <Badge variant={supplier.is_active !== false ? 'success' : 'neutral'}>
               {supplier.is_active !== false ? 'Activo' : 'Inactivo'}
             </Badge>
           </div>
-          <p className="text-sm text-slate-500 mt-1">{supplier.tax_id}</p>
+          <p className="text-sm text-muted-foreground mt-1">{supplier.tax_id}</p>
         </div>
         <div className="flex items-center gap-2">
           <Link href={`/dashboard/suppliers/${id}/edit`}>
-            <button className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            <button className="bg-primary hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
               <Pencil className="w-4 h-4" />
               Editar
             </button>
@@ -128,53 +128,53 @@ export default function SupplierDetailPage({ params }: { params: { id: string } 
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Mail className="w-4 h-4 text-indigo-600" />
+              <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Mail className="w-4 h-4 text-primary" />
               </div>
               <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Email</p>
-                <p className="text-sm font-medium text-slate-900">{supplier.email || '—'}</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Email</p>
+                <p className="text-sm font-medium text-foreground">{supplier.email || '—'}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Phone className="w-4 h-4 text-indigo-600" />
+              <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Phone className="w-4 h-4 text-primary" />
               </div>
               <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Teléfono</p>
-                <p className="text-sm font-medium text-slate-900">{supplier.phone || '—'}</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Teléfono</p>
+                <p className="text-sm font-medium text-foreground">{supplier.phone || '—'}</p>
               </div>
             </div>
             {supplier.trade_name && (
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <span className="text-[10px] font-bold text-indigo-600">RS</span>
+                <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <span className="text-[10px] font-bold text-primary">RS</span>
                 </div>
                 <div>
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Razón Social</p>
-                  <p className="text-sm font-medium text-slate-900">{supplier.trade_name}</p>
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Razón Social</p>
+                  <p className="text-sm font-medium text-foreground">{supplier.trade_name}</p>
                 </div>
               </div>
             )}
             {(supplier.city || supplier.region) && (
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-4 h-4 text-indigo-600" />
+                <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <MapPin className="w-4 h-4 text-primary" />
                 </div>
                 <div>
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Ubicación</p>
-                  <p className="text-sm font-medium text-slate-900">{[supplier.city, supplier.region].filter(Boolean).join(', ')}</p>
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Ubicación</p>
+                  <p className="text-sm font-medium text-foreground">{[supplier.city, supplier.region].filter(Boolean).join(', ')}</p>
                 </div>
               </div>
             )}
             {supplier.website && (
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Globe className="w-4 h-4 text-indigo-600" />
+                <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Globe className="w-4 h-4 text-primary" />
                 </div>
                 <div>
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Sitio Web</p>
-                  <a href={supplier.website} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:underline">{supplier.website}</a>
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Sitio Web</p>
+                  <a href={supplier.website} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-primary hover:text-primary hover:underline">{supplier.website}</a>
                 </div>
               </div>
             )}
@@ -187,11 +187,11 @@ export default function SupplierDetailPage({ params }: { params: { id: string } 
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-500">RUT / Tax ID</span>
-              <span className="font-medium text-slate-900 font-mono">{supplier.tax_id || '—'}</span>
+              <span className="text-muted-foreground">RUT / Tax ID</span>
+              <span className="font-medium text-foreground font-mono">{supplier.tax_id || '—'}</span>
             </div>
             <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-500">Estado</span>
+              <span className="text-muted-foreground">Estado</span>
               <Badge variant={supplier.is_active !== false ? 'success' : 'neutral'}>
                 {supplier.is_active !== false ? 'Activo' : 'Inactivo'}
               </Badge>

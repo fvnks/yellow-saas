@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Clock, AlertTriangle, Plus, Trash2, XCircle, CheckCircle, Calendar, Package, X } from 'lucide-react';
@@ -140,30 +140,30 @@ export default function ProductExpirations() {
         <div className="bg-muted border border-border rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-foreground">Registrar Vencimiento</span>
-            <button onClick={() => setShowCreate(false)} className="p-1 hover:bg-slate-200 rounded">
+            <button onClick={() => setShowCreate(false)} className="p-1 hover:bg-muted rounded">
               <X className="w-3 h-3 text-muted-foreground" />
             </button>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <select value={form.product_id} onChange={e => setForm({ ...form, product_id: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white">
               <option value="">Producto...</option>
               {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
             <select value={form.warehouse_id} onChange={e => setForm({ ...form, warehouse_id: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white">
               <option value="">Bodega...</option>
               {warehouses.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}
             </select>
             <input type="text" value={form.batch_number} onChange={e => setForm({ ...form, batch_number: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white"
               placeholder="Lote (opcional)" />
             <input type="number" value={form.quantity} onChange={e => setForm({ ...form, quantity: Number(e.target.value) })}
-              min={1} className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+              min={1} className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white" />
             <input type="date" value={form.expiration_date} onChange={e => setForm({ ...form, expiration_date: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white" />
             <input type="text" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white"
               placeholder="Notas" />
           </div>
           <button onClick={handleCreate}
@@ -174,8 +174,8 @@ export default function ProductExpirations() {
       )}
 
       {items.length === 0 ? (
-        <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
-          <Clock className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+        <div className="text-center py-12 bg-muted border border-dashed border-border rounded-xl">
+          <Clock className="w-8 h-8 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">Sin vencimientos registrados</p>
         </div>
       ) : (
@@ -193,7 +193,7 @@ export default function ProductExpirations() {
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                     isExpired ? 'bg-red-100' : isExpiringSoon ? 'bg-amber-100' : 'bg-muted'
                   }`}>
-                    <Calendar className={`w-4 h-4 ${isExpired ? 'text-red-600' : isExpiringSoon ? 'text-amber-600' : 'text-slate-600'}`} />
+                    <Calendar className={`w-4 h-4 ${isExpired ? 'text-red-600' : isExpiringSoon ? 'text-amber-600' : 'text-foreground'}`} />
                   </div>
                   <div>
                     <p className="text-sm font-medium text-foreground">{item.product_name}</p>

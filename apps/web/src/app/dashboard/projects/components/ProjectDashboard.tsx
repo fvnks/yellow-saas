@@ -55,7 +55,7 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
   }, [project, tasks, milestones, expenses, timesheets, costs]);
 
   const statusColors: Record<string, string> = {
-    todo: 'bg-slate-400',
+    todo: 'bg-muted',
     in_progress: 'bg-blue-500',
     review: 'bg-amber-500',
     done: 'bg-emerald-500',
@@ -67,23 +67,23 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
     <div className="space-y-6">
       {/* KPIs Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Progreso</p>
               <p className="text-2xl font-bold text-foreground mt-1">{progressPercent}%</p>
               <p className="text-[10px] text-muted-foreground">{stats.completedTasks}/{stats.totalTasks} tareas</p>
             </div>
-            <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-indigo-600" />
+            <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+              <BarChart3 className="w-5 h-5 text-primary" />
             </div>
           </div>
           <div className="mt-3 w-full bg-muted rounded-full h-2">
-            <div className="bg-indigo-500 h-2 rounded-full transition-all" style={{ width: `${progressPercent}%` }} />
+            <div className="bg-primary h-2 rounded-full transition-all" style={{ width: `${progressPercent}%` }} />
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Presupuesto</p>
@@ -96,7 +96,7 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Horas</p>
@@ -109,7 +109,7 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Alertas</p>
@@ -125,7 +125,7 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Task Status Breakdown */}
-        <div className="bg-card border border-border rounded-xl p-5 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-5 dark:bg-primary dark:border-border">
           <h3 className="text-sm font-semibold text-foreground mb-4">Estado de Tareas</h3>
           <div className="flex gap-1 h-6 rounded-full overflow-hidden mb-4">
             {Object.entries(stats.taskStatusBreakdown).map(([status, count]) => (
@@ -136,14 +136,14 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
           </div>
           <div className="grid grid-cols-2 gap-3">
             {[
-              { label: 'Por Hacer', count: stats.taskStatusBreakdown.todo, color: 'bg-slate-400' },
+              { label: 'Por Hacer', count: stats.taskStatusBreakdown.todo, color: 'bg-muted' },
               { label: 'En Progreso', count: stats.taskStatusBreakdown.in_progress, color: 'bg-blue-500' },
               { label: 'Revision', count: stats.taskStatusBreakdown.review, color: 'bg-amber-500' },
               { label: 'Completada', count: stats.taskStatusBreakdown.done, color: 'bg-emerald-500' },
             ].map(item => (
               <div key={item.label} className="flex items-center gap-2">
                 <div className={`w-2.5 h-2.5 rounded-full ${item.color}`} />
-                <span className="text-xs text-slate-600">{item.label}</span>
+                <span className="text-xs text-foreground">{item.label}</span>
                 <span className="text-xs font-semibold text-foreground ml-auto">{item.count}</span>
               </div>
             ))}
@@ -151,7 +151,7 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
         </div>
 
         {/* Upcoming Milestones */}
-        <div className="bg-card border border-border rounded-xl p-5 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-5 dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-semibold text-foreground">Proximos Hitos</h3>
             <span className="text-[9px] text-muted-foreground">{stats.completedMilestones}/{stats.totalMilestones} completados</span>
@@ -181,7 +181,7 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-card border border-border rounded-xl p-5 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-5 dark:bg-primary dark:border-border">
           <h3 className="text-sm font-semibold text-foreground mb-4">Actividad Reciente</h3>
           {stats.recentTimesheets.length === 0 ? (
             <p className="text-xs text-muted-foreground text-center py-4">No hay actividad reciente</p>
@@ -192,14 +192,14 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
                 const task = tasks.find(t => t.id === ts.task_id);
                 return (
                   <div key={ts.id} className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center">
-                      <Users className="w-4 h-4 text-indigo-600" />
+                    <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center">
+                      <Users className="w-4 h-4 text-primary" />
                     </div>
                     <div className="flex-1">
                       <p className="text-xs text-foreground">
                         <span className="font-medium">{emp?.full_name || emp?.first_name || 'Empleado'}</span>
                         {' registro '}
-                        <span className="font-semibold text-indigo-600">{parseFloat(ts.hours).toFixed(1)}h</span>
+                        <span className="font-semibold text-primary">{parseFloat(ts.hours).toFixed(1)}h</span>
                         {task && <span> en <span className="font-medium">{task.name}</span></span>}
                       </p>
                       <p className="text-[10px] text-muted-foreground">{ts.date || ts.created_at?.split('T')[0]}</p>
@@ -212,7 +212,7 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
         </div>
 
         {/* Hours Estimation */}
-        <div className="bg-card border border-border rounded-xl p-5 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-5 dark:bg-primary dark:border-border">
           <h3 className="text-sm font-semibold text-foreground mb-4">Estimacion de Horas</h3>
           <div className="space-y-4">
             <div>
@@ -234,7 +234,7 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
                   style={{ width: `${stats.totalEstimated > 0 ? Math.min((stats.totalActual / stats.totalEstimated) * 100, 100) : 0}%` }} />
               </div>
             </div>
-            <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+            <div className="flex items-center gap-2 pt-2 border-t border-border">
               {stats.totalActual > stats.totalEstimated ? (
                 <>
                   <AlertTriangle className="w-4 h-4 text-red-500" />

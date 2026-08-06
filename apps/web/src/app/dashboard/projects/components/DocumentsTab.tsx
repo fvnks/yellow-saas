@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useRef } from 'react';
 import { Badge } from '@yellow-erp/ui';
@@ -128,8 +128,8 @@ export default function DocumentsTab({ projectId, documents, onRefresh }: { proj
       </div>
 
       {documents.length === 0 ? (
-        <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
-          <FileText className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+        <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+          <FileText className="w-12 h-12 text-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">No hay documentos adjuntos</p>
         </div>
       ) : (
@@ -137,7 +137,7 @@ export default function DocumentsTab({ projectId, documents, onRefresh }: { proj
           {documents.map(doc => {
             const FileIcon = getFileIcon(doc.mime_type || doc.file_type);
             return (
-              <div key={doc.id} className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 hover:shadow-md transition-shadow">
+              <div key={doc.id} className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border hover:shadow-md transition-shadow">
                 <div className="flex items-start justify-between mb-3">
                   <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">
                     <FileIcon className="w-5 h-5 text-muted-foreground" />
@@ -158,7 +158,7 @@ export default function DocumentsTab({ projectId, documents, onRefresh }: { proj
                   <Badge variant={categoryConfig[doc.category]?.variant || 'neutral'}>{categoryConfig[doc.category]?.label || doc.category}</Badge>
                   <span className="text-[9px] text-muted-foreground">{formatFileSize(doc.file_size)}</span>
                 </div>
-                <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
                   <span className="text-[9px] text-muted-foreground">{doc.uploaded_by_name || '—'}</span>
                   <span className="text-[9px] text-muted-foreground">{new Date(doc.created_at).toLocaleDateString('es-CL')}</span>
                 </div>
@@ -173,7 +173,7 @@ export default function DocumentsTab({ projectId, documents, onRefresh }: { proj
           <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarylg mx-4">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">Subir Documento</h2>
-              <button onClick={() => { setShowForm(false); setSelectedFile(null); }} className="text-muted-foreground hover:text-slate-600 text-lg">X</button>
+              <button onClick={() => { setShowForm(false); setSelectedFile(null); }} className="text-muted-foreground hover:text-foreground text-lg">X</button>
             </div>
             <div className="p-6 space-y-4">
               <div
@@ -182,7 +182,7 @@ export default function DocumentsTab({ projectId, documents, onRefresh }: { proj
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
                 className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
-                  dragOver ? 'border-indigo-400 bg-indigo-50' : selectedFile ? 'border-emerald-300 bg-emerald-50' : 'border-border hover:border-slate-300'
+                  dragOver ? 'border-primary/40 bg-blue-50' : selectedFile ? 'border-emerald-300 bg-emerald-50' : 'border-border hover:border-border'
                 }`}>
                 <input ref={fileInputRef} type="file" className="hidden" onChange={handleFileSelect}
                   accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.jpg,.jpeg,.png,.gif,.zip,.rar" />
@@ -196,8 +196,8 @@ export default function DocumentsTab({ projectId, documents, onRefresh }: { proj
                   </div>
                 ) : (
                   <div>
-                    <Upload className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-                    <p className="text-sm text-slate-600">Arrastra un archivo aqui o haz click para seleccionar</p>
+                    <Upload className="w-10 h-10 text-foreground mx-auto mb-2" />
+                    <p className="text-sm text-foreground">Arrastra un archivo aqui o haz click para seleccionar</p>
                     <p className="text-[10px] text-muted-foreground mt-1">PDF, Word, Excel, imagenes, etc. (max 10MB)</p>
                   </div>
                 )}
@@ -206,14 +206,14 @@ export default function DocumentsTab({ projectId, documents, onRefresh }: { proj
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">Nombre</label>
                 <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Nombre del documento" />
               </div>
 
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">URL externa (alternativa)</label>
                 <input type="url" value={form.file_url} onChange={e => setForm({ ...form, file_url: e.target.value })}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="https://..." />
                 <p className="text-[10px] text-muted-foreground">Si no subes un archivo, puedes pegar un enlace</p>
               </div>
@@ -235,12 +235,12 @@ export default function DocumentsTab({ projectId, documents, onRefresh }: { proj
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">Descripcion</label>
                 <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={2}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
             </div>
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button onClick={() => { setShowForm(false); setSelectedFile(null); }}
-                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               {selectedFile ? (
                 <button onClick={handleUpload} disabled={uploading}
                   className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { CreditCard, Building2, Users, Edit3, CheckCircle, AlertTriangle, Save, Plus, Trash2, GripVertical } from 'lucide-react';
@@ -168,9 +168,9 @@ export default function AdminBillingPage() {
   };
 
   const planColors: Record<string, string> = {
-    free: 'bg-muted0/10 text-muted-foreground border-slate-500/20',
+    free: 'bg-muted0/10 text-muted-foreground border-border/20',
     starter: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    professional: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
+    professional: 'bg-blue-600/10 text-blue-500 border-blue-500/20',
     enterprise: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
   };
 
@@ -178,10 +178,10 @@ export default function AdminBillingPage() {
     active: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     trial: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
     suspended: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-    cancelled: 'bg-muted0/10 text-muted-foreground border-slate-500/20',
+    cancelled: 'bg-muted0/10 text-muted-foreground border-border/20',
   };
 
-  const getPlanColor = (planName: string) => planColors[planName] || 'bg-muted0/10 text-muted-foreground border-slate-500/20';
+  const getPlanColor = (planName: string) => planColors[planName] || 'bg-muted0/10 text-muted-foreground border-border/20';
 
   return (
     <div className="space-y-6">
@@ -200,12 +200,12 @@ export default function AdminBillingPage() {
       )}
 
       {/* Plans Management */}
-      <div className="bg-primary border border-slate-800 rounded-xl overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+      <div className="bg-primary border border-border rounded-xl overflow-hidden">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <h3 className="text-sm font-semibold text-white">Planes de la Plataforma</h3>
           <button
             onClick={startCreatePlan}
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm font-medium text-white transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors"
           >
             <Plus className="w-4 h-4" />
             Nuevo Plan
@@ -213,7 +213,7 @@ export default function AdminBillingPage() {
         </div>
 
         {showPlanForm && (
-          <div className="px-6 py-4 border-b border-slate-800 bg-slate-800/30">
+          <div className="px-6 py-4 border-b border-border bg-card/30">
             <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
               {editingPlan ? 'Editar Plan' : 'Crear Plan'}
             </h4>
@@ -226,7 +226,7 @@ export default function AdminBillingPage() {
                     value={planForm.name}
                     onChange={(e) => setPlanForm({ ...planForm, name: e.target.value })}
                     placeholder="ej: premium"
-                    className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
+                    className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
                   />
                 </div>
               )}
@@ -237,7 +237,7 @@ export default function AdminBillingPage() {
                   value={planForm.label}
                   onChange={(e) => setPlanForm({ ...planForm, label: e.target.value })}
                   placeholder="ej: Premium"
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
                 />
               </div>
               <div className="space-y-1">
@@ -246,7 +246,7 @@ export default function AdminBillingPage() {
                   type="number"
                   value={planForm.max_users}
                   onChange={(e) => setPlanForm({ ...planForm, max_users: parseInt(e.target.value) || -1 })}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                 />
               </div>
               <div className="space-y-1">
@@ -255,7 +255,7 @@ export default function AdminBillingPage() {
                   type="number"
                   value={planForm.price_monthly}
                   onChange={(e) => setPlanForm({ ...planForm, price_monthly: parseInt(e.target.value) || 0 })}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                 />
               </div>
               <div className="space-y-1">
@@ -264,20 +264,20 @@ export default function AdminBillingPage() {
                   type="number"
                   value={planForm.price_yearly}
                   onChange={(e) => setPlanForm({ ...planForm, price_yearly: parseInt(e.target.value) || 0 })}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                 />
               </div>
               <div className="flex items-end gap-2">
                 <button
                   onClick={handleSavePlan}
                   disabled={saving}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
+                  className="px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
                 >
                   {saving ? 'Guardando...' : 'Guardar'}
                 </button>
                 <button
                   onClick={() => { setShowPlanForm(false); setEditingPlan(null); }}
-                  className="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm font-medium text-white transition-colors"
+                  className="px-4 py-2 bg-muted hover:bg-muted rounded-lg text-sm font-medium text-white transition-colors"
                 >
                   Cancelar
                 </button>
@@ -290,7 +290,7 @@ export default function AdminBillingPage() {
                 value={planForm.features}
                 onChange={(e) => setPlanForm({ ...planForm, features: e.target.value })}
                 placeholder="Inventario completo, CRM, Soporte 24/7"
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
+                className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
               />
             </div>
           </div>
@@ -298,13 +298,13 @@ export default function AdminBillingPage() {
 
         <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {plans.map((plan) => (
-            <div key={plan.id} className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 relative group">
+            <div key={plan.id} className="bg-card/50 border border-border rounded-xl p-5 relative group">
               <div className="flex items-center justify-between mb-3">
                 <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${getPlanColor(plan.name)}`}>
                   {plan.label}
                 </span>
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button onClick={() => startEditPlan(plan)} className="p-1 hover:bg-slate-700 rounded text-muted-foreground hover:text-white transition-colors">
+                  <button onClick={() => startEditPlan(plan)} className="p-1 hover:bg-primary/90 rounded text-muted-foreground hover:text-white transition-colors">
                     <Edit3 className="w-3.5 h-3.5" />
                   </button>
                   <button onClick={() => handleDeletePlan(plan.id)} className="p-1 hover:bg-rose-500/20 rounded text-muted-foreground hover:text-rose-400 transition-colors">
@@ -328,7 +328,7 @@ export default function AdminBillingPage() {
                     </li>
                   ))}
                   {plan.features.length > 3 && (
-                    <li className="text-[10px] text-slate-600">+{plan.features.length - 3} mas</li>
+                    <li className="text-[10px] text-foreground">+{plan.features.length - 3} mas</li>
                   )}
                 </ul>
               )}
@@ -338,13 +338,13 @@ export default function AdminBillingPage() {
       </div>
 
       {/* Companies Table */}
-      <div className="bg-primary border border-slate-800 rounded-xl overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-800">
+      <div className="bg-primary border border-border rounded-xl overflow-hidden">
+        <div className="px-6 py-4 border-b border-border">
           <h3 className="text-sm font-semibold text-white">Empresas ({companies.length})</h3>
         </div>
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-800">
+            <tr className="border-b border-border">
               <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Empresa</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Plan</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Estado</th>
@@ -356,8 +356,8 @@ export default function AdminBillingPage() {
           <tbody>
             {loading ? (
               Array.from({ length: 3 }).map((_, i) => (
-                <tr key={i} className="border-b border-slate-800/50">
-                  <td colSpan={6} className="px-6 py-4"><div className="h-4 bg-slate-800 rounded animate-pulse" /></td>
+                <tr key={i} className="border-b border-border/50">
+                  <td colSpan={6} className="px-6 py-4"><div className="h-4 bg-card rounded animate-pulse" /></td>
                 </tr>
               ))
             ) : companies.length === 0 ? (
@@ -366,10 +366,10 @@ export default function AdminBillingPage() {
               </tr>
             ) : (
               companies.map((company) => (
-                <tr key={company.id} className="border-b border-slate-800/50 hover:bg-primary/90/30 transition-colors">
+                <tr key={company.id} className="border-b border-border/50 hover:bg-primary/90/30 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 bg-slate-800 rounded-lg flex items-center justify-center">
+                      <div className="w-9 h-9 bg-card rounded-lg flex items-center justify-center">
                         <Building2 className="w-4 h-4 text-muted-foreground" />
                       </div>
                       <div>
@@ -383,7 +383,7 @@ export default function AdminBillingPage() {
                       <select
                         value={editForm.plan}
                         onChange={(e) => setEditForm({ ...editForm, plan: e.target.value })}
-                        className="bg-slate-800/50 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                        className="bg-card/50 border border-border rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                       >
                         {plans.map((p) => <option key={p.id} value={p.name}>{p.label}</option>)}
                       </select>
@@ -398,7 +398,7 @@ export default function AdminBillingPage() {
                       <select
                         value={editForm.status}
                         onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-                        className="bg-slate-800/50 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                        className="bg-card/50 border border-border rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                       >
                         <option value="active">Activo</option>
                         <option value="trial">Prueba</option>
@@ -412,7 +412,7 @@ export default function AdminBillingPage() {
                     )}
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-1.5 text-sm text-slate-300">
+                    <div className="flex items-center gap-1.5 text-sm text-foreground">
                       <Users className="w-3.5 h-3.5 text-muted-foreground" />
                       {company.user_count}
                     </div>
@@ -423,7 +423,7 @@ export default function AdminBillingPage() {
                         type="date"
                         value={editForm.trial_ends_at ? editForm.trial_ends_at.split('T')[0] : ''}
                         onChange={(e) => setEditForm({ ...editForm, trial_ends_at: e.target.value })}
-                        className="bg-slate-800/50 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                        className="bg-card/50 border border-border rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                       />
                     ) : (
                       <span className="text-xs text-muted-foreground">
@@ -443,7 +443,7 @@ export default function AdminBillingPage() {
                         </button>
                         <button
                           onClick={() => setEditingId(null)}
-                          className="p-1.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-white transition-colors"
+                          className="p-1.5 bg-muted hover:bg-muted rounded-lg text-white transition-colors"
                         >
                           <span className="text-xs">Cancelar</span>
                         </button>
@@ -451,7 +451,7 @@ export default function AdminBillingPage() {
                     ) : (
                       <button
                         onClick={() => startEdit(company)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-card hover:bg-primary/90 rounded-lg text-xs font-medium text-foreground hover:text-white transition-colors"
                       >
                         <Edit3 className="w-3.5 h-3.5" />
                         Editar

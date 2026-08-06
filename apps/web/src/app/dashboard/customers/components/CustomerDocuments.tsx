@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { Upload, FileText, Trash2, X, File, Image, FileSpreadsheet, FileCode, HardDrive } from 'lucide-react';
@@ -21,12 +21,12 @@ interface CustomerDocumentsProps {
 }
 
 const categoryConfig: Record<string, { label: string; color: string }> = {
-  contract: { label: 'Contrato', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
+  contract: { label: 'Contrato', color: 'bg-blue-50 text-primary border-primary/20' },
   agreement: { label: 'Acuerdo', color: 'bg-blue-50 text-blue-700 border-blue-200' },
   tax_id: { label: 'Tributario', color: 'bg-amber-50 text-amber-700 border-amber-200' },
   invoice: { label: 'Factura', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  certificate: { label: 'Certificado', color: 'bg-purple-50 text-purple-700 border-purple-200' },
-  other: { label: 'Otro', color: 'bg-muted text-slate-600 border-border' },
+  certificate: { label: 'Certificado', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+  other: { label: 'Otro', color: 'bg-muted text-foreground border-border' },
 };
 
 function getFileIcon(mimeType: string | null) {
@@ -137,7 +137,7 @@ export default function CustomerDocuments({ customerId }: CustomerDocumentsProps
         </div>
       ) : documents.length === 0 ? (
         <div className="bg-card border border-border rounded-xl p-8 text-center">
-          <FileText className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+          <FileText className="w-10 h-10 text-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">No hay documentos adjuntos</p>
         </div>
       ) : (
@@ -146,7 +146,7 @@ export default function CustomerDocuments({ customerId }: CustomerDocumentsProps
             const Icon = getFileIcon(doc.mime_type);
             const cat = categoryConfig[doc.category] || categoryConfig.other;
             return (
-              <div key={doc.id} className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800 hover:shadow-sm transition-shadow">
+              <div key={doc.id} className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border hover:shadow-sm transition-shadow">
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center flex-shrink-0">
                     <Icon className="w-5 h-5 text-muted-foreground" />
@@ -184,7 +184,7 @@ export default function CustomerDocuments({ customerId }: CustomerDocumentsProps
           <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarylg mx-4">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">Subir Documento</h2>
-              <button onClick={() => { setShowModal(false); setFileData(null); }} className="text-muted-foreground hover:text-slate-600">
+              <button onClick={() => { setShowModal(false); setFileData(null); }} className="text-muted-foreground hover:text-foreground">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -227,7 +227,7 @@ export default function CustomerDocuments({ customerId }: CustomerDocumentsProps
                   ref={fileInputRef}
                   type="file"
                   onChange={handleFileSelect}
-                  className="w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-muted file:text-foreground hover:file:bg-slate-200 file:cursor-pointer"
+                  className="w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-muted file:text-foreground hover:file:bg-muted file:cursor-pointer"
                 />
                 {fileData && (
                   <p className="text-[10px] text-muted-foreground mt-1">{fileData.name} ({formatFileSize(fileData.size)})</p>
@@ -237,7 +237,7 @@ export default function CustomerDocuments({ customerId }: CustomerDocumentsProps
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button
                 onClick={() => { setShowModal(false); setFileData(null); }}
-                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>
@@ -261,7 +261,7 @@ export default function CustomerDocuments({ customerId }: CustomerDocumentsProps
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowDeleteConfirm(null)}
-                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>

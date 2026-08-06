@@ -116,16 +116,16 @@ export default function NotificationsDropdown() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-80 bg-card border border-border rounded-xl shadow-xl z-50 dark:bg-primary dark:border-slate-800">
+        <div className="absolute right-0 top-full mt-2 w-80 bg-card border border-border rounded-xl shadow-xl z-50 dark:bg-primary dark:border-border">
           <div className="px-4 py-3 border-b border-border flex items-center justify-between">
             <h3 className="text-sm font-semibold text-foreground">Notificaciones</h3>
             <div className="flex items-center gap-2">
               <button onClick={handleCheckDeadlines} disabled={loading}
-                className="text-[10px] text-indigo-600 hover:text-indigo-800 disabled:opacity-50">
+                className="text-[10px] text-primary hover:text-primary disabled:opacity-50">
                 {loading ? 'Verificando...' : 'Verificar plazos'}
               </button>
               {unreadCount > 0 && (
-                <button onClick={handleMarkAllRead} className="text-[10px] text-muted-foreground hover:text-slate-600">
+                <button onClick={handleMarkAllRead} className="text-[10px] text-muted-foreground hover:text-foreground">
                   <CheckCheck className="w-3.5 h-3.5" />
                 </button>
               )}
@@ -135,7 +135,7 @@ export default function NotificationsDropdown() {
           <div className="max-h-80 overflow-y-auto">
             {notifications.length === 0 ? (
               <div className="px-4 py-8 text-center">
-                <Bell className="w-8 h-8 text-slate-200 mx-auto mb-2" />
+                <Bell className="w-8 h-8 text-foreground mx-auto mb-2" />
                 <p className="text-xs text-muted-foreground">Sin notificaciones</p>
               </div>
             ) : (
@@ -143,10 +143,10 @@ export default function NotificationsDropdown() {
                 const Icon = (n.entity_type && entityIcons[n.entity_type]) || Bell;
                 return (
                   <div key={n.id}
-                    className={`px-4 py-3 border-b border-slate-100 hover:bg-muted transition-colors ${!n.read_at ? 'bg-indigo-50/30' : ''}`}>
+                    className={`px-4 py-3 border-b border-border hover:bg-muted transition-colors ${!n.read_at ? 'bg-blue-50/30' : ''}`}>
                     <div className="flex items-start gap-3">
-                      <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${!n.read_at ? 'bg-indigo-100' : 'bg-muted'}`}>
-                        <Icon className={`w-3.5 h-3.5 ${!n.read_at ? 'text-indigo-600' : 'text-muted-foreground'}`} />
+                      <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${!n.read_at ? 'bg-blue-50' : 'bg-muted'}`}>
+                        <Icon className={`w-3.5 h-3.5 ${!n.read_at ? 'text-primary' : 'text-muted-foreground'}`} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-medium text-foreground">{n.title}</p>
@@ -155,7 +155,7 @@ export default function NotificationsDropdown() {
                       </div>
                       {!n.read_at && (
                         <button onClick={() => handleMarkRead(n.id)}
-                          className="p-1 hover:bg-slate-200 rounded transition-colors flex-shrink-0">
+                          className="p-1 hover:bg-muted rounded transition-colors flex-shrink-0">
                           <Check className="w-3 h-3 text-muted-foreground" />
                         </button>
                       )}

@@ -43,7 +43,7 @@ export default function DeadStockPage() {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input type="text" placeholder="Buscar producto..." value={search} onChange={e => setSearch(e.target.value)}
-            className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+            className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
         </div>
       </div>
 
@@ -65,7 +65,7 @@ export default function DeadStockPage() {
               ) : filtered.length === 0 ? (
                 <tr><td colSpan={5} className="px-4 py-12 text-center text-sm text-muted-foreground">No hay stock muerto</td></tr>
               ) : filtered.map((p, i) => (
-                <tr key={i} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <tr key={i} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3">
                     <p className="text-xs font-medium text-foreground">{p.name || p.product_name}</p>
                     <p className="text-[10px] text-muted-foreground font-mono">{p.sku}</p>

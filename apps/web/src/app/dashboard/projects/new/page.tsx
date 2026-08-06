@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -55,7 +55,7 @@ export default function NewProjectPage() {
       <div className="flex items-center gap-4">
         <Link href="/dashboard/projects">
           <button className="p-2 hover:bg-muted rounded-lg transition-colors">
-            <ArrowLeft className="w-5 h-5 text-slate-600" />
+            <ArrowLeft className="w-5 h-5 text-foreground" />
           </button>
         </Link>
         <div>
@@ -65,18 +65,18 @@ export default function NewProjectPage() {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 space-y-6">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Nombre *</label>
               <input type="text" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="Nombre del proyecto" />
             </div>
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Codigo *</label>
               <input type="text" required value={form.code} onChange={e => setForm({ ...form, code: e.target.value })}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="PRJ-001" />
             </div>
           </div>
@@ -84,7 +84,7 @@ export default function NewProjectPage() {
           <div className="space-y-1">
             <label className="block text-xs font-medium text-foreground">Descripcion</label>
             <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Descripcion del proyecto..." />
           </div>
 
@@ -132,7 +132,7 @@ export default function NewProjectPage() {
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Presupuesto (CLP)</label>
               <input type="number" value={form.budget} onChange={e => setForm({ ...form, budget: e.target.value })}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="0" />
             </div>
             <div className="space-y-1">
@@ -149,7 +149,7 @@ export default function NewProjectPage() {
 
         <div className="flex items-center justify-end gap-3 mt-6">
           <Link href="/dashboard/projects">
-            <button type="button" className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            <button type="button" className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">
               Cancelar
             </button>
           </Link>

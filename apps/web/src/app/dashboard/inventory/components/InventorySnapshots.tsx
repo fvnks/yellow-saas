@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Camera, Calendar, TrendingUp, Package, Download } from 'lucide-react';
@@ -85,7 +85,7 @@ export default function InventorySnapshots() {
         <div className="flex items-center gap-2">
           {snapshots.length > 0 && (
             <button onClick={handleExport}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium transition-colors">
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground rounded-lg text-xs font-medium transition-colors">
               <Download className="w-3.5 h-3.5" /> Exportar
             </button>
           )}
@@ -97,16 +97,16 @@ export default function InventorySnapshots() {
       </div>
 
       {dates.length > 0 && (
-        <div className="bg-card border border-border rounded-xl p-3 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl p-3 dark:bg-primary dark:border-border">
           <div className="flex items-center gap-2 flex-wrap">
             <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
             <button onClick={() => setSelectedDate('')}
-              className={`px-2 py-1 rounded text-xs font-medium transition-colors ${!selectedDate ? 'bg-primary text-white' : 'bg-muted text-slate-600 hover:bg-slate-200'}`}>
+              className={`px-2 py-1 rounded text-xs font-medium transition-colors ${!selectedDate ? 'bg-primary text-white' : 'bg-muted text-foreground hover:bg-muted'}`}>
               Todos
             </button>
             {dates.map(d => (
               <button key={d} onClick={() => setSelectedDate(d)}
-                className={`px-2 py-1 rounded text-xs font-medium transition-colors ${selectedDate === d ? 'bg-primary text-white' : 'bg-muted text-slate-600 hover:bg-slate-200'}`}>
+                className={`px-2 py-1 rounded text-xs font-medium transition-colors ${selectedDate === d ? 'bg-primary text-white' : 'bg-muted text-foreground hover:bg-muted'}`}>
                 {new Date(d).toLocaleDateString('es-CL')}
               </button>
             ))}
@@ -115,14 +115,14 @@ export default function InventorySnapshots() {
       )}
 
       {selectedDate && (
-        <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 flex items-center justify-between">
+        <div className="bg-blue-50 border border-primary/20 rounded-xl p-4 flex items-center justify-between">
           <div>
-            <p className="text-[9px] font-semibold text-indigo-600 uppercase">Valor Total del Dia</p>
+            <p className="text-[9px] font-semibold text-primary uppercase">Valor Total del Dia</p>
             <p className="text-2xl font-bold text-foreground mt-1">
               ${totalValue.toLocaleString('en-US', { minimumFractionDigits: 0 })}
             </p>
           </div>
-          <TrendingUp className="w-6 h-6 text-indigo-400" />
+          <TrendingUp className="w-6 h-6 text-primary/70" />
         </div>
       )}
 
@@ -131,12 +131,12 @@ export default function InventorySnapshots() {
           {[1, 2, 3].map(i => <div key={i} className="h-16 bg-muted rounded-xl animate-pulse" />)}
         </div>
       ) : snapshots.length === 0 ? (
-        <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
-          <Camera className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+        <div className="text-center py-12 bg-muted border border-dashed border-border rounded-xl">
+          <Camera className="w-8 h-8 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">Sin snapshots. Tome uno para guardar el estado actual del inventario.</p>
         </div>
       ) : (
-        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-border">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -151,12 +151,12 @@ export default function InventorySnapshots() {
               </thead>
               <tbody>
                 {snapshots.map((s, i) => (
-                  <tr key={i} className="border-b border-slate-100 hover:bg-muted transition-colors">
-                    <td className="px-4 py-3 text-xs text-slate-600">{new Date(s.snapshot_date).toLocaleDateString('es-CL')}</td>
+                  <tr key={i} className="border-b border-border hover:bg-muted transition-colors">
+                    <td className="px-4 py-3 text-xs text-foreground">{new Date(s.snapshot_date).toLocaleDateString('es-CL')}</td>
                     <td className="px-4 py-3 text-xs font-medium text-foreground">{s.product_name}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{s.warehouse_name}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{s.warehouse_name}</td>
                     <td className="px-4 py-3 text-xs text-right font-bold text-foreground">{s.quantity}</td>
-                    <td className="px-4 py-3 text-xs text-right text-slate-600">${s.unit_cost}</td>
+                    <td className="px-4 py-3 text-xs text-right text-foreground">${s.unit_cost}</td>
                     <td className="px-4 py-3 text-xs text-right font-medium text-foreground">
                       ${s.total_value.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                     </td>

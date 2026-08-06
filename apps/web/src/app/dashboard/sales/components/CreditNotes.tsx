@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { FileText, Plus, Trash2, Eye, Printer, Download, X } from 'lucide-react';
@@ -31,7 +31,7 @@ interface CreditNote {
 }
 
 const statusConfig: Record<string, { label: string; color: string; bg: string }> = {
-  draft: { label: 'Borrador', color: 'text-slate-600', bg: 'bg-muted border-border' },
+  draft: { label: 'Borrador', color: 'text-foreground', bg: 'bg-muted border-border' },
   issued: { label: 'Emitida', color: 'text-blue-700', bg: 'bg-blue-50 border-blue-200' },
   applied: { label: 'Aplicada', color: 'text-emerald-700', bg: 'bg-emerald-50 border-emerald-200' },
   cancelled: { label: 'Anulada', color: 'text-red-700', bg: 'bg-red-50 border-red-200' },
@@ -170,26 +170,26 @@ export default function CreditNotes() {
         <div className="bg-muted border border-border rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-foreground">Nueva Nota de Credito</span>
-            <button onClick={() => setShowCreate(false)} className="p-1 hover:bg-slate-200 rounded"><X className="w-3 h-3 text-muted-foreground" /></button>
+            <button onClick={() => setShowCreate(false)} className="p-1 hover:bg-muted rounded"><X className="w-3 h-3 text-muted-foreground" /></button>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <select value={form.customer_id} onChange={e => { setForm({ ...form, customer_id: e.target.value }); loadInvoices(e.target.value); }}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white">
               <option value="">Cliente...</option>
               {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
             <select value={form.invoice_id} onChange={e => setForm({ ...form, invoice_id: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white">
               <option value="">Factura referenciada (opcional)</option>
               {invoices.map(i => <option key={i.id} value={i.id}>{i.invoice_number} - ${i.total_amount}</option>)}
             </select>
             <input type="text" value={form.reason} onChange={e => setForm({ ...form, reason: e.target.value })}
-              className="col-span-2 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+              className="col-span-2 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white"
               placeholder="Motivo de la nota de credito" />
             <input type="date" value={form.credit_date} onChange={e => setForm({ ...form, credit_date: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white" />
             <input type="text" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white"
               placeholder="Notas" />
           </div>
 
@@ -201,18 +201,18 @@ export default function CreditNotes() {
                   const prod = products.find(p => p.id === e.target.value);
                   updateItem(idx, 'product_id', e.target.value);
                   if (prod) { updateItem(idx, 'unit_price', prod.sale_price || 0); updateItem(idx, 'description', prod.name); }
-                }} className="flex-1 bg-card border border-border rounded-lg px-3 py-2 text-xs focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20">
+                }} className="flex-1 bg-card border border-border rounded-lg px-3 py-2 text-xs focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-2 focus:ring-primary/20">
                   <option value="">Producto...</option>
                   {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                 </select>
                 <input type="number" value={item.quantity} onChange={e => updateItem(idx, 'quantity', Number(e.target.value))} min={0.01}
-                  className="w-16 bg-card border border-border rounded-lg px-2 py-2 text-xs text-right focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20" />
+                  className="w-16 bg-card border border-border rounded-lg px-2 py-2 text-xs text-right focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-2 focus:ring-primary/20" />
                 <input type="number" value={item.unit_price} onChange={e => updateItem(idx, 'unit_price', Number(e.target.value))}
-                  className="w-24 bg-card border border-border rounded-lg px-2 py-2 text-xs text-right focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20" />
+                  className="w-24 bg-card border border-border rounded-lg px-2 py-2 text-xs text-right focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-2 focus:ring-primary/20" />
                 <button onClick={() => removeItem(idx)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-3.5 h-3.5" /></button>
               </div>
             ))}
-            <button onClick={addItem} className="text-xs text-indigo-600 hover:text-indigo-800 font-medium">+ Agregar item</button>
+            <button onClick={addItem} className="text-xs text-primary hover:text-primary font-medium">+ Agregar item</button>
           </div>
 
           <div className="flex justify-end gap-6 text-sm">
@@ -229,12 +229,12 @@ export default function CreditNotes() {
       )}
 
       {notes.length === 0 ? (
-        <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
-          <FileText className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+        <div className="text-center py-12 bg-muted border border-dashed border-border rounded-xl">
+          <FileText className="w-8 h-8 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">Sin notas de credito</p>
         </div>
       ) : (
-        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-border">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border">
@@ -251,11 +251,11 @@ export default function CreditNotes() {
               {notes.map(note => {
                 const cfg = statusConfig[note.status] || statusConfig.draft;
                 return (
-                  <tr key={note.id} className="border-b border-slate-100 hover:bg-muted">
+                  <tr key={note.id} className="border-b border-border hover:bg-muted">
                     <td className="px-4 py-3 text-xs font-medium text-foreground">{note.number}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{note.customer_name}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{note.invoice_number || '—'}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{new Date(note.credit_date).toLocaleDateString('es-CL')}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{note.customer_name}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{note.invoice_number || '—'}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{new Date(note.credit_date).toLocaleDateString('es-CL')}</td>
                     <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-full text-[9px] font-semibold ${cfg.bg} ${cfg.color}`}>{cfg.label}</span></td>
                     <td className="px-4 py-3 text-xs text-right font-bold text-foreground">${note.total_amount.toLocaleString()}</td>
                     <td className="px-4 py-3 text-right">

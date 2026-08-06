@@ -115,7 +115,7 @@ export default function SalesQuotationsReportsPage() {
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Cotizaciones</p>
               <p className="text-2xl font-bold text-foreground mt-1">{stats.total}</p>
             </div>
-            <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center"><FileText className="w-6 h-6 text-slate-600" /></div>
+            <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center"><FileText className="w-6 h-6 text-foreground" /></div>
           </div>
         </div>
         <div className="bg-card border border-border rounded-xl p-5">
@@ -141,9 +141,9 @@ export default function SalesQuotationsReportsPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Monto Aceptado</p>
-              <p className="text-2xl font-bold text-indigo-600 mt-1">{fmt(stats.acceptedAmount)}</p>
+              <p className="text-2xl font-bold text-primary mt-1">{fmt(stats.acceptedAmount)}</p>
             </div>
-            <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center"><TrendingUp className="w-6 h-6 text-indigo-600" /></div>
+            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center"><TrendingUp className="w-6 h-6 text-primary" /></div>
           </div>
         </div>
       </div>
@@ -153,7 +153,7 @@ export default function SalesQuotationsReportsPage() {
         <h3 className="text-sm font-semibold text-foreground mb-4">Distribución por Estado</h3>
         <div className="grid grid-cols-5 gap-4">
           {[
-            { label: 'Borrador', count: stats.draft, color: 'bg-muted text-slate-600', icon: FileText },
+            { label: 'Borrador', count: stats.draft, color: 'bg-muted text-foreground', icon: FileText },
             { label: 'Enviadas', count: stats.sent, color: 'bg-blue-50 text-blue-600', icon: Clock },
             { label: 'Aceptadas', count: stats.accepted, color: 'bg-emerald-50 text-emerald-600', icon: CheckCircle2 },
             { label: 'Rechazadas', count: stats.rejected, color: 'bg-rose-50 text-rose-600', icon: XCircle },
@@ -177,7 +177,7 @@ export default function SalesQuotationsReportsPage() {
               <div key={m.month} className="flex items-center gap-3">
                 <span className="text-xs text-muted-foreground w-8">{m.month}</span>
                 <div className="flex-1 bg-muted rounded-full h-5 overflow-hidden">
-                  <div className="h-full bg-indigo-500 rounded-full transition-all" style={{ width: `${(m.amount / maxAmount) * 100}%` }} />
+                  <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${(m.amount / maxAmount) * 100}%` }} />
                 </div>
                 <span className="text-xs text-foreground w-20 text-right">{fmt(m.amount)}</span>
               </div>
@@ -193,7 +193,7 @@ export default function SalesQuotationsReportsPage() {
               <p className="text-sm text-muted-foreground text-center py-4">Sin datos</p>
             ) : topCustomers.map((c, i) => (
               <div key={c.name} className="flex items-center gap-3 p-3 bg-muted rounded-lg">
-                <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center text-xs font-bold text-indigo-600">{i + 1}</div>
+                <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-xs font-bold text-primary">{i + 1}</div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{c.name}</p>
                   <p className="text-xs text-muted-foreground">{c.count} cotizaciones</p>

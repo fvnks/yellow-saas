@@ -86,23 +86,23 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <div className="w-9 h-9 bg-slate-200 rounded-lg animate-pulse" />
+          <div className="w-9 h-9 bg-muted rounded-lg animate-pulse" />
           <div className="space-y-2">
-            <div className="h-6 w-48 bg-slate-200 rounded animate-pulse" />
-            <div className="h-4 w-32 bg-slate-200 rounded animate-pulse" />
+            <div className="h-6 w-48 bg-muted rounded animate-pulse" />
+            <div className="h-4 w-32 bg-muted rounded animate-pulse" />
           </div>
         </div>
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
-              <div className="h-48 bg-slate-100 rounded animate-pulse" />
+            <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border">
+              <div className="h-48 bg-muted rounded animate-pulse" />
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
-              <div className="h-32 bg-slate-100 rounded animate-pulse" />
+            <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border">
+              <div className="h-32 bg-muted rounded animate-pulse" />
             </div>
           </div>
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800">
-            <div className="h-32 bg-slate-100 rounded animate-pulse" />
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border">
+            <div className="h-32 bg-muted rounded animate-pulse" />
           </div>
         </div>
       </div>
@@ -113,16 +113,16 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Link href="/dashboard/purchases/receipts" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+          <Link href="/dashboard/purchases/receipts" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <h1 className="text-xl font-bold text-slate-900">Recepción no encontrada</h1>
+          <h1 className="text-xl font-bold text-foreground">Recepción no encontrada</h1>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-12 dark:bg-slate-900 dark:border-slate-800 text-center">
-          <Package className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <p className="text-sm text-slate-500">{error || 'La recepción solicitada no existe.'}</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-12 dark:bg-primary dark:border-border text-center">
+          <Package className="w-12 h-12 text-foreground mx-auto mb-4" />
+          <p className="text-sm text-muted-foreground">{error || 'La recepción solicitada no existe.'}</p>
           <Link href="/dashboard/purchases/receipts">
-            <button className="mt-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            <button className="mt-4 bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">
               Volver a Recepciones
             </button>
           </Link>
@@ -131,7 +131,7 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
     );
   }
 
-  const status = statusConfig[receipt.status] || { label: receipt.status, color: 'bg-slate-100 text-slate-600 border border-slate-200', icon: Clock };
+  const status = statusConfig[receipt.status] || { label: receipt.status, color: 'bg-muted text-foreground border border-border', icon: Clock };
   const items = receipt.items || [];
   const totalQty = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalOrdered = items.reduce((sum, item) => sum + item.ordered_quantity, 0);
@@ -139,20 +139,20 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/purchases/receipts" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href="/dashboard/purchases/receipts" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold text-slate-900">Detalle de Recepción</h1>
-            <span className="text-sm font-mono text-slate-500">{receipt.receipt_number}</span>
+            <h1 className="text-xl font-bold text-foreground">Detalle de Recepción</h1>
+            <span className="text-sm font-mono text-muted-foreground">{receipt.receipt_number}</span>
           </div>
           <div className="flex items-center gap-2 mt-1">
             <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-semibold ${status.color}`}>
               <status.icon className="w-3 h-3" />
               {status.label}
             </span>
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-muted-foreground">
               {receipt.received_date || 'Sin fecha'}
             </span>
           </div>
@@ -162,7 +162,7 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
             {receipt.status === 'pending' && (
               <button
                 onClick={() => handleStatusChange('received')}
-                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+                className="bg-primary hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
               >
                 <CheckCircle className="w-4 h-4" />
                 Marcar Recibido
@@ -200,81 +200,81 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
-            <div className="px-6 py-4 border-b border-slate-100">
-              <h3 className="text-sm font-semibold text-slate-900">Información de la Recepción</h3>
+          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+            <div className="px-6 py-4 border-b border-border">
+              <h3 className="text-sm font-semibold text-foreground">Información de la Recepción</h3>
             </div>
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Package className="w-4 h-4 text-indigo-600" />
+                  <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Package className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Orden de Compra</p>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Orden de Compra</p>
                     <Link
                       href={`/dashboard/purchases/${receipt.purchase_order_id}`}
-                      className="text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:underline"
+                      className="text-sm font-medium text-primary hover:text-primary hover:underline"
                     >
                       {receipt.order_number || '—'}
                     </Link>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Truck className="w-4 h-4 text-indigo-600" />
+                  <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Truck className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Proveedor</p>
-                    <p className="text-sm font-medium text-slate-900">{receipt.supplier_name || '—'}</p>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Proveedor</p>
+                    <p className="text-sm font-medium text-foreground">{receipt.supplier_name || '—'}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Warehouse className="w-4 h-4 text-indigo-600" />
+                  <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Warehouse className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Bodega</p>
-                    <p className="text-sm font-medium text-slate-900">{receipt.warehouse_name || '—'}</p>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Bodega</p>
+                    <p className="text-sm font-medium text-foreground">{receipt.warehouse_name || '—'}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Calendar className="w-4 h-4 text-indigo-600" />
+                  <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Calendar className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha de Recepción</p>
-                    <p className="text-sm font-medium text-slate-900">{receipt.received_date || '—'}</p>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha de Recepción</p>
+                    <p className="text-sm font-medium text-foreground">{receipt.received_date || '—'}</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
-            <div className="px-6 py-4 border-b border-slate-100">
-              <h3 className="text-sm font-semibold text-slate-900">Items Recibidos</h3>
+          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+            <div className="px-6 py-4 border-b border-border">
+              <h3 className="text-sm font-semibold text-foreground">Items Recibidos</h3>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-slate-200">
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
-                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cant. Pedida</th>
-                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cant. Recibida</th>
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nro. Lote</th>
+                  <tr className="border-b border-border">
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th>
+                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cant. Pedida</th>
+                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cant. Recibida</th>
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nro. Lote</th>
                   </tr>
                 </thead>
                 <tbody>
                   {items.map((item) => (
-                    <tr key={item.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                    <tr key={item.id} className="border-b border-border hover:bg-muted transition-colors">
                       <td className="px-4 py-3">
                         <div>
-                          <p className="text-xs font-medium text-slate-900">{item.product_name || 'Producto'}</p>
-                          <p className="text-[9px] text-slate-400 font-mono">{item.sku || item.product_id}</p>
+                          <p className="text-xs font-medium text-foreground">{item.product_name || 'Producto'}</p>
+                          <p className="text-[9px] text-muted-foreground font-mono">{item.sku || item.product_id}</p>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-center text-xs text-slate-700">{item.ordered_quantity}</td>
+                      <td className="px-4 py-3 text-center text-xs text-foreground">{item.ordered_quantity}</td>
                       <td className="px-4 py-3 text-center">
                         {item.quantity >= item.ordered_quantity ? (
                           <span className="inline-flex items-center gap-1 text-xs text-emerald-600 font-medium">
@@ -285,12 +285,12 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
                           <span className="text-xs font-medium text-amber-600">{item.quantity}</span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-xs text-slate-700 font-mono">{item.batch_number || '—'}</td>
+                      <td className="px-4 py-3 text-xs text-foreground font-mono">{item.batch_number || '—'}</td>
                     </tr>
                   ))}
                   {items.length === 0 && (
                     <tr>
-                      <td colSpan={4} className="px-4 py-8 text-center text-sm text-slate-400">No hay items en esta recepción</td>
+                      <td colSpan={4} className="px-4 py-8 text-center text-sm text-muted-foreground">No hay items en esta recepción</td>
                     </tr>
                   )}
                 </tbody>
@@ -299,46 +299,46 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
           </div>
 
           {receipt.notes && (
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
-              <div className="px-6 py-4 border-b border-slate-100">
-                <h3 className="text-sm font-semibold text-slate-900">Notas</h3>
+            <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+              <div className="px-6 py-4 border-b border-border">
+                <h3 className="text-sm font-semibold text-foreground">Notas</h3>
               </div>
               <div className="p-6">
-                <p className="text-sm text-slate-700">{receipt.notes}</p>
+                <p className="text-sm text-foreground">{receipt.notes}</p>
               </div>
             </div>
           )}
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm sticky dark:bg-slate-900 dark:border-slate-800 top-24">
-            <div className="px-6 py-4 border-b border-slate-100">
-              <h3 className="text-sm font-semibold text-slate-900">Resumen</h3>
+          <div className="bg-card border border-border rounded-xl shadow-sm sticky dark:bg-primary dark:border-border top-24">
+            <div className="px-6 py-4 border-b border-border">
+              <h3 className="text-sm font-semibold text-foreground">Resumen</h3>
             </div>
             <div className="p-6 space-y-4">
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-500">Total Items</span>
-                  <span className="font-medium text-slate-900">{items.length}</span>
+                  <span className="text-muted-foreground">Total Items</span>
+                  <span className="font-medium text-foreground">{items.length}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-500">Unidades Recibidas</span>
-                  <span className="font-medium text-slate-900">{totalQty}</span>
+                  <span className="text-muted-foreground">Unidades Recibidas</span>
+                  <span className="font-medium text-foreground">{totalQty}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-500">Unidades Pedidas</span>
-                  <span className="font-medium text-slate-900">{totalOrdered}</span>
+                  <span className="text-muted-foreground">Unidades Pedidas</span>
+                  <span className="font-medium text-foreground">{totalOrdered}</span>
                 </div>
-                <hr className="border-slate-200" />
+                <hr className="border-border" />
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-500">Progreso</span>
+                  <span className="text-muted-foreground">Progreso</span>
                   <span className={`font-medium ${totalQty >= totalOrdered ? 'text-emerald-600' : 'text-amber-600'}`}>
                     {totalOrdered > 0 ? Math.round((totalQty / totalOrdered) * 100) : 0}%
                   </span>
                 </div>
               </div>
 
-              <div className="space-y-2 text-xs text-slate-500">
+              <div className="space-y-2 text-xs text-muted-foreground">
                 <div className="flex items-center justify-between">
                   <span>Creado:</span>
                   <span className="font-medium">{receipt.created_at?.split('T')[0] || '—'}</span>

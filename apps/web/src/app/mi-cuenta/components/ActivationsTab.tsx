@@ -46,13 +46,13 @@ export default function ActivationsTab() {
       case 'active':
         return { label: 'Activo', icon: CheckCircle2, color: 'text-emerald-500', bgColor: 'bg-emerald-50 text-emerald-700 border border-emerald-200' };
       case 'inactive':
-        return { label: 'Inactivo', icon: XCircle, color: 'text-muted-foreground', bgColor: 'bg-muted text-slate-600 border border-border' };
+        return { label: 'Inactivo', icon: XCircle, color: 'text-muted-foreground', bgColor: 'bg-muted text-foreground border border-border' };
       case 'expired':
         return { label: 'Expirado', icon: Clock, color: 'text-amber-500', bgColor: 'bg-amber-50 text-amber-700 border border-amber-200' };
       case 'cancelled':
         return { label: 'Cancelado', icon: XCircle, color: 'text-rose-500', bgColor: 'bg-rose-50 text-rose-700 border border-rose-200' };
       default:
-        return { label: status, icon: Clock, color: 'text-muted-foreground', bgColor: 'bg-muted text-slate-600 border border-border' };
+        return { label: status, icon: Clock, color: 'text-muted-foreground', bgColor: 'bg-muted text-foreground border border-border' };
     }
   };
 
@@ -69,7 +69,7 @@ export default function ActivationsTab() {
 
       {activations.length === 0 ? (
         <div className="text-center py-12 bg-card border border-border rounded-xl">
-          <History className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+          <History className="w-12 h-12 text-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">No hay activaciones registradas</p>
           <p className="text-xs text-muted-foreground mt-1">Los módulos que actives aparecerán aquí</p>
         </div>
@@ -113,7 +113,7 @@ export default function ActivationsTab() {
                       <span>Cancelado: {new Date(activation.cancelled_at).toLocaleDateString('es-CL')}</span>
                     </div>
                   )}
-                  <span className="px-2 py-0.5 bg-muted text-slate-600 rounded text-[10px] font-medium capitalize">
+                  <span className="px-2 py-0.5 bg-muted text-foreground rounded text-[10px] font-medium capitalize">
                     {activation.category}
                   </span>
                 </div>

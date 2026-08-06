@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -18,7 +18,7 @@ interface Batch {
 const statusMap: Record<string, { bg: string; text: string; border: string; label: string }> = {
   active: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', label: 'Activo' },
   expired: { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200', label: 'Vencido' },
-  consumed: { bg: 'bg-muted', text: 'text-slate-600', border: 'border-border', label: 'Consumido' },
+  consumed: { bg: 'bg-muted', text: 'text-foreground', border: 'border-border', label: 'Consumido' },
 };
 
 export default function BatchesPage() {
@@ -87,7 +87,7 @@ export default function BatchesPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.back()} className="p-2 hover:bg-muted rounded-lg transition-colors"><ArrowLeft className="w-5 h-5 text-slate-600" /></button>
+          <button onClick={() => router.back()} className="p-2 hover:bg-muted rounded-lg transition-colors"><ArrowLeft className="w-5 h-5 text-foreground" /></button>
           <div>
             <h1 className="text-xl font-bold text-foreground">Lotes / Batches</h1>
             <p className="text-sm text-muted-foreground mt-1">Control de lotes y vencimientos</p>
@@ -98,16 +98,16 @@ export default function BatchesPage() {
         </button>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input type="text" placeholder="Buscar lote, producto..." value={search} onChange={e => setSearch(e.target.value)}
-            className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+            className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
         </div>
       </div>
 
       {showNew && (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <h3 className="text-sm font-semibold text-foreground mb-4">Nuevo Lote</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="space-y-1">
@@ -129,7 +129,7 @@ export default function BatchesPage() {
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Numero de Lote *</label>
               <input type="text" value={form.batch_number} onChange={e => setForm({...form, batch_number: e.target.value})}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="LOT-001" />
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="LOT-001" />
             </div>
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Cantidad</label>
@@ -148,13 +148,13 @@ export default function BatchesPage() {
             </div>
           </div>
           <div className="flex justify-end gap-3 mt-4">
-            <button onClick={() => setShowNew(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+            <button onClick={() => setShowNew(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
             <button onClick={handleCreate} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Crear Lote</button>
           </div>
         </div>
       )}
 
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -174,7 +174,7 @@ export default function BatchesPage() {
               ) : filtered.map(b => {
                 const st = statusMap[b.status] || statusMap.active;
                 return (
-                  <tr key={b.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={b.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-mono font-semibold text-foreground">{b.batch_number}</td>
                     <td className="px-4 py-3 text-xs text-foreground">{b.product?.name}</td>
                     <td className="px-4 py-3 text-xs text-foreground">{b.warehouse?.name}</td>

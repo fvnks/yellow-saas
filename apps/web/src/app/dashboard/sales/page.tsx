@@ -294,8 +294,8 @@ function SalesPageContent() {
                 <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Ventas del Mes</p>
                 <p className="text-2xl font-bold text-foreground mt-1">${(totalSales / 1000000).toFixed(1)}M</p>
               </div>
-              <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-indigo-600" />
+              <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                <DollarSign className="w-5 h-5 text-primary" />
               </div>
             </div>
           </CardContent>
@@ -342,7 +342,7 @@ function SalesPageContent() {
       </div>
 
       {/* Module Navigation */}
-      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="flex items-center gap-1 flex-wrap">
           {salesModules.map(m => {
             const isActive = activeModule === m.id;
@@ -353,7 +353,7 @@ function SalesPageContent() {
                 const firstTab = m.tabs[0];
                 if (firstTab) { setActiveTab(firstTab.id); setSearch(''); setStatusFilter('all'); }
               }}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive ? 'bg-primary text-white' : 'text-slate-600 hover:bg-muted'}`}>
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive ? 'bg-primary text-white' : 'text-foreground hover:bg-muted'}`}>
                 <Icon className="w-4 h-4" /> {m.label}
               </button>
             );
@@ -362,11 +362,11 @@ function SalesPageContent() {
       </div>
 
       {/* Sub-tabs for active module */}
-      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="flex items-center gap-1 flex-wrap">
           {salesModules.find(m => m.id === activeModule)?.tabs.map(t => (
             <button key={t.id} onClick={() => { setActiveTab(t.id); setSearch(''); setStatusFilter('all'); }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${activeTab === t.id ? 'bg-primary text-white' : 'text-slate-600 hover:bg-muted border border-border'}`}>
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${activeTab === t.id ? 'bg-primary text-white' : 'text-foreground hover:bg-muted border border-border'}`}>
               {t.label}
             </button>
           ))}
@@ -374,10 +374,10 @@ function SalesPageContent() {
       </div>
 
       {/* Content area */}
-      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         {/* Filters - hidden for POS tab */}
         {activeTab !== 'pos' && (
-          <div className="p-4 border-b border-slate-100">
+          <div className="p-4 border-b border-border">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative flex-1 max-w-md">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -386,7 +386,7 @@ function SalesPageContent() {
                   placeholder="Buscar por n�mero, cliente..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
+                  className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                 />
               </div>
               <Select
@@ -447,13 +447,13 @@ function SalesPageContent() {
               </thead>
               <tbody>
                 {filteredOrders.map(order => (
-                  <tr key={order.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={order.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-mono font-medium text-foreground">{order.number}</td>
                     <td className="px-4 py-3 text-xs text-foreground">{order.customer}</td>
                     <td className="px-4 py-3 text-xs text-muted-foreground">{order.date}</td>
                     <td className="px-4 py-3 text-xs text-foreground text-center">{order.items}</td>
                     <td className="px-4 py-3 text-xs font-medium text-foreground text-right">${(order.total || 0).toLocaleString('es-CL')}</td>
-                    <td className="px-4 py-3 text-xs text-muted-foreground">{order.project || <span className="text-slate-300">�</span>}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{order.project || <span className="text-foreground">�</span>}</td>
                     <td className="px-4 py-3">
                       <Badge variant={orderStatusConfig[order.status]?.variant || 'neutral'}>
                         {orderStatusConfig[order.status]?.label || order.status}
@@ -462,10 +462,10 @@ function SalesPageContent() {
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <Link href={`/dashboard/sales/${order.id}`}>
-                          <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
+                          <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
                         </Link>
                         <Link href={`/dashboard/sales/${order.id}/edit`}>
-                          <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Edit className="w-4 h-4" /></button>
+                          <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"><Edit className="w-4 h-4" /></button>
                         </Link>
                       </div>
                     </td>
@@ -493,12 +493,12 @@ function SalesPageContent() {
               </thead>
               <tbody>
                 {filteredGuides.map(guide => (
-                  <tr key={guide.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={guide.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-mono font-medium text-foreground">{guide.number}</td>
-                    <td className="px-4 py-3 text-xs text-indigo-600 font-medium">{guide.orderId}</td>
+                    <td className="px-4 py-3 text-xs text-primary font-medium">{guide.orderId}</td>
                     <td className="px-4 py-3 text-xs text-muted-foreground">{guide.date}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{guide.transport}</td>
-                    <td className="px-4 py-3 text-xs text-muted-foreground">{guide.project || <span className="text-slate-300">�</span>}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{guide.transport}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{guide.project || <span className="text-foreground">�</span>}</td>
                     <td className="px-4 py-3">
                       <Badge variant={deliveryStatusConfig[guide.status]?.variant || 'neutral'}>
                         {deliveryStatusConfig[guide.status]?.label || guide.status}
@@ -506,7 +506,7 @@ function SalesPageContent() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <Link href={`/dashboard/sales/delivery/${guide.id}`}>
-                        <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
+                        <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
                       </Link>
                     </td>
                   </tr>
@@ -533,12 +533,12 @@ function SalesPageContent() {
               </thead>
               <tbody>
                 {filteredInvoices.map(invoice => (
-                  <tr key={invoice.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={invoice.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-mono font-medium text-foreground">{invoice.number}</td>
-                    <td className="px-4 py-3 text-xs text-indigo-600 font-medium">{invoice.orderId}</td>
+                    <td className="px-4 py-3 text-xs text-primary font-medium">{invoice.orderId}</td>
                     <td className="px-4 py-3 text-xs text-muted-foreground">{invoice.date}</td>
                     <td className="px-4 py-3 text-xs font-medium text-foreground text-right">${(invoice.total || 0).toLocaleString('es-CL')}</td>
-                    <td className="px-4 py-3 text-xs text-muted-foreground">{invoice.project || <span className="text-slate-300">�</span>}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{invoice.project || <span className="text-foreground">�</span>}</td>
                     <td className="px-4 py-3">
                       <Badge variant={invoiceStatusConfig[invoice.status]?.variant || 'neutral'}>
                         {invoiceStatusConfig[invoice.status]?.label || invoice.status}
@@ -547,7 +547,7 @@ function SalesPageContent() {
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <Link href={`/dashboard/sales/invoices/${invoice.id}`}>
-                          <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
+                          <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
                         </Link>
                         <button onClick={async () => {
                           try {
@@ -579,7 +579,7 @@ function SalesPageContent() {
                             });
                             doc.save(`${inv.invoice_number || invoice.number}.pdf`);
                            } catch { toast.error('Error al descargar factura'); }
-                        }} className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors">
+                        }} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors">
                           <Download className="w-4 h-4" />
                         </button>
                       </div>
@@ -608,18 +608,18 @@ function SalesPageContent() {
               </thead>
               <tbody>
                 {filteredCustomers.map(customer => (
-                  <tr key={customer.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={customer.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center">
-                          <Users className="w-4 h-4 text-indigo-600" />
+                        <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center">
+                          <Users className="w-4 h-4 text-primary" />
                         </div>
                         <span className="text-xs font-medium text-foreground">{customer.name}</span>
                       </div>
                     </td>
                     <td className="px-4 py-3 text-xs font-mono text-muted-foreground">{customer.tax_id}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{customer.email}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{customer.phone}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{customer.email}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{customer.phone}</td>
                     <td className="px-4 py-3 text-xs text-muted-foreground max-w-[200px] truncate">{customer.address}</td>
                     <td className="px-4 py-3">
                       <Badge variant={customer.active ? 'success' : 'neutral'}>
@@ -629,10 +629,10 @@ function SalesPageContent() {
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <Link href={`/dashboard/customers/${customer.id}`}>
-                          <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
+                          <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
                         </Link>
                         <Link href={`/dashboard/customers/${customer.id}/edit`}>
-                          <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Edit className="w-4 h-4" /></button>
+                          <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"><Edit className="w-4 h-4" /></button>
                         </Link>
                       </div>
                     </td>
@@ -664,7 +664,7 @@ function SalesPageContent() {
                   const matchesStatus = statusFilter === 'all' || q.status === statusFilter;
                   return matchesSearch && matchesStatus;
                 }).map(q => (
-                  <tr key={q.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={q.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-mono font-medium text-foreground">{q.number}</td>
                     <td className="px-4 py-3 text-xs text-foreground">{q.customer}</td>
                     <td className="px-4 py-3 text-xs text-muted-foreground">{q.date}</td>
@@ -677,7 +677,7 @@ function SalesPageContent() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <Link href={`/dashboard/sales/quotations/${q.id}`}>
-                        <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
+                        <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
                       </Link>
                     </td>
                   </tr>
@@ -708,7 +708,7 @@ function SalesPageContent() {
                   const matchesStatus = statusFilter === 'all' || r.status === statusFilter;
                   return matchesSearch && matchesStatus;
                 }).map(r => (
-                  <tr key={r.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={r.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-mono font-medium text-foreground">{r.number}</td>
                     <td className="px-4 py-3 text-xs text-foreground">{r.customer}</td>
                     <td className="px-4 py-3 text-xs text-muted-foreground">{r.warehouse}</td>
@@ -721,7 +721,7 @@ function SalesPageContent() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <Link href={`/dashboard/sales/returns`}>
-                        <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
+                        <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"><Eye className="w-4 h-4" /></button>
                       </Link>
                     </td>
                   </tr>
@@ -814,8 +814,8 @@ function SalesPageContent() {
 
         {activeTab === 'pos' && (
           <div className="p-6">
-            <div className="bg-card border border-border rounded-xl shadow-sm p-8 dark:bg-primary dark:border-slate-800 text-center">
-              <Monitor className="w-12 h-12 text-indigo-500 mx-auto mb-4" />
+            <div className="bg-card border border-border rounded-xl shadow-sm p-8 dark:bg-primary dark:border-border text-center">
+              <Monitor className="w-12 h-12 text-primary mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-foreground mb-2">Punto de Venta</h3>
               <p className="text-sm text-muted-foreground mb-4">Utiliza el POS dedicado para una mejor experiencia</p>
               <Link href="/dashboard/pos">
@@ -836,7 +836,7 @@ function SalesPageContent() {
         (activeTab === 'customers' && filteredCustomers.length === 0)
       ) && (
         <div className="text-center py-12">
-          <ShoppingCart className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+          <ShoppingCart className="w-12 h-12 text-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">No se encontraron resultados</p>
         </div>
       )}
@@ -849,12 +849,12 @@ export default function SalesPage() {
     <Suspense fallback={<div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <div className="h-6 w-32 bg-slate-200 rounded animate-pulse" />
-          <div className="h-4 w-48 bg-slate-200 rounded animate-pulse mt-2" />
+          <div className="h-6 w-32 bg-muted rounded animate-pulse" />
+          <div className="h-4 w-48 bg-muted rounded animate-pulse mt-2" />
         </div>
       </div>
       <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-        {[1,2,3,4].map(i => <div key={i} className="h-24 bg-slate-200 rounded-xl animate-pulse" />)}
+        {[1,2,3,4].map(i => <div key={i} className="h-24 bg-muted rounded-xl animate-pulse" />)}
       </div>
     </div>}>
       <SalesPageContent />

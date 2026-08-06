@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { Suspense, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -134,7 +134,7 @@ function RegisterForm() {
       <div className="flex w-full flex-col items-center justify-center p-6 sm:p-12 lg:w-1/2">
         {/* Mobile logo */}
         <div className="lg:hidden mb-8 flex items-center gap-3">
-          <div className="w-10 h-10 bg-slate-950 rounded-xl flex items-center justify-center border border-slate-800">
+          <div className="w-10 h-10 bg-background rounded-xl flex items-center justify-center border border-border">
             <Building2 className="w-6 h-6 text-white" />
           </div>
           <span className="text-xl font-bold text-foreground">Yellow ERP</span>
@@ -143,7 +143,7 @@ function RegisterForm() {
         <div className="w-full max-w-[440px]">
           {/* Title */}
           <div className="mb-8">
-            <h1 className="mb-3 text-[36px] font-bold leading-[1.05] tracking-tight text-slate-950">
+            <h1 className="mb-3 text-[36px] font-bold leading-[1.05] tracking-tight text-foreground">
               Crea tu cuenta
             </h1>
             <p className="text-[15px] text-muted-foreground text-balance">
@@ -211,7 +211,7 @@ function RegisterForm() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-[38px] text-muted-foreground hover:text-slate-600"
+                  className="absolute right-3 top-[38px] text-muted-foreground hover:text-foreground"
                   aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -231,7 +231,7 @@ function RegisterForm() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-[38px] text-muted-foreground hover:text-slate-600"
+                  className="absolute right-3 top-[38px] text-muted-foreground hover:text-foreground"
                   aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 >
                   {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -239,8 +239,8 @@ function RegisterForm() {
               </div>
             </div>
 
-            <div className="bg-muted p-4 rounded-lg border border-slate-100">
-              <p className="text-sm text-slate-600 font-medium mb-2">La contraseña debe incluir:</p>
+            <div className="bg-muted p-4 rounded-lg border border-border">
+              <p className="text-sm text-foreground font-medium mb-2">La contraseña debe incluir:</p>
               <ul className="text-xs text-muted-foreground space-y-1">
                 <li>• Al menos 8 caracteres</li>
                 <li>• Una letra mayúscula y una minúscula</li>
@@ -253,7 +253,7 @@ function RegisterForm() {
               <input
                 type="checkbox"
                 id="terms"
-                className="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-600 mt-0.5"
+                className="w-4 h-4 text-blue-600 border-border rounded focus:ring-blue-600 mt-0.5"
                 required
               />
               <label htmlFor="terms" className="ml-2 text-sm text-foreground">

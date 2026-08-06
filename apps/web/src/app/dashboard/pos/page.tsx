@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Badge, Input, Select } from '@yellow-erp/ui';
@@ -250,7 +250,7 @@ export default function POSPage() {
   if (completedInvoice) {
     return (
       <div className="h-[calc(100vh-4rem)] flex items-center justify-center">
-        <div className="bg-card border border-border rounded-xl shadow-sm p-8 dark:bg-primary dark:border-slate-800 w-full max-w-md text-center">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-8 dark:bg-primary dark:border-border w-full max-w-md text-center">
           <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Check className="w-8 h-8 text-emerald-600" />
           </div>
@@ -300,20 +300,20 @@ export default function POSPage() {
             {loading ? (
               Array.from({ length: 8 }).map((_, i) => (
                 <div key={i} className="p-4 bg-card border border-border rounded-xl animate-pulse">
-                  <div className="w-10 h-10 bg-slate-200 rounded-lg mb-3" />
-                  <div className="h-3 bg-slate-200 rounded w-16 mb-2" />
-                  <div className="h-4 bg-slate-200 rounded w-3/4 mb-2" />
-                  <div className="h-5 bg-slate-200 rounded w-20" />
+                  <div className="w-10 h-10 bg-muted rounded-lg mb-3" />
+                  <div className="h-3 bg-muted rounded w-16 mb-2" />
+                  <div className="h-4 bg-muted rounded w-3/4 mb-2" />
+                  <div className="h-5 bg-muted rounded w-20" />
                 </div>
               ))
             ) : filteredProducts.map(product => (
               <button
                 key={product.id}
                 onClick={() => addToCart(product)}
-                className="p-4 bg-card border border-border rounded-xl text-left hover:border-indigo-300 hover:shadow-md transition-all group"
+                className="p-4 bg-card border border-border rounded-xl text-left hover:border-primary/30 hover:shadow-md transition-all group"
               >
-                <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center mb-3 group-hover:bg-indigo-50 transition-colors">
-                  <Package className="w-5 h-5 text-muted-foreground group-hover:text-indigo-600" />
+                <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center mb-3 group-hover:bg-blue-50 transition-colors">
+                  <Package className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
                 </div>
                 <p className="text-xs text-muted-foreground font-mono">{product.sku}</p>
                 <p className="text-sm font-medium text-foreground mt-1 line-clamp-2">{product.name}</p>
@@ -337,13 +337,13 @@ export default function POSPage() {
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {cart.length === 0 ? (
             <div className="text-center py-12">
-              <ShoppingCart className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+              <ShoppingCart className="w-12 h-12 text-foreground mx-auto mb-3" />
               <p className="text-sm text-muted-foreground">Carrito vac�o</p>
               <p className="text-xs text-muted-foreground mt-1">Selecciona productos para agregar</p>
             </div>
           ) : (
             cart.map(item => (
-              <div key={item.id} className="p-3 bg-muted rounded-lg border border-slate-100">
+              <div key={item.id} className="p-3 bg-muted rounded-lg border border-border">
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-foreground truncate">{item.name}</p>
@@ -357,14 +357,14 @@ export default function POSPage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="w-7 h-7 bg-card border border-border rounded-md flex items-center justify-center dark:bg-slate-800 dark:border-slate-700 text-slate-600 hover:bg-muted"
+                      className="w-7 h-7 bg-card border border-border rounded-md flex items-center justify-center dark:bg-card dark:border-border text-foreground hover:bg-muted"
                     >
                       -
                     </button>
                     <span className="text-sm font-medium w-8 text-center">{item.quantity}</span>
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="w-7 h-7 bg-card border border-border rounded-md flex items-center justify-center dark:bg-slate-800 dark:border-slate-700 text-slate-600 hover:bg-muted"
+                      className="w-7 h-7 bg-card border border-border rounded-md flex items-center justify-center dark:bg-card dark:border-border text-foreground hover:bg-muted"
                     >
                       +
                     </button>
@@ -409,7 +409,7 @@ export default function POSPage() {
           <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarylg mx-4">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">Cobrar Venta</h2>
-              <button onClick={() => setShowPaymentModal(false)} className="text-muted-foreground hover:text-slate-600">
+              <button onClick={() => setShowPaymentModal(false)} className="text-muted-foreground hover:text-foreground">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -422,8 +422,8 @@ export default function POSPage() {
                     onClick={() => { setDocumentType('boleta'); setSelectedCustomer(null); setCustomerSearch(''); }}
                     className={`p-3 rounded-lg border-2 flex flex-col items-center gap-1 transition-colors ${
                       documentType === 'boleta'
-                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                        : 'border-border text-slate-600 hover:border-slate-300'
+                        ? 'border-primary bg-blue-50 text-primary'
+                        : 'border-border text-foreground hover:border-border'
                     }`}
                   >
                     <Receipt className="w-5 h-5" />
@@ -434,8 +434,8 @@ export default function POSPage() {
                     onClick={() => setDocumentType('factura')}
                     className={`p-3 rounded-lg border-2 flex flex-col items-center gap-1 transition-colors ${
                       documentType === 'factura'
-                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                        : 'border-border text-slate-600 hover:border-slate-300'
+                        ? 'border-primary bg-blue-50 text-primary'
+                        : 'border-border text-foreground hover:border-border'
                     }`}
                   >
                     <FileText className="w-5 h-5" />
@@ -461,8 +461,8 @@ export default function POSPage() {
                     />
                   </div>
                   {selectedCustomer && (
-                    <div className="flex items-center gap-2 p-2 bg-indigo-50 rounded-lg border border-indigo-200">
-                      <User className="w-4 h-4 text-indigo-600" />
+                    <div className="flex items-center gap-2 p-2 bg-blue-50 rounded-lg border border-primary/20">
+                      <User className="w-4 h-4 text-primary" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-foreground truncate">{selectedCustomer.name}</p>
                         <p className="text-[9px] text-muted-foreground">RUT: {selectedCustomer.tax_id}</p>
@@ -473,7 +473,7 @@ export default function POSPage() {
                     </div>
                   )}
                   {showCustomerDropdown && !selectedCustomer && customerSearch && (
-                    <div className="absolute z-10 w-full mt-1 bg-card border border-border rounded-lg shadow-lg max- dark:bg-primary dark:border-slate-800h-48 overflow-y-auto">
+                    <div className="absolute z-10 w-full mt-1 bg-card border border-border rounded-lg shadow-lg max- dark:bg-primary dark:border-borderh-48 overflow-y-auto">
                       {filteredCustomers.length === 0 ? (
                         <div className="p-3 text-center text-sm text-muted-foreground">No se encontraron clientes</div>
                       ) : (
@@ -481,7 +481,7 @@ export default function POSPage() {
                           <button
                             key={c.id}
                             onClick={() => { setSelectedCustomer(c); setCustomerSearch(''); setShowCustomerDropdown(false); }}
-                            className="w-full text-left px-3 py-2 hover:bg-muted flex items-center gap-2 border-b border-slate-100 last:border-0"
+                            className="w-full text-left px-3 py-2 hover:bg-muted flex items-center gap-2 border-b border-border last:border-0"
                           >
                             <User className="w-4 h-4 text-muted-foreground" />
                             <div>
@@ -521,7 +521,7 @@ export default function POSPage() {
                     </div>
                   )}
                   {showCustomerDropdown && !selectedCustomer && customerSearch && (
-                    <div className="absolute z-10 w-full mt-1 bg-card border border-border rounded-lg shadow-lg max- dark:bg-primary dark:border-slate-800h-48 overflow-y-auto">
+                    <div className="absolute z-10 w-full mt-1 bg-card border border-border rounded-lg shadow-lg max- dark:bg-primary dark:border-borderh-48 overflow-y-auto">
                       {filteredCustomers.length === 0 ? (
                         <div className="p-3 text-center text-sm text-muted-foreground">No se encontraron clientes</div>
                       ) : (
@@ -529,7 +529,7 @@ export default function POSPage() {
                           <button
                             key={c.id}
                             onClick={() => { setSelectedCustomer(c); setCustomerSearch(''); setShowCustomerDropdown(false); }}
-                            className="w-full text-left px-3 py-2 hover:bg-muted flex items-center gap-2 border-b border-slate-100 last:border-0"
+                            className="w-full text-left px-3 py-2 hover:bg-muted flex items-center gap-2 border-b border-border last:border-0"
                           >
                             <User className="w-4 h-4 text-muted-foreground" />
                             <div>
@@ -566,8 +566,8 @@ export default function POSPage() {
                       onClick={() => setPaymentMethod(method.id)}
                       className={`p-3 rounded-lg border-2 flex flex-col items-center gap-1 transition-colors ${
                         paymentMethod === method.id
-                          ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                          : 'border-border text-slate-600 hover:border-slate-300'
+                          ? 'border-primary bg-blue-50 text-primary'
+                          : 'border-border text-foreground hover:border-border'
                       }`}
                     >
                       <method.icon className="w-5 h-5" />
@@ -624,7 +624,7 @@ export default function POSPage() {
           <div className="bg-card rounded-xl shadow-xl w-full max-w-md mx-4">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <CreditCard className="w-5 h-5 text-indigo-600" />
+                <CreditCard className="w-5 h-5 text-primary" />
                 <h2 className="text-lg font-semibold text-foreground">N° Transacción Tarjeta</h2>
               </div>
             </div>
@@ -635,7 +635,7 @@ export default function POSPage() {
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">N° Transacción *</label>
                 <input type="text" value={cardTransactionNumber} onChange={e => setCardTransactionNumber(e.target.value)}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground font-mono placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground font-mono placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Ej: 1234567890" autoFocus />
                 <p className="text-[10px] text-muted-foreground">Número que aparece en el comprobante de la maquina</p>
               </div>

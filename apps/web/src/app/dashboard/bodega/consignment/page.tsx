@@ -39,7 +39,7 @@ export default function ConsignmentPage() {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Link href="/dashboard/bodega" className="p-2 hover:bg-muted rounded-lg transition-colors">
-          <ArrowLeft className="w-5 h-5 text-slate-600" />
+          <ArrowLeft className="w-5 h-5 text-foreground" />
         </Link>
         <div className="flex-1">
           <h1 className="text-xl font-bold text-foreground">Consignacion / VMI</h1>
@@ -47,19 +47,19 @@ export default function ConsignmentPage() {
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm p-1 flex dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 items-center gap-1">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-1 flex dark:bg-primary dark:border-border dark:bg-primary dark:border-border items-center gap-1">
         <button onClick={() => setTab('agreements')}
-          className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === 'agreements' ? 'bg-primary text-white' : 'text-slate-600 hover:bg-muted'}`}>
+          className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === 'agreements' ? 'bg-primary text-white' : 'text-foreground hover:bg-muted'}`}>
           Acuerdos ({agreements.length})
         </button>
         <button onClick={() => setTab('stock')}
-          className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === 'stock' ? 'bg-primary text-white' : 'text-slate-600 hover:bg-muted'}`}>
+          className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === 'stock' ? 'bg-primary text-white' : 'text-foreground hover:bg-muted'}`}>
           Stock Consignado ({stock.length})
         </button>
       </div>
 
       {tab === 'agreements' && (
-        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -78,11 +78,11 @@ export default function ConsignmentPage() {
                   <tr><td colSpan={7} className="px-4 py-12 text-center text-sm text-muted-foreground">Cargando...</td></tr>
                 ) : agreements.length === 0 ? (
                   <tr><td colSpan={7} className="px-4 py-12 text-center">
-                    <Truck className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+                    <Truck className="w-12 h-12 text-foreground mx-auto mb-3" />
                     <p className="text-sm text-muted-foreground">No hay acuerdos de consignacion</p>
                   </td></tr>
                 ) : agreements.map(a => (
-                  <tr key={a.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={a.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-mono font-semibold text-foreground">{a.agreement_number}</td>
                     <td className="px-4 py-3 text-xs text-foreground">{a.supplier_name || '—'}</td>
                     <td className="px-4 py-3 text-xs text-foreground">{a.warehouse_name || '—'}</td>
@@ -103,7 +103,7 @@ export default function ConsignmentPage() {
       )}
 
       {tab === 'stock' && (
-        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -122,11 +122,11 @@ export default function ConsignmentPage() {
                   <tr><td colSpan={7} className="px-4 py-12 text-center text-sm text-muted-foreground">Cargando...</td></tr>
                 ) : stock.length === 0 ? (
                   <tr><td colSpan={7} className="px-4 py-12 text-center">
-                    <Package className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+                    <Package className="w-12 h-12 text-foreground mx-auto mb-3" />
                     <p className="text-sm text-muted-foreground">No hay stock consignado</p>
                   </td></tr>
                 ) : stock.map(s => (
-                  <tr key={s.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={s.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-medium text-foreground">{s.product_name || '—'}</td>
                     <td className="px-4 py-3 text-xs text-foreground">{s.supplier_name || '—'}</td>
                     <td className="px-4 py-3 text-xs text-foreground">{s.warehouse_name || '—'}</td>

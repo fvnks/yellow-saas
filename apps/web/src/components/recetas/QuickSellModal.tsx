@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { X, ShoppingCart, Receipt, FileText, CreditCard, Banknote, Check, Search, User, Printer, Download } from 'lucide-react';
@@ -156,7 +156,7 @@ export default function QuickSellModal({ open, onClose, productName, productId, 
           <h2 className="text-lg font-semibold text-foreground">
             {step === 'sale' ? 'Venta Rápida' : 'Venta Registrada'}
           </h2>
-          <button onClick={onClose} className="text-muted-foreground hover:text-slate-600">
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -190,7 +190,7 @@ export default function QuickSellModal({ open, onClose, productName, productId, 
                 <div className="grid grid-cols-2 gap-2">
                   <button onClick={() => { setDocumentType('boleta'); setSelectedCustomer(null); setCustomerSearch(''); }}
                     className={`p-3 rounded-lg border-2 flex flex-col items-center gap-1 transition-colors ${
-                      documentType === 'boleta' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-border text-slate-600 hover:border-slate-300'
+                      documentType === 'boleta' ? 'border-primary bg-blue-50 text-primary' : 'border-border text-foreground hover:border-border'
                     }`}>
                     <Receipt className="w-5 h-5" />
                     <span className="text-xs font-medium">Boleta</span>
@@ -198,7 +198,7 @@ export default function QuickSellModal({ open, onClose, productName, productId, 
                   </button>
                   <button onClick={() => setDocumentType('factura')}
                     className={`p-3 rounded-lg border-2 flex flex-col items-center gap-1 transition-colors ${
-                      documentType === 'factura' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-border text-slate-600 hover:border-slate-300'
+                      documentType === 'factura' ? 'border-primary bg-blue-50 text-primary' : 'border-border text-foreground hover:border-border'
                     }`}>
                     <FileText className="w-5 h-5" />
                     <span className="text-xs font-medium">Factura</span>
@@ -221,8 +221,8 @@ export default function QuickSellModal({ open, onClose, productName, productId, 
                     className="w-full pl-9 pr-3 py-2 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
                 {selectedCustomer && (
-                  <div className="flex items-center gap-2 p-2 bg-indigo-50 rounded-lg border border-indigo-200">
-                    <User className="w-4 h-4 text-indigo-600" />
+                  <div className="flex items-center gap-2 p-2 bg-blue-50 rounded-lg border border-primary/20">
+                    <User className="w-4 h-4 text-primary" />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-foreground truncate">{selectedCustomer.name}</p>
                       <p className="text-[9px] text-muted-foreground">RUT: {selectedCustomer.tax_id}</p>
@@ -240,7 +240,7 @@ export default function QuickSellModal({ open, onClose, productName, productId, 
                       filteredCustomers.slice(0, 10).map(c => (
                         <button key={c.id}
                           onClick={() => { setSelectedCustomer(c); setCustomerSearch(''); setShowCustomerDropdown(false); }}
-                          className="w-full text-left px-3 py-2 hover:bg-muted flex items-center gap-2 border-b border-slate-100 last:border-0">
+                          className="w-full text-left px-3 py-2 hover:bg-muted flex items-center gap-2 border-b border-border last:border-0">
                           <User className="w-4 h-4 text-muted-foreground" />
                           <div>
                             <p className="text-sm font-medium text-foreground">{c.name}</p>
@@ -264,7 +264,7 @@ export default function QuickSellModal({ open, onClose, productName, productId, 
                   ].map(method => (
                     <button key={method.id} onClick={() => setPaymentMethod(method.id)}
                       className={`p-3 rounded-lg border-2 flex flex-col items-center gap-1 transition-colors ${
-                        paymentMethod === method.id ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-border text-slate-600 hover:border-slate-300'
+                        paymentMethod === method.id ? 'border-primary bg-blue-50 text-primary' : 'border-border text-foreground hover:border-border'
                       }`}>
                       <method.icon className="w-5 h-5" />
                       <span className="text-xs font-medium">{method.label}</span>

@@ -91,24 +91,24 @@ export default function ActivityLog({ projectId }: { projectId: string }) {
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+            <div key={i} className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
               <div className="animate-pulse flex items-center gap-3">
-                <div className="w-8 h-8 bg-slate-200 rounded-full" />
+                <div className="w-8 h-8 bg-muted rounded-full" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-3 bg-slate-200 rounded w-2/3" />
-                  <div className="h-2 bg-slate-200 rounded w-1/3" />
+                  <div className="h-3 bg-muted rounded w-2/3" />
+                  <div className="h-2 bg-muted rounded w-1/3" />
                 </div>
               </div>
             </div>
           ))}
         </div>
       ) : activities.length === 0 ? (
-        <div className="text-center py-8 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-          <Clock className="w-10 h-10 text-slate-200 mx-auto mb-2" />
+        <div className="text-center py-8 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+          <Clock className="w-10 h-10 text-foreground mx-auto mb-2" />
           <p className="text-sm text-muted-foreground">No hay actividad registrada</p>
         </div>
       ) : (
-        <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="divide-y divide-slate-100">
             {activities.map(a => (
               <div key={a.id} className="px-4 py-3 hover:bg-muted transition-colors">
@@ -146,12 +146,12 @@ export default function ActivityLog({ projectId }: { projectId: string }) {
       {total > limit && (
         <div className="flex items-center justify-center gap-2">
           <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-            className="px-3 py-1 rounded-lg text-xs font-medium bg-muted text-muted-foreground hover:bg-slate-200 disabled:opacity-50">
+            className="px-3 py-1 rounded-lg text-xs font-medium bg-muted text-muted-foreground hover:bg-muted disabled:opacity-50">
             Anterior
           </button>
           <span className="text-xs text-muted-foreground">Pagina {page} de {Math.ceil(total / limit)}</span>
           <button onClick={() => setPage(p => p + 1)} disabled={page >= Math.ceil(total / limit)}
-            className="px-3 py-1 rounded-lg text-xs font-medium bg-muted text-muted-foreground hover:bg-slate-200 disabled:opacity-50">
+            className="px-3 py-1 rounded-lg text-xs font-medium bg-muted text-muted-foreground hover:bg-muted disabled:opacity-50">
             Siguiente
           </button>
         </div>

@@ -137,7 +137,7 @@ export default function AdminFaqPage() {
             setForm(emptyForm);
             setShowForm(!showForm);
           }}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+          className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
         >
           <Plus className="w-4 h-4" />
           {showForm ? 'Cancelar' : 'Nueva FAQ'}
@@ -156,7 +156,7 @@ export default function AdminFaqPage() {
                   value={form.category}
                   onChange={e => setForm({ ...form, category: e.target.value })}
                   placeholder="Ej: Cuenta, Ventas, Inventario"
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 />
               </div>
               <div className="space-y-1">
@@ -187,7 +187,7 @@ export default function AdminFaqPage() {
                 value={form.question}
                 onChange={e => setForm({ ...form, question: e.target.value })}
                 placeholder="¿Cómo hago...?"
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               />
             </div>
             <div className="space-y-1">
@@ -197,7 +197,7 @@ export default function AdminFaqPage() {
                 onChange={e => setForm({ ...form, answer: e.target.value })}
                 rows={4}
                 placeholder="Explica la respuesta paso a paso..."
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent resize-none"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent resize-none"
               />
             </div>
             <div className="flex justify-end gap-3">
@@ -211,7 +211,7 @@ export default function AdminFaqPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"
+                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 {saving ? 'Guardando...' : editing ? 'Actualizar' : 'Crear FAQ'}
@@ -229,7 +229,7 @@ export default function AdminFaqPage() {
             placeholder="Buscar FAQ..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full bg-muted border border-border rounded-lg pl-10 pr-4 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+            className="w-full bg-muted border border-border rounded-lg pl-10 pr-4 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
           />
         </div>
       </div>
@@ -248,27 +248,27 @@ export default function AdminFaqPage() {
           <tbody>
             {loading ? (
               Array.from({ length: 3 }).map((_, i) => (
-                <tr key={i} className="border-b border-slate-100">
-                  <td colSpan={5} className="px-6 py-4"><div className="h-4 bg-slate-200 rounded animate-pulse" /></td>
+                <tr key={i} className="border-b border-border">
+                  <td colSpan={5} className="px-6 py-4"><div className="h-4 bg-muted rounded animate-pulse" /></td>
                 </tr>
               ))
             ) : filtered.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-12 text-center">
-                  <BookOpen className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                  <BookOpen className="w-12 h-12 text-foreground mx-auto mb-3" />
                   <p className="text-sm text-muted-foreground font-medium">{search ? 'No hay FAQ que coincidan' : 'Aún no hay preguntas frecuentes'}</p>
                   <p className="text-xs text-muted-foreground mt-1">Crea la primera FAQ para mostrarla en el módulo de Ayuda</p>
                 </td>
               </tr>
             ) : (
               filtered.map(item => (
-                <tr key={item.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <tr key={item.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-6 py-4">
                     <p className="text-sm font-medium text-foreground">{item.question}</p>
                     <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1 max-w-md">{item.answer}</p>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-blue-50 text-primary border border-primary/20">
                       {item.category}
                     </span>
                   </td>
@@ -279,7 +279,7 @@ export default function AdminFaqPage() {
                       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-semibold border transition-colors ${
                         item.active
                           ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
-                          : 'bg-muted text-slate-600 border-border hover:bg-slate-200'
+                          : 'bg-muted text-foreground border-border hover:bg-muted'
                       }`}
                     >
                       {item.active ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
@@ -300,7 +300,7 @@ export default function AdminFaqPage() {
                           });
                           setShowForm(true);
                         }}
-                        className="p-2 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                        className="p-2 text-muted-foreground hover:text-primary hover:bg-blue-50 rounded-lg transition-colors"
                         title="Editar"
                       >
                         <Pencil className="w-4 h-4" />

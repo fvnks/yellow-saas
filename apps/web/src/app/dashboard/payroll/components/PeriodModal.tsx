@@ -50,7 +50,7 @@ export default function PeriodModal({ onClose, onSave }: Props) {
       <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
         <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <h2 className="text-lg font-semibold text-foreground">Nuevo Período de Nómina</h2>
-          <button onClick={onClose} className="text-muted-foreground hover:text-slate-600">
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -73,7 +73,7 @@ export default function PeriodModal({ onClose, onSave }: Props) {
               value={notes}
               onChange={(e: any) => setNotes(e.target.value)}
               rows={2}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Ej: Nómina julio 2026..."
             />
           </div>

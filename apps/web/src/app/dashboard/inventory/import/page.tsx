@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -127,7 +127,7 @@ export default function ImportProductsPage() {
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center gap-3">
         <button onClick={() => router.push('/dashboard/inventory')} className="p-1 hover:bg-muted rounded transition-colors">
-          <ArrowLeft className="w-5 h-5 text-slate-600" />
+          <ArrowLeft className="w-5 h-5 text-foreground" />
         </button>
         <div>
           <h1 className="text-xl font-bold text-foreground">Importar Productos</h1>
@@ -147,7 +147,7 @@ export default function ImportProductsPage() {
       </div>
 
       {/* Upload area */}
-      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <input
           ref={fileInputRef}
           type="file"
@@ -159,9 +159,9 @@ export default function ImportProductsPage() {
         {!file ? (
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="w-full border-2 border-dashed border-slate-300 rounded-xl p-12 text-center hover:border-indigo-400 hover:bg-indigo-50/50 transition-colors"
+            className="w-full border-2 border-dashed border-border rounded-xl p-12 text-center hover:border-primary/40 hover:bg-blue-50/50 transition-colors"
           >
-            <FileSpreadsheet className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+            <FileSpreadsheet className="w-12 h-12 text-foreground mx-auto mb-4" />
             <p className="text-sm font-medium text-foreground">Seleccionar archivo CSV</p>
             <p className="text-xs text-muted-foreground mt-1">Maximo 500 productos por importacion</p>
           </button>
@@ -175,7 +175,7 @@ export default function ImportProductsPage() {
                   <p className="text-xs text-muted-foreground">{preview.length} filas de vista previa</p>
                 </div>
               </div>
-              <button onClick={() => { setFile(null); setPreview([]); setResult(null); }} className="text-muted-foreground hover:text-slate-600 text-xs">
+              <button onClick={() => { setFile(null); setPreview([]); setResult(null); }} className="text-muted-foreground hover:text-foreground text-xs">
                 Cambiar archivo
               </button>
             </div>
@@ -192,7 +192,7 @@ export default function ImportProductsPage() {
                   </thead>
                   <tbody>
                     {preview.map((row, i) => (
-                      <tr key={i} className="border-b border-slate-100">
+                      <tr key={i} className="border-b border-border">
                         <td className="px-3 py-2 text-foreground">{row.name || '-'}</td>
                         <td className="px-3 py-2 text-muted-foreground font-mono">{row.sku || '-'}</td>
                         <td className="px-3 py-2 text-foreground">${row.sale_price || '0'}</td>
@@ -255,7 +255,7 @@ export default function ImportProductsPage() {
             )}
             <button
               onClick={() => router.push('/dashboard/inventory')}
-              className="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+              className="text-primary hover:text-primary text-sm font-medium"
             >
               Ver inventario →
             </button>

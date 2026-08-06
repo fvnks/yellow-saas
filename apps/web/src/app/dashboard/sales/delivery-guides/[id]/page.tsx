@@ -37,7 +37,7 @@ const STATUS_MAP: Record<string, { label: string; class: string }> = {
   in_transit: { label: 'En Tránsito', class: 'bg-blue-50 text-blue-700 border border-blue-200' },
   delivered: { label: 'Entregado', class: 'bg-emerald-50 text-emerald-700 border border-emerald-200' },
   cancelled: { label: 'Cancelado', class: 'bg-rose-50 text-rose-700 border border-rose-200' },
-  draft: { label: 'Borrador', class: 'bg-slate-100 text-slate-600 border border-slate-200' },
+  draft: { label: 'Borrador', class: 'bg-muted text-foreground border border-border' },
 };
 
 export default function DeliveryGuideDetailPage({ params }: { params: { id: string } }) {
@@ -141,10 +141,10 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="flex items-center gap-4"><div className="w-9 h-9 bg-slate-200 rounded-lg animate-pulse" /><div className="h-6 w-48 bg-slate-200 rounded animate-pulse" /></div>
+        <div className="flex items-center gap-4"><div className="w-9 h-9 bg-muted rounded-lg animate-pulse" /><div className="h-6 w-48 bg-muted rounded animate-pulse" /></div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">{[1, 2].map(i => <div key={i} className="animate-pulse bg-slate-200 h-48 rounded-xl" />)}</div>
-          <div className="animate-pulse bg-slate-200 h-64 rounded-xl" />
+          <div className="lg:col-span-2 space-y-6">{[1, 2].map(i => <div key={i} className="animate-pulse bg-muted h-48 rounded-xl" />)}</div>
+          <div className="animate-pulse bg-muted h-64 rounded-xl" />
         </div>
       </div>
     );
@@ -153,11 +153,11 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
   if (!guide) {
     return (
       <div className="space-y-6">
-        <Link href="/dashboard/sales/delivery-guides" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700">
+        <Link href="/dashboard/sales/delivery-guides" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="w-4 h-4" /> Volver
         </Link>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-12 text-center">
-          <p className="text-sm text-slate-500">Guía de despacho no encontrada</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-12 text-center">
+          <p className="text-sm text-muted-foreground">Guía de despacho no encontrada</p>
         </div>
       </div>
     );
@@ -169,30 +169,30 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
     <div className="space-y-6 print:space-y-0">
       <div className="flex items-center justify-between print:hidden">
         <div className="flex items-center gap-4">
-          <Link href="/dashboard/sales/delivery-guides" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+          <Link href="/dashboard/sales/delivery-guides" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">Guía de Despacho {guide.guide_number}</h1>
-            <p className="text-sm text-slate-500 mt-1">{guide.created_at?.split('T')[0]}</p>
+            <h1 className="text-xl font-bold text-foreground">Guía de Despacho {guide.guide_number}</h1>
+            <p className="text-sm text-muted-foreground mt-1">{guide.created_at?.split('T')[0]}</p>
           </div>
           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-semibold ${status.class}`}>
             {status.label}
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={handlePrint} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          <button onClick={handlePrint} className="bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <Printer className="w-4 h-4" /> Imprimir
           </button>
-          <button onClick={handleDownloadPDF} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          <button onClick={handleDownloadPDF} className="bg-primary hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <Download className="w-4 h-4" /> Descargar PDF
           </button>
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm print:shadow-none print:border-0 print:rounded-none" id="print-area">
+      <div className="bg-card border border-border rounded-xl shadow-sm print:shadow-none print:border-0 print:rounded-none" id="print-area">
         <div className="p-8 print:p-4">
-          <div className="flex items-start justify-between mb-8 pb-6 border-b border-slate-200">
+          <div className="flex items-start justify-between mb-8 pb-6 border-b border-border">
             <div>
               {company?.logo_url ? (
                 <img src={company.logo_url} alt="Logo" className="h-16 w-auto mb-3" />
@@ -201,61 +201,61 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
                   {(company?.name || 'E')[0]}
                 </div>
               )}
-              <p className="text-lg font-bold text-slate-900">{company?.name || 'Empresa'}</p>
-              {company?.tax_id && <p className="text-xs text-slate-500">RUT: {company.tax_id}</p>}
-              {company?.address && <p className="text-xs text-slate-500">{company.address}</p>}
-              {company?.phone && <p className="text-xs text-slate-500">Tel: {company.phone}</p>}
+              <p className="text-lg font-bold text-foreground">{company?.name || 'Empresa'}</p>
+              {company?.tax_id && <p className="text-xs text-muted-foreground">RUT: {company.tax_id}</p>}
+              {company?.address && <p className="text-xs text-muted-foreground">{company.address}</p>}
+              {company?.phone && <p className="text-xs text-muted-foreground">Tel: {company.phone}</p>}
             </div>
             <div className="text-right">
-              <h2 className="text-2xl font-bold text-slate-900 mb-1">GUÍA DE DESPACHO</h2>
-              <p className="text-sm font-mono text-slate-600">{guide.guide_number}</p>
-              <p className="text-xs text-slate-500 mt-2">Fecha: {guide.created_at?.split('T')[0]}</p>
+              <h2 className="text-2xl font-bold text-foreground mb-1">GUÍA DE DESPACHO</h2>
+              <p className="text-sm font-mono text-foreground">{guide.guide_number}</p>
+              <p className="text-xs text-muted-foreground mt-2">Fecha: {guide.created_at?.split('T')[0]}</p>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-8 mb-8">
             <div className="space-y-4">
               <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Cliente</p>
-                <p className="text-sm font-medium text-slate-900">{guide.sales_order?.customer?.name || '—'}</p>
-                <p className="text-xs text-slate-500">RUT: {guide.sales_order?.customer?.tax_id || '—'}</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Cliente</p>
+                <p className="text-sm font-medium text-foreground">{guide.sales_order?.customer?.name || '—'}</p>
+                <p className="text-xs text-muted-foreground">RUT: {guide.sales_order?.customer?.tax_id || '—'}</p>
               </div>
               <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Orden de Venta</p>
-                <p className="text-sm font-medium text-indigo-600">{guide.sales_order?.order_number || '—'}</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Orden de Venta</p>
+                <p className="text-sm font-medium text-primary">{guide.sales_order?.order_number || '—'}</p>
               </div>
             </div>
             <div className="space-y-4">
               <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Bodega Origen</p>
-                <p className="text-sm font-medium text-slate-900">{guide.warehouse?.name || '—'}</p>
-                <p className="text-xs text-slate-500">{guide.warehouse?.code || ''}</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Bodega Origen</p>
+                <p className="text-sm font-medium text-foreground">{guide.warehouse?.name || '—'}</p>
+                <p className="text-xs text-muted-foreground">{guide.warehouse?.code || ''}</p>
               </div>
               <div>
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Dirección de Entrega</p>
-                <p className="text-sm font-medium text-slate-900">{guide.shipping_address || '—'}</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Dirección de Entrega</p>
+                <p className="text-sm font-medium text-foreground">{guide.shipping_address || '—'}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-slate-50 rounded-lg p-4 mb-8 border border-slate-200">
+          <div className="bg-muted rounded-lg p-4 mb-8 border border-border">
             <div className="grid grid-cols-3 gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
                   <Truck className="w-4 h-4 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Transporte</p>
-                  <p className="text-xs font-medium text-slate-900">{guide.transport}</p>
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Transporte</p>
+                  <p className="text-xs font-medium text-foreground">{guide.transport}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
-                  <User className="w-4 h-4 text-indigo-600" />
+                <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <User className="w-4 h-4 text-primary" />
                 </div>
                 <div>
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Chofer</p>
-                  <p className="text-xs font-medium text-slate-900">{guide.driver_name}</p>
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Chofer</p>
+                  <p className="text-xs font-medium text-foreground">{guide.driver_name}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -263,8 +263,8 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
                   <Truck className="w-4 h-4 text-amber-600" />
                 </div>
                 <div>
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Patente</p>
-                  <p className="text-xs font-medium text-slate-900">{guide.vehicle_plate}</p>
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Patente</p>
+                  <p className="text-xs font-medium text-foreground">{guide.vehicle_plate}</p>
                 </div>
               </div>
             </div>
@@ -273,45 +273,45 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
           <div className="mb-8">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left py-2 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
-                  <th className="text-right py-2 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cantidad</th>
-                  <th className="text-left py-2 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Observación</th>
+                <tr className="border-b border-border">
+                  <th className="text-left py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th>
+                  <th className="text-right py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cantidad</th>
+                  <th className="text-left py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Observación</th>
                 </tr>
               </thead>
               <tbody>
                 {(guide.items || []).map((item) => (
-                  <tr key={item.id} className="border-b border-slate-100">
+                  <tr key={item.id} className="border-b border-border">
                     <td className="py-3">
-                      <p className="text-xs font-medium text-slate-900">{item.product?.name || '—'}</p>
-                      <p className="text-[10px] text-slate-500 font-mono">{item.product?.sku}</p>
+                      <p className="text-xs font-medium text-foreground">{item.product?.name || '—'}</p>
+                      <p className="text-[10px] text-muted-foreground font-mono">{item.product?.sku}</p>
                     </td>
-                    <td className="py-3 text-xs text-right font-medium text-slate-900">{item.quantity}</td>
-                    <td className="py-3 text-xs text-slate-500">{item.observation || '—'}</td>
+                    <td className="py-3 text-xs text-right font-medium text-foreground">{item.quantity}</td>
+                    <td className="py-3 text-xs text-muted-foreground">{item.observation || '—'}</td>
                   </tr>
                 ))}
                 {(!guide.items || guide.items.length === 0) && (
-                  <tr><td colSpan={3} className="py-8 text-center text-xs text-slate-400">Sin items</td></tr>
+                  <tr><td colSpan={3} className="py-8 text-center text-xs text-muted-foreground">Sin items</td></tr>
                 )}
               </tbody>
             </table>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 mt-12 pt-8 border-t border-slate-200">
+          <div className="grid grid-cols-2 gap-8 mt-12 pt-8 border-t border-border">
             <div className="text-center">
-              <div className="border-t border-slate-300 pt-2 mt-16">
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Firma Despachador</p>
+              <div className="border-t border-border pt-2 mt-16">
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Firma Despachador</p>
               </div>
             </div>
             <div className="text-center">
-              <div className="border-t border-slate-300 pt-2 mt-16">
-                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Firma Recibidor</p>
+              <div className="border-t border-border pt-2 mt-16">
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Firma Recibidor</p>
               </div>
             </div>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-slate-200 text-center">
-            <p className="text-[10px] text-slate-400">Documento generado por Yellow ERP</p>
+          <div className="mt-8 pt-6 border-t border-border text-center">
+            <p className="text-[10px] text-muted-foreground">Documento generado por Yellow ERP</p>
           </div>
         </div>
       </div>

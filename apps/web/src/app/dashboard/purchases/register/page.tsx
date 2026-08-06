@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -146,7 +146,7 @@ export default function PurchaseRegisterPage() {
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <button onClick={() => router.push('/dashboard/purchases')} className="p-1 hover:bg-muted rounded transition-colors">
-          <ArrowLeft className="w-5 h-5 text-slate-600" />
+          <ArrowLeft className="w-5 h-5 text-foreground" />
         </button>
         <div className="flex-1">
           <h1 className="text-xl font-bold text-foreground">Registro de Compras</h1>
@@ -157,12 +157,12 @@ export default function PurchaseRegisterPage() {
         </button>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="flex items-center gap-4 flex-wrap">
           <div className="relative flex-1 min-w-[200px] max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input type="text" placeholder="Buscar por razón social, RUT, factura..." value={search} onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+              className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
           <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
             className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
@@ -178,17 +178,17 @@ export default function PurchaseRegisterPage() {
       </div>
 
       {loading ? (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 space-y-3">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border space-y-3">
           {[1, 2, 3].map(i => <div key={i} className="h-12 bg-muted rounded-lg animate-pulse" />)}
         </div>
       ) : records.length === 0 ? (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-12 dark:bg-primary dark:border-slate-800 text-center">
-          <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+        <div className="bg-card border border-border rounded-xl shadow-sm p-12 dark:bg-primary dark:border-border text-center">
+          <ShoppingBag className="w-12 h-12 text-foreground mx-auto mb-4" />
           <p className="text-sm text-muted-foreground">No hay registros de compras</p>
-          <button onClick={openNew} className="mt-4 text-indigo-600 hover:text-indigo-700 text-sm font-medium">Crear primer registro</button>
+          <button onClick={openNew} className="mt-4 text-primary hover:text-primary text-sm font-medium">Crear primer registro</button>
         </div>
       ) : (
-        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -207,7 +207,7 @@ export default function PurchaseRegisterPage() {
               </thead>
               <tbody>
                 {records.map(r => (
-                  <tr key={r.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={r.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-medium text-foreground max-w-[160px] truncate">{r.razon_social}</td>
                     <td className="px-4 py-3 text-xs text-foreground font-mono">{r.rut || '-'}</td>
                     <td className="px-4 py-3 text-xs text-foreground font-mono">{r.invoice_number}</td>
@@ -227,7 +227,7 @@ export default function PurchaseRegisterPage() {
                     <td className="px-4 py-3 text-xs text-foreground">{r.payment_date?.split('T')[0] || '-'}</td>
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-1">
-                        <button onClick={() => openEdit(r)} className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Edit className="w-4 h-4" /></button>
+                        <button onClick={() => openEdit(r)} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"><Edit className="w-4 h-4" /></button>
                         <button onClick={() => handleDelete(r.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-4 h-4" /></button>
                       </div>
                     </td>
@@ -244,7 +244,7 @@ export default function PurchaseRegisterPage() {
           <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarylg mx-4">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">{editing ? 'Editar' : 'Nuevo'} Registro de Compra</h2>
-              <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-slate-600 text-xl">&times;</button>
+              <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground text-xl">&times;</button>
             </div>
             <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
               <div className="grid grid-cols-2 gap-4">
@@ -312,7 +312,7 @@ export default function PurchaseRegisterPage() {
               </div>
             </div>
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
-              <button onClick={() => setShowModal(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={() => setShowModal(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={saving}
                 className="bg-primary hover:bg-primary/90 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                 {saving ? 'Guardando...' : 'Guardar'}

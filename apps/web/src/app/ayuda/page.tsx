@@ -56,7 +56,7 @@ export default function AyudaPage() {
       <div className="bg-card border border-border rounded-xl shadow-sm p-6">
         <div className="flex flex-col items-center text-center mb-6">
           <div className="w-14 h-14 bg-muted rounded-xl flex items-center justify-center mb-4">
-            <LifeBuoy className="w-7 h-7 text-slate-600" />
+            <LifeBuoy className="w-7 h-7 text-foreground" />
           </div>
           <h2 className="text-lg font-bold text-foreground">¿En qué podemos ayudarte?</h2>
           <p className="text-sm text-muted-foreground mt-1 max-w-lg">Busca entre nuestras preguntas frecuentes o crea un ticket de soporte</p>
@@ -67,7 +67,7 @@ export default function AyudaPage() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Buscar una pregunta..."
-              className="w-full bg-muted border border-border rounded-lg pl-10 pr-4 py-2.5 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+              className="w-full bg-muted border border-border rounded-lg pl-10 pr-4 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
             />
           </div>
         </div>
@@ -80,7 +80,7 @@ export default function AyudaPage() {
               className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
                 category === cat
                   ? 'bg-primary text-white'
-                  : 'bg-muted text-slate-600 hover:bg-slate-200'
+                  : 'bg-muted text-foreground hover:bg-muted'
               }`}
             >
               {cat}
@@ -94,13 +94,13 @@ export default function AyudaPage() {
           <div className="divide-y divide-slate-100">
             {[1, 2, 3, 4].map(i => (
               <div key={i} className="px-6 py-5">
-                <div className="h-4 w-1/3 bg-slate-200 rounded animate-pulse" />
+                <div className="h-4 w-1/3 bg-muted rounded animate-pulse" />
               </div>
             ))}
           </div>
         ) : filtered.length === 0 ? (
           <div className="p-12 text-center">
-            <BookOpen className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+            <BookOpen className="w-10 h-10 text-foreground mx-auto mb-3" />
             <p className="text-sm text-muted-foreground">No se encontraron resultados</p>
             <p className="text-xs text-muted-foreground mt-1">Prueba con otra búsqueda o crea un ticket de soporte</p>
             <Link href="/ayuda/tickets"
@@ -113,7 +113,7 @@ export default function AyudaPage() {
           filtered.map((item, index) => {
             const isOpen = openId === item.id;
             return (
-              <div key={item.id || index} className="border-b border-slate-100 last:border-b-0">
+              <div key={item.id || index} className="border-b border-border last:border-b-0">
                 <button
                   onClick={() => setOpenId(isOpen ? null : item.id)}
                   className={`w-full flex items-center justify-between px-6 py-4 text-left transition-colors ${
@@ -122,7 +122,7 @@ export default function AyudaPage() {
                 >
                   <div className="flex items-center gap-3">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border transition-colors ${
-                      isOpen ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-muted text-slate-600 border-border'
+                      isOpen ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-muted text-foreground border-border'
                     }`}>
                       {item.category}
                     </span>
@@ -146,7 +146,7 @@ export default function AyudaPage() {
                       className="overflow-hidden"
                     >
                       <div className="px-6 pb-4 pl-16">
-                        <p className="text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+                        <p className="text-sm text-foreground leading-relaxed">{item.answer}</p>
                       </div>
                     </motion.div>
                   )}

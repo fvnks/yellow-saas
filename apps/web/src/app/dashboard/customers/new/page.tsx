@@ -119,7 +119,7 @@ export default function NewCustomerPage() {
         <div className="lg:col-span-2 space-y-6">
           {/* Datos Generales */}
           <Card>
-            <div className="px-6 py-4 border-b border-slate-100">
+            <div className="px-6 py-4 border-b border-border">
               <h3 className="text-sm font-semibold text-foreground">Datos Generales</h3>
             </div>
             <div className="p-6 space-y-4">
@@ -136,7 +136,7 @@ export default function NewCustomerPage() {
 
           {/* Contacto */}
           <Card>
-            <div className="px-6 py-4 border-b border-slate-100">
+            <div className="px-6 py-4 border-b border-border">
               <h3 className="text-sm font-semibold text-foreground">Contacto</h3>
             </div>
             <div className="p-6 space-y-4">
@@ -155,7 +155,7 @@ export default function NewCustomerPage() {
 
           {/* Dirección */}
           <Card>
-            <div className="px-6 py-4 border-b border-slate-100">
+            <div className="px-6 py-4 border-b border-border">
               <h3 className="text-sm font-semibold text-foreground">Dirección</h3>
             </div>
             <div className="p-6 space-y-4">
@@ -170,7 +170,7 @@ export default function NewCustomerPage() {
 
           {/* Crédito y Pagos */}
           <Card>
-            <div className="px-6 py-4 border-b border-slate-100">
+            <div className="px-6 py-4 border-b border-border">
               <h3 className="text-sm font-semibold text-foreground">Crédito y Pagos</h3>
             </div>
             <div className="p-6 space-y-4">
@@ -190,7 +190,7 @@ export default function NewCustomerPage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setTaxExempt(!taxExempt)}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${taxExempt ? 'bg-indigo-600' : 'bg-slate-200'}`}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${taxExempt ? 'bg-primary' : 'bg-muted'}`}
                 >
                   <span className={`inline-block h-4 w-4 transform rounded-full bg-card transition-transform ${taxExempt ? 'translate-x-6' : 'translate-x-1'}`} />
                 </button>
@@ -201,7 +201,7 @@ export default function NewCustomerPage() {
 
           {/* Clasificación */}
           <Card>
-            <div className="px-6 py-4 border-b border-slate-100">
+            <div className="px-6 py-4 border-b border-border">
               <h3 className="text-sm font-semibold text-foreground">Clasificación</h3>
             </div>
             <div className="p-6 space-y-4">
@@ -236,7 +236,7 @@ export default function NewCustomerPage() {
               </div>
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">Notas</label>
-                <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="Notas adicionales..." />
+                <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="Notas adicionales..." />
               </div>
             </div>
           </Card>
@@ -244,8 +244,8 @@ export default function NewCustomerPage() {
 
         {/* Summary Sidebar */}
         <div className="space-y-6">
-          <div className="bg-card border border-border rounded-xl shadow-sm sticky dark:bg-primary dark:border-slate-800 top-24">
-            <div className="px-6 py-4 border-b border-slate-100">
+          <div className="bg-card border border-border rounded-xl shadow-sm sticky dark:bg-primary dark:border-border top-24">
+            <div className="px-6 py-4 border-b border-border">
               <h3 className="text-sm font-semibold text-foreground">Resumen</h3>
             </div>
             <div className="p-6 space-y-3 text-sm">

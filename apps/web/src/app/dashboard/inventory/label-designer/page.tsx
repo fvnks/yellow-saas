@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
@@ -376,7 +376,7 @@ export default function LabelDesignerPage() {
   const canvasHeight = activeTemplate ? activeTemplate.height_mm * MM_TO_PX : 151;
   const marginPx = activeTemplate ? activeTemplate.margin_mm * MM_TO_PX : 7.5;
 
-  if (loading) return <div className="space-y-6">{[1,2,3].map(i => <div key={i} className="animate-pulse bg-slate-200 h-32 rounded-xl" />)}</div>;
+  if (loading) return <div className="space-y-6">{[1,2,3].map(i => <div key={i} className="animate-pulse bg-muted h-32 rounded-xl" />)}</div>;
 
   return (
     <div className="space-y-6">
@@ -395,7 +395,7 @@ export default function LabelDesignerPage() {
         </div>
       </div>
 
-      {loading && <div className="fixed inset-0 bg-card/80 z-50 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" /></div>}
+      {loading && <div className="fixed inset-0 bg-card/80 z-50 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>}
 
       <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr_320px] gap-6">
         {/* Sidebar: Templates & Elements */}
@@ -409,8 +409,8 @@ export default function LabelDesignerPage() {
                   onClick={() => { setActiveTemplate(tpl); loadTemplate(tpl); }}
                   className={`w-full text-left p-3 rounded-lg border transition-colors ${
                     activeTemplate?.id === tpl.id
-                      ? 'border-indigo-500 bg-indigo-50'
-                      : 'border-border hover:border-slate-300 hover:bg-muted'
+                      ? 'border-primary bg-blue-50'
+                      : 'border-border hover:border-border hover:bg-muted'
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -447,8 +447,8 @@ export default function LabelDesignerPage() {
                     key={el.id}
                     className={`flex items-center gap-2 p-2 rounded border ${
                       selectedElementId === el.id
-                        ? 'border-indigo-500 bg-indigo-50'
-                        : 'border-border hover:border-slate-300'
+                        ? 'border-primary bg-blue-50'
+                        : 'border-border hover:border-border'
                     }`}
                   >
                     <span className="text-xs text-muted-foreground capitalize">{el.type}</span>
@@ -580,13 +580,13 @@ export default function LabelDesignerPage() {
                 <h4 className="font-medium text-sm text-foreground">Grid</h4>
                 <div className="flex items-center gap-2">
                   <label className="flex items-center gap-2 text-sm">
-                    <input type="checkbox" checked={gridSettings.show} onChange={e => setGridSettings(s => ({ ...s, show: e.target.checked }))} className="rounded border-slate-300" />
+                    <input type="checkbox" checked={gridSettings.show} onChange={e => setGridSettings(s => ({ ...s, show: e.target.checked }))} className="rounded border-border" />
                     Mostrar grid
                   </label>
                 </div>
                 <div className="flex items-center gap-2">
                   <label className="flex items-center gap-2 text-sm">
-                    <input type="checkbox" checked={gridSettings.snap} onChange={e => setGridSettings(s => ({ ...s, snap: e.target.checked }))} className="rounded border-slate-300" />
+                    <input type="checkbox" checked={gridSettings.snap} onChange={e => setGridSettings(s => ({ ...s, snap: e.target.checked }))} className="rounded border-border" />
                     Snap to grid
                   </label>
                 </div>
@@ -617,7 +617,7 @@ export default function LabelDesignerPage() {
                       </div>
                       <div className="flex items-center gap-2">
                         <label className="flex items-center gap-2 text-xs">
-                          <input type="checkbox" checked={!!selectedElement.dynamicField} onChange={e => updateElement(selectedElement.id, { dynamicField: e.target.checked ? 'product.name' : undefined })} className="rounded border-slate-300" />
+                          <input type="checkbox" checked={!!selectedElement.dynamicField} onChange={e => updateElement(selectedElement.id, { dynamicField: e.target.checked ? 'product.name' : undefined })} className="rounded border-border" />
                           Campo dinámico
                         </label>
                       </div>
@@ -630,7 +630,7 @@ export default function LabelDesignerPage() {
                       <Input label="Valor" value={selectedElement.barcodeValue || ''} onChange={e => updateElement(selectedElement.id, { barcodeValue: e.target.value })} />
                       <div className="flex items-center gap-2">
                         <label className="flex items-center gap-2 text-xs">
-                          <input type="checkbox" checked={!!selectedElement.dynamicField} onChange={e => updateElement(selectedElement.id, { dynamicField: e.target.checked ? 'product.barcode' : undefined })} className="rounded border-slate-300" />
+                          <input type="checkbox" checked={!!selectedElement.dynamicField} onChange={e => updateElement(selectedElement.id, { dynamicField: e.target.checked ? 'product.barcode' : undefined })} className="rounded border-border" />
                           Valor dinámico (product.barcode)
                         </label>
                       </div>
@@ -809,7 +809,7 @@ function LabelElementRenderer({
   return (
     <div
       style={style}
-      className={isSelected ? 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-white' : ''}
+      className={isSelected ? 'ring-2 ring-primary/20 ring-offset-2 ring-offset-white' : ''}
       onClick={(e) => { e.stopPropagation(); onSelect(); }}
       onMouseDown={onDragStart}
     >
@@ -820,7 +820,7 @@ function LabelElementRenderer({
           {['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'].map(dir => (
             <div
               key={dir}
-              className="absolute w-2 h-2 bg-card border border-indigo-500 rounded"
+              className="absolute w-2 h-2 bg-card border border-primary rounded"
               style={{
                 left: dir.includes('w') ? -4 : dir.includes('e') ? 'calc(100% - 4px)' : 'calc(50% - 4px)',
                 top: dir.includes('n') ? -4 : dir.includes('s') ? 'calc(100% - 4px)' : 'calc(50% - 4px)',

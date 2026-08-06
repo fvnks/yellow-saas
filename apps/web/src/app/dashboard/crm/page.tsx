@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Users, Plus, Search, Eye, Edit, Trash2, Phone, Mail, Calendar, Star, Filter, X, Save } from 'lucide-react';
@@ -98,60 +98,60 @@ export default function CRMPage() {
       {error && <NotificationAlert variant="warning" title={error} dismissible onDismiss={() => setError('')} />}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Leads</p>
               <p className="text-2xl font-bold text-foreground mt-1">{leads.length}</p>
             </div>
             <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
-              <Users className="w-6 h-6 text-slate-600" />
+              <Users className="w-6 h-6 text-foreground" />
             </div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Activos</p>
               <p className="text-2xl font-bold text-foreground mt-1">{activeLeads.length}</p>
             </div>
             <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
-              <Star className="w-6 h-6 text-slate-600" />
+              <Star className="w-6 h-6 text-foreground" />
             </div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Ganados</p>
               <p className="text-2xl font-bold text-emerald-600 mt-1">{wonLeads.length}</p>
             </div>
             <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-slate-600" />
+              <Calendar className="w-6 h-6 text-foreground" />
             </div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Valor Pipeline</p>
               <p className="text-2xl font-bold text-foreground mt-1">${(totalValue / 1000000).toFixed(1)}M</p>
             </div>
             <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
-              <Star className="w-6 h-6 text-slate-600" />
+              <Star className="w-6 h-6 text-foreground" />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
         <div className="flex items-center gap-4">
           <div className="flex-1 relative">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input type="text" value={search} onChange={e => setSearch(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSearch()}
               placeholder="Buscar por nombre, email o telefono..."
-              className="w-full bg-muted border border-border rounded-lg pl-10 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+              className="w-full bg-muted border border-border rounded-lg pl-10 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
           <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
             className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
@@ -163,7 +163,7 @@ export default function CRMPage() {
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -181,13 +181,13 @@ export default function CRMPage() {
                 <tr><td colSpan={6} className="px-4 py-12 text-center text-sm text-muted-foreground">Cargando...</td></tr>
               ) : leads.length === 0 ? (
                 <tr><td colSpan={6} className="px-4 py-12 text-center">
-                  <Users className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+                  <Users className="w-12 h-12 text-foreground mx-auto mb-3" />
                   <p className="text-sm text-muted-foreground">No hay leads registrados</p>
                 </td></tr>
               ) : leads.map(lead => {
                 const st = statusConfig[lead.status] || statusConfig.new;
                 return (
-                  <tr key={lead.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={lead.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3">
                       <p className="text-sm font-medium text-foreground">{lead.name}</p>
                       {lead.notes && <p className="text-[10px] text-muted-foreground truncate max-w-xs">{lead.notes}</p>}
@@ -196,7 +196,7 @@ export default function CRMPage() {
                       {lead.email && <p className="text-xs text-foreground flex items-center gap-1"><Mail className="w-3 h-3" />{lead.email}</p>}
                       {lead.phone && <p className="text-xs text-foreground flex items-center gap-1"><Phone className="w-3 h-3" />{lead.phone}</p>}
                     </td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{sourceOptions.find(s => s.value === lead.source)?.label || lead.source || '�'}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{sourceOptions.find(s => s.value === lead.source)?.label || lead.source || '�'}</td>
                     <td className="px-4 py-3 text-xs text-right font-medium text-foreground">
                       {lead.estimated_value ? `$${Number(lead.estimated_value).toLocaleString('es-CL')}` : '�'}
                     </td>
@@ -226,24 +226,24 @@ export default function CRMPage() {
           <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarylg mx-4">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">{editingLead ? 'Editar Lead' : 'Nuevo Lead'}</h2>
-              <button onClick={() => { setShowForm(false); setEditingLead(null); }} className="text-muted-foreground hover:text-slate-600"><X className="w-5 h-5" /></button>
+              <button onClick={() => { setShowForm(false); setEditingLead(null); }} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
             </div>
             <div className="p-6 space-y-4">
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">Nombre *</label>
                 <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-foreground">Email</label>
                   <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-foreground">Telefono</label>
                   <input type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -266,17 +266,17 @@ export default function CRMPage() {
                 <label className="block text-xs font-medium text-foreground">Valor Estimado (CLP)</label>
                 <input type="number" value={form.estimated_value} onChange={e => setForm({ ...form, estimated_value: e.target.value })}
                   placeholder="0"
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">Notas</label>
                 <textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} rows={3}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
             </div>
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button onClick={() => { setShowForm(false); setEditingLead(null); }}
-                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={saving || !form.name}
                 className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
                 <Save className="w-4 h-4" /> {saving ? 'Guardando...' : editingLead ? 'Actualizar' : 'Crear Lead'}

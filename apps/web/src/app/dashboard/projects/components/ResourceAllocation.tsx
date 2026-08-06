@@ -42,7 +42,7 @@ export default function ResourceAllocation({ projectId }: ResourceAllocationProp
     if (r.in_progress_tasks >= 5 || r.pending_hours >= 40) return { level: 'overloaded', color: 'bg-red-500', label: 'Sobrecargado', textColor: 'text-red-700', bgColor: 'bg-red-50', borderColor: 'border-red-200' };
     if (r.in_progress_tasks >= 3 || r.pending_hours >= 20) return { level: 'high', color: 'bg-amber-500', label: 'Alta carga', textColor: 'text-amber-700', bgColor: 'bg-amber-50', borderColor: 'border-amber-200' };
     if (r.active_tasks > 0) return { level: 'normal', color: 'bg-emerald-500', label: 'Normal', textColor: 'text-emerald-700', bgColor: 'bg-emerald-50', borderColor: 'border-emerald-200' };
-    return { level: 'available', color: 'bg-slate-300', label: 'Disponible', textColor: 'text-muted-foreground', bgColor: 'bg-muted', borderColor: 'border-border' };
+    return { level: 'available', color: 'bg-muted', label: 'Disponible', textColor: 'text-muted-foreground', bgColor: 'bg-muted', borderColor: 'border-border' };
   };
 
   if (loading) {
@@ -64,13 +64,13 @@ export default function ResourceAllocation({ projectId }: ResourceAllocationProp
         <div className="flex items-center gap-3 text-[10px]">
           <span className="flex items-center gap-1"><span className="w-2 h-2 bg-red-500 rounded-full" />{overloaded} sobrecargados</span>
           <span className="flex items-center gap-1"><span className="w-2 h-2 bg-amber-500 rounded-full" />{highWorkload} alta carga</span>
-          <span className="flex items-center gap-1"><span className="w-2 h-2 bg-slate-300 rounded-full" />{available} disponibles</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 bg-muted rounded-full" />{available} disponibles</span>
         </div>
       </div>
 
       {resources.length === 0 ? (
-        <div className="text-center py-8 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
-          <Users className="w-10 h-10 text-slate-200 mx-auto mb-2" />
+        <div className="text-center py-8 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+          <Users className="w-10 h-10 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">No hay empleados asignados</p>
         </div>
       ) : (
@@ -82,8 +82,8 @@ export default function ResourceAllocation({ projectId }: ResourceAllocationProp
               <div key={r.employee_id} className={`bg-card border ${workload.borderColor} rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow`}>
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                      <span className="text-xs font-semibold text-indigo-600">
+                    <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
+                      <span className="text-xs font-semibold text-primary">
                         {r.employee_name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
                       </span>
                     </div>

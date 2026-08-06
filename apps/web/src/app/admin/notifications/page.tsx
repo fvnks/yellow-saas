@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { Bell, Send, Building2, CheckCircle, AlertTriangle, Info, AlertCircle, Plus, X, Eye, EyeOff, Trash2 } from 'lucide-react';
@@ -149,14 +149,14 @@ export default function AdminNotificationsPage() {
           <h1 className="text-2xl font-bold text-white">Notificaciones</h1>
           <p className="text-sm text-muted-foreground mt-1">
             Envía notificaciones a empresas de la plataforma
-            {unreadCount > 0 && <span className="ml-2 text-indigo-400">({unreadCount} sin leer)</span>}
+            {unreadCount > 0 && <span className="ml-2 text-primary/70">({unreadCount} sin leer)</span>}
           </p>
         </div>
         <div className="flex items-center gap-2">
           {unreadCount > 0 && (
             <button
               onClick={handleMarkAllAsRead}
-              className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm font-medium text-slate-300 hover:text-white transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-card hover:bg-primary/90 rounded-lg text-sm font-medium text-foreground hover:text-white transition-colors"
             >
               <Eye className="w-4 h-4" />
               Marcar todo como leído
@@ -164,7 +164,7 @@ export default function AdminNotificationsPage() {
           )}
           <button
             onClick={() => { setShowCreate(!showCreate); setMessage({ type: '', text: '' }); }}
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm font-medium text-white transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors"
           >
             <Plus className="w-4 h-4" />
             {showCreate ? 'Cancelar' : 'Nueva Notificación'}
@@ -173,7 +173,7 @@ export default function AdminNotificationsPage() {
       </div>
 
       {showCreate && (
-        <div className="bg-primary border border-slate-800 rounded-xl p-6">
+        <div className="bg-primary border border-border rounded-xl p-6">
           <h3 className="text-sm font-semibold text-white mb-4">Enviar Notificación</h3>
           {message.text && (
             <div className={`mb-4 flex items-center gap-2 p-3 rounded-lg text-sm ${
@@ -190,7 +190,7 @@ export default function AdminNotificationsPage() {
                 <select
                   value={form.company_id}
                   onChange={(e) => setForm({ ...form, company_id: e.target.value })}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                 >
                   <option value="">Todas las empresas</option>
                   {companies.map((c) => (
@@ -203,7 +203,7 @@ export default function AdminNotificationsPage() {
                 <select
                   value={form.type}
                   onChange={(e) => setForm({ ...form, type: e.target.value })}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                 >
                   <option value="info">Info</option>
                   <option value="warning">Advertencia</option>
@@ -220,7 +220,7 @@ export default function AdminNotificationsPage() {
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
                 placeholder="Título de la notificación"
                 required
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
+                className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
               />
             </div>
             <div className="space-y-1">
@@ -231,14 +231,14 @@ export default function AdminNotificationsPage() {
                 placeholder="Contenido de la notificación..."
                 required
                 rows={3}
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20 resize-none"
+                className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20 resize-none"
               />
             </div>
             <div className="flex justify-end">
               <button
                 type="submit"
                 disabled={saving}
-                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
               >
                 <Send className="w-4 h-4" />
                 {saving ? 'Enviando...' : 'Enviar'}
@@ -249,7 +249,7 @@ export default function AdminNotificationsPage() {
       )}
 
       {/* Filters */}
-      <div className="bg-primary border border-slate-800 rounded-xl p-4 flex items-center gap-4">
+      <div className="bg-primary border border-border rounded-xl p-4 flex items-center gap-4">
         <div className="flex items-center gap-2">
           {[
             { value: 'all', label: 'Todas' },
@@ -261,8 +261,8 @@ export default function AdminNotificationsPage() {
               onClick={() => setFilter(opt.value as any)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                 filter === opt.value
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-slate-800 text-muted-foreground hover:text-white hover:bg-slate-700'
+                  ? 'bg-primary text-white'
+                  : 'bg-card text-muted-foreground hover:text-white hover:bg-primary/90'
               }`}
             >
               {opt.label}
@@ -271,10 +271,10 @@ export default function AdminNotificationsPage() {
         </div>
       </div>
 
-      <div className="bg-primary border border-slate-800 rounded-xl overflow-hidden">
+      <div className="bg-primary border border-border rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-800">
+            <tr className="border-b border-border">
               <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Estado</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Fecha</th>
               <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Tipo</th>
@@ -287,9 +287,9 @@ export default function AdminNotificationsPage() {
           <tbody>
             {loading ? (
               Array.from({ length: 5 }).map((_, i) => (
-                <tr key={i} className="border-b border-slate-800/50">
+                <tr key={i} className="border-b border-border/50">
                   <td colSpan={7} className="px-6 py-4">
-                    <div className="h-4 bg-slate-800 rounded animate-pulse" />
+                    <div className="h-4 bg-card rounded animate-pulse" />
                   </td>
                 </tr>
               ))
@@ -304,12 +304,12 @@ export default function AdminNotificationsPage() {
               filtered.map((n) => {
                 const Icon = typeIcons[n.type] || Info;
                 return (
-                  <tr key={n.id} className={`border-b border-slate-800/50 hover:bg-primary/90/30 transition-colors ${!n.is_read ? 'bg-indigo-500/5' : ''}`}>
+                  <tr key={n.id} className={`border-b border-border/50 hover:bg-primary/90/30 transition-colors ${!n.is_read ? 'bg-primary/5' : ''}`}>
                     <td className="px-6 py-4">
                       <button
                         onClick={() => handleMarkAsRead(n.id, !n.is_read)}
                         className={`p-1.5 rounded-lg transition-colors ${
-                          n.is_read ? 'text-muted-foreground hover:text-slate-300' : 'text-indigo-400 hover:text-indigo-300'
+                          n.is_read ? 'text-muted-foreground hover:text-foreground' : 'text-primary/70 hover:text-primary/60'
                         }`}
                         title={n.is_read ? 'Marcar como no leído' : 'Marcar como leído'}
                       >
@@ -327,7 +327,7 @@ export default function AdminNotificationsPage() {
                     </td>
                     <td className={`px-6 py-4 text-sm font-medium ${n.is_read ? 'text-muted-foreground' : 'text-white'}`}>{n.title}</td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-1.5 text-xs text-slate-300">
+                      <div className="flex items-center gap-1.5 text-xs text-foreground">
                         <Building2 className="w-3 h-3 text-muted-foreground" />
                         {n.company_name || 'Todas'}
                       </div>

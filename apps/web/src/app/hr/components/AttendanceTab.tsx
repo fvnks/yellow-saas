@@ -121,7 +121,7 @@ export default function AttendanceTab() {
       </div>
 
       {showForm && (
-        <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 space-y-3">
+        <div className="bg-blue-50 border border-primary/20 rounded-xl p-4 space-y-3">
           <h4 className="text-sm font-medium text-foreground">Registrar Asistencia</h4>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
             <select value={form.employee_id} onChange={e => setForm({ ...form, employee_id: e.target.value })}
@@ -162,7 +162,7 @@ export default function AttendanceTab() {
               ) : filtered.length === 0 ? (
                 <tr><td colSpan={6} className="text-center py-8 text-sm text-muted-foreground">Sin registros de asistencia</td></tr>
               ) : filtered.map(r => (
-                <tr key={r.id} className="border-b border-slate-100 hover:bg-muted">
+                <tr key={r.id} className="border-b border-border hover:bg-muted">
                   <td className="px-4 py-3">
                     <p className="text-xs font-medium text-foreground">{r.employee_name}</p>
                     <p className="text-[10px] text-muted-foreground">{r.employee_rut}</p>

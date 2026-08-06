@@ -120,7 +120,7 @@ export default function PWAOfflineQueuePage() {
     return config[status] || { variant: 'neutral', label: status };
   };
 
-  if (loading) return <div className="space-y-6">{[1,2,3].map(i => <div key={i} className="animate-pulse bg-slate-200 h-32 rounded-xl" />)}</div>;
+  if (loading) return <div className="space-y-6">{[1,2,3].map(i => <div key={i} className="animate-pulse bg-muted h-32 rounded-xl" />)}</div>;
 
   return (
     <div className="space-y-6">
@@ -151,10 +151,10 @@ export default function PWAOfflineQueuePage() {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <div className="space-y-4">{[1,2,3,4,5].map(i => <div key={i} className="animate-pulse bg-slate-200 h-16 rounded-lg" />)}</div>
+            <div className="space-y-4">{[1,2,3,4,5].map(i => <div key={i} className="animate-pulse bg-muted h-16 rounded-lg" />)}</div>
           ) : items.length === 0 ? (
             <div className="text-center py-12">
-              <Database className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+              <Database className="w-12 h-12 text-foreground mx-auto mb-3" />
               <p className="text-sm text-muted-foreground">No hay elementos en la cola</p>
             </div>
           ) : (
@@ -177,8 +177,8 @@ export default function PWAOfflineQueuePage() {
                 </TableHeader>
                 <TableBody>
                   {items.map(item => (
-                    <TableRow key={item.id} className={`border-b border-slate-100 hover:bg-muted transition-colors ${item.status === 'failed' ? 'bg-rose-50/50' : item.status === 'conflict' ? 'bg-amber-50/50' : ''}`}>
-                      <TableCell className="font-mono text-xs text-slate-600">{item.id.slice(0,8)}...</TableCell>
+                    <TableRow key={item.id} className={`border-b border-border hover:bg-muted transition-colors ${item.status === 'failed' ? 'bg-rose-50/50' : item.status === 'conflict' ? 'bg-amber-50/50' : ''}`}>
+                      <TableCell className="font-mono text-xs text-foreground">{item.id.slice(0,8)}...</TableCell>
                       <TableCell className="text-xs">
                         {item.user ? (
                           <div>

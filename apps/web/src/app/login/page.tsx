@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -132,7 +132,7 @@ function LoginForm() {
                   placeholder="admin@yellow-erp.cl"
                   autoComplete="email"
                   required
-                  className="w-full rounded-lg border border-border bg-card pl-10 pr-4 py-3 text-[14px] text-foreground placeholder:text-muted-foreground focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10 transition-colors"
+                  className="w-full rounded-lg border border-border bg-card pl-10 pr-4 py-3 text-[14px] text-foreground placeholder:text-muted-foreground focus:border-border focus:outline-none focus:ring-2 focus:ring-slate-900/10 transition-colors"
                 />
               </div>
             </motion.div>
@@ -152,13 +152,13 @@ function LoginForm() {
                   placeholder="••••••••"
                   autoComplete="current-password"
                   required
-                  className="w-full rounded-lg border border-border bg-card pl-10 pr-12 py-3 text-[14px] font-mono text-foreground placeholder:text-muted-foreground focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10 transition-colors"
+                  className="w-full rounded-lg border border-border bg-card pl-10 pr-12 py-3 text-[14px] font-mono text-foreground placeholder:text-muted-foreground focus:border-border focus:outline-none focus:ring-2 focus:ring-slate-900/10 transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-slate-600 transition-colors"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -173,9 +173,9 @@ function LoginForm() {
                   type="checkbox"
                   checked={remember}
                   onChange={(e) => setRemember(e.target.checked)}
-                  className="size-[18px] rounded border-slate-300 text-foreground focus:ring-slate-900 focus:ring-2 transition-colors"
+                  className="size-[18px] rounded border-border text-foreground focus:ring-slate-900 focus:ring-2 transition-colors"
                 />
-                <label htmlFor="remember" className="text-[14px] text-slate-600 cursor-pointer">
+                <label htmlFor="remember" className="text-[14px] text-foreground cursor-pointer">
                   Mantener sesión
                 </label>
               </div>
@@ -202,9 +202,9 @@ function LoginForm() {
 
           {/* Divider */}
           <motion.div variants={itemVariants} className="flex items-center gap-4 mt-6">
-            <div className="flex-1 h-px bg-slate-200" />
+            <div className="flex-1 h-px bg-muted" />
             <span className="text-xs text-muted-foreground">o</span>
-            <div className="flex-1 h-px bg-slate-200" />
+            <div className="flex-1 h-px bg-muted" />
           </motion.div>
 
           {/* Footer */}

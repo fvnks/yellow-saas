@@ -110,15 +110,15 @@ export default function RubrosPage() {
           {[1, 2, 3].map(i => (
             <div key={i} className="bg-card border border-border rounded-xl shadow-sm p-6">
               <div className="animate-pulse space-y-3">
-                <div className="h-4 bg-slate-200 rounded w-1/3" />
-                <div className="h-3 bg-slate-200 rounded w-2/3" />
+                <div className="h-4 bg-muted rounded w-1/3" />
+                <div className="h-3 bg-muted rounded w-2/3" />
               </div>
             </div>
           ))}
         </div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm">
-          <Tag className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+          <Tag className="w-12 h-12 text-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">No se encontraron rubros</p>
           <p className="text-xs text-muted-foreground mt-1">Crea el primer rubro para clasificar tus clientes</p>
         </div>
@@ -136,24 +136,24 @@ export default function RubrosPage() {
             </thead>
             <tbody>
               {filtered.map(rubro => (
-                <tr key={rubro.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <tr key={rubro.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
-                        <Tag className="w-4 h-4 text-indigo-600" />
+                      <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                        <Tag className="w-4 h-4 text-primary" />
                       </div>
                       <span className="text-sm font-medium text-foreground">{rubro.name}</span>
                     </div>
                   </td>
                   <td className="px-4 py-3 text-xs text-muted-foreground max-w-[200px] truncate">{rubro.description || '—'}</td>
                   <td className="px-4 py-3 text-center">
-                    <span className="inline-flex items-center gap-1 text-xs text-slate-600">
+                    <span className="inline-flex items-center gap-1 text-xs text-foreground">
                       <Users className="w-3 h-3" /> {rubro.customer_count || 0}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-center">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
-                      rubro.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-muted text-slate-600 border border-border'
+                      rubro.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-muted text-foreground border border-border'
                     }`}>
                       {rubro.is_active ? 'Activo' : 'Inactivo'}
                     </span>
@@ -180,7 +180,7 @@ export default function RubrosPage() {
           <div className="bg-card rounded-xl shadow-xl w-full max-w-lg mx-4">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">{editing ? 'Editar Rubro' : 'Nuevo Rubro'}</h2>
-              <button onClick={() => { setShowForm(false); setEditing(null); }} className="text-muted-foreground hover:text-slate-600">
+              <button onClick={() => { setShowForm(false); setEditing(null); }} className="text-muted-foreground hover:text-foreground">
                 <span className="text-xl">&times;</span>
               </button>
             </div>
@@ -197,7 +197,7 @@ export default function RubrosPage() {
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
                   rows={2}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Descripción del rubro..."
                 />
               </div>

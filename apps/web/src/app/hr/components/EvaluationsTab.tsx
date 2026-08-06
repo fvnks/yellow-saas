@@ -93,7 +93,7 @@ export default function EvaluationsTab() {
       </div>
 
       {showForm && (
-        <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 space-y-3">
+        <div className="bg-blue-50 border border-primary/20 rounded-xl p-4 space-y-3">
           <h4 className="text-sm font-medium text-foreground">Nueva Evaluación de Desempeño</h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <select value={form.employee_id} onChange={e => setForm({ ...form, employee_id: e.target.value })}
@@ -138,7 +138,7 @@ export default function EvaluationsTab() {
               ) : filtered.length === 0 ? (
                 <tr><td colSpan={7} className="text-center py-8 text-sm text-muted-foreground">Sin evaluaciones registradas</td></tr>
               ) : filtered.map(e => (
-                <tr key={e.id} className="border-b border-slate-100 hover:bg-muted">
+                <tr key={e.id} className="border-b border-border hover:bg-muted">
                   <td className="px-4 py-3">
                     <p className="text-xs font-medium text-foreground">{e.employee_name}</p>
                     <p className="text-[10px] text-muted-foreground">{e.employee_rut}</p>

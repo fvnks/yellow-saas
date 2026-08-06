@@ -139,10 +139,10 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <div className="w-9 h-9 bg-slate-200 rounded-lg animate-pulse" />
-          <div className="h-6 w-48 bg-slate-200 rounded animate-pulse" />
+          <div className="w-9 h-9 bg-muted rounded-lg animate-pulse" />
+          <div className="h-6 w-48 bg-muted rounded animate-pulse" />
         </div>
-        <Card><CardContent><div className="h-96 bg-slate-100 rounded animate-pulse" /></CardContent></Card>
+        <Card><CardContent><div className="h-96 bg-muted rounded animate-pulse" /></CardContent></Card>
       </div>
     );
   }
@@ -151,14 +151,14 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Link href="/dashboard/customers" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+          <Link href="/dashboard/customers" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <h1 className="text-xl font-bold text-slate-900">Cliente no encontrado</h1>
+          <h1 className="text-xl font-bold text-foreground">Cliente no encontrado</h1>
         </div>
         <Card>
           <CardContent className="text-center py-12">
-            <p className="text-sm text-slate-500">{error}</p>
+            <p className="text-sm text-muted-foreground">{error}</p>
             <Link href="/dashboard/customers"><Button className="mt-4">Volver a Clientes</Button></Link>
           </CardContent>
         </Card>
@@ -169,12 +169,12 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href={`/dashboard/customers/${id}`} className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href={`/dashboard/customers/${id}`} className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">
-          <h1 className="text-xl font-bold text-slate-900">Editar Cliente</h1>
-          <p className="text-sm text-slate-500 mt-1">{name}</p>
+          <h1 className="text-xl font-bold text-foreground">Editar Cliente</h1>
+          <p className="text-sm text-muted-foreground mt-1">{name}</p>
         </div>
         <Button onClick={handleSave} disabled={saving}>
           <Save className="w-4 h-4 mr-2" />
@@ -190,8 +190,8 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
         <div className="lg:col-span-2 space-y-6">
           {/* Datos Generales */}
           <Card>
-            <div className="px-6 py-4 border-b border-slate-100">
-              <h3 className="text-sm font-semibold text-slate-900">Datos Generales</h3>
+            <div className="px-6 py-4 border-b border-border">
+              <h3 className="text-sm font-semibold text-foreground">Datos Generales</h3>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -207,8 +207,8 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
 
           {/* Contacto */}
           <Card>
-            <div className="px-6 py-4 border-b border-slate-100">
-              <h3 className="text-sm font-semibold text-slate-900">Contacto</h3>
+            <div className="px-6 py-4 border-b border-border">
+              <h3 className="text-sm font-semibold text-foreground">Contacto</h3>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -226,8 +226,8 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
 
           {/* Dirección */}
           <Card>
-            <div className="px-6 py-4 border-b border-slate-100">
-              <h3 className="text-sm font-semibold text-slate-900">Dirección</h3>
+            <div className="px-6 py-4 border-b border-border">
+              <h3 className="text-sm font-semibold text-foreground">Dirección</h3>
             </div>
             <div className="p-6 space-y-4">
               <Input label="Dirección" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Av. Providencia 1234" />
@@ -241,16 +241,16 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
 
           {/* Crédito y Pagos */}
           <Card>
-            <div className="px-6 py-4 border-b border-slate-100">
-              <h3 className="text-sm font-semibold text-slate-900">Crédito y Pagos</h3>
+            <div className="px-6 py-4 border-b border-border">
+              <h3 className="text-sm font-semibold text-foreground">Crédito y Pagos</h3>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Input label="Plazo de Pago (días)" type="number" value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)} placeholder="30" />
                 <Input label="Límite de Crédito" type="number" value={creditLimit} onChange={(e) => setCreditLimit(e.target.value)} placeholder="0" />
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Lista de Precios</label>
-                  <select value={priceListId} onChange={(e) => setPriceListId(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                  <label className="block text-xs font-medium text-foreground">Lista de Precios</label>
+                  <select value={priceListId} onChange={(e) => setPriceListId(e.target.value)} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                     <option value="">Ninguna</option>
                     {priceLists.map((pl: any) => (
                       <option key={pl.id} value={pl.id}>{pl.name}</option>
@@ -259,24 +259,24 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={() => setTaxExempt(!taxExempt)} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${taxExempt ? 'bg-indigo-600' : 'bg-slate-200'}`}>
+                <button onClick={() => setTaxExempt(!taxExempt)} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${taxExempt ? 'bg-primary' : 'bg-muted'}`}>
                   <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${taxExempt ? 'translate-x-6' : 'translate-x-1'}`} />
                 </button>
-                <label className="text-sm font-medium text-slate-700">Exento de IVA</label>
+                <label className="text-sm font-medium text-foreground">Exento de IVA</label>
               </div>
             </div>
           </Card>
 
           {/* Clasificación */}
           <Card>
-            <div className="px-6 py-4 border-b border-slate-100">
-              <h3 className="text-sm font-semibold text-slate-900">Clasificación</h3>
+            <div className="px-6 py-4 border-b border-border">
+              <h3 className="text-sm font-semibold text-foreground">Clasificación</h3>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Rubro</label>
-                  <select value={rubroId} onChange={(e) => setRubroId(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                  <label className="block text-xs font-medium text-foreground">Rubro</label>
+                  <select value={rubroId} onChange={(e) => setRubroId(e.target.value)} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                     <option value="">Sin rubro</option>
                     {rubros.map((r: any) => (
                       <option key={r.id} value={r.id}>{r.name}</option>
@@ -284,8 +284,8 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Categoría</label>
-                  <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                  <label className="block text-xs font-medium text-foreground">Categoría</label>
+                  <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                     <option value="">Sin categoría</option>
                     {categories.map((cat: any) => (
                       <option key={cat.id} value={cat.id}>{cat.name}</option>
@@ -293,8 +293,8 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Segmento</label>
-                  <select value={segmentId} onChange={(e) => setSegmentId(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                  <label className="block text-xs font-medium text-foreground">Segmento</label>
+                  <select value={segmentId} onChange={(e) => setSegmentId(e.target.value)} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                     <option value="">Sin segmento</option>
                     {segments.map((seg: any) => (
                       <option key={seg.id} value={seg.id}>{seg.name}</option>
@@ -303,8 +303,8 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Notas</label>
-                <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Notas adicionales..." />
+                <label className="block text-xs font-medium text-foreground">Notas</label>
+                <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="Notas adicionales..." />
               </div>
             </div>
           </Card>
@@ -312,46 +312,46 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
 
         {/* Sidebar */}
         <div className="space-y-6">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
-            <div className="px-6 py-4 border-b border-slate-100">
-              <h3 className="text-sm font-semibold text-slate-900">Estado</h3>
+          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+            <div className="px-6 py-4 border-b border-border">
+              <h3 className="text-sm font-semibold text-foreground">Estado</h3>
             </div>
             <div className="p-6">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-slate-700">Activo</label>
-                <button onClick={() => setIsActive(!isActive)} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isActive ? 'bg-indigo-600' : 'bg-slate-200'}`}>
+                <label className="text-sm font-medium text-foreground">Activo</label>
+                <button onClick={() => setIsActive(!isActive)} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isActive ? 'bg-primary' : 'bg-muted'}`}>
                   <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isActive ? 'translate-x-6' : 'translate-x-1'}`} />
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
-            <div className="px-6 py-4 border-b border-slate-100">
-              <h3 className="text-sm font-semibold text-slate-900">Portal Cliente</h3>
+          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+            <div className="px-6 py-4 border-b border-border">
+              <h3 className="text-sm font-semibold text-foreground">Portal Cliente</h3>
             </div>
             <div className="p-6 space-y-4">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-slate-700">Habilitar Portal</label>
-                <button onClick={() => setPortalEnabled(!portalEnabled)} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${portalEnabled ? 'bg-indigo-600' : 'bg-slate-200'}`}>
+                <label className="text-sm font-medium text-foreground">Habilitar Portal</label>
+                <button onClick={() => setPortalEnabled(!portalEnabled)} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${portalEnabled ? 'bg-primary' : 'bg-muted'}`}>
                   <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${portalEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
                 </button>
               </div>
               {portalEnabled && portalToken && (
                 <div className="space-y-1">
-                  <label className="block text-[9px] font-semibold text-slate-500 uppercase tracking-wider">URL del Portal</label>
+                  <label className="block text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">URL del Portal</label>
                   <div className="flex items-center gap-2">
                     <input
                       readOnly
                       value={`${typeof window !== 'undefined' ? window.location.origin : ''}/portal/customer/${portalToken}`}
-                      className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-700 font-mono"
+                      className="flex-1 bg-muted border border-border rounded-lg px-3 py-1.5 text-xs text-foreground font-mono"
                     />
                     <button
                       onClick={() => {
                         navigator.clipboard.writeText(`${window.location.origin}/portal/customer/${portalToken}`);
                         toast.success('URL copiada');
                       }}
-                      className="px-2 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+                      className="px-2 py-1.5 text-xs bg-muted hover:bg-muted rounded-lg transition-colors"
                     >
                       Copiar
                     </button>
@@ -361,21 +361,21 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm sticky dark:bg-slate-900 dark:border-slate-800 top-24">
-            <div className="px-6 py-4 border-b border-slate-100">
-              <h3 className="text-sm font-semibold text-slate-900">Resumen</h3>
+          <div className="bg-card border border-border rounded-xl shadow-sm sticky dark:bg-primary dark:border-border top-24">
+            <div className="px-6 py-4 border-b border-border">
+              <h3 className="text-sm font-semibold text-foreground">Resumen</h3>
             </div>
             <div className="p-6 space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-slate-500">Nombre</span>
+                <span className="text-muted-foreground">Nombre</span>
                 <span className="font-medium">{name || '—'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">RUT</span>
+                <span className="text-muted-foreground">RUT</span>
                 <span className="font-medium font-mono">{taxId || '—'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Estado</span>
+                <span className="text-muted-foreground">Estado</span>
                 <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${isActive ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}`}>
                   {isActive ? 'Activo' : 'Inactivo'}
                 </span>

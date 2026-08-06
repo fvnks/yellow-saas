@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Tag, Plus, Trash2, Star, Edit3, X, Check, DollarSign } from 'lucide-react';
@@ -161,33 +161,33 @@ export default function ProductPriceLists() {
         <div className="bg-muted border border-border rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-foreground">Crear Lista de Precios</span>
-            <button onClick={() => setShowCreate(false)} className="p-1 hover:bg-slate-200 rounded">
+            <button onClick={() => setShowCreate(false)} className="p-1 hover:bg-muted rounded">
               <X className="w-3 h-3 text-muted-foreground" />
             </button>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white"
               placeholder="Nombre de la lista" />
             <select value={form.currency} onChange={e => setForm({ ...form, currency: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white">
               <option value="CLP">CLP - Peso Chileno</option>
               <option value="USD">USD - Dolar</option>
               <option value="EUR">EUR - Euro</option>
             </select>
             <input type="text" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
-              className="col-span-2 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+              className="col-span-2 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white"
               placeholder="Descripcion (opcional)" />
             <div className="flex items-center gap-2">
               <input type="date" value={form.valid_from} onChange={e => setForm({ ...form, valid_from: e.target.value })}
-                className="flex-1 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                className="flex-1 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white" />
               <span className="text-xs text-muted-foreground">a</span>
               <input type="date" value={form.valid_until} onChange={e => setForm({ ...form, valid_until: e.target.value })}
-                className="flex-1 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                className="flex-1 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white" />
             </div>
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" checked={form.is_default} onChange={e => setForm({ ...form, is_default: e.target.checked })}
-                className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-primary/20" />
+                className="w-4 h-4 rounded border-border text-primary focus:ring-primary/20" />
               <span className="text-xs text-foreground">Lista por defecto</span>
             </label>
           </div>
@@ -199,32 +199,32 @@ export default function ProductPriceLists() {
       )}
 
       {selectedList && (
-        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-border">
           <div className="px-6 py-4 border-b border-border flex items-center justify-between">
             <div className="flex items-center gap-3">
               <h3 className="text-sm font-semibold text-foreground">{selectedList.name}</h3>
               {selectedList.is_default && (
-                <span className="px-2 py-0.5 bg-indigo-100 text-indigo-700 text-[9px] font-semibold rounded-full">Default</span>
+                <span className="px-2 py-0.5 bg-blue-50 text-primary text-[9px] font-semibold rounded-full">Default</span>
               )}
             </div>
             <button onClick={() => setSelectedList(null)}
-              className="px-3 py-1.5 bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium transition-colors">
+              className="px-3 py-1.5 bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground rounded-lg text-xs font-medium transition-colors">
               Cerrar
             </button>
           </div>
 
-          <div className="px-6 py-3 border-b border-slate-100 bg-muted">
+          <div className="px-6 py-3 border-b border-border bg-muted">
             <div className="flex items-center gap-2">
               <select value={newItem.product_id} onChange={e => setNewItem({ ...newItem, product_id: e.target.value })}
-                className="flex-1 bg-card border border-border rounded-lg px-3 py-1.5 text-xs focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20">
+                className="flex-1 bg-card border border-border rounded-lg px-3 py-1.5 text-xs focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-2 focus:ring-primary/20">
                 <option value="">Producto...</option>
                 {products.map(p => <option key={p.id} value={p.id}>{p.name} ({p.sku})</option>)}
               </select>
               <input type="number" value={newItem.unit_price || ''} onChange={e => setNewItem({ ...newItem, unit_price: Number(e.target.value) })}
-                className="w-28 bg-card border border-border rounded-lg px-3 py-1.5 text-xs focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20"
+                className="w-28 bg-card border border-border rounded-lg px-3 py-1.5 text-xs focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-2 focus:ring-primary/20"
                 placeholder="Precio" />
               <input type="number" value={newItem.min_quantity} onChange={e => setNewItem({ ...newItem, min_quantity: Number(e.target.value) })}
-                min={1} className="w-20 bg-card border border-border rounded-lg px-3 py-1.5 text-xs focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20"
+                min={1} className="w-20 bg-card border border-border rounded-lg px-3 py-1.5 text-xs focus:outline-none dark:bg-card dark:border-border dark:text-white focus:ring-2 focus:ring-primary/20"
                 placeholder="Min" />
               <button onClick={handleAddItem}
                 className="px-3 py-1.5 bg-primary hover:bg-primary/90 text-white rounded-lg text-xs font-medium transition-colors">
@@ -248,13 +248,13 @@ export default function ProductPriceLists() {
               </thead>
               <tbody>
                 {selectedList.items?.map(item => (
-                  <tr key={item.product_id} className="border-b border-slate-100 hover:bg-muted">
+                  <tr key={item.product_id} className="border-b border-border hover:bg-muted">
                     <td className="px-4 py-3 text-xs font-medium text-foreground">{item.product_name}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{item.sku}</td>
-                    <td className="px-4 py-3 text-xs text-right font-bold text-indigo-700">${item.unit_price}</td>
-                    <td className="px-4 py-3 text-xs text-right text-slate-600">${item.sale_price}</td>
-                    <td className="px-4 py-3 text-xs text-right text-slate-600">{item.min_quantity}</td>
-                    <td className="px-4 py-3 text-xs text-right text-slate-600">{item.discount_pct}%</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{item.sku}</td>
+                    <td className="px-4 py-3 text-xs text-right font-bold text-primary">${item.unit_price}</td>
+                    <td className="px-4 py-3 text-xs text-right text-foreground">${item.sale_price}</td>
+                    <td className="px-4 py-3 text-xs text-right text-foreground">{item.min_quantity}</td>
+                    <td className="px-4 py-3 text-xs text-right text-foreground">{item.discount_pct}%</td>
                     <td className="px-4 py-3 text-right">
                       <button onClick={() => handleRemoveItem(item.product_id)}
                         className="p-1 text-red-500 hover:bg-red-50 rounded transition-colors">
@@ -271,8 +271,8 @@ export default function ProductPriceLists() {
 
       {!selectedList && (
         lists.length === 0 ? (
-          <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
-            <Tag className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+          <div className="text-center py-12 bg-muted border border-dashed border-border rounded-xl">
+            <Tag className="w-8 h-8 text-foreground mx-auto mb-2" />
             <p className="text-xs text-muted-foreground">Sin listas de precios configuradas</p>
           </div>
         ) : (
@@ -281,14 +281,14 @@ export default function ProductPriceLists() {
               <div key={l.id} className="flex items-center justify-between p-3 bg-card border border-border rounded-xl hover:shadow-sm transition-all cursor-pointer"
                 onClick={() => loadListDetail(l.id)}>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-                    <Tag className="w-5 h-5 text-indigo-600" />
+                  <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                    <Tag className="w-5 h-5 text-primary" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-medium text-foreground">{l.name}</p>
                       {l.is_default && (
-                        <span className="px-1.5 py-0.5 bg-indigo-100 text-indigo-700 text-[8px] font-semibold rounded">DEFAULT</span>
+                        <span className="px-1.5 py-0.5 bg-blue-50 text-primary text-[8px] font-semibold rounded">DEFAULT</span>
                       )}
                     </div>
                     <p className="text-[9px] text-muted-foreground">{l.currency} | {l.item_count} productos</p>

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { Badge } from '@yellow-erp/ui';
@@ -93,12 +93,12 @@ export default function ExpensesTab({ projectId, expenses, onRefresh }: { projec
       </div>
 
       {expenses.length === 0 ? (
-        <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
-          <Receipt className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+        <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+          <Receipt className="w-12 h-12 text-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">No hay gastos registrados</p>
         </div>
       ) : (
-        <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border">
@@ -112,7 +112,7 @@ export default function ExpensesTab({ projectId, expenses, onRefresh }: { projec
             </thead>
             <tbody>
               {expenses.map(e => (
-                <tr key={e.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <tr key={e.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-4 py-3 text-xs text-foreground">{new Date(e.expense_date).toLocaleDateString('es-CL')}</td>
                   <td className="px-4 py-3"><Badge variant={categoryConfig[e.category]?.variant || 'neutral'}>{categoryConfig[e.category]?.label || e.category}</Badge></td>
                   <td className="px-4 py-3 text-xs text-foreground max-w-[200px] truncate">{e.description}</td>
@@ -140,7 +140,7 @@ export default function ExpensesTab({ projectId, expenses, onRefresh }: { projec
           <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">{editing ? 'Editar Gasto' : 'Nuevo Gasto'}</h2>
-              <button onClick={() => { setShowForm(false); setEditing(null); }} className="text-muted-foreground hover:text-slate-600">X</button>
+              <button onClick={() => { setShowForm(false); setEditing(null); }} className="text-muted-foreground hover:text-foreground">X</button>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -159,13 +159,13 @@ export default function ExpensesTab({ projectId, expenses, onRefresh }: { projec
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-foreground">Monto (CLP) *</label>
                   <input type="number" value={form.amount} onChange={e => setForm({ ...form, amount: e.target.value })}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
               </div>
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">Descripcion *</label>
                 <input type="text" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
@@ -176,17 +176,17 @@ export default function ExpensesTab({ projectId, expenses, onRefresh }: { projec
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-foreground">Proveedor</label>
                   <input type="text" value={form.supplier_name} onChange={e => setForm({ ...form, supplier_name: e.target.value })}
-                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
               </div>
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-foreground">N. Factura</label>
                 <input type="text" value={form.invoice_number} onChange={e => setForm({ ...form, invoice_number: e.target.value })}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
             </div>
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
-              <button onClick={() => { setShowForm(false); setEditing(null); }} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={() => { setShowForm(false); setEditing(null); }} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={saving || !form.description || !form.amount}
                 className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                 {saving ? 'Guardando...' : editing ? 'Actualizar' : 'Crear Gasto'}

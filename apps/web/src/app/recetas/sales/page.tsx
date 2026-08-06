@@ -22,7 +22,7 @@ interface Sale {
 const paymentLabels: Record<string, { label: string; icon: any; badge: string }> = {
   cash: { label: 'Efectivo', icon: Banknote, badge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
   card: { label: 'Tarjeta', icon: CreditCard, badge: 'bg-blue-50 text-blue-700 border-blue-200' },
-  transfer: { label: 'Transferencia', icon: ArrowLeftRight, badge: 'bg-violet-50 text-violet-700 border-violet-200' },
+  transfer: { label: 'Transferencia', icon: ArrowLeftRight, badge: 'bg-blue-50 text-blue-700 border-blue-200' },
 };
 
 export default function SalesHistoryPage() {
@@ -69,7 +69,7 @@ export default function SalesHistoryPage() {
     return new Date(d).toLocaleDateString('es-CL');
   };
 
-  const getPaymentInfo = (method: string | null) => paymentLabels[method || ''] || { label: 'Otro', icon: Receipt, badge: 'bg-muted text-slate-600 border-border' };
+  const getPaymentInfo = (method: string | null) => paymentLabels[method || ''] || { label: 'Otro', icon: Receipt, badge: 'bg-muted text-foreground border-border' };
 
   return (
     <div className="space-y-6">
@@ -152,16 +152,16 @@ export default function SalesHistoryPage() {
             <tbody>
               {loading ? (
                 Array.from({ length: 6 }).map((_, i) => (
-                  <tr key={i} className="border-b border-slate-100">
+                  <tr key={i} className="border-b border-border">
                     <td colSpan={7} className="px-4 py-3">
-                      <div className="h-4 bg-slate-200 rounded animate-pulse" />
+                      <div className="h-4 bg-muted rounded animate-pulse" />
                     </td>
                   </tr>
                 ))
               ) : sales.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-4 py-10 text-center">
-                    <Receipt className="w-10 h-10 text-slate-200 mx-auto mb-2" />
+                    <Receipt className="w-10 h-10 text-foreground mx-auto mb-2" />
                     <p className="text-sm text-muted-foreground">No hay ventas registradas</p>
                   </td>
                 </tr>
@@ -169,12 +169,12 @@ export default function SalesHistoryPage() {
                 const pay = getPaymentInfo(sale.payment_method);
                 const PayIcon = pay.icon;
                 return (
-                  <tr key={sale.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={sale.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-medium text-foreground">{sale.invoice_number}</td>
                     <td className="px-4 py-3 text-xs text-foreground">{formatDate(sale.invoice_date || sale.created_at)}</td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
-                        sale.document_type === 'boleta' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                        sale.document_type === 'boleta' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-blue-50 text-primary border border-primary/20'
                       }`}>
                         {sale.document_type === 'boleta' ? 'Boleta' : 'Factura'}
                       </span>

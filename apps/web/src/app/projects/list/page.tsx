@@ -107,8 +107,8 @@ export default function ProjectListPage() {
           {[1, 2, 3].map(i => (
             <div key={i} className="bg-card border border-border rounded-xl shadow-sm p-6">
               <div className="animate-pulse space-y-4">
-                <div className="h-4 bg-slate-200 rounded w-1/3" />
-                <div className="h-3 bg-slate-200 rounded w-2/3" />
+                <div className="h-4 bg-muted rounded w-1/3" />
+                <div className="h-3 bg-muted rounded w-2/3" />
               </div>
             </div>
           ))}
@@ -130,26 +130,26 @@ export default function ProjectListPage() {
               </thead>
               <tbody>
                 {filteredByTab.map(project => (
-                  <tr key={project.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={project.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <FolderKanban className="w-4 h-4 text-muted-foreground" />
                         <span className="text-xs font-medium text-foreground">{project.name}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{project.code}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{project.code}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${statusConfig[project.status]?.variant === 'success' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : statusConfig[project.status]?.variant === 'warning' ? 'bg-amber-50 text-amber-700 border-amber-200' : statusConfig[project.status]?.variant === 'danger' ? 'bg-rose-50 text-rose-700 border-rose-200' : statusConfig[project.status]?.variant === 'info' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-muted text-slate-600 border-border'} border`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${statusConfig[project.status]?.variant === 'success' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : statusConfig[project.status]?.variant === 'warning' ? 'bg-amber-50 text-amber-700 border-amber-200' : statusConfig[project.status]?.variant === 'danger' ? 'bg-rose-50 text-rose-700 border-rose-200' : statusConfig[project.status]?.variant === 'info' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-muted text-foreground border-border'} border`}>
                         {statusConfig[project.status]?.label || project.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{project.start_date || '—'}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{project.end_date || '—'}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{project.start_date || '—'}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{project.end_date || '—'}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-indigo-500 rounded-full"
+                            className="h-full bg-primary rounded-full"
                             style={{ width: `${project.progress || 0}%` }}
                           />
                         </div>
@@ -183,7 +183,7 @@ export default function ProjectListPage() {
 
       {!loading && filteredByTab.length === 0 && (
         <div className="text-center py-12">
-          <FolderKanban className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+          <FolderKanban className="w-12 h-12 text-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">No se encontraron proyectos</p>
         </div>
       )}

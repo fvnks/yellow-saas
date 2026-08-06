@@ -93,7 +93,7 @@ export default function RecetasSettingsPage() {
             <span className="w-2 h-2 rounded-full bg-rose-500" /> Crítico — por debajo del 50% del mínimo
           </span>
           <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-            <span className="w-2 h-2 rounded-full bg-slate-400" /> Sin configurar
+            <span className="w-2 h-2 rounded-full bg-muted" /> Sin configurar
           </span>
         </div>
       </div>
@@ -114,14 +114,14 @@ export default function RecetasSettingsPage() {
             <tbody>
               {loading ? (
                 [1, 2, 3, 4, 5].map(i => (
-                  <tr key={i} className="border-b border-slate-100">
+                  <tr key={i} className="border-b border-border">
                     <td colSpan={5} className="px-4 py-3"><div className="h-5 bg-muted rounded animate-pulse" /></td>
                   </tr>
                 ))
               ) : products.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-4 py-12 text-center">
-                    <Package className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+                    <Package className="w-10 h-10 text-foreground mx-auto mb-3" />
                     <p className="text-sm text-muted-foreground">No hay productos registrados</p>
                   </td>
                 </tr>
@@ -132,15 +132,15 @@ export default function RecetasSettingsPage() {
                 const isDirty = changes[p.id] !== undefined && changes[p.id] !== currentMin;
 
                 return (
-                  <tr key={p.id} className={`border-b border-slate-100 transition-colors ${isDirty ? 'bg-indigo-50/50' : 'hover:bg-muted'}`}>
+                  <tr key={p.id} className={`border-b border-border transition-colors ${isDirty ? 'bg-blue-50/50' : 'hover:bg-muted'}`}>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <Package className="w-4 h-4 text-amber-500" />
                         <span className="text-xs font-medium text-foreground">{p.name}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-xs text-slate-600 font-mono">{p.sku}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{p.unit_of_measure}</td>
+                    <td className="px-4 py-3 text-xs text-foreground font-mono">{p.sku}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{p.unit_of_measure}</td>
                     <td className="px-4 py-3 text-right text-xs font-semibold text-foreground">{stock.toLocaleString('es-CL')}</td>
                     <td className="px-4 py-3 text-right">
                       <input

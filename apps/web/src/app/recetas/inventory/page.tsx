@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { Package, Search, Plus, Settings, Pencil, Trash2, X, FlaskConical } from 'lucide-react';
@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { useRecetasRefresh } from '@/components/recetas/RefreshContext';
 
 function getStockStatus(stock: number, minStock: number) {
-  if (minStock <= 0) return { color: 'text-muted-foreground bg-muted border-border', label: 'Sin config', dot: 'bg-slate-400' };
+  if (minStock <= 0) return { color: 'text-muted-foreground bg-muted border-border', label: 'Sin config', dot: 'bg-muted' };
   if (stock <= 0) return { color: 'text-rose-700 bg-rose-50 border-rose-200', label: 'Sin stock', dot: 'bg-rose-500' };
   if (stock <= minStock * 0.5) return { color: 'text-rose-700 bg-rose-50 border-rose-200', label: 'Crítico', dot: 'bg-rose-500' };
   if (stock <= minStock) return { color: 'text-amber-700 bg-amber-50 border-amber-200', label: 'Bajo', dot: 'bg-amber-500' };
@@ -72,20 +72,20 @@ function ProductModal({ open, onClose, onSave, editProduct }: {
       <div className="bg-card rounded-xl shadow-xl w-full max-w-md" onClick={e => e.stopPropagation()}>
         <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <h2 className="text-lg font-semibold text-foreground">{editProduct ? 'Editar Producto' : 'Nuevo Producto'}</h2>
-          <button onClick={onClose} className="text-muted-foreground hover:text-slate-600"><X className="w-5 h-5" /></button>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div className="space-y-1">
             <label className="block text-xs font-medium text-foreground">Nombre *</label>
             <input type="text" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Ej: Harina de trigo" autoFocus />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">SKU *</label>
               <input type="text" value={form.sku} onChange={e => setForm(p => ({ ...p, sku: e.target.value }))}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent font-mono"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent font-mono"
                 placeholder="ING-001" />
             </div>
             <div className="space-y-1">
@@ -104,26 +104,26 @@ function ProductModal({ open, onClose, onSave, editProduct }: {
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Costo Unitario</label>
               <input type="number" step="1" min="0" value={form.cost_price} onChange={e => setForm(p => ({ ...p, cost_price: e.target.value }))}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="0" />
             </div>
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Precio Venta</label>
               <input type="number" step="1" min="0" value={form.sale_price} onChange={e => setForm(p => ({ ...p, sale_price: e.target.value }))}
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 placeholder="0" />
             </div>
           </div>
           <div className="space-y-1">
             <label className="block text-xs font-medium text-foreground">Descripción</label>
             <textarea value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} rows={2}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Descripción..." />
           </div>
           <div className="space-y-1">
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" checked={form.sellable} onChange={e => setForm(p => ({ ...p, sellable: e.target.checked }))}
-                className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-primary/20" />
+                className="w-4 h-4 text-primary border-border rounded focus:ring-primary/20" />
               <span className="text-xs font-medium text-foreground">Vendible (aparece en POS y pestaña Producción)</span>
             </label>
             <p className="text-[10px] text-muted-foreground">Si está activo, el producto se podrá vender en POS y aparecerá en la pestaña Producción</p>
@@ -260,17 +260,17 @@ export default function RecipeInventoryPage() {
           <span className="flex items-center gap-2">
             <Package className="w-4 h-4" />
             Ingredientes
-            <span className="text-[9px] bg-muted text-slate-600 px-1.5 py-0.5 rounded-full">{ingredients.length}</span>
+            <span className="text-[9px] bg-muted text-foreground px-1.5 py-0.5 rounded-full">{ingredients.length}</span>
           </span>
         </button>
         <button onClick={() => setActiveTab('products')}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            activeTab === 'products' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'text-muted-foreground hover:text-foreground'
+            activeTab === 'products' ? 'bg-blue-50 text-primary border border-primary/20' : 'text-muted-foreground hover:text-foreground'
           }`}>
           <span className="flex items-center gap-2">
             <FlaskConical className="w-4 h-4" />
             Producción
-            <span className="text-[9px] bg-muted text-slate-600 px-1.5 py-0.5 rounded-full">{products.length}</span>
+            <span className="text-[9px] bg-muted text-foreground px-1.5 py-0.5 rounded-full">{products.length}</span>
           </span>
         </button>
       </div>
@@ -298,7 +298,7 @@ export default function RecipeInventoryPage() {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input type="text" value={search} onChange={e => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+            className="w-full pl-9 pr-3 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
             placeholder="Buscar por nombre o SKU..." />
         </div>
       </div>
@@ -324,20 +324,20 @@ export default function RecipeInventoryPage() {
             <tbody>
               {loading ? (
                 [1, 2, 3].map(i => (
-                  <tr key={i} className="border-b border-slate-100">
+                  <tr key={i} className="border-b border-border">
                     <td colSpan={8} className="px-4 py-3"><div className="h-5 bg-muted rounded animate-pulse" /></td>
                   </tr>
                 ))
               ) : filtered.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="px-4 py-12 text-center">
-                    <Package className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+                    <Package className="w-10 h-10 text-foreground mx-auto mb-3" />
                     <p className="text-sm text-muted-foreground">
                       {search ? 'No se encontraron resultados' : activeTab === 'ingredients' ? 'No hay ingredientes registrados' : 'No hay productos de producción'}
                     </p>
                     {!search && (
                       <button onClick={() => { setEditProduct(null); setModalOpen(true); }}
-                        className="text-sm text-indigo-600 hover:underline mt-1 inline-block">
+                        className="text-sm text-primary hover:underline mt-1 inline-block">
                         Crear primer {activeTab === 'ingredients' ? 'ingrediente' : 'producto'}
                       </button>
                     )}
@@ -348,10 +348,10 @@ export default function RecipeInventoryPage() {
                 const minStock = Number(p.min_stock) || 0;
                 const status = getStockStatus(stock, minStock);
                 return (
-                  <tr key={p.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={p.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <Package className={`w-4 h-4 ${activeTab === 'ingredients' ? 'text-amber-500' : 'text-indigo-500'}`} />
+                        <Package className={`w-4 h-4 ${activeTab === 'ingredients' ? 'text-amber-500' : 'text-primary'}`} />
                         <div>
                           <span className="text-xs font-medium text-foreground">{p.name}</span>
                           {p.formula && (
@@ -360,8 +360,8 @@ export default function RecipeInventoryPage() {
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-xs text-slate-600 font-mono">{p.sku}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600 uppercase">{p.unit_of_measure}</td>
+                    <td className="px-4 py-3 text-xs text-foreground font-mono">{p.sku}</td>
+                    <td className="px-4 py-3 text-xs text-foreground uppercase">{p.unit_of_measure}</td>
                     {activeTab === 'products' && (
                       <td className="px-4 py-3 text-right text-xs font-semibold text-foreground">
                         ${(Number(p.sale_price) || 0).toLocaleString('es-CL')}
@@ -378,7 +378,7 @@ export default function RecipeInventoryPage() {
                     <td className="px-4 py-3 text-center">
                       <div className="flex items-center justify-center gap-1">
                         <button onClick={() => { setEditProduct(p); setModalOpen(true); }}
-                          className="p-1.5 rounded-lg text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
+                          className="p-1.5 rounded-lg text-muted-foreground hover:text-primary hover:bg-blue-50 transition-colors"
                           title="Editar">
                           <Pencil className="w-3.5 h-3.5" />
                         </button>

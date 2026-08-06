@@ -98,43 +98,43 @@ export default function BillingAccountTab() {
           <div className="space-y-1">
             <label className="block text-xs font-medium text-foreground">RUT</label>
             <input type="text" value={formData.tax_id} onChange={(e) => setFormData({ ...formData, tax_id: e.target.value })}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="12.345.678-9" />
           </div>
           <div className="space-y-1">
             <label className="block text-xs font-medium text-foreground">Razón Social</label>
             <input type="text" value={formData.business_name} onChange={(e) => setFormData({ ...formData, business_name: e.target.value })}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Empresa SpA" />
           </div>
           <div className="space-y-1">
             <label className="block text-xs font-medium text-foreground">Dirección</label>
             <input type="text" value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Av. Principal 1234" />
           </div>
           <div className="space-y-1">
             <label className="block text-xs font-medium text-foreground">Ciudad</label>
             <input type="text" value={formData.city} onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Santiago" />
           </div>
           <div className="space-y-1">
             <label className="block text-xs font-medium text-foreground">Región</label>
             <input type="text" value={formData.region} onChange={(e) => setFormData({ ...formData, region: e.target.value })}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Región Metropolitana" />
           </div>
           <div className="space-y-1">
             <label className="block text-xs font-medium text-foreground">Email de Facturación</label>
             <input type="email" value={formData.billing_email} onChange={(e) => setFormData({ ...formData, billing_email: e.target.value })}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="billing@empresa.cl" />
           </div>
           <div className="space-y-1">
             <label className="block text-xs font-medium text-foreground">Teléfono</label>
             <input type="text" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="+56 9 1234 5678" />
           </div>
           <div className="space-y-1">
@@ -174,8 +174,8 @@ export default function BillingAccountTab() {
               </thead>
               <tbody>
                 {payments.map((payment) => (
-                  <tr key={payment.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
-                    <td className="px-4 py-3 text-xs text-slate-600">{new Date(payment.created_at).toLocaleDateString('es-CL')}</td>
+                  <tr key={payment.id} className="border-b border-border hover:bg-muted transition-colors">
+                    <td className="px-4 py-3 text-xs text-foreground">{new Date(payment.created_at).toLocaleDateString('es-CL')}</td>
                     <td className="px-4 py-3 text-xs font-medium text-foreground">{payment.description || payment.plan_name}</td>
                     <td className="px-4 py-3 text-xs font-medium text-foreground">{formatAmount(payment.amount)}</td>
                     <td className="px-4 py-3">
@@ -210,19 +210,19 @@ export default function BillingAccountTab() {
               </thead>
               <tbody>
                 {invoices.map((invoice) => (
-                  <tr key={invoice.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={invoice.id} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs font-medium text-foreground">{invoice.invoice_number}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600">{new Date(invoice.created_at).toLocaleDateString('es-CL')}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{new Date(invoice.created_at).toLocaleDateString('es-CL')}</td>
                     <td className="px-4 py-3 text-xs font-medium text-foreground">{formatAmount(invoice.total_amount)}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${invoice.status === 'paid' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : invoice.status === 'pending' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-muted text-slate-600 border border-border'}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${invoice.status === 'paid' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : invoice.status === 'pending' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-muted text-foreground border border-border'}`}>
                         {invoice.status === 'paid' ? 'Pagada' : invoice.status === 'pending' ? 'Pendiente' : 'Anulada'}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right">
                       {invoice.pdf_url && (
                         <a href={invoice.pdf_url} target="_blank" rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800">
+                          className="inline-flex items-center gap-1 text-xs text-primary hover:text-primary">
                           <Download className="w-3.5 h-3.5" /> PDF
                         </a>
                       )}

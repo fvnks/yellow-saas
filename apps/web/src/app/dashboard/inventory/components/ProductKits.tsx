@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Layers, Plus, Trash2, Package, DollarSign, X } from 'lucide-react';
@@ -141,23 +141,23 @@ export default function ProductKits({ productId }: ProductKitsProps) {
         <div className="bg-muted border border-border rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-foreground">Crear Kit</span>
-            <button onClick={() => setShowCreate(false)} className="p-1 hover:bg-slate-200 rounded">
+            <button onClick={() => setShowCreate(false)} className="p-1 hover:bg-muted rounded">
               <X className="w-3 h-3 text-muted-foreground" />
             </button>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white"
               placeholder="Nombre del kit" />
             {!productId && (
               <select value={form.product_id} onChange={e => setForm({ ...form, product_id: e.target.value })}
-                className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+                className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white">
                 <option value="">Producto padre...</option>
                 {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
               </select>
             )}
             <input type="text" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
-              className="col-span-2 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+              className="col-span-2 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white"
               placeholder="Descripcion (opcional)" />
           </div>
 
@@ -166,20 +166,20 @@ export default function ProductKits({ productId }: ProductKitsProps) {
             {form.items.map((item, idx) => (
               <div key={idx} className="flex items-center gap-2">
                 <select value={item.product_id} onChange={e => updateItem(idx, 'product_id', e.target.value)}
-                  className="flex-1 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+                  className="flex-1 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white">
                   <option value="">Componente...</option>
                   {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                 </select>
                 <input type="number" value={item.quantity} onChange={e => updateItem(idx, 'quantity', Number(e.target.value))}
                   min={0.01} step={0.01}
-                  className="w-24 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+                  className="w-24 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white"
                   placeholder="Cant." />
                 <button onClick={() => removeItem(idx)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg">
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             ))}
-            <button onClick={addItem} className="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-medium">
+            <button onClick={addItem} className="flex items-center gap-1 text-xs text-primary hover:text-primary font-medium">
               <Plus className="w-3.5 h-3.5" /> Agregar componente
             </button>
           </div>
@@ -192,8 +192,8 @@ export default function ProductKits({ productId }: ProductKitsProps) {
       )}
 
       {kits.length === 0 ? (
-        <div className="text-center py-8 bg-muted border border-dashed border-slate-300 rounded-xl">
-          <Layers className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+        <div className="text-center py-8 bg-muted border border-dashed border-border rounded-xl">
+          <Layers className="w-8 h-8 text-foreground mx-auto mb-2" />
           <p className="text-xs text-muted-foreground">Sin kits configurados</p>
         </div>
       ) : (
@@ -201,7 +201,7 @@ export default function ProductKits({ productId }: ProductKitsProps) {
           {kits.map(kit => {
             const totalCost = kit.items?.reduce((sum, item) => sum + (item.cost_price * item.quantity), 0) || 0;
             return (
-              <div key={kit.id} className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800">
+              <div key={kit.id} className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
                 <div className="flex items-center justify-between mb-2">
                   <div>
                     <p className="text-sm font-medium text-foreground">{kit.name}</p>
@@ -221,7 +221,7 @@ export default function ProductKits({ productId }: ProductKitsProps) {
                 {kit.items && kit.items.length > 0 && (
                   <div className="mt-2 space-y-1">
                     {kit.items.map((item, idx) => (
-                      <div key={idx} className="flex items-center justify-between text-xs text-slate-600 bg-muted rounded-lg px-3 py-1.5">
+                      <div key={idx} className="flex items-center justify-between text-xs text-foreground bg-muted rounded-lg px-3 py-1.5">
                         <span>{item.product_name}</span>
                         <span className="font-medium">{item.quantity} x ${item.cost_price}</span>
                       </div>

@@ -120,13 +120,13 @@ export default function NuevoPedidoPage() {
             <div className="space-y-1">
               <label className="block text-xs font-medium text-foreground">Notas</label>
               <input type="text" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Motivo del pedido..."
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
             </div>
           </div>
         </div>
 
         <div className="bg-card border border-border rounded-xl shadow-sm">
-          <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+          <div className="px-6 py-4 border-b border-border flex items-center justify-between">
             <h3 className="text-sm font-semibold text-foreground">Productos a Solicitar</h3>
             <button type="button" onClick={addItem}
               className="bg-card border border-border hover:bg-muted text-foreground px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
@@ -146,7 +146,7 @@ export default function NuevoPedidoPage() {
               </thead>
               <tbody>
                 {items.map((item, index) => (
-                  <tr key={index} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <tr key={index} className="border-b border-border hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs text-muted-foreground">{index + 1}</td>
                     <td className="px-4 py-3">
                       <select value={item.product_id} onChange={e => handleItemChange(index, 'product_id', e.target.value)}
@@ -163,7 +163,7 @@ export default function NuevoPedidoPage() {
                     <td className="px-4 py-3">
                       <input type="text" value={item.notes} placeholder="Opcional..."
                         onChange={e => handleItemChange(index, 'notes', e.target.value)}
-                        className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                        className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                     </td>
                     <td className="px-4 py-3">
                       <button type="button" onClick={() => removeItem(index)} disabled={items.length === 1}

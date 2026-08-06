@@ -125,47 +125,47 @@ export default function AlertsPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Sin Stock</p>
               <p className="text-2xl font-bold text-rose-600 mt-1">{outOfStockCount}</p>
             </div>
             <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
-              <Package className="w-6 h-6 text-slate-600" />
+              <Package className="w-6 h-6 text-foreground" />
             </div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Stock Bajo</p>
               <p className="text-2xl font-bold text-amber-600 mt-1">{lowStockCount}</p>
             </div>
             <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
-              <AlertTriangle className="w-6 h-6 text-slate-600" />
+              <AlertTriangle className="w-6 h-6 text-foreground" />
             </div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Alertas</p>
               <p className="text-2xl font-bold text-foreground mt-1">{lowStockItems.length}</p>
             </div>
             <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
-              <Bell className="w-6 h-6 text-slate-600" />
+              <Bell className="w-6 h-6 text-foreground" />
             </div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Lotes Vencidos</p>
               <p className="text-2xl font-bold text-rose-600 mt-1">{expiredBatches.length}</p>
             </div>
             <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
-              <Clock className="w-6 h-6 text-slate-600" />
+              <Clock className="w-6 h-6 text-foreground" />
             </div>
           </div>
         </div>
@@ -193,7 +193,7 @@ export default function AlertsPage() {
           <div className="overflow-x-auto">
             {loading ? (
               <div className="p-12 text-center">
-                <div className="animate-pulse bg-slate-200 h-8 w-48 mx-auto rounded" />
+                <div className="animate-pulse bg-muted h-8 w-48 mx-auto rounded" />
               </div>
             ) : filtered.length === 0 ? (
               <div className="p-12 text-center">
@@ -214,9 +214,9 @@ export default function AlertsPage() {
                 </thead>
                 <tbody>
                   {filtered.map((item, idx) => (
-                    <tr key={`${item.product_id}-${item.warehouse_id}-${idx}`} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <tr key={`${item.product_id}-${item.warehouse_id}-${idx}`} className="border-b border-border hover:bg-muted transition-colors">
                       <td className="px-6 py-3">
-                        <Link href={`/dashboard/inventory/${item.product_id}`} className="text-xs font-medium text-indigo-600 hover:text-indigo-700">
+                        <Link href={`/dashboard/inventory/${item.product_id}`} className="text-xs font-medium text-primary hover:text-primary">
                           {item.product_name}
                         </Link>
                       </td>
@@ -262,7 +262,7 @@ export default function AlertsPage() {
                 </thead>
                 <tbody>
                   {expiredBatches.map((b) => (
-                    <tr key={b.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <tr key={b.id} className="border-b border-border hover:bg-muted transition-colors">
                       <td className="px-4 py-3 text-xs font-medium text-foreground">{b.product?.name || '—'}</td>
                       <td className="px-4 py-3 text-xs font-mono text-foreground">{b.batch_number}</td>
                       <td className="px-4 py-3 text-xs text-foreground">{b.warehouse?.name || '—'}</td>

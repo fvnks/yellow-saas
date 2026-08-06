@@ -161,18 +161,18 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <div className="w-9 h-9 bg-slate-200 rounded-lg animate-pulse" />
+          <div className="w-9 h-9 bg-muted rounded-lg animate-pulse" />
           <div className="space-y-2">
-            <div className="h-6 w-48 bg-slate-200 rounded animate-pulse" />
-            <div className="h-4 w-32 bg-slate-200 rounded animate-pulse" />
+            <div className="h-6 w-48 bg-muted rounded animate-pulse" />
+            <div className="h-4 w-32 bg-muted rounded animate-pulse" />
           </div>
         </div>
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
-            <Card><CardContent><div className="h-48 bg-slate-100 rounded animate-pulse" /></CardContent></Card>
-            <Card><CardContent><div className="h-32 bg-slate-100 rounded animate-pulse" /></CardContent></Card>
+            <Card><CardContent><div className="h-48 bg-muted rounded animate-pulse" /></CardContent></Card>
+            <Card><CardContent><div className="h-32 bg-muted rounded animate-pulse" /></CardContent></Card>
           </div>
-          <Card><CardContent><div className="h-32 bg-slate-100 rounded animate-pulse" /></CardContent></Card>
+          <Card><CardContent><div className="h-32 bg-muted rounded animate-pulse" /></CardContent></Card>
         </div>
       </div>
     );
@@ -182,14 +182,14 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Link href="/dashboard/sales" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+          <Link href="/dashboard/sales" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <h1 className="text-xl font-bold text-slate-900">Orden no encontrada</h1>
+          <h1 className="text-xl font-bold text-foreground">Orden no encontrada</h1>
         </div>
         <Card>
           <CardContent className="text-center py-12">
-            <p className="text-sm text-slate-500">{error || 'La orden solicitada no existe.'}</p>
+            <p className="text-sm text-muted-foreground">{error || 'La orden solicitada no existe.'}</p>
             <Link href="/dashboard/sales">
               <Button className="mt-4">Volver a Ventas</Button>
             </Link>
@@ -219,13 +219,13 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/sales" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href="/dashboard/sales" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold text-slate-900">Detalle de Venta</h1>
-            <span className="text-sm font-mono text-slate-500">{order.order_number}</span>
+            <h1 className="text-xl font-bold text-foreground">Detalle de Venta</h1>
+            <span className="text-sm font-mono text-muted-foreground">{order.order_number}</span>
           </div>
           <div className="flex items-center gap-2 mt-1">
             <Badge variant={status.variant}>{status.label}</Badge>
@@ -262,52 +262,52 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <User className="w-4 h-4 text-indigo-600" />
+                  <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <User className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</p>
-                    <p className="text-sm font-medium text-slate-900">{order.customer?.name || '—'}</p>
-                    <p className="text-xs text-slate-400">{order.customer?.tax_id || ''}</p>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cliente</p>
+                    <p className="text-sm font-medium text-foreground">{order.customer?.name || '—'}</p>
+                    <p className="text-xs text-muted-foreground">{order.customer?.tax_id || ''}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Calendar className="w-4 h-4 text-indigo-600" />
+                  <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Calendar className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha de Orden</p>
-                    <p className="text-sm font-medium text-slate-900">{order.created_at?.split('T')[0] || '—'}</p>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha de Orden</p>
+                    <p className="text-sm font-medium text-foreground">{order.created_at?.split('T')[0] || '—'}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Truck className="w-4 h-4 text-indigo-600" />
+                  <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Truck className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha de Entrega</p>
-                    <p className="text-sm font-medium text-slate-900">{order.delivery_date || '—'}</p>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha de Entrega</p>
+                    <p className="text-sm font-medium text-foreground">{order.delivery_date || '—'}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <CreditCard className="w-4 h-4 text-indigo-600" />
+                  <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <CreditCard className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Plazo de Pago</p>
-                    <p className="text-sm font-medium text-slate-900">{order.payment_terms ? `${order.payment_terms} días` : 'Contado'}</p>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Plazo de Pago</p>
+                    <p className="text-sm font-medium text-foreground">{order.payment_terms ? `${order.payment_terms} días` : 'Contado'}</p>
                   </div>
                 </div>
               </div>
               {order.warehouse && (
-                <div className="mt-4 pt-4 border-t border-slate-100">
+                <div className="mt-4 pt-4 border-t border-border">
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-4 h-4 text-indigo-600" />
+                    <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-4 h-4 text-primary" />
                     </div>
                     <div>
-                      <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Bodega</p>
-                      <p className="text-sm font-medium text-slate-900">{order.warehouse.name}</p>
+                      <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Bodega</p>
+                      <p className="text-sm font-medium text-foreground">{order.warehouse.name}</p>
                     </div>
                   </div>
                 </div>
@@ -336,8 +336,8 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
                     <TableRow key={index}>
                       <TableCell>
                         <div>
-                          <p className="font-medium text-slate-900">{item.product?.name || 'Producto'}</p>
-                          <p className="text-[9px] text-slate-400 font-mono">{item.product?.sku || item.product_id}</p>
+                          <p className="font-medium text-foreground">{item.product?.name || 'Producto'}</p>
+                          <p className="text-[9px] text-muted-foreground font-mono">{item.product?.sku || item.product_id}</p>
                         </div>
                       </TableCell>
                       <TableCell className="text-center">{item.quantity}</TableCell>
@@ -346,7 +346,7 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
                         {item.discount_percent > 0 ? (
                           <Badge variant="warning">{item.discount_percent}%</Badge>
                         ) : (
-                          <span className="text-xs text-slate-400">-</span>
+                          <span className="text-xs text-muted-foreground">-</span>
                         )}
                       </TableCell>
                       <TableCell className="text-right font-medium">${(item.line_total || item.quantity * item.unit_price).toLocaleString('es-CL')}</TableCell>
@@ -364,7 +364,7 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
                 <CardTitle>Notas</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-slate-700">{order.notes}</p>
+                <p className="text-sm text-foreground">{order.notes}</p>
               </CardContent>
             </Card>
           )}
@@ -378,20 +378,20 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
             <CardContent className="space-y-4">
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-500">Subtotal</span>
-                  <span className="font-medium text-slate-900">${subtotal.toLocaleString('es-CL')}</span>
+                  <span className="text-muted-foreground">Subtotal</span>
+                  <span className="font-medium text-foreground">${subtotal.toLocaleString('es-CL')}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-500">IVA (19%)</span>
-                  <span className="font-medium text-slate-900">${tax.toLocaleString('es-CL')}</span>
+                  <span className="text-muted-foreground">IVA (19%)</span>
+                  <span className="font-medium text-foreground">${tax.toLocaleString('es-CL')}</span>
                 </div>
-                <hr className="border-slate-200" />
+                <hr className="border-border" />
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold text-slate-900">Total</span>
-                  <span className="text-xl font-bold text-slate-900">${order.total?.toLocaleString('es-CL') || (subtotal + tax).toLocaleString('es-CL')}</span>
+                  <span className="text-sm font-semibold text-foreground">Total</span>
+                  <span className="text-xl font-bold text-foreground">${order.total?.toLocaleString('es-CL') || (subtotal + tax).toLocaleString('es-CL')}</span>
                 </div>
               </div>
-              <div className="space-y-2 text-xs text-slate-500">
+              <div className="space-y-2 text-xs text-muted-foreground">
                 <div className="flex items-center justify-between">
                   <span>Items:</span>
                   <span className="font-medium">{items.length}</span>

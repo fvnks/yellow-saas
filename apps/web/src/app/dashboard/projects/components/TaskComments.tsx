@@ -94,8 +94,8 @@ export default function TaskComments({ projectId, taskId, currentUserId }: TaskC
           <p className="text-xs text-muted-foreground text-center py-4">Sin comentarios aun</p>
         ) : comments.map(comment => (
           <div key={comment.id} className="group flex gap-2">
-            <div className="w-7 h-7 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-[10px] font-semibold text-indigo-600">
+            <div className="w-7 h-7 bg-blue-50 rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-[10px] font-semibold text-primary">
                 {comment.user_name?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
               </span>
             </div>
@@ -123,7 +123,7 @@ export default function TaskComments({ projectId, taskId, currentUserId }: TaskC
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
-          className="flex-1 bg-muted border border-border rounded-lg px-3 py-2 text-xs text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+          className="flex-1 bg-muted border border-border rounded-lg px-3 py-2 text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
           placeholder="Escribe un comentario..."
         />
         <button onClick={handleSend} disabled={sending || !newComment.trim()}

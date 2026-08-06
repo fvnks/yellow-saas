@@ -178,13 +178,13 @@ export default function NewAdjustmentPage() {
                     <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Stock Actual</p>
                     <p className="text-2xl font-bold text-foreground mt-1">{currentStock}</p>
                   </div>
-                  <div className="p-4 bg-indigo-50 rounded-lg text-center">
-                    <p className="text-[9px] font-semibold text-indigo-600 uppercase tracking-wider">Stock Nuevo</p>
+                  <div className="p-4 bg-blue-50 rounded-lg text-center">
+                    <p className="text-[9px] font-semibold text-primary uppercase tracking-wider">Stock Nuevo</p>
                     <input
                       type="number"
                       value={newQuantity}
                       onChange={(e) => setNewQuantity(parseInt(e.target.value) || 0)}
-                      className="text-2xl font-bold text-indigo-700 mt-1 bg-transparent text-center w-full focus:outline-none"
+                      className="text-2xl font-bold text-primary mt-1 bg-transparent text-center w-full focus:outline-none"
                     />
                   </div>
                   <div className={`p-4 rounded-lg text-center ${difference > 0 ? 'bg-emerald-50' : difference < 0 ? 'bg-rose-50' : 'bg-muted'}`}>
@@ -217,7 +217,7 @@ export default function NewAdjustmentPage() {
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   rows={3}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Descripcion adicional del ajuste..."
                 />
               </div>
@@ -232,8 +232,8 @@ export default function NewAdjustmentPage() {
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
-                  <Package className="w-4 h-4 text-indigo-600" />
+                <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <Package className="w-4 h-4 text-primary" />
                 </div>
                 <div>
                   <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</p>
@@ -241,15 +241,15 @@ export default function NewAdjustmentPage() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
-                  <Warehouse className="w-4 h-4 text-indigo-600" />
+                <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <Warehouse className="w-4 h-4 text-primary" />
                 </div>
                 <div>
                   <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Bodega</p>
                   <p className="font-medium text-foreground">{selectedWarehouseName || '—'}</p>
                 </div>
               </div>
-              <hr className="border-slate-100" />
+              <hr className="border-border" />
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Stock Actual</span>
                 <span className="font-medium">{currentStock ?? '—'}</span>
@@ -260,7 +260,7 @@ export default function NewAdjustmentPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Diferencia</span>
-                <span className={`font-bold ${difference > 0 ? 'text-emerald-600' : difference < 0 ? 'text-rose-600' : 'text-slate-600'}`}>
+                <span className={`font-bold ${difference > 0 ? 'text-emerald-600' : difference < 0 ? 'text-rose-600' : 'text-foreground'}`}>
                   {currentStock !== null ? `${difference > 0 ? '+' : ''}${difference}` : '—'}
                 </span>
               </div>
