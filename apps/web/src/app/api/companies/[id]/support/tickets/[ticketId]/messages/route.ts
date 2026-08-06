@@ -2,8 +2,9 @@ import { NextRequest } from 'next/server';
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
 import { jwtVerify } from 'jose';
+import { getJwtSecret } from '@/lib/env';
 
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'yellow-erp-secret-key-change-in-production');
+const JWT_SECRET = getJwtSecret();
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB per file
 const MAX_FILES = 5;
