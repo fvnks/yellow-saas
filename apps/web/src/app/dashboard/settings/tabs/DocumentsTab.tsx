@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Upload, Eye, Save, Palette, FileText, Hash, Type, LayoutTemplate } from 'lucide-react';
+import { Upload, Eye, Save, Palette, FileText, Hash, Type, LayoutTemplate, Check, Sparkles, Zap, Minus } from 'lucide-react';
 import { toast } from 'sonner';
 import { useDocumentSettings } from '@/lib/use-document-settings';
 import {
@@ -11,10 +11,19 @@ import {
 import { generateBoletaPDF, generateCotizacionPDF, generateOrdenVentaPDF, generateOrdenCompraPDF, generateDeliveryGuidePDF, DocumentData, type DocumentItem, type DeliveryGuideData, type ReturnNoteData } from '@/lib/pdf-design';
 
 const STYLE: { input: string; select: string; toggle: string } = {
-  input: 'w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent',
-  select: 'w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent',
-  toggle: 'w-11 h-6 bg-slate-200 peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[""] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600',
+  input: 'w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 hover:border-slate-300',
+  select: 'w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 hover:border-slate-300 appearance-none cursor-pointer',
+  toggle: 'w-12 h-6 bg-slate-200 peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[""] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600 shadow-inner',
 };
+
+const COLOR_PRESETS = [
+  { name: 'Slate', primary: '#1e293b', accent: '#4f46e5' },
+  { name: 'Indigo', primary: '#312e81', accent: '#6366f1' },
+  { name: 'Emerald', primary: '#064e3b', accent: '#10b981' },
+  { name: 'Amber', primary: '#78350f', accent: '#f59e0b' },
+  { name: 'Rose', primary: '#881337', accent: '#f43f5e' },
+  { name: 'Cyan', primary: '#164e63', accent: '#06b6d4' },
+];
 
 export function DocumentsTab() {
   const { settings, setSettings, save, loading } = useDocumentSettings();
@@ -37,116 +46,194 @@ export function DocumentsTab() {
   return (
     <div className="grid gap-6 lg:grid-cols-5">
       {/* Editor */}
-      <div className="lg:col-span-2 space-y-6">
+      <div className="lg:col-span-2 space-y-5">
         {loading ? (
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 text-center">
-            <div className="animate-pulse bg-slate-200 h-6 w-48 rounded mx-auto" />
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 text-center">
+            <div className="animate-pulse bg-slate-200 h-6 w-48 rounded-xl mx-auto" />
           </div>
         ) : (
           <>
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2">
-                <LayoutTemplate className="w-4 h-4 text-slate-500" />
-                <h3 className="text-sm font-semibold text-slate-900">Plantilla</h3>
+            {/* Template Selection */}
+            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
+                  <LayoutTemplate className="w-4 h-4 text-indigo-600" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-900">Plantilla</h3>
+                  <p className="text-xs text-slate-500">Estilo visual del documento</p>
+                </div>
               </div>
-              <div className="p-6 space-y-4">
-                <div className="grid grid-cols-1 gap-2">
+              <div className="p-4">
+                <div className="grid grid-cols-3 gap-3">
                   {DOCUMENT_TEMPLATES.map(t => (
                     <button
                       key={t.id}
                       onClick={() => update({ template_id: t.id })}
-                      className={`flex items-start gap-3 p-3 rounded-xl border text-left transition-colors ${
+                      className={`relative flex flex-col items-center p-4 rounded-xl border-2 transition-all duration-200 ${
                         settings.template_id === t.id
-                          ? 'border-indigo-500 bg-indigo-50'
-                          : 'border-slate-200 hover:bg-slate-50'
+                          ? 'border-indigo-500 bg-indigo-50 shadow-md scale-[1.02]'
+                          : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                       }`}
                     >
-                      <span className={`mt-1 w-4 h-4 rounded-full border-4 ${settings.template_id === t.id ? 'border-indigo-500' : 'border-slate-300'}`} />
-                      <div>
-                        <p className="text-sm font-medium text-slate-900">{t.name}</p>
-                        <p className="text-xs text-slate-500 mt-0.5">{t.description}</p>
+                      {settings.template_id === t.id && (
+                        <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-indigo-500 rounded-full flex items-center justify-center">
+                          <Check className="w-3 h-3 text-white" />
+                        </div>
+                      )}
+                      <div className={`w-12 h-16 rounded-lg mb-2 flex items-center justify-center ${
+                        t.id === 'classic' ? 'bg-slate-100 border border-slate-200' :
+                        t.id === 'minimal' ? 'bg-white border border-slate-200' :
+                        'bg-gradient-to-br from-indigo-500 to-purple-600'
+                      }`}>
+                        {t.id === 'classic' && <FileText className="w-6 h-6 text-slate-600" />}
+                        {t.id === 'minimal' && <Minus className="w-6 h-6 text-slate-400" />}
+                        {t.id === 'bold' && <Zap className="w-6 h-6 text-white" />}
                       </div>
+                      <span className="text-xs font-semibold text-slate-900">{t.name}</span>
+                      <span className="text-[10px] text-slate-500 mt-0.5 text-center leading-tight">{t.description}</span>
                     </button>
                   ))}
                 </div>
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2">
-                <Palette className="w-4 h-4 text-slate-500" />
-                <h3 className="text-sm font-semibold text-slate-900">Colores</h3>
+            {/* Colors */}
+            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center">
+                  <Palette className="w-4 h-4 text-purple-600" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-900">Colores</h3>
+                  <p className="text-xs text-slate-500">Personaliza la paleta</p>
+                </div>
               </div>
-              <div className="p-6 space-y-4">
+              <div className="p-5 space-y-5">
+                {/* Color Presets */}
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-2.5">Paletas predefinidas</label>
+                  <div className="flex gap-2 flex-wrap">
+                    {COLOR_PRESETS.map(preset => (
+                      <button
+                        key={preset.name}
+                        onClick={() => update({ primary_color: preset.primary, accent_color: preset.accent })}
+                        className={`group flex items-center gap-2 px-3 py-2 rounded-xl border transition-all duration-200 ${
+                          settings.primary_color === preset.primary && settings.accent_color === preset.accent
+                            ? 'border-indigo-500 bg-indigo-50 shadow-sm'
+                            : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                        }`}
+                      >
+                        <div className="flex -space-x-1">
+                          <div className="w-4 h-4 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: preset.primary }} />
+                          <div className="w-4 h-4 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: preset.accent }} />
+                        </div>
+                        <span className="text-xs font-medium text-slate-700">{preset.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Custom Colors */}
                 <div className="grid grid-cols-2 gap-4">
                   <ColorField label="Color Principal" value={settings.primary_color} onChange={v => update({ primary_color: v })} />
                   <ColorField label="Color Acento" value={settings.accent_color} onChange={v => update({ accent_color: v })} />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <ToggleRow label="Mostrar logo" checked={settings.show_logo} onChange={v => update({ show_logo: v })} />
-                  <ToggleRow label="Mostrar QR" checked={settings.show_qr} onChange={v => update({ show_qr: v })} />
+
+                {/* Toggles */}
+                <div className="grid grid-cols-2 gap-3">
+                  <ToggleRow label="Logo" sublabel="Mostrar en documentos" checked={settings.show_logo} onChange={v => update({ show_logo: v })} />
+                  <ToggleRow label="Código QR" sublabel="Para verificación" checked={settings.show_qr} onChange={v => update({ show_qr: v })} />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2">
-                <Hash className="w-4 h-4 text-slate-500" />
-                <h3 className="text-sm font-semibold text-slate-900">Localización</h3>
+            {/* Localization */}
+            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
+                  <Hash className="w-4 h-4 text-emerald-600" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-900">Localización</h3>
+                  <p className="text-xs text-slate-500">Idioma y moneda</p>
+                </div>
               </div>
-              <div className="p-6 space-y-4">
+              <div className="p-5 space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
+                  <div className="space-y-1.5">
                     <label className="block text-xs font-medium text-slate-700">Idioma</label>
-                    <select value={settings.language} onChange={e => update({ language: e.target.value as DocumentSettings['language'] })} className={STYLE.select}>
-                      {LANGUAGES.map(l => <option key={l.code} value={l.code}>{l.label}</option>)}
-                    </select>
+                    <div className="relative">
+                      <select value={settings.language} onChange={e => update({ language: e.target.value as DocumentSettings['language'] })} className={STYLE.select}>
+                        {LANGUAGES.map(l => <option key={l.code} value={l.code}>{l.label}</option>)}
+                      </select>
+                      <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                        <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                      </div>
+                    </div>
                   </div>
-                  <div className="space-y-1">
+                  <div className="space-y-1.5">
                     <label className="block text-xs font-medium text-slate-700">Moneda</label>
-                    <select value={settings.currency} onChange={e => update({ currency: e.target.value as DocumentSettings['currency'] })} className={STYLE.select}>
-                      {CURRENCIES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}
-                    </select>
+                    <div className="relative">
+                      <select value={settings.currency} onChange={e => update({ currency: e.target.value as DocumentSettings['currency'] })} className={STYLE.select}>
+                        {CURRENCIES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}
+                      </select>
+                      <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                        <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                   <label className="block text-xs font-medium text-slate-700">Etiqueta de impuesto</label>
                   <input type="text" value={settings.tax_label} onChange={e => update({ tax_label: e.target.value })} className={STYLE.input} placeholder="IVA (19%)" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2">
-                <Type className="w-4 h-4 text-slate-500" />
-                <h3 className="text-sm font-semibold text-slate-900">Textos</h3>
+            {/* Texts */}
+            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
+                  <Type className="w-4 h-4 text-amber-600" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-900">Textos</h3>
+                  <p className="text-xs text-slate-500">Encabezado, pie y notas</p>
+                </div>
               </div>
-              <div className="p-6 space-y-4">
-                <div className="space-y-1">
+              <div className="p-5 space-y-4">
+                <div className="space-y-1.5">
                   <label className="block text-xs font-medium text-slate-700">Texto de encabezado</label>
                   <input type="text" value={settings.header_text} onChange={e => update({ header_text: e.target.value })} className={STYLE.input} placeholder="Texto opcional bajo los datos de la empresa" />
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                   <label className="block text-xs font-medium text-slate-700">Texto de pie</label>
                   <input type="text" value={settings.footer_text} onChange={e => update({ footer_text: e.target.value })} className={STYLE.input} placeholder="Documento generado por Yellow ERP" />
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                   <label className="block text-xs font-medium text-slate-700">Notas predeterminadas</label>
-                  <textarea value={settings.default_notes} onChange={e => update({ default_notes: e.target.value })} rows={2} className={`${STYLE.input} resize-none`} placeholder="Notas que aparecerán por defecto en cada documento" />
+                  <textarea value={settings.default_notes} onChange={e => update({ default_notes: e.target.value })} rows={3} className={`${STYLE.input} resize-none`} placeholder="Notas que aparecerán por defecto en cada documento" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-slate-500" />
-                <h3 className="text-sm font-semibold text-slate-900">Títulos de documento</h3>
+            {/* Document Titles */}
+            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-cyan-50 flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-cyan-600" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-900">Títulos de documento</h3>
+                  <p className="text-xs text-slate-500">Nombres personalizados</p>
+                </div>
               </div>
-              <div className="p-6 space-y-4">
+              <div className="p-5">
                 <div className="grid grid-cols-1 gap-3">
                   {(['boleta', 'factura', 'cotizacion', 'orden_venta', 'orden_compra'] as const).map(key => (
-                    <div key={key} className="grid grid-cols-[130px_1fr] items-center gap-2">
-                      <label className="text-xs font-medium text-slate-700 capitalize">{key.replace('_', ' ')}</label>
+                    <div key={key} className="flex items-center gap-3">
+                      <label className="text-xs font-medium text-slate-700 w-24 capitalize">{key.replace('_', ' ')}</label>
                       <input
                         type="text"
                         value={settings.document_titles[key]}
@@ -164,13 +251,23 @@ export function DocumentsTab() {
 
       {/* Preview */}
       <div className="lg:col-span-3">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden sticky top-20">
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden sticky top-20">
           <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Eye className="w-4 h-4 text-slate-500" />
-              <h3 className="text-sm font-semibold text-slate-900">Vista previa</h3>
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                <Eye className="w-4 h-4 text-slate-600" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-slate-900">Vista previa</h3>
+                <p className="text-xs text-slate-500">En tiempo real</p>
+              </div>
             </div>
-            {savingStatus === 'saved' && <span className="text-xs text-emerald-600">Guardado</span>}
+            {savingStatus === 'saved' && (
+              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-xs font-medium">
+                <Check className="w-3 h-3" />
+                Guardado
+              </div>
+            )}
           </div>
           <div className="p-6">
             <DocumentPreview settings={settings} />
@@ -179,9 +276,19 @@ export function DocumentsTab() {
             <button
               onClick={handleSave}
               disabled={savingStatus === 'saving'}
-              className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+              className="bg-slate-900 hover:bg-black text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 disabled:opacity-50 flex items-center gap-2 shadow-lg shadow-slate-900/20 hover:shadow-xl hover:shadow-slate-900/25 active:scale-[0.98]"
             >
-              {savingStatus === 'saving' ? 'Guardando...' : 'Guardar configuración'}
+              {savingStatus === 'saving' ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Guardando...
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  Guardar configuración
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -192,20 +299,26 @@ export function DocumentsTab() {
 
 function ColorField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
   return (
-    <div className="space-y-1">
+    <div className="space-y-1.5">
       <label className="block text-xs font-medium text-slate-700">{label}</label>
       <div className="flex items-center gap-2">
-        <input type="color" value={value} onChange={e => onChange(e.target.value)} className="w-10 h-9 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer" />
-        <input type="text" value={value} onChange={e => onChange(e.target.value)} className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        <div className="relative">
+          <input type="color" value={value} onChange={e => onChange(e.target.value)} className="w-10 h-10 rounded-xl border-2 border-slate-200 bg-white cursor-pointer hover:border-slate-300 transition-colors shadow-sm" />
+          <div className="absolute inset-0 rounded-xl ring-2 ring-black/5 pointer-events-none" />
+        </div>
+        <input type="text" value={value} onChange={e => onChange(e.target.value)} className="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-900 font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all hover:border-slate-300" />
       </div>
     </div>
   );
 }
 
-function ToggleRow({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
+function ToggleRow({ label, sublabel, checked, onChange }: { label: string; sublabel?: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
-    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-      <p className="text-sm font-medium text-slate-900">{label}</p>
+    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors">
+      <div>
+        <p className="text-sm font-medium text-slate-900">{label}</p>
+        {sublabel && <p className="text-xs text-slate-500 mt-0.5">{sublabel}</p>}
+      </div>
       <label className="relative inline-flex items-center cursor-pointer">
         <input type="checkbox" checked={checked} onChange={e => onChange(e.target.checked)} className="sr-only peer" />
         <div className={STYLE.toggle} />
@@ -219,12 +332,12 @@ function DocumentPreview({ settings }: { settings: DocumentSettings }) {
   const [activeType, setActiveType] = useState<'boleta' | 'factura' | 'cotizacion' | 'orden_venta' | 'orden_compra' | 'guia_despacho'>('boleta');
 
   const PREVIEW_TYPES = [
-    { id: 'boleta', label: 'Boleta' },
-    { id: 'factura', label: 'Factura' },
-    { id: 'cotizacion', label: 'Cotización' },
-    { id: 'orden_venta', label: 'OV' },
-    { id: 'orden_compra', label: 'OC' },
-    { id: 'guia_despacho', label: 'Guía' },
+    { id: 'boleta', label: 'Boleta', icon: '📄' },
+    { id: 'factura', label: 'Factura', icon: '📋' },
+    { id: 'cotizacion', label: 'Cotización', icon: '💰' },
+    { id: 'orden_venta', label: 'OV', icon: '🛒' },
+    { id: 'orden_compra', label: 'OC', icon: '🛍️' },
+    { id: 'guia_despacho', label: 'Guía', icon: '🚚' },
   ] as const;
 
   useEffect(() => {
@@ -250,7 +363,7 @@ function DocumentPreview({ settings }: { settings: DocumentSettings }) {
     const tax = 8382;
     const total = 52500;
 
-const generators = {
+    const generators: Record<string, (d: any) => Promise<any>> = {
       boleta: (d: DocumentData) => generateBoletaPDF(d),
       factura: (d: DocumentData) => generateBoletaPDF(d),
       cotizacion: (d: DocumentData) => generateCotizacionPDF(d),
@@ -281,7 +394,7 @@ const generators = {
         sample = { id: 'preview', number: 'B-000001', type: 'boleta', date: new Date().toISOString().split('T')[0], company: baseCompany, customer: baseCustomer, items: baseItems, subtotal, tax_amount: tax, total, settings };
     }
 
-    generators[activeType](sample as any).then((pdf: any) => {
+    generators[activeType]?.(sample).then((pdf: any) => {
       if (cancelled) return;
       objectUrl = URL.createObjectURL(pdf.output('blob'));
       setPdfUrl(objectUrl);
@@ -296,34 +409,43 @@ const generators = {
   }, [settings, activeType]);
 
   return (
-    <div className="space-y-3">
-      <div className="flex gap-1 bg-slate-100 rounded-lg p-1" role="tablist">
+    <div className="space-y-4">
+      <div className="flex gap-1 bg-slate-100 rounded-xl p-1" role="tablist">
         {PREVIEW_TYPES.map(t => (
           <button
             key={t.id}
             role="tab"
             aria-selected={activeType === t.id}
             onClick={() => setActiveType(t.id as typeof activeType)}
-            className={`px-3 py-1.5 text-xs font-medium rounded transition-colors ${
+            className={`flex-1 px-3 py-2 text-xs font-medium rounded-lg transition-all duration-200 ${
               activeType === t.id
                 ? 'bg-white text-slate-900 shadow-sm'
-                : 'text-slate-500 hover:text-slate-700'
+                : 'text-slate-500 hover:text-slate-700 hover:bg-white/50'
             }`}
           >
+            <span className="mr-1">{t.icon}</span>
             {t.label}
           </button>
         ))}
       </div>
-      <div className="bg-slate-100 rounded-lg overflow-hidden h-[520px]">
+      <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl overflow-hidden h-[520px] shadow-inner">
         {pdfUrl ? (
           <iframe src={pdfUrl} title={`Vista previa ${activeType}`} className="w-full h-full border-0" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <div className="animate-pulse bg-slate-200 h-6 w-40 rounded" />
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-white/80 flex items-center justify-center animate-pulse">
+                <Sparkles className="w-6 h-6 text-slate-400" />
+              </div>
+              <div className="animate-pulse bg-white/60 h-4 w-32 rounded-lg" />
+            </div>
           </div>
         )}
       </div>
-      <p className="text-xs text-slate-500 text-center">Vista previa en vivo de {activeType === 'boleta' ? 'Boleta' : activeType === 'factura' ? 'Factura' : activeType === 'cotizacion' ? 'Cotización' : activeType === 'orden_venta' ? 'Orden de Venta' : activeType === 'orden_compra' ? 'Orden de Compra' : 'Guía de Despacho'} de ejemplo
+      <p className="text-xs text-slate-500 text-center">
+        Vista previa de <span className="font-medium text-slate-700">
+          {activeType === 'boleta' ? 'Boleta' : activeType === 'factura' ? 'Factura' : activeType === 'cotizacion' ? 'Cotización' : activeType === 'orden_venta' ? 'Orden de Venta' : activeType === 'orden_compra' ? 'Orden de Compra' : 'Guía de Despacho'}
+        </span> de ejemplo
       </p>
     </div>
   );
