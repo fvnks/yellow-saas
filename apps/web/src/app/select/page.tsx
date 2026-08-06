@@ -4,8 +4,15 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
-import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight, X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight } from 'lucide-react';
+import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight, X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface ModuleOption {
   id: string;
@@ -20,6 +27,18 @@ interface ModuleOption {
   href: string;
   requiredModules: string[];
   moduleName: string;
+}
+
+interface Company {
+  id: string;
+  name: string;
+  slug?: string;
+  logo_url?: string;
+  plan?: string;
+  status?: string;
+  role: string;
+  is_default?: boolean;
+  is_active?: boolean;
 }
 
 const modules: ModuleOption[] = [
@@ -127,6 +146,40 @@ function getUserFromCookie() {
   }
 }
 
+async function fetchUserCompanies(token: string): Promise<Company[]> {
+  try {
+    const res = await fetch('/api/auth/companies', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    return data.data?.companies || [];
+  } catch {
+    return [];
+  }
+}
+
+async function switchCompany(token: string, companyId: string): Promise<string | null> {
+  try {
+    const res = await fetch('/api/auth/switch-company', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ company_id: companyId }),
+    });
+    const data = await res.json();
+    return data.data?.token || null;
+  } catch {
+    return null;
+  }
+}
+
+function logout() {
+  document.cookie = 'auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  window.location.href = '/login';
+}
+
 export default function SelectPage() {
   const router = useRouter();
   const [company, setCompany] = useState<any>(null);
@@ -137,6 +190,9 @@ export default function SelectPage() {
   const [selectedModule, setSelectedModule] = useState<ModuleOption | null>(null);
   const [activating, setActivating] = useState(false);
   const [lastAccess, setLastAccess] = useState<string | null>(null);
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [companiesLoading, setCompaniesLoading] = useState(true);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   useEffect(() => {
     const userData = getUserFromCookie();
@@ -161,11 +217,18 @@ export default function SelectPage() {
       }
     }
 
-    const api = getApiClient();
+    const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+
     Promise.all([
-      api.getCompany(),
+      token ? fetchUserCompanies(token) : Promise.resolve([]),
       loadActivatedModules(),
-    ]).then(([companyRes]) => {
+    ]).then(([companiesRes, _]) => {
+      if (companiesRes) setCompanies(companiesRes);
+      setCompaniesLoading(false);
+    });
+
+    const api = getApiClient();
+    api.getCompany().then(companyRes => {
       if (companyRes) setCompany(companyRes);
       setLoading(false);
     }).catch(() => setLoading(false));
@@ -202,6 +265,16 @@ export default function SelectPage() {
     } else {
       setSelectedModule(mod);
       setModalOpen(true);
+    }
+  };
+
+  const handleCompanySwitch = async (companyId: string) => {
+    const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+    if (!token) return;
+    const newToken = await switchCompany(token, companyId);
+    if (newToken) {
+      document.cookie = `auth-token=${newToken}; path=/; max-age=604800; SameSite=Lax`;
+      window.location.reload();
     }
   };
 
@@ -255,9 +328,77 @@ export default function SelectPage() {
               <p className="text-[11px] text-muted-foreground">Bienvenido, {user?.name}</p>
             </div>
           </div>
-          <a href="/dashboard/settings" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-muted transition-colors">
-            <Settings className="w-3.5 h-3.5" /> Configuración
-          </a>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-muted transition-colors">
+                <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <User className="w-4 h-4 text-primary" />
+                </div>
+                <span className="text-xs font-medium text-foreground hidden sm:block">{user?.name}</span>
+                <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent side="bottom" align="end" className="w-56">
+              {/* User Info */}
+              <div className="px-3 py-2 border-b border-border">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <User className="w-4 h-4 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-foreground truncate">{user?.name}</p>
+                    <p className="text-[10px] text-muted-foreground truncate flex items-center gap-1">
+                      <Mail className="w-3 h-3 flex-shrink-0" />
+                      {user?.email}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Company Switcher */}
+              {!companiesLoading && companies.length > 1 && (
+                <>
+                  <DropdownMenuSeparator />
+                  <div className="px-3 py-2">
+                    <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                      Cambiar Empresa
+                    </p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  {companies.map((c) => (
+                    <DropdownMenuItem
+                      key={c.id}
+                      onClick={() => handleCompanySwitch(c.id)}
+                      className="cursor-pointer flex items-center gap-2 px-2 py-2"
+                      disabled={c.id === company?.id}
+                    >
+                      <div className="w-7 h-7 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Building2 className="w-3.5 h-3.5 text-white" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground truncate">{c.name}</p>
+                        <p className="text-[10px] text-muted-foreground capitalize">{c.role}</p>
+                      </div>
+                      {c.id === company?.id && (
+                        <svg className="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </DropdownMenuItem>
+                  ))}
+                </>
+              )}
+              
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={logout}
+                className="flex items-center gap-2 px-2 py-2 text-rose-600 hover:bg-rose-50"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Cerrar sesión</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
