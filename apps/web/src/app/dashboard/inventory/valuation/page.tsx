@@ -399,7 +399,7 @@ export default function ValuationPage() {
                 </div>
               </form>
               {methods.length === 0 && (
-                <p className="text-xs text-amber-600 mt-3">Crea un método de valoración primero en la pestaña "Métodos".</p>
+                <p className="text-xs text-amber-600 mt-3">Crea un método de valoración primero en la pestaña &quot;Métodos&quot;.</p>
               )}
             </div>
           </div>

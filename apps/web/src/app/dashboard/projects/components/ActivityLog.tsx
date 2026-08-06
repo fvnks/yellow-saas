@@ -121,7 +121,7 @@ export default function ActivityLog({ projectId }: { projectId: string }) {
                       <span className="font-medium">{a.actor_name || 'Sistema'}</span>
                       {' '}{actionLabels[a.action] || a.action}{' '}
                       <span className="font-medium">{entityLabels[a.entity_type] || a.entity_type}</span>
-                      {a.entity_name && <span className="text-slate-500"> "{a.entity_name}"</span>}
+                      {a.entity_name && <span className="text-slate-500"> &quot;{a.entity_name}&quot;</span>}
                     </p>
                     {a.old_value && a.new_value && (
                       <div className="mt-1 text-[10px] text-slate-400">
