@@ -379,16 +379,15 @@ async function buildDocumentHeader(doc: jsPDF, data: DocumentData): Promise<numb
     const docLabel = getDocumentTitle(settings, data.type);
     doc.setFillColor(...C.primary);
     const badgeWidth = doc.getTextWidth(docLabel) + 12;
-    const badgeX = (pageWidth - badgeWidth) / 2;
-    doc.roundedRect(badgeX, y - 4, badgeWidth, 8, 2, 2, 'F');
+    doc.roundedRect(15, y - 4, badgeWidth, 8, 2, 2, 'F');
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
     doc.setTextColor(255, 255, 255);
-    doc.text(docLabel, badgeX + badgeWidth / 2, y + 1, { align: 'center' });
+    doc.text(docLabel, 15 + badgeWidth / 2, y + 1, { align: 'center' });
 
     doc.setTextColor(...C.textDark);
     doc.setFontSize(9);
-    doc.text(`N°: ${data.number}`, 15 + badgeWidth + 10, y + 1);
+    doc.text(`N°: ${data.number}`, 15 + badgeWidth + 8, y + 1);
     doc.setTextColor(...C.textMuted);
     doc.text(`Fecha: ${formatDate(data.date, settings)}`, pageWidth - 15, y + 1, { align: 'right' });
 
@@ -975,16 +974,15 @@ export async function generateDeliveryGuidePDF(data: DeliveryGuideData): Promise
   const docLabel = settings.document_titles?.orden_venta || 'GUÍA DE DESPACHO';
   doc.setFillColor(...C.primary);
   const badgeWidth = doc.getTextWidth(docLabel) + 12;
-  const badgeX = (pageWidth - badgeWidth) / 2;
-  doc.roundedRect(badgeX, y - 4, badgeWidth, 8, 2, 2, 'F');
+  doc.roundedRect(15, y - 4, badgeWidth, 8, 2, 2, 'F');
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9);
   doc.setTextColor(255, 255, 255);
-  doc.text(docLabel, badgeX + badgeWidth / 2, y + 1, { align: 'center' });
+  doc.text(docLabel, 15 + badgeWidth / 2, y + 1, { align: 'center' });
 
   doc.setTextColor(...C.textDark);
   doc.setFontSize(9);
-  doc.text(`N°: ${data.number}`, 15 + badgeWidth + 10, y + 1);
+  doc.text(`N°: ${data.number}`, 15 + badgeWidth + 8, y + 1);
   doc.setTextColor(...C.textMuted);
   doc.text(`Fecha: ${formatDate(data.date, settings)}`, doc.internal.pageSize.getWidth() - 15, y + 1, { align: 'right' });
   y += 10;
