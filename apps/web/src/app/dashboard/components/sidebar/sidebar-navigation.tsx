@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight, ChevronDown } from "lucide-react";
@@ -18,6 +18,48 @@ import {
 import { NavGroup, NavMainItem, NavSubItem, resolveIcon, ICON_MAP } from "@/navigation/sidebar/sidebar-items";
 import { usePermissions } from "@/lib/permissions";
 
+// Find the nearest scrollable ancestor in the sidebar
+function findScrollableAncestor(el: HTMLElement | null): HTMLElement | null {
+  let node: HTMLElement | null = el;
+  while (node && node !== document.body) {
+    const style = window.getComputedStyle(node);
+    const overflowY = style.overflowY;
+    if ((overflowY === "auto" || overflowY === "scroll") && node.scrollHeight > node.clientHeight) {
+      return node;
+    }
+    node = node.parentElement;
+  }
+  return null;
+}
+
+// Scroll an element into view inside its scrollable sidebar ancestor.
+// Uses block: 'nearest' to only scroll when the element is out of view.
+function scrollIntoSidebarView(el: HTMLElement | null) {
+  if (!el) return;
+  const scrollContainer = findScrollableAncestor(el);
+  if (!scrollContainer) return;
+
+  const containerRect = scrollContainer.getBoundingClientRect();
+  const elRect = el.getBoundingClientRect();
+
+  // If the trigger is above the visible area, scroll up
+  if (elRect.top < containerRect.top) {
+    scrollContainer.scrollTo({
+      top: scrollContainer.scrollTop - (containerRect.top - elRect.top) - 8,
+      behavior: "smooth",
+    });
+  } else if (elRect.bottom > containerRect.bottom) {
+    // If below, scroll down so the trigger sits comfortably with room for the expanded content
+    scrollContainer.scrollTo({
+      top:
+        scrollContainer.scrollTop +
+        (elRect.bottom - containerRect.bottom) +
+        8,
+      behavior: "smooth",
+    });
+  }
+}
+
 interface SidebarNavigationProps {
   sidebarItems: NavGroup[];
 }
@@ -33,6 +75,14 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
   const path = usePathname();
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
+
+  // Refs to track trigger buttons for auto-scroll
+  const groupTriggerRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const itemTriggerRefs = useRef<Record<string, HTMLElement | null>>({});
+  // Track previous open state so we only auto-scroll on user-initiated toggle, not the auto-open-on-active mount
+  const prevOpenGroups = useRef<Record<string, boolean>>({});
+  const prevOpenItems = useRef<Record<string, boolean>>({});
+  const mountedRef = useRef(false);
 
   // Filter sidebar items based on permissions
   const filteredItems = useMemo(() => {
@@ -89,12 +139,61 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
     setOpenItems((prev) => ({ ...prev, ...updatedItems }));
   }, [path, filteredItems]);
 
+  // After each render where openGroups/openItems changed, ensure the trigger of any newly
+  // opened group/item is scrolled into view (covers auto-open on active path as well).
+  useEffect(() => {
+    // Skip the very first effect run after mount so we don't scroll when the sidebar first opens
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      prevOpenGroups.current = { ...openGroups };
+      prevOpenItems.current = { ...openItems };
+      return;
+    }
+
+    const newlyOpenedGroups = Object.entries(openGroups).filter(
+      ([id, isOpen]) => isOpen && !prevOpenGroups.current[id]
+    );
+    const newlyOpenedItems = Object.entries(openItems).filter(
+      ([title, isOpen]) => isOpen && !prevOpenItems.current[title]
+    );
+
+    requestAnimationFrame(() => {
+      if (newlyOpenedGroups.length > 0) {
+        const firstId = newlyOpenedGroups[0][0];
+        const trigger = groupTriggerRefs.current[firstId];
+        scrollIntoSidebarView(trigger ?? null);
+      } else if (newlyOpenedItems.length > 0) {
+        const firstTitle = newlyOpenedItems[0][0];
+        const trigger = itemTriggerRefs.current[firstTitle];
+        scrollIntoSidebarView(trigger ?? null);
+      }
+    });
+
+    prevOpenGroups.current = { ...openGroups };
+    prevOpenItems.current = { ...openItems };
+  }, [openGroups, openItems]);
+
   const toggleGroup = (groupId: string | number) => {
-    setOpenGroups((prev) => ({ ...prev, [groupId]: !prev[groupId] }));
+    const nextOpen = !(openGroups[groupId] ?? false);
+    setOpenGroups((prev) => ({ ...prev, [groupId]: nextOpen }));
+    if (nextOpen) {
+      // Defer to next frame so the Collapsible content has begun expanding
+      requestAnimationFrame(() => {
+        const trigger = groupTriggerRefs.current[String(groupId)];
+        scrollIntoSidebarView(trigger ?? null);
+      });
+    }
   };
 
   const toggleItem = (title: string) => {
-    setOpenItems((prev) => ({ ...prev, [title]: !prev[title] }));
+    const nextOpen = !(openItems[title] ?? false);
+    setOpenItems((prev) => ({ ...prev, [title]: nextOpen }));
+    if (nextOpen) {
+      requestAnimationFrame(() => {
+        const trigger = itemTriggerRefs.current[title];
+        scrollIntoSidebarView(trigger ?? null);
+      });
+    }
   };
 
   const renderIcon = (iconName: keyof typeof ICON_MAP | undefined): React.ReactNode => {
@@ -153,7 +252,9 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
             )}>
               {navGroup.label && (
                 <CollapsibleTrigger asChild>
-                  <button className={cn(
+                  <button
+                    ref={(el) => { groupTriggerRefs.current[String(navGroup.id)] = el; }}
+                    className={cn(
                     "flex w-full items-center gap-2 px-3 py-2.5 rounded-xl",
                     "text-[11px] font-semibold uppercase tracking-wider",
                     "transition-all duration-150 cursor-pointer",
@@ -193,9 +294,10 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                                 <SidebarMenuButton
                                   isActive={itemActive}
                                   tooltip={item.title}
+                                  ref={(el) => { itemTriggerRefs.current[item.title] = el; }}
                                   className={cn(
                                     "whitespace-nowrap rounded-xl transition-all duration-150",
-                                    itemActive 
+                                    itemActive
                                       ? "bg-secondary text-primary font-medium border-l-3 border-primary"
                                       : "text-muted-foreground hover:text-foreground hover:bg-muted"
                                   )}
@@ -241,6 +343,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                                           <CollapsibleTrigger asChild>
                                             <SidebarMenuSubButton
                                               isActive={isActive(subItem.path, subItem.subItems)}
+                                              ref={(el) => { itemTriggerRefs.current[subItem.title] = el; }}
                                               className="rounded-xl justify-between"
                                             >
                                               <div className="flex items-center gap-2">
