@@ -29,7 +29,7 @@ export default function TermsPage() {
             <section>
               <h2 className="text-base font-semibold text-slate-900 mb-2">1. Aceptacion de los Terminos</h2>
               <p>
-                Al acceder y utilizar Yellow ERP ("el Servicio"), usted acepta estos Terminos y Condiciones.
+                Al acceder y utilizar Yellow ERP (&quot;el Servicio&quot;), usted acepta estos Terminos y Condiciones.
                 Si no esta de acuerdo con alguno de estos terminos, no debe utilizar el Servicio.
                 Nos reservamos el derecho de modificar estos terminos en cualquier momento,
                 siendo efectivos desde su publicacion en esta pagina.

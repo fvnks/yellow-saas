@@ -420,7 +420,7 @@ export default function ProjectDetailPage() {
       {project.archived && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center gap-3">
           <Archive className="w-4 h-4 text-amber-600" />
-          <span className="text-sm text-amber-700 font-medium">Este proyecto esta archivado. Haz clic en "Restaurar" para volver a mostrarlo.</span>
+          <span className="text-sm text-amber-700 font-medium">Este proyecto esta archivado. Haz clic en &quot;Restaurar&quot; para volver a mostrarlo.</span>
         </div>
       )}
       <div className="flex items-center gap-4">
