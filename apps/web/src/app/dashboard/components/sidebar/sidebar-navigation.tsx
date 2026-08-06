@@ -148,19 +148,19 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
             className="group/collapsible-group"
           >
             <div className={cn(
-              "rounded-xl transition-all duration-200",
-              groupOpen && "bg-sidebar-accent/30"
+              "rounded-lg transition-all duration-150",
+              groupOpen && "bg-white/5"
             )}>
               {navGroup.label && (
                 <CollapsibleTrigger asChild>
                   <button className={cn(
-                    "flex w-full items-center gap-2 px-3 py-2 rounded-xl",
-                    "text-[10px] font-bold uppercase tracking-widest",
-                    "transition-all duration-200 cursor-pointer",
+                    "flex w-full items-center gap-2 px-3 py-2 rounded-lg",
+                    "text-[11px] font-semibold uppercase tracking-wider",
+                    "transition-all duration-150 cursor-pointer",
                     groupActive
-                      ? "text-sidebar-foreground"
-                      : "text-sidebar-foreground/40 hover:text-sidebar-foreground/70",
-                    "hover:bg-sidebar-accent/50"
+                      ? "text-white/90"
+                      : "text-white/40 hover:text-white/70",
+                    "hover:bg-white/5"
                   )}>
                     <ChevronDown className={cn(
                       "h-3 w-3 flex-shrink-0 transition-transform duration-200",
@@ -168,7 +168,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                     )} />
                     <span className="truncate">{navGroup.label}</span>
                     {groupActive && !groupOpen && (
-                      <div className="ml-auto w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0 animate-pulse" />
+                      <div className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400 flex-shrink-0" />
                     )}
                   </button>
                 </CollapsibleTrigger>
@@ -194,8 +194,8 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                                   isActive={itemActive}
                                   tooltip={item.title}
                                   className={cn(
-                                    "whitespace-nowrap rounded-xl transition-all duration-200",
-                                    itemActive && "bg-sidebar-accent/60 font-medium"
+                                    "whitespace-nowrap rounded-lg transition-all duration-150",
+                                    itemActive && "bg-white/10 font-medium text-white"
                                   )}
                                 >
                                   {renderIcon(item.icon)}
@@ -213,8 +213,8 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                                     isActive={itemActive}
                                     tooltip={item.title}
                                     className={cn(
-                                      "rounded-xl transition-all duration-200",
-                                      itemActive && "bg-sidebar-accent/60 font-medium"
+                                      "rounded-lg transition-all duration-150",
+                                      itemActive && "bg-white/10 font-medium text-white"
                                     )}
                                   >
                                     {renderIcon(item.icon)}
@@ -297,7 +297,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
             </div>
 
             {groupIndex < sidebarItems.length - 1 && (
-              <div className="my-1.5 mx-3 h-px bg-sidebar-border/50" />
+              <div className="my-2 mx-3 h-px bg-white/10" />
             )}
           </Collapsible>
         );
