@@ -142,8 +142,8 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
     setOpenItems((prev) => ({ ...prev, ...updatedItems }));
   }, [path, filteredItems]);
 
-  // Single useLayoutEffect to handle ALL scroll cases (manual toggle + auto-open on path change)
-  // Runs after DOM mutations but before paint, so scroll is smooth
+// Single useLayoutEffect to handle ALL scroll cases (manual toggle + auto-open on path change)
+// Runs after DOM mutations but before paint, so scroll is smooth
   useLayoutEffect(() => {
     // Skip the very first effect run after mount so we don't scroll when the sidebar first opens
     if (!mountedRef.current) {
@@ -160,14 +160,28 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
       ([title, isOpen]) => isOpen && !prevOpenItems.current[title]
     );
 
-    if (newlyOpenedGroups.length > 0) {
-      const firstId = newlyOpenedGroups[0][0];
-      const trigger = groupTriggerRefs.current[firstId];
-      scrollIntoSidebarView(trigger ?? null);
-    } else if (newlyOpenedItems.length > 0) {
-      const firstTitle = newlyOpenedItems[0][0];
-      const trigger = itemTriggerRefs.current[firstTitle];
-      scrollIntoSidebarView(trigger ?? null);
+    // If both groups and items opened, prioritize items (deeper level = more important to see)
+    const allNewlyOpened: Array<{ type: 'group' | 'item'; key: string }> = [
+      ...newlyOpenedItems.map(([title]) => ({ type: 'item' as const, key: title })),
+      ...newlyOpenedGroups.map(([id]) => ({ type: 'group' as const, key: id })),
+    ];
+
+    if (allNewlyOpened.length > 0) {
+      // Use requestAnimationFrame to wait for layout to settle after Collapsible expansion
+      requestAnimationFrame(() => {
+        allNewlyOpened.forEach(({ type, key }, index) => {
+          // Stagger scrolls slightly to handle multiple opens in same frame
+          setTimeout(() => {
+            if (type === 'group') {
+              const trigger = groupTriggerRefs.current[key];
+              scrollIntoSidebarView(trigger ?? null);
+            } else {
+              const trigger = itemTriggerRefs.current[key];
+              scrollIntoSidebarView(trigger ?? null);
+            }
+          }, index * 50);
+        });
+      });
     }
 
     prevOpenGroups.current = { ...openGroups };
