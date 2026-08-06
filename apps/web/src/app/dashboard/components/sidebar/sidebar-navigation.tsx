@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useLayoutEffect, useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight, ChevronDown } from "lucide-react";
@@ -142,9 +142,9 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
     setOpenItems((prev) => ({ ...prev, ...updatedItems }));
   }, [path, filteredItems]);
 
-  // After each render where openGroups/openItems changed, ensure the trigger of any newly
-  // opened group/item is scrolled into view (covers auto-open on active path as well).
-  useEffect(() => {
+  // Single useLayoutEffect to handle ALL scroll cases (manual toggle + auto-open on path change)
+  // Runs after DOM mutations but before paint, so scroll is smooth
+  useLayoutEffect(() => {
     // Skip the very first effect run after mount so we don't scroll when the sidebar first opens
     if (!mountedRef.current) {
       mountedRef.current = true;
@@ -160,17 +160,15 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
       ([title, isOpen]) => isOpen && !prevOpenItems.current[title]
     );
 
-    requestAnimationFrame(() => {
-      if (newlyOpenedGroups.length > 0) {
-        const firstId = newlyOpenedGroups[0][0];
-        const trigger = groupTriggerRefs.current[firstId];
-        scrollIntoSidebarView(trigger ?? null);
-      } else if (newlyOpenedItems.length > 0) {
-        const firstTitle = newlyOpenedItems[0][0];
-        const trigger = itemTriggerRefs.current[firstTitle];
-        scrollIntoSidebarView(trigger ?? null);
-      }
-    });
+    if (newlyOpenedGroups.length > 0) {
+      const firstId = newlyOpenedGroups[0][0];
+      const trigger = groupTriggerRefs.current[firstId];
+      scrollIntoSidebarView(trigger ?? null);
+    } else if (newlyOpenedItems.length > 0) {
+      const firstTitle = newlyOpenedItems[0][0];
+      const trigger = itemTriggerRefs.current[firstTitle];
+      scrollIntoSidebarView(trigger ?? null);
+    }
 
     prevOpenGroups.current = { ...openGroups };
     prevOpenItems.current = { ...openItems };
@@ -179,24 +177,11 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
   const toggleGroup = (groupId: string | number) => {
     const nextOpen = !(openGroups[groupId] ?? false);
     setOpenGroups((prev) => ({ ...prev, [groupId]: nextOpen }));
-    if (nextOpen) {
-      // Defer to next frame so the Collapsible content has begun expanding
-      requestAnimationFrame(() => {
-        const trigger = groupTriggerRefs.current[String(groupId)];
-        scrollIntoSidebarView(trigger ?? null);
-      });
-    }
   };
 
   const toggleItem = (title: string) => {
     const nextOpen = !(openItems[title] ?? false);
     setOpenItems((prev) => ({ ...prev, [title]: nextOpen }));
-    if (nextOpen) {
-      requestAnimationFrame(() => {
-        const trigger = itemTriggerRefs.current[title];
-        scrollIntoSidebarView(trigger ?? null);
-      });
-    }
   };
 
   const renderIcon = (iconName: keyof typeof ICON_MAP | undefined): React.ReactNode => {
