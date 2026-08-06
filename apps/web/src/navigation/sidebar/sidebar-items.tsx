@@ -466,6 +466,7 @@ export const sidebarItems: NavGroup[] = [
               { title: "Empresa", path: "/dashboard/settings/empresa", icon: "Building2", requiredPermission: { module: "sistema", action: "read" } },
               { title: "Rubros", path: "/dashboard/settings/rubros", icon: "Tag", requiredPermission: { module: "sistema", action: "read" } },
               { title: "Centros de Costo", path: "/dashboard/cost-centers", icon: "CircleDollarSign", requiredPermission: { module: "sistema", action: "read" } },
+              { title: "Documentos", path: "/settings/documents", icon: "FileText", requiredPermission: { module: "sistema", action: "read" } },
             ],
           },
           { title: "Webhooks", path: "/dashboard/settings/webhooks", icon: "Webhook", requiredPermission: { module: "sistema", action: "read" } },
