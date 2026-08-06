@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, createContext, useContext } from 'react';
 import { Sun, Moon } from 'lucide-react';
@@ -49,7 +49,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+      className="p-2 hover:bg-muted dark:hover:bg-slate-700 rounded-lg transition-colors"
       title={theme === 'light' ? 'Modo oscuro' : 'Modo claro'}
       suppressHydrationWarning
     >

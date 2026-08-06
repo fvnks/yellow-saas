@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -82,7 +82,7 @@ export default function GoodsReceiptsPage() {
   };
 
   const getStatusBadge = (status: string) => {
-    const config = statusConfig[status] || { label: status, color: 'bg-slate-100 text-slate-600 border border-slate-200' };
+    const config = statusConfig[status] || { label: status, color: 'bg-muted text-slate-600 border border-border' };
     return (
       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${config.color}`}>
         {config.label}
@@ -93,58 +93,58 @@ export default function GoodsReceiptsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <button onClick={() => router.push('/dashboard/purchases')} className="p-1 hover:bg-slate-100 rounded transition-colors">
+        <button onClick={() => router.push('/dashboard/purchases')} className="p-1 hover:bg-muted rounded transition-colors">
           <ArrowLeft className="w-5 h-5 text-slate-600" />
         </button>
         <div className="flex-1">
-          <h1 className="text-xl font-bold text-slate-900">Recepción de Mercadería</h1>
-          <p className="text-sm text-slate-500 mt-1">{total} recepciones</p>
+          <h1 className="text-xl font-bold text-foreground">Recepción de Mercadería</h1>
+          <p className="text-sm text-muted-foreground mt-1">{total} recepciones</p>
         </div>
         <button onClick={() => router.push('/dashboard/purchases/receipts/new')}
-          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" /> Nueva Recepción
         </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Recepciones</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">{kpis.total}</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Recepciones</p>
+              <p className="text-2xl font-bold text-foreground mt-1">{kpis.total}</p>
             </div>
             <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
               <PackageCheck className="w-6 h-6 text-indigo-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Pendientes</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">{kpis.pending}</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Pendientes</p>
+              <p className="text-2xl font-bold text-foreground mt-1">{kpis.pending}</p>
             </div>
             <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
               <PackageCheck className="w-6 h-6 text-amber-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Completadas</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">{kpis.completed}</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Completadas</p>
+              <p className="text-2xl font-bold text-foreground mt-1">{kpis.completed}</p>
             </div>
             <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">
               <PackageCheck className="w-6 h-6 text-emerald-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Este Mes</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">{kpis.thisMonth}</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Este Mes</p>
+              <p className="text-2xl font-bold text-foreground mt-1">{kpis.thisMonth}</p>
             </div>
             <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
               <PackageCheck className="w-6 h-6 text-blue-600" />
@@ -153,16 +153,16 @@ export default function GoodsReceiptsPage() {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         <div className="flex items-center gap-4 flex-wrap">
           <div className="relative flex-1 min-w-[200px] max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input type="text" placeholder="Buscar por número, proveedor o bodega..."
               value={search} onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+              className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
           <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+            className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
             <option value="">Todos los estados</option>
             <option value="pending">Pendiente</option>
             <option value="received">Recibido</option>
@@ -173,49 +173,49 @@ export default function GoodsReceiptsPage() {
       </div>
 
       {loading ? (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 space-y-3">
-          {[1, 2, 3].map(i => <div key={i} className="h-12 bg-slate-100 rounded-lg animate-pulse" />)}
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 space-y-3">
+          {[1, 2, 3].map(i => <div key={i} className="h-12 bg-muted rounded-lg animate-pulse" />)}
         </div>
       ) : receipts.length === 0 ? (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-12 dark:bg-slate-900 dark:border-slate-800 text-center">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-12 dark:bg-primary dark:border-slate-800 text-center">
           <PackageCheck className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <p className="text-sm text-slate-500">No hay recepciones de mercadería</p>
+          <p className="text-sm text-muted-foreground">No hay recepciones de mercadería</p>
           <button onClick={() => router.push('/dashboard/purchases/receipts/new')}
             className="mt-4 text-indigo-600 hover:text-indigo-700 text-sm font-medium">Crear primera recepción</button>
         </div>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Recepción #</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">OC #</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Proveedor</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Bodega</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                <tr className="border-b border-border">
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Recepción #</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">OC #</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Proveedor</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Bodega</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {receipts.map(r => (
-                  <tr key={r.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3 text-xs font-medium text-slate-900 font-mono">{r.receipt_number}</td>
-                    <td className="px-4 py-3 text-xs text-slate-700 font-mono">{r.order_number || '-'}</td>
-                    <td className="px-4 py-3 text-xs text-slate-700 max-w-[160px] truncate">{r.supplier_name || '-'}</td>
-                    <td className="px-4 py-3 text-xs text-slate-700">{r.warehouse_name || '-'}</td>
-                    <td className="px-4 py-3 text-xs text-slate-700">{r.received_date || '-'}</td>
+                  <tr key={r.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <td className="px-4 py-3 text-xs font-medium text-foreground font-mono">{r.receipt_number}</td>
+                    <td className="px-4 py-3 text-xs text-foreground font-mono">{r.order_number || '-'}</td>
+                    <td className="px-4 py-3 text-xs text-foreground max-w-[160px] truncate">{r.supplier_name || '-'}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{r.warehouse_name || '-'}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{r.received_date || '-'}</td>
                     <td className="px-4 py-3">{getStatusBadge(r.status)}</td>
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-1">
                         <button onClick={() => router.push(`/dashboard/purchases/receipts/${r.id}`)}
-                          className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors">
+                          className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors">
                           <Eye className="w-4 h-4" />
                         </button>
                         {r.status === 'pending' && (
                           <button onClick={() => handleDelete(r.id)}
-                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors">
+                            className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors">
                             <Trash2 className="w-4 h-4" />
                           </button>
                         )}
@@ -230,7 +230,7 @@ export default function GoodsReceiptsPage() {
       )}
 
       {receipts.length > 0 && (
-        <div className="flex items-center justify-between text-xs text-slate-500">
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
           <p>Mostrando {receipts.length} de {total}</p>
         </div>
       )}

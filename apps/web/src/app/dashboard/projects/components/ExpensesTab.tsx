@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Badge } from '@yellow-erp/ui';
@@ -84,44 +84,44 @@ export default function ExpensesTab({ projectId, expenses, onRefresh }: { projec
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-semibold text-slate-900">Gastos del Proyecto</h3>
-          <p className="text-xs text-slate-500 mt-0.5">Total: {formatCurrency(total)}</p>
+          <h3 className="text-sm font-semibold text-foreground">Gastos del Proyecto</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">Total: {formatCurrency(total)}</p>
         </div>
-        <button onClick={openCreate} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+        <button onClick={openCreate} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" /> Nuevo Gasto
         </button>
       </div>
 
       {expenses.length === 0 ? (
-        <div className="text-center py-12 bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <Receipt className="w-12 h-12 text-slate-200 mx-auto mb-3" />
-          <p className="text-sm text-slate-500">No hay gastos registrados</p>
+          <p className="text-sm text-muted-foreground">No hay gastos registrados</p>
         </div>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Categoria</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Descripcion</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Proveedor</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Monto</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider"></th>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Categoria</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Descripcion</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Proveedor</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Monto</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider"></th>
               </tr>
             </thead>
             <tbody>
               {expenses.map(e => (
-                <tr key={e.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3 text-xs text-slate-700">{new Date(e.expense_date).toLocaleDateString('es-CL')}</td>
+                <tr key={e.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <td className="px-4 py-3 text-xs text-foreground">{new Date(e.expense_date).toLocaleDateString('es-CL')}</td>
                   <td className="px-4 py-3"><Badge variant={categoryConfig[e.category]?.variant || 'neutral'}>{categoryConfig[e.category]?.label || e.category}</Badge></td>
-                  <td className="px-4 py-3 text-xs text-slate-700 max-w-[200px] truncate">{e.description}</td>
-                  <td className="px-4 py-3 text-xs text-slate-500">{e.supplier_name || '—'}</td>
-                  <td className="px-4 py-3 text-xs font-semibold text-slate-900 text-right">{formatCurrency(Number(e.amount))}</td>
+                  <td className="px-4 py-3 text-xs text-foreground max-w-[200px] truncate">{e.description}</td>
+                  <td className="px-4 py-3 text-xs text-muted-foreground">{e.supplier_name || '—'}</td>
+                  <td className="px-4 py-3 text-xs font-semibold text-foreground text-right">{formatCurrency(Number(e.amount))}</td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <button onClick={() => openEdit(e)} className="p-1 hover:bg-slate-100 rounded-lg transition-colors">
-                        <Edit className="w-3.5 h-3.5 text-slate-400" />
+                      <button onClick={() => openEdit(e)} className="p-1 hover:bg-muted rounded-lg transition-colors">
+                        <Edit className="w-3.5 h-3.5 text-muted-foreground" />
                       </button>
                       <button onClick={() => handleDelete(e.id)} className="p-1 hover:bg-red-50 rounded-lg transition-colors">
                         <Trash2 className="w-3.5 h-3.5 text-red-500" />
@@ -137,17 +137,17 @@ export default function ExpensesTab({ projectId, expenses, onRefresh }: { projec
 
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900md mx-4">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900">{editing ? 'Editar Gasto' : 'Nuevo Gasto'}</h2>
-              <button onClick={() => { setShowForm(false); setEditing(null); }} className="text-slate-400 hover:text-slate-600">X</button>
+          <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">{editing ? 'Editar Gasto' : 'Nuevo Gasto'}</h2>
+              <button onClick={() => { setShowForm(false); setEditing(null); }} className="text-muted-foreground hover:text-slate-600">X</button>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Categoria *</label>
+                  <label className="block text-xs font-medium text-foreground">Categoria *</label>
                   <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                     <option value="travel">Viajes</option>
                     <option value="materials">Materiales</option>
                     <option value="services">Servicios</option>
@@ -157,38 +157,38 @@ export default function ExpensesTab({ projectId, expenses, onRefresh }: { projec
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Monto (CLP) *</label>
+                  <label className="block text-xs font-medium text-foreground">Monto (CLP) *</label>
                   <input type="number" value={form.amount} onChange={e => setForm({ ...form, amount: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Descripcion *</label>
+                <label className="block text-xs font-medium text-foreground">Descripcion *</label>
                 <input type="text" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Fecha *</label>
+                  <label className="block text-xs font-medium text-foreground">Fecha *</label>
                   <input type="date" value={form.expense_date} onChange={e => setForm({ ...form, expense_date: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Proveedor</label>
+                  <label className="block text-xs font-medium text-foreground">Proveedor</label>
                   <input type="text" value={form.supplier_name} onChange={e => setForm({ ...form, supplier_name: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">N. Factura</label>
+                <label className="block text-xs font-medium text-foreground">N. Factura</label>
                 <input type="text" value={form.invoice_number} onChange={e => setForm({ ...form, invoice_number: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
             </div>
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
-              <button onClick={() => { setShowForm(false); setEditing(null); }} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
+              <button onClick={() => { setShowForm(false); setEditing(null); }} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={saving || !form.description || !form.amount}
-                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                 {saving ? 'Guardando...' : editing ? 'Actualizar' : 'Crear Gasto'}
               </button>
             </div>

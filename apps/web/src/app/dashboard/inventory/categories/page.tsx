@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -66,60 +66,60 @@ export default function CategoriesPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <button onClick={() => router.push('/dashboard/bodega')} className="p-1 hover:bg-slate-100 rounded transition-colors">
+        <button onClick={() => router.push('/dashboard/bodega')} className="p-1 hover:bg-muted rounded transition-colors">
           <ArrowLeft className="w-5 h-5 text-slate-600" />
         </button>
         <div className="flex-1">
-          <h1 className="text-xl font-bold text-slate-900">Categorias de Inventario</h1>
-          <p className="text-sm text-slate-500 mt-1">{categories.length} categorias</p>
+          <h1 className="text-xl font-bold text-foreground">Categorias de Inventario</h1>
+          <p className="text-sm text-muted-foreground mt-1">{categories.length} categorias</p>
         </div>
-        <button onClick={openNew} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+        <button onClick={openNew} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" /> Nueva Categoria
         </button>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input type="text" placeholder="Buscar categoria..." value={search} onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+            className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
         </div>
       </div>
 
       {loading ? (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 space-y-3">
-          {[1, 2, 3].map(i => <div key={i} className="h-12 bg-slate-100 rounded-lg animate-pulse" />)}
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 space-y-3">
+          {[1, 2, 3].map(i => <div key={i} className="h-12 bg-muted rounded-lg animate-pulse" />)}
         </div>
       ) : categories.length === 0 ? (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-12 dark:bg-slate-900 dark:border-slate-800 text-center">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-12 dark:bg-primary dark:border-slate-800 text-center">
           <Tag className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <p className="text-sm text-slate-500">No hay categorias</p>
+          <p className="text-sm text-muted-foreground">No hay categorias</p>
           <button onClick={openNew} className="mt-4 text-indigo-600 hover:text-indigo-700 text-sm font-medium">Crear primera categoria</button>
         </div>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Color</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Descripcion</th>
-                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Productos</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                <tr className="border-b border-border">
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Color</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nombre</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Descripcion</th>
+                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Productos</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {categories.map(cat => (
-                  <tr key={cat.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                  <tr key={cat.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
                     <td className="px-4 py-3"><div className="w-4 h-4 rounded" style={{ backgroundColor: cat.color }} /></td>
-                    <td className="px-4 py-3 text-xs font-medium text-slate-900">{cat.name}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{cat.description || '-'}</td>
-                    <td className="px-4 py-3 text-center text-xs text-slate-700">{cat.product_count}</td>
+                    <td className="px-4 py-3 text-xs font-medium text-foreground">{cat.name}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{cat.description || '-'}</td>
+                    <td className="px-4 py-3 text-center text-xs text-foreground">{cat.product_count}</td>
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-1">
-                        <button onClick={() => openEdit(cat)} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"><Edit className="w-4 h-4" /></button>
-                        <button onClick={() => handleDelete(cat.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-4 h-4" /></button>
+                        <button onClick={() => openEdit(cat)} className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Edit className="w-4 h-4" /></button>
+                        <button onClick={() => handleDelete(cat.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-4 h-4" /></button>
                       </div>
                     </td>
                   </tr>
@@ -132,35 +132,35 @@ export default function CategoriesPage() {
 
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900md mx-4">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900">{editing ? 'Editar' : 'Nueva'} Categoria</h2>
-              <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600">&times;</button>
+          <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">{editing ? 'Editar' : 'Nueva'} Categoria</h2>
+              <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-slate-600">&times;</button>
             </div>
             <div className="p-6 space-y-4">
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Nombre *</label>
+                <label className="block text-xs font-medium text-foreground">Nombre *</label>
                 <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Descripcion</label>
+                <label className="block text-xs font-medium text-foreground">Descripcion</label>
                 <input type="text" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Color</label>
+                <label className="block text-xs font-medium text-foreground">Color</label>
                 <div className="flex items-center gap-3">
-                  <input type="color" value={form.color} onChange={(e) => setForm({ ...form, color: e.target.value })} className="w-10 h-10 rounded border border-slate-200 cursor-pointer" />
+                  <input type="color" value={form.color} onChange={(e) => setForm({ ...form, color: e.target.value })} className="w-10 h-10 rounded border border-border cursor-pointer" />
                   <input type="text" value={form.color} onChange={(e) => setForm({ ...form, color: e.target.value })}
-                    className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    className="flex-1 bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
               </div>
             </div>
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
-              <button onClick={() => setShowModal(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
+              <button onClick={() => setShowModal(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={!form.name || saving}
-                className="bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                className="bg-primary hover:bg-primary/90 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                 {saving ? 'Guardando...' : 'Guardar'}
               </button>
             </div>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { ChevronDown, HelpCircle } from 'lucide-react';
@@ -26,7 +26,7 @@ export function FaqAccordion({ items, className }: FaqAccordionProps) {
             'rounded-xl border transition-all duration-300',
             openIndex === index
               ? 'border-blue-200 bg-blue-50/50 dark:border-blue-500/30 dark:bg-blue-500/5'
-              : 'border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800/50'
+              : 'border-border bg-card dark:border-slate-700 dark:bg-slate-800/50'
           )}
         >
           <button
@@ -38,15 +38,15 @@ export function FaqAccordion({ items, className }: FaqAccordionProps) {
             <div className="flex items-center gap-3">
               <HelpCircle className={cn(
                 'w-5 h-5 flex-shrink-0 transition-colors',
-                openIndex === index ? 'text-blue-600' : 'text-slate-400'
+                openIndex === index ? 'text-blue-600' : 'text-muted-foreground'
               )} />
-              <span className="text-sm font-semibold text-slate-900 dark:text-white">
+              <span className="text-sm font-semibold text-foreground dark:text-white">
                 {item.question}
               </span>
             </div>
             <ChevronDown
               className={cn(
-                'w-5 h-5 text-slate-400 transition-transform duration-300 flex-shrink-0',
+                'w-5 h-5 text-muted-foreground transition-transform duration-300 flex-shrink-0',
                 openIndex === index && 'rotate-180'
               )}
             />
@@ -60,7 +60,7 @@ export function FaqAccordion({ items, className }: FaqAccordionProps) {
               openIndex === index ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
             )}
           >
-            <p className="px-5 pb-5 pl-13 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+            <p className="px-5 pb-5 pl-13 text-sm text-slate-600 dark:text-muted-foreground leading-relaxed">
               {item.answer}
             </p>
           </div>

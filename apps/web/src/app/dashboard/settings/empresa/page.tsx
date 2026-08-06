@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Button, Input, Select } from '@yellow-erp/ui';
@@ -143,10 +143,10 @@ export default function EmpresaPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Empresa</h1>
-          <p className="text-sm text-slate-500 mt-1">Cargando información...</p>
+          <h1 className="text-xl font-bold text-foreground">Empresa</h1>
+          <p className="text-sm text-muted-foreground mt-1">Cargando información...</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 text-center">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-8 text-center">
           <div className="animate-pulse bg-slate-200 h-6 w-48 rounded mx-auto mb-4" />
           <div className="animate-pulse bg-slate-200 h-4 w-32 rounded mx-auto" />
         </div>
@@ -157,16 +157,16 @@ export default function EmpresaPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-slate-900">Empresa</h1>
-        <p className="text-sm text-slate-500 mt-1">Información general de la empresa y configuración fiscal</p>
+        <h1 className="text-xl font-bold text-foreground">Empresa</h1>
+        <p className="text-sm text-muted-foreground mt-1">Información general de la empresa y configuración fiscal</p>
       </div>
 
       <ContinuousTabs tabs={tabs} defaultActiveId={activeTab} onChange={setActiveTab} />
 
       {/* Tab: Datos de la Empresa */}
       {activeTab === 'datos' && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-6">
-          <h3 className="text-sm font-semibold text-slate-900">Datos de la Empresa</h3>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 space-y-6">
+          <h3 className="text-sm font-semibold text-foreground">Datos de la Empresa</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
               label="Nombre de la Empresa"
@@ -238,9 +238,9 @@ export default function EmpresaPage() {
 
       {/* Tab: Representante Legal */}
       {activeTab === 'representante' && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-6">
-          <h3 className="text-sm font-semibold text-slate-900">Representante Legal</h3>
-          <p className="text-xs text-slate-500">Información del representante legal registrado ante el SII.</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 space-y-6">
+          <h3 className="text-sm font-semibold text-foreground">Representante Legal</h3>
+          <p className="text-xs text-muted-foreground">Información del representante legal registrado ante el SII.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
               label="Nombre Completo"
@@ -287,9 +287,9 @@ export default function EmpresaPage() {
       {/* Tab: SII / ACTEO */}
       {activeTab === 'sii' && (
         <div className="space-y-6">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-6">
-            <h3 className="text-sm font-semibold text-slate-900">Código de Actividad Económica (ACTEO)</h3>
-            <p className="text-xs text-slate-500">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 space-y-6">
+            <h3 className="text-sm font-semibold text-foreground">Código de Actividad Económica (ACTEO)</h3>
+            <p className="text-xs text-muted-foreground">
               Ingrese el código ACTEO correspondiente a la actividad económica principal de su empresa según el SII.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -315,19 +315,19 @@ export default function EmpresaPage() {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-6">
-            <h3 className="text-sm font-semibold text-slate-900">Logo de la Empresa</h3>
-            <p className="text-xs text-slate-500">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 space-y-6">
+            <h3 className="text-sm font-semibold text-foreground">Logo de la Empresa</h3>
+            <p className="text-xs text-muted-foreground">
               Logo que aparecerá en los documentos electrónicos y en la interfaz del sistema.
             </p>
             <div className="flex items-start gap-6">
-              <div className="w-32 h-32 border-2 border-dashed border-slate-300 rounded-xl flex items-center justify-center bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer">
+              <div className="w-32 h-32 border-2 border-dashed border-slate-300 rounded-xl flex items-center justify-center bg-muted hover:bg-muted transition-colors cursor-pointer">
                 {company.logo_url ? (
                   <img src={company.logo_url} alt="Logo empresa" className="w-full h-full object-contain rounded-xl" />
                 ) : (
                   <div className="text-center">
                     <Upload className="w-8 h-8 text-slate-300 mx-auto mb-1" />
-                    <p className="text-[9px] text-slate-400">Subir logo</p>
+                    <p className="text-[9px] text-muted-foreground">Subir logo</p>
                   </div>
                 )}
               </div>
@@ -340,31 +340,31 @@ export default function EmpresaPage() {
                     placeholder="https://empresa.cl/logo.png"
                   />
                   <div className="space-y-1">
-                    <label className="block text-xs font-medium text-slate-700">Formatos aceptados</label>
-                    <p className="text-xs text-slate-500">PNG, JPG, SVG (max. 2MB)</p>
-                    <p className="text-xs text-slate-400">Recomendado: 512x512px</p>
+                    <label className="block text-xs font-medium text-foreground">Formatos aceptados</label>
+                    <p className="text-xs text-muted-foreground">PNG, JPG, SVG (max. 2MB)</p>
+                    <p className="text-xs text-muted-foreground">Recomendado: 512x512px</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-4">
-            <h3 className="text-sm font-semibold text-slate-900">Estado de Conexión SII</h3>
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 space-y-4">
+            <h3 className="text-sm font-semibold text-foreground">Estado de Conexión SII</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 bg-slate-50 rounded-lg text-center">
-                <p className="text-[9px] font-semibold text-slate-500 uppercase">Ambiente</p>
-                <p className="text-sm font-medium text-slate-900 mt-1">Producción</p>
+              <div className="p-4 bg-muted rounded-lg text-center">
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase">Ambiente</p>
+                <p className="text-sm font-medium text-foreground mt-1">Producción</p>
               </div>
-              <div className="p-4 bg-slate-50 rounded-lg text-center">
-                <p className="text-[9px] font-semibold text-slate-500 uppercase">Estado</p>
+              <div className="p-4 bg-muted rounded-lg text-center">
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase">Estado</p>
                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 mt-1">
                   Conectado
                 </span>
               </div>
-              <div className="p-4 bg-slate-50 rounded-lg text-center">
-                <p className="text-[9px] font-semibold text-slate-500 uppercase">Última Verificación</p>
-                <p className="text-sm font-medium text-slate-900 mt-1">Hoy</p>
+              <div className="p-4 bg-muted rounded-lg text-center">
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase">Última Verificación</p>
+                <p className="text-sm font-medium text-foreground mt-1">Hoy</p>
               </div>
             </div>
           </div>

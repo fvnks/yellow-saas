@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Badge } from '@yellow-erp/ui';
@@ -118,56 +118,56 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-semibold text-slate-900">Control de Horas</h3>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h3 className="text-sm font-semibold text-foreground">Control de Horas</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">
             {totalHours.toFixed(1)}h total · {billableHours.toFixed(1)}h facturables
             {pendingCount > 0 && <span className="ml-2 text-amber-600">· {pendingCount} pendientes</span>}
           </p>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => setWeekFilter(!weekFilter)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${weekFilter ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${weekFilter ? 'bg-indigo-100 text-indigo-700' : 'bg-muted text-muted-foreground hover:bg-slate-200'}`}>
             <Filter className="w-3 h-3 mr-1 inline" /> Esta semana
           </button>
           <select value={statusFilter} onChange={e => setStatusFilter(e.target.value as any)}
-            className="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-500 border-0 focus:ring-2 focus:ring-indigo-500">
+            className="px-3 py-1.5 rounded-lg text-xs font-medium bg-muted text-muted-foreground border-0 focus:ring-2 focus:ring-primary/20">
             <option value="all">Todos ({timesheets.length})</option>
             <option value="pending">Pendientes ({pendingCount})</option>
             <option value="approved">Aprobados ({approvedCount})</option>
             <option value="rejected">Rechazados</option>
           </select>
-          <button onClick={openCreate} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          <button onClick={openCreate} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <Plus className="w-4 h-4" /> Registrar Horas
           </button>
         </div>
       </div>
 
       {filtered.length === 0 ? (
-        <div className="text-center py-12 bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <Clock className="w-12 h-12 text-slate-200 mx-auto mb-3" />
-          <p className="text-sm text-slate-500">No hay registros de horas</p>
+          <p className="text-sm text-muted-foreground">No hay registros de horas</p>
         </div>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Empleado</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tarea</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Horas</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tipo</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Empleado</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tarea</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Horas</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tipo</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {filtered.map(t => (
-                <tr key={t.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3 text-xs text-slate-700">{new Date(t.date).toLocaleDateString('es-CL')}</td>
-                  <td className="px-4 py-3 text-xs text-slate-700">{t.employee_name || '—'}</td>
-                  <td className="px-4 py-3 text-xs text-slate-700">{t.task_name || '—'}</td>
-                  <td className="px-4 py-3 text-xs font-semibold text-slate-900">{Number(t.hours).toFixed(1)}h</td>
+                <tr key={t.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <td className="px-4 py-3 text-xs text-foreground">{new Date(t.date).toLocaleDateString('es-CL')}</td>
+                  <td className="px-4 py-3 text-xs text-foreground">{t.employee_name || '—'}</td>
+                  <td className="px-4 py-3 text-xs text-foreground">{t.task_name || '—'}</td>
+                  <td className="px-4 py-3 text-xs font-semibold text-foreground">{Number(t.hours).toFixed(1)}h</td>
                   <td className="px-4 py-3">
                     <Badge variant={t.billable ? 'success' : 'neutral'}>{t.billable ? 'Facturable' : 'No fact.'}</Badge>
                   </td>
@@ -186,8 +186,8 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
                           </button>
                         </>
                       )}
-                      <button onClick={() => openEdit(t)} className="p-1 hover:bg-slate-100 rounded-lg transition-colors">
-                        <Edit className="w-3.5 h-3.5 text-slate-400" />
+                      <button onClick={() => openEdit(t)} className="p-1 hover:bg-muted rounded-lg transition-colors">
+                        <Edit className="w-3.5 h-3.5 text-muted-foreground" />
                       </button>
                       <button onClick={() => handleDelete(t.id)} className="p-1 hover:bg-red-50 rounded-lg transition-colors">
                         <Trash2 className="w-3.5 h-3.5 text-red-500" />
@@ -203,57 +203,57 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
 
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900md mx-4">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900">{editing ? 'Editar Horas' : 'Registrar Horas'}</h2>
-              <button onClick={() => { setShowForm(false); setEditing(null); }} className="text-slate-400 hover:text-slate-600">X</button>
+          <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">{editing ? 'Editar Horas' : 'Registrar Horas'}</h2>
+              <button onClick={() => { setShowForm(false); setEditing(null); }} className="text-muted-foreground hover:text-slate-600">X</button>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Fecha *</label>
+                  <label className="block text-xs font-medium text-foreground">Fecha *</label>
                   <input type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Horas *</label>
+                  <label className="block text-xs font-medium text-foreground">Horas *</label>
                   <input type="number" step="0.5" min="0.5" max="24" value={form.hours} onChange={e => setForm({ ...form, hours: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="8" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="8" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Empleado</label>
+                  <label className="block text-xs font-medium text-foreground">Empleado</label>
                   <select value={form.employee_id} onChange={e => setForm({ ...form, employee_id: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                     <option value="">Sin asignar</option>
                     {employees.map((e: any) => <option key={e.id} value={e.id}>{e.name || e.first_name}</option>)}
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Tarea</label>
+                  <label className="block text-xs font-medium text-foreground">Tarea</label>
                   <select value={form.task_id} onChange={e => setForm({ ...form, task_id: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                     <option value="">Sin tarea</option>
                     {tasks.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
                   </select>
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Descripcion</label>
+                <label className="block text-xs font-medium text-foreground">Descripcion</label>
                 <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={2}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="flex items-center gap-2">
                 <input type="checkbox" id="billable" checked={form.billable} onChange={e => setForm({ ...form, billable: e.target.checked })}
-                  className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500" />
-                <label htmlFor="billable" className="text-sm text-slate-700">Horas facturables</label>
+                  className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-primary/20" />
+                <label htmlFor="billable" className="text-sm text-foreground">Horas facturables</label>
               </div>
             </div>
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
-              <button onClick={() => { setShowForm(false); setEditing(null); }} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
+              <button onClick={() => { setShowForm(false); setEditing(null); }} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={saving || !form.date || !form.hours}
-                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                 {saving ? 'Guardando...' : editing ? 'Actualizar' : 'Registrar'}
               </button>
             </div>

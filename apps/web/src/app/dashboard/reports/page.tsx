@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select, KPICard } from '@yellow-erp/ui';
@@ -97,8 +97,8 @@ export default function ReportsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Reportes</h1>
-          <p className="text-sm text-slate-500 mt-1">Análisis y estadísticas del negocio</p>
+          <h1 className="text-xl font-bold text-foreground">Reportes</h1>
+          <p className="text-sm text-muted-foreground mt-1">Análisis y estadísticas del negocio</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm" onClick={loadData} disabled={loading}>
@@ -193,7 +193,7 @@ export default function ReportsPage() {
                   {loading ? (
                     Array.from({ length: 5 }).map((_, i) => (
                       <TableRow key={i}>
-                        <TableCell colSpan={6}><div className="h-4 bg-slate-100 rounded animate-pulse" /></TableCell>
+                        <TableCell colSpan={6}><div className="h-4 bg-muted rounded animate-pulse" /></TableCell>
                       </TableRow>
                     ))
                   ) : sales?.topProducts?.length ? (
@@ -201,14 +201,14 @@ export default function ReportsPage() {
                       <TableRow key={product.id}>
                         <TableCell>{index + 1}</TableCell>
                         <TableCell className="font-medium">{product.name}</TableCell>
-                        <TableCell className="font-mono text-xs text-slate-500">{product.sku}</TableCell>
+                        <TableCell className="font-mono text-xs text-muted-foreground">{product.sku}</TableCell>
                         <TableCell>{product.units}</TableCell>
                         <TableCell>${product.total.toLocaleString('es-CL')}</TableCell>
                         <TableCell>{product.percentage}%</TableCell>
                       </TableRow>
                     ))
                   ) : (
-                    <TableRow><TableCell colSpan={6} className="py-8 text-center text-xs text-slate-400">No hay datos de ventas en este período</TableCell></TableRow>
+                    <TableRow><TableCell colSpan={6} className="py-8 text-center text-xs text-muted-foreground">No hay datos de ventas en este período</TableCell></TableRow>
                   )}
                 </TableBody>
               </Table>
@@ -336,14 +336,14 @@ export default function ReportsPage() {
                   {loading ? (
                     Array.from({ length: 5 }).map((_, i) => (
                       <TableRow key={i}>
-                        <TableCell colSpan={6}><div className="h-4 bg-slate-100 rounded animate-pulse" /></TableCell>
+                        <TableCell colSpan={6}><div className="h-4 bg-muted rounded animate-pulse" /></TableCell>
                       </TableRow>
                     ))
                   ) : inventory?.products?.length ? (
                     inventory.products.map(product => (
                       <TableRow key={product.id}>
                         <TableCell className="font-medium">{product.name}</TableCell>
-                        <TableCell className="font-mono text-xs text-slate-500">{product.sku}</TableCell>
+                        <TableCell className="font-mono text-xs text-muted-foreground">{product.sku}</TableCell>
                         <TableCell>{product.warehouse_name || '—'}</TableCell>
                         <TableCell className={product.current_stock === 0 ? 'text-rose-600 font-medium' : ''}>{product.current_stock}</TableCell>
                         <TableCell>{product.min_stock}</TableCell>
@@ -351,7 +351,7 @@ export default function ReportsPage() {
                       </TableRow>
                     ))
                   ) : (
-                    <TableRow><TableCell colSpan={6} className="py-8 text-center text-xs text-slate-400">No hay productos en inventario</TableCell></TableRow>
+                    <TableRow><TableCell colSpan={6} className="py-8 text-center text-xs text-muted-foreground">No hay productos en inventario</TableCell></TableRow>
                   )}
                 </TableBody>
               </Table>
@@ -439,7 +439,7 @@ export default function ReportsPage() {
                   {loading ? (
                     Array.from({ length: 3 }).map((_, i) => (
                       <TableRow key={i}>
-                        <TableCell colSpan={5}><div className="h-4 bg-slate-100 rounded animate-pulse" /></TableCell>
+                        <TableCell colSpan={5}><div className="h-4 bg-muted rounded animate-pulse" /></TableCell>
                       </TableRow>
                     ))
                   ) : financials?.monthly?.length ? (
@@ -457,7 +457,7 @@ export default function ReportsPage() {
                       </TableRow>
                     ))
                   ) : (
-                    <TableRow><TableCell colSpan={5} className="py-8 text-center text-xs text-slate-400">No hay datos financieros en este período</TableCell></TableRow>
+                    <TableRow><TableCell colSpan={5} className="py-8 text-center text-xs text-muted-foreground">No hay datos financieros en este período</TableCell></TableRow>
                   )}
                 </TableBody>
               </Table>

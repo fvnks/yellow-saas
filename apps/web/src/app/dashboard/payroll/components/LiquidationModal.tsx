@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Button } from '@yellow-erp/ui';
@@ -71,21 +71,21 @@ export default function LiquidationModal({ employees, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-9002xl mx-4 max-h-[90vh] overflow-y-auto">
-        <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-900">Liquidacion de Remuneraciones</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+      <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primary2xl mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-foreground">Liquidacion de Remuneraciones</h2>
+          <button onClick={onClose} className="text-muted-foreground hover:text-slate-600">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         <div className="p-6 space-y-4">
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Empleado</label>
+            <label className="block text-xs font-medium text-foreground">Empleado</label>
             <select
               value={selectedEmployee}
               onChange={e => setSelectedEmployee(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
             >
               <option value="">Seleccionar empleado...</option>
               {employees.filter(e => e.status === 'active').map(e => (
@@ -96,11 +96,11 @@ export default function LiquidationModal({ employees, onClose }: Props) {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Tipo de Baja</label>
+              <label className="block text-xs font-medium text-foreground">Tipo de Baja</label>
               <select
                 value={terminationType}
                 onChange={e => setTerminationType(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               >
                 {terminationTypes.map(t => (
                   <option key={t.value} value={t.value}>{t.label}</option>
@@ -109,12 +109,12 @@ export default function LiquidationModal({ employees, onClose }: Props) {
             </div>
 
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Fecha de Baja</label>
+              <label className="block text-xs font-medium text-foreground">Fecha de Baja</label>
               <input
                 type="date"
                 value={terminationDate}
                 onChange={e => setTerminationDate(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               />
             </div>
           </div>
@@ -128,7 +128,7 @@ export default function LiquidationModal({ employees, onClose }: Props) {
                 onChange={e => setNoticeGiven(e.target.checked)}
                 className="rounded border-slate-300"
               />
-              <label htmlFor="notice_given" className="text-xs text-slate-700">
+              <label htmlFor="notice_given" className="text-xs text-foreground">
                 Se dio aviso previo al empleado (sin recargo del 25%)
               </label>
             </div>
@@ -143,9 +143,9 @@ export default function LiquidationModal({ employees, onClose }: Props) {
           </div>
 
           {result && (
-            <div className="mt-6 space-y-4 border-t border-slate-200 pt-6">
+            <div className="mt-6 space-y-4 border-t border-border pt-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-slate-900">
+                <h3 className="text-sm font-semibold text-foreground">
                   Resultado — {result.employee_name}
                 </h3>
                 <Button onClick={handleDownloadPDF} size="sm">
@@ -163,34 +163,34 @@ export default function LiquidationModal({ employees, onClose }: Props) {
                   <p className="text-blue-600 font-medium">Indemnizaciones</p>
                   <p className="text-lg font-bold text-blue-700">${result.totals.severance.toLocaleString('es-CL')}</p>
                 </div>
-                <div className="bg-slate-900 rounded-lg p-3">
-                  <p className="text-slate-400 font-medium">Liquido a Pagar</p>
+                <div className="bg-primary rounded-lg p-3">
+                  <p className="text-muted-foreground font-medium">Liquido a Pagar</p>
                   <p className="text-lg font-bold text-white">${result.totals.net_total.toLocaleString('es-CL')}</p>
                 </div>
               </div>
 
-              <div className="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+              <div className="bg-muted rounded-lg border border-border overflow-hidden">
                 <table className="w-full text-xs">
                   <thead>
-                    <tr className="border-b border-slate-200">
-                      <th className="text-left px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Codigo</th>
-                      <th className="text-left px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Concepto</th>
-                      <th className="text-right px-3 py-2 text-[9px] font-semibold text-slate-500 uppercase">Monto</th>
+                    <tr className="border-b border-border">
+                      <th className="text-left px-3 py-2 text-[9px] font-semibold text-muted-foreground uppercase">Codigo</th>
+                      <th className="text-left px-3 py-2 text-[9px] font-semibold text-muted-foreground uppercase">Concepto</th>
+                      <th className="text-right px-3 py-2 text-[9px] font-semibold text-muted-foreground uppercase">Monto</th>
                     </tr>
                   </thead>
                   <tbody>
                     {result.items.map((item: any, i: number) => (
                       <tr key={i} className="border-b border-slate-100">
-                        <td className="px-3 py-2 font-mono text-slate-500">{item.code}</td>
-                        <td className="px-3 py-2 text-slate-700">{item.concept}</td>
-                        <td className="px-3 py-2 text-right font-medium text-slate-900">${item.amount.toLocaleString('es-CL')}</td>
+                        <td className="px-3 py-2 font-mono text-muted-foreground">{item.code}</td>
+                        <td className="px-3 py-2 text-foreground">{item.concept}</td>
+                        <td className="px-3 py-2 text-right font-medium text-foreground">${item.amount.toLocaleString('es-CL')}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
 
-              <p className="text-[9px] text-slate-400 text-center">
+              <p className="text-[9px] text-muted-foreground text-center">
                 Antiguedad: {result.years_of_service} años — Contrato: {result.contract_type} — Base: ${result.base_salary.toLocaleString('es-CL')}
               </p>
             </div>

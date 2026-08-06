@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -91,73 +91,73 @@ export default function VariantsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.back()} className="p-2 hover:bg-slate-100 rounded-lg transition-colors"><ArrowLeft className="w-5 h-5 text-slate-600" /></button>
+          <button onClick={() => router.back()} className="p-2 hover:bg-muted rounded-lg transition-colors"><ArrowLeft className="w-5 h-5 text-slate-600" /></button>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">Variantes de Producto</h1>
-            <p className="text-sm text-slate-500 mt-1">Tallas, colores y atributos</p>
+            <h1 className="text-xl font-bold text-foreground">Variantes de Producto</h1>
+            <p className="text-sm text-muted-foreground mt-1">Tallas, colores y atributos</p>
           </div>
         </div>
-        <button onClick={() => setShowNew(true)} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+        <button onClick={() => setShowNew(true)} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" /> Nueva Variante
         </button>
       </div>
 
       {error && <NotificationAlert variant="warning" title={error} dismissible onDismiss={() => setError('')} />}
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input type="text" placeholder="Buscar variante, SKU..." value={search} onChange={e => setSearch(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+            className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
         </div>
       </div>
 
       {showNew && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
-          <h3 className="text-sm font-semibold text-slate-900 mb-4">Nueva Variante</h3>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+          <h3 className="text-sm font-semibold text-foreground mb-4">Nueva Variante</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Producto *</label>
+              <label className="block text-xs font-medium text-foreground">Producto *</label>
               <select value={form.product_id} onChange={e => setForm({...form, product_id: e.target.value})}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20">
                 <option value="">Seleccionar...</option>
                 {products.map((p: any) => <option key={p.id} value={p.id}>{p.name} ({p.sku})</option>)}
               </select>
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">SKU Variante *</label>
+              <label className="block text-xs font-medium text-foreground">SKU Variante *</label>
               <input type="text" value={form.sku} onChange={e => setForm({...form, sku: e.target.value})}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="SKU-RED-L" />
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="SKU-RED-L" />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Nombre</label>
+              <label className="block text-xs font-medium text-foreground">Nombre</label>
               <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Rojo Large" />
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="Rojo Large" />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Costo</label>
+              <label className="block text-xs font-medium text-foreground">Costo</label>
               <input type="number" value={form.cost_price} onChange={e => setForm({...form, cost_price: e.target.value})}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20" />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Precio Venta</label>
+              <label className="block text-xs font-medium text-foreground">Precio Venta</label>
               <input type="number" value={form.sale_price} onChange={e => setForm({...form, sale_price: e.target.value})}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20" />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Barcode</label>
+              <label className="block text-xs font-medium text-foreground">Barcode</label>
               <input type="text" value={form.barcode} onChange={e => setForm({...form, barcode: e.target.value})}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20" />
             </div>
           </div>
           <div className="mt-4">
-            <label className="block text-xs font-medium text-slate-700 mb-2">Atributos</label>
+            <label className="block text-xs font-medium text-foreground mb-2">Atributos</label>
             <div className="flex gap-2 mb-2">
               <input type="text" value={attrKey} onChange={e => setAttrKey(e.target.value)} placeholder="Ej: color, talla"
-                className="w-32 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                className="w-32 bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20" />
               <input type="text" value={attrVal} onChange={e => setAttrVal(e.target.value)} placeholder="Ej: Rojo, L"
-                className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-              <button onClick={addAttribute} className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors">Agregar</button>
+                className="flex-1 bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20" />
+              <button onClick={addAttribute} className="bg-muted hover:bg-slate-200 text-foreground px-3 py-2 rounded-lg text-sm font-medium transition-colors">Agregar</button>
             </div>
             <div className="flex flex-wrap gap-2">
               {Object.entries(form.attributes).map(([k, v]) => (
@@ -169,57 +169,57 @@ export default function VariantsPage() {
             </div>
           </div>
           <div className="flex justify-end gap-3 mt-4">
-            <button onClick={() => setShowNew(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
-            <button onClick={handleCreate} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Crear Variante</button>
+            <button onClick={() => setShowNew(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+            <button onClick={handleCreate} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Crear Variante</button>
           </div>
         </div>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">SKU</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Atributos</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Costo</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Precio</th>
-                <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">SKU</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nombre</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Atributos</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Costo</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Precio</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                [1,2,3].map(i => <tr key={i}><td colSpan={8} className="px-4 py-3"><div className="h-10 bg-slate-100 rounded-lg animate-pulse" /></td></tr>)
+                [1,2,3].map(i => <tr key={i}><td colSpan={8} className="px-4 py-3"><div className="h-10 bg-muted rounded-lg animate-pulse" /></td></tr>)
               ) : filtered.map(v => (
-                <tr key={v.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3 text-xs font-mono font-semibold text-slate-900">{v.sku}</td>
-                  <td className="px-4 py-3 text-xs text-slate-700">{v.product?.name}</td>
-                  <td className="px-4 py-3 text-xs text-slate-700">{v.name || '-'}</td>
+                <tr key={v.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <td className="px-4 py-3 text-xs font-mono font-semibold text-foreground">{v.sku}</td>
+                  <td className="px-4 py-3 text-xs text-foreground">{v.product?.name}</td>
+                  <td className="px-4 py-3 text-xs text-foreground">{v.name || '-'}</td>
                   <td className="px-4 py-3">
                     <div className="flex flex-wrap gap-1">
                       {Object.entries(v.attributes || {}).map(([k, val]) => (
-                        <span key={k} className="px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded text-[9px]">{k}: {val}</span>
+                        <span key={k} className="px-1.5 py-0.5 bg-muted text-slate-600 rounded text-[9px]">{k}: {val}</span>
                       ))}
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-right text-xs text-slate-700">{v.cost_price ? new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(v.cost_price) : '-'}</td>
-                  <td className="px-4 py-3 text-right text-xs text-slate-700">{v.sale_price ? new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(v.sale_price) : '-'}</td>
+                  <td className="px-4 py-3 text-right text-xs text-foreground">{v.cost_price ? new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(v.cost_price) : '-'}</td>
+                  <td className="px-4 py-3 text-right text-xs text-foreground">{v.sale_price ? new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(v.sale_price) : '-'}</td>
                   <td className="px-4 py-3 text-center">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${v.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-600 border border-slate-200'}`}>{v.is_active ? 'Activa' : 'Inactiva'}</span>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${v.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-muted text-slate-600 border border-border'}`}>{v.is_active ? 'Activa' : 'Inactiva'}</span>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end">
-                      <button onClick={() => handleDelete(v.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-4 h-4" /></button>
+                      <button onClick={() => handleDelete(v.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-4 h-4" /></button>
                     </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          {filtered.length === 0 && <div className="p-8 text-center text-sm text-slate-500">No hay variantes registradas</div>}
+          {filtered.length === 0 && <div className="p-8 text-center text-sm text-muted-foreground">No hay variantes registradas</div>}
         </div>
       </div>
     </div>

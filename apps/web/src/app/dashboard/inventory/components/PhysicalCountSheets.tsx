@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { ClipboardList, Plus, Play, CheckCircle, Clock, Printer, X } from 'lucide-react';
@@ -119,7 +119,7 @@ export default function PhysicalCountSheets() {
   };
 
   const statusConfig: Record<string, { label: string; color: string; bg: string }> = {
-    draft: { label: 'Borrador', color: 'text-slate-600', bg: 'bg-slate-100 border-slate-200' },
+    draft: { label: 'Borrador', color: 'text-slate-600', bg: 'bg-muted border-border' },
     in_progress: { label: 'En Progreso', color: 'text-blue-700', bg: 'bg-blue-50 border-blue-200' },
     completed: { label: 'Completado', color: 'text-emerald-700', bg: 'bg-emerald-50 border-emerald-200' },
     cancelled: { label: 'Cancelado', color: 'text-red-700', bg: 'bg-red-50 border-red-200' },
@@ -131,56 +131,56 @@ export default function PhysicalCountSheets() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <ClipboardList className="w-4 h-4 text-slate-500" />
-          <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">
+          <ClipboardList className="w-4 h-4 text-muted-foreground" />
+          <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
             Conteos Fisicos ({counts.length})
           </span>
         </div>
         <button onClick={() => setShowCreate(!showCreate)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-medium transition-colors">
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary hover:bg-primary/90 text-white rounded-lg text-xs font-medium transition-colors">
           <Plus className="w-3.5 h-3.5" /> Nuevo Conteo
         </button>
       </div>
 
       {showCreate && (
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+        <div className="bg-muted border border-border rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-700">Crear Conteo Fisico</span>
+            <span className="text-xs font-medium text-foreground">Crear Conteo Fisico</span>
             <button onClick={() => setShowCreate(false)} className="p-1 hover:bg-slate-200 rounded">
-              <X className="w-3 h-3 text-slate-400" />
+              <X className="w-3 h-3 text-muted-foreground" />
             </button>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <select value={form.warehouse_id} onChange={e => setForm({ ...form, warehouse_id: e.target.value })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
               <option value="">Bodega...</option>
               {warehouses.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}
             </select>
             <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
               placeholder="Nombre del conteo" />
             <input type="text" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })}
-              className="col-span-2 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+              className="col-span-2 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
               placeholder="Notas (opcional)" />
           </div>
           <button onClick={handleCreate}
-            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Crear Conteo
           </button>
         </div>
       )}
 
       {selectedCount && (
-        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-          <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+        <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-slate-800">
+          <div className="px-6 py-4 border-b border-border flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-semibold text-slate-900">{selectedCount.name}</h3>
-              <p className="text-[9px] text-slate-500">{selectedCount.warehouse_name} | {selectedCount.items?.length || 0} productos</p>
+              <h3 className="text-sm font-semibold text-foreground">{selectedCount.name}</h3>
+              <p className="text-[9px] text-muted-foreground">{selectedCount.warehouse_name} | {selectedCount.items?.length || 0} productos</p>
             </div>
             <div className="flex gap-2">
               {selectedCount.status === 'draft' && (
                 <button onClick={() => handleStatus(selectedCount.id, 'in_progress')}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-medium transition-all duration-150 active:scale-[0.98]">
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-primary hover:bg-primary/90 text-white rounded-lg text-xs font-medium transition-all duration-150 active:scale-[0.98]">
                   <Play className="w-3.5 h-3.5" /> Iniciar
                 </button>
               )}
@@ -191,7 +191,7 @@ export default function PhysicalCountSheets() {
                 </button>
               )}
               <button onClick={() => setSelectedCount(null)}
-                className="px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium transition-colors">
+                className="px-3 py-1.5 bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium transition-colors">
                 Cerrar
               </button>
             </div>
@@ -199,30 +199,30 @@ export default function PhysicalCountSheets() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">SKU</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Esperado</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Contado</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Varianza</th>
+                <tr className="border-b border-border">
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">SKU</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Esperado</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Contado</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Varianza</th>
                 </tr>
               </thead>
               <tbody>
                 {selectedCount.items?.map(item => (
-                  <tr key={item.id} className="border-b border-slate-100 hover:bg-slate-50">
-                    <td className="px-4 py-3 text-xs font-medium text-slate-900">{item.product_name}</td>
+                  <tr key={item.id} className="border-b border-slate-100 hover:bg-muted">
+                    <td className="px-4 py-3 text-xs font-medium text-foreground">{item.product_name}</td>
                     <td className="px-4 py-3 text-xs text-slate-600">{item.sku}</td>
                     <td className="px-4 py-3 text-xs text-right text-slate-600">{item.expected_quantity}</td>
                     <td className="px-4 py-3 text-xs text-right">
                       {selectedCount.status === 'in_progress' ? (
                         <input type="number" defaultValue={item.counted_quantity ?? ''}
                           onBlur={e => handleUpdateItem(item.id, Number(e.target.value))}
-                          className="w-20 bg-white border border-slate-200 rounded px-2 py-1 text-xs text-right focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                          className="w-20 bg-card border border-border rounded px-2 py-1 text-xs text-right focus:outline-none focus:ring-2 focus:ring-primary/20" />
                       ) : (
-                        <span className="font-medium text-slate-900">{item.counted_quantity ?? '—'}</span>
+                        <span className="font-medium text-foreground">{item.counted_quantity ?? '—'}</span>
                       )}
                     </td>
-                    <td className={`px-4 py-3 text-xs text-right font-bold ${item.variance && item.variance !== 0 ? (item.variance > 0 ? 'text-emerald-600' : 'text-red-600') : 'text-slate-400'}`}>
+                    <td className={`px-4 py-3 text-xs text-right font-bold ${item.variance && item.variance !== 0 ? (item.variance > 0 ? 'text-emerald-600' : 'text-red-600') : 'text-muted-foreground'}`}>
                       {item.variance ?? '—'}
                     </td>
                   </tr>
@@ -235,9 +235,9 @@ export default function PhysicalCountSheets() {
 
       {!selectedCount && (
         counts.length === 0 ? (
-          <div className="text-center py-12 bg-slate-50 border border-dashed border-slate-300 rounded-xl">
+          <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
             <ClipboardList className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-            <p className="text-xs text-slate-400">Sin conteos fisicos registrados</p>
+            <p className="text-xs text-muted-foreground">Sin conteos fisicos registrados</p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -247,15 +247,15 @@ export default function PhysicalCountSheets() {
                 <div key={c.id} className={`flex items-center justify-between p-3 rounded-xl border ${cfg.bg} cursor-pointer hover:shadow-sm transition-all`}
                   onClick={() => loadCountDetail(c.id)}>
                   <div className="flex items-center gap-3">
-                    <ClipboardList className="w-5 h-5 text-slate-500" />
+                    <ClipboardList className="w-5 h-5 text-muted-foreground" />
                     <div>
-                      <p className="text-sm font-medium text-slate-900">{c.name}</p>
-                      <p className="text-[9px] text-slate-500">{c.warehouse_name} | {c.item_count} productos</p>
+                      <p className="text-sm font-medium text-foreground">{c.name}</p>
+                      <p className="text-[9px] text-muted-foreground">{c.warehouse_name} | {c.item_count} productos</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="text-right">
-                      <p className="text-xs font-medium text-slate-700">
+                      <p className="text-xs font-medium text-foreground">
                         {c.counted_count}/{c.item_count} contados
                       </p>
                       <p className={`text-[9px] font-semibold ${cfg.color}`}>{cfg.label}</p>

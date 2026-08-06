@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { History, CheckCircle2, XCircle, Clock, Calendar } from 'lucide-react';
@@ -46,32 +46,32 @@ export default function ActivationsTab() {
       case 'active':
         return { label: 'Activo', icon: CheckCircle2, color: 'text-emerald-500', bgColor: 'bg-emerald-50 text-emerald-700 border border-emerald-200' };
       case 'inactive':
-        return { label: 'Inactivo', icon: XCircle, color: 'text-slate-400', bgColor: 'bg-slate-100 text-slate-600 border border-slate-200' };
+        return { label: 'Inactivo', icon: XCircle, color: 'text-muted-foreground', bgColor: 'bg-muted text-slate-600 border border-border' };
       case 'expired':
         return { label: 'Expirado', icon: Clock, color: 'text-amber-500', bgColor: 'bg-amber-50 text-amber-700 border border-amber-200' };
       case 'cancelled':
         return { label: 'Cancelado', icon: XCircle, color: 'text-rose-500', bgColor: 'bg-rose-50 text-rose-700 border border-rose-200' };
       default:
-        return { label: status, icon: Clock, color: 'text-slate-400', bgColor: 'bg-slate-100 text-slate-600 border border-slate-200' };
+        return { label: status, icon: Clock, color: 'text-muted-foreground', bgColor: 'bg-muted text-slate-600 border border-border' };
     }
   };
 
   if (loading) {
-    return <div className="space-y-4">{[1, 2, 3].map(i => <div key={i} className="h-24 bg-slate-100 rounded-xl animate-pulse" />)}</div>;
+    return <div className="space-y-4">{[1, 2, 3].map(i => <div key={i} className="h-24 bg-muted rounded-xl animate-pulse" />)}</div>;
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-slate-900">Mis Activaciones</h3>
-        <p className="text-sm text-slate-500">Historial de módulos activados</p>
+        <h3 className="text-lg font-semibold text-foreground">Mis Activaciones</h3>
+        <p className="text-sm text-muted-foreground">Historial de módulos activados</p>
       </div>
 
       {activations.length === 0 ? (
-        <div className="text-center py-12 bg-white border border-slate-200 rounded-xl">
+        <div className="text-center py-12 bg-card border border-border rounded-xl">
           <History className="w-12 h-12 text-slate-200 mx-auto mb-3" />
-          <p className="text-sm text-slate-500">No hay activaciones registradas</p>
-          <p className="text-xs text-slate-400 mt-1">Los módulos que actives aparecerán aquí</p>
+          <p className="text-sm text-muted-foreground">No hay activaciones registradas</p>
+          <p className="text-xs text-muted-foreground mt-1">Los módulos que actives aparecerán aquí</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -80,15 +80,15 @@ export default function ActivationsTab() {
             const StatusIcon = statusConfig.icon;
 
             return (
-              <div key={activation.id} className="bg-white border border-slate-200 rounded-xl p-5 hover:shadow-md transition-shadow">
+              <div key={activation.id} className="bg-card border border-border rounded-xl p-5 hover:shadow-md transition-shadow">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${activation.status === 'active' ? 'bg-emerald-50' : 'bg-slate-100'}`}>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${activation.status === 'active' ? 'bg-emerald-50' : 'bg-muted'}`}>
                       <StatusIcon className={`w-5 h-5 ${statusConfig.color}`} />
                     </div>
                     <div>
-                      <h4 className="text-sm font-semibold text-slate-900">{activation.label || activation.module_name}</h4>
-                      <p className="text-xs text-slate-500 mt-0.5">{activation.description}</p>
+                      <h4 className="text-sm font-semibold text-foreground">{activation.label || activation.module_name}</h4>
+                      <p className="text-xs text-muted-foreground mt-0.5">{activation.description}</p>
                     </div>
                   </div>
                   <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${statusConfig.bgColor}`}>
@@ -96,7 +96,7 @@ export default function ActivationsTab() {
                   </span>
                 </div>
 
-                <div className="flex items-center gap-6 mt-4 text-xs text-slate-500">
+                <div className="flex items-center gap-6 mt-4 text-xs text-muted-foreground">
                   <div className="flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5" />
                     <span>Activado: {new Date(activation.activated_at).toLocaleDateString('es-CL')}</span>
@@ -113,7 +113,7 @@ export default function ActivationsTab() {
                       <span>Cancelado: {new Date(activation.cancelled_at).toLocaleDateString('es-CL')}</span>
                     </div>
                   )}
-                  <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[10px] font-medium capitalize">
+                  <span className="px-2 py-0.5 bg-muted text-slate-600 rounded text-[10px] font-medium capitalize">
                     {activation.category}
                   </span>
                 </div>

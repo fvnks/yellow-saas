@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Badge, Input, Select, KPICard } from '@yellow-erp/ui';
@@ -67,8 +67,8 @@ export default function BillingPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Facturaci�n</h1>
-          <p className="text-sm text-slate-500 mt-1">Gesti�n de facturas y cobranzas</p>
+          <h1 className="text-xl font-bold text-foreground">Facturaci�n</h1>
+          <p className="text-sm text-muted-foreground mt-1">Gesti�n de facturas y cobranzas</p>
         </div>
         <Link href="/dashboard/billing/new">
           <Button>
@@ -85,15 +85,15 @@ export default function BillingPage() {
         <KPICard label="Vencidas" value={overdueInvoices.length} icon={AlertCircle} trend={overdueInvoices.length > 0 ? "Requiere atenci�n" : "Sin vencidas"} trendUp={overdueInvoices.length === 0} />
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         <div className="flex items-center gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full pl-9 pr-4 py-2 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Buscar por ID, cliente o RUT..."
             />
           </div>
@@ -121,19 +121,19 @@ export default function BillingPage() {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">ID Factura</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha Emisi�n</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha Vencimiento</th>
-                <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Items</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Monto</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">ID Factura</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cliente</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha Emisi�n</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha Vencimiento</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Items</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Monto</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -148,16 +148,16 @@ export default function BillingPage() {
                   </tr>
                 ))
               ) : filteredInvoices.map(invoice => (
-                <tr key={invoice.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3 text-xs font-mono font-medium text-slate-900">{invoice.id}</td>
+                <tr key={invoice.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <td className="px-4 py-3 text-xs font-mono font-medium text-foreground">{invoice.id}</td>
                   <td className="px-4 py-3">
-                    <p className="text-sm font-medium text-slate-900">{invoice.client}</p>
-                    <p className="text-xs text-slate-500">{invoice.rut}</p>
+                    <p className="text-sm font-medium text-foreground">{invoice.client}</p>
+                    <p className="text-xs text-muted-foreground">{invoice.rut}</p>
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-500">{invoice.date}</td>
-                  <td className="px-4 py-3 text-xs text-slate-500">{invoice.dueDate}</td>
-                  <td className="px-4 py-3 text-xs text-slate-700 text-center">{invoice.items}</td>
-                  <td className="px-4 py-3 text-sm font-medium text-slate-900 text-right">${invoice.amount.toLocaleString('es-CL')}</td>
+                  <td className="px-4 py-3 text-xs text-muted-foreground">{invoice.date}</td>
+                  <td className="px-4 py-3 text-xs text-muted-foreground">{invoice.dueDate}</td>
+                  <td className="px-4 py-3 text-xs text-foreground text-center">{invoice.items}</td>
+                  <td className="px-4 py-3 text-sm font-medium text-foreground text-right">${invoice.amount.toLocaleString('es-CL')}</td>
                   <td className="px-4 py-3">
                     <Badge variant={statusConfig[invoice.status]?.variant || 'neutral'}>
                       {statusConfig[invoice.status]?.label || invoice.status}
@@ -184,7 +184,7 @@ export default function BillingPage() {
       {filteredInvoices.length === 0 && (
         <div className="text-center py-12">
           <FileText className="w-12 h-12 text-slate-200 mx-auto mb-3" />
-          <p className="text-sm text-slate-500">No se encontraron facturas</p>
+          <p className="text-sm text-muted-foreground">No se encontraron facturas</p>
         </div>
       )}
     </div>

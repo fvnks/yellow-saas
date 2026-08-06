@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -97,12 +97,12 @@ export default function NewDeliveryGuidePage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/sales" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href="/dashboard/sales" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Nueva Guía de Despacho</h1>
-          <p className="text-sm text-slate-500 mt-1">Crear guía de despacho para envío de mercadería</p>
+          <h1 className="text-xl font-bold text-foreground">Nueva Guía de Despacho</h1>
+          <p className="text-sm text-muted-foreground mt-1">Crear guía de despacho para envío de mercadería</p>
         </div>
       </div>
 
@@ -162,12 +162,12 @@ export default function NewDeliveryGuidePage() {
                   placeholder="ABCD-12"
                 />
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Dirección de Envío</label>
+                  <label className="block text-xs font-medium text-foreground">Dirección de Envío</label>
                   <textarea
                     value={formData.shippingAddress}
                     onChange={handleFormChange('shippingAddress')}
                     rows={3}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors resize-none"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
                     placeholder="Av. Principal 1234, Santiago, Chile"
                   />
                 </div>
@@ -182,21 +182,21 @@ export default function NewDeliveryGuidePage() {
                 <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-slate-200">
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-8">#</th>
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">SKU</th>
-                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-24">Stock Disp.</th>
-                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-28">Cant. Despachar</th>
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Observación</th>
+                    <tr className="border-b border-border">
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider w-8">#</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">SKU</th>
+                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider w-24">Stock Disp.</th>
+                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider w-28">Cant. Despachar</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Observación</th>
                     </tr>
                   </thead>
                   <tbody>
                     {items.map((item, index) => {
                       const isOverStock = item.quantity > item.stock;
                       return (
-                        <tr key={index} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                          <td className="px-4 py-3 text-xs text-slate-500">{index + 1}</td>
+                        <tr key={index} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                          <td className="px-4 py-3 text-xs text-muted-foreground">{index + 1}</td>
                           <td className="px-4 py-3">
                             <select
                               value={item.productId}
@@ -210,7 +210,7 @@ export default function NewDeliveryGuidePage() {
                                   });
                                 }
                               }}
-                              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                             >
                               <option value="">Seleccionar producto...</option>
                               {products.map(p => (
@@ -218,7 +218,7 @@ export default function NewDeliveryGuidePage() {
                               ))}
                             </select>
                           </td>
-                          <td className="px-4 py-3 text-xs text-slate-500">{item.sku}</td>
+                          <td className="px-4 py-3 text-xs text-muted-foreground">{item.sku}</td>
                           <td className="px-4 py-3 text-center">
                             <span className={`text-xs font-medium ${item.stock > 10 ? 'text-emerald-600' : item.stock > 0 ? 'text-amber-600' : 'text-rose-600'}`}>
                               {item.stock} uds
@@ -231,7 +231,7 @@ export default function NewDeliveryGuidePage() {
                               max={item.stock}
                               value={item.quantity}
                               onChange={(e) => handleItemChange(index, 'quantity', parseInt(e.target.value) || 1)}
-                              className={`w-full bg-slate-50 border rounded-lg px-3 py-2 text-sm text-slate-900 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors ${isOverStock ? 'border-rose-300 bg-rose-50' : 'border-slate-200'}`}
+                              className={`w-full bg-muted border rounded-lg px-3 py-2 text-sm text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors ${isOverStock ? 'border-rose-300 bg-rose-50' : 'border-border'}`}
                             />
                           </td>
                           <td className="px-4 py-3">
@@ -239,7 +239,7 @@ export default function NewDeliveryGuidePage() {
                               type="text"
                               value={item.observation}
                               onChange={(e) => handleItemChange(index, 'observation', e.target.value)}
-                              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                               placeholder="Observación..."
                             />
                           </td>
@@ -249,7 +249,7 @@ export default function NewDeliveryGuidePage() {
                   </tbody>
                 </table>
                 </div>
-                <div className="px-4 py-3 border-t border-slate-200">
+                <div className="px-4 py-3 border-t border-border">
                   <button
                     type="button"
                     onClick={() => setItems(prev => [...prev, { productId: '', name: '', sku: '', stock: 0, quantity: 1, observation: '' }])}
@@ -282,23 +282,23 @@ export default function NewDeliveryGuidePage() {
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">Items a despachar</span>
-                    <span className="font-medium text-slate-900">{items.length}</span>
+                    <span className="text-muted-foreground">Items a despachar</span>
+                    <span className="font-medium text-foreground">{items.length}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">Total unidades</span>
-                    <span className="font-medium text-slate-900">{totalUnits} uds</span>
+                    <span className="text-muted-foreground">Total unidades</span>
+                    <span className="font-medium text-foreground">{totalUnits} uds</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">Orden ref.</span>
-                    <span className="font-medium text-slate-900">
+                    <span className="text-muted-foreground">Orden ref.</span>
+                    <span className="font-medium text-foreground">
                       {orders.find(o => o.id === formData.orderId)?.order_number || '—'}
                     </span>
                   </div>
-                  <hr className="border-slate-200" />
+                  <hr className="border-border" />
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold text-slate-900">Estado</span>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+                    <span className="text-sm font-semibold text-foreground">Estado</span>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-muted text-slate-600 border border-border">
                       Borrador
                     </span>
                   </div>

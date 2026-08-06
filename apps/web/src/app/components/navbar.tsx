@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { useState } from 'react';
@@ -23,7 +23,7 @@ export function Navbar() {
             <span className="text-white font-bold text-sm">Y</span>
           </div>
           <span className="text-lg font-bold text-white">
-            Yellow <span className="text-slate-400 font-normal">ERP</span>
+            Yellow <span className="text-muted-foreground font-normal">ERP</span>
           </span>
         </Link>
 
@@ -50,7 +50,7 @@ export function Navbar() {
           </Link>
           <Link
             href="/register"
-            className="rounded-lg bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 text-sm font-medium transition-all duration-150 active:scale-[0.98]"
+            className="rounded-lg bg-primary hover:bg-primary/90 text-white px-4 py-2 text-sm font-medium transition-all duration-150 active:scale-[0.98]"
           >
             Empezar Gratis
           </Link>
@@ -89,7 +89,7 @@ export function Navbar() {
             <Link href="/login" className="block text-sm font-medium text-slate-300" onClick={() => setMobileOpen(false)}>
               Iniciar Sesión
             </Link>
-            <Link href="/register" className="block rounded-lg bg-slate-900 hover:bg-slate-800 px-4 py-2 text-sm font-medium text-white text-center" onClick={() => setMobileOpen(false)}>
+            <Link href="/register" className="block rounded-lg bg-primary hover:bg-primary/90 px-4 py-2 text-sm font-medium text-white text-center" onClick={() => setMobileOpen(false)}>
               Empezar Gratis
             </Link>
           </div>

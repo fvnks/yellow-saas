@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Bell, Mail, Hash, Plus, X, Check } from 'lucide-react';
@@ -87,57 +87,57 @@ export default function NotificationSettings({ projectId }: NotificationSettings
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Bell className="w-4 h-4 text-slate-500" />
-          <h3 className="text-sm font-semibold text-slate-900">Notificaciones</h3>
+          <Bell className="w-4 h-4 text-muted-foreground" />
+          <h3 className="text-sm font-semibold text-foreground">Notificaciones</h3>
         </div>
         <button onClick={saveSettings} disabled={saving}
-          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+          className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
           {saving ? 'Guardando...' : 'Guardar'}
         </button>
       </div>
 
       {/* Slack Configuration */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl p-5 dark:bg-primary dark:border-slate-800">
         <div className="flex items-center gap-2 mb-4">
           <Hash className="w-4 h-4 text-purple-600" />
-          <h4 className="text-sm font-semibold text-slate-900">Slack</h4>
+          <h4 className="text-sm font-semibold text-foreground">Slack</h4>
         </div>
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Webhook URL</label>
+            <label className="block text-xs font-medium text-foreground">Webhook URL</label>
             <input type="url" value={settings.slack_webhook_url} onChange={e => setSettings({ ...settings, slack_webhook_url: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="https://hooks.slack.com/services/..." />
           </div>
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Canal</label>
+            <label className="block text-xs font-medium text-foreground">Canal</label>
             <input type="text" value={settings.slack_channel} onChange={e => setSettings({ ...settings, slack_channel: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="#proyectos" />
           </div>
         </div>
       </div>
 
       {/* Email Configuration */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl p-5 dark:bg-primary dark:border-slate-800">
         <div className="flex items-center gap-2 mb-4">
           <Mail className="w-4 h-4 text-blue-600" />
-          <h4 className="text-sm font-semibold text-slate-900">Email</h4>
+          <h4 className="text-sm font-semibold text-foreground">Email</h4>
         </div>
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <input type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && addEmail()}
-              className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="flex-1 bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="correo@empresa.cl" />
-            <button onClick={addEmail} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+            <button onClick={addEmail} className="bg-primary hover:bg-primary/90 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
               <Plus className="w-4 h-4" />
             </button>
           </div>
           {settings.email_recipients.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {settings.email_recipients.map(email => (
-                <span key={email} className="inline-flex items-center gap-1 px-2 py-1 bg-slate-100 rounded-lg text-xs text-slate-700">
+                <span key={email} className="inline-flex items-center gap-1 px-2 py-1 bg-muted rounded-lg text-xs text-foreground">
                   {email}
                   <button onClick={() => removeEmail(email)} className="hover:text-red-500"><X className="w-3 h-3" /></button>
                 </span>
@@ -148,8 +148,8 @@ export default function NotificationSettings({ projectId }: NotificationSettings
       </div>
 
       {/* Event Toggles */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5 dark:bg-slate-900 dark:border-slate-800">
-        <h4 className="text-sm font-semibold text-slate-900 mb-4">Eventos a Notificar</h4>
+      <div className="bg-card border border-border rounded-xl p-5 dark:bg-primary dark:border-slate-800">
+        <h4 className="text-sm font-semibold text-foreground mb-4">Eventos a Notificar</h4>
         <div className="space-y-3">
           {[
             { key: 'notify_task_created' as const, label: 'Tarea creada' },
@@ -160,10 +160,10 @@ export default function NotificationSettings({ projectId }: NotificationSettings
             { key: 'notify_comment_added' as const, label: 'Comentario agregado' },
           ].map(item => (
             <label key={item.key} className="flex items-center justify-between cursor-pointer">
-              <span className="text-xs text-slate-700">{item.label}</span>
+              <span className="text-xs text-foreground">{item.label}</span>
               <button onClick={() => toggle(item.key)}
                 className={`w-10 h-5 rounded-full transition-colors relative ${settings[item.key] ? 'bg-indigo-600' : 'bg-slate-300'}`}>
-                <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${settings[item.key] ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                <div className={`absolute top-0.5 w-4 h-4 bg-card rounded-full shadow transition-transform ${settings[item.key] ? 'translate-x-5' : 'translate-x-0.5'}`} />
               </button>
             </label>
           ))}

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Users, Clock, Layers } from 'lucide-react';
@@ -51,13 +51,13 @@ export default function AllocationPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Asignacion de Recursos</h1>
-          <p className="text-sm text-slate-500 mt-1">Distribucion de horas por empleado en proyectos</p>
+          <h1 className="text-xl font-bold text-foreground">Asignacion de Recursos</h1>
+          <p className="text-sm text-muted-foreground mt-1">Distribucion de horas por empleado en proyectos</p>
         </div>
         <div className="flex items-center gap-2">
           {PERIOD_OPTIONS.map(opt => (
             <button key={opt.value} onClick={() => setPeriod(opt.value)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${period === opt.value ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${period === opt.value ? 'bg-indigo-100 text-indigo-700' : 'bg-muted text-muted-foreground hover:bg-slate-200'}`}>
               {opt.label}
             </button>
           ))}
@@ -65,33 +65,33 @@ export default function AllocationPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Empleados</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">{employees.length}</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Empleados</p>
+              <p className="text-2xl font-bold text-foreground mt-1">{employees.length}</p>
             </div>
             <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
               <Users className="w-6 h-6 text-indigo-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Horas Totales</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">{employees.reduce((s: number, e: any) => s + parseFloat(e.total_hours), 0).toFixed(0)}</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Horas Totales</p>
+              <p className="text-2xl font-bold text-foreground mt-1">{employees.reduce((s: number, e: any) => s + parseFloat(e.total_hours), 0).toFixed(0)}</p>
             </div>
             <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">
               <Clock className="w-6 h-6 text-emerald-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Proyectos Activos</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">{projects.length}</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Proyectos Activos</p>
+              <p className="text-2xl font-bold text-foreground mt-1">{projects.length}</p>
             </div>
             <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
               <Layers className="w-6 h-6 text-amber-600" />
@@ -100,13 +100,13 @@ export default function AllocationPage() {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
         <div className="px-6 py-4 border-b border-slate-100">
-          <h3 className="text-sm font-semibold text-slate-900">Distribucion por Empleado</h3>
+          <h3 className="text-sm font-semibold text-foreground">Distribucion por Empleado</h3>
         </div>
         <div className="p-6">
           {employees.length === 0 ? (
-            <p className="text-xs text-slate-500 text-center py-8">No hay horas registradas en este periodo</p>
+            <p className="text-xs text-muted-foreground text-center py-8">No hay horas registradas en este periodo</p>
           ) : (
             <div className="space-y-6">
               {employees.map((emp: any) => {
@@ -116,18 +116,18 @@ export default function AllocationPage() {
                   <div key={emp.employee_id} className="border border-slate-100 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-3">
                       <div>
-                        <span className="text-sm font-semibold text-slate-900">{emp.employee_name}</span>
-                        <span className="text-xs text-slate-500 ml-2">{emp.total_hours}h en {projectCount} proyecto{projectCount !== 1 ? 's' : ''}</span>
+                        <span className="text-sm font-semibold text-foreground">{emp.employee_name}</span>
+                        <span className="text-xs text-muted-foreground ml-2">{emp.total_hours}h en {projectCount} proyecto{projectCount !== 1 ? 's' : ''}</span>
                       </div>
-                      <span className="text-[10px] text-slate-400">{emp.active_days} dias activos</span>
+                      <span className="text-[10px] text-muted-foreground">{emp.active_days} dias activos</span>
                     </div>
-                    <div className="h-3 bg-slate-100 rounded-full overflow-hidden flex">
+                    <div className="h-3 bg-muted rounded-full overflow-hidden flex">
                       {empAllocation.map((a: any, i: number) => {
                         const pct = parseFloat(a.allocation_pct) || 0;
                         return (
                           <div key={i} className={`${PROJECT_COLORS[i % PROJECT_COLORS.length]} relative group cursor-default`}
                             style={{ width: `${pct}%` }}>
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-slate-900 text-white text-[9px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-primary text-white text-[9px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                               {a.project_name}: {pct}%
                             </div>
                           </div>
@@ -139,7 +139,7 @@ export default function AllocationPage() {
                         <div key={i} className="flex items-center gap-1.5">
                           <span className={`w-2 h-2 rounded-full ${PROJECT_COLORS[i % PROJECT_COLORS.length]}`} />
                           <span className="text-[10px] text-slate-600">{a.project_name}</span>
-                          <span className="text-[10px] font-semibold text-slate-900">{a.allocation_pct}%</span>
+                          <span className="text-[10px] font-semibold text-foreground">{a.allocation_pct}%</span>
                         </div>
                       ))}
                     </div>
@@ -151,21 +151,21 @@ export default function AllocationPage() {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
         <div className="px-6 py-4 border-b border-slate-100">
-          <h3 className="text-sm font-semibold text-slate-900">Carga por Proyecto</h3>
+          <h3 className="text-sm font-semibold text-foreground">Carga por Proyecto</h3>
         </div>
         <div className="p-6">
           <div className="space-y-3">
             {projects.map((p: any) => (
               <div key={p.project_id} className="flex items-center gap-4">
-                <span className="text-xs text-slate-700 w-40 truncate">{p.project_name}</span>
-                <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                <span className="text-xs text-foreground w-40 truncate">{p.project_name}</span>
+                <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
                   <div className="h-full bg-indigo-500 rounded-full"
                     style={{ width: `${Math.min((parseFloat(p.total_hours) / (projects[0] ? parseFloat(projects[0].total_hours) : 1)) * 100, 100)}%` }} />
                 </div>
-                <span className="text-xs font-medium text-slate-900 w-12 text-right">{parseFloat(p.total_hours).toFixed(0)}h</span>
-                <span className="text-[10px] text-slate-400 w-20 text-right">{p.employee_count} personas</span>
+                <span className="text-xs font-medium text-foreground w-12 text-right">{parseFloat(p.total_hours).toFixed(0)}h</span>
+                <span className="text-[10px] text-muted-foreground w-20 text-right">{p.employee_count} personas</span>
               </div>
             ))}
           </div>

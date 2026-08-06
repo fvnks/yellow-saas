@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { X, ShoppingCart, Receipt, FileText, CreditCard, Banknote, Check, Search, User, Printer, Download } from 'lucide-react';
@@ -151,12 +151,12 @@ export default function QuickSellModal({ open, onClose, productName, productId, 
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg" onClick={e => e.stopPropagation()}>
-        <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-900">
+      <div className="bg-card rounded-xl shadow-xl w-full max-w-lg" onClick={e => e.stopPropagation()}>
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-foreground">
             {step === 'sale' ? 'Venta Rápida' : 'Venta Registrada'}
           </h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+          <button onClick={onClose} className="text-muted-foreground hover:text-slate-600">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -165,86 +165,86 @@ export default function QuickSellModal({ open, onClose, productName, productId, 
           <>
             <div className="p-6 space-y-4">
               {/* Product info */}
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-                <p className="text-xs text-slate-500">Producto</p>
-                <p className="text-sm font-medium text-slate-900">{productName || '—'}</p>
+              <div className="p-3 bg-muted rounded-lg border border-border">
+                <p className="text-xs text-muted-foreground">Producto</p>
+                <p className="text-sm font-medium text-foreground">{productName || '—'}</p>
               </div>
 
               {/* Quantity + Price */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Cantidad *</label>
+                  <label className="block text-xs font-medium text-foreground">Cantidad *</label>
                   <input type="number" step="0.01" min="0.01" value={quantity} onChange={e => setQuantity(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Precio Unitario *</label>
+                  <label className="block text-xs font-medium text-foreground">Precio Unitario *</label>
                   <input type="number" step="1" min="0" value={unitPrice} onChange={e => setUnitPrice(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
               </div>
 
               {/* Document Type */}
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Tipo de Documento</label>
+                <label className="block text-xs font-medium text-foreground">Tipo de Documento</label>
                 <div className="grid grid-cols-2 gap-2">
                   <button onClick={() => { setDocumentType('boleta'); setSelectedCustomer(null); setCustomerSearch(''); }}
                     className={`p-3 rounded-lg border-2 flex flex-col items-center gap-1 transition-colors ${
-                      documentType === 'boleta' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-200 text-slate-600 hover:border-slate-300'
+                      documentType === 'boleta' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-border text-slate-600 hover:border-slate-300'
                     }`}>
                     <Receipt className="w-5 h-5" />
                     <span className="text-xs font-medium">Boleta</span>
-                    <span className="text-[9px] text-slate-400">Sin RUT</span>
+                    <span className="text-[9px] text-muted-foreground">Sin RUT</span>
                   </button>
                   <button onClick={() => setDocumentType('factura')}
                     className={`p-3 rounded-lg border-2 flex flex-col items-center gap-1 transition-colors ${
-                      documentType === 'factura' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-200 text-slate-600 hover:border-slate-300'
+                      documentType === 'factura' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-border text-slate-600 hover:border-slate-300'
                     }`}>
                     <FileText className="w-5 h-5" />
                     <span className="text-xs font-medium">Factura</span>
-                    <span className="text-[9px] text-slate-400">Requiere RUT</span>
+                    <span className="text-[9px] text-muted-foreground">Requiere RUT</span>
                   </button>
                 </div>
               </div>
 
               {/* Customer */}
               <div className="space-y-1 relative">
-                <label className="block text-xs font-medium text-slate-700">
+                <label className="block text-xs font-medium text-foreground">
                   Cliente {documentType === 'factura' ? '(Requerido) *' : '(Opcional)'}
                 </label>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <input type="text" value={customerSearch}
                     onChange={e => { setCustomerSearch(e.target.value); setShowCustomerDropdown(true); }}
                     onFocus={() => setShowCustomerDropdown(true)}
                     placeholder={documentType === 'factura' ? 'Buscar por nombre o RUT...' : 'Consumidor Final (sin cliente)'}
-                    className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    className="w-full pl-9 pr-3 py-2 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
                 {selectedCustomer && (
                   <div className="flex items-center gap-2 p-2 bg-indigo-50 rounded-lg border border-indigo-200">
                     <User className="w-4 h-4 text-indigo-600" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-slate-900 truncate">{selectedCustomer.name}</p>
-                      <p className="text-[9px] text-slate-500">RUT: {selectedCustomer.tax_id}</p>
+                      <p className="text-sm font-medium text-foreground truncate">{selectedCustomer.name}</p>
+                      <p className="text-[9px] text-muted-foreground">RUT: {selectedCustomer.tax_id}</p>
                     </div>
-                    <button onClick={() => { setSelectedCustomer(null); setCustomerSearch(''); }} className="p-1 text-slate-400 hover:text-rose-600">
+                    <button onClick={() => { setSelectedCustomer(null); setCustomerSearch(''); }} className="p-1 text-muted-foreground hover:text-rose-600">
                       <X className="w-3 h-3" />
                     </button>
                   </div>
                 )}
                 {showCustomerDropdown && !selectedCustomer && customerSearch && (
-                  <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                  <div className="absolute z-10 w-full mt-1 bg-card border border-border rounded-lg shadow-lg max-h-48 overflow-y-auto">
                     {filteredCustomers.length === 0 ? (
-                      <div className="p-3 text-center text-sm text-slate-500">No se encontraron clientes</div>
+                      <div className="p-3 text-center text-sm text-muted-foreground">No se encontraron clientes</div>
                     ) : (
                       filteredCustomers.slice(0, 10).map(c => (
                         <button key={c.id}
                           onClick={() => { setSelectedCustomer(c); setCustomerSearch(''); setShowCustomerDropdown(false); }}
-                          className="w-full text-left px-3 py-2 hover:bg-slate-50 flex items-center gap-2 border-b border-slate-100 last:border-0">
-                          <User className="w-4 h-4 text-slate-400" />
+                          className="w-full text-left px-3 py-2 hover:bg-muted flex items-center gap-2 border-b border-slate-100 last:border-0">
+                          <User className="w-4 h-4 text-muted-foreground" />
                           <div>
-                            <p className="text-sm font-medium text-slate-900">{c.name}</p>
-                            <p className="text-[9px] text-slate-500">RUT: {c.tax_id}</p>
+                            <p className="text-sm font-medium text-foreground">{c.name}</p>
+                            <p className="text-[9px] text-muted-foreground">RUT: {c.tax_id}</p>
                           </div>
                         </button>
                       ))
@@ -255,7 +255,7 @@ export default function QuickSellModal({ open, onClose, productName, productId, 
 
               {/* Payment Method */}
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Método de Pago</label>
+                <label className="block text-xs font-medium text-foreground">Método de Pago</label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
                     { id: 'cash', label: 'Efectivo', icon: Banknote },
@@ -264,7 +264,7 @@ export default function QuickSellModal({ open, onClose, productName, productId, 
                   ].map(method => (
                     <button key={method.id} onClick={() => setPaymentMethod(method.id)}
                       className={`p-3 rounded-lg border-2 flex flex-col items-center gap-1 transition-colors ${
-                        paymentMethod === method.id ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-200 text-slate-600 hover:border-slate-300'
+                        paymentMethod === method.id ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-border text-slate-600 hover:border-slate-300'
                       }`}>
                       <method.icon className="w-5 h-5" />
                       <span className="text-xs font-medium">{method.label}</span>
@@ -276,9 +276,9 @@ export default function QuickSellModal({ open, onClose, productName, productId, 
               {/* Cash amount */}
               {paymentMethod === 'cash' && (
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Monto Recibido</label>
+                  <label className="block text-xs font-medium text-foreground">Monto Recibido</label>
                   <input type="number" value={amountPaid || ''} onChange={e => setAmountPaid(parseInt(e.target.value) || 0)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                     placeholder="0" />
                 </div>
               )}
@@ -292,19 +292,19 @@ export default function QuickSellModal({ open, onClose, productName, productId, 
               )}
 
               {/* Total */}
-              <div className="p-4 bg-slate-50 rounded-lg text-center">
-                <p className="text-xs text-slate-500">Total a cobrar</p>
-                <p className="text-2xl font-bold text-slate-900">${total.toLocaleString('es-CL')}</p>
+              <div className="p-4 bg-muted rounded-lg text-center">
+                <p className="text-xs text-muted-foreground">Total a cobrar</p>
+                <p className="text-2xl font-bold text-foreground">${total.toLocaleString('es-CL')}</p>
               </div>
             </div>
 
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button onClick={onClose}
-                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                className="bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                 Cancelar
               </button>
               <button onClick={handlePay} disabled={processing || qty <= 0 || (paymentMethod === 'cash' && amountPaid < total) || (documentType === 'factura' && !selectedCustomer)}
-                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
                 {processing ? (
                   <span className="flex items-center gap-2">
                     <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -326,21 +326,21 @@ export default function QuickSellModal({ open, onClose, productName, productId, 
             <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto">
               <Check className="w-8 h-8 text-emerald-600" />
             </div>
-            <h3 className="text-xl font-bold text-slate-900">Venta Registrada</h3>
-            <p className="text-sm text-slate-500">{completedInvoice.invoice_number}</p>
-            <p className="text-3xl font-bold text-slate-900">${completedInvoice.total.toLocaleString('es-CL')}</p>
+            <h3 className="text-xl font-bold text-foreground">Venta Registrada</h3>
+            <p className="text-sm text-muted-foreground">{completedInvoice.invoice_number}</p>
+            <p className="text-3xl font-bold text-foreground">${completedInvoice.total.toLocaleString('es-CL')}</p>
             <div className="flex gap-3">
               <button onClick={handlePrint}
-                className="flex-1 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors">
+                className="flex-1 bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors">
                 <Printer className="w-4 h-4" /> Imprimir
               </button>
               <button onClick={handleDownload}
-                className="flex-1 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors">
+                className="flex-1 bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors">
                 <Download className="w-4 h-4" /> Descargar PDF
               </button>
             </div>
             <button onClick={onClose}
-              className="w-full bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+              className="w-full bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
               Cerrar
             </button>
           </div>

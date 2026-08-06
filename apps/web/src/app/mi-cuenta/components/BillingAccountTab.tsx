@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Save, Download, Receipt, CreditCard, Calendar, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
@@ -86,61 +86,61 @@ export default function BillingAccountTab() {
   const formatAmount = (cents: number) => `$${(cents / 100).toLocaleString('es-CL')}`;
 
   if (loading) {
-    return <div className="space-y-4">{[1, 2].map(i => <div key={i} className="h-48 bg-slate-100 rounded-xl animate-pulse" />)}</div>;
+    return <div className="space-y-4">{[1, 2].map(i => <div key={i} className="h-48 bg-muted rounded-xl animate-pulse" />)}</div>;
   }
 
   return (
     <div className="space-y-6">
       {/* Billing Info */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6">
-        <h3 className="text-sm font-semibold text-slate-900 mb-4">Datos de Facturación</h3>
+      <div className="bg-card border border-border rounded-xl p-6">
+        <h3 className="text-sm font-semibold text-foreground mb-4">Datos de Facturación</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">RUT</label>
+            <label className="block text-xs font-medium text-foreground">RUT</label>
             <input type="text" value={formData.tax_id} onChange={(e) => setFormData({ ...formData, tax_id: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="12.345.678-9" />
           </div>
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Razón Social</label>
+            <label className="block text-xs font-medium text-foreground">Razón Social</label>
             <input type="text" value={formData.business_name} onChange={(e) => setFormData({ ...formData, business_name: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Empresa SpA" />
           </div>
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Dirección</label>
+            <label className="block text-xs font-medium text-foreground">Dirección</label>
             <input type="text" value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Av. Principal 1234" />
           </div>
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Ciudad</label>
+            <label className="block text-xs font-medium text-foreground">Ciudad</label>
             <input type="text" value={formData.city} onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Santiago" />
           </div>
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Región</label>
+            <label className="block text-xs font-medium text-foreground">Región</label>
             <input type="text" value={formData.region} onChange={(e) => setFormData({ ...formData, region: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="Región Metropolitana" />
           </div>
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Email de Facturación</label>
+            <label className="block text-xs font-medium text-foreground">Email de Facturación</label>
             <input type="email" value={formData.billing_email} onChange={(e) => setFormData({ ...formData, billing_email: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="billing@empresa.cl" />
           </div>
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Teléfono</label>
+            <label className="block text-xs font-medium text-foreground">Teléfono</label>
             <input type="text" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               placeholder="+56 9 1234 5678" />
           </div>
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Proveedor de Pagos</label>
+            <label className="block text-xs font-medium text-foreground">Proveedor de Pagos</label>
             <select value={formData.payment_provider} onChange={(e) => setFormData({ ...formData, payment_provider: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
               <option value="stripe">Stripe</option>
               <option value="mach">Mach</option>
               <option value="webpay">Webpay (Transbank)</option>
@@ -150,34 +150,34 @@ export default function BillingAccountTab() {
         </div>
         <div className="flex justify-end mt-4">
           <button onClick={handleSave} disabled={saving}
-            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+            className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
             <Save className="w-4 h-4" /> {saving ? 'Guardando...' : 'Guardar'}
           </button>
         </div>
       </div>
 
       {/* Payment History */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6">
-        <h3 className="text-sm font-semibold text-slate-900 mb-4">Historial de Pagos</h3>
+      <div className="bg-card border border-border rounded-xl p-6">
+        <h3 className="text-sm font-semibold text-foreground mb-4">Historial de Pagos</h3>
         {payments.length === 0 ? (
-          <p className="text-sm text-slate-500 text-center py-8">No hay pagos registrados</p>
+          <p className="text-sm text-muted-foreground text-center py-8">No hay pagos registrados</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Descripción</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Monto</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
+                <tr className="border-b border-border">
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Descripción</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Monto</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
                 </tr>
               </thead>
               <tbody>
                 {payments.map((payment) => (
-                  <tr key={payment.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                  <tr key={payment.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
                     <td className="px-4 py-3 text-xs text-slate-600">{new Date(payment.created_at).toLocaleDateString('es-CL')}</td>
-                    <td className="px-4 py-3 text-xs font-medium text-slate-900">{payment.description || payment.plan_name}</td>
-                    <td className="px-4 py-3 text-xs font-medium text-slate-900">{formatAmount(payment.amount)}</td>
+                    <td className="px-4 py-3 text-xs font-medium text-foreground">{payment.description || payment.plan_name}</td>
+                    <td className="px-4 py-3 text-xs font-medium text-foreground">{formatAmount(payment.amount)}</td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${payment.status === 'completed' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : payment.status === 'pending' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}`}>
                         {payment.status === 'completed' ? 'Completado' : payment.status === 'pending' ? 'Pendiente' : 'Fallido'}
@@ -192,30 +192,30 @@ export default function BillingAccountTab() {
       </div>
 
       {/* Invoices */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6">
-        <h3 className="text-sm font-semibold text-slate-900 mb-4">Facturas</h3>
+      <div className="bg-card border border-border rounded-xl p-6">
+        <h3 className="text-sm font-semibold text-foreground mb-4">Facturas</h3>
         {invoices.length === 0 ? (
-          <p className="text-sm text-slate-500 text-center py-8">No hay facturas disponibles</p>
+          <p className="text-sm text-muted-foreground text-center py-8">No hay facturas disponibles</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">N° Factura</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Monto</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">PDF</th>
+                <tr className="border-b border-border">
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">N° Factura</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Monto</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">PDF</th>
                 </tr>
               </thead>
               <tbody>
                 {invoices.map((invoice) => (
-                  <tr key={invoice.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3 text-xs font-medium text-slate-900">{invoice.invoice_number}</td>
+                  <tr key={invoice.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <td className="px-4 py-3 text-xs font-medium text-foreground">{invoice.invoice_number}</td>
                     <td className="px-4 py-3 text-xs text-slate-600">{new Date(invoice.created_at).toLocaleDateString('es-CL')}</td>
-                    <td className="px-4 py-3 text-xs font-medium text-slate-900">{formatAmount(invoice.total_amount)}</td>
+                    <td className="px-4 py-3 text-xs font-medium text-foreground">{formatAmount(invoice.total_amount)}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${invoice.status === 'paid' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : invoice.status === 'pending' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-slate-100 text-slate-600 border border-slate-200'}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${invoice.status === 'paid' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : invoice.status === 'pending' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-muted text-slate-600 border border-border'}`}>
                         {invoice.status === 'paid' ? 'Pagada' : invoice.status === 'pending' ? 'Pendiente' : 'Anulada'}
                       </span>
                     </td>

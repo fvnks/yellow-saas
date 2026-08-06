@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
@@ -67,8 +67,8 @@ export default function SuppliersPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Proveedores</h1>
-          <p className="text-sm text-slate-500 mt-1">Gestin de proveedores y contacto comercial</p>
+          <h1 className="text-xl font-bold text-foreground">Proveedores</h1>
+          <p className="text-sm text-muted-foreground mt-1">Gestin de proveedores y contacto comercial</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm">
@@ -90,8 +90,8 @@ export default function SuppliersPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Proveedores</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">{suppliers.length}</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Proveedores</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{suppliers.length}</p>
               </div>
               <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
                 <Truck className="w-5 h-5 text-indigo-600" />
@@ -103,8 +103,8 @@ export default function SuppliersPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Activos</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">{suppliers.filter(s => s.isActive).length}</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Activos</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{suppliers.filter(s => s.isActive).length}</p>
               </div>
               <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
                 <Building2 className="w-5 h-5 text-emerald-600" />
@@ -116,8 +116,8 @@ export default function SuppliersPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Crdito Pendiente</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">${suppliers.filter(s => s.currentBalance > 0).reduce((sum, s) => sum + s.currentBalance, 0).toLocaleString('es-CL')}</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Crdito Pendiente</p>
+                <p className="text-2xl font-bold text-foreground mt-1">${suppliers.filter(s => s.currentBalance > 0).reduce((sum, s) => sum + s.currentBalance, 0).toLocaleString('es-CL')}</p>
               </div>
               <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center">
                 <CreditCard className="w-5 h-5 text-rose-600" />
@@ -129,8 +129,8 @@ export default function SuppliersPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Productos Provedos</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">{suppliers.reduce((sum, s) => sum + s.products, 0).toLocaleString('es-CL')}</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Productos Provedos</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{suppliers.reduce((sum, s) => sum + s.products, 0).toLocaleString('es-CL')}</p>
               </div>
               <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
                 <Package className="w-5 h-5 text-amber-600" />
@@ -145,13 +145,13 @@ export default function SuppliersPage() {
         <CardContent className="p-4">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input
                 type="search"
                 placeholder="Buscar por nombre, RUT, razn social..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
               />
             </div>
             <Select
@@ -210,8 +210,8 @@ export default function SuppliersPage() {
                     <TableCell className="font-medium">{supplier.name}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
-                        <span className="font-mono text-slate-900">{supplier.taxId}</span>
-                        <span className="text-xs text-slate-500">({taxIdType})</span>
+                        <span className="font-mono text-foreground">{supplier.taxId}</span>
+                        <span className="text-xs text-muted-foreground">({taxIdType})</span>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -220,21 +220,21 @@ export default function SuppliersPage() {
                     <TableCell>
                       <div className="space-y-1">
                         <div className="flex items-center gap-1 text-xs">
-                          <Phone className="w-3 h-3 text-slate-400" />
-                          <a href={`tel:${supplier.phone}`} className="text-slate-700 hover:text-slate-900">{supplier.phone}</a>
+                          <Phone className="w-3 h-3 text-muted-foreground" />
+                          <a href={`tel:${supplier.phone}`} className="text-foreground hover:text-foreground">{supplier.phone}</a>
                         </div>
                         <div className="flex items-center gap-1 text-xs">
-                          <Mail className="w-3 h-3 text-slate-400" />
-                          <a href={`mailto:${supplier.email}`} className="text-slate-700 hover:text-slate-900 truncate">{supplier.email}</a>
+                          <Mail className="w-3 h-3 text-muted-foreground" />
+                          <a href={`mailto:${supplier.email}`} className="text-foreground hover:text-foreground truncate">{supplier.email}</a>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1 text-xs">
-                        <MapPin className="w-3 h-3 text-slate-400" />
+                        <MapPin className="w-3 h-3 text-muted-foreground" />
                         <span>{supplier.city}</span>
                       </div>
-                      <div className="text-xs text-slate-500">{supplier.region}</div>
+                      <div className="text-xs text-muted-foreground">{supplier.region}</div>
                     </TableCell>
                     <TableCell className="text-center font-medium">{supplier.paymentTerms} das</TableCell>
                     <TableCell className="text-center font-medium">${supplier.creditLimit.toLocaleString('es-CL')}</TableCell>
@@ -248,7 +248,7 @@ export default function SuppliersPage() {
                     <TableCell>
                       <div className="flex items-center justify-center gap-1">
                         <Link href={`/dashboard/suppliers/${supplier.id}`}>
-                          <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors" aria-label="Ver">
+                          <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors" aria-label="Ver">
                             <Eye className="w-4 h-4" />
                           </button>
                         </Link>
@@ -263,7 +263,7 @@ export default function SuppliersPage() {
                               toast.error('Error al eliminar proveedor');
                             }
                           }}
-                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                          className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
                           aria-label="Eliminar"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -280,7 +280,7 @@ export default function SuppliersPage() {
       </Card>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between text-xs text-slate-500">
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
         <p>Mostrando 1 a {filteredSuppliers.length} de {suppliers.length} proveedores</p>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm" disabled>Anterior</Button>

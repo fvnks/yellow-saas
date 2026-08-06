@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Check, Plus, Trash2, ListChecks } from 'lucide-react';
@@ -82,14 +82,14 @@ export default function TaskChecklist({ taskId, onUpdate }: TaskChecklistProps) 
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
-        <ListChecks className="w-3.5 h-3.5 text-slate-500" />
-        <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">
+        <ListChecks className="w-3.5 h-3.5 text-muted-foreground" />
+        <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
           Checklist {total > 0 && `(${checked}/${total})`}
         </span>
       </div>
 
       {total > 0 && (
-        <div className="w-full bg-slate-100 rounded-full h-1.5">
+        <div className="w-full bg-muted rounded-full h-1.5">
           <div className="bg-emerald-500 h-1.5 rounded-full transition-all" style={{ width: `${percent}%` }} />
         </div>
       )}
@@ -103,7 +103,7 @@ export default function TaskChecklist({ taskId, onUpdate }: TaskChecklistProps) 
               }`}>
               {item.is_checked && <Check className="w-2.5 h-2.5 text-white" />}
             </button>
-            <span className={`text-xs flex-1 ${item.is_checked ? 'text-slate-400 line-through' : 'text-slate-700'}`}>
+            <span className={`text-xs flex-1 ${item.is_checked ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
               {item.text}
             </span>
             <button onClick={() => deleteItem(item.id)}
@@ -117,10 +117,10 @@ export default function TaskChecklist({ taskId, onUpdate }: TaskChecklistProps) 
       <div className="flex items-center gap-2">
         <input type="text" value={newItem} onChange={e => setNewItem(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && addItem()}
-          className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="flex-1 bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-primary/20"
           placeholder="Agregar item..." />
         <button onClick={addItem} disabled={!newItem.trim()}
-          className="bg-slate-900 hover:bg-slate-800 text-white px-2 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50">
+          className="bg-primary hover:bg-primary/90 text-white px-2 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50">
           <Plus className="w-3.5 h-3.5" />
         </button>
       </div>

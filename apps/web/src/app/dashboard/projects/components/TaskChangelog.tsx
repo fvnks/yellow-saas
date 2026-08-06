@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { History, Plus, Minus, ArrowRight, MessageCircle, CheckCircle2, Trash2 } from 'lucide-react';
@@ -75,14 +75,14 @@ export default function TaskChangelog({ taskId }: TaskChangelogProps) {
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
-        <History className="w-3.5 h-3.5 text-slate-500" />
-        <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">
+        <History className="w-3.5 h-3.5 text-muted-foreground" />
+        <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
           Historial {total > 0 && `(${total} cambios)`}
         </span>
       </div>
 
       {entries.length === 0 ? (
-        <p className="text-xs text-slate-400 text-center py-3">Sin cambios registrados</p>
+        <p className="text-xs text-muted-foreground text-center py-3">Sin cambios registrados</p>
       ) : (
         <div className="space-y-2">
           {entries.map(entry => {
@@ -96,7 +96,7 @@ export default function TaskChangelog({ taskId }: TaskChangelogProps) {
                   <Icon className="w-3.5 h-3.5" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-slate-700">
+                  <p className="text-xs text-foreground">
                     <span className="font-medium">{entry.user_name || 'Sistema'}</span>
                     {' '}
                     {entry.change_type === 'create' && (
@@ -109,13 +109,13 @@ export default function TaskChangelog({ taskId }: TaskChangelogProps) {
                       <>agrego un comentario</>
                     )}
                     {entry.change_type === 'status' && (
-                      <>cambio estado de <span className="font-medium text-slate-500">{entry.old_value}</span> a <span className="font-medium text-indigo-600">{entry.new_value}</span></>
+                      <>cambio estado de <span className="font-medium text-muted-foreground">{entry.old_value}</span> a <span className="font-medium text-indigo-600">{entry.new_value}</span></>
                     )}
                     {entry.change_type === 'update' && (
                       <>
                         cambio <span className="font-medium">{label}</span>
                         {entry.old_value && entry.old_value !== 'null' && (
-                          <span className="text-slate-500"> de <span className="line-through">{entry.old_value}</span></span>
+                          <span className="text-muted-foreground"> de <span className="line-through">{entry.old_value}</span></span>
                         )}
                         {entry.new_value && (
                           <span> a <span className="text-indigo-600 font-medium">{entry.new_value}</span></span>
@@ -123,7 +123,7 @@ export default function TaskChangelog({ taskId }: TaskChangelogProps) {
                       </>
                     )}
                   </p>
-                  <p className="text-[10px] text-slate-400">{timeAgo(entry.created_at)}</p>
+                  <p className="text-[10px] text-muted-foreground">{timeAgo(entry.created_at)}</p>
                 </div>
               </div>
             );

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import {
@@ -114,42 +114,42 @@ function formatPrice(price: number) {
 
 export default function HomePage() {
   return (
-    <div className="landing-page min-h-screen bg-white">
+    <div className="landing-page min-h-screen bg-card">
       {/* ─── 1. NAVBAR ─── */}
       <Navbar />
 
       {/* ─── 2. HERO ─── */}
-      <section className="relative pt-32 pb-24 overflow-hidden bg-white">
+      <section className="relative pt-32 pb-24 overflow-hidden bg-card">
         {/* Subtle grid */}
         <div className="absolute inset-0 bg-grid opacity-[0.03]" />
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 text-xs font-medium text-slate-600 mb-8 animate-fade-in-up">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-4 py-1.5 text-xs font-medium text-slate-600 mb-8 animate-fade-in-up">
             <Zap className="w-3.5 h-3.5" />
             Multi-tenant ERP para PyMEs chilenas
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-[1.1] tracking-tight mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1] tracking-tight mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
             El ERP todo-en-uno
             <br />
-            <span className="text-slate-400">para tu empresa</span>
+            <span className="text-muted-foreground">para tu empresa</span>
           </h1>
 
-          <p className="text-lg sm:text-xl text-slate-500 max-w-2xl mx-auto mb-10 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
             Gestiona inventario, ventas, compras, contabilidad y más. Facturación electrónica SII, nómina chilena y multi-tenant nativo.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
             <Link
               href="/register"
-              className="group rounded-lg bg-slate-900 px-8 py-3.5 text-sm font-medium text-white transition-all duration-150 hover:bg-slate-800 active:scale-[0.98]"
+              className="group rounded-lg bg-primary px-8 py-3.5 text-sm font-medium text-white transition-all duration-150 hover:bg-primary/90 active:scale-[0.98]"
             >
               Empezar Gratis — 14 días
               <ChevronRight className="inline-block ml-2 w-4 h-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <Link
               href="#modules"
-              className="group rounded-lg border border-slate-200 bg-white px-8 py-3.5 text-sm font-medium text-slate-700 transition-all duration-150 hover:bg-slate-50 hover:border-slate-300"
+              className="group rounded-lg border border-border bg-card px-8 py-3.5 text-sm font-medium text-foreground transition-all duration-150 hover:bg-muted hover:border-slate-300"
             >
               Ver Módulos
               <ArrowRight className="inline-block ml-2 w-4 h-4 transition-transform group-hover:translate-x-0.5" />
@@ -157,17 +157,17 @@ export default function HomePage() {
           </div>
 
           {/* Social proof */}
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-slate-400">
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-slate-400" />
+              <Shield className="w-4 h-4 text-muted-foreground" />
               <span>SOC 2 Type II</span>
             </div>
             <div className="flex items-center gap-2">
-              <Lock className="w-4 h-4 text-slate-400" />
+              <Lock className="w-4 h-4 text-muted-foreground" />
               <span>Encriptación AES-256</span>
             </div>
             <div className="flex items-center gap-2">
-              <Globe className="w-4 h-4 text-slate-400" />
+              <Globe className="w-4 h-4 text-muted-foreground" />
               <span>SII Certificado</span>
             </div>
           </div>
@@ -175,21 +175,21 @@ export default function HomePage() {
 
         {/* Dashboard mockup */}
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 mt-16 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-          <div className="relative rounded-xl border border-slate-200 bg-white shadow-xl shadow-slate-200/50 overflow-hidden">
+          <div className="relative rounded-xl border border-border bg-card shadow-xl shadow-slate-200/50 overflow-hidden">
             {/* Window bar */}
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-100 bg-slate-50">
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-100 bg-muted">
               <div className="w-3 h-3 rounded-full bg-slate-300" />
               <div className="w-3 h-3 rounded-full bg-slate-300" />
               <div className="w-3 h-3 rounded-full bg-slate-300" />
-              <div className="ml-4 text-xs text-slate-400">app.yellow-erp.cl/dashboard</div>
+              <div className="ml-4 text-xs text-muted-foreground">app.yellow-erp.cl/dashboard</div>
             </div>
             {/* Mock content */}
             <div className="p-6 sm:p-8">
               <div className="flex items-center justify-between mb-6">
-                <div className="text-sm font-semibold text-slate-700">Panel de Control</div>
-                <div className="flex items-center gap-3 text-xs text-slate-400">
-                  <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-500">Semana</span>
-                  <span className="px-2.5 py-1 rounded-lg bg-slate-900 text-white">Mes</span>
+                <div className="text-sm font-semibold text-foreground">Panel de Control</div>
+                <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                  <span className="px-2.5 py-1 rounded-lg bg-muted text-muted-foreground">Semana</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-primary text-white">Mes</span>
                 </div>
               </div>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -199,9 +199,9 @@ export default function HomePage() {
                   { label: 'Stock Items', value: '3,891', change: '-2%' },
                   { label: 'Órdenes', value: '89', change: '+18%' },
                 ].map((kpi) => (
-                  <div key={kpi.label} className="rounded-lg border border-slate-100 bg-white p-4">
-                    <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{kpi.label}</p>
-                    <p className="text-xl font-bold text-slate-900 mt-1">{kpi.value}</p>
+                  <div key={kpi.label} className="rounded-lg border border-slate-100 bg-card p-4">
+                    <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{kpi.label}</p>
+                    <p className="text-xl font-bold text-foreground mt-1">{kpi.value}</p>
                     <p className={`text-xs mt-1 ${kpi.change.startsWith('+') ? 'text-emerald-600' : 'text-rose-600'}`}>{kpi.change}</p>
                   </div>
                 ))}
@@ -233,14 +233,14 @@ export default function HomePage() {
 
       {/* ─── 4. SOCIAL PROOF / LOGOS ─── */}
       <section className="py-12 border-b border-slate-100">
-        <p className="text-center text-xs font-semibold text-slate-400 uppercase tracking-wider mb-8">
+        <p className="text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-8">
           Powered by las mejores tecnologías
         </p>
         <Marquee speed={25} className="py-2">
           {logos.map((logo) => (
             <div
               key={logo}
-              className="flex items-center justify-center px-6 py-3 text-sm font-bold text-slate-300 hover:text-slate-500 transition-colors whitespace-nowrap"
+              className="flex items-center justify-center px-6 py-3 text-sm font-bold text-slate-300 hover:text-muted-foreground transition-colors whitespace-nowrap"
             >
               {logo}
             </div>
@@ -252,10 +252,10 @@ export default function HomePage() {
       <section id="modules" className="py-24 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
               Módulos que se adaptan a tu negocio
             </h2>
-            <p className="text-lg text-slate-500 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               12 módulos integrados que cubren toda la operación de una empresa chilena.
             </p>
           </div>
@@ -264,13 +264,13 @@ export default function HomePage() {
             {modules.map((mod) => (
               <div
                 key={mod.title}
-                className="group rounded-xl border border-slate-200 bg-white p-6 transition-all duration-150 hover:border-slate-300 hover:shadow-sm"
+                className="group rounded-xl border border-border bg-card p-6 transition-all duration-150 hover:border-slate-300 hover:shadow-sm"
               >
-                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center mb-4 group-hover:bg-slate-900 group-hover:text-white transition-colors duration-150">
+                <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors duration-150">
                   <mod.icon className="w-5 h-5 text-slate-600 group-hover:text-white transition-colors duration-150" />
                 </div>
-                <h3 className="text-sm font-semibold text-slate-900 mb-1.5">{mod.title}</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">{mod.description}</p>
+                <h3 className="text-sm font-semibold text-foreground mb-1.5">{mod.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{mod.description}</p>
               </div>
             ))}
           </div>
@@ -278,27 +278,27 @@ export default function HomePage() {
       </section>
 
       {/* ─── 6. FEATURES ─── */}
-      <section className="py-24 px-4 sm:px-6 bg-slate-50">
+      <section className="py-24 px-4 sm:px-6 bg-muted">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6">
                 Construido para Chile,
                 <br />
-                <span className="text-slate-400">diseñado para crecer</span>
+                <span className="text-muted-foreground">diseñado para crecer</span>
               </h2>
-              <p className="text-lg text-slate-500 mb-8 leading-relaxed">
+              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
                 Cada funcionalidad está pensada para la realidad de las empresas chilenas: desde la facturación electrónica con el SII hasta el cálculo automático de AFP e ISAPRE.
               </p>
               <div className="space-y-4">
                 {features.map((f) => (
                   <div key={f.title} className="flex items-start gap-4">
-                    <div className="w-9 h-9 rounded-lg bg-white border border-slate-200 flex items-center justify-center flex-shrink-0">
+                    <div className="w-9 h-9 rounded-lg bg-card border border-border flex items-center justify-center flex-shrink-0">
                       <f.icon className="w-4 h-4 text-slate-600" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-semibold text-slate-900">{f.title}</h3>
-                      <p className="text-sm text-slate-500">{f.description}</p>
+                      <h3 className="text-sm font-semibold text-foreground">{f.title}</h3>
+                      <p className="text-sm text-muted-foreground">{f.description}</p>
                     </div>
                   </div>
                 ))}
@@ -306,7 +306,7 @@ export default function HomePage() {
             </div>
 
             <div className="relative">
-              <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+              <div className="rounded-xl border border-border bg-card p-8 shadow-sm">
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   {[
                     { label: 'Ingresos Mes', value: '$38.2M', change: '+22%' },
@@ -315,13 +315,13 @@ export default function HomePage() {
                     { label: 'Proveedores', value: '56', change: '+7%' },
                   ].map((kpi) => (
                     <div key={kpi.label} className="rounded-lg border border-slate-100 p-4">
-                      <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{kpi.label}</p>
-                      <p className="text-xl font-bold text-slate-900 mt-1">{kpi.value}</p>
+                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{kpi.label}</p>
+                      <p className="text-xl font-bold text-foreground mt-1">{kpi.value}</p>
                       <p className={`text-xs mt-1 ${kpi.change.startsWith('+') ? 'text-emerald-600' : 'text-rose-600'}`}>{kpi.change}</p>
                     </div>
                   ))}
                 </div>
-                <div className="flex items-center gap-2 text-sm text-slate-400">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Eye className="w-4 h-4" />
                   <span>Vista previa del Dashboard</span>
                 </div>
@@ -335,22 +335,22 @@ export default function HomePage() {
       <section className="py-24 overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 mb-12">
           <div className="text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
               Empresas que confían en Yellow
             </h2>
-            <p className="text-lg text-slate-500">
+            <p className="text-lg text-muted-foreground">
               Más de 200 empresas chilenas ya gestionan su operación con nosotros.
             </p>
 
             {/* Aggregate rating */}
             <div
-              className="mt-6 inline-flex items-center gap-3 rounded-full border border-slate-200 bg-white px-5 py-2.5"
+              className="mt-6 inline-flex items-center gap-3 rounded-full border border-border bg-card px-5 py-2.5"
               role="img"
               aria-label="Calificación promedio 4.9 de 5, más de 200 reseñas verificadas"
             >
               <Stars />
-              <span className="text-sm font-semibold text-slate-900">4.9/5</span>
-              <span className="text-sm text-slate-500">· 200+ reseñas verificadas</span>
+              <span className="text-sm font-semibold text-foreground">4.9/5</span>
+              <span className="text-sm text-muted-foreground">· 200+ reseñas verificadas</span>
             </div>
           </div>
         </div>
@@ -369,13 +369,13 @@ export default function HomePage() {
       </section>
 
       {/* ─── 8. PRICING ─── */}
-      <section id="pricing" className="py-24 px-4 sm:px-6 bg-slate-50">
+      <section id="pricing" className="py-24 px-4 sm:px-6 bg-muted">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
               Planes simples, sin sorpresas
             </h2>
-            <p className="text-lg text-slate-500 max-w-2xl mx-auto mb-8">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
               Todos los planes incluyen 14 días de prueba gratis. Sin tarjeta de crédito.
             </p>
             <PricingToggle onToggle={() => {}} />
@@ -387,25 +387,25 @@ export default function HomePage() {
                 key={plan.name}
                 className={`relative rounded-xl border p-8 transition-all duration-150 ${
                   plan.popular
-                    ? 'border-slate-900 bg-white shadow-lg'
-                    : 'border-slate-200 bg-white hover:border-slate-300'
+                    ? 'border-slate-900 bg-card shadow-lg'
+                    : 'border-border bg-card hover:border-slate-300'
                 }`}
               >
                 {plan.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-slate-900 px-4 py-1 text-xs font-semibold text-white">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-xs font-semibold text-white">
                     Más Popular
                   </div>
                 )}
-                <h3 className="text-xl font-bold text-slate-900">{plan.name}</h3>
-                <p className="text-sm text-slate-500 mt-1 mb-6">{plan.description}</p>
+                <h3 className="text-xl font-bold text-foreground">{plan.name}</h3>
+                <p className="text-sm text-muted-foreground mt-1 mb-6">{plan.description}</p>
                 <div className="mb-6">
-                  <span className="text-4xl font-bold text-slate-900">{formatPrice(plan.monthlyPrice)}</span>
-                  <span className="text-sm text-slate-400">/mes</span>
+                  <span className="text-4xl font-bold text-foreground">{formatPrice(plan.monthlyPrice)}</span>
+                  <span className="text-sm text-muted-foreground">/mes</span>
                 </div>
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((f) => (
                     <li key={f} className="flex items-start gap-3 text-sm text-slate-600">
-                      <Check className="w-4 h-4 text-slate-900 mt-0.5 flex-shrink-0" />
+                      <Check className="w-4 h-4 text-foreground mt-0.5 flex-shrink-0" />
                       {f}
                     </li>
                   ))}
@@ -414,8 +414,8 @@ export default function HomePage() {
                   href="/register"
                   className={`block w-full text-center rounded-lg py-3 text-sm font-medium transition-all duration-150 ${
                     plan.popular
-                      ? 'bg-slate-900 text-white hover:bg-slate-800'
-                      : 'border border-slate-200 text-slate-700 hover:bg-slate-50'
+                      ? 'bg-primary text-white hover:bg-primary/90'
+                      : 'border border-border text-foreground hover:bg-muted'
                   }`}
                 >
                   {plan.cta}
@@ -430,10 +430,10 @@ export default function HomePage() {
       <section id="faq" className="py-24 px-4 sm:px-6">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
               Preguntas frecuentes
             </h2>
-            <p className="text-lg text-slate-500">
+            <p className="text-lg text-muted-foreground">
               Resolvemos las dudas más comunes sobre Yellow ERP.
             </p>
           </div>
@@ -444,24 +444,24 @@ export default function HomePage() {
       {/* ─── 10. CTA ─── */}
       <section className="py-24 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="rounded-xl border border-slate-200 bg-white p-12 sm:p-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+          <div className="rounded-xl border border-border bg-card p-12 sm:p-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
               Empieza a transformar tu empresa hoy
             </h2>
-            <p className="text-lg text-slate-500 mb-8 max-w-xl mx-auto">
+            <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
               14 días de prueba gratis. Sin tarjeta de crédito. Configuración en minutos.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/register"
-                className="group rounded-lg bg-slate-900 px-8 py-3.5 text-sm font-medium text-white transition-all duration-150 hover:bg-slate-800 active:scale-[0.98]"
+                className="group rounded-lg bg-primary px-8 py-3.5 text-sm font-medium text-white transition-all duration-150 hover:bg-primary/90 active:scale-[0.98]"
               >
                 Empezar Gratis
                 <ChevronRight className="inline-block ml-2 w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
                 href="mailto:hola@yellow-erp.cl"
-                className="rounded-lg border border-slate-200 px-8 py-3.5 text-sm font-medium text-slate-700 transition-all duration-150 hover:bg-slate-50"
+                className="rounded-lg border border-border px-8 py-3.5 text-sm font-medium text-foreground transition-all duration-150 hover:bg-muted"
               >
                 Hablar con Ventas
               </Link>

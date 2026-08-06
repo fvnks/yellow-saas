@@ -65,10 +65,10 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   }, [activatedModules]);
 
   return (
-    <Sidebar className="border-none" collapsible="icon" {...props}>
+    <Sidebar className="border-r border-border" collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarBrandHeader />
-        <SidebarSeparator className="mx-3 opacity-30" />
+        <SidebarSeparator className="mx-3 bg-border" />
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu className="px-2 mb-1 space-y-0.5">
@@ -76,7 +76,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
             <Link href="/select">
               <SidebarMenuButton
                 tooltip="Volver al selector"
-                className="rounded-xl transition-all duration-200 text-slate-500 hover:text-slate-900"
+                className="rounded-xl transition-all duration-150 text-muted-foreground hover:text-foreground hover:bg-muted"
               >
                 <ArrowLeft className="h-4 w-4" />
                 <span>Volver al selector</span>
@@ -87,7 +87,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
         <SidebarNavigation sidebarItems={filteredSidebarItems} />
       </SidebarContent>
       <SidebarFooter>
-        <SidebarSeparator className="mx-3 opacity-30" />
+        <SidebarSeparator className="mx-3 bg-border" />
         <div className="px-2 py-1">
           <SidebarFooterMenu user={user} />
         </div>

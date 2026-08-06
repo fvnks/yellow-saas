@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, Trash2, Save, AlertCircle } from 'lucide-react';
@@ -113,29 +113,29 @@ export default function NewInvoicePage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/billing" className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href="/dashboard/billing" className="p-2 hover:bg-muted rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5 text-slate-600" />
         </Link>
         <div className="flex-1">
-          <h1 className="text-xl font-bold text-slate-900">Nueva Factura</h1>
-          <p className="text-sm text-slate-500 mt-1">Crear una nueva factura o boleta</p>
+          <h1 className="text-xl font-bold text-foreground">Nueva Factura</h1>
+          <p className="text-sm text-muted-foreground mt-1">Crear una nueva factura o boleta</p>
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         <div className="grid grid-cols-4 gap-4 mb-6">
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Tipo Documento *</label>
+            <label className="block text-xs font-medium text-foreground">Tipo Documento *</label>
             <select value={form.document_type} onChange={e => setForm({ ...form, document_type: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
               <option value="factura">Factura</option>
               <option value="boleta">Boleta</option>
             </select>
           </div>
           <div className="col-span-3 space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Cliente *</label>
+            <label className="block text-xs font-medium text-foreground">Cliente *</label>
             <select value={form.customer_id} onChange={e => setForm({ ...form, customer_id: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
               <option value="">Seleccionar cliente...</option>
               {customers.map(c => (
                 <option key={c.id} value={c.id}>{c.name} {c.rut ? `(${c.rut})` : ''}</option>
@@ -146,33 +146,33 @@ export default function NewInvoicePage() {
 
         <div className="grid grid-cols-3 gap-4 mb-6">
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Fecha Emision</label>
+            <label className="block text-xs font-medium text-foreground">Fecha Emision</label>
             <input type="date" value={form.invoice_date} onChange={e => setForm({ ...form, invoice_date: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Fecha Vencimiento</label>
+            <label className="block text-xs font-medium text-foreground">Fecha Vencimiento</label>
             <input type="date" value={form.due_date} onChange={e => setForm({ ...form, due_date: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">Condiciones de Pago</label>
+            <label className="block text-xs font-medium text-foreground">Condiciones de Pago</label>
             <input type="text" value={form.payment_terms} onChange={e => setForm({ ...form, payment_terms: e.target.value })}
               placeholder="Ej: 30 dias"
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
         </div>
 
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-semibold text-slate-900">Items</h3>
+          <h3 className="text-sm font-semibold text-foreground">Items</h3>
           <button onClick={addItem}
-            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors">
+            className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors">
             <Plus className="w-3.5 h-3.5" /> Agregar Item
           </button>
         </div>
 
         <div className="space-y-2">
-          <div className="grid grid-cols-12 gap-2 text-[9px] font-semibold text-slate-500 uppercase tracking-wider px-1">
+          <div className="grid grid-cols-12 gap-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider px-1">
             <div className="col-span-3">Producto</div>
             <div className="col-span-3">Descripcion</div>
             <div className="col-span-1 text-center">Cant.</div>
@@ -185,7 +185,7 @@ export default function NewInvoicePage() {
             <div key={i} className="grid grid-cols-12 gap-2 items-center">
               <div className="col-span-3">
                 <select value={item.product_id} onChange={e => updateItem(i, 'product_id', e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                  className="w-full bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                   <option value="">Sin producto</option>
                   {products.map(p => (
                     <option key={p.id} value={p.id}>{p.name}</option>
@@ -195,27 +195,27 @@ export default function NewInvoicePage() {
               <div className="col-span-3">
                 <input type="text" value={item.description} onChange={e => updateItem(i, 'description', e.target.value)}
                   placeholder="Descripcion..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="col-span-1">
                 <input type="number" step="0.01" min="0" value={item.quantity}
                   onChange={e => updateItem(i, 'quantity', e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="col-span-2">
                 <input type="number" step="1" min="0" value={item.unit_price}
                   onChange={e => updateItem(i, 'unit_price', e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 text-right focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground text-right focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="col-span-1">
                 <input type="number" step="0.1" min="0" max="100" value={item.discount}
                   onChange={e => updateItem(i, 'discount', e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="col-span-1">
                 <input type="number" step="0.1" min="0" value={item.tax_rate}
                   onChange={e => updateItem(i, 'tax_rate', e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  className="w-full bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
               </div>
               <div className="col-span-1 flex justify-center">
                 <button onClick={() => removeItem(i)} disabled={items.length <= 1}
@@ -227,24 +227,24 @@ export default function NewInvoicePage() {
           ))}
         </div>
 
-        <div className="mt-4 border-t border-slate-200 pt-4 flex items-center justify-between">
+        <div className="mt-4 border-t border-border pt-4 flex items-center justify-between">
           <div className="space-y-1 w-96">
-            <label className="block text-xs font-medium text-slate-700">Notas</label>
+            <label className="block text-xs font-medium text-foreground">Notas</label>
             <textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} rows={2}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
           <div className="text-right space-y-1">
-            <p className="text-xs text-slate-500">Subtotal: <span className="font-semibold text-slate-900">${subtotal.toLocaleString('es-CL')}</span></p>
-            <p className="text-xs text-slate-500">IVA: <span className="font-semibold text-slate-900">${taxAmount.toLocaleString('es-CL')}</span></p>
-            <p className="text-sm font-bold text-slate-900">Total: ${totalAmount.toLocaleString('es-CL')}</p>
+            <p className="text-xs text-muted-foreground">Subtotal: <span className="font-semibold text-foreground">${subtotal.toLocaleString('es-CL')}</span></p>
+            <p className="text-xs text-muted-foreground">IVA: <span className="font-semibold text-foreground">${taxAmount.toLocaleString('es-CL')}</span></p>
+            <p className="text-sm font-bold text-foreground">Total: ${totalAmount.toLocaleString('es-CL')}</p>
           </div>
         </div>
 
         <div className="mt-4 flex items-center justify-end gap-3">
           <Link href="/dashboard/billing"
-            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</Link>
+            className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</Link>
           <button onClick={handleSubmit} disabled={saving}
-            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+            className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
             <Save className="w-4 h-4" /> {saving ? 'Guardando...' : 'Crear Factura'}
           </button>
         </div>

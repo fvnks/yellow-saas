@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Calendar, Clock, Users, GripVertical, MoreHorizontal, Edit, Trash2 } from 'lucide-react';
@@ -25,14 +25,14 @@ interface KanbanBoardProps {
 }
 
 const columns = [
-  { id: 'todo', label: 'Por Hacer', color: 'bg-slate-500', bgColor: 'bg-slate-50', borderColor: 'border-slate-200' },
+  { id: 'todo', label: 'Por Hacer', color: 'bg-muted0', bgColor: 'bg-muted', borderColor: 'border-border' },
   { id: 'in_progress', label: 'En Progreso', color: 'bg-blue-500', bgColor: 'bg-blue-50', borderColor: 'border-blue-200' },
   { id: 'review', label: 'En Revision', color: 'bg-amber-500', bgColor: 'bg-amber-50', borderColor: 'border-amber-200' },
   { id: 'done', label: 'Completada', color: 'bg-emerald-500', bgColor: 'bg-emerald-50', borderColor: 'border-emerald-200' },
 ];
 
 const priorityConfig: Record<string, { label: string; color: string }> = {
-  low: { label: 'Baja', color: 'bg-slate-100 text-slate-600' },
+  low: { label: 'Baja', color: 'bg-muted text-slate-600' },
   medium: { label: 'Media', color: 'bg-blue-100 text-blue-700' },
   high: { label: 'Alta', color: 'bg-amber-100 text-amber-700' },
   urgent: { label: 'Urgente', color: 'bg-red-100 text-red-700' },
@@ -52,31 +52,31 @@ function TaskCard({ task, onEdit, onDelete, onDragStart }: {
     <div
       draggable
       onDragStart={(e) => onDragStart(e, task)}
-      className="bg-white border border-slate-200 rounded-lg p-3 hover:shadow-md transition-all cursor-grab active:cursor-grabbing group"
+      className="bg-card border border-border rounded-lg p-3 hover:shadow-md transition-all cursor-grab active:cursor-grabbing group"
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
           <GripVertical className="w-3.5 h-3.5 text-slate-300" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold text-slate-900 truncate">{task.name}</p>
+          <p className="text-xs font-semibold text-foreground truncate">{task.name}</p>
           {task.description && (
-            <p className="text-[10px] text-slate-400 mt-0.5 line-clamp-2">{task.description}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-2">{task.description}</p>
           )}
         </div>
         <div className="relative">
           <button
             onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
-            className="p-1 hover:bg-slate-100 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+            className="p-1 hover:bg-muted rounded opacity-0 group-hover:opacity-100 transition-opacity"
           >
-            <MoreHorizontal className="w-3.5 h-3.5 text-slate-400" />
+            <MoreHorizontal className="w-3.5 h-3.5 text-muted-foreground" />
           </button>
           {showMenu && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
-              <div className="absolute right-0 top-7 bg-white border border-slate-200 rounded-lg shadow-lg z-20 dark:bg-slate-900 dark:border-slate-800 py-1 min-w-[120px]">
+              <div className="absolute right-0 top-7 bg-card border border-border rounded-lg shadow-lg z-20 dark:bg-primary dark:border-slate-800 py-1 min-w-[120px]">
                 <button onClick={(e) => { e.stopPropagation(); onEdit(); setShowMenu(false); }}
-                  className="w-full px-3 py-1.5 text-left text-xs text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+                  className="w-full px-3 py-1.5 text-left text-xs text-foreground hover:bg-muted flex items-center gap-2">
                   <Edit className="w-3 h-3" /> Editar
                 </button>
                 <button onClick={(e) => { e.stopPropagation(); onDelete(); setShowMenu(false); }}
@@ -103,7 +103,7 @@ function TaskCard({ task, onEdit, onDelete, onDragStart }: {
       <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100">
         <div className="flex items-center gap-2">
           {task.assignee_name && (
-            <div className="flex items-center gap-1 text-[10px] text-slate-500">
+            <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
               <div className="w-4 h-4 bg-indigo-100 rounded-full flex items-center justify-center">
                 <span className="text-[8px] font-bold text-indigo-600">
                   {task.assignee_name.charAt(0).toUpperCase()}
@@ -115,13 +115,13 @@ function TaskCard({ task, onEdit, onDelete, onDragStart }: {
         </div>
         <div className="flex items-center gap-2">
           {task.due_date && (
-            <span className={`flex items-center gap-0.5 text-[10px] ${isOverdue ? 'text-red-500 font-medium' : 'text-slate-400'}`}>
+            <span className={`flex items-center gap-0.5 text-[10px] ${isOverdue ? 'text-red-500 font-medium' : 'text-muted-foreground'}`}>
               <Calendar className="w-2.5 h-2.5" />
               {new Date(task.due_date).toLocaleDateString('es-CL', { day: '2-digit', month: 'short' })}
             </span>
           )}
           {task.estimated_hours && (
-            <span className="flex items-center gap-0.5 text-[10px] text-slate-400">
+            <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">
               <Clock className="w-2.5 h-2.5" />
               {task.estimated_hours}h
             </span>
@@ -183,23 +183,23 @@ export default function KanbanBoard({ tasks, onStatusChange, onEdit, onDelete, o
           <div className={`flex items-center justify-between px-3 py-2 rounded-t-xl ${col.bgColor} border ${col.borderColor}`}>
             <div className="flex items-center gap-2">
               <div className={`w-2 h-2 rounded-full ${col.color}`} />
-              <span className="text-xs font-semibold text-slate-700">{col.label}</span>
-              <span className="text-[10px] font-medium text-slate-400 bg-white/60 px-1.5 py-0.5 rounded">
+              <span className="text-xs font-semibold text-foreground">{col.label}</span>
+              <span className="text-[10px] font-medium text-muted-foreground bg-card/60 px-1.5 py-0.5 rounded">
                 {col.tasks.length}
               </span>
             </div>
             <button
               onClick={() => onAddTask(col.id)}
-              className="p-1 hover:bg-white/60 rounded transition-colors"
+              className="p-1 hover:bg-card/60 rounded transition-colors"
             >
-              <span className="text-slate-500 text-sm">+</span>
+              <span className="text-muted-foreground text-sm">+</span>
             </button>
           </div>
 
           <div className={`space-y-2 p-2 min-h-[200px] rounded-b-xl border border-t-0 ${col.borderColor} ${col.bgColor}/30`}>
             {col.tasks.length === 0 ? (
-              <div className="h-full min-h-[160px] flex items-center justify-center border-2 border-dashed border-slate-200 rounded-lg">
-                <p className="text-[10px] text-slate-400">Arrastra tareas aqui</p>
+              <div className="h-full min-h-[160px] flex items-center justify-center border-2 border-dashed border-border rounded-lg">
+                <p className="text-[10px] text-muted-foreground">Arrastra tareas aqui</p>
               </div>
             ) : (
               col.tasks.map(task => (

@@ -4,7 +4,7 @@
 
 Yellow ERP is a multi-tenant SaaS ERP for Chilean SMEs. This document defines the **visual rules and constraints** that ALL modules must follow.
 
-**Design Style:** Flat Design Modern (Vercel/Linear inspired)
+**Design Style:** BankDash Modern Banking Dashboard
 
 ---
 
@@ -20,9 +20,9 @@ Yellow ERP is a multi-tenant SaaS ERP for Chilean SMEs. This document defines th
 └──────────┴───────────────────────────────────────────┘
 ```
 
-- Sidebar: `w-64 bg-slate-900 h-screen fixed left-0 top-0` (dark)
-- Header: `h-16 bg-white border-b border-slate-200 fixed top-0 right-0 left-64 z-10`
-- Content: `ml-64 pt-16 p-6 bg-slate-50`
+- Sidebar: `w-64 bg-white h-screen fixed left-0 top-0 border-r border-[#E6EFF5]` (white with accent)
+- Header: `h-16 bg-white border-b border-[#E6EFF5] fixed top-0 right-0 left-64 z-10`
+- Content: `ml-64 pt-16 p-6 bg-[#F5F7FA]`
 
 ---
 
@@ -32,20 +32,20 @@ Yellow ERP is a multi-tenant SaaS ERP for Chilean SMEs. This document defines th
 
 | Token | Value |
 |-------|-------|
-| background | `bg-slate-50` |
-| card | `bg-white border border-slate-200 shadow-sm rounded-xl` |
-| primary | `bg-slate-900 hover:bg-slate-800 text-white` |
-| success | `bg-emerald-600` / `bg-emerald-50 text-emerald-700 border-emerald-200` |
-| warning | `bg-amber-500` / `bg-amber-50 text-amber-700 border-amber-200` |
-| danger | `bg-rose-600 hover:bg-rose-700` |
-| info | `bg-blue-500` / `bg-blue-50 text-blue-700 border-blue-200` |
-| text-primary | `text-slate-900` |
-| text-secondary | `text-slate-500` |
-| text-muted | `text-slate-400` |
-| border | `border-slate-200` |
-| hover-row | `hover:bg-slate-50` |
-| input-bg | `bg-white border-slate-200` |
-| focus-ring | `focus:ring-slate-900/10 focus:border-slate-900` |
+| background | `bg-[#F5F7FA]` |
+| card | `bg-white border border-[#E6EFF5] shadow-sm rounded-2xl` |
+| primary | `bg-[#1814F3] hover:bg-[#1612D3] text-white` |
+| success | `bg-[#16DBCC]` / `bg-emerald-50 text-emerald-700 border-emerald-200` |
+| warning | `bg-[#FFBB38]` / `bg-amber-50 text-amber-700 border-amber-200` |
+| danger | `bg-[#FE5C73] hover:bg-[#E54A62]` |
+| info | `bg-[#2D60FF]` / `bg-blue-50 text-blue-700 border-blue-200` |
+| text-primary | `text-[#232323]` |
+| text-secondary | `text-[#718EBF]` |
+| text-muted | `text-[#8BA3CB]` |
+| border | `border-[#E6EFF5]` |
+| hover-row | `hover:bg-[#F5F7FA]` |
+| input-bg | `bg-white border-[#E6EFF5]` |
+| focus-ring | `focus:ring-[#1814F3]/20 focus:border-[#1814F3]` |
 
 ---
 
@@ -53,14 +53,14 @@ Yellow ERP is a multi-tenant SaaS ERP for Chilean SMEs. This document defines th
 
 | Element | Size | Weight | Color |
 |---------|------|--------|-------|
-| Module title | `text-xl` | `font-bold` | `text-slate-900` |
-| Subtitle | `text-sm` | `font-normal` | `text-slate-500` |
-| Description | `text-sm` | `font-normal` | `text-slate-500` |
-| Table body | `text-xs` | `font-normal` | `text-slate-700` |
-| Table header | `text-[9px]` | `font-semibold uppercase tracking-wider` | `text-slate-400` |
+| Module title | `text-xl` | `font-bold` | `text-foreground` |
+| Subtitle | `text-sm` | `font-normal` | `text-muted-foreground` |
+| Description | `text-sm` | `font-normal` | `text-muted-foreground` |
+| Table body | `text-xs` | `font-normal` | `text-foreground` |
+| Table header | `text-[10px]` | `font-medium uppercase tracking-wider` | `text-muted-foreground` |
 | Badge | `text-[9px]` | `font-semibold` | Per status color |
 | Button | `text-sm` | `font-medium` | Depends on variant |
-| Input label | `text-xs` | `font-medium` | `text-slate-700` |
+| Input label | `text-xs` | `font-medium` | `text-foreground` |
 
 ---
 
@@ -69,9 +69,9 @@ Yellow ERP is a multi-tenant SaaS ERP for Chilean SMEs. This document defines th
 ### Card
 
 ```tsx
-<div className="bg-white border border-slate-200 rounded-xl shadow-sm">
-  <div className="px-6 py-4 border-b border-slate-100">
-    <h3 className="text-sm font-semibold text-slate-900">Title</h3>
+<div className="bg-white border border-[#E6EFF5] rounded-2xl shadow-sm">
+  <div className="px-6 py-4 border-b border-[#E6EFF5]">
+    <h3 className="text-sm font-semibold text-foreground">Title</h3>
   </div>
   <div className="p-6">
     {/* content */}
@@ -83,22 +83,22 @@ Yellow ERP is a multi-tenant SaaS ERP for Chilean SMEs. This document defines th
 
 ```tsx
 // Primary
-<button className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 active:scale-[0.98]">
+<button className="bg-[#1814F3] hover:bg-[#1612D3] text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-150 active:scale-[0.98]">
   Action
 </button>
 
 // Secondary
-<button className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150">
+<button className="bg-white border border-[#E6EFF5] hover:bg-[#F5F7FA] text-foreground px-4 py-2 rounded-xl text-sm font-medium transition-all duration-150">
   Cancel
 </button>
 
 // Danger
-<button className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 active:scale-[0.98]">
+<button className="bg-[#FE5C73] hover:bg-[#E54A62] text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-150 active:scale-[0.98]">
   Delete
 </button>
 
 // Success
-<button className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 active:scale-[0.98]">
+<button className="bg-[#16DBCC] hover:bg-[#14C4B6] text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-150 active:scale-[0.98]">
   Save
 </button>
 ```
@@ -108,15 +108,15 @@ Yellow ERP is a multi-tenant SaaS ERP for Chilean SMEs. This document defines th
 ```tsx
 <table className="w-full">
   <thead>
-    <tr className="border-b border-slate-200">
-      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-400 uppercase tracking-wider">
+    <tr className="border-b border-[#E6EFF5]">
+      <th className="text-left px-4 py-3 text-[10px] font-medium text-[#718EBF] uppercase tracking-wider">
         Column
       </th>
     </tr>
   </thead>
   <tbody>
-    <tr className="border-b border-slate-100 hover:bg-slate-50 transition-colors duration-100">
-      <td className="px-4 py-3 text-xs text-slate-700">
+    <tr className="border-b border-[#E6EFF5] hover:bg-[#F5F7FA] transition-colors duration-100">
+      <td className="px-4 py-3 text-xs text-[#232323]">
         Value
       </td>
     </tr>
@@ -157,12 +157,12 @@ Yellow ERP is a multi-tenant SaaS ERP for Chilean SMEs. This document defines th
 
 ```tsx
 <div className="space-y-1">
-  <label className="block text-xs font-medium text-slate-700">
+  <label className="block text-xs font-medium text-foreground">
     Label
   </label>
   <input
     type="text"
-    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-colors duration-150"
+    className="w-full bg-white border border-[#E6EFF5] rounded-xl px-3 py-2 text-sm text-[#232323] placeholder-[#718EBF] focus:outline-none focus:ring-2 focus:ring-[#1814F3]/20 focus:border-[#1814F3] transition-colors duration-150"
     placeholder="Placeholder..."
   />
 </div>
@@ -171,7 +171,7 @@ Yellow ERP is a multi-tenant SaaS ERP for Chilean SMEs. This document defines th
 ### Select
 
 ```tsx
-<select className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-colors duration-150">
+<select className="w-full bg-white border border-[#E6EFF5] rounded-xl px-3 py-2 text-sm text-[#232323] focus:outline-none focus:ring-2 focus:ring-[#1814F3]/20 focus:border-[#1814F3] transition-colors duration-150">
   <option>Select...</option>
 </select>
 ```
@@ -180,17 +180,17 @@ Yellow ERP is a multi-tenant SaaS ERP for Chilean SMEs. This document defines th
 
 ```tsx
 <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-  <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4">
-    <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-      <h2 className="text-lg font-semibold text-slate-900">Title</h2>
-      <button className="text-slate-400 hover:text-slate-600 transition-colors">
+  <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4">
+    <div className="px-6 py-4 border-b border-[#E6EFF5] flex items-center justify-between">
+      <h2 className="text-lg font-semibold text-[#232323]">Title</h2>
+      <button className="text-muted-foreground hover:text-foreground transition-colors">
         <X className="w-5 h-5" />
       </button>
     </div>
     <div className="p-6">
       {/* content */}
     </div>
-    <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+    <div className="px-6 py-4 border-t border-[#E6EFF5] flex justify-end gap-3">
       <button className="...">Cancel</button>
       <button className="...">Save</button>
     </div>
@@ -201,19 +201,19 @@ Yellow ERP is a multi-tenant SaaS ERP for Chilean SMEs. This document defines th
 ### KPI Card
 
 ```tsx
-<div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5 hover:border-slate-300 transition-all duration-150">
+<div className="bg-white border border-[#E6EFF5] rounded-2xl shadow-sm p-5 hover:border-[#E6EFF5]/80 transition-all duration-150">
   <div className="flex items-center justify-between mb-3">
-    <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider">
+    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
       Label
     </p>
-    <div className="w-9 h-9 bg-slate-100 rounded-lg flex items-center justify-center">
-      <Icon className="w-4 h-4 text-slate-600" />
+    <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
+      <Icon className="w-5 h-5 text-blue-600" />
     </div>
   </div>
-  <p className="text-2xl font-bold text-slate-900">
+  <p className="text-2xl font-bold text-foreground">
     Value
   </p>
-  <p className="text-[11px] text-slate-500 mt-1">
+  <p className="text-[11px] text-muted-foreground mt-1">
     +12% vs last month
   </p>
 </div>
@@ -282,7 +282,7 @@ shadow-xl   // main modals
 ```tsx
 transition-all duration-150          // all interactive elements
 active:scale-[0.98]                  // button click feedback
-hover:bg-slate-50 transition-colors  // row hover
+hover:bg-[#F5F7FA] transition-colors  // row hover
 animate-pulse bg-slate-200           // skeleton loading
 ```
 
@@ -299,24 +299,24 @@ export default function ModuleName({ session, token, onNavigate }) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Module Name</h1>
-          <p className="text-sm text-slate-500 mt-1">Description</p>
+          <h1 className="text-xl font-bold text-foreground">Module Name</h1>
+          <p className="text-sm text-muted-foreground mt-1">Description</p>
         </div>
-        <button className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98]">
+        <button className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98]">
           <Plus className="w-4 h-4" />
           New
         </button>
       </div>
 
       {/* Filters */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div className="bg-card border border-border rounded-2xl shadow-sm p-4">
         <div className="flex items-center gap-4">
           {/* filter inputs */}
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-card border border-border rounded-2xl shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full">
             {/* ... */}
@@ -325,7 +325,7 @@ export default function ModuleName({ session, token, onNavigate }) {
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between text-xs text-slate-500">
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
         <p>Showing 1-10 of 50</p>
         <div className="flex items-center gap-2">
           {/* pagination buttons */}
@@ -368,8 +368,8 @@ DELETE /api/companies/:id/module/:id    → Delete
 ## Rules
 
 1. **NEVER** use colors outside the palette defined above
-2. **ALWAYS** use `rounded-xl` for cards, `rounded-lg` for buttons/inputs
-3. **ALWAYS** use `text-[9px] uppercase` for table headers and badges
+2. **ALWAYS** use `rounded-2xl` for cards, `rounded-xl` for buttons/inputs
+3. **ALWAYS** use `text-[10px] uppercase` for table headers and badges
 4. **ALWAYS** include hover states on interactive elements
 5. **ALWAYS** use Lucide icons (no other icon libraries)
 6. **ALWAYS** follow the module page template structure
@@ -380,5 +380,5 @@ DELETE /api/companies/:id/module/:id    → Delete
 11. **ALWAYS** use `transition-all duration-150` for interactive elements
 12. **ALWAYS** use `active:scale-[0.98]` for button click feedback
 13. **NEVER** use gradients on cards or icons (flat design only)
-14. **NEVER** use `hover:bg-black` - use `hover:bg-slate-800` instead
-15. **ALWAYS** use `bg-slate-100` for icon containers (not colored backgrounds)
+14. **NEVER** use `hover:bg-black` - use `hover:bg-primary/90` instead
+15. **ALWAYS** use colored backgrounds for icon containers (blue-50, teal-50, amber-50, etc.)

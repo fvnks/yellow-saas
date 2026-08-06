@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -212,10 +212,10 @@ export default function InventoryConfigPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.back()} className="p-2 hover:bg-slate-100 rounded-lg transition-colors"><ArrowLeft className="w-5 h-5 text-slate-600" /></button>
+          <button onClick={() => router.back()} className="p-2 hover:bg-muted rounded-lg transition-colors"><ArrowLeft className="w-5 h-5 text-slate-600" /></button>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">Configuracion de Inventario</h1>
-            <p className="text-sm text-slate-500 mt-1">Categorias, impuestos, unidades, lotes, variantes y reservas</p>
+            <h1 className="text-xl font-bold text-foreground">Configuracion de Inventario</h1>
+            <p className="text-sm text-muted-foreground mt-1">Categorias, impuestos, unidades, lotes, variantes y reservas</p>
           </div>
         </div>
         {(activeTab === 'categories' || activeTab === 'taxes' || activeTab === 'uom' || activeTab === 'batches' || activeTab === 'variants' || activeTab === 'reasons' || activeTab === 'tags') && (
@@ -228,14 +228,14 @@ export default function InventoryConfigPage() {
             if (activeTab === 'reasons') { setShowReasonForm(true); setEditingReason(null); setReasonForm({ name: '', description: '' }); }
             if (activeTab === 'tags') { setShowTagForm(true); setEditingTag(null); setTagForm({ name: '', color: '#6366f1' }); }
           }}
-            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <Plus className="w-4 h-4" /> Nuevo
           </button>
         )}
       </div>
 
       {/* Tabs */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         <ContinuousTabs
           tabs={tabs.map(t => ({ id: t.id, label: t.count > 0 ? `${t.label} (${t.count})` : t.label }))}
           defaultActiveId={activeTab}
@@ -246,54 +246,54 @@ export default function InventoryConfigPage() {
         {activeTab !== 'reservations' && (
           <div className="p-4 border-b border-slate-100">
             <div className="relative max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input type="text" placeholder="Buscar..." value={search} onChange={e => setSearch(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
             </div>
           </div>
         )}
 
         <div className="p-0">
           {loading ? (
-            <div className="p-6 space-y-3">{[1,2,3].map(i => <div key={i} className="h-12 bg-slate-100 rounded-lg animate-pulse" />)}</div>
+            <div className="p-6 space-y-3">{[1,2,3].map(i => <div key={i} className="h-12 bg-muted rounded-lg animate-pulse" />)}</div>
           ) : (
             <>
               {/* ========== CATEGORIES ========== */}
               {activeTab === 'categories' && (
                 <>
                   {showCatForm && (
-                    <div className="p-4 border-b border-slate-100 bg-slate-50">
+                    <div className="p-4 border-b border-slate-100 bg-muted">
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <input type="text" value={catForm.name} onChange={e => setCatForm({...catForm, name: e.target.value})} placeholder="Nombre categoria" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
-                        <input type="text" value={catForm.description} onChange={e => setCatForm({...catForm, description: e.target.value})} placeholder="Descripcion" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="text" value={catForm.name} onChange={e => setCatForm({...catForm, name: e.target.value})} placeholder="Nombre categoria" className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="text" value={catForm.description} onChange={e => setCatForm({...catForm, description: e.target.value})} placeholder="Descripcion" className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                         <div className="flex gap-2">
-                          <input type="color" value={catForm.color} onChange={e => setCatForm({...catForm, color: e.target.value})} className="w-10 h-10 rounded border border-slate-200 cursor-pointer" />
-                          <button onClick={saveCat} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
-                          <button onClick={() => setShowCatForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
+                          <input type="color" value={catForm.color} onChange={e => setCatForm({...catForm, color: e.target.value})} className="w-10 h-10 rounded border border-border cursor-pointer" />
+                          <button onClick={saveCat} className="bg-primary hover:bg-primary/90 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
+                          <button onClick={() => setShowCatForm(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
                     </div>
                   )}
                   <div className="overflow-x-auto">
                     <table className="w-full">
-                      <thead><tr className="border-b border-slate-200">
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Color</th>
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Descripcion</th>
-                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                      <thead><tr className="border-b border-border">
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Color</th>
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nombre</th>
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Descripcion</th>
+                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                       </tr></thead>
                       <tbody>
                         {categories.map(c => (
-                          <tr key={c.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                          <tr key={c.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
                             <td className="px-4 py-2"><div className="w-4 h-4 rounded" style={{ backgroundColor: c.color }} /></td>
-                            <td className="px-4 py-2 text-xs font-medium text-slate-900">{c.name}</td>
-                            <td className="px-4 py-2 text-xs text-slate-500">{c.description || '-'}</td>
-                            <td className="px-4 py-2"><div className="flex justify-end"><button onClick={() => deleteCat(c.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-3.5 h-3.5" /></button></div></td>
+                            <td className="px-4 py-2 text-xs font-medium text-foreground">{c.name}</td>
+                            <td className="px-4 py-2 text-xs text-muted-foreground">{c.description || '-'}</td>
+                            <td className="px-4 py-2"><div className="flex justify-end"><button onClick={() => deleteCat(c.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-3.5 h-3.5" /></button></div></td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
-                    {categories.length === 0 && <div className="p-8 text-center text-sm text-slate-500">No hay categorias</div>}
+                    {categories.length === 0 && <div className="p-8 text-center text-sm text-muted-foreground">No hay categorias</div>}
                   </div>
                 </>
               )}
@@ -302,43 +302,43 @@ export default function InventoryConfigPage() {
               {activeTab === 'taxes' && (
                 <>
                   {showTaxForm && (
-                    <div className="p-4 border-b border-slate-100 bg-slate-50">
+                    <div className="p-4 border-b border-slate-100 bg-muted">
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                        <input type="text" value={taxForm.code} onChange={e => setTaxForm({...taxForm, code: e.target.value})} placeholder="Codigo (IVA-19)" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
-                        <input type="text" value={taxForm.name} onChange={e => setTaxForm({...taxForm, name: e.target.value})} placeholder="Nombre" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
-                        <input type="number" value={taxForm.rate} onChange={e => setTaxForm({...taxForm, rate: e.target.value})} placeholder="Tasa %" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="text" value={taxForm.code} onChange={e => setTaxForm({...taxForm, code: e.target.value})} placeholder="Codigo (IVA-19)" className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="text" value={taxForm.name} onChange={e => setTaxForm({...taxForm, name: e.target.value})} placeholder="Nombre" className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="number" value={taxForm.rate} onChange={e => setTaxForm({...taxForm, rate: e.target.value})} placeholder="Tasa %" className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                         <div className="flex gap-2">
-                          <select value={taxForm.type} onChange={e => setTaxForm({...taxForm, type: e.target.value})} className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+                          <select value={taxForm.type} onChange={e => setTaxForm({...taxForm, type: e.target.value})} className="flex-1 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                             <option value="iva">IVA</option><option value="exento">Exento</option><option value="otro">Otro</option>
                           </select>
-                          <button onClick={saveTax} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
-                          <button onClick={() => setShowTaxForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
+                          <button onClick={saveTax} className="bg-primary hover:bg-primary/90 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
+                          <button onClick={() => setShowTaxForm(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
                     </div>
                   )}
                   <div className="overflow-x-auto">
                     <table className="w-full">
-                      <thead><tr className="border-b border-slate-200">
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Codigo</th>
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
-                        <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tasa</th>
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tipo</th>
-                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                      <thead><tr className="border-b border-border">
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Codigo</th>
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nombre</th>
+                        <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tasa</th>
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tipo</th>
+                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                       </tr></thead>
                       <tbody>
                         {taxes.map(t => (
-                          <tr key={t.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                            <td className="px-4 py-2 text-xs font-mono font-semibold text-slate-900">{t.code}</td>
-                            <td className="px-4 py-2 text-xs font-medium text-slate-900">{t.name}</td>
-                            <td className="px-4 py-2 text-center text-xs font-bold text-slate-900">{t.rate}%</td>
-                            <td className="px-4 py-2"><span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-slate-100 text-slate-600 border border-slate-200 uppercase">{t.type}</span></td>
-                            <td className="px-4 py-2"><div className="flex justify-end"><button onClick={() => deleteTax(t.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-3.5 h-3.5" /></button></div></td>
+                          <tr key={t.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                            <td className="px-4 py-2 text-xs font-mono font-semibold text-foreground">{t.code}</td>
+                            <td className="px-4 py-2 text-xs font-medium text-foreground">{t.name}</td>
+                            <td className="px-4 py-2 text-center text-xs font-bold text-foreground">{t.rate}%</td>
+                            <td className="px-4 py-2"><span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-muted text-slate-600 border border-border uppercase">{t.type}</span></td>
+                            <td className="px-4 py-2"><div className="flex justify-end"><button onClick={() => deleteTax(t.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-3.5 h-3.5" /></button></div></td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
-                    {taxes.length === 0 && <div className="p-8 text-center text-sm text-slate-500">No hay impuestos</div>}
+                    {taxes.length === 0 && <div className="p-8 text-center text-sm text-muted-foreground">No hay impuestos</div>}
                   </div>
                 </>
               )}
@@ -347,43 +347,43 @@ export default function InventoryConfigPage() {
               {activeTab === 'uom' && (
                 <>
                   {showUomForm && (
-                    <div className="p-4 border-b border-slate-100 bg-slate-50">
+                    <div className="p-4 border-b border-slate-100 bg-muted">
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                        <input type="text" value={uomForm.code} onChange={e => setUomForm({...uomForm, code: e.target.value})} placeholder="Codigo (kg)" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
-                        <input type="text" value={uomForm.name} onChange={e => setUomForm({...uomForm, name: e.target.value})} placeholder="Nombre" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
-                        <select value={uomForm.type} onChange={e => setUomForm({...uomForm, type: e.target.value})} className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+                        <input type="text" value={uomForm.code} onChange={e => setUomForm({...uomForm, code: e.target.value})} placeholder="Codigo (kg)" className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="text" value={uomForm.name} onChange={e => setUomForm({...uomForm, name: e.target.value})} placeholder="Nombre" className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <select value={uomForm.type} onChange={e => setUomForm({...uomForm, type: e.target.value})} className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                           {Object.entries(typeLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                         </select>
                         <div className="flex gap-2">
-                          <input type="number" step="0.000001" value={uomForm.conversion_factor} onChange={e => setUomForm({...uomForm, conversion_factor: e.target.value})} placeholder="Factor" className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
-                          <button onClick={saveUom} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
-                          <button onClick={() => setShowUomForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
+                          <input type="number" step="0.000001" value={uomForm.conversion_factor} onChange={e => setUomForm({...uomForm, conversion_factor: e.target.value})} placeholder="Factor" className="flex-1 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                          <button onClick={saveUom} className="bg-primary hover:bg-primary/90 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
+                          <button onClick={() => setShowUomForm(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
                     </div>
                   )}
                   <div className="overflow-x-auto">
                     <table className="w-full">
-                      <thead><tr className="border-b border-slate-200">
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Codigo</th>
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tipo</th>
-                        <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Factor</th>
-                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                      <thead><tr className="border-b border-border">
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Codigo</th>
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nombre</th>
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tipo</th>
+                        <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Factor</th>
+                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                       </tr></thead>
                       <tbody>
                         {uoms.map(u => (
-                          <tr key={u.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                            <td className="px-4 py-2 text-xs font-mono font-semibold text-slate-900">{u.code}</td>
-                            <td className="px-4 py-2 text-xs font-medium text-slate-900">{u.name}</td>
-                            <td className="px-4 py-2"><span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">{typeLabels[u.type] || u.type}</span></td>
-                            <td className="px-4 py-2 text-center text-xs text-slate-700">{u.conversion_factor}</td>
-                            <td className="px-4 py-2"><div className="flex justify-end"><button onClick={() => deleteUom(u.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-3.5 h-3.5" /></button></div></td>
+                          <tr key={u.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                            <td className="px-4 py-2 text-xs font-mono font-semibold text-foreground">{u.code}</td>
+                            <td className="px-4 py-2 text-xs font-medium text-foreground">{u.name}</td>
+                            <td className="px-4 py-2"><span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-muted text-slate-600 border border-border">{typeLabels[u.type] || u.type}</span></td>
+                            <td className="px-4 py-2 text-center text-xs text-foreground">{u.conversion_factor}</td>
+                            <td className="px-4 py-2"><div className="flex justify-end"><button onClick={() => deleteUom(u.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-3.5 h-3.5" /></button></div></td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
-                    {uoms.length === 0 && <div className="p-8 text-center text-sm text-slate-500">No hay unidades</div>}
+                    {uoms.length === 0 && <div className="p-8 text-center text-sm text-muted-foreground">No hay unidades</div>}
                   </div>
                 </>
               )}
@@ -392,48 +392,48 @@ export default function InventoryConfigPage() {
               {activeTab === 'batches' && (
                 <>
                   {showBatchForm && (
-                    <div className="p-4 border-b border-slate-100 bg-slate-50">
+                    <div className="p-4 border-b border-slate-100 bg-muted">
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                        <select value={batchForm.product_id} onChange={e => setBatchForm({...batchForm, product_id: e.target.value})} className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+                        <select value={batchForm.product_id} onChange={e => setBatchForm({...batchForm, product_id: e.target.value})} className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                           <option value="">Producto...</option>{products.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
                         </select>
-                        <select value={batchForm.warehouse_id} onChange={e => setBatchForm({...batchForm, warehouse_id: e.target.value})} className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+                        <select value={batchForm.warehouse_id} onChange={e => setBatchForm({...batchForm, warehouse_id: e.target.value})} className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                           <option value="">Bodega...</option>{warehouses.map((w: any) => <option key={w.id} value={w.id}>{w.name}</option>)}
                         </select>
-                        <input type="text" value={batchForm.batch_number} onChange={e => setBatchForm({...batchForm, batch_number: e.target.value})} placeholder="Lote..." className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
-                        <input type="number" value={batchForm.quantity} onChange={e => setBatchForm({...batchForm, quantity: e.target.value})} placeholder="Cantidad" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
-                        <input type="date" value={batchForm.expiry_date} onChange={e => setBatchForm({...batchForm, expiry_date: e.target.value})} className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="text" value={batchForm.batch_number} onChange={e => setBatchForm({...batchForm, batch_number: e.target.value})} placeholder="Lote..." className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="number" value={batchForm.quantity} onChange={e => setBatchForm({...batchForm, quantity: e.target.value})} placeholder="Cantidad" className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="date" value={batchForm.expiry_date} onChange={e => setBatchForm({...batchForm, expiry_date: e.target.value})} className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                         <div className="flex gap-2">
-                          <button onClick={saveBatch} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
-                          <button onClick={() => setShowBatchForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
+                          <button onClick={saveBatch} className="bg-primary hover:bg-primary/90 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
+                          <button onClick={() => setShowBatchForm(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
                     </div>
                   )}
                   <div className="overflow-x-auto">
                     <table className="w-full">
-                      <thead><tr className="border-b border-slate-200">
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Lote</th>
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Bodega</th>
-                        <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cantidad</th>
-                        <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Vencimiento</th>
-                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                      <thead><tr className="border-b border-border">
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Lote</th>
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th>
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Bodega</th>
+                        <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cantidad</th>
+                        <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Vencimiento</th>
+                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                       </tr></thead>
                       <tbody>
                         {batches.map(b => (
-                          <tr key={b.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                            <td className="px-4 py-2 text-xs font-mono font-semibold text-slate-900">{b.batch_number}</td>
-                            <td className="px-4 py-2 text-xs text-slate-700">{b.product?.name}</td>
-                            <td className="px-4 py-2 text-xs text-slate-700">{b.warehouse?.name}</td>
-                            <td className="px-4 py-2 text-center text-xs font-bold text-slate-900">{b.quantity}</td>
-                            <td className="px-4 py-2 text-center text-xs text-slate-500">{b.expiry_date ? new Date(b.expiry_date).toLocaleDateString('es-CL') : '-'}</td>
-                            <td className="px-4 py-2"><div className="flex justify-end"><button onClick={() => deleteBatch(b.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-3.5 h-3.5" /></button></div></td>
+                          <tr key={b.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                            <td className="px-4 py-2 text-xs font-mono font-semibold text-foreground">{b.batch_number}</td>
+                            <td className="px-4 py-2 text-xs text-foreground">{b.product?.name}</td>
+                            <td className="px-4 py-2 text-xs text-foreground">{b.warehouse?.name}</td>
+                            <td className="px-4 py-2 text-center text-xs font-bold text-foreground">{b.quantity}</td>
+                            <td className="px-4 py-2 text-center text-xs text-muted-foreground">{b.expiry_date ? new Date(b.expiry_date).toLocaleDateString('es-CL') : '-'}</td>
+                            <td className="px-4 py-2"><div className="flex justify-end"><button onClick={() => deleteBatch(b.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-3.5 h-3.5" /></button></div></td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
-                    {batches.length === 0 && <div className="p-8 text-center text-sm text-slate-500">No hay lotes</div>}
+                    {batches.length === 0 && <div className="p-8 text-center text-sm text-muted-foreground">No hay lotes</div>}
                   </div>
                 </>
               )}
@@ -442,24 +442,24 @@ export default function InventoryConfigPage() {
               {activeTab === 'variants' && (
                 <>
                   {showVariantForm && (
-                    <div className="p-4 border-b border-slate-100 bg-slate-50">
+                    <div className="p-4 border-b border-slate-100 bg-muted">
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
-                        <select value={variantForm.product_id} onChange={e => setVariantForm({...variantForm, product_id: e.target.value})} className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+                        <select value={variantForm.product_id} onChange={e => setVariantForm({...variantForm, product_id: e.target.value})} className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                           <option value="">Producto...</option>{products.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
                         </select>
-                        <input type="text" value={variantForm.sku} onChange={e => setVariantForm({...variantForm, sku: e.target.value})} placeholder="SKU variante" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
-                        <input type="text" value={variantForm.name} onChange={e => setVariantForm({...variantForm, name: e.target.value})} placeholder="Nombre (Rojo L)" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
-                        <input type="number" value={variantForm.cost_price} onChange={e => setVariantForm({...variantForm, cost_price: e.target.value})} placeholder="Costo" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
-                        <input type="number" value={variantForm.sale_price} onChange={e => setVariantForm({...variantForm, sale_price: e.target.value})} placeholder="Precio" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="text" value={variantForm.sku} onChange={e => setVariantForm({...variantForm, sku: e.target.value})} placeholder="SKU variante" className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="text" value={variantForm.name} onChange={e => setVariantForm({...variantForm, name: e.target.value})} placeholder="Nombre (Rojo L)" className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="number" value={variantForm.cost_price} onChange={e => setVariantForm({...variantForm, cost_price: e.target.value})} placeholder="Costo" className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="number" value={variantForm.sale_price} onChange={e => setVariantForm({...variantForm, sale_price: e.target.value})} placeholder="Precio" className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                         <div className="flex gap-2">
-                          <button onClick={saveVariant} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
-                          <button onClick={() => setShowVariantForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
+                          <button onClick={saveVariant} className="bg-primary hover:bg-primary/90 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
+                          <button onClick={() => setShowVariantForm(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <input type="text" value={attrKey} onChange={e => setAttrKey(e.target.value)} placeholder="Atributo (color)" className="w-32 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
-                        <input type="text" value={attrVal} onChange={e => setAttrVal(e.target.value)} placeholder="Valor (Rojo)" className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
-                        <button onClick={addAttr} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">+ Atributo</button>
+                        <input type="text" value={attrKey} onChange={e => setAttrKey(e.target.value)} placeholder="Atributo (color)" className="w-32 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="text" value={attrVal} onChange={e => setAttrVal(e.target.value)} placeholder="Valor (Rojo)" className="flex-1 bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <button onClick={addAttr} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">+ Atributo</button>
                       </div>
                       {Object.keys(variantForm.attributes).length > 0 && (
                         <div className="flex flex-wrap gap-1.5 mt-2">
@@ -475,28 +475,28 @@ export default function InventoryConfigPage() {
                   )}
                   <div className="overflow-x-auto">
                     <table className="w-full">
-                      <thead><tr className="border-b border-slate-200">
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">SKU</th>
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Atributos</th>
-                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Precio</th>
-                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                      <thead><tr className="border-b border-border">
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">SKU</th>
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th>
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Atributos</th>
+                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Precio</th>
+                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                       </tr></thead>
                       <tbody>
                         {variants.map(v => (
-                          <tr key={v.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                            <td className="px-4 py-2 text-xs font-mono font-semibold text-slate-900">{v.sku}</td>
-                            <td className="px-4 py-2 text-xs text-slate-700">{v.product?.name}</td>
+                          <tr key={v.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                            <td className="px-4 py-2 text-xs font-mono font-semibold text-foreground">{v.sku}</td>
+                            <td className="px-4 py-2 text-xs text-foreground">{v.product?.name}</td>
                             <td className="px-4 py-2"><div className="flex flex-wrap gap-1">{Object.entries(v.attributes || {}).map(([k, val]) => (
-                              <span key={k} className="px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded text-[9px]">{k}: {val}</span>
+                              <span key={k} className="px-1.5 py-0.5 bg-muted text-slate-600 rounded text-[9px]">{k}: {val}</span>
                             ))}</div></td>
-                            <td className="px-4 py-2 text-right text-xs text-slate-700">{v.sale_price ? `$${v.sale_price.toLocaleString()}` : '-'}</td>
-                            <td className="px-4 py-2"><div className="flex justify-end"><button onClick={() => deleteVariant(v.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-3.5 h-3.5" /></button></div></td>
+                            <td className="px-4 py-2 text-right text-xs text-foreground">{v.sale_price ? `$${v.sale_price.toLocaleString()}` : '-'}</td>
+                            <td className="px-4 py-2"><div className="flex justify-end"><button onClick={() => deleteVariant(v.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-3.5 h-3.5" /></button></div></td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
-                    {variants.length === 0 && <div className="p-8 text-center text-sm text-slate-500">No hay variantes</div>}
+                    {variants.length === 0 && <div className="p-8 text-center text-sm text-muted-foreground">No hay variantes</div>}
                   </div>
                 </>
               )}
@@ -505,32 +505,32 @@ export default function InventoryConfigPage() {
               {activeTab === 'reservations' && (
                 <div className="overflow-x-auto">
                   <table className="w-full">
-                    <thead><tr className="border-b border-slate-200">
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Bodega</th>
-                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cantidad</th>
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Tipo</th>
-                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Expira</th>
-                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                    <thead><tr className="border-b border-border">
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Bodega</th>
+                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cantidad</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tipo</th>
+                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Expira</th>
+                      <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                     </tr></thead>
                     <tbody>
                       {reservations.map(r => (
-                        <tr key={r.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                          <td className="px-4 py-2 text-xs font-medium text-slate-900">{r.product?.name}</td>
-                          <td className="px-4 py-2 text-xs text-slate-700">{r.warehouse?.name}</td>
-                          <td className="px-4 py-2 text-center text-xs font-bold text-slate-900">{r.quantity}</td>
-                          <td className="px-4 py-2 text-xs text-slate-500 capitalize">{r.reference_type}</td>
-                          <td className="px-4 py-2 text-center text-xs text-slate-500">{r.expires_at ? new Date(r.expires_at).toLocaleDateString('es-CL') : '-'}</td>
-                          <td className="px-4 py-2 text-center"><span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${r.status === 'active' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-slate-100 text-slate-600 border border-slate-200'}`}>{r.status === 'active' ? 'Activa' : r.status}</span></td>
+                        <tr key={r.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                          <td className="px-4 py-2 text-xs font-medium text-foreground">{r.product?.name}</td>
+                          <td className="px-4 py-2 text-xs text-foreground">{r.warehouse?.name}</td>
+                          <td className="px-4 py-2 text-center text-xs font-bold text-foreground">{r.quantity}</td>
+                          <td className="px-4 py-2 text-xs text-muted-foreground capitalize">{r.reference_type}</td>
+                          <td className="px-4 py-2 text-center text-xs text-muted-foreground">{r.expires_at ? new Date(r.expires_at).toLocaleDateString('es-CL') : '-'}</td>
+                          <td className="px-4 py-2 text-center"><span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${r.status === 'active' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-muted text-slate-600 border border-border'}`}>{r.status === 'active' ? 'Activa' : r.status}</span></td>
                           <td className="px-4 py-2"><div className="flex justify-end">{r.status === 'active' && (
-                            <button onClick={() => releaseReservation(r.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors text-[9px] font-medium">Liberar</button>
+                            <button onClick={() => releaseReservation(r.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors text-[9px] font-medium">Liberar</button>
                           )}</div></td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
-                  {reservations.length === 0 && <div className="p-8 text-center text-sm text-slate-500">No hay reservas</div>}
+                  {reservations.length === 0 && <div className="p-8 text-center text-sm text-muted-foreground">No hay reservas</div>}
                 </div>
               )}
 
@@ -538,44 +538,44 @@ export default function InventoryConfigPage() {
               {activeTab === 'reasons' && (
                 <>
                   {showReasonForm && (
-                    <div className="p-4 border-b border-slate-100 bg-slate-50">
+                    <div className="p-4 border-b border-slate-100 bg-muted">
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <input type="text" value={reasonForm.name} onChange={e => setReasonForm({...reasonForm, name: e.target.value})} placeholder="Nombre del motivo" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
-                        <input type="text" value={reasonForm.description} onChange={e => setReasonForm({...reasonForm, description: e.target.value})} placeholder="Descripcion (opcional)" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="text" value={reasonForm.name} onChange={e => setReasonForm({...reasonForm, name: e.target.value})} placeholder="Nombre del motivo" className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="text" value={reasonForm.description} onChange={e => setReasonForm({...reasonForm, description: e.target.value})} placeholder="Descripcion (opcional)" className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                         <div className="flex gap-2">
-                          <button onClick={saveReason} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">{editingReason ? 'Actualizar' : 'Guardar'}</button>
-                          <button onClick={() => { setShowReasonForm(false); setEditingReason(null); }} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
+                          <button onClick={saveReason} className="bg-primary hover:bg-primary/90 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">{editingReason ? 'Actualizar' : 'Guardar'}</button>
+                          <button onClick={() => { setShowReasonForm(false); setEditingReason(null); }} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
                     </div>
                   )}
                   <div className="overflow-x-auto">
                     <table className="w-full">
-                      <thead><tr className="border-b border-slate-200">
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Descripcion</th>
-                        <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                      <thead><tr className="border-b border-border">
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nombre</th>
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Descripcion</th>
+                        <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                       </tr></thead>
                       <tbody>
                         {reasons.map(r => (
-                          <tr key={r.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                            <td className="px-4 py-2 text-xs font-medium text-slate-900">{r.name}</td>
-                            <td className="px-4 py-2 text-xs text-slate-500">{r.description || '-'}</td>
+                          <tr key={r.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                            <td className="px-4 py-2 text-xs font-medium text-foreground">{r.name}</td>
+                            <td className="px-4 py-2 text-xs text-muted-foreground">{r.description || '-'}</td>
                             <td className="px-4 py-2 text-center">
-                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${r.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-600 border border-slate-200'}`}>
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${r.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-muted text-slate-600 border border-border'}`}>
                                 {r.is_active ? 'Activo' : 'Inactivo'}
                               </span>
                             </td>
                             <td className="px-4 py-2"><div className="flex justify-end gap-1">
-                              <button onClick={() => editReason(r)} className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"><Edit className="w-3.5 h-3.5" /></button>
-                              <button onClick={() => deleteReason(r.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                              <button onClick={() => editReason(r)} className="p-1.5 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"><Edit className="w-3.5 h-3.5" /></button>
+                              <button onClick={() => deleteReason(r.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                             </div></td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
-                    {reasons.length === 0 && <div className="p-8 text-center text-sm text-slate-500">No hay motivos de ajuste</div>}
+                    {reasons.length === 0 && <div className="p-8 text-center text-sm text-muted-foreground">No hay motivos de ajuste</div>}
                   </div>
                 </>
               )}
@@ -584,9 +584,9 @@ export default function InventoryConfigPage() {
               {activeTab === 'tags' && (
                 <>
                   {showTagForm && (
-                    <div className="p-4 border-b border-slate-100 bg-slate-50">
+                    <div className="p-4 border-b border-slate-100 bg-muted">
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <input type="text" value={tagForm.name} onChange={e => setTagForm({...tagForm, name: e.target.value})} placeholder="Nombre del tag" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+                        <input type="text" value={tagForm.name} onChange={e => setTagForm({...tagForm, name: e.target.value})} placeholder="Nombre del tag" className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                         <div className="flex gap-2 items-center">
                           {TAG_COLORS.map(c => (
                             <button key={c.name} onClick={() => setTagForm({...tagForm, color: c.value})}
@@ -595,35 +595,35 @@ export default function InventoryConfigPage() {
                           ))}
                         </div>
                         <div className="flex gap-2">
-                          <button onClick={saveTag} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">{editingTag ? 'Actualizar' : 'Guardar'}</button>
-                          <button onClick={() => { setShowTagForm(false); setEditingTag(null); }} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
+                          <button onClick={saveTag} className="bg-primary hover:bg-primary/90 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">{editingTag ? 'Actualizar' : 'Guardar'}</button>
+                          <button onClick={() => { setShowTagForm(false); setEditingTag(null); }} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
                     </div>
                   )}
                   <div className="overflow-x-auto">
                     <table className="w-full">
-                      <thead><tr className="border-b border-slate-200">
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Color</th>
-                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
-                        <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Productos</th>
-                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                      <thead><tr className="border-b border-border">
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Color</th>
+                        <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nombre</th>
+                        <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Productos</th>
+                        <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                       </tr></thead>
                       <tbody>
                         {tags.map(t => (
-                          <tr key={t.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                          <tr key={t.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
                             <td className="px-4 py-2"><div className="w-4 h-4 rounded" style={{ backgroundColor: t.color }} /></td>
-                            <td className="px-4 py-2 text-xs font-medium text-slate-900">{t.name}</td>
-                            <td className="px-4 py-2 text-center text-xs text-slate-500">{t.product_count ?? 0}</td>
+                            <td className="px-4 py-2 text-xs font-medium text-foreground">{t.name}</td>
+                            <td className="px-4 py-2 text-center text-xs text-muted-foreground">{t.product_count ?? 0}</td>
                             <td className="px-4 py-2"><div className="flex justify-end gap-1">
-                              <button onClick={() => editTag(t)} className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"><Edit className="w-3.5 h-3.5" /></button>
-                              <button onClick={() => deleteTag(t.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                              <button onClick={() => editTag(t)} className="p-1.5 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"><Edit className="w-3.5 h-3.5" /></button>
+                              <button onClick={() => deleteTag(t.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                             </div></td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
-                    {tags.length === 0 && <div className="p-8 text-center text-sm text-slate-500">No hay tags</div>}
+                    {tags.length === 0 && <div className="p-8 text-center text-sm text-muted-foreground">No hay tags</div>}
                   </div>
                 </>
               )}
@@ -632,7 +632,7 @@ export default function InventoryConfigPage() {
               {activeTab === 'serials' && (
                 <div className="p-8 text-center">
                   <Hash className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-                  <p className="text-sm text-slate-500 mb-4">Gestion de numeros de serie por producto</p>
+                  <p className="text-sm text-muted-foreground mb-4">Gestion de numeros de serie por producto</p>
                   <Link href="/dashboard/inventory/serials" className="inline-flex items-center gap-2 text-sm text-indigo-600 hover:text-indigo-700 font-medium">
                     Ir a Seriales <ExternalLink className="w-4 h-4" />
                   </Link>
@@ -643,7 +643,7 @@ export default function InventoryConfigPage() {
               {activeTab === 'relations' && (
                 <div className="p-8 text-center">
                   <Link2 className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-                  <p className="text-sm text-slate-500 mb-4">Conecta productos relacionados entre si</p>
+                  <p className="text-sm text-muted-foreground mb-4">Conecta productos relacionados entre si</p>
                   <Link href="/dashboard/inventory/relations" className="inline-flex items-center gap-2 text-sm text-indigo-600 hover:text-indigo-700 font-medium">
                     Ir a Relaciones <ExternalLink className="w-4 h-4" />
                   </Link>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, X, Save, Layers, TrendingUp } from 'lucide-react';
@@ -116,13 +116,13 @@ export default function CustomerSegments() {
 
   if (loading) {
     return (
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
         <div className="px-6 py-4 border-b border-slate-100">
           <div className="h-4 w-36 bg-slate-200 rounded animate-pulse" />
         </div>
         <div className="p-6 space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-12 bg-slate-100 rounded animate-pulse" />
+            <div key={i} className="h-12 bg-muted rounded animate-pulse" />
           ))}
         </div>
       </div>
@@ -130,12 +130,12 @@ export default function CustomerSegments() {
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+    <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
       <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-900">Segmentos de Clientes</h3>
+        <h3 className="text-sm font-semibold text-foreground">Segmentos de Clientes</h3>
         <button
           onClick={handleOpenNew}
-          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+          className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
         >
           <Plus className="w-4 h-4" />
           Nuevo Segmento
@@ -145,46 +145,46 @@ export default function CustomerSegments() {
       {segments.length === 0 ? (
         <div className="text-center py-12">
           <Layers className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-          <p className="text-sm text-slate-500">No hay segmentos</p>
+          <p className="text-sm text-muted-foreground">No hay segmentos</p>
         </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Descripción</th>
-                <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Mín. Pedidos</th>
-                <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Mín. Ingresos</th>
-                <th className="text-center w-24 px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nombre</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Descripción</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Mín. Pedidos</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Mín. Ingresos</th>
+                <th className="text-center w-24 px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {segments.map(seg => (
-                <tr key={seg.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                <tr key={seg.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
                         <TrendingUp className="w-4 h-4 text-indigo-600" />
                       </div>
-                      <span className="text-xs font-medium text-slate-900">{seg.name}</span>
+                      <span className="text-xs font-medium text-foreground">{seg.name}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-700">{seg.description || '—'}</td>
-                  <td className="px-4 py-3 text-center text-xs font-medium text-slate-900">{seg.min_orders}</td>
-                  <td className="px-4 py-3 text-right text-xs font-medium text-slate-900">${(seg.min_revenue || 0).toLocaleString('es-CL')}</td>
+                  <td className="px-4 py-3 text-xs text-foreground">{seg.description || '—'}</td>
+                  <td className="px-4 py-3 text-center text-xs font-medium text-foreground">{seg.min_orders}</td>
+                  <td className="px-4 py-3 text-right text-xs font-medium text-foreground">${(seg.min_revenue || 0).toLocaleString('es-CL')}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-center gap-1">
                       <button
                         onClick={() => handleOpenEdit(seg)}
-                        className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"
+                        className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"
                         aria-label="Editar"
                       >
                         <Edit className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDelete(seg.id, seg.name)}
-                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                        className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
                         aria-label="Eliminar"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -200,76 +200,76 @@ export default function CustomerSegments() {
 
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900md mx-4">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900">
+          <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">
                 {editingId ? 'Editar Segmento' : 'Nuevo Segmento'}
               </h2>
-              <button onClick={handleClose} className="text-slate-400 hover:text-slate-600">
+              <button onClick={handleClose} className="text-muted-foreground hover:text-slate-600">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="p-6 space-y-4">
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Nombre *</label>
+                <label className="block text-xs font-medium text-foreground">Nombre *</label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={e => update('name', e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                   placeholder="Nombre del segmento"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Descripción</label>
+                <label className="block text-xs font-medium text-foreground">Descripción</label>
                 <textarea
                   value={form.description}
                   onChange={e => update('description', e.target.value)}
                   rows={2}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                   placeholder="Descripción del segmento..."
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Mín. Pedidos</label>
+                  <label className="block text-xs font-medium text-foreground">Mín. Pedidos</label>
                   <input
                     type="number"
                     value={form.min_orders}
                     onChange={e => update('min_orders', parseInt(e.target.value) || 0)}
                     min={0}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="0"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Mín. Ingresos (CLP)</label>
+                  <label className="block text-xs font-medium text-foreground">Mín. Ingresos (CLP)</label>
                   <input
                     type="number"
                     value={form.min_revenue}
                     onChange={e => update('min_revenue', parseInt(e.target.value) || 0)}
                     min={0}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="0"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button
                 onClick={handleClose}
-                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"
+                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 {saving ? 'Guardando...' : 'Guardar'}

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Globe, Copy, Check, ExternalLink } from 'lucide-react';
@@ -45,33 +45,33 @@ export default function PortalTab({ projectId, project, onRefresh }: PortalTabPr
 
   return (
     <div className="space-y-6">
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         <div className="flex items-center gap-3 mb-4">
           <Globe className="w-5 h-5 text-indigo-600" />
-          <h3 className="text-sm font-semibold text-slate-900">Portal del Cliente</h3>
+          <h3 className="text-sm font-semibold text-foreground">Portal del Cliente</h3>
         </div>
-        <p className="text-xs text-slate-500 mb-6">
+        <p className="text-xs text-muted-foreground mb-6">
           Permite a los clientes ver el estado del proyecto con un enlace publico.
         </p>
 
         <div className="space-y-4">
           <label className="flex items-center gap-3 cursor-pointer">
             <input type="checkbox" checked={enabled} onChange={e => setEnabled(e.target.checked)}
-              className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
-            <span className="text-sm text-slate-700">Habilitar portal publico</span>
+              className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-primary/20" />
+            <span className="text-sm text-foreground">Habilitar portal publico</span>
           </label>
 
           {enabled && (
             <div className="ml-7 space-y-3 border-l-2 border-indigo-200 pl-4">
               <label className="flex items-center gap-3 cursor-pointer">
                 <input type="checkbox" checked={showBudget} onChange={e => setShowBudget(e.target.checked)}
-                  className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
-                <span className="text-sm text-slate-700">Mostrar presupuesto</span>
+                  className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-primary/20" />
+                <span className="text-sm text-foreground">Mostrar presupuesto</span>
               </label>
               <label className="flex items-center gap-3 cursor-pointer">
                 <input type="checkbox" checked={showCosts} onChange={e => setShowCosts(e.target.checked)}
-                  className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
-                <span className="text-sm text-slate-700">Mostrar costos</span>
+                  className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-primary/20" />
+                <span className="text-sm text-foreground">Mostrar costos</span>
               </label>
             </div>
           )}
@@ -79,19 +79,19 @@ export default function PortalTab({ projectId, project, onRefresh }: PortalTabPr
 
         <div className="mt-6 flex items-center gap-3">
           <button onClick={handleSave} disabled={saving}
-            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+            className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
             {saving ? 'Guardando...' : 'Guardar Configuracion'}
           </button>
         </div>
       </div>
 
       {enabled && portalToken && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
-          <h3 className="text-sm font-semibold text-slate-900 mb-3">Enlace Publico</h3>
-          <div className="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-lg p-3">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+          <h3 className="text-sm font-semibold text-foreground mb-3">Enlace Publico</h3>
+          <div className="flex items-center gap-3 bg-muted border border-border rounded-lg p-3">
             <span className="text-xs text-slate-600 truncate flex-1 font-mono">{fullUrl}</span>
             <button onClick={handleCopy}
-              className="flex items-center gap-1 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-xs font-medium text-slate-700 transition-colors">
+              className="flex items-center gap-1 px-3 py-1.5 bg-card border border-border hover:bg-muted rounded-lg text-xs font-medium text-foreground transition-colors">
               {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
               {copied ? 'Copiado' : 'Copiar'}
             </button>
@@ -100,7 +100,7 @@ export default function PortalTab({ projectId, project, onRefresh }: PortalTabPr
               <ExternalLink className="w-3.5 h-3.5" /> Abrir
             </a>
           </div>
-          <p className="text-[10px] text-slate-400 mt-2">
+          <p className="text-[10px] text-muted-foreground mt-2">
             Este enlace es de solo lectura y no requiere autenticacion.
           </p>
         </div>

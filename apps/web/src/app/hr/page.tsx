@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -33,12 +33,12 @@ function HRPageInner() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Recursos Humanos</h1>
-          <p className="text-sm text-slate-500 mt-1">Gestión de talento humano, contratos, asistencia y evaluaciones</p>
+          <h1 className="text-xl font-bold text-foreground">Recursos Humanos</h1>
+          <p className="text-sm text-muted-foreground mt-1">Gestión de talento humano, contratos, asistencia y evaluaciones</p>
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-card border border-border rounded-xl shadow-sm">
         <ContinuousTabs
           tabs={tabs}
           defaultActiveId={activeTab}
@@ -58,7 +58,7 @@ function HRPageInner() {
 
 export default function HRPage() {
   return (
-    <Suspense fallback={<div className="animate-pulse text-sm text-slate-400 p-6">Cargando...</div>}>
+    <Suspense fallback={<div className="animate-pulse text-sm text-muted-foreground p-6">Cargando...</div>}>
       <HRPageInner />
     </Suspense>
   );

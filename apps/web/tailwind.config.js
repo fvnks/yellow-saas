@@ -62,8 +62,29 @@ module.exports = {
           ring: 'hsl(var(--sidebar-ring))'
         },
         brand: {
-          yellow: 'hsl(var(--brand-yellow))',
+          blue: 'hsl(var(--brand-blue))',
+          'blue-bright': 'hsl(var(--brand-blue-bright))',
+          teal: 'hsl(var(--brand-teal))',
+          red: 'hsl(var(--brand-red))',
           amber: 'hsl(var(--brand-amber))',
+          yellow: 'hsl(var(--brand-yellow))',
+        },
+        bankdash: {
+          blue: '#1814F3',
+          'blue-bright': '#2D60FF',
+          teal: '#16DBCC',
+          red: '#FE5C73',
+          amber: '#FFBB38',
+          orange: '#FC7900',
+          pink: '#FF82AC',
+          bg: '#F5F7FA',
+          card: '#FFFFFF',
+          border: '#E6EFF5',
+          'border-alt': '#DFEAF2',
+          muted: '#718EBF',
+          'muted-light': '#8BA3CB',
+          dark: '#232323',
+          navy: '#343C6A',
         }
       },
       borderRadius: {

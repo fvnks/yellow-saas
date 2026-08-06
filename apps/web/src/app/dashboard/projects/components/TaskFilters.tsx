@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Search, Filter, X } from 'lucide-react';
@@ -77,32 +77,32 @@ export default function TaskFilters({ tasks, users, onFilter }: TaskFiltersProps
     <div className="space-y-2">
       <div className="flex items-center gap-2">
         <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
           <input type="text" value={filters.search} onChange={e => applyFilters({ ...filters, search: e.target.value })}
-            className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="w-full bg-muted border border-border rounded-lg pl-8 pr-3 py-2 text-xs text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
             placeholder="Buscar tareas..." />
         </div>
         <button onClick={() => setShowAdvanced(!showAdvanced)}
           className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors border ${
             showAdvanced || activeFilterCount > 0
               ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
-              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700'
+              : 'bg-card text-foreground border-border hover:bg-muted dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700'
           }`}>
           <Filter className="w-3.5 h-3.5" />
           Filtros {activeFilterCount > 0 && `(${activeFilterCount})`}
         </button>
         {activeFilterCount > 0 && (
-          <button onClick={clearFilters} className="p-2 text-slate-400 hover:text-red-500 transition-colors">
+          <button onClick={clearFilters} className="p-2 text-muted-foreground hover:text-red-500 transition-colors">
             <X className="w-4 h-4" />
           </button>
         )}
       </div>
 
       {showAdvanced && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-3 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-3 dark:bg-primary dark:border-slate-800">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
             <select value={filters.status} onChange={e => applyFilters({ ...filters, status: e.target.value })}
-              className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+              className="bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary/20">
               <option value="">Todos los estados</option>
               <option value="todo">Por Hacer</option>
               <option value="in_progress">En Progreso</option>
@@ -111,7 +111,7 @@ export default function TaskFilters({ tasks, users, onFilter }: TaskFiltersProps
             </select>
 
             <select value={filters.priority} onChange={e => applyFilters({ ...filters, priority: e.target.value })}
-              className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+              className="bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary/20">
               <option value="">Todas las prioridades</option>
               <option value="low">Baja</option>
               <option value="medium">Media</option>
@@ -120,18 +120,18 @@ export default function TaskFilters({ tasks, users, onFilter }: TaskFiltersProps
             </select>
 
             <select value={filters.assignee_id} onChange={e => applyFilters({ ...filters, assignee_id: e.target.value })}
-              className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+              className="bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary/20">
               <option value="">Todos los asignados</option>
               {users.map(u => <option key={u.id} value={u.id}>{u.full_name || u.email}</option>)}
             </select>
 
             <div className="flex items-center gap-1">
               <input type="date" value={filters.date_from} onChange={e => applyFilters({ ...filters, date_from: e.target.value })}
-                className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="flex-1 bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
                 placeholder="Desde" />
-              <span className="text-slate-400 text-xs">-</span>
+              <span className="text-muted-foreground text-xs">-</span>
               <input type="date" value={filters.date_to} onChange={e => applyFilters({ ...filters, date_to: e.target.value })}
-                className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="flex-1 bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
                 placeholder="Hasta" />
             </div>
           </div>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, Minus, AlertTriangle, Package, ArrowDown, BarChart3 } from 'lucide-react';
@@ -42,7 +42,7 @@ export default function StockForecasting() {
   const trendIcon = (trend: string) => {
     if (trend === 'increasing') return <TrendingUp className="w-4 h-4 text-red-500" />;
     if (trend === 'decreasing') return <TrendingDown className="w-4 h-4 text-emerald-500" />;
-    return <Minus className="w-4 h-4 text-slate-400" />;
+    return <Minus className="w-4 h-4 text-muted-foreground" />;
   };
 
   const trendLabel = (trend: string) => {
@@ -52,7 +52,7 @@ export default function StockForecasting() {
   };
 
   const urgencyColor = (daysLeft: number | null) => {
-    if (daysLeft === null) return 'text-slate-400';
+    if (daysLeft === null) return 'text-muted-foreground';
     if (daysLeft <= 7) return 'text-red-600';
     if (daysLeft <= 14) return 'text-amber-600';
     return 'text-emerald-600';
@@ -62,12 +62,12 @@ export default function StockForecasting() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <BarChart3 className="w-4 h-4 text-slate-500" />
-          <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Pronostico de Stock</span>
+          <BarChart3 className="w-4 h-4 text-muted-foreground" />
+          <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Pronostico de Stock</span>
         </div>
         <div className="flex items-center gap-2">
           <select value={days} onChange={e => setDays(Number(e.target.value))}
-            className="bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500">
+            className="bg-card border border-border rounded-lg px-3 py-1.5 text-xs focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-primary/20">
             <option value={15}>15 dias</option>
             <option value={30}>30 dias</option>
             <option value={60}>60 dias</option>
@@ -89,44 +89,44 @@ export default function StockForecasting() {
 
       {loading ? (
         <div className="space-y-2">
-          {[1, 2, 3].map(i => <div key={i} className="h-20 bg-slate-100 rounded-xl animate-pulse" />)}
+          {[1, 2, 3].map(i => <div key={i} className="h-20 bg-muted rounded-xl animate-pulse" />)}
         </div>
       ) : forecasts.length === 0 ? (
-        <div className="text-center py-12 bg-slate-50 border border-dashed border-slate-300 rounded-xl">
+        <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
           <BarChart3 className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-          <p className="text-xs text-slate-400">Sin datos suficientes para pronosticar</p>
+          <p className="text-xs text-muted-foreground">Sin datos suficientes para pronosticar</p>
         </div>
       ) : (
         <div className="space-y-2">
           {forecasts.map(f => (
-            <div key={f.id} className={`bg-white border rounded-xl p-4 transition-colors ${f.recommended_reorder ? 'border-red-200 bg-red-50/30' : 'border-slate-200'}`}>
+            <div key={f.id} className={`bg-card border rounded-xl p-4 transition-colors ${f.recommended_reorder ? 'border-red-200 bg-red-50/30' : 'border-border'}`}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+                  <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">
                     <Package className="w-5 h-5 text-slate-600" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-slate-900">{f.name}</p>
-                    <p className="text-[9px] text-slate-500">{f.sku}</p>
+                    <p className="text-sm font-medium text-foreground">{f.name}</p>
+                    <p className="text-[9px] text-muted-foreground">{f.sku}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="text-center">
-                    <p className="text-lg font-bold text-slate-900">{f.current_stock}</p>
-                    <p className="text-[9px] text-slate-500">Stock Actual</p>
+                    <p className="text-lg font-bold text-foreground">{f.current_stock}</p>
+                    <p className="text-[9px] text-muted-foreground">Stock Actual</p>
                   </div>
                   <div className="text-center">
                     <p className={`text-lg font-bold ${urgencyColor(f.projected_stockout_days)}`}>
                       {f.projected_stockout_days !== null ? `${f.projected_stockout_days}d` : '—'}
                     </p>
-                    <p className="text-[9px] text-slate-500">Agotamiento</p>
+                    <p className="text-[9px] text-muted-foreground">Agotamiento</p>
                   </div>
                   <div className="text-center">
                     <div className="flex items-center gap-1">
                       {trendIcon(f.demand_trend)}
-                      <p className="text-xs font-medium text-slate-700">{trendLabel(f.demand_trend)}</p>
+                      <p className="text-xs font-medium text-foreground">{trendLabel(f.demand_trend)}</p>
                     </div>
-                    <p className="text-[9px] text-slate-500">{f.adjusted_daily_demand}/dia</p>
+                    <p className="text-[9px] text-muted-foreground">{f.adjusted_daily_demand}/dia</p>
                   </div>
                   {f.recommended_reorder && (
                     <div className="bg-red-100 border border-red-200 rounded-lg px-3 py-2">

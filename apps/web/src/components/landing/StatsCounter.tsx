@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -65,10 +65,10 @@ export function StatsCounter({ value, decimals = 0, prefix = '', suffix = '', la
 
   return (
     <div ref={ref} className={cn('text-center', className)}>
-      <p className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tabular-nums">
+      <p className="text-3xl sm:text-4xl font-bold text-foreground dark:text-white tabular-nums">
         {prefix}{formatted}{suffix}
       </p>
-      <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{label}</p>
+      <p className="mt-2 text-sm text-muted-foreground dark:text-muted-foreground">{label}</p>
     </div>
   );
 }

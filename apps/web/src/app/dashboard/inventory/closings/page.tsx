@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Lock, Unlock, Calendar, CheckCircle2, Clock, AlertTriangle } from 'lucide-react';
@@ -54,11 +54,11 @@ export default function ClosingsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Cierres de Inventario</h1>
-          <p className="text-sm text-slate-500 mt-1">Cierres mensuales de inventario y conteos físicos</p>
+          <h1 className="text-xl font-bold text-foreground">Cierres de Inventario</h1>
+          <p className="text-sm text-muted-foreground mt-1">Cierres mensuales de inventario y conteos físicos</p>
         </div>
         <select value={selectedYear} onChange={e => setSelectedYear(e.target.value)}
-          className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+          className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
           <option value="2026">2026</option>
           <option value="2025">2025</option>
           <option value="2024">2024</option>
@@ -66,21 +66,21 @@ export default function ClosingsPage() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Cierres</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">{closings.length}</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Cierres</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{closings.length}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cerrados</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cerrados</p>
           <p className="text-2xl font-bold text-emerald-600 mt-1">{closings.filter(c => c.status === 'closed').length}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Abiertos</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Abiertos</p>
           <p className="text-2xl font-bold text-amber-600 mt-1">{closings.filter(c => c.status === 'open').length}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Último Cierre</p>
-          <p className="text-sm font-bold text-slate-900 mt-1">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Último Cierre</p>
+          <p className="text-sm font-bold text-foreground mt-1">
             {closings.filter(c => c.status === 'closed').length > 0
               ? closings.filter(c => c.status === 'closed')[0].period
               : '—'}
@@ -88,9 +88,9 @@ export default function ClosingsPage() {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-card border border-border rounded-xl shadow-sm">
         <div className="px-6 py-4 border-b border-slate-100">
-          <h3 className="text-sm font-semibold text-slate-900">Calendario de Cierres {selectedYear}</h3>
+          <h3 className="text-sm font-semibold text-foreground">Calendario de Cierres {selectedYear}</h3>
         </div>
         <div className="p-6">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -104,12 +104,12 @@ export default function ClosingsPage() {
               const st = isClosed ? statusConfig.closed : isOpen ? statusConfig.open : { label: 'Sin Datos', variant: 'neutral' as const, icon: Clock };
 
               return (
-                <div key={i} className={`border rounded-xl p-4 transition-colors ${isClosed ? 'bg-emerald-50 border-emerald-200' : isOpen ? 'bg-amber-50 border-amber-200' : 'bg-slate-50 border-slate-200'}`}>
+                <div key={i} className={`border rounded-xl p-4 transition-colors ${isClosed ? 'bg-emerald-50 border-emerald-200' : isOpen ? 'bg-amber-50 border-amber-200' : 'bg-muted border-border'}`}>
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-semibold text-slate-900">{month}</p>
+                    <p className="text-sm font-semibold text-foreground">{month}</p>
                     <Badge variant={st.variant}>{st.label}</Badge>
                   </div>
-                  <p className="text-xs text-slate-500">{monthClosings.length} conteo{monthClosings.length !== 1 ? 's' : ''}</p>
+                  <p className="text-xs text-muted-foreground">{monthClosings.length} conteo{monthClosings.length !== 1 ? 's' : ''}</p>
                   {isClosed && monthClosings[0]?.closed_at && (
                     <p className="text-[10px] text-emerald-600 mt-1">Cerrado: {monthClosings[0].closed_at.split('T')[0]}</p>
                   )}
@@ -120,35 +120,35 @@ export default function ClosingsPage() {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-card border border-border rounded-xl shadow-sm">
         <div className="px-6 py-4 border-b border-slate-100">
-          <h3 className="text-sm font-semibold text-slate-900">Historial de Conteos</h3>
+          <h3 className="text-sm font-semibold text-foreground">Historial de Conteos</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Bodega</th>
-                <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Productos</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cerrado Por</th>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Bodega</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Productos</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cerrado Por</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={5} className="px-4 py-12 text-center text-sm text-slate-400">Cargando...</td></tr>
+                <tr><td colSpan={5} className="px-4 py-12 text-center text-sm text-muted-foreground">Cargando...</td></tr>
               ) : closings.length === 0 ? (
-                <tr><td colSpan={5} className="px-4 py-12 text-center text-sm text-slate-400">No hay cierres registrados</td></tr>
+                <tr><td colSpan={5} className="px-4 py-12 text-center text-sm text-muted-foreground">No hay cierres registrados</td></tr>
               ) : closings.map(c => {
                 const st = statusConfig[c.status] || statusConfig.open;
                 return (
-                  <tr key={c.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3 text-xs text-slate-900">{c.period}</td>
-                    <td className="px-4 py-3 text-xs text-slate-700">{c.warehouse_name}</td>
-                    <td className="px-4 py-3 text-xs text-slate-700 text-center">{c.total_products}</td>
+                  <tr key={c.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <td className="px-4 py-3 text-xs text-foreground">{c.period}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{c.warehouse_name}</td>
+                    <td className="px-4 py-3 text-xs text-foreground text-center">{c.total_products}</td>
                     <td className="px-4 py-3"><Badge variant={st.variant}>{st.label}</Badge></td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{c.closed_by || '—'}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{c.closed_by || '—'}</td>
                   </tr>
                 );
               })}

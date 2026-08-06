@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { Upload, FileText, CheckCircle, XCircle, AlertTriangle, Download, Trash2 } from 'lucide-react';
@@ -121,18 +121,18 @@ export default function SupplierCatalogImport() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Upload className="w-4 h-4 text-slate-500" />
-          <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Importar Catalogo Proveedor</span>
+          <Upload className="w-4 h-4 text-muted-foreground" />
+          <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Importar Catalogo Proveedor</span>
         </div>
       </div>
 
-      <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+      <div className="bg-muted border border-border rounded-xl p-4 space-y-3">
         <div className="grid grid-cols-2 gap-3">
           <input type="text" value={catalogName} onChange={e => setCatalogName(e.target.value)}
-            className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+            className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
             placeholder="Nombre del catalogo" />
           <select value={selectedSupplier} onChange={e => setSelectedSupplier(e.target.value)}
-            className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+            className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
             <option value="">Proveedor (opcional)</option>
             {suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
           </select>
@@ -141,43 +141,43 @@ export default function SupplierCatalogImport() {
           <input ref={fileRef} type="file" accept=".csv,.txt" onChange={handleFile}
             className="hidden" id="catalog-upload" />
           <label htmlFor="catalog-upload"
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-sm font-medium text-slate-700 cursor-pointer transition-colors">
+            className="flex items-center gap-2 px-4 py-2 bg-card border border-border hover:bg-muted rounded-lg text-sm font-medium text-foreground cursor-pointer transition-colors">
             <FileText className="w-4 h-4" /> Seleccionar CSV
           </label>
-          {importing && <span className="text-xs text-slate-500">Importando...</span>}
+          {importing && <span className="text-xs text-muted-foreground">Importando...</span>}
         </div>
-        <p className="text-[9px] text-slate-400">
+        <p className="text-[9px] text-muted-foreground">
           Formato CSV: name, sku, cost_price, sale_price, barcode, description (encabezados en la primera fila)
         </p>
       </div>
 
       {loading ? (
         <div className="space-y-2">
-          {[1, 2].map(i => <div key={i} className="h-16 bg-slate-100 rounded-xl animate-pulse" />)}
+          {[1, 2].map(i => <div key={i} className="h-16 bg-muted rounded-xl animate-pulse" />)}
         </div>
       ) : catalogs.length === 0 ? (
-        <div className="text-center py-12 bg-slate-50 border border-dashed border-slate-300 rounded-xl">
+        <div className="text-center py-12 bg-muted border border-dashed border-slate-300 rounded-xl">
           <Upload className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-          <p className="text-xs text-slate-400">Sin importaciones de catalogo</p>
+          <p className="text-xs text-muted-foreground">Sin importaciones de catalogo</p>
         </div>
       ) : (
         <div className="space-y-2">
           {catalogs.map(c => {
             const cfg = statusConfig[c.status] || statusConfig.pending;
             return (
-              <div key={c.id} className="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-xl dark:bg-slate-900 dark:border-slate-800">
+              <div key={c.id} className="flex items-center justify-between p-3 bg-card border border-border rounded-xl dark:bg-primary dark:border-slate-800">
                 <div className="flex items-center gap-3">
-                  <FileText className="w-5 h-5 text-slate-500" />
+                  <FileText className="w-5 h-5 text-muted-foreground" />
                   <div>
-                    <p className="text-sm font-medium text-slate-900">{c.name}</p>
-                    <p className="text-[9px] text-slate-500">
+                    <p className="text-sm font-medium text-foreground">{c.name}</p>
+                    <p className="text-[9px] text-muted-foreground">
                       {c.supplier_name || 'Sin proveedor'} | {new Date(c.created_at).toLocaleDateString('es-CL')}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="text-right">
-                    <p className="text-xs text-slate-700">{c.imported_rows}/{c.total_rows} importados</p>
+                    <p className="text-xs text-foreground">{c.imported_rows}/{c.total_rows} importados</p>
                     {c.error_rows > 0 && <p className="text-[9px] text-red-600">{c.error_rows} errores</p>}
                   </div>
                   <cfg.icon className={`w-5 h-5 ${cfg.color}`} />

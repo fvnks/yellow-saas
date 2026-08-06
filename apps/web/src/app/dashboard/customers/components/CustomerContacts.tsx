@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, X, Save, Phone, Mail, User } from 'lucide-react';
@@ -145,13 +145,13 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
 
   if (loading) {
     return (
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
         <div className="px-6 py-4 border-b border-slate-100">
           <div className="h-4 w-40 bg-slate-200 rounded animate-pulse" />
         </div>
         <div className="p-6 space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-12 bg-slate-100 rounded animate-pulse" />
+            <div key={i} className="h-12 bg-muted rounded animate-pulse" />
           ))}
         </div>
       </div>
@@ -159,12 +159,12 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+    <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
       <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-900">Contactos</h3>
+        <h3 className="text-sm font-semibold text-foreground">Contactos</h3>
         <button
           onClick={handleOpenNew}
-          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+          className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
         >
           <Plus className="w-4 h-4" />
           Nuevo Contacto
@@ -174,57 +174,57 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
       {contacts.length === 0 ? (
         <div className="text-center py-12">
           <User className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-          <p className="text-sm text-slate-500">No hay contactos registrados</p>
+          <p className="text-sm text-muted-foreground">No hay contactos registrados</p>
         </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Rol</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Email</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Teléfono</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Móvil</th>
-                <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Principal</th>
-                <th className="text-center w-24 px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nombre</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Rol</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Email</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Teléfono</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Móvil</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Principal</th>
+                <th className="text-center w-24 px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {contacts.map(contact => (
-                <tr key={contact.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                <tr key={contact.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
                         <User className="w-4 h-4 text-indigo-600" />
                       </div>
-                      <span className="text-xs font-medium text-slate-900">{contact.name}</span>
+                      <span className="text-xs font-medium text-foreground">{contact.name}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-700">{contact.role || '—'}</td>
+                  <td className="px-4 py-3 text-xs text-foreground">{contact.role || '—'}</td>
                   <td className="px-4 py-3">
                     {contact.email ? (
                       <div className="flex items-center gap-1 text-xs">
-                        <Mail className="w-3 h-3 text-slate-400" />
-                        <a href={`mailto:${contact.email}`} className="text-slate-700 hover:text-slate-900">{contact.email}</a>
+                        <Mail className="w-3 h-3 text-muted-foreground" />
+                        <a href={`mailto:${contact.email}`} className="text-foreground hover:text-foreground">{contact.email}</a>
                       </div>
-                    ) : <span className="text-xs text-slate-400">—</span>}
+                    ) : <span className="text-xs text-muted-foreground">—</span>}
                   </td>
                   <td className="px-4 py-3">
                     {contact.phone ? (
                       <div className="flex items-center gap-1 text-xs">
-                        <Phone className="w-3 h-3 text-slate-400" />
-                        <a href={`tel:${contact.phone}`} className="text-slate-700 hover:text-slate-900">{contact.phone}</a>
+                        <Phone className="w-3 h-3 text-muted-foreground" />
+                        <a href={`tel:${contact.phone}`} className="text-foreground hover:text-foreground">{contact.phone}</a>
                       </div>
-                    ) : <span className="text-xs text-slate-400">—</span>}
+                    ) : <span className="text-xs text-muted-foreground">—</span>}
                   </td>
                   <td className="px-4 py-3">
                     {contact.mobile ? (
                       <div className="flex items-center gap-1 text-xs">
-                        <Phone className="w-3 h-3 text-slate-400" />
-                        <a href={`tel:${contact.mobile}`} className="text-slate-700 hover:text-slate-900">{contact.mobile}</a>
+                        <Phone className="w-3 h-3 text-muted-foreground" />
+                        <a href={`tel:${contact.mobile}`} className="text-foreground hover:text-foreground">{contact.mobile}</a>
                       </div>
-                    ) : <span className="text-xs text-slate-400">—</span>}
+                    ) : <span className="text-xs text-muted-foreground">—</span>}
                   </td>
                   <td className="px-4 py-3 text-center">
                     {contact.is_primary ? (
@@ -232,21 +232,21 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
                         Principal
                       </span>
                     ) : (
-                      <span className="text-xs text-slate-400">—</span>
+                      <span className="text-xs text-muted-foreground">—</span>
                     )}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-center gap-1">
                       <button
                         onClick={() => handleOpenEdit(contact)}
-                        className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"
+                        className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"
                         aria-label="Editar"
                       >
                         <Edit className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDelete(contact.id, contact.name)}
-                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                        className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
                         aria-label="Eliminar"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -262,46 +262,46 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
 
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900lg mx-4">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900">
+          <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarylg mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">
                 {editingId ? 'Editar Contacto' : 'Nuevo Contacto'}
               </h2>
-              <button onClick={handleClose} className="text-slate-400 hover:text-slate-600">
+              <button onClick={handleClose} className="text-muted-foreground hover:text-slate-600">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="p-6 space-y-4">
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Nombre *</label>
+                <label className="block text-xs font-medium text-foreground">Nombre *</label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={e => update('name', e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                   placeholder="Nombre del contacto"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Rol</label>
+                  <label className="block text-xs font-medium text-foreground">Rol</label>
                   <input
                     type="text"
                     value={form.role}
                     onChange={e => update('role', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="Ej: Gerente Compra"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Email</label>
+                  <label className="block text-xs font-medium text-foreground">Email</label>
                   <input
                     type="email"
                     value={form.email}
                     onChange={e => update('email', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="contacto@empresa.cl"
                   />
                 </div>
@@ -309,22 +309,22 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Teléfono</label>
+                  <label className="block text-xs font-medium text-foreground">Teléfono</label>
                   <input
                     type="tel"
                     value={form.phone}
                     onChange={e => update('phone', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="+56 2 2345 6789"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Móvil</label>
+                  <label className="block text-xs font-medium text-foreground">Móvil</label>
                   <input
                     type="tel"
                     value={form.mobile}
                     onChange={e => update('mobile', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                     placeholder="+56 9 1234 5678"
                   />
                 </div>
@@ -338,34 +338,34 @@ export default function CustomerContacts({ customerId, onUpdate }: Props) {
                     onChange={e => update('is_primary', e.target.checked)}
                     className="sr-only peer"
                   />
-                  <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                  <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
                 </label>
-                <span className="text-xs font-medium text-slate-700">Contacto principal</span>
+                <span className="text-xs font-medium text-foreground">Contacto principal</span>
               </div>
 
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Notas</label>
+                <label className="block text-xs font-medium text-foreground">Notas</label>
                 <textarea
                   value={form.notes}
                   onChange={e => update('notes', e.target.value)}
                   rows={2}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                   placeholder="Notas adicionales..."
                 />
               </div>
             </div>
 
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button
                 onClick={handleClose}
-                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"
+                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 {saving ? 'Guardando...' : 'Guardar'}

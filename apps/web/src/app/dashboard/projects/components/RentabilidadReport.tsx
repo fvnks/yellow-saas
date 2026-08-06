@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useMemo } from 'react';
 import { TrendingUp, TrendingDown, DollarSign, BarChart3, Download } from 'lucide-react';
@@ -137,53 +137,53 @@ export default function RentabilidadReport({ project, costs, expenses, timesheet
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-900">Reporte de Rentabilidad</h3>
-        <button onClick={handleExportPDF} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+        <h3 className="text-sm font-semibold text-foreground">Reporte de Rentabilidad</h3>
+        <button onClick={handleExportPDF} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Download className="w-4 h-4" /> Exportar PDF
         </button>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Presupuesto</p>
-          <p className="text-xl font-bold text-slate-900 mt-1">{formatCurrency(data.budget)}</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Presupuesto</p>
+          <p className="text-xl font-bold text-foreground mt-1">{formatCurrency(data.budget)}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Costo Total</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Costo Total</p>
           <p className="text-xl font-bold text-rose-600 mt-1">{formatCurrency(data.totalCost)}</p>
-          <p className="text-[9px] text-slate-400 mt-0.5">{data.totalCosts > 0 ? `Compras/Inv: ${formatCurrency(data.totalCosts)}` : ''} {data.totalExpenses > 0 ? `Gastos: ${formatCurrency(data.totalExpenses)}` : ''}</p>
+          <p className="text-[9px] text-muted-foreground mt-0.5">{data.totalCosts > 0 ? `Compras/Inv: ${formatCurrency(data.totalCosts)}` : ''} {data.totalExpenses > 0 ? `Gastos: ${formatCurrency(data.totalExpenses)}` : ''}</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Margen</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Margen</p>
           <p className={`text-xl font-bold mt-1 ${data.margin >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{formatCurrency(data.margin)}</p>
-          <p className="text-[9px] text-slate-400 mt-0.5">{data.marginPercent}% del presupuesto</p>
+          <p className="text-[9px] text-muted-foreground mt-0.5">{data.marginPercent}% del presupuesto</p>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Costo/Hora</p>
-          <p className="text-xl font-bold text-slate-900 mt-1">{formatCurrency(data.costPerHour)}</p>
-          <p className="text-[9px] text-slate-400 mt-0.5">{data.billableHours}h facturables</p>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Costo/Hora</p>
+          <p className="text-xl font-bold text-foreground mt-1">{formatCurrency(data.costPerHour)}</p>
+          <p className="text-[9px] text-muted-foreground mt-0.5">{data.billableHours}h facturables</p>
         </div>
       </div>
 
       {/* Margin bar */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             {data.margin >= 0 ? <TrendingUp className="w-5 h-5 text-emerald-600" /> : <TrendingDown className="w-5 h-5 text-red-600" />}
             <div>
-              <p className="text-sm font-semibold text-slate-900">Margen del Proyecto</p>
-              <p className="text-xs text-slate-500">{data.margin >= 0 ? 'Proyecto rentable' : 'Proyecto con perdida'}</p>
+              <p className="text-sm font-semibold text-foreground">Margen del Proyecto</p>
+              <p className="text-xs text-muted-foreground">{data.margin >= 0 ? 'Proyecto rentable' : 'Proyecto con perdida'}</p>
             </div>
           </div>
           <span className={`text-2xl font-bold ${data.margin >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{data.marginPercent}%</span>
         </div>
-        <div className="w-full h-4 bg-slate-100 rounded-full overflow-hidden">
+        <div className="w-full h-4 bg-muted rounded-full overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-500 ${data.marginPercent >= 20 ? 'bg-emerald-500' : data.marginPercent >= 0 ? 'bg-amber-500' : 'bg-red-500'}`}
             style={{ width: `${Math.min(Math.max(data.marginPercent, 0), 100)}%` }}
           />
         </div>
-        <div className="flex items-center justify-between mt-2 text-xs text-slate-400">
+        <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
           <span>0%</span>
           <span>50%</span>
           <span>100%</span>
@@ -191,8 +191,8 @@ export default function RentabilidadReport({ project, costs, expenses, timesheet
       </div>
 
       {/* Breakdown */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
-        <h4 className="text-sm font-semibold text-slate-900 mb-4">Desglose de Costos</h4>
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
+        <h4 className="text-sm font-semibold text-foreground mb-4">Desglose de Costos</h4>
         <div className="space-y-3">
           {[
             { label: 'Compras / Inventario', value: data.totalCosts, icon: DollarSign },
@@ -202,7 +202,7 @@ export default function RentabilidadReport({ project, costs, expenses, timesheet
           ].map((item, i) => (
             <div key={i} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
               <span className="text-sm text-slate-600">{item.label}</span>
-              <span className="text-sm font-semibold text-slate-900">
+              <span className="text-sm font-semibold text-foreground">
                 {item.unit ? `${Number(item.value).toFixed(1)}${item.unit}` : formatCurrency(Number(item.value))}
               </span>
             </div>

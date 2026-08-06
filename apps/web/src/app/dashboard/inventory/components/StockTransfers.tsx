@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { ArrowRightLeft, Plus, Package, MapPin, Clock, CheckCircle, XCircle, Truck, X } from 'lucide-react';
@@ -124,60 +124,60 @@ export default function StockTransfers() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <ArrowRightLeft className="w-4 h-4 text-slate-500" />
-          <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">
+          <ArrowRightLeft className="w-4 h-4 text-muted-foreground" />
+          <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
             Transferencias ({transfers.length})
           </span>
         </div>
         <button onClick={() => setShowCreate(!showCreate)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-medium transition-colors">
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary hover:bg-primary/90 text-white rounded-lg text-xs font-medium transition-colors">
           <Plus className="w-3.5 h-3.5" /> Nueva Transferencia
         </button>
       </div>
 
       {showCreate && (
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+        <div className="bg-muted border border-border rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-700">Nueva Transferencia</span>
+            <span className="text-xs font-medium text-foreground">Nueva Transferencia</span>
             <button onClick={() => setShowCreate(false)} className="p-1 hover:bg-slate-200 rounded">
-              <X className="w-3 h-3 text-slate-400" />
+              <X className="w-3 h-3 text-muted-foreground" />
             </button>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <select value={form.product_id} onChange={e => setForm({ ...form, product_id: e.target.value })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
               <option value="">Producto...</option>
               {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
             <select value={form.from_warehouse_id} onChange={e => setForm({ ...form, from_warehouse_id: e.target.value })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
               <option value="">Origen...</option>
               {warehouses.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}
             </select>
             <div className="flex items-center justify-center">
-              <ArrowRightLeft className="w-5 h-5 text-slate-400" />
+              <ArrowRightLeft className="w-5 h-5 text-muted-foreground" />
             </div>
             <select value={form.to_warehouse_id} onChange={e => setForm({ ...form, to_warehouse_id: e.target.value })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
               <option value="">Destino...</option>
               {warehouses.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}
             </select>
             <input type="number" value={form.quantity} onChange={e => setForm({ ...form, quantity: Number(e.target.value) })}
-              min={1} className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" placeholder="Cantidad" />
+              min={1} className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" placeholder="Cantidad" />
             <input type="text" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })}
-              className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" placeholder="Notas (opcional)" />
+              className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-slate-700 dark:text-white" placeholder="Notas (opcional)" />
           </div>
           <button onClick={handleCreate}
-            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Crear Transferencia
           </button>
         </div>
       )}
 
       {transfers.length === 0 ? (
-        <div className="text-center py-8 bg-slate-50 border border-dashed border-slate-300 rounded-xl">
+        <div className="text-center py-8 bg-muted border border-dashed border-slate-300 rounded-xl">
           <ArrowRightLeft className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-          <p className="text-xs text-slate-400">Sin transferencias registradas</p>
+          <p className="text-xs text-muted-foreground">Sin transferencias registradas</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -186,19 +186,19 @@ export default function StockTransfers() {
             return (
               <div key={t.id} className={`flex items-center justify-between p-3 rounded-xl border ${config.bg}`}>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 bg-card rounded-lg flex items-center justify-center">
                     <Package className="w-4 h-4 text-slate-600" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-slate-900">{t.product_name}</p>
-                    <p className="text-[9px] text-slate-500">
+                    <p className="text-sm font-medium text-foreground">{t.product_name}</p>
+                    <p className="text-[9px] text-muted-foreground">
                       {t.from_warehouse_name} <ArrowRightLeft className="w-3 h-3 inline" /> {t.to_warehouse_name}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="text-right">
-                    <p className="text-sm font-bold text-slate-900">{t.quantity}</p>
+                    <p className="text-sm font-bold text-foreground">{t.quantity}</p>
                     <p className={`text-[9px] font-semibold ${config.color}`}>{config.label}</p>
                   </div>
                   {t.status === 'pending' && (

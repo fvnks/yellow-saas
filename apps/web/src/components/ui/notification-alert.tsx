@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, type ReactNode } from 'react';
 import { X, AlertCircle, CheckCircle2, AlertTriangle, Info } from 'lucide-react';
@@ -79,7 +79,7 @@ export function NotificationAlert({
       {dismissible && (
         <button
           onClick={handleDismiss}
-          className={`self-start p-0.5 rounded hover:bg-slate-800/5 transition-colors ${styles.iconColor}`}
+          className={`self-start p-0.5 rounded hover:bg-primary/90/5 transition-colors ${styles.iconColor}`}
         >
           <X className="size-4" />
           <span className="sr-only">Cerrar</span>

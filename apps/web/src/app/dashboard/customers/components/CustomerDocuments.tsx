@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { Upload, FileText, Trash2, X, File, Image, FileSpreadsheet, FileCode, HardDrive } from 'lucide-react';
@@ -26,7 +26,7 @@ const categoryConfig: Record<string, { label: string; color: string }> = {
   tax_id: { label: 'Tributario', color: 'bg-amber-50 text-amber-700 border-amber-200' },
   invoice: { label: 'Factura', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
   certificate: { label: 'Certificado', color: 'bg-purple-50 text-purple-700 border-purple-200' },
-  other: { label: 'Otro', color: 'bg-slate-100 text-slate-600 border-slate-200' },
+  other: { label: 'Otro', color: 'bg-muted text-slate-600 border-border' },
 };
 
 function getFileIcon(mimeType: string | null) {
@@ -119,10 +119,10 @@ export default function CustomerDocuments({ customerId }: CustomerDocumentsProps
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-900">Documentos Adjuntos</h3>
+        <h3 className="text-sm font-semibold text-foreground">Documentos Adjuntos</h3>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors"
+          className="bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors"
         >
           <Upload className="w-3.5 h-3.5" />
           Subir Documento
@@ -132,13 +132,13 @@ export default function CustomerDocuments({ customerId }: CustomerDocumentsProps
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="animate-pulse bg-slate-100 rounded-xl h-32" />
+            <div key={i} className="animate-pulse bg-muted rounded-xl h-32" />
           ))}
         </div>
       ) : documents.length === 0 ? (
-        <div className="bg-white border border-slate-200 rounded-xl p-8 text-center">
+        <div className="bg-card border border-border rounded-xl p-8 text-center">
           <FileText className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-          <p className="text-sm text-slate-500">No hay documentos adjuntos</p>
+          <p className="text-sm text-muted-foreground">No hay documentos adjuntos</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -146,18 +146,18 @@ export default function CustomerDocuments({ customerId }: CustomerDocumentsProps
             const Icon = getFileIcon(doc.mime_type);
             const cat = categoryConfig[doc.category] || categoryConfig.other;
             return (
-              <div key={doc.id} className="bg-white border border-slate-200 rounded-xl p-4 dark:bg-slate-900 dark:border-slate-800 hover:shadow-sm transition-shadow">
+              <div key={doc.id} className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-slate-800 hover:shadow-sm transition-shadow">
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-slate-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-5 h-5 text-slate-500" />
+                  <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Icon className="w-5 h-5 text-muted-foreground" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-slate-900 truncate">{doc.name}</p>
-                    {doc.description && <p className="text-[10px] text-slate-500 mt-0.5 truncate">{doc.description}</p>}
+                    <p className="text-xs font-medium text-foreground truncate">{doc.name}</p>
+                    {doc.description && <p className="text-[10px] text-muted-foreground mt-0.5 truncate">{doc.description}</p>}
                   </div>
                   <button
                     onClick={() => setShowDeleteConfirm(doc.id)}
-                    className="text-slate-400 hover:text-rose-600 transition-colors flex-shrink-0"
+                    className="text-muted-foreground hover:text-rose-600 transition-colors flex-shrink-0"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -167,10 +167,10 @@ export default function CustomerDocuments({ customerId }: CustomerDocumentsProps
                     {cat.label}
                   </span>
                   {doc.file_size && (
-                    <span className="text-[10px] text-slate-400">{formatFileSize(doc.file_size)}</span>
+                    <span className="text-[10px] text-muted-foreground">{formatFileSize(doc.file_size)}</span>
                   )}
                 </div>
-                <p className="text-[10px] text-slate-400 mt-2">
+                <p className="text-[10px] text-muted-foreground mt-2">
                   {new Date(doc.created_at).toLocaleDateString('es-CL')}
                 </p>
               </div>
@@ -181,40 +181,40 @@ export default function CustomerDocuments({ customerId }: CustomerDocumentsProps
 
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900lg mx-4">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900">Subir Documento</h2>
-              <button onClick={() => { setShowModal(false); setFileData(null); }} className="text-slate-400 hover:text-slate-600">
+          <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarylg mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">Subir Documento</h2>
+              <button onClick={() => { setShowModal(false); setFileData(null); }} className="text-muted-foreground hover:text-slate-600">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="p-6 space-y-4">
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Nombre *</label>
+                <label className="block text-xs font-medium text-foreground">Nombre *</label>
                 <input
                   type="text"
                   value={newDoc.name}
                   onChange={e => setNewDoc({ ...newDoc, name: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Nombre del documento"
                 />
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Descripción</label>
+                <label className="block text-xs font-medium text-foreground">Descripción</label>
                 <textarea
                   value={newDoc.description}
                   onChange={e => setNewDoc({ ...newDoc, description: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent resize-none"
                   rows={2}
                   placeholder="Descripción opcional"
                 />
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Categoría</label>
+                <label className="block text-xs font-medium text-foreground">Categoría</label>
                 <select
                   value={newDoc.category}
                   onChange={e => setNewDoc({ ...newDoc, category: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                 >
                   {Object.entries(categoryConfig).map(([key, val]) => (
                     <option key={key} value={key}>{val.label}</option>
@@ -222,29 +222,29 @@ export default function CustomerDocuments({ customerId }: CustomerDocumentsProps
                 </select>
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Archivo *</label>
+                <label className="block text-xs font-medium text-foreground">Archivo *</label>
                 <input
                   ref={fileInputRef}
                   type="file"
                   onChange={handleFileSelect}
-                  className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 file:cursor-pointer"
+                  className="w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-muted file:text-foreground hover:file:bg-slate-200 file:cursor-pointer"
                 />
                 {fileData && (
-                  <p className="text-[10px] text-slate-500 mt-1">{fileData.name} ({formatFileSize(fileData.size)})</p>
+                  <p className="text-[10px] text-muted-foreground mt-1">{fileData.name} ({formatFileSize(fileData.size)})</p>
                 )}
               </div>
             </div>
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button
                 onClick={() => { setShowModal(false); setFileData(null); }}
-                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleSave}
                 disabled={!newDoc.name || !fileData || saving}
-                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
               >
                 {saving ? 'Guardando...' : 'Guardar'}
               </button>
@@ -255,13 +255,13 @@ export default function CustomerDocuments({ customerId }: CustomerDocumentsProps
 
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900sm mx-4 p-6">
-            <h3 className="text-sm font-semibold text-slate-900 mb-2">Eliminar documento</h3>
-            <p className="text-xs text-slate-500 mb-4">¿Estás seguro de que deseas eliminar este documento? Esta acción no se puede deshacer.</p>
+          <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarysm mx-4 p-6">
+            <h3 className="text-sm font-semibold text-foreground mb-2">Eliminar documento</h3>
+            <p className="text-xs text-muted-foreground mb-4">¿Estás seguro de que deseas eliminar este documento? Esta acción no se puede deshacer.</p>
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowDeleteConfirm(null)}
-                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Badge, Button, Select, Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@yellow-erp/ui';
@@ -126,8 +126,8 @@ export default function PWAOfflineQueuePage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Cola Offline (PWA)</h1>
-          <p className="text-sm text-slate-500 mt-1">Gestiona acciones realizadas offline pendientes de sincronizar</p>
+          <h1 className="text-xl font-bold text-foreground">Cola Offline (PWA)</h1>
+          <p className="text-sm text-muted-foreground mt-1">Gestiona acciones realizadas offline pendientes de sincronizar</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={loadData}><RefreshCw className="w-4 h-4 mr-2" /> Refrescar</Button>
@@ -155,7 +155,7 @@ export default function PWAOfflineQueuePage() {
           ) : items.length === 0 ? (
             <div className="text-center py-12">
               <Database className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <p className="text-sm text-slate-500">No hay elementos en la cola</p>
+              <p className="text-sm text-muted-foreground">No hay elementos en la cola</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -177,34 +177,34 @@ export default function PWAOfflineQueuePage() {
                 </TableHeader>
                 <TableBody>
                   {items.map(item => (
-                    <TableRow key={item.id} className={`border-b border-slate-100 hover:bg-slate-50 transition-colors ${item.status === 'failed' ? 'bg-rose-50/50' : item.status === 'conflict' ? 'bg-amber-50/50' : ''}`}>
+                    <TableRow key={item.id} className={`border-b border-slate-100 hover:bg-muted transition-colors ${item.status === 'failed' ? 'bg-rose-50/50' : item.status === 'conflict' ? 'bg-amber-50/50' : ''}`}>
                       <TableCell className="font-mono text-xs text-slate-600">{item.id.slice(0,8)}...</TableCell>
                       <TableCell className="text-xs">
                         {item.user ? (
                           <div>
-                            <p className="font-medium text-slate-900">{item.user.full_name || item.user.email}</p>
-                            <p className="text-[9px] text-slate-400">{item.user.email}</p>
+                            <p className="font-medium text-foreground">{item.user.full_name || item.user.email}</p>
+                            <p className="text-[9px] text-muted-foreground">{item.user.email}</p>
                           </div>
                         ) : (
-                          <span className="text-slate-400 text-xs">—</span>
+                          <span className="text-muted-foreground text-xs">—</span>
                         )}
                       </TableCell>
                       <TableCell>
                         <Badge variant={item.action_type.includes('stock') ? 'success' : item.action_type.includes('pick') ? 'warning' : item.action_type.includes('count') ? 'info' : 'secondary'} className="text-[9px] capitalize">{item.action_type.replace('_', ' ')}</Badge>
                       </TableCell>
-                      <TableCell className="text-xs font-medium text-slate-700 capitalize">{item.entity_type}</TableCell>
-                      <TableCell className="text-xs font-mono text-slate-500">{item.entity_id || '—'}</TableCell>
+                      <TableCell className="text-xs font-medium text-foreground capitalize">{item.entity_type}</TableCell>
+                      <TableCell className="text-xs font-mono text-muted-foreground">{item.entity_id || '—'}</TableCell>
                       <TableCell>
                         <Badge variant={getStatusBadge(item.status).variant}>{getStatusBadge(item.status).label}</Badge>
                       </TableCell>
                       <TableCell className="text-center">
-                        <span className={item.retry_count > 0 ? 'text-amber-600 font-bold' : 'text-slate-500'}>
+                        <span className={item.retry_count > 0 ? 'text-amber-600 font-bold' : 'text-muted-foreground'}>
                           {item.retry_count}
                         </span>
                       </TableCell>
-                      <TableCell className="text-xs text-slate-500 max-w-[180px] truncate">{item.last_error || '—'}</TableCell>
-                      <TableCell className="text-xs text-slate-500">{new Date(item.created_at).toLocaleString('es-CL')}</TableCell>
-                      <TableCell className="text-xs text-slate-500">{item.synced_at ? new Date(item.synced_at).toLocaleString('es-CL') : '—'}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground max-w-[180px] truncate">{item.last_error || '—'}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{new Date(item.created_at).toLocaleString('es-CL')}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{item.synced_at ? new Date(item.synced_at).toLocaleString('es-CL') : '—'}</TableCell>
                       <TableCell className="text-right">
                         {item.status !== 'synced' && (
                           <Button variant="ghost" size="icon" onClick={() => retryItem(item.id)} title="Reintentar sincronización">
@@ -225,9 +225,9 @@ export default function PWAOfflineQueuePage() {
         <CardHeader><CardTitle>Estadísticas</CardTitle></CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">{items.length}</p>
+            <div className="bg-muted rounded-xl p-4 border border-border">
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total</p>
+              <p className="text-2xl font-bold text-foreground mt-1">{items.length}</p>
             </div>
             <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-200">
               <p className="text-[9px] font-semibold text-emerald-700 uppercase tracking-wider">Sincronizados</p>

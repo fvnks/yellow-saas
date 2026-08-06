@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -142,12 +142,12 @@ export default function NewGoodsReceiptPage() {
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <button onClick={() => step === 2 ? setStep(1) : router.push('/dashboard/purchases/receipts')}
-          className="p-1 hover:bg-slate-100 rounded transition-colors">
+          className="p-1 hover:bg-muted rounded transition-colors">
           <ArrowLeft className="w-5 h-5 text-slate-600" />
         </button>
         <div className="flex-1">
-          <h1 className="text-xl font-bold text-slate-900">Nueva Recepción de Mercadería</h1>
-          <p className="text-sm text-slate-500 mt-1">{step === 1 ? 'Seleccionar orden de compra' : `Recibir items de ${selectedOrder?.number || ''}`}</p>
+          <h1 className="text-xl font-bold text-foreground">Nueva Recepción de Mercadería</h1>
+          <p className="text-sm text-muted-foreground mt-1">{step === 1 ? 'Seleccionar orden de compra' : `Recibir items de ${selectedOrder?.number || ''}`}</p>
         </div>
       </div>
 
@@ -159,16 +159,16 @@ export default function NewGoodsReceiptPage() {
       )}
 
       {step === 1 ? (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
           <div className="px-6 py-4 border-b border-slate-100">
-            <h3 className="text-sm font-semibold text-slate-900">Órdenes de Compra Confirmadas</h3>
-            <p className="text-xs text-slate-500 mt-1">Selecciona una orden de compra para recepcionar</p>
+            <h3 className="text-sm font-semibold text-foreground">Órdenes de Compra Confirmadas</h3>
+            <p className="text-xs text-muted-foreground mt-1">Selecciona una orden de compra para recepcionar</p>
           </div>
           <div className="p-6">
             {orders.length === 0 ? (
               <div className="text-center py-12">
                 <PackageCheck className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                <p className="text-sm text-slate-500">No hay órdenes de compra confirmadas disponibles</p>
+                <p className="text-sm text-muted-foreground">No hay órdenes de compra confirmadas disponibles</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -176,20 +176,20 @@ export default function NewGoodsReceiptPage() {
                   <button
                     key={order.id}
                     onClick={() => handleSelectOrder(order.id)}
-                    className="w-full text-left p-4 border border-slate-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors"
+                    className="w-full text-left p-4 border border-border rounded-lg hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors"
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-slate-900">{order.number}</p>
-                        <p className="text-xs text-slate-500 mt-1">
+                        <p className="text-sm font-medium text-foreground">{order.number}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
                           {order.supplier?.name || 'Sin proveedor'} · {order.warehouse?.name || 'Sin bodega'}
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-semibold text-slate-900">
+                        <p className="text-sm font-semibold text-foreground">
                           ${order.total_amount?.toLocaleString('es-CL') || '0'}
                         </p>
-                        <p className="text-xs text-slate-500 mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                           {order.items?.length || 0} items
                         </p>
                       </div>
@@ -202,40 +202,40 @@ export default function NewGoodsReceiptPage() {
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
             <div className="px-6 py-4 border-b border-slate-100">
-              <h3 className="text-sm font-semibold text-slate-900">Items a Recibir</h3>
-              <p className="text-xs text-slate-500 mt-1">Ingresa las cantidades a recibir para cada producto</p>
+              <h3 className="text-sm font-semibold text-foreground">Items a Recibir</h3>
+              <p className="text-xs text-muted-foreground mt-1">Ingresa las cantidades a recibir para cada producto</p>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-slate-200">
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
-                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-24">Ordenado</th>
-                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-28">Ya Recibido</th>
-                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-32">Por Recibir</th>
-                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-32">A Recibir</th>
-                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider w-36">N° Lote</th>
+                  <tr className="border-b border-border">
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th>
+                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider w-24">Ordenado</th>
+                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider w-28">Ya Recibido</th>
+                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider w-32">Por Recibir</th>
+                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider w-32">A Recibir</th>
+                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider w-36">N° Lote</th>
                   </tr>
                 </thead>
                 <tbody>
                   {receiveItems.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-500">
+                      <td colSpan={6} className="px-4 py-8 text-center text-sm text-muted-foreground">
                         Todos los items de esta orden ya han sido recepcionados
                       </td>
                     </tr>
                   ) : (
                     receiveItems.map((item, index) => (
-                      <tr key={item.purchase_order_item_id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                      <tr key={item.purchase_order_item_id} className="border-b border-slate-100 hover:bg-muted transition-colors">
                         <td className="px-4 py-3">
-                          <p className="text-xs font-medium text-slate-900">{item.product_name}</p>
-                          <p className="text-[10px] text-slate-500 font-mono">{item.product_sku}</p>
+                          <p className="text-xs font-medium text-foreground">{item.product_name}</p>
+                          <p className="text-[10px] text-muted-foreground font-mono">{item.product_sku}</p>
                         </td>
-                        <td className="px-4 py-3 text-center text-xs text-slate-700">{item.ordered_quantity}</td>
-                        <td className="px-4 py-3 text-center text-xs text-slate-500">{item.already_received}</td>
-                        <td className="px-4 py-3 text-center text-xs text-slate-700 font-medium">
+                        <td className="px-4 py-3 text-center text-xs text-foreground">{item.ordered_quantity}</td>
+                        <td className="px-4 py-3 text-center text-xs text-muted-foreground">{item.already_received}</td>
+                        <td className="px-4 py-3 text-center text-xs text-foreground font-medium">
                           {item.ordered_quantity - item.already_received}
                         </td>
                         <td className="px-4 py-3">
@@ -245,7 +245,7 @@ export default function NewGoodsReceiptPage() {
                             max={item.ordered_quantity - item.already_received}
                             value={item.quantity_to_receive}
                             onChange={(e) => handleQuantityChange(index, e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                            className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                           />
                         </td>
                         <td className="px-4 py-3">
@@ -254,7 +254,7 @@ export default function NewGoodsReceiptPage() {
                             value={item.batch_number}
                             onChange={(e) => handleBatchChange(index, e.target.value)}
                             placeholder="Opcional"
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 text-center placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                            className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground text-center placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors"
                           />
                         </td>
                       </tr>
@@ -265,9 +265,9 @@ export default function NewGoodsReceiptPage() {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
             <div className="px-6 py-4 border-b border-slate-100">
-              <h3 className="text-sm font-semibold text-slate-900">Observaciones</h3>
+              <h3 className="text-sm font-semibold text-foreground">Observaciones</h3>
             </div>
             <div className="p-6">
               <textarea
@@ -275,29 +275,29 @@ export default function NewGoodsReceiptPage() {
                 onChange={(e) => setNotes(e.target.value)}
                 rows={3}
                 placeholder="Notas sobre la recepción..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors resize-none"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
               />
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <p className="text-sm font-medium text-slate-900">Resumen de Recepción</p>
-                <p className="text-xs text-slate-500 mt-1">Total de unidades a recibir</p>
+                <p className="text-sm font-medium text-foreground">Resumen de Recepción</p>
+                <p className="text-xs text-muted-foreground mt-1">Total de unidades a recibir</p>
               </div>
               <div className="text-right">
-                <p className="text-2xl font-bold text-slate-900">{totalItemsToReceive}</p>
-                <p className="text-xs text-slate-500">unidades</p>
+                <p className="text-2xl font-bold text-foreground">{totalItemsToReceive}</p>
+                <p className="text-xs text-muted-foreground">unidades</p>
               </div>
             </div>
             <div className="flex gap-3">
               <button onClick={() => setStep(1)}
-                className="flex-1 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                className="flex-1 bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                 Volver
               </button>
               <button onClick={handleSubmit} disabled={saving || totalItemsToReceive === 0}
-                className="flex-1 bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors">
+                className="flex-1 bg-primary hover:bg-primary/90 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors">
                 <Save className="w-4 h-4" />
                 {saving ? 'Guardando...' : 'Guardar Recepción'}
               </button>

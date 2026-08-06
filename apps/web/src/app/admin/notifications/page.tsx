@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { Bell, Send, Building2, CheckCircle, AlertTriangle, Info, AlertCircle, Plus, X, Eye, EyeOff, Trash2 } from 'lucide-react';
@@ -147,7 +147,7 @@ export default function AdminNotificationsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Notificaciones</h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Envía notificaciones a empresas de la plataforma
             {unreadCount > 0 && <span className="ml-2 text-indigo-400">({unreadCount} sin leer)</span>}
           </p>
@@ -173,7 +173,7 @@ export default function AdminNotificationsPage() {
       </div>
 
       {showCreate && (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+        <div className="bg-primary border border-slate-800 rounded-xl p-6">
           <h3 className="text-sm font-semibold text-white mb-4">Enviar Notificación</h3>
           {message.text && (
             <div className={`mb-4 flex items-center gap-2 p-3 rounded-lg text-sm ${
@@ -186,11 +186,11 @@ export default function AdminNotificationsPage() {
           <form onSubmit={handleCreate} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-400">Enviar a</label>
+                <label className="text-xs font-medium text-muted-foreground">Enviar a</label>
                 <select
                   value={form.company_id}
                   onChange={(e) => setForm({ ...form, company_id: e.target.value })}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                 >
                   <option value="">Todas las empresas</option>
                   {companies.map((c) => (
@@ -199,11 +199,11 @@ export default function AdminNotificationsPage() {
                 </select>
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-400">Tipo</label>
+                <label className="text-xs font-medium text-muted-foreground">Tipo</label>
                 <select
                   value={form.type}
                   onChange={(e) => setForm({ ...form, type: e.target.value })}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                 >
                   <option value="info">Info</option>
                   <option value="warning">Advertencia</option>
@@ -213,25 +213,25 @@ export default function AdminNotificationsPage() {
               </div>
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-400">Título</label>
+              <label className="text-xs font-medium text-muted-foreground">Título</label>
               <input
                 type="text"
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
                 placeholder="Título de la notificación"
                 required
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
               />
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-400">Mensaje</label>
+              <label className="text-xs font-medium text-muted-foreground">Mensaje</label>
               <textarea
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 placeholder="Contenido de la notificación..."
                 required
                 rows={3}
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-none"
+                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20 resize-none"
               />
             </div>
             <div className="flex justify-end">
@@ -249,7 +249,7 @@ export default function AdminNotificationsPage() {
       )}
 
       {/* Filters */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-4">
+      <div className="bg-primary border border-slate-800 rounded-xl p-4 flex items-center gap-4">
         <div className="flex items-center gap-2">
           {[
             { value: 'all', label: 'Todas' },
@@ -262,7 +262,7 @@ export default function AdminNotificationsPage() {
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                 filter === opt.value
                   ? 'bg-indigo-600 text-white'
-                  : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
+                  : 'bg-slate-800 text-muted-foreground hover:text-white hover:bg-slate-700'
               }`}
             >
               {opt.label}
@@ -271,17 +271,17 @@ export default function AdminNotificationsPage() {
         </div>
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+      <div className="bg-primary border border-slate-800 rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
             <tr className="border-b border-slate-800">
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Estado</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Fecha</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Tipo</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Título</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Empresa</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Mensaje</th>
-              <th className="text-right px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Acciones</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Estado</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Fecha</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Tipo</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Título</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Empresa</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Mensaje</th>
+              <th className="text-right px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -296,27 +296,27 @@ export default function AdminNotificationsPage() {
             ) : filtered.length === 0 ? (
               <tr>
                 <td colSpan={7} className="px-6 py-12 text-center">
-                  <Bell className="w-12 h-12 text-slate-700 mx-auto mb-3" />
-                  <p className="text-sm text-slate-500">No hay notificaciones</p>
+                  <Bell className="w-12 h-12 text-foreground mx-auto mb-3" />
+                  <p className="text-sm text-muted-foreground">No hay notificaciones</p>
                 </td>
               </tr>
             ) : (
               filtered.map((n) => {
                 const Icon = typeIcons[n.type] || Info;
                 return (
-                  <tr key={n.id} className={`border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors ${!n.is_read ? 'bg-indigo-500/5' : ''}`}>
+                  <tr key={n.id} className={`border-b border-slate-800/50 hover:bg-primary/90/30 transition-colors ${!n.is_read ? 'bg-indigo-500/5' : ''}`}>
                     <td className="px-6 py-4">
                       <button
                         onClick={() => handleMarkAsRead(n.id, !n.is_read)}
                         className={`p-1.5 rounded-lg transition-colors ${
-                          n.is_read ? 'text-slate-500 hover:text-slate-300' : 'text-indigo-400 hover:text-indigo-300'
+                          n.is_read ? 'text-muted-foreground hover:text-slate-300' : 'text-indigo-400 hover:text-indigo-300'
                         }`}
                         title={n.is_read ? 'Marcar como no leído' : 'Marcar como leído'}
                       >
                         {n.is_read ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
                     </td>
-                    <td className="px-6 py-4 text-xs text-slate-400">
+                    <td className="px-6 py-4 text-xs text-muted-foreground">
                       {new Date(n.created_at).toLocaleString('es-CL')}
                     </td>
                     <td className="px-6 py-4">
@@ -325,18 +325,18 @@ export default function AdminNotificationsPage() {
                         {n.type}
                       </span>
                     </td>
-                    <td className={`px-6 py-4 text-sm font-medium ${n.is_read ? 'text-slate-400' : 'text-white'}`}>{n.title}</td>
+                    <td className={`px-6 py-4 text-sm font-medium ${n.is_read ? 'text-muted-foreground' : 'text-white'}`}>{n.title}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-1.5 text-xs text-slate-300">
-                        <Building2 className="w-3 h-3 text-slate-500" />
+                        <Building2 className="w-3 h-3 text-muted-foreground" />
                         {n.company_name || 'Todas'}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-xs text-slate-400 max-w-[250px] truncate">{n.message}</td>
+                    <td className="px-6 py-4 text-xs text-muted-foreground max-w-[250px] truncate">{n.message}</td>
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => handleDelete(n.id)}
-                        className="p-1.5 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors"
+                        className="p-1.5 text-muted-foreground hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors"
                         title="Eliminar"
                       >
                         <Trash2 className="w-4 h-4" />

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Bell, Check, CheckCheck, AlertTriangle, Clock, DollarSign, MessageCircle } from 'lucide-react';
@@ -90,7 +90,7 @@ export default function NotificationsPanel({ userId }: NotificationsPanelProps) 
   return (
     <div className="relative">
       <button onClick={() => setOpen(!open)}
-        className="relative p-2 hover:bg-slate-100 rounded-lg transition-colors">
+        className="relative p-2 hover:bg-muted rounded-lg transition-colors">
         <Bell className="w-5 h-5 text-slate-600" />
         {unreadCount > 0 && (
           <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
@@ -100,9 +100,9 @@ export default function NotificationsPanel({ userId }: NotificationsPanelProps) 
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-96 bg-white border border-slate-200 rounded-xl shadow-xl z-50">
-          <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-slate-900">Notificaciones</h3>
+        <div className="absolute right-0 top-full mt-2 w-96 bg-card border border-border rounded-xl shadow-xl z-50">
+          <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-foreground">Notificaciones</h3>
             {unreadCount > 0 && (
               <button onClick={handleMarkAllRead} className="text-xs text-indigo-600 hover:text-indigo-700">
                 Marcar todo leido
@@ -112,32 +112,32 @@ export default function NotificationsPanel({ userId }: NotificationsPanelProps) 
           <div className="max-h-96 overflow-y-auto">
             {loading ? (
               <div className="p-4 space-y-2">
-                {[1, 2, 3].map(i => <div key={i} className="h-14 bg-slate-100 rounded-lg animate-pulse" />)}
+                {[1, 2, 3].map(i => <div key={i} className="h-14 bg-muted rounded-lg animate-pulse" />)}
               </div>
             ) : notifications.length === 0 ? (
               <div className="p-6 text-center">
                 <Bell className="w-8 h-8 text-slate-200 mx-auto mb-2" />
-                <p className="text-xs text-slate-500">Sin notificaciones</p>
+                <p className="text-xs text-muted-foreground">Sin notificaciones</p>
               </div>
             ) : (
               notifications.map(n => {
-                const config = typeConfig[n.type] || { icon: Bell, color: 'text-slate-500' };
+                const config = typeConfig[n.type] || { icon: Bell, color: 'text-muted-foreground' };
                 const Icon = config.icon;
                 return (
                   <div key={n.id}
-                    className={`px-4 py-3 border-b border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer ${!n.is_read ? 'bg-indigo-50/30' : ''}`}
+                    className={`px-4 py-3 border-b border-slate-100 hover:bg-muted transition-colors cursor-pointer ${!n.is_read ? 'bg-indigo-50/30' : ''}`}
                     onClick={() => !n.is_read && handleMarkRead([n.id])}>
                     <div className="flex gap-3">
                       <div className={`mt-0.5 ${config.color}`}>
                         <Icon className="w-4 h-4" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className={`text-xs ${!n.is_read ? 'font-semibold text-slate-900' : 'text-slate-700'}`}>{n.title}</p>
-                        <p className="text-[10px] text-slate-500 mt-0.5 truncate">{n.message}</p>
+                        <p className={`text-xs ${!n.is_read ? 'font-semibold text-foreground' : 'text-foreground'}`}>{n.title}</p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5 truncate">{n.message}</p>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-[10px] text-slate-400">{n.project_name}</span>
+                          <span className="text-[10px] text-muted-foreground">{n.project_name}</span>
                           <span className="text-[10px] text-slate-300">·</span>
-                          <span className="text-[10px] text-slate-400">{formatTime(n.created_at)}</span>
+                          <span className="text-[10px] text-muted-foreground">{formatTime(n.created_at)}</span>
                         </div>
                       </div>
                       {!n.is_read && <div className="w-2 h-2 bg-indigo-500 rounded-full flex-shrink-0 mt-1" />}

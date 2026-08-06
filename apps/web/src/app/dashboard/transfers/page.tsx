@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent, Badge, Button, Select } from '@yellow-erp/ui';
@@ -55,12 +55,12 @@ export default function TransfersPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-4">
-          <Link href="/dashboard/bodega" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+          <Link href="/dashboard/bodega" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">Transferencias</h1>
-            <p className="text-sm text-slate-500 mt-1">Movimiento de stock entre bodegas</p>
+            <h1 className="text-xl font-bold text-foreground">Transferencias</h1>
+            <p className="text-sm text-muted-foreground mt-1">Movimiento de stock entre bodegas</p>
           </div>
         </div>
         <Link href="/dashboard/transfers/new" className="w-full sm:w-auto">
@@ -75,13 +75,13 @@ export default function TransfersPage() {
         <CardContent className="p-4">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input
                 type="search"
                 placeholder="Buscar por numero, bodega..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
               />
             </div>
             <Select
@@ -111,7 +111,7 @@ export default function TransfersPage() {
             ) : filtered.length === 0 ? (
               <div className="p-12 text-center">
                 <Truck className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-                <p className="text-sm text-slate-500">Sin transferencias</p>
+                <p className="text-sm text-muted-foreground">Sin transferencias</p>
                 <Link href="/dashboard/transfers/new" className="inline-flex items-center gap-2 mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium">
                   <Plus className="w-4 h-4" /> Crear primera transferencia
                 </Link>
@@ -119,36 +119,36 @@ export default function TransfersPage() {
             ) : (
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-slate-200">
-                    <th className="text-left px-6 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Numero</th>
-                    <th className="text-left px-6 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Origen</th>
-                    <th className="text-center px-6 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider"></th>
-                    <th className="text-left px-6 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Destino</th>
-                    <th className="text-center px-6 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Items</th>
-                    <th className="text-center px-6 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                    <th className="text-left px-6 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
+                  <tr className="border-b border-border">
+                    <th className="text-left px-6 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Numero</th>
+                    <th className="text-left px-6 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Origen</th>
+                    <th className="text-center px-6 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider"></th>
+                    <th className="text-left px-6 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Destino</th>
+                    <th className="text-center px-6 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Items</th>
+                    <th className="text-center px-6 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                    <th className="text-left px-6 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filtered.map((t) => {
                     const st = statusConfig[t.status] || statusConfig.draft;
                     return (
-                      <tr key={t.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                      <tr key={t.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
                         <td className="px-6 py-3">
                           <Link href={`/dashboard/transfers/${t.id}`} className="text-xs font-bold text-indigo-600 hover:text-indigo-700">
                             {t.transfer_number}
                           </Link>
                         </td>
-                        <td className="px-6 py-3 text-xs text-slate-700">{t.source_warehouse?.name}</td>
+                        <td className="px-6 py-3 text-xs text-foreground">{t.source_warehouse?.name}</td>
                         <td className="px-6 py-3 text-center">
-                          <ArrowRight className="w-4 h-4 text-slate-400 mx-auto" />
+                          <ArrowRight className="w-4 h-4 text-muted-foreground mx-auto" />
                         </td>
-                        <td className="px-6 py-3 text-xs text-slate-700">{t.destination_warehouse?.name}</td>
-                        <td className="px-6 py-3 text-center text-xs text-slate-700">{t.items_count}</td>
+                        <td className="px-6 py-3 text-xs text-foreground">{t.destination_warehouse?.name}</td>
+                        <td className="px-6 py-3 text-center text-xs text-foreground">{t.items_count}</td>
                         <td className="px-6 py-3 text-center">
                           <Badge variant={st.variant}>{st.label}</Badge>
                         </td>
-                        <td className="px-6 py-3 text-xs text-slate-500">
+                        <td className="px-6 py-3 text-xs text-muted-foreground">
                           {new Date(t.created_at).toLocaleDateString('es-CL')}
                         </td>
                       </tr>

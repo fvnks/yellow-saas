@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Plus, X, Tag } from 'lucide-react';
@@ -64,7 +64,7 @@ export default function TagsManager({ selectedTagIds, onChange }: TagsManagerPro
     }
   };
 
-  if (loading) return <div className="h-8 bg-slate-100 rounded animate-pulse" />;
+  if (loading) return <div className="h-8 bg-muted rounded animate-pulse" />;
 
   return (
     <div className="space-y-2">
@@ -74,7 +74,7 @@ export default function TagsManager({ selectedTagIds, onChange }: TagsManagerPro
           return (
             <button key={tag.id} onClick={() => toggleTag(tag.id)}
               className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border transition-all ${
-                selected ? 'text-white' : 'text-slate-600 bg-white border-slate-200 hover:border-slate-300'
+                selected ? 'text-white' : 'text-slate-600 bg-card border-border hover:border-slate-300'
               }`}
               style={selected ? { backgroundColor: tag.color, borderColor: tag.color } : {}}>
               <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: tag.color }} />
@@ -84,13 +84,13 @@ export default function TagsManager({ selectedTagIds, onChange }: TagsManagerPro
           );
         })}
         <button onClick={() => setShowCreate(!showCreate)}
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border border-dashed border-slate-300 text-slate-400 hover:text-slate-600 hover:border-slate-400 transition-colors">
+          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border border-dashed border-slate-300 text-muted-foreground hover:text-slate-600 hover:border-slate-400 transition-colors">
           <Plus className="w-2.5 h-2.5" /> Nuevo
         </button>
       </div>
 
       {showCreate && (
-        <div className="flex items-center gap-2 bg-slate-50 rounded-lg p-2">
+        <div className="flex items-center gap-2 bg-muted rounded-lg p-2">
           <div className="flex gap-1">
             {COLORS.map(c => (
               <button key={c} onClick={() => setNewColor(c)}
@@ -100,10 +100,10 @@ export default function TagsManager({ selectedTagIds, onChange }: TagsManagerPro
           </div>
           <input type="text" value={newName} onChange={e => setNewName(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleCreate()}
-            className="flex-1 bg-white border border-slate-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="flex-1 bg-card border border-border rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary/20"
             placeholder="Nombre del tag..." autoFocus />
           <button onClick={handleCreate} disabled={!newName.trim()}
-            className="bg-slate-900 text-white px-2 py-1 rounded text-[10px] font-medium disabled:opacity-50">
+            className="bg-primary text-white px-2 py-1 rounded text-[10px] font-medium disabled:opacity-50">
             Crear
           </button>
         </div>

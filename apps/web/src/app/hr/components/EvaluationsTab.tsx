@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { Button, Badge, Input } from '@yellow-erp/ui';
@@ -84,7 +84,7 @@ export default function EvaluationsTab() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Buscar evaluación..." value={search} onChange={e => setSearch(e.target.value)} className="w-64 pl-9" />
         </div>
         <Button onClick={() => setShowForm(true)}>
@@ -94,10 +94,10 @@ export default function EvaluationsTab() {
 
       {showForm && (
         <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 space-y-3">
-          <h4 className="text-sm font-medium text-slate-900">Nueva Evaluación de Desempeño</h4>
+          <h4 className="text-sm font-medium text-foreground">Nueva Evaluación de Desempeño</h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <select value={form.employee_id} onChange={e => setForm({ ...form, employee_id: e.target.value })}
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm">
+              className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm">
               <option value="">Seleccionar empleado...</option>
               {employees.map((e: any) => <option key={e.id} value={e.id}>{e.first_name} {e.last_name}</option>)}
             </select>
@@ -106,9 +106,9 @@ export default function EvaluationsTab() {
             <Input label="Competencias (1-5)" type="number" min="1" max="5" step="0.1" value={form.competencies_score} onChange={e => setForm({ ...form, competencies_score: e.target.value })} />
             <Input label="Metas (1-5)" type="number" min="1" max="5" step="0.1" value={form.goals_score} onChange={e => setForm({ ...form, goals_score: e.target.value })} />
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-slate-700">Comentarios</label>
+              <label className="block text-xs font-medium text-foreground">Comentarios</label>
               <textarea value={form.comments} onChange={e => setForm({ ...form, comments: e.target.value })}
-                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm h-[38px] resize-none" placeholder="Observaciones..." />
+                className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm h-[38px] resize-none" placeholder="Observaciones..." />
             </div>
           </div>
           <div className="flex justify-end gap-2">
@@ -118,30 +118,30 @@ export default function EvaluationsTab() {
         </div>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-card border border-border rounded-xl shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Empleado</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Período</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">General</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Competencias</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Metas</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Empleado</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Período</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">General</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Competencias</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Metas</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={7} className="text-center py-8 text-sm text-slate-400">Cargando...</td></tr>
+                <tr><td colSpan={7} className="text-center py-8 text-sm text-muted-foreground">Cargando...</td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={7} className="text-center py-8 text-sm text-slate-400">Sin evaluaciones registradas</td></tr>
+                <tr><td colSpan={7} className="text-center py-8 text-sm text-muted-foreground">Sin evaluaciones registradas</td></tr>
               ) : filtered.map(e => (
-                <tr key={e.id} className="border-b border-slate-100 hover:bg-slate-50">
+                <tr key={e.id} className="border-b border-slate-100 hover:bg-muted">
                   <td className="px-4 py-3">
-                    <p className="text-xs font-medium text-slate-900">{e.employee_name}</p>
-                    <p className="text-[10px] text-slate-400">{e.employee_rut}</p>
+                    <p className="text-xs font-medium text-foreground">{e.employee_name}</p>
+                    <p className="text-[10px] text-muted-foreground">{e.employee_rut}</p>
                   </td>
                   <td className="px-4 py-3 text-xs">{e.period}</td>
                   <td className="px-4 py-3">
@@ -158,7 +158,7 @@ export default function EvaluationsTab() {
                       {statusConfig[e.status]?.label || e.status}
                     </Badge>
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-500">{e.created_at?.split('T')[0]}</td>
+                  <td className="px-4 py-3 text-xs text-muted-foreground">{e.created_at?.split('T')[0]}</td>
                 </tr>
               ))}
             </tbody>

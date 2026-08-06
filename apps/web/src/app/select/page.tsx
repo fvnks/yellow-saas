@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
@@ -30,8 +30,8 @@ const modules: ModuleOption[] = [
     description: ['Inventario y Bodegas', 'Ventas y Compras', 'Contabilidad', 'CRM'],
     icon: Package,
     gradient: 'from-slate-700 to-slate-900',
-    iconBg: 'bg-slate-100',
-    iconColor: 'text-slate-700',
+    iconBg: 'bg-muted',
+    iconColor: 'text-foreground',
     hoverBorder: 'hover:border-slate-300',
     href: '/dashboard',
     requiredModules: ['inventory', 'products', 'sales', 'purchases', 'accounting', 'projects', 'crm'],
@@ -44,8 +44,8 @@ const modules: ModuleOption[] = [
     description: ['Contratos', 'Asistencia', 'Evaluaciones', 'Capacitación'],
     icon: UsersRound,
     gradient: 'from-slate-700 to-slate-900',
-    iconBg: 'bg-slate-100',
-    iconColor: 'text-slate-700',
+    iconBg: 'bg-muted',
+    iconColor: 'text-foreground',
     hoverBorder: 'hover:border-slate-300',
     href: '/hr',
     requiredModules: ['hr'],
@@ -58,8 +58,8 @@ const modules: ModuleOption[] = [
     description: ['Cronogramas', 'Tareas', 'Tiempo', 'Reportes'],
     icon: FolderKanban,
     gradient: 'from-slate-700 to-slate-900',
-    iconBg: 'bg-slate-100',
-    iconColor: 'text-slate-700',
+    iconBg: 'bg-muted',
+    iconColor: 'text-foreground',
     hoverBorder: 'hover:border-slate-300',
     href: '/projects',
     requiredModules: ['projects'],
@@ -72,8 +72,8 @@ const modules: ModuleOption[] = [
     description: ['Recetas con ingredientes', 'Producción por lotes', 'Control de stock decimal'],
     icon: FlaskConical,
     gradient: 'from-slate-700 to-slate-900',
-    iconBg: 'bg-slate-100',
-    iconColor: 'text-slate-700',
+    iconBg: 'bg-muted',
+    iconColor: 'text-foreground',
     hoverBorder: 'hover:border-slate-300',
     href: '/recetas',
     requiredModules: [],
@@ -86,8 +86,8 @@ const modules: ModuleOption[] = [
     description: ['Mi Plan', 'Facturación', 'Módulos', 'Activaciones'],
     icon: CreditCard,
     gradient: 'from-slate-700 to-slate-900',
-    iconBg: 'bg-slate-100',
-    iconColor: 'text-slate-700',
+    iconBg: 'bg-muted',
+    iconColor: 'text-foreground',
     hoverBorder: 'hover:border-slate-300',
     href: '/mi-cuenta',
     requiredModules: [],
@@ -100,8 +100,8 @@ const modules: ModuleOption[] = [
     description: ['Preguntas frecuentes', 'Tickets de soporte', 'Atención a fallas'],
     icon: LifeBuoy,
     gradient: 'from-slate-700 to-slate-900',
-    iconBg: 'bg-slate-100',
-    iconColor: 'text-slate-700',
+    iconBg: 'bg-muted',
+    iconColor: 'text-foreground',
     hoverBorder: 'hover:border-slate-300',
     href: '/ayuda',
     requiredModules: [],
@@ -232,30 +232,30 @@ export default function SelectPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-muted flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-slate-200 border-t-slate-900 rounded-full animate-spin" />
-          <p className="text-xs text-slate-400">Cargando...</p>
+          <div className="w-8 h-8 border-2 border-border border-t-slate-900 rounded-full animate-spin" />
+          <p className="text-xs text-muted-foreground">Cargando...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-muted flex flex-col">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 px-6 py-4">
+      <div className="bg-card border-b border-border px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center overflow-hidden bg-slate-900">
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center overflow-hidden bg-primary">
               <Image src="/logo/yellow-cube.svg" alt="Yellow" width={28} height={28} className="brightness-0 invert" />
             </div>
             <div>
-              <h1 className="text-sm font-semibold text-slate-900">{company?.name || 'Yellow ERP'}</h1>
-              <p className="text-[11px] text-slate-400">Bienvenido, {user?.name}</p>
+              <h1 className="text-sm font-semibold text-foreground">{company?.name || 'Yellow ERP'}</h1>
+              <p className="text-[11px] text-muted-foreground">Bienvenido, {user?.name}</p>
             </div>
           </div>
-          <a href="/dashboard/settings" className="text-xs text-slate-400 hover:text-slate-600 flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors">
+          <a href="/dashboard/settings" className="text-xs text-muted-foreground hover:text-slate-600 flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-muted transition-colors">
             <Settings className="w-3.5 h-3.5" /> Configuración
           </a>
         </div>
@@ -270,10 +270,10 @@ export default function SelectPage() {
             transition={{ duration: 0.3 }}
             className="text-center mb-10"
           >
-            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+            <h2 className="text-2xl font-bold text-foreground tracking-tight">
               Hola {user?.name || 'Usuario'}
             </h2>
-            <p className="text-sm text-slate-500 mt-2">
+            <p className="text-sm text-muted-foreground mt-2">
               Selecciona un módulo para comenzar
             </p>
           </motion.div>
@@ -281,11 +281,11 @@ export default function SelectPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {modules.filter(mod => isModuleActivated(mod)).length === 0 ? (
               <div className="col-span-full text-center py-16">
-                <div className="w-16 h-16 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <Lock className="w-7 h-7 text-slate-400" />
+                <div className="w-16 h-16 bg-muted rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Lock className="w-7 h-7 text-muted-foreground" />
                 </div>
                 <p className="text-sm font-medium text-slate-600">No hay módulos activos</p>
-                <p className="text-xs text-slate-400 mt-1">Contacta al administrador para activar módulos</p>
+                <p className="text-xs text-muted-foreground mt-1">Contacta al administrador para activar módulos</p>
               </div>
             ) : modules.filter(mod => isModuleActivated(mod)).map((mod, i) => {
               const Icon = mod.icon;
@@ -297,7 +297,7 @@ export default function SelectPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.25, delay: 0.05 + i * 0.05 }}
                   onClick={() => handleModuleClick(mod)}
-                  className="group relative bg-white border border-slate-200 hover:border-slate-300 rounded-xl p-5 text-left transition-all duration-200 hover:shadow-lg hover:shadow-slate-200/50"
+                  className="group relative bg-card border border-border hover:border-slate-300 rounded-xl p-5 text-left transition-all duration-200 hover:shadow-lg hover:shadow-slate-200/50"
                 >
                   <div className="flex items-start gap-4">
                     <div className={`w-11 h-11 ${mod.iconBg} rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-200 group-hover:scale-105`}>
@@ -306,18 +306,18 @@ export default function SelectPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="text-sm font-semibold text-slate-900">{mod.title}</h3>
-                          <p className="text-[11px] text-slate-400 mt-0.5">{mod.subtitle}</p>
+                          <h3 className="text-sm font-semibold text-foreground">{mod.title}</h3>
+                          <p className="text-[11px] text-muted-foreground mt-0.5">{mod.subtitle}</p>
                         </div>
                         {activated ? (
-                          <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all duration-150 flex-shrink-0" />
+                          <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-muted-foreground group-hover:translate-x-0.5 transition-all duration-150 flex-shrink-0" />
                         ) : (
-                          <Lock className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                          <Lock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                         )}
                       </div>
                       <div className="flex flex-wrap gap-1.5 mt-3">
                         {mod.description.map((item, j) => (
-                          <span key={j} className="inline-flex items-center px-2 py-0.5 bg-slate-50 text-slate-600 text-[10px] font-medium rounded-md border border-slate-100">
+                          <span key={j} className="inline-flex items-center px-2 py-0.5 bg-muted text-slate-600 text-[10px] font-medium rounded-md border border-slate-100">
                             {item}
                           </span>
                         ))}
@@ -333,7 +333,7 @@ export default function SelectPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.3 }}
-            className="text-center text-[11px] text-slate-400 mt-8"
+            className="text-center text-[11px] text-muted-foreground mt-8"
           >
             Puedes cambiar de módulo en cualquier momento desde el menú lateral
           </motion.p>
@@ -356,32 +356,32 @@ export default function SelectPage() {
               exit={{ opacity: 0, scale: 0.95, y: 12 }}
               transition={{ duration: 0.15 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-xl shadow-xl w-full max-w-sm"
+              className="bg-card rounded-xl shadow-xl w-full max-w-sm"
             >
               <div className="p-6 text-center">
-                <div className="w-14 h-14 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <Lock className="w-6 h-6 text-slate-500" />
+                <div className="w-14 h-14 bg-muted rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Lock className="w-6 h-6 text-muted-foreground" />
                 </div>
-                <h2 className="text-base font-semibold text-slate-900">Módulo no activado</h2>
-                <p className="text-sm text-slate-500 mt-2">
-                  <span className="font-medium text-slate-700">{user?.name}</span>, el módulo{' '}
-                  <span className="font-medium text-slate-700">{selectedModule.title}</span> aún no está activado.
+                <h2 className="text-base font-semibold text-foreground">Módulo no activado</h2>
+                <p className="text-sm text-muted-foreground mt-2">
+                  <span className="font-medium text-foreground">{user?.name}</span>, el módulo{' '}
+                  <span className="font-medium text-foreground">{selectedModule.title}</span> aún no está activado.
                 </p>
-                <p className="text-sm text-slate-500 mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                   ¿Deseas activarlo ahora?
                 </p>
               </div>
               <div className="px-6 pb-6 flex gap-3">
                 <button
                   onClick={() => setModalOpen(false)}
-                  className="flex-1 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                  className="flex-1 bg-card border border-border hover:bg-muted text-foreground px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
                 >
                   Ahora no
                 </button>
                 <button
                   onClick={handleActivate}
                   disabled={activating}
-                  className="flex-1 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                  className="flex-1 bg-primary hover:bg-primary/90 text-white px-4 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
                 >
                   {activating ? (
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -400,7 +400,7 @@ export default function SelectPage() {
 
       {/* Last Access */}
       {lastAccess && (
-        <div className="fixed bottom-4 right-5 text-[10px] text-slate-400 select-none">
+        <div className="fixed bottom-4 right-5 text-[10px] text-muted-foreground select-none">
           Último acceso: {lastAccess}
         </div>
       )}

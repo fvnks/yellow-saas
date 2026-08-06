@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { AlertTriangle, Bell, X, CheckCircle2, TrendingUp } from 'lucide-react';
@@ -94,24 +94,24 @@ export default function BudgetAlerts({ projectId, budget, costs, expenses }: Bud
   return (
     <div className="space-y-3">
       {/* Budget Progress Bar */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-slate-500" />
-            <span className="text-sm font-semibold text-slate-900">Uso de Presupuesto</span>
+            <TrendingUp className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm font-semibold text-foreground">Uso de Presupuesto</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className={`text-sm font-bold ${percentUsed > 90 ? 'text-red-600' : percentUsed > 75 ? 'text-orange-600' : 'text-slate-900'}`}>
+            <span className={`text-sm font-bold ${percentUsed > 90 ? 'text-red-600' : percentUsed > 75 ? 'text-orange-600' : 'text-foreground'}`}>
               {percentUsed}%
             </span>
             <button onClick={() => setShowConfig(!showConfig)}
-              className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
-              <Bell className={`w-3.5 h-3.5 ${hasUnread ? 'text-amber-500' : 'text-slate-400'}`} />
+              className="p-1.5 hover:bg-muted rounded-lg transition-colors">
+              <Bell className={`w-3.5 h-3.5 ${hasUnread ? 'text-amber-500' : 'text-muted-foreground'}`} />
             </button>
           </div>
         </div>
         
-        <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+        <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
           <div 
             className={`h-full rounded-full transition-all ${
               percentUsed > 90 ? 'bg-red-500' : percentUsed > 75 ? 'bg-orange-500' : percentUsed > 50 ? 'bg-amber-500' : 'bg-emerald-500'
@@ -120,7 +120,7 @@ export default function BudgetAlerts({ projectId, budget, costs, expenses }: Bud
           />
         </div>
         
-        <div className="flex justify-between mt-2 text-xs text-slate-500">
+        <div className="flex justify-between mt-2 text-xs text-muted-foreground">
           <span>${totalUsed.toLocaleString('es-CL')} gastado</span>
           <span>${budget.toLocaleString('es-CL')} total</span>
         </div>
@@ -139,18 +139,18 @@ export default function BudgetAlerts({ projectId, budget, costs, expenses }: Bud
 
       {/* Alert Config Panel */}
       {showConfig && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="text-xs font-semibold text-slate-700">Configurar Alertas</h4>
-            <button onClick={() => setShowConfig(false)} className="p-1 hover:bg-slate-100 rounded">
-              <X className="w-3 h-3 text-slate-400" />
+            <h4 className="text-xs font-semibold text-foreground">Configurar Alertas</h4>
+            <button onClick={() => setShowConfig(false)} className="p-1 hover:bg-muted rounded">
+              <X className="w-3 h-3 text-muted-foreground" />
             </button>
           </div>
           
           <div className="flex items-center gap-2 mb-3">
             <span className="text-xs text-slate-600">Alertar al</span>
             <select value={newThreshold} onChange={e => setNewThreshold(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
+              className="bg-muted border border-border rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary/20">
               <option value="50">50%</option>
               <option value="60">60%</option>
               <option value="75">75%</option>
@@ -161,31 +161,31 @@ export default function BudgetAlerts({ projectId, budget, costs, expenses }: Bud
             </select>
             <span className="text-xs text-slate-600">del presupuesto</span>
             <button onClick={createAlert}
-              className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1 rounded-lg text-xs font-medium transition-colors">
+              className="bg-primary hover:bg-primary/90 text-white px-3 py-1 rounded-lg text-xs font-medium transition-colors">
               Crear
             </button>
           </div>
 
           {alerts.length > 0 && (
             <div className="space-y-1">
-              <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Alertas Configuradas</span>
+              <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Alertas Configuradas</span>
               {alerts.map(alert => {
                 const style = alertStyles[alert.alert_type];
                 return (
-                  <div key={alert.id} className={`flex items-center justify-between p-2 rounded-lg ${alert.is_read ? 'bg-slate-50' : style.bg} ${alert.is_read ? '' : style.border + ' border'}`}>
+                  <div key={alert.id} className={`flex items-center justify-between p-2 rounded-lg ${alert.is_read ? 'bg-muted' : style.bg} ${alert.is_read ? '' : style.border + ' border'}`}>
                     <div className="flex items-center gap-2">
                       {alert.is_read ? (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-slate-400" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-muted-foreground" />
                       ) : (
                         <AlertTriangle className={`w-3.5 h-3.5 ${style.icon}`} />
                       )}
-                      <span className={`text-xs ${alert.is_read ? 'text-slate-500' : style.text}`}>
+                      <span className={`text-xs ${alert.is_read ? 'text-muted-foreground' : style.text}`}>
                         {alert.threshold_percent}% - {alert.message || `Alerta al ${alert.threshold_percent}%`}
                       </span>
                     </div>
                     {!alert.is_read && (
                       <button onClick={() => markAsRead(alert.id)}
-                        className="text-[9px] text-slate-500 hover:text-slate-700 underline">
+                        className="text-[9px] text-muted-foreground hover:text-foreground underline">
                         Marcar leido
                       </button>
                     )}
@@ -205,7 +205,7 @@ export default function BudgetAlerts({ projectId, budget, costs, expenses }: Bud
             <span className={`text-xs font-medium ${alertStyles[unreadAlerts[0].alert_type].text}`}>
               Presupuesto al {percentUsed}% — {unreadAlerts.length} alerta{unreadAlerts.length > 1 ? 's' : ''} activa{unreadAlerts.length > 1 ? 's' : ''}
             </span>
-            <button onClick={() => setShowConfig(true)} className="ml-auto text-[9px] underline text-slate-500">Ver</button>
+            <button onClick={() => setShowConfig(true)} className="ml-auto text-[9px] underline text-muted-foreground">Ver</button>
           </div>
         </div>
       )}

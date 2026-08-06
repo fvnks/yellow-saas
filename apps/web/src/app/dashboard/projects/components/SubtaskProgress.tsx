@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 interface SubtaskProgressProps {
   tasks: any[];
@@ -17,10 +17,10 @@ export default function SubtaskProgress({ tasks, parentId }: SubtaskProgressProp
 
   return (
     <div className="flex items-center gap-2 mt-1.5">
-      <div className="flex-1 max-w-[100px] bg-slate-100 rounded-full h-1">
+      <div className="flex-1 max-w-[100px] bg-muted rounded-full h-1">
         <div className="bg-indigo-500 h-1 rounded-full transition-all" style={{ width: `${percentage}%` }} />
       </div>
-      <span className="text-[10px] text-slate-400">
+      <span className="text-[10px] text-muted-foreground">
         {completed}/{total} subtareas
       </span>
     </div>

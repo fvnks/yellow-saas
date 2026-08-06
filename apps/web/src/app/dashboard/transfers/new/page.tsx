@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
@@ -86,12 +86,12 @@ export default function NewTransferPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-        <Link href="/dashboard/transfers" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href="/dashboard/transfers" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">
-          <h1 className="text-xl font-bold text-slate-900">Nueva Transferencia</h1>
-          <p className="text-sm text-slate-500 mt-1">Mover stock entre bodegas</p>
+          <h1 className="text-xl font-bold text-foreground">Nueva Transferencia</h1>
+          <p className="text-sm text-muted-foreground mt-1">Mover stock entre bodegas</p>
         </div>
         <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto justify-center">
           <Save className="w-4 h-4 mr-2" />
@@ -127,12 +127,12 @@ export default function NewTransferPage() {
                 />
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Notas</label>
+                <label className="block text-xs font-medium text-foreground">Notas</label>
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   rows={2}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Motivo de la transferencia..."
                 />
               </div>
@@ -150,10 +150,10 @@ export default function NewTransferPage() {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-slate-200">
-                      <th className="text-left px-6 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Producto</th>
-                      <th className="text-right px-6 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cantidad</th>
-                      <th className="text-right px-6 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Costo Unit.</th>
+                    <tr className="border-b border-border">
+                      <th className="text-left px-6 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th>
+                      <th className="text-right px-6 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cantidad</th>
+                      <th className="text-right px-6 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Costo Unit.</th>
                       <th className="w-12"></th>
                     </tr>
                   </thead>
@@ -174,7 +174,7 @@ export default function NewTransferPage() {
                             value={item.quantity}
                             onChange={(e) => updateItem(idx, 'quantity', parseInt(e.target.value) || 0)}
                             min="1"
-                            className="w-20 text-right bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                            className="w-20 text-right bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                           />
                         </td>
                         <td className="px-6 py-3">
@@ -183,12 +183,12 @@ export default function NewTransferPage() {
                             value={item.unit_cost}
                             onChange={(e) => updateItem(idx, 'unit_cost', parseFloat(e.target.value) || 0)}
                             min="0"
-                            className="w-24 text-right bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                            className="w-24 text-right bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                           />
                         </td>
                         <td className="px-6 py-3">
                           {items.length > 1 && (
-                            <button onClick={() => removeItem(idx)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors">
+                            <button onClick={() => removeItem(idx)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors">
                               <Trash2 className="w-4 h-4" />
                             </button>
                           )}
@@ -213,8 +213,8 @@ export default function NewTransferPage() {
                   <Truck className="w-4 h-4 text-indigo-600" />
                 </div>
                 <div>
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Origen</p>
-                  <p className="font-medium text-slate-900">{warehouses.find(w => w.id === sourceWarehouse)?.name || '—'}</p>
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Origen</p>
+                  <p className="font-medium text-foreground">{warehouses.find(w => w.id === sourceWarehouse)?.name || '—'}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -222,17 +222,17 @@ export default function NewTransferPage() {
                   <Package className="w-4 h-4 text-emerald-600" />
                 </div>
                 <div>
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Destino</p>
-                  <p className="font-medium text-slate-900">{warehouses.find(w => w.id === destWarehouse)?.name || '—'}</p>
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Destino</p>
+                  <p className="font-medium text-foreground">{warehouses.find(w => w.id === destWarehouse)?.name || '—'}</p>
                 </div>
               </div>
               <hr className="border-slate-100" />
               <div className="flex justify-between">
-                <span className="text-slate-500">Productos</span>
+                <span className="text-muted-foreground">Productos</span>
                 <span className="font-medium">{items.filter(i => i.product_id).length}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Estado</span>
+                <span className="text-muted-foreground">Estado</span>
                 <Badge variant="neutral">Borrador</Badge>
               </div>
             </CardContent>

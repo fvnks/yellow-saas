@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import {
@@ -14,7 +14,7 @@ import {
   PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip
 } from 'recharts';
 
-const PIE_COLORS = ['#10b981', '#6366f1', '#f59e0b', '#ef4444', '#8b5cf6'];
+const PIE_COLORS = ['#16DBCC', '#1814F3', '#FFBB38', '#FE5C73', '#FF82AC'];
 
 const statusLabels: Record<string, string> = {
   draft: 'Borrador', confirmed: 'Confirmado', processing: 'Procesando',
@@ -31,21 +31,21 @@ function formatCurrency(amount: number): string {
 function ChangeIndicator({ value }: { value: number }) {
   if (value > 0) return <span className="text-[10px] font-semibold text-emerald-600 flex items-center gap-0.5"><ArrowUpRight className="w-3 h-3" />+{value}%</span>;
   if (value < 0) return <span className="text-[10px] font-semibold text-rose-600 flex items-center gap-0.5"><ArrowDownRight className="w-3 h-3" />{value}%</span>;
-  return <span className="text-[10px] font-medium text-slate-400 flex items-center gap-0.5"><Minus className="w-3 h-3" />0%</span>;
+  return <span className="text-[10px] font-medium text-muted-foreground flex items-center gap-0.5"><Minus className="w-3 h-3" />0%</span>;
 }
 
 const salesMarkers = [
-  { date: new Date(2026, 0, 1), icon: '🎯', title: 'Inicio de año', color: '#6366f1' },
-  { date: new Date(2026, 5, 1), icon: '📊', title: 'Medio año', color: '#10b981' },
+  { date: new Date(2026, 0, 1), icon: '🎯', title: 'Inicio de año', color: '#1814F3' },
+  { date: new Date(2026, 5, 1), icon: '📊', title: 'Medio año', color: '#16DBCC' },
 ];
 
 const kpiColors = [
-  { bg: 'bg-slate-100', text: 'text-slate-600', ring: 'ring-slate-200' },
-  { bg: 'bg-slate-100', text: 'text-slate-600', ring: 'ring-slate-200' },
-  { bg: 'bg-slate-100', text: 'text-slate-600', ring: 'ring-slate-200' },
-  { bg: 'bg-slate-100', text: 'text-slate-600', ring: 'ring-slate-200' },
-  { bg: 'bg-slate-100', text: 'text-slate-600', ring: 'ring-slate-200' },
-  { bg: 'bg-slate-100', text: 'text-slate-600', ring: 'ring-slate-200' },
+  { bg: 'bg-blue-50', text: 'text-blue-600', ring: 'ring-blue-100' },
+  { bg: 'bg-teal-50', text: 'text-teal-600', ring: 'ring-teal-100' },
+  { bg: 'bg-purple-50', text: 'text-purple-600', ring: 'ring-purple-100' },
+  { bg: 'bg-amber-50', text: 'text-amber-600', ring: 'ring-amber-100' },
+  { bg: 'bg-rose-50', text: 'text-rose-600', ring: 'ring-rose-100' },
+  { bg: 'bg-emerald-50', text: 'text-emerald-600', ring: 'ring-emerald-100' },
 ];
 
 export default function DashboardPage() {
@@ -66,13 +66,13 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between">
           <div>
             <div className="h-7 w-48 bg-slate-200 rounded-lg animate-pulse" />
-            <div className="h-4 w-64 bg-slate-100 rounded mt-2 animate-pulse" />
+            <div className="h-4 w-64 bg-muted rounded mt-2 animate-pulse" />
           </div>
         </div>
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="border border-slate-200 rounded-xl shadow-sm p-5 bg-white">
-              <div className="h-4 w-20 bg-slate-100 rounded animate-pulse mb-3" />
+            <div key={i} className="border border-border rounded-2xl shadow-sm p-5 bg-card">
+              <div className="h-4 w-20 bg-muted rounded animate-pulse mb-3" />
               <div className="h-8 w-28 bg-slate-200 rounded animate-pulse" />
             </div>
           ))}
@@ -106,10 +106,10 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Dashboard</h1>
-          <p className="text-sm text-slate-500 mt-1">Resumen general de tu empresa</p>
+          <h1 className="text-xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-sm text-muted-foreground mt-1">Resumen general de tu empresa</p>
         </div>
-        <Link href="/dashboard/sales" className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 active:scale-[0.98]">
+        <Link href="/dashboard/sales" className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-xl text-sm font-medium transition-all duration-150 active:scale-[0.98]">
           Nueva Venta
         </Link>
       </div>
@@ -119,16 +119,16 @@ export default function DashboardPage() {
         {kpiCards.map((kpi, i) => {
           const colors = kpiColors[i % kpiColors.length];
           return (
-            <div key={i} className="group border border-slate-200 rounded-xl shadow-sm p-5 bg-white hover:border-slate-300 transition-all duration-150">
+            <div key={i} className="group border border-border rounded-2xl shadow-sm p-5 bg-card hover:border-border/80 transition-all duration-150">
               <div className="flex items-center justify-between mb-3">
-                <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider">{kpi.label}</p>
-                <div className={`w-9 h-9 ${colors.bg} rounded-lg flex items-center justify-center`}>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">{kpi.label}</p>
+                <div className={`w-10 h-10 ${colors.bg} rounded-full flex items-center justify-center`}>
                   <kpi.icon className={`w-4 h-4 ${colors.text}`} />
                 </div>
               </div>
-              <p className="text-2xl font-bold text-slate-900">{kpi.value}</p>
+              <p className="text-2xl font-bold text-foreground">{kpi.value}</p>
               <div className="flex items-center justify-between mt-1.5">
-                <p className="text-[11px] text-slate-500">{kpi.sub}</p>
+                <p className="text-[11px] text-muted-foreground">{kpi.sub}</p>
                 <ChangeIndicator value={kpi.change} />
               </div>
             </div>
@@ -142,14 +142,14 @@ export default function DashboardPage() {
           title="Ventas del Mes"
           subtitle={`${kpis.sales?.count || 0} órdenes · ${formatCurrency(kpis.sales?.total || 0)}`}
           action={
-            <Link href="/dashboard/sales" className="text-[10px] text-slate-500 hover:text-slate-700">
+            <Link href="/dashboard/sales" className="text-[10px] text-muted-foreground hover:text-foreground">
               Ver todas →
             </Link>
           }
         >
           <ThemedLineChart
             data={salesByDay}
-            lines={[{ dataKey: 'Monto', color: '#6366f1' }]}
+            lines={[{ dataKey: 'Monto', color: '#1814F3' }]}
             markers={salesMarkers}
             formatter={(v) => [formatCurrency(v), 'Monto']}
           />
@@ -159,14 +159,14 @@ export default function DashboardPage() {
           title="Compras del Mes"
           subtitle={`${kpis.purchases?.count || 0} órdenes · ${formatCurrency(kpis.purchases?.total || 0)}`}
           action={
-            <Link href="/dashboard/purchases" className="text-[10px] text-slate-500 hover:text-slate-700">
+            <Link href="/dashboard/purchases" className="text-[10px] text-muted-foreground hover:text-foreground">
               Ver todas →
             </Link>
           }
         >
           <ThemedBarChart
             data={purchasesByDay}
-            bars={[{ dataKey: 'Monto', color: '#10b981' }]}
+            bars={[{ dataKey: 'Monto', color: '#16DBCC' }]}
             formatter={(v) => [formatCurrency(v), 'Monto']}
           />
         </ChartCard>
@@ -205,7 +205,7 @@ export default function DashboardPage() {
         <ChartCard title="Clientes Nuevos" subtitle="Últimos 6 meses">
           <ThemedLineChart
             data={customersByMonth}
-            lines={[{ dataKey: 'Clientes', color: '#f59e0b' }]}
+            lines={[{ dataKey: 'Clientes', color: '#FFBB38' }]}
             formatter={(v) => [String(v), 'Clientes']}
           />
         </ChartCard>
@@ -215,19 +215,19 @@ export default function DashboardPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         <ChartCard title="Top Productos" subtitle="Más vendidos este mes">
           {topProducts.length === 0 ? (
-            <p className="text-xs text-slate-400 text-center py-8">Sin datos de ventas este mes</p>
+            <p className="text-xs text-muted-foreground text-center py-8">Sin datos de ventas este mes</p>
           ) : (
             <div className="space-y-3">
               {topProducts.map((p: any, i: number) => (
                 <div key={i} className="flex items-center justify-between group/item">
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className="text-xs font-bold text-slate-300 dark:text-slate-600 w-5 group-hover/item:text-amber-500 transition-colors">{i + 1}</span>
+                    <span className="text-xs font-bold text-slate-300 w-5 group-hover/item:text-amber-500 transition-colors">{i + 1}</span>
                     <div className="min-w-0">
-                      <p className="text-xs font-medium text-slate-900 dark:text-white truncate">{p.name}</p>
-                      <p className="text-[10px] text-slate-400 dark:text-slate-500">{p.sku}</p>
+                      <p className="text-xs font-medium text-foreground truncate">{p.name}</p>
+                      <p className="text-[10px] text-muted-foreground">{p.sku}</p>
                     </div>
                   </div>
-                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{p.total_sold} u.</span>
+                  <span className="text-xs font-semibold text-foreground">{p.total_sold} u.</span>
                 </div>
               ))}
             </div>
@@ -237,21 +237,21 @@ export default function DashboardPage() {
         <ChartCard
           title="Ventas Recientes"
           action={
-            <Link href="/dashboard/sales" className="text-[10px] text-slate-500 hover:text-slate-700">
+            <Link href="/dashboard/sales" className="text-[10px] text-muted-foreground hover:text-foreground">
               Ver todas →
             </Link>
           }
         >
           <div className="space-y-2">
             {(recent.sales || []).length === 0 ? (
-              <p className="text-xs text-slate-400 text-center py-4">Sin ventas recientes</p>
+              <p className="text-xs text-muted-foreground text-center py-4">Sin ventas recientes</p>
             ) : recent.sales.map((s: any) => (
-              <Link key={s.id} href={`/dashboard/sales/${s.id}`} className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200">
+              <Link key={s.id} href={`/dashboard/sales/${s.id}`} className="flex items-center justify-between p-2.5 rounded-xl hover:bg-muted transition-all duration-200">
                 <div>
-                  <p className="text-xs font-medium text-slate-900 dark:text-white">{s.order_number || s.number}</p>
-                  <p className="text-[10px] text-slate-400 dark:text-slate-500">{s.customer?.name || '—'}</p>
+                  <p className="text-xs font-medium text-foreground">{s.order_number || s.number}</p>
+                  <p className="text-[10px] text-muted-foreground">{s.customer?.name || '—'}</p>
                 </div>
-                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{formatCurrency(s.total || 0)}</span>
+                <span className="text-xs font-semibold text-foreground">{formatCurrency(s.total || 0)}</span>
               </Link>
             ))}
           </div>
@@ -260,21 +260,21 @@ export default function DashboardPage() {
         <ChartCard
           title="Compras Recientes"
           action={
-            <Link href="/dashboard/purchases" className="text-[10px] text-slate-500 hover:text-slate-700">
+            <Link href="/dashboard/purchases" className="text-[10px] text-muted-foreground hover:text-foreground">
               Ver todas →
             </Link>
           }
         >
           <div className="space-y-2">
             {(recent.purchases || []).length === 0 ? (
-              <p className="text-xs text-slate-400 text-center py-4">Sin compras recientes</p>
+              <p className="text-xs text-muted-foreground text-center py-4">Sin compras recientes</p>
             ) : recent.purchases.map((p: any) => (
-              <Link key={p.id} href={`/dashboard/purchases/${p.id || p.number}`} className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200">
+              <Link key={p.id} href={`/dashboard/purchases/${p.id || p.number}`} className="flex items-center justify-between p-2.5 rounded-xl hover:bg-muted transition-all duration-200">
                 <div>
-                  <p className="text-xs font-medium text-slate-900 dark:text-white">{p.number}</p>
-                  <p className="text-[10px] text-slate-400 dark:text-slate-500">{p.supplier?.name || '—'}</p>
+                  <p className="text-xs font-medium text-foreground">{p.number}</p>
+                  <p className="text-[10px] text-muted-foreground">{p.supplier?.name || '—'}</p>
                 </div>
-                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{formatCurrency(p.total_amount || 0)}</span>
+                <span className="text-xs font-semibold text-foreground">{formatCurrency(p.total_amount || 0)}</span>
               </Link>
             ))}
           </div>

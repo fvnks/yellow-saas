@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Check, Star, ArrowRight, CreditCard, Zap } from 'lucide-react';
@@ -67,7 +67,7 @@ export default function PlanTab() {
     return (
       <div className="space-y-4">
         {[1, 2, 3].map(i => (
-          <div key={i} className="h-48 bg-slate-100 rounded-xl animate-pulse" />
+          <div key={i} className="h-48 bg-muted rounded-xl animate-pulse" />
         ))}
       </div>
     );
@@ -77,19 +77,19 @@ export default function PlanTab() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-slate-900">Tu Plan Actual</h3>
-          <p className="text-sm text-slate-500">Plan: <span className="font-medium text-slate-700">{plans.find(p => p.name === currentPlan)?.label || currentPlan}</span></p>
+          <h3 className="text-lg font-semibold text-foreground">Tu Plan Actual</h3>
+          <p className="text-sm text-muted-foreground">Plan: <span className="font-medium text-foreground">{plans.find(p => p.name === currentPlan)?.label || currentPlan}</span></p>
         </div>
-        <div className="flex items-center gap-2 bg-slate-100 rounded-lg p-1">
+        <div className="flex items-center gap-2 bg-muted rounded-lg p-1">
           <button
             onClick={() => setBillingPeriod('monthly')}
-            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${billingPeriod === 'monthly' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${billingPeriod === 'monthly' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
           >
             Mensual
           </button>
           <button
             onClick={() => setBillingPeriod('yearly')}
-            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${billingPeriod === 'yearly' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${billingPeriod === 'yearly' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
           >
             Anual <span className="text-emerald-600 text-[10px]">-17%</span>
           </button>
@@ -103,20 +103,20 @@ export default function PlanTab() {
           const monthlyPrice = billingPeriod === 'yearly' ? Math.round(plan.price_yearly / 12) : plan.price_monthly;
 
           return (
-            <div key={plan.name} className={`relative bg-white border-2 rounded-xl p-6 transition-all ${isCurrent ? 'border-indigo-500 shadow-md shadow-indigo-100' : 'border-slate-200 hover:border-slate-300'}`}>
+            <div key={plan.name} className={`relative bg-card border-2 rounded-xl p-6 transition-all ${isCurrent ? 'border-indigo-500 shadow-md shadow-indigo-100' : 'border-border hover:border-slate-300'}`}>
               {isCurrent && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-500 text-white px-3 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider">
                   Plan Actual
                 </div>
               )}
               <div className="text-center mb-4">
-                <h4 className="text-lg font-bold text-slate-900">{plan.label}</h4>
+                <h4 className="text-lg font-bold text-foreground">{plan.label}</h4>
                 <div className="mt-2">
-                  <span className="text-2xl font-bold text-slate-900">{formatPrice(monthlyPrice)}</span>
-                  <span className="text-sm text-slate-500">/mes</span>
+                  <span className="text-2xl font-bold text-foreground">{formatPrice(monthlyPrice)}</span>
+                  <span className="text-sm text-muted-foreground">/mes</span>
                 </div>
                 {billingPeriod === 'yearly' && plan.price_yearly > 0 && (
-                  <p className="text-xs text-slate-400 mt-1">Facturado {formatPrice(plan.price_yearly)}/año</p>
+                  <p className="text-xs text-muted-foreground mt-1">Facturado {formatPrice(plan.price_yearly)}/año</p>
                 )}
               </div>
 
@@ -137,7 +137,7 @@ export default function PlanTab() {
                 <button
                   onClick={() => handleUpgrade(plan.name)}
                   disabled={checkoutLoading}
-                  className="w-full bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                  className="w-full bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
                 >
                   {checkoutLoading ? 'Procesando...' : 'Upgrade'}
                   <ArrowRight className="w-4 h-4" />

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -154,32 +154,32 @@ export default function SalesRegisterPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <button onClick={() => router.push('/dashboard/sales')} className="p-1 hover:bg-slate-100 rounded transition-colors">
+        <button onClick={() => router.push('/dashboard/sales')} className="p-1 hover:bg-muted rounded transition-colors">
           <ArrowLeft className="w-5 h-5 text-slate-600" />
         </button>
         <div className="flex-1">
-          <h1 className="text-xl font-bold text-slate-900">Registro de Ventas</h1>
-          <p className="text-sm text-slate-500 mt-1">{records.length} registros</p>
+          <h1 className="text-xl font-bold text-foreground">Registro de Ventas</h1>
+          <p className="text-sm text-muted-foreground mt-1">{records.length} registros</p>
         </div>
-        <button onClick={openNew} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+        <button onClick={openNew} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" /> Nuevo Registro
         </button>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         <div className="flex items-center gap-4 flex-wrap">
           <div className="relative flex-1 min-w-[200px] max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input type="text" placeholder="Buscar por cliente, factura, guia..." value={search} onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+              className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
           </div>
           <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+            className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
             <option value="">Todos los estados</option>
             {statuses.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
           <select value={sellerFilter} onChange={(e) => setSellerFilter(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+            className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
             <option value="">Todos los vendedores</option>
             {sellers.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
@@ -187,48 +187,48 @@ export default function SalesRegisterPage() {
       </div>
 
       {loading ? (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800 space-y-3">
-          {[1, 2, 3].map(i => <div key={i} className="h-12 bg-slate-100 rounded-lg animate-pulse" />)}
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800 space-y-3">
+          {[1, 2, 3].map(i => <div key={i} className="h-12 bg-muted rounded-lg animate-pulse" />)}
         </div>
       ) : records.length === 0 ? (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-12 dark:bg-slate-900 dark:border-slate-800 text-center">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-12 dark:bg-primary dark:border-slate-800 text-center">
           <Receipt className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <p className="text-sm text-slate-500">No hay registros de ventas</p>
+          <p className="text-sm text-muted-foreground">No hay registros de ventas</p>
           <button onClick={openNew} className="mt-4 text-indigo-600 hover:text-indigo-700 text-sm font-medium">Crear primer registro</button>
         </div>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-slate-800">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cliente</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">N° Factura</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha Emisión</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha Pago</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Monto Neto</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Monto Total</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">N° Guía</th>
-                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Vendedor</th>
-                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                <tr className="border-b border-border">
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cliente</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">N° Factura</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha Emisión</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha Pago</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Monto Neto</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Monto Total</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">N° Guía</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Vendedor</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {records.map(r => (
-                  <tr key={r.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3 text-xs font-medium text-slate-900">{r.client}</td>
-                    <td className="px-4 py-3 text-xs text-slate-700 font-mono">{r.invoice_number}</td>
-                    <td className="px-4 py-3 text-xs text-slate-700">{r.emission_date?.split('T')[0] || '-'}</td>
+                  <tr key={r.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                    <td className="px-4 py-3 text-xs font-medium text-foreground">{r.client}</td>
+                    <td className="px-4 py-3 text-xs text-foreground font-mono">{r.invoice_number}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{r.emission_date?.split('T')[0] || '-'}</td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${statusColorMap[r.status] || ''}`}>
                         {statusLabelMap[r.status] || r.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-xs text-slate-700">{r.payment_date?.split('T')[0] || '-'}</td>
-                    <td className="px-4 py-3 text-xs text-slate-700 text-right">{formatMoney(r.net_amount)}</td>
-                    <td className="px-4 py-3 text-xs text-slate-900 font-medium text-right">{formatMoney(r.total_amount)}</td>
-                    <td className="px-4 py-3 text-xs text-slate-700 font-mono">{r.guide_number || '-'}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{r.payment_date?.split('T')[0] || '-'}</td>
+                    <td className="px-4 py-3 text-xs text-foreground text-right">{formatMoney(r.net_amount)}</td>
+                    <td className="px-4 py-3 text-xs text-foreground font-medium text-right">{formatMoney(r.total_amount)}</td>
+                    <td className="px-4 py-3 text-xs text-foreground font-mono">{r.guide_number || '-'}</td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${sellerColorMap[r.seller] || ''}`}>
                         {sellerLabelMap[r.seller] || r.seller}
@@ -236,8 +236,8 @@ export default function SalesRegisterPage() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-1">
-                        <button onClick={() => openEdit(r)} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"><Edit className="w-4 h-4" /></button>
-                        <button onClick={() => handleDelete(r.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-4 h-4" /></button>
+                        <button onClick={() => openEdit(r)} className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors"><Edit className="w-4 h-4" /></button>
+                        <button onClick={() => handleDelete(r.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"><Trash2 className="w-4 h-4" /></button>
                       </div>
                     </td>
                   </tr>
@@ -250,15 +250,15 @@ export default function SalesRegisterPage() {
 
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900lg mx-4">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900">{editing ? 'Editar' : 'Nuevo'} Registro de Venta</h2>
-              <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600 text-xl">&times;</button>
+          <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarylg mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">{editing ? 'Editar' : 'Nuevo'} Registro de Venta</h2>
+              <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-slate-600 text-xl">&times;</button>
             </div>
             <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Cliente *</label>
+                  <label className="block text-xs font-medium text-foreground">Cliente *</label>
                   <SearchableSelect
                     options={customers.map(c => ({ label: c.name, value: c.name, sublabel: c.tax_id || undefined }))}
                     value={form.client}
@@ -268,65 +268,65 @@ export default function SalesRegisterPage() {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">RUT</label>
+                  <label className="block text-xs font-medium text-foreground">RUT</label>
                   <input type="text" value={form.client_rut} readOnly
-                    className="w-full bg-slate-100 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500 cursor-not-allowed" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-muted-foreground cursor-not-allowed" />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">N° Factura *</label>
+                  <label className="block text-xs font-medium text-foreground">N° Factura *</label>
                   <input type="text" value={form.invoice_number} onChange={(e) => setForm({ ...form, invoice_number: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Fecha Emisión</label>
+                  <label className="block text-xs font-medium text-foreground">Fecha Emisión</label>
                   <input type="date" value={form.emission_date} onChange={(e) => setForm({ ...form, emission_date: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Estado</label>
+                  <label className="block text-xs font-medium text-foreground">Estado</label>
                   <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                     {statuses.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Fecha de Pago</label>
+                  <label className="block text-xs font-medium text-foreground">Fecha de Pago</label>
                   <input type="date" value={form.payment_date} onChange={(e) => setForm({ ...form, payment_date: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Vendedor *</label>
+                  <label className="block text-xs font-medium text-foreground">Vendedor *</label>
                   <select value={form.seller} onChange={(e) => setForm({ ...form, seller: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
                     {sellers.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Monto Neto</label>
+                  <label className="block text-xs font-medium text-foreground">Monto Neto</label>
                   <input type="number" value={form.net_amount} onChange={(e) => setForm({ ...form, net_amount: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-700">Monto Total (IVA 19%)</label>
+                  <label className="block text-xs font-medium text-foreground">Monto Total (IVA 19%)</label>
                   <input type="number" value={form.total_amount} readOnly
-                    className="w-full bg-slate-100 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500 cursor-not-allowed" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-muted-foreground cursor-not-allowed" />
                 </div>
                 <div className="space-y-1 col-span-2">
-                  <label className="block text-xs font-medium text-slate-700">N° Guía de Despacho</label>
+                  <label className="block text-xs font-medium text-foreground">N° Guía de Despacho</label>
                   <input type="text" value={form.guide_number} onChange={(e) => setForm({ ...form, guide_number: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
                 </div>
                 <div className="space-y-1 col-span-2">
-                  <label className="block text-xs font-medium text-slate-700">Observaciones</label>
+                  <label className="block text-xs font-medium text-foreground">Observaciones</label>
                   <textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} rows={2}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none" />
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent resize-none" />
                 </div>
               </div>
             </div>
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
-              <button onClick={() => setShowModal(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
+              <button onClick={() => setShowModal(false)} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
               <button onClick={handleSave} disabled={saving}
-                className="bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                className="bg-primary hover:bg-primary/90 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                 {saving ? 'Guardando...' : 'Guardar'}
               </button>
             </div>

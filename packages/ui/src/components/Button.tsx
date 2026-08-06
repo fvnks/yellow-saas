@@ -11,15 +11,15 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', loading, icon, iconPosition = 'left', children, disabled, ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] transition-transform';
+    const baseStyles = 'inline-flex items-center justify-center font-medium rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-[#1814F3]/20 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] transition-transform';
 
     const variants = {
-      primary: 'bg-slate-900 hover:bg-black text-white',
-      secondary: 'bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300',
-      danger: 'bg-rose-600 hover:bg-rose-700 text-white',
-      success: 'bg-emerald-600 hover:bg-emerald-700 text-white',
-      ghost: 'bg-transparent hover:bg-slate-100 text-slate-700 dark:hover:bg-slate-800 dark:text-slate-300',
-      outline: 'bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300',
+      primary: 'bg-[#1814F3] hover:bg-[#1612D3] text-white',
+      secondary: 'bg-white border border-[#E6EFF5] hover:bg-[#F5F7FA] text-[#232323] dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300',
+      danger: 'bg-[#FE5C73] hover:bg-[#E54A62] text-white',
+      success: 'bg-[#16DBCC] hover:bg-[#14C4B6] text-white',
+      ghost: 'bg-transparent hover:bg-[#F5F7FA] text-[#232323] dark:hover:bg-slate-800 dark:text-slate-300',
+      outline: 'bg-white border border-[#E6EFF5] hover:bg-[#F5F7FA] text-[#232323] dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300',
     };
 
     const sizes = {

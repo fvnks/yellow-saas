@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
@@ -133,17 +133,17 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-slate-900">Configuración</h1>
-        <p className="text-sm text-slate-500 mt-1">Administra la configuración de tu empresa</p>
+        <h1 className="text-xl font-bold text-foreground">Configuración</h1>
+        <p className="text-sm text-muted-foreground mt-1">Administra la configuración de tu empresa</p>
       </div>
 
       {/* Contenido */}
         <div className="space-y-6">
           {activeTab === 'empresa' && (
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 text-center">
+            <div className="bg-card border border-border rounded-xl shadow-sm p-8 text-center">
               <Building2 className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <h3 className="text-sm font-semibold text-slate-900">Datos de la Empresa</h3>
-              <p className="text-xs text-slate-500 mt-1 mb-4">Configure la información de su empresa, representante legal y logo SII.</p>
+              <h3 className="text-sm font-semibold text-foreground">Datos de la Empresa</h3>
+              <p className="text-xs text-muted-foreground mt-1 mb-4">Configure la información de su empresa, representante legal y logo SII.</p>
               <Button onClick={() => window.location.href = '/dashboard/settings/empresa'}>
                 <Building2 className="w-4 h-4 mr-2" /> Ir a Configuración de Empresa
               </Button>
@@ -176,32 +176,32 @@ export default function SettingsPage() {
 
 function WebhooksTab() {
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+    <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
       <div className="px-6 py-4 border-b border-slate-100">
-        <h3 className="text-sm font-semibold text-slate-900">Webhooks</h3>
+        <h3 className="text-sm font-semibold text-foreground">Webhooks</h3>
       </div>
       <div className="p-6 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-6">
+          <div className="bg-muted border border-border rounded-xl p-6">
             <Zap className="w-8 h-8 text-amber-600 mx-auto mb-2" />
-            <p className="font-medium text-slate-900 text-center text-sm">Eventos en Tiempo Real</p>
-            <p className="text-xs text-slate-500 mt-1 text-center">Recibe notificaciones instantáneas de stock, ventas, compras y más</p>
+            <p className="font-medium text-foreground text-center text-sm">Eventos en Tiempo Real</p>
+            <p className="text-xs text-muted-foreground mt-1 text-center">Recibe notificaciones instantáneas de stock, ventas, compras y más</p>
           </div>
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-6">
+          <div className="bg-muted border border-border rounded-xl p-6">
             <Shield className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
-            <p className="font-medium text-slate-900 text-center text-sm">Seguro y Confiable</p>
-            <p className="text-xs text-slate-500 mt-1 text-center">Firma HMAC, reintentos exponenciales y logs de entrega</p>
+            <p className="font-medium text-foreground text-center text-sm">Seguro y Confiable</p>
+            <p className="text-xs text-muted-foreground mt-1 text-center">Firma HMAC, reintentos exponenciales y logs de entrega</p>
           </div>
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-6">
+          <div className="bg-muted border border-border rounded-xl p-6">
             <Globe className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-            <p className="font-medium text-slate-900 text-center text-sm">Fácil Integración</p>
-            <p className="text-xs text-slate-500 mt-1 text-center">JSON sobre HTTP/HTTPS, eventos tipados y documentados</p>
+            <p className="font-medium text-foreground text-center text-sm">Fácil Integración</p>
+            <p className="text-xs text-muted-foreground mt-1 text-center">JSON sobre HTTP/HTTPS, eventos tipados y documentados</p>
           </div>
         </div>
         <div className="pt-4 border-t border-slate-100">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
             {['stock.changed', 'stock.low', 'stock.out', 'batch.expiring', 'batch.expired', 'return.created', 'return.approved', 'order.created', 'order.shipped', 'invoice.created', 'invoice.paid', 'invoice.overdue', 'purchase_order.created', 'purchase_order.received'].map((event, i) => (
-              <span key={i} className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-slate-100 text-slate-600 border border-slate-200 font-mono">
+              <span key={i} className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-muted text-slate-600 border border-border font-mono">
                 {event}
               </span>
             ))}
@@ -282,9 +282,9 @@ function UsersTab() {
   const roleLabels: Record<string, string> = { owner: 'Propietario', admin: 'Administrador', manager: 'Gerente', member: 'Miembro', viewer: 'Observador' };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+    <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
       <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-900">Usuarios del Sistema</h3>
+        <h3 className="text-sm font-semibold text-foreground">Usuarios del Sistema</h3>
         <Button size="sm" onClick={() => setShowInvite(true)}>
           <Plus className="w-4 h-4 mr-2" /> Invitar Usuario
         </Button>
@@ -316,29 +316,29 @@ function UsersTab() {
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-200">
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Email</th>
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Rol</th>
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Último Acceso</th>
-              <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+            <tr className="border-b border-border">
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nombre</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Email</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Rol</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Último Acceso</th>
+              <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-500">Cargando...</td></tr>
+              <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-muted-foreground">Cargando...</td></tr>
             ) : users.length === 0 ? (
-              <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-500">No hay usuarios</td></tr>
+              <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-muted-foreground">No hay usuarios</td></tr>
             ) : users.map(user => (
-              <tr key={user.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                <td className="px-4 py-3 text-sm font-medium text-slate-900">{user.full_name || '—'}</td>
+              <tr key={user.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                <td className="px-4 py-3 text-sm font-medium text-foreground">{user.full_name || '—'}</td>
                 <td className="px-4 py-3 text-sm text-slate-600">{user.email}</td>
                 <td className="px-4 py-3">
                   <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
                     user.role === 'owner' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
                     user.role === 'admin' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                    'bg-slate-100 text-slate-600 border border-slate-200'
+                    'bg-muted text-slate-600 border border-border'
                   }`}>
                     {roleLabels[user.role] || user.role}
                   </span>
@@ -352,17 +352,17 @@ function UsersTab() {
                     {user.status === 'active' ? 'Activo' : user.status === 'invited' ? 'Invitado' : 'Suspendido'}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-xs text-slate-500">
+                <td className="px-4 py-3 text-xs text-muted-foreground">
                   {user.last_login_at ? new Date(user.last_login_at).toLocaleDateString('es-CL') : 'Nunca'}
                 </td>
                 <td className="px-4 py-3 text-right">
                   <div className="flex items-center justify-end gap-1">
                     {user.role !== 'owner' && (
                       <>
-                        <button onClick={() => setEditingUser(user)} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors">
+                        <button onClick={() => setEditingUser(user)} className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded transition-colors">
                           <Pencil className="w-4 h-4" />
                         </button>
-                        <button onClick={() => handleDelete(user.id)} className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors">
+                        <button onClick={() => handleDelete(user.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </>
@@ -376,8 +376,8 @@ function UsersTab() {
       </div>
 
       {editingUser && (
-        <div className="p-4 bg-slate-50 border-t border-slate-200 space-y-3">
-          <h4 className="text-sm font-medium text-slate-900">Editar Usuario</h4>
+        <div className="p-4 bg-muted border-t border-border space-y-3">
+          <h4 className="text-sm font-medium text-foreground">Editar Usuario</h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <Input label="Nombre" value={editingUser.full_name || ''} onChange={(e) => setEditingUser({ ...editingUser, full_name: e.target.value })} />
             <Select label="Rol" value={editingUser.role} onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
@@ -438,13 +438,13 @@ function BillingTab({ plan, status }: { plan: string; status: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-100">
-          <h3 className="text-sm font-semibold text-slate-900">Plan Actual</h3>
+          <h3 className="text-sm font-semibold text-foreground">Plan Actual</h3>
         </div>
         <div className="p-6">
           {loadingPlans ? (
-            <div className="p-4 text-sm text-slate-400">Cargando planes...</div>
+            <div className="p-4 text-sm text-muted-foreground">Cargando planes...</div>
           ) : current ? (
             <>
               <div className="flex items-center justify-between p-4 bg-indigo-50 rounded-xl border border-indigo-100">
@@ -461,41 +461,41 @@ function BillingTab({ plan, status }: { plan: string; status: string }) {
                 </span>
               </div>
               <div className="mt-4 grid grid-cols-3 gap-4 text-center text-sm">
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase">Usuarios</p>
-                  <p className="font-bold text-slate-900 mt-1">{current.max_users === -1 ? 'Ilimitados' : current.max_users}</p>
+                <div className="p-3 bg-muted rounded-lg">
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase">Usuarios</p>
+                  <p className="font-bold text-foreground mt-1">{current.max_users === -1 ? 'Ilimitados' : current.max_users}</p>
                 </div>
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase">Precio Mensual</p>
-                  <p className="font-bold text-slate-900 mt-1">{formatPrice(current.price_monthly)}</p>
+                <div className="p-3 bg-muted rounded-lg">
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase">Precio Mensual</p>
+                  <p className="font-bold text-foreground mt-1">{formatPrice(current.price_monthly)}</p>
                 </div>
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase">Precio Anual</p>
-                  <p className="font-bold text-slate-900 mt-1">{current.price_yearly ? formatPrice(current.price_yearly) + '/año' : '—'}</p>
+                <div className="p-3 bg-muted rounded-lg">
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase">Precio Anual</p>
+                  <p className="font-bold text-foreground mt-1">{current.price_yearly ? formatPrice(current.price_yearly) + '/año' : '—'}</p>
                 </div>
               </div>
             </>
           ) : (
-            <div className="p-4 text-sm text-slate-400">No se pudo cargar la información del plan</div>
+            <div className="p-4 text-sm text-muted-foreground">No se pudo cargar la información del plan</div>
           )}
         </div>
       </div>
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-100">
-          <h3 className="text-sm font-semibold text-slate-900">Planes Disponibles</h3>
+          <h3 className="text-sm font-semibold text-foreground">Planes Disponibles</h3>
         </div>
         <div className="p-6">
           {loadingPlans ? (
-            <div className="p-4 text-sm text-slate-400">Cargando planes...</div>
+            <div className="p-4 text-sm text-muted-foreground">Cargando planes...</div>
           ) : otherPlans.length === 0 ? (
-            <div className="p-4 text-sm text-slate-400">No hay otros planes disponibles</div>
+            <div className="p-4 text-sm text-muted-foreground">No hay otros planes disponibles</div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {otherPlans.map((p) => (
                 <div key={p.name} className={`p-4 rounded-xl border-2 transition-colors ${
-                  plan === p.name ? 'border-indigo-500 bg-indigo-50' : 'border-slate-200 hover:border-slate-300'
+                  plan === p.name ? 'border-indigo-500 bg-indigo-50' : 'border-border hover:border-slate-300'
                 }`}>
-                  <p className="font-bold text-slate-900">{p.label}</p>
+                  <p className="font-bold text-foreground">{p.label}</p>
                   <p className="text-lg font-bold text-indigo-600 mt-1">{formatPrice(p.price_monthly)}/mes</p>
                   <ul className="mt-3 space-y-1">
                     {featuresList(p).map((f, i) => (
@@ -553,26 +553,26 @@ function NotificationsTab() {
   };
 
   if (loading) return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 text-center">
+    <div className="bg-card border border-border rounded-xl shadow-sm p-8 text-center">
       <div className="animate-pulse bg-slate-200 h-6 w-48 rounded mx-auto" />
     </div>
   );
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+    <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
       <div className="px-6 py-4 border-b border-slate-100">
-        <h3 className="text-sm font-semibold text-slate-900">Preferencias de Notificación</h3>
+        <h3 className="text-sm font-semibold text-foreground">Preferencias de Notificación</h3>
       </div>
       <div className="p-6 space-y-4">
-        <div className="p-4 bg-slate-50 rounded-lg space-y-3">
+        <div className="p-4 bg-muted rounded-lg space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-900">Notificaciones por Email</p>
-              <p className="text-xs text-slate-500">Recibe resúmenes y alertas importantes por correo</p>
+              <p className="text-sm font-medium text-foreground">Notificaciones por Email</p>
+              <p className="text-xs text-muted-foreground">Recibe resúmenes y alertas importantes por correo</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" checked={prefs.email_enabled} onChange={(e) => setPrefs(p => ({ ...p, email_enabled: e.target.checked }))} className="sr-only peer" />
-              <div className="w-11 h-6 bg-slate-200 peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+              <div className="w-11 h-6 bg-slate-200 peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-card after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
             </label>
           </div>
           {prefs.email_enabled && (
@@ -587,15 +587,15 @@ function NotificationsTab() {
           { key: 'project_deadline', label: 'Fechas límite de proyectos', desc: 'Alerta cuando un proyecto está por vencer' },
           { key: 'timesheet_reminders', label: 'Recordatorios de horas', desc: 'Recordatorio para registrar horas trabajadas' },
         ].map((item) => (
-          <div key={item.key} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+          <div key={item.key} className="flex items-center justify-between p-4 bg-muted rounded-lg">
             <div>
-              <p className="text-sm font-medium text-slate-900">{item.label}</p>
-              <p className="text-xs text-slate-500">{item.desc}</p>
+              <p className="text-sm font-medium text-foreground">{item.label}</p>
+              <p className="text-xs text-muted-foreground">{item.desc}</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" checked={(prefs as any)[item.key]}
                 onChange={(e) => setPrefs(p => ({ ...p, [item.key]: e.target.checked }))} className="sr-only peer" />
-              <div className="w-11 h-6 bg-slate-200 peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+              <div className="w-11 h-6 bg-slate-200 peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-card after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
             </label>
           </div>
         ))}
@@ -637,9 +637,9 @@ function SecurityTab() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-100">
-          <h3 className="text-sm font-semibold text-slate-900">Contraseña</h3>
+          <h3 className="text-sm font-semibold text-foreground">Contraseña</h3>
         </div>
         <div className="p-6 space-y-4">
           <Input label="Contraseña Actual" type="password" value={currentPassword}
@@ -657,17 +657,17 @@ function SecurityTab() {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-100">
-          <h3 className="text-sm font-semibold text-slate-900">Autenticación de Dos Factores</h3>
+          <h3 className="text-sm font-semibold text-foreground">Autenticación de Dos Factores</h3>
         </div>
         <div className="p-6">
-          <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+          <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
             <div>
-              <p className="text-sm font-medium text-slate-900">2FA con Authenticator App</p>
-              <p className="text-xs text-slate-500">Agrega una capa extra de seguridad a tu cuenta</p>
+              <p className="text-sm font-medium text-foreground">2FA con Authenticator App</p>
+              <p className="text-xs text-muted-foreground">Agrega una capa extra de seguridad a tu cuenta</p>
             </div>
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-muted text-slate-600 border border-border">
               Próximamente
             </span>
           </div>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { ScrollText, Search, Shield, Building2, ChevronLeft, ChevronRight, Filter, X } from 'lucide-react';
@@ -107,7 +107,7 @@ export default function AdminAuditPage() {
     login: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     access: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
     modify: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-    logout: 'bg-slate-500/10 text-slate-400 border-slate-500/20',
+    logout: 'bg-muted0/10 text-muted-foreground border-slate-500/20',
   };
 
   const totalPages = Math.ceil(total / limit);
@@ -117,12 +117,12 @@ export default function AdminAuditPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Audit Log</h1>
-          <p className="text-sm text-slate-400 mt-1">Registro de acciones de super admins en la plataforma</p>
+          <p className="text-sm text-muted-foreground mt-1">Registro de acciones de super admins en la plataforma</p>
         </div>
         <button
           onClick={() => setShowFilters(!showFilters)}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            showFilters || activeFilters > 0 ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white'
+            showFilters || activeFilters > 0 ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-muted-foreground hover:text-white'
           }`}
         >
           <Filter className="w-4 h-4" />
@@ -132,14 +132,14 @@ export default function AdminAuditPage() {
 
       {/* Filters */}
       {showFilters && (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <div className="bg-primary border border-slate-800 rounded-xl p-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-400">Acción</label>
+              <label className="text-xs font-medium text-muted-foreground">Acción</label>
               <select
                 value={filters.action}
                 onChange={(e) => { setFilters({ ...filters, action: e.target.value }); setPage(0); }}
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
               >
                 <option value="">Todas</option>
                 <option value="login">Login</option>
@@ -149,49 +149,49 @@ export default function AdminAuditPage() {
               </select>
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-400">Super Admin</label>
+              <label className="text-xs font-medium text-muted-foreground">Super Admin</label>
               <select
                 value={filters.super_admin_id}
                 onChange={(e) => { setFilters({ ...filters, super_admin_id: e.target.value }); setPage(0); }}
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
               >
                 <option value="">Todos</option>
                 {superAdmins.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
               </select>
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-400">Empresa</label>
+              <label className="text-xs font-medium text-muted-foreground">Empresa</label>
               <select
                 value={filters.company_id}
                 onChange={(e) => { setFilters({ ...filters, company_id: e.target.value }); setPage(0); }}
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
               >
                 <option value="">Todas</option>
                 {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-400">Desde</label>
+              <label className="text-xs font-medium text-muted-foreground">Desde</label>
               <input
                 type="date"
                 value={filters.date_from}
                 onChange={(e) => { setFilters({ ...filters, date_from: e.target.value }); setPage(0); }}
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
               />
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-400">Hasta</label>
+              <label className="text-xs font-medium text-muted-foreground">Hasta</label>
               <input
                 type="date"
                 value={filters.date_to}
                 onChange={(e) => { setFilters({ ...filters, date_to: e.target.value }); setPage(0); }}
-                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
               />
             </div>
           </div>
           {activeFilters > 0 && (
             <div className="mt-3 flex justify-end">
-              <button onClick={clearFilters} className="flex items-center gap-1 text-xs text-slate-400 hover:text-white transition-colors">
+              <button onClick={clearFilters} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-white transition-colors">
                 <X className="w-3 h-3" /> Limpiar filtros
               </button>
             </div>
@@ -199,15 +199,15 @@ export default function AdminAuditPage() {
         </div>
       )}
 
-      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+      <div className="bg-primary border border-slate-800 rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
             <tr className="border-b border-slate-800">
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Fecha</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Super Admin</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Empresa</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Acción</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Detalles</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Fecha</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Super Admin</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Empresa</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Acción</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Detalles</th>
             </tr>
           </thead>
           <tbody>
@@ -222,14 +222,14 @@ export default function AdminAuditPage() {
             ) : entries.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-12 text-center">
-                  <ScrollText className="w-12 h-12 text-slate-700 mx-auto mb-3" />
-                  <p className="text-sm text-slate-500">No hay registros de auditoría</p>
+                  <ScrollText className="w-12 h-12 text-foreground mx-auto mb-3" />
+                  <p className="text-sm text-muted-foreground">No hay registros de auditoría</p>
                 </td>
               </tr>
             ) : (
               entries.map((entry) => (
-                <tr key={entry.id} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
-                  <td className="px-6 py-4 text-xs text-slate-400">
+                <tr key={entry.id} className="border-b border-slate-800/50 hover:bg-primary/90/30 transition-colors">
+                  <td className="px-6 py-4 text-xs text-muted-foreground">
                     {new Date(entry.created_at).toLocaleString('es-CL')}
                   </td>
                   <td className="px-6 py-4">
@@ -239,13 +239,13 @@ export default function AdminAuditPage() {
                       </div>
                       <div>
                         <p className="text-xs font-medium text-white">{entry.super_admin_name}</p>
-                        <p className="text-[10px] text-slate-500">{entry.super_admin_email}</p>
+                        <p className="text-[10px] text-muted-foreground">{entry.super_admin_email}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-1.5 text-xs text-slate-300">
-                      <Building2 className="w-3 h-3 text-slate-500" />
+                      <Building2 className="w-3 h-3 text-muted-foreground" />
                       {entry.company_name}
                     </div>
                   </td>
@@ -254,7 +254,7 @@ export default function AdminAuditPage() {
                       {entry.action}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-xs text-slate-400 max-w-[200px] truncate">
+                  <td className="px-6 py-4 text-xs text-muted-foreground max-w-[200px] truncate">
                     {entry.details ? JSON.stringify(entry.details) : '—'}
                   </td>
                 </tr>
@@ -265,13 +265,13 @@ export default function AdminAuditPage() {
       </div>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between text-xs text-slate-500">
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
           <p>Mostrando {page * limit + 1}-{Math.min((page + 1) * limit, total)} de {total}</p>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPage(p => Math.max(0, p - 1))}
               disabled={page === 0}
-              className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white disabled:opacity-30 transition-colors"
+              className="p-1.5 rounded-lg bg-slate-800 text-muted-foreground hover:text-white disabled:opacity-30 transition-colors"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -279,7 +279,7 @@ export default function AdminAuditPage() {
             <button
               onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
               disabled={page >= totalPages - 1}
-              className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white disabled:opacity-30 transition-colors"
+              className="p-1.5 rounded-lg bg-slate-800 text-muted-foreground hover:text-white disabled:opacity-30 transition-colors"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

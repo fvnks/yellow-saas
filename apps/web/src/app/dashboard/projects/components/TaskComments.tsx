@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { Send, Trash2, MessageCircle } from 'lucide-react';
@@ -77,7 +77,7 @@ export default function TaskComments({ projectId, taskId, currentUserId }: TaskC
   if (loading) {
     return (
       <div className="space-y-2">
-        {[1, 2].map(i => <div key={i} className="h-12 bg-slate-100 rounded-lg animate-pulse" />)}
+        {[1, 2].map(i => <div key={i} className="h-12 bg-muted rounded-lg animate-pulse" />)}
       </div>
     );
   }
@@ -85,13 +85,13 @@ export default function TaskComments({ projectId, taskId, currentUserId }: TaskC
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center gap-2 mb-3">
-        <MessageCircle className="w-4 h-4 text-slate-500" />
-        <span className="text-xs font-semibold text-slate-700">{comments.length} comentario{comments.length !== 1 ? 's' : ''}</span>
+        <MessageCircle className="w-4 h-4 text-muted-foreground" />
+        <span className="text-xs font-semibold text-foreground">{comments.length} comentario{comments.length !== 1 ? 's' : ''}</span>
       </div>
 
       <div className="flex-1 overflow-y-auto max-h-64 space-y-3 mb-3">
         {comments.length === 0 ? (
-          <p className="text-xs text-slate-400 text-center py-4">Sin comentarios aun</p>
+          <p className="text-xs text-muted-foreground text-center py-4">Sin comentarios aun</p>
         ) : comments.map(comment => (
           <div key={comment.id} className="group flex gap-2">
             <div className="w-7 h-7 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0">
@@ -101,8 +101,8 @@ export default function TaskComments({ projectId, taskId, currentUserId }: TaskC
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-slate-900">{comment.user_name}</span>
-                <span className="text-[10px] text-slate-400">{formatTime(comment.created_at)}</span>
+                <span className="text-xs font-semibold text-foreground">{comment.user_name}</span>
+                <span className="text-[10px] text-muted-foreground">{formatTime(comment.created_at)}</span>
                 {comment.user_id === currentUserId && (
                   <button onClick={() => handleDelete(comment.id)}
                     className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-red-50 rounded transition-all">
@@ -110,7 +110,7 @@ export default function TaskComments({ projectId, taskId, currentUserId }: TaskC
                   </button>
                 )}
               </div>
-              <p className="text-xs text-slate-700 mt-0.5 whitespace-pre-wrap">{comment.content}</p>
+              <p className="text-xs text-foreground mt-0.5 whitespace-pre-wrap">{comment.content}</p>
             </div>
           </div>
         ))}
@@ -123,11 +123,11 @@ export default function TaskComments({ projectId, taskId, currentUserId }: TaskC
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
-          className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          className="flex-1 bg-muted border border-border rounded-lg px-3 py-2 text-xs text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
           placeholder="Escribe un comentario..."
         />
         <button onClick={handleSend} disabled={sending || !newComment.trim()}
-          className="bg-slate-900 hover:bg-slate-800 text-white p-2 rounded-lg transition-colors disabled:opacity-50">
+          className="bg-primary hover:bg-primary/90 text-white p-2 rounded-lg transition-colors disabled:opacity-50">
           <Send className="w-3.5 h-3.5" />
         </button>
       </div>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -194,11 +194,11 @@ function PayrollPage() {
             <div key={i} className="h-28 bg-slate-200 rounded-xl animate-pulse" />
           ))}
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
           <div className="space-y-4">
             <div className="h-10 w-full bg-slate-200 rounded-lg animate-pulse" />
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-12 w-full bg-slate-100 rounded-lg animate-pulse" />
+              <div key={i} className="h-12 w-full bg-muted rounded-lg animate-pulse" />
             ))}
           </div>
         </div>
@@ -210,13 +210,13 @@ function PayrollPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Remuneraciones</h1>
-          <p className="text-sm text-slate-500 mt-1">Gestion de nomina chilena</p>
+          <h1 className="text-xl font-bold text-foreground">Remuneraciones</h1>
+          <p className="text-sm text-muted-foreground mt-1">Gestion de nomina chilena</p>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={() => { setUFInput(ufValue.toLocaleString('es-CL')); setShowUFModal(true); }}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-slate-600 bg-slate-50 border border-slate-200 rounded-lg hover:bg-slate-100 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-slate-600 bg-muted border border-border rounded-lg hover:bg-muted transition-colors"
             title="Configurar valor UF"
           >
             <DollarSign className="w-3.5 h-3.5" />
@@ -249,7 +249,7 @@ function PayrollPage() {
         <KPICard label="Costo Total Empleador" value={`$${((totalPayroll * 1.35) / 1000000).toFixed(1)}M`} icon={DollarSign} trend="Incluye cargas" trendUp={true} />
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:border-slate-800">
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-slate-800 dark:bg-primary dark:border-slate-800">
         <ContinuousTabs
           tabs={[
             { id: 'employees', label: `Empleados (${employees.length})` },
@@ -265,12 +265,12 @@ function PayrollPage() {
             <div className="p-4 border-b border-slate-100">
               <div className="flex items-center gap-4">
                 <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <input
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full pl-9 pr-4 py-2 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                     placeholder="Buscar por nombre, RUT o cargo..."
                   />
                 </div>
@@ -287,11 +287,11 @@ function PayrollPage() {
             <div className="overflow-x-auto">
               {employees.length === 0 ? (
                 <div className="p-12 text-center">
-                  <div className="w-16 h-16 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <Users className="w-8 h-8 text-slate-400" />
+                  <div className="w-16 h-16 bg-muted rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <Users className="w-8 h-8 text-muted-foreground" />
                   </div>
-                  <h3 className="text-sm font-semibold text-slate-700 mb-1">No hay empleados registrados</h3>
-                  <p className="text-xs text-slate-500 mb-4">Comienza agregando tu primer empleado para calcular remuneraciones.</p>
+                  <h3 className="text-sm font-semibold text-foreground mb-1">No hay empleados registrados</h3>
+                  <p className="text-xs text-muted-foreground mb-4">Comienza agregando tu primer empleado para calcular remuneraciones.</p>
                   <Button onClick={() => { setEditingEmployee(null); setShowEmployeeModal(true); }} size="sm">
                     <Plus className="w-4 h-4 mr-2" />
                     Nuevo Empleado
@@ -300,7 +300,7 @@ function PayrollPage() {
               ) : filteredEmployees.length === 0 ? (
                 <div className="p-12 text-center">
                   <Search className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-                  <p className="text-sm text-slate-500">No se encontraron empleados con esos filtros</p>
+                  <p className="text-sm text-muted-foreground">No se encontraron empleados con esos filtros</p>
                   <button
                     onClick={() => { setSearchTerm(''); setDepartmentFilter('all'); }}
                     className="text-xs text-indigo-600 hover:text-indigo-800 mt-2"
@@ -311,30 +311,30 @@ function PayrollPage() {
               ) : (
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-slate-200">
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">RUT</th>
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cargo</th>
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Departamento</th>
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Contrato</th>
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">AFP</th>
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Salud</th>
-                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Sueldo Base</th>
-                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                    <tr className="border-b border-border">
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nombre</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">RUT</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cargo</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Departamento</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Contrato</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">AFP</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Salud</th>
+                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Sueldo Base</th>
+                      <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                      <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredEmployees.map(employee => (
-                      <tr key={employee.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                        <td className="px-4 py-3 text-sm font-medium text-slate-900">{employee.first_name} {employee.last_name}</td>
-                        <td className="px-4 py-3 text-xs font-mono text-slate-500">{employee.rut || '�'}</td>
+                      <tr key={employee.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                        <td className="px-4 py-3 text-sm font-medium text-foreground">{employee.first_name} {employee.last_name}</td>
+                        <td className="px-4 py-3 text-xs font-mono text-muted-foreground">{employee.rut || '�'}</td>
                         <td className="px-4 py-3 text-xs text-slate-600">{employee.position || '�'}</td>
                         <td className="px-4 py-3 text-xs text-slate-600">{employee.department || '�'}</td>
                         <td className="px-4 py-3 text-xs text-slate-600">{contractTypeLabels[employee.contract_type] || employee.contract_type || '�'}</td>
                         <td className="px-4 py-3 text-xs text-slate-600">{employee.afp_fund || '�'}</td>
                         <td className="px-4 py-3 text-xs text-slate-600">{employee.health_type === 'isapre' ? 'Isapre' : 'FONASA'}</td>
-                        <td className="px-4 py-3 text-xs text-right font-medium text-slate-900">${(employee.base_salary || 0).toLocaleString('es-CL')}</td>
+                        <td className="px-4 py-3 text-xs text-right font-medium text-foreground">${(employee.base_salary || 0).toLocaleString('es-CL')}</td>
                         <td className="px-4 py-3">
                           <Badge variant={statusConfig[employee.status]?.variant || 'neutral'}>
                             {statusConfig[employee.status]?.label || employee.status}
@@ -344,7 +344,7 @@ function PayrollPage() {
                           <div className="flex items-center justify-end gap-1">
                             <button
                               onClick={() => { setEditingEmployee(employee); setShowEmployeeModal(true); }}
-                              className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                              className="p-1.5 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
                               title="Editar"
                             >
                               <Edit className="w-3.5 h-3.5" />
@@ -352,7 +352,7 @@ function PayrollPage() {
                             <button
                               onClick={() => handleDeleteEmployee(employee.id)}
                               disabled={deletingEmployee === employee.id}
-                              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors disabled:opacity-50"
+                              className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors disabled:opacity-50"
                               title="Eliminar"
                             >
                               {deletingEmployee === employee.id ? (
@@ -376,11 +376,11 @@ function PayrollPage() {
           <div className="overflow-x-auto">
             {runs.length === 0 ? (
               <div className="p-12 text-center">
-                <div className="w-16 h-16 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <FileText className="w-8 h-8 text-slate-400" />
+                <div className="w-16 h-16 bg-muted rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <FileText className="w-8 h-8 text-muted-foreground" />
                 </div>
-                <h3 className="text-sm font-semibold text-slate-700 mb-1">No hay periodos de nomina</h3>
-                <p className="text-xs text-slate-500 mb-4">Crea un periodo para calcular las remuneraciones de tus empleados.</p>
+                <h3 className="text-sm font-semibold text-foreground mb-1">No hay periodos de nomina</h3>
+                <p className="text-xs text-muted-foreground mb-4">Crea un periodo para calcular las remuneraciones de tus empleados.</p>
                 <Button onClick={() => setShowPeriodModal(true)} size="sm">
                   <Plus className="w-4 h-4 mr-2" />
                   Nuevo Periodo
@@ -389,26 +389,26 @@ function PayrollPage() {
             ) : (
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-slate-200">
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Periodo</th>
-                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Empleados</th>
-                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Sueldo Imponible</th>
-                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Cargas Empleador</th>
-                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Retenciones</th>
-                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Liquido a Pagar</th>
-                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
-                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                  <tr className="border-b border-border">
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Periodo</th>
+                    <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Empleados</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Sueldo Imponible</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cargas Empleador</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Retenciones</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Liquido a Pagar</th>
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {runs.map(run => (
-                    <tr key={run.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                      <td className="px-4 py-3 text-sm font-medium text-slate-900">{run.period_label}</td>
-                      <td className="px-4 py-3 text-xs text-center text-slate-700">{run.employee_count || 0}</td>
-                      <td className="px-4 py-3 text-xs text-right text-slate-700">${(run.gross_amount || 0).toLocaleString('es-CL')}</td>
-                      <td className="px-4 py-3 text-xs text-right text-slate-700">${(run.total_employer || 0).toLocaleString('es-CL')}</td>
-                      <td className="px-4 py-3 text-xs text-right text-slate-700">${((run.total_deductions || 0) + (run.total_tax || 0)).toLocaleString('es-CL')}</td>
-                      <td className="px-4 py-3 text-xs text-right font-bold text-slate-900">${(run.net_amount || 0).toLocaleString('es-CL')}</td>
+                    <tr key={run.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                      <td className="px-4 py-3 text-sm font-medium text-foreground">{run.period_label}</td>
+                      <td className="px-4 py-3 text-xs text-center text-foreground">{run.employee_count || 0}</td>
+                      <td className="px-4 py-3 text-xs text-right text-foreground">${(run.gross_amount || 0).toLocaleString('es-CL')}</td>
+                      <td className="px-4 py-3 text-xs text-right text-foreground">${(run.total_employer || 0).toLocaleString('es-CL')}</td>
+                      <td className="px-4 py-3 text-xs text-right text-foreground">${((run.total_deductions || 0) + (run.total_tax || 0)).toLocaleString('es-CL')}</td>
+                      <td className="px-4 py-3 text-xs text-right font-bold text-foreground">${(run.net_amount || 0).toLocaleString('es-CL')}</td>
                       <td className="px-4 py-3">
                         <Badge variant={statusConfig[run.status]?.variant || 'neutral'}>
                           {statusConfig[run.status]?.label || run.status}
@@ -418,7 +418,7 @@ function PayrollPage() {
                         <div className="flex items-center justify-end gap-1">
                           <a
                             href={`/dashboard/payroll/${run.id}`}
-                            className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                            className="p-1.5 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
                             title="Ver detalle"
                           >
                             <Eye className="w-3.5 h-3.5" />
@@ -428,7 +428,7 @@ function PayrollPage() {
                               <button
                                 onClick={() => handleCalculate(run.id)}
                                 disabled={calculatingRun === run.id}
-                                className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors disabled:opacity-50"
+                                className="p-1.5 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors disabled:opacity-50"
                                 title="Calcular nomina"
                               >
                                 {calculatingRun === run.id ? (
@@ -440,7 +440,7 @@ function PayrollPage() {
                               <button
                                 onClick={() => handleDeleteRun(run.id)}
                                 disabled={deletingRun === run.id}
-                                className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors disabled:opacity-50"
+                                className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors disabled:opacity-50"
                                 title="Eliminar"
                               >
                                 {deletingRun === run.id ? (
@@ -455,7 +455,7 @@ function PayrollPage() {
                             <button
                               onClick={() => handleApprove(run.id)}
                               disabled={approvingRun === run.id}
-                              className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                              className="p-1.5 text-muted-foreground hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
                               title="Aprobar"
                             >
                               {approvingRun === run.id ? (
@@ -469,7 +469,7 @@ function PayrollPage() {
                             <button
                               onClick={() => handlePay(run.id)}
                               disabled={payingRun === run.id}
-                              className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                              className="p-1.5 text-muted-foreground hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
                               title="Marcar como pagada"
                             >
                               {payingRun === run.id ? (
@@ -513,35 +513,35 @@ function PayrollPage() {
 
       {showUFModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full dark:bg-slate-900 max-w- dark:bg-slate-900sm mx-4">
-            <div className="px-6 py-4 border-b border-slate-200">
-              <h2 className="text-sm font-semibold text-slate-900">Valor UF Actual</h2>
+          <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarysm mx-4">
+            <div className="px-6 py-4 border-b border-border">
+              <h2 className="text-sm font-semibold text-foreground">Valor UF Actual</h2>
             </div>
             <div className="p-6 space-y-4">
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-muted-foreground">
                 Se usa para calcular gratificaciones y aguinaldo navideno.
               </p>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Valor (CLP)</label>
+                <label className="block text-xs font-medium text-foreground">Valor (CLP)</label>
                 <input
                   type="text"
                   value={ufInput}
                   onChange={e => setUFInput(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="38500"
                 />
               </div>
             </div>
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button
                 onClick={() => setShowUFModal(false)}
-                className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50"
+                className="px-4 py-2 text-sm font-medium text-foreground bg-card border border-border rounded-lg hover:bg-muted"
               >
                 Cancelar
               </button>
               <button
                 onClick={saveUF}
-                className="px-4 py-2 text-sm font-medium text-white bg-slate-900 rounded-lg hover:bg-slate-800"
+                className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/90"
               >
                 Guardar
               </button>

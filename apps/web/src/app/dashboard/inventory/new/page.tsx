@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select } from '@yellow-erp/ui';
@@ -188,12 +188,12 @@ export default function NewProductPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/inventory" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link href="/dashboard/inventory" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">
-          <h1 className="text-xl font-bold text-slate-900">Nuevo Producto</h1>
-          <p className="text-sm text-slate-500 mt-1">Crear un nuevo producto en el inventario</p>
+          <h1 className="text-xl font-bold text-foreground">Nuevo Producto</h1>
+          <p className="text-sm text-muted-foreground mt-1">Crear un nuevo producto en el inventario</p>
         </div>
         <Button onClick={handleSave} disabled={saving}>
           <Save className="w-4 h-4 mr-2" />
@@ -219,12 +219,12 @@ export default function NewProductPage() {
                 <Input label="Nombre *" value={name} onChange={(e) => setName(e.target.value)} placeholder="Nombre del producto" />
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-slate-700">Descripción</label>
+                <label className="block text-xs font-medium text-foreground">Descripción</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={3}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
                   placeholder="Descripción del producto..."
                 />
               </div>
@@ -278,19 +278,19 @@ export default function NewProductPage() {
             <CardContent>
               {imageUrl ? (
                 <div className="relative">
-                  <img src={imageUrl} alt="Producto" className="w-full h-48 object-cover rounded-lg border border-slate-200" />
+                  <img src={imageUrl} alt="Producto" className="w-full h-48 object-cover rounded-lg border border-border" />
                   <button
                     type="button"
                     onClick={() => setImageUrl('')}
-                    className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-sm border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700"
+                    className="absolute top-2 right-2 bg-card rounded-full p-1 shadow-sm border border-border hover:bg-muted dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700"
                   >
-                    <X className="w-4 h-4 text-slate-500" />
+                    <X className="w-4 h-4 text-muted-foreground" />
                   </button>
                 </div>
               ) : (
                 <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/50 transition-colors">
-                  <Upload className="w-6 h-6 text-slate-400 mb-2" />
-                  <span className="text-xs text-slate-500">{uploadingImage ? 'Subiendo...' : 'Click para subir imagen'}</span>
+                  <Upload className="w-6 h-6 text-muted-foreground mb-2" />
+                  <span className="text-xs text-muted-foreground">{uploadingImage ? 'Subiendo...' : 'Click para subir imagen'}</span>
                   <input
                     type="file"
                     accept="image/jpeg,image/png,image/webp,image/gif"
@@ -332,7 +332,7 @@ export default function NewProductPage() {
               <CardTitle>Ubicación en Bodega</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <p className="text-xs text-slate-500">Selecciona dónde almacenar este producto en el layout de la bodega.</p>
+              <p className="text-xs text-muted-foreground">Selecciona dónde almacenar este producto en el layout de la bodega.</p>
               <Select
                 label="Bodega"
                 value={selectedWarehouse}
@@ -396,12 +396,12 @@ export default function NewProductPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-slate-700">Rastrear Stock</label>
+                <label className="text-sm font-medium text-foreground">Rastrear Stock</label>
                 <button
                   onClick={() => setTrackStock(!trackStock)}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${trackStock ? 'bg-indigo-600' : 'bg-slate-200'}`}
                 >
-                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${trackStock ? 'translate-x-6' : 'translate-x-1'}`} />
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-card transition-transform ${trackStock ? 'translate-x-6' : 'translate-x-1'}`} />
                 </button>
               </div>
               {trackStock && (
@@ -411,12 +411,12 @@ export default function NewProductPage() {
                 </div>
               )}
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-slate-700">Activo</label>
+                <label className="text-sm font-medium text-foreground">Activo</label>
                 <button
                   onClick={() => setIsActive(!isActive)}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isActive ? 'bg-indigo-600' : 'bg-slate-200'}`}
                 >
-                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isActive ? 'translate-x-6' : 'translate-x-1'}`} />
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-card transition-transform ${isActive ? 'translate-x-6' : 'translate-x-1'}`} />
                 </button>
               </div>
             </CardContent>
@@ -432,20 +432,20 @@ export default function NewProductPage() {
                   <Package className="w-4 h-4 text-indigo-600" />
                 </div>
                 <div>
-                  <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">SKU</p>
-                  <p className="font-medium text-slate-900">{sku || '—'}</p>
+                  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">SKU</p>
+                  <p className="font-medium text-foreground">{sku || '—'}</p>
                 </div>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Costo</span>
+                <span className="text-muted-foreground">Costo</span>
                 <span className="font-medium">${costPrice.toLocaleString('es-CL')}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Venta</span>
+                <span className="text-muted-foreground">Venta</span>
                 <span className="font-medium">${salePrice.toLocaleString('es-CL')}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Margen</span>
+                <span className="text-muted-foreground">Margen</span>
                 <span className="font-medium">
                   {costPrice > 0 ? `${(((salePrice - costPrice) / costPrice) * 100).toFixed(1)}%` : '—'}
                 </span>

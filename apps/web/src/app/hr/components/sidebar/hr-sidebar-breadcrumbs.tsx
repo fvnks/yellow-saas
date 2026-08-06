@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { usePathname } from "next/navigation";
 import { ChevronRight, Home } from "lucide-react";
@@ -28,7 +28,7 @@ export default function HRSidebarBreadcrumbs() {
     <nav className="flex items-center gap-1 text-sm overflow-x-auto">
       <a
         href="/select"
-        className="flex items-center gap-1 text-slate-500 hover:text-slate-700 transition-colors shrink-0"
+        className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors shrink-0"
       >
         <Home className="h-4 w-4" />
       </a>
@@ -38,13 +38,13 @@ export default function HRSidebarBreadcrumbs() {
 
         return (
           <span key={`${segment}-${index}`} className="flex items-center gap-1 shrink-0">
-            <ChevronRight className="h-3 w-3 text-slate-400" />
+            <ChevronRight className="h-3 w-3 text-muted-foreground" />
             {isLast ? (
-              <span className="font-medium text-slate-900">{label}</span>
+              <span className="font-medium text-foreground">{label}</span>
             ) : (
               <a
                 href={segmentPath(segments, index)}
-                className="text-slate-500 hover:text-slate-700 transition-colors whitespace-nowrap"
+                className="text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
               >
                 {label}
               </a>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -31,12 +31,12 @@ function MiCuentaPageInner() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Mi Cuenta</h1>
-          <p className="text-sm text-slate-500 mt-1">Gestiona tu plan, facturación y módulos</p>
+          <h1 className="text-xl font-bold text-foreground">Mi Cuenta</h1>
+          <p className="text-sm text-muted-foreground mt-1">Gestiona tu plan, facturación y módulos</p>
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="bg-card border border-border rounded-xl shadow-sm">
         <ContinuousTabs
           tabs={tabs}
           defaultActiveId={activeTab}
@@ -55,7 +55,7 @@ function MiCuentaPageInner() {
 
 export default function MiCuentaPage() {
   return (
-    <Suspense fallback={<div className="animate-pulse text-sm text-slate-400 p-6">Cargando...</div>}>
+    <Suspense fallback={<div className="animate-pulse text-sm text-muted-foreground p-6">Cargando...</div>}>
       <MiCuentaPageInner />
     </Suspense>
   );

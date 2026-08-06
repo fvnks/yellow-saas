@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -47,7 +47,7 @@ export function HRSidebar(props: React.ComponentProps<typeof Sidebar>) {
             <Link href="/select">
               <SidebarMenuButton
                 tooltip="Volver al selector"
-                className="rounded-xl transition-all duration-200 text-slate-500 hover:text-slate-900"
+                className="rounded-xl transition-all duration-200 text-muted-foreground hover:text-foreground"
               >
                 <ArrowLeft className="h-4 w-4" />
                 <span>Volver al selector</span>

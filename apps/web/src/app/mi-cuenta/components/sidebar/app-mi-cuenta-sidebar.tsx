@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -47,7 +47,7 @@ export function MiCuentaSidebar(props: React.ComponentProps<typeof Sidebar>) {
             <Link href="/select">
               <SidebarMenuButton
                 tooltip="Volver al selector"
-                className="rounded-xl transition-all duration-200 text-slate-500 hover:text-slate-900"
+                className="rounded-xl transition-all duration-200 text-muted-foreground hover:text-foreground"
               >
                 <ArrowLeft className="h-4 w-4" />
                 <span>Volver al selector</span>
@@ -55,7 +55,7 @@ export function MiCuentaSidebar(props: React.ComponentProps<typeof Sidebar>) {
             </Link>
           </SidebarMenuItem>
         </SidebarMenu>
-        <Suspense fallback={<div className="p-2 text-xs text-slate-400">Cargando...</div>}>
+        <Suspense fallback={<div className="p-2 text-xs text-muted-foreground">Cargando...</div>}>
           <MiCuentaSidebarNavigation sidebarItems={miCuentaSidebarItems} />
         </Suspense>
       </SidebarContent>

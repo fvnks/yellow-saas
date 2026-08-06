@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Search, FileMinus, MoreVertical, Download, Printer } from 'lucide-react';
@@ -106,31 +106,31 @@ export default function PurchaseDebitNotes() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <FileMinus className="w-4 h-4 text-amber-500" />
-          <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Notas de Débito Recibidas</span>
+          <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Notas de Débito Recibidas</span>
         </div>
         <div className="text-right">
-          <p className="text-[9px] font-semibold text-slate-500 uppercase">Total ND</p>
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase">Total ND</p>
           <p className="text-sm font-bold text-amber-600">${total.toLocaleString('es-CL')}</p>
         </div>
       </div>
 
       <div className="relative max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <input type="search" placeholder="Buscar por N° ND, proveedor o RUT..." value={search} onChange={e => setSearch(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+          className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-200">
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">N° ND</th>
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Proveedor</th>
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">RUT</th>
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
-              <th className="text-left px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Motivo</th>
-              <th className="text-right px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Monto</th>
-              <th className="text-center px-4 py-3 text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
+            <tr className="border-b border-border">
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">N° ND</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Proveedor</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">RUT</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Motivo</th>
+              <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Monto</th>
+              <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
               <th className="w-12 px-4 py-3"></th>
             </tr>
           </thead>
@@ -138,10 +138,10 @@ export default function PurchaseDebitNotes() {
             {filtered.map(n => {
               const st = STATUS_CFG[n.status] || STATUS_CFG.pending;
               return (
-                <tr key={n.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3 text-xs font-medium text-slate-900 font-mono">{n.note_number}</td>
-                  <td className="px-4 py-3 text-xs text-slate-700">{n.supplier_name}</td>
-                  <td className="px-4 py-3 text-xs text-slate-500 font-mono">{n.supplier_tax_id}</td>
+                <tr key={n.id} className="border-b border-slate-100 hover:bg-muted transition-colors">
+                  <td className="px-4 py-3 text-xs font-medium text-foreground font-mono">{n.note_number}</td>
+                  <td className="px-4 py-3 text-xs text-foreground">{n.supplier_name}</td>
+                  <td className="px-4 py-3 text-xs text-muted-foreground font-mono">{n.supplier_tax_id}</td>
                   <td className="px-4 py-3 text-xs text-slate-600">{n.issue_date}</td>
                   <td className="px-4 py-3 text-xs text-slate-600 max-w-xs truncate">{n.reason}</td>
                   <td className="px-4 py-3 text-xs text-right font-medium text-amber-600 font-mono">${Number(n.total_amount || 0).toLocaleString('es-CL')}</td>
@@ -151,17 +151,17 @@ export default function PurchaseDebitNotes() {
                   <td className="px-4 py-3">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                        <button className="p-1.5 text-muted-foreground hover:text-slate-600 hover:bg-muted rounded-lg transition-colors">
                           <MoreVertical className="w-4 h-4" />
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-44">
                         <DropdownMenuItem onClick={() => handlePrintDebitNote(n)}>
-                          <Printer className="w-4 h-4 mr-2 text-slate-500" />
+                          <Printer className="w-4 h-4 mr-2 text-muted-foreground" />
                           Vista previa PDF
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => downloadXml(`${n.note_number}.xml`, generateNdXml(n))}>
-                          <Download className="w-4 h-4 mr-2 text-slate-500" />
+                          <Download className="w-4 h-4 mr-2 text-muted-foreground" />
                           Descargar XML
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -171,7 +171,7 @@ export default function PurchaseDebitNotes() {
               );
             })}
             {filtered.length === 0 && (
-              <tr><td colSpan={8} className="text-center py-8 text-xs text-slate-400">No se encontraron notas de débito</td></tr>
+              <tr><td colSpan={8} className="text-center py-8 text-xs text-muted-foreground">No se encontraron notas de débito</td></tr>
             )}
           </tbody>
         </table>

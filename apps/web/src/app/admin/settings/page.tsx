@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { Settings, Shield, Save, AlertCircle, CheckCircle, Database, Globe, Key, Pencil, Trash2, X } from 'lucide-react';
@@ -132,40 +132,40 @@ export default function AdminSettingsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white">Configuración</h1>
-        <p className="text-sm text-slate-400 mt-1">Gestiona super administradores de la plataforma</p>
+        <p className="text-sm text-muted-foreground mt-1">Gestiona super administradores de la plataforma</p>
       </div>
 
       {/* System Info */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+        <div className="bg-primary border border-slate-800 rounded-xl p-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-indigo-500/10 border border-indigo-500/20 rounded-xl flex items-center justify-center">
               <Database className="w-5 h-5 text-indigo-400" />
             </div>
             <div>
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Base de datos</p>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Base de datos</p>
               <p className="text-sm font-medium text-white">PostgreSQL</p>
             </div>
           </div>
         </div>
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+        <div className="bg-primary border border-slate-800 rounded-xl p-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center">
               <Globe className="w-5 h-5 text-emerald-400" />
             </div>
             <div>
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Plataforma</p>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Plataforma</p>
               <p className="text-sm font-medium text-white">Yellow ERP</p>
             </div>
           </div>
         </div>
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+        <div className="bg-primary border border-slate-800 rounded-xl p-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-center">
               <Key className="w-5 h-5 text-amber-400" />
             </div>
             <div>
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Super Admins</p>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Super Admins</p>
               <p className="text-sm font-medium text-white">{admins.length}</p>
             </div>
           </div>
@@ -184,7 +184,7 @@ export default function AdminSettingsPage() {
       )}
 
       {/* Super Admins Section */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+      <div className="bg-primary border border-slate-800 rounded-xl overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
           <h3 className="text-sm font-semibold text-white">Super Administradores</h3>
           <button
@@ -200,29 +200,29 @@ export default function AdminSettingsPage() {
           <div className="px-6 py-4 border-b border-slate-800 bg-slate-800/30">
             <form onSubmit={handleCreate} className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-400">Nombre</label>
+                <label className="text-xs font-medium text-muted-foreground">Nombre</label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   placeholder="Juan Pérez"
                   required
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-400">Email</label>
+                <label className="text-xs font-medium text-muted-foreground">Email</label>
                 <input
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   placeholder="admin@yellow.cl"
                   required
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-400">Contraseña</label>
+                <label className="text-xs font-medium text-muted-foreground">Contraseña</label>
                 <input
                   type="password"
                   value={form.password}
@@ -230,7 +230,7 @@ export default function AdminSettingsPage() {
                   placeholder="Mínimo 8 caracteres"
                   required
                   minLength={8}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
                 />
               </div>
               <div className="flex items-end">
@@ -250,11 +250,11 @@ export default function AdminSettingsPage() {
         <table className="w-full">
           <thead>
             <tr className="border-b border-slate-800">
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Admin</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Estado</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Último Acceso</th>
-              <th className="text-left px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Creado</th>
-              <th className="text-right px-6 py-3 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Acciones</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Admin</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Estado</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Último Acceso</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Creado</th>
+              <th className="text-right px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -268,13 +268,13 @@ export default function AdminSettingsPage() {
               ))
             ) : admins.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-6 py-12 text-center text-sm text-slate-500">
+                <td colSpan={5} className="px-6 py-12 text-center text-sm text-muted-foreground">
                   No hay super admins registrados
                 </td>
               </tr>
             ) : (
               admins.map((adm) => (
-                <tr key={adm.id} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+                <tr key={adm.id} className="border-b border-slate-800/50 hover:bg-primary/90/30 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 bg-indigo-500/10 rounded-lg flex items-center justify-center">
@@ -282,21 +282,21 @@ export default function AdminSettingsPage() {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-white">{adm.name}</p>
-                        <p className="text-xs text-slate-500">{adm.email}</p>
+                        <p className="text-xs text-muted-foreground">{adm.email}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${
-                      adm.is_active ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-slate-500/10 text-slate-400 border-slate-500/20'
+                      adm.is_active ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-muted0/10 text-muted-foreground border-slate-500/20'
                     }`}>
                       {adm.is_active ? 'Activo' : 'Inactivo'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-xs text-slate-400">
+                  <td className="px-6 py-4 text-xs text-muted-foreground">
                     {adm.last_login_at ? new Date(adm.last_login_at).toLocaleString('es-CL') : 'Nunca'}
                   </td>
-                  <td className="px-6 py-4 text-xs text-slate-400">
+                  <td className="px-6 py-4 text-xs text-muted-foreground">
                     {new Date(adm.created_at).toLocaleDateString('es-CL')}
                   </td>
                   <td className="px-6 py-4 text-right">
@@ -307,14 +307,14 @@ export default function AdminSettingsPage() {
                           setEditForm({ name: adm.name, email: adm.email, password: '', is_active: adm.is_active });
                           setMessage({ type: '', text: '' });
                         }}
-                        className="p-1.5 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors"
+                        className="p-1.5 text-muted-foreground hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors"
                         title="Editar"
                       >
                         <Pencil className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => { setDeleteAdmin(adm); setMessage({ type: '', text: '' }); }}
-                        className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors"
+                        className="p-1.5 text-muted-foreground hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors"
                         title="Eliminar"
                         disabled={adm.id === admins[0]?.id}
                       >
@@ -332,47 +332,47 @@ export default function AdminSettingsPage() {
       {/* Edit Modal */}
       {editAdmin && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-slate-900 border border-slate-700 rounded-xl shadow-xl w-full max-w-md mx-4">
+          <div className="bg-primary border border-slate-700 rounded-xl shadow-xl w-full max-w-md mx-4">
             <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-white">Editar Super Admin</h2>
-              <button onClick={() => setEditAdmin(null)} className="text-slate-400 hover:text-white">
+              <button onClick={() => setEditAdmin(null)} className="text-muted-foreground hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleEdit} className="p-6 space-y-4">
               <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-400">Nombre</label>
+                <label className="text-xs font-medium text-muted-foreground">Nombre</label>
                 <input
                   type="text"
                   value={editForm.name}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                   required
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-400">Email</label>
+                <label className="text-xs font-medium text-muted-foreground">Email</label>
                 <input
                   type="email"
                   value={editForm.email}
                   onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
                   required
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-400">Nueva contraseña (opcional)</label>
+                <label className="text-xs font-medium text-muted-foreground">Nueva contraseña (opcional)</label>
                 <input
                   type="password"
                   value={editForm.password}
                   onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
                   placeholder="Dejar vacío para no cambiar"
                   minLength={8}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
                 />
               </div>
               <div className="flex items-center gap-3">
-                <label className="text-xs font-medium text-slate-400">Estado</label>
+                <label className="text-xs font-medium text-muted-foreground">Estado</label>
                 <button
                   type="button"
                   onClick={() => setEditForm({ ...editForm, is_active: !editForm.is_active })}
@@ -380,11 +380,11 @@ export default function AdminSettingsPage() {
                     editForm.is_active ? 'bg-indigo-600' : 'bg-slate-600'
                   }`}
                 >
-                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-card transition-transform ${
                     editForm.is_active ? 'translate-x-4.5' : 'translate-x-0.5'
                   }`} />
                 </button>
-                <span className="text-xs text-slate-400">{editForm.is_active ? 'Activo' : 'Inactivo'}</span>
+                <span className="text-xs text-muted-foreground">{editForm.is_active ? 'Activo' : 'Inactivo'}</span>
               </div>
               <div className="flex justify-end gap-3 pt-2">
                 <button
@@ -410,10 +410,10 @@ export default function AdminSettingsPage() {
       {/* Delete Confirmation Modal */}
       {deleteAdmin && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-slate-900 border border-slate-700 rounded-xl shadow-xl w-full max-w-sm mx-4">
+          <div className="bg-primary border border-slate-700 rounded-xl shadow-xl w-full max-w-sm mx-4">
             <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-white">Eliminar Super Admin</h2>
-              <button onClick={() => setDeleteAdmin(null)} className="text-slate-400 hover:text-white">
+              <button onClick={() => setDeleteAdmin(null)} className="text-muted-foreground hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
