@@ -6,6 +6,8 @@ import { getJwtSecret } from '@/lib/env';
 
 const JWT_SECRET = getJwtSecret();
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization');
