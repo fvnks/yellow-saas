@@ -191,118 +191,226 @@ async function buildDocumentHeader(doc: jsPDF, data: DocumentData): Promise<numb
   const settings = resolveSettings(data);
   const C = resolvePalette(settings);
   const pageWidth = doc.internal.pageSize.getWidth();
+  const template = settings.template_id || 'classic';
   let y = 15;
 
-  // Logo
-  if (settings.show_logo && data.company.logo_url) {
-    try {
-      const logoDataUrl = await fetchLogoAsDataUrl(data.company.logo_url);
-      if (logoDataUrl) {
-        doc.addImage(logoDataUrl, 'PNG', 15, y, 30, 30);
-      }
-    } catch { /* skip logo */ }
-  }
+  if (template === 'minimal') {
+    // MINIMAL: Clean, no QR, simple lines
+    doc.setFillColor(...C.primary);
+    doc.rect(0, 0, pageWidth, 3, 'F');
 
-  // Company info (left)
-  const textStartX = settings.show_logo && data.company.logo_url ? 50 : 15;
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(14);
-  doc.setTextColor(...C.textDark);
-  doc.text(data.company.name || 'Empresa', textStartX, y + 6);
-
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8);
-  doc.setTextColor(...C.textMuted);
-  let infoY = y + 12;
-  if (data.company.tax_id) { doc.text(`RUT: ${data.company.tax_id}`, textStartX, infoY); infoY += 4; }
-  if (data.company.razon_social) { doc.text(data.company.razon_social, textStartX, infoY); infoY += 4; }
-  if (data.company.giro) { doc.text(`Giro: ${data.company.giro}`, textStartX, infoY); infoY += 4; }
-  if (data.company.address) { doc.text(data.company.address, textStartX, infoY); infoY += 4; }
-  if (data.company.phone) { doc.text(`Tel: ${data.company.phone}`, textStartX, infoY); infoY += 4; }
-  if (data.company.email) { doc.text(data.company.email, textStartX, infoY); }
-
-  // QR Code (right)
-  if (settings.show_qr) {
-    const qrUrl = `${BASE_URL}/view/${getDocTypeRoute(data.type)}/${data.id}`;
-    try {
-      const qrDataUrl = await generateQRDataUrl(qrUrl);
-      doc.addImage(qrDataUrl, 'PNG', pageWidth - 40, y, 28, 28);
-    } catch { /* skip QR */ }
-  }
-
-  y = Math.max(y + 35, infoY + 5);
-
-  // Separator line
-  doc.setDrawColor(...C.border);
-  doc.setLineWidth(0.5);
-  doc.line(15, y, pageWidth - 15, y);
-  y += 6;
-
-  // Document type badge
-  const docLabel = getDocumentTitle(settings, data.type);
-  doc.setFillColor(...C.primary);
-  const badgeWidth = doc.getTextWidth(docLabel) + 12;
-  doc.roundedRect(15, y - 4, badgeWidth, 8, 2, 2, 'F');
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(9);
-  doc.setTextColor(255, 255, 255);
-  doc.text(docLabel, 21, y + 1);
-
-  // Document number and date (right of badge)
-  doc.setTextColor(...C.textDark);
-  doc.setFontSize(9);
-  doc.text(`N°: ${data.number}`, 15 + badgeWidth + 10, y + 1);
-  doc.setTextColor(...C.textMuted);
-  doc.text(`Fecha: ${formatDate(data.date, settings)}`, pageWidth - 15, y + 1, { align: 'right' });
-
-  y += 10;
-
-  // Due date / Validity / Delivery date
-if (data.due_date) {
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8);
-      doc.setTextColor(...C.textMuted);
-      doc.text(`Vencimiento: ${formatDate(data.due_date, settings)}`, 15, y);
-      y += 5;
-    }
-    if (data.valid_until) {
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8);
-      doc.setTextColor(...C.textMuted);
-      doc.text(`Válido hasta: ${formatDate(data.valid_until, settings)}`, 15, y);
-      y += 5;
-    }
-    if (data.delivery_date) {
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8);
-      doc.setTextColor(...C.textMuted);
-      doc.text(`Fecha de entrega: ${formatDate(data.delivery_date, settings)}`, 15, y);
-      y += 5;
+    if (settings.show_logo && data.company.logo_url) {
+      try {
+        const logoDataUrl = await fetchLogoAsDataUrl(data.company.logo_url);
+        if (logoDataUrl) doc.addImage(logoDataUrl, 'PNG', 15, y, 25, 25);
+      } catch { /* skip logo */ }
     }
 
-  // Customer/Supplier info
-  const party = data.customer || data.supplier;
-  if (party) {
-    y += 2;
-    doc.setFillColor(...C.lightBg);
-    doc.roundedRect(15, y - 3, pageWidth - 30, data.customer ? 20 : 14, 2, 2, 'F');
+    const textStartX = settings.show_logo && data.company.logo_url ? 45 : 15;
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8);
+    doc.setFontSize(16);
     doc.setTextColor(...C.textDark);
-    const partyLabel = data.customer ? 'Cliente' : 'Proveedor';
-    doc.text(partyLabel, 20, y + 2);
+    doc.text(data.company.name || 'Empresa', textStartX, y + 8);
+
     doc.setFont('helvetica', 'normal');
-    doc.text(party.name, 20, y + 7);
-    if (party.tax_id) {
-      doc.text(`RUT: ${party.tax_id}`, 20, y + 12);
+    doc.setFontSize(8);
+    doc.setTextColor(...C.textMuted);
+    let infoY = y + 14;
+    const info: string[] = [];
+    if (data.company.tax_id) info.push(`RUT: ${data.company.tax_id}`);
+    if (data.company.giro) info.push(data.company.giro);
+    if (data.company.address) info.push(data.company.address);
+    if (data.company.phone) info.push(`Tel: ${data.company.phone}`);
+    if (data.company.email) info.push(data.company.email);
+    doc.text(info.join('  |  '), textStartX, infoY);
+
+    y += 30;
+    doc.setDrawColor(...C.border);
+    doc.setLineWidth(0.3);
+    doc.line(15, y, pageWidth - 15, y);
+    y += 6;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(...C.textDark);
+    const docLabel = getDocumentTitle(settings, data.type);
+    doc.text(docLabel, 15, y);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(...C.textMuted);
+    doc.text(`N° ${data.number}  |  ${formatDate(data.date, settings)}`, pageWidth - 15, y, { align: 'right' });
+    y += 8;
+
+    if (data.due_date) { doc.setFontSize(8); doc.text(`Vencimiento: ${formatDate(data.due_date, settings)}`, 15, y); y += 5; }
+    if (data.valid_until) { doc.setFontSize(8); doc.text(`Válido hasta: ${formatDate(data.valid_until, settings)}`, 15, y); y += 5; }
+    if (data.delivery_date) { doc.setFontSize(8); doc.text(`Fecha de entrega: ${formatDate(data.delivery_date, settings)}`, 15, y); y += 5; }
+
+    const party = data.customer || data.supplier;
+    if (party) {
+      y += 2;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(...C.textDark);
+      doc.text(`${data.customer ? 'Cliente' : 'Proveedor'}: ${party.name}`, 15, y);
+      y += 4;
+      if (party.tax_id) { doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(...C.textMuted); doc.text(`RUT: ${party.tax_id}`, 15, y); y += 4; }
+      if (data.customer && party.address) { doc.text(party.address, 15, y); y += 3; }
     }
-    if (data.customer && party.address) {
-      doc.text(party.address, 20, y + 17);
+  } else if (template === 'bold') {
+    // BOLD: Full-color header band, accent sidebar
+    doc.setFillColor(...C.primary);
+    doc.rect(0, 0, pageWidth, 42, 'F');
+
+    doc.setFillColor(...C.accent);
+    doc.rect(0, 42, 5, pageWidth - 30, 'F');
+
+    if (settings.show_logo && data.company.logo_url) {
+      try {
+        const logoDataUrl = await fetchLogoAsDataUrl(data.company.logo_url);
+        if (logoDataUrl) doc.addImage(logoDataUrl, 'PNG', 15, 6, 28, 28);
+      } catch { /* skip logo */ }
     }
-    if (data.supplier && party.phone) {
-      doc.text(`Tel: ${party.phone}`, pageWidth - 20, y + 7, { align: 'right' });
+
+    const textStartX = settings.show_logo && data.company.logo_url ? 48 : 15;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.setTextColor(255, 255, 255);
+    doc.text(data.company.name || 'Empresa', textStartX, 18);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(220, 220, 240);
+    let infoY = 24;
+    if (data.company.tax_id) { doc.text(`RUT: ${data.company.tax_id}`, textStartX, infoY); infoY += 4; }
+    if (data.company.giro) { doc.text(data.company.giro, textStartX, infoY); infoY += 4; }
+    if (data.company.address) { doc.text(data.company.address, textStartX, infoY); infoY += 4; }
+    if (data.company.phone) { doc.text(`Tel: ${data.company.phone}`, textStartX, infoY); infoY += 4; }
+    if (data.company.email) { doc.text(data.company.email, textStartX, infoY); }
+
+    if (settings.show_qr) {
+      const qrUrl = `${BASE_URL}/view/${getDocTypeRoute(data.type)}/${data.id}`;
+      try {
+        const qrDataUrl = await generateQRDataUrl(qrUrl);
+        doc.addImage(qrDataUrl, 'PNG', pageWidth - 38, 6, 24, 24);
+      } catch { /* skip QR */ }
     }
-    y += data.customer ? 24 : 16;
+
+    y = 50;
+
+    const docLabel = getDocumentTitle(settings, data.type);
+    doc.setFillColor(...C.accent);
+    const badgeWidth = doc.getTextWidth(docLabel) + 16;
+    doc.roundedRect(15, y - 4, badgeWidth, 10, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(255, 255, 255);
+    doc.text(docLabel, 23, y + 2);
+
+    doc.setTextColor(...C.textDark);
+    doc.setFontSize(9);
+    doc.text(`N°: ${data.number}`, 15 + badgeWidth + 10, y + 2);
+    doc.setTextColor(...C.textMuted);
+    doc.text(`Fecha: ${formatDate(data.date, settings)}`, pageWidth - 15, y + 2, { align: 'right' });
+
+    y += 12;
+    if (data.due_date) { doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...C.textMuted); doc.text(`Vencimiento: ${formatDate(data.due_date, settings)}`, 15, y); y += 5; }
+    if (data.valid_until) { doc.setFontSize(8); doc.text(`Válido hasta: ${formatDate(data.valid_until, settings)}`, 15, y); y += 5; }
+    if (data.delivery_date) { doc.setFontSize(8); doc.text(`Fecha de entrega: ${formatDate(data.delivery_date, settings)}`, 15, y); y += 5; }
+
+    const party = data.customer || data.supplier;
+    if (party) {
+      y += 2;
+      doc.setFillColor(...C.lightBg);
+      doc.roundedRect(15, y - 3, pageWidth - 30, data.customer ? 20 : 14, 2, 2, 'F');
+      doc.setFillColor(...C.accent);
+      doc.rect(15, y - 3, 3, data.customer ? 20 : 14, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(...C.textDark);
+      doc.text(`${data.customer ? 'Cliente' : 'Proveedor'}`, 22, y + 2);
+      doc.setFont('helvetica', 'normal');
+      doc.text(party.name, 22, y + 7);
+      if (party.tax_id) doc.text(`RUT: ${party.tax_id}`, 22, y + 12);
+      if (data.customer && party.address) doc.text(party.address, 22, y + 17);
+      y += data.customer ? 24 : 16;
+    }
+  } else {
+    // CLASSIC: Corporate style (default)
+    if (settings.show_logo && data.company.logo_url) {
+      try {
+        const logoDataUrl = await fetchLogoAsDataUrl(data.company.logo_url);
+        if (logoDataUrl) doc.addImage(logoDataUrl, 'PNG', 15, y, 30, 30);
+      } catch { /* skip logo */ }
+    }
+
+    const textStartX = settings.show_logo && data.company.logo_url ? 50 : 15;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.setTextColor(...C.textDark);
+    doc.text(data.company.name || 'Empresa', textStartX, y + 6);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...C.textMuted);
+    let infoY = y + 12;
+    if (data.company.tax_id) { doc.text(`RUT: ${data.company.tax_id}`, textStartX, infoY); infoY += 4; }
+    if (data.company.razon_social) { doc.text(data.company.razon_social, textStartX, infoY); infoY += 4; }
+    if (data.company.giro) { doc.text(`Giro: ${data.company.giro}`, textStartX, infoY); infoY += 4; }
+    if (data.company.address) { doc.text(data.company.address, textStartX, infoY); infoY += 4; }
+    if (data.company.phone) { doc.text(`Tel: ${data.company.phone}`, textStartX, infoY); infoY += 4; }
+    if (data.company.email) { doc.text(data.company.email, textStartX, infoY); }
+
+    if (settings.show_qr) {
+      const qrUrl = `${BASE_URL}/view/${getDocTypeRoute(data.type)}/${data.id}`;
+      try {
+        const qrDataUrl = await generateQRDataUrl(qrUrl);
+        doc.addImage(qrDataUrl, 'PNG', pageWidth - 40, y, 28, 28);
+      } catch { /* skip QR */ }
+    }
+
+    y = Math.max(y + 35, infoY + 5);
+
+    doc.setDrawColor(...C.border);
+    doc.setLineWidth(0.5);
+    doc.line(15, y, pageWidth - 15, y);
+    y += 6;
+
+    const docLabel = getDocumentTitle(settings, data.type);
+    doc.setFillColor(...C.primary);
+    const badgeWidth = doc.getTextWidth(docLabel) + 12;
+    doc.roundedRect(15, y - 4, badgeWidth, 8, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(255, 255, 255);
+    doc.text(docLabel, 21, y + 1);
+
+    doc.setTextColor(...C.textDark);
+    doc.setFontSize(9);
+    doc.text(`N°: ${data.number}`, 15 + badgeWidth + 10, y + 1);
+    doc.setTextColor(...C.textMuted);
+    doc.text(`Fecha: ${formatDate(data.date, settings)}`, pageWidth - 15, y + 1, { align: 'right' });
+
+    y += 10;
+
+    if (data.due_date) { doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...C.textMuted); doc.text(`Vencimiento: ${formatDate(data.due_date, settings)}`, 15, y); y += 5; }
+    if (data.valid_until) { doc.setFontSize(8); doc.text(`Válido hasta: ${formatDate(data.valid_until, settings)}`, 15, y); y += 5; }
+    if (data.delivery_date) { doc.setFontSize(8); doc.text(`Fecha de entrega: ${formatDate(data.delivery_date, settings)}`, 15, y); y += 5; }
+
+    const party = data.customer || data.supplier;
+    if (party) {
+      y += 2;
+      doc.setFillColor(...C.lightBg);
+      doc.roundedRect(15, y - 3, pageWidth - 30, data.customer ? 20 : 14, 2, 2, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(...C.textDark);
+      doc.text(`${data.customer ? 'Cliente' : 'Proveedor'}`, 20, y + 2);
+      doc.setFont('helvetica', 'normal');
+      doc.text(party.name, 20, y + 7);
+      if (party.tax_id) doc.text(`RUT: ${party.tax_id}`, 20, y + 12);
+      if (data.customer && party.address) doc.text(party.address, 20, y + 17);
+      y += data.customer ? 24 : 16;
+    }
   }
 
   // Custom header text
@@ -322,6 +430,7 @@ if (data.due_date) {
 function buildItemsTable(doc: jsPDF, data: DocumentData, startY: number): number {
   const settings = resolveSettings(data);
   const C = resolvePalette(settings);
+  const template = settings.template_id || 'classic';
   const isPriceDocument = data.type === 'cotizacion' || data.type === 'orden_venta' || data.type === 'orden_compra' || data.type === 'boleta';
 
   const head = isPriceDocument
@@ -356,14 +465,30 @@ function buildItemsTable(doc: jsPDF, data: DocumentData, startY: number): number
     columnStyles[6] = { halign: 'right', cellWidth: 30 };
   }
 
+  let tableTheme: 'grid' | 'striped' | 'plain' = 'grid';
+  let headFillColor = C.primary;
+  let headTextColor: [number, number, number] = [255, 255, 255];
+  let alternateFill = C.lightBg;
+
+  if (template === 'minimal') {
+    tableTheme = 'plain';
+    headFillColor = [240, 240, 240];
+    headTextColor = C.textDark;
+    alternateFill = [255, 255, 255];
+  } else if (template === 'bold') {
+    tableTheme = 'striped';
+    headFillColor = C.accent;
+    alternateFill = [248, 245, 255];
+  }
+
   autoTable(doc, {
     startY,
     head,
     body,
-    theme: 'grid',
+    theme: tableTheme,
     headStyles: {
-      fillColor: C.primary,
-      textColor: [255, 255, 255],
+      fillColor: headFillColor,
+      textColor: headTextColor,
       fontStyle: 'bold',
       fontSize: 7,
       halign: 'center',
@@ -373,7 +498,7 @@ function buildItemsTable(doc: jsPDF, data: DocumentData, startY: number): number
       textColor: C.textDark,
     },
     alternateRowStyles: {
-      fillColor: C.lightBg,
+      fillColor: alternateFill,
     },
     columnStyles,
     margin: { left: 15, right: 15 },
@@ -385,10 +510,19 @@ function buildItemsTable(doc: jsPDF, data: DocumentData, startY: number): number
 function buildTotalsBlock(doc: jsPDF, data: DocumentData, y: number): number {
   const settings = resolveSettings(data);
   const C = resolvePalette(settings);
+  const template = settings.template_id || 'classic';
   const pageWidth = doc.internal.pageSize.getWidth();
   const totalsX = pageWidth - 80;
 
   y += 6;
+
+  if (template === 'bold') {
+    // Bold: colored box for totals
+    doc.setFillColor(...C.lightBg);
+    doc.roundedRect(totalsX - 5, y - 4, pageWidth - totalsX - 10, 30, 3, 3, 'F');
+    doc.setFillColor(...C.accent);
+    doc.rect(totalsX - 5, y - 4, 3, 30, 'F');
+  }
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
@@ -402,21 +536,28 @@ function buildTotalsBlock(doc: jsPDF, data: DocumentData, y: number): number {
   doc.text(formatCurrency(data.tax_amount, settings), pageWidth - 15, y, { align: 'right' });
   y += 6;
 
-  // Separator
   doc.setDrawColor(...C.border);
   doc.setLineWidth(0.3);
   doc.line(totalsX, y - 2, pageWidth - 15, y - 2);
   y += 2;
 
-  // Total
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(12);
-  doc.setTextColor(...C.textDark);
+  if (template === 'minimal') {
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(...C.primary);
+  } else if (template === 'bold') {
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.setTextColor(...C.accent);
+  } else {
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.setTextColor(...C.textDark);
+  }
   doc.text('TOTAL:', totalsX, y);
   doc.text(formatCurrency(data.total, settings), pageWidth - 15, y, { align: 'right' });
   y += 8;
 
-  // Payment info for boletas
   if (data.type === 'boleta' && data.payment_method) {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
@@ -431,13 +572,30 @@ function buildTotalsBlock(doc: jsPDF, data: DocumentData, y: number): number {
 function buildNotes(doc: jsPDF, data: DocumentData, y: number): number {
   const C = resolvePalette(resolveSettings(data));
   const settings = resolveSettings(data);
+  const template = settings.template_id || 'classic';
   const notes = data.notes || settings.default_notes || '';
   if (!notes) return y;
   y += 4;
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(8);
-  doc.setTextColor(...C.textDark);
-  doc.text('Notas:', 15, y);
+
+  if (template === 'minimal') {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...C.textMuted);
+    doc.text('Notas:', 15, y);
+  } else if (template === 'bold') {
+    doc.setFillColor(...C.accent);
+    doc.roundedRect(15, y - 3, 25, 5, 1, 1, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(255, 255, 255);
+    doc.text('Notas', 18, y);
+  } else {
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...C.textDark);
+    doc.text('Notas:', 15, y);
+  }
+
   y += 5;
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
@@ -451,20 +609,37 @@ function buildNotes(doc: jsPDF, data: DocumentData, y: number): number {
 function buildFooter(doc: jsPDF, data: { id: string; type: string; settings?: DocumentSettings }): void {
   const C = resolvePalette(resolveSettings(data));
   const settings = resolveSettings(data);
+  const template = settings.template_id || 'classic';
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
 
-  // Separator
-  doc.setDrawColor(...C.border);
-  doc.setLineWidth(0.3);
-  doc.line(15, pageHeight - 20, pageWidth - 15, pageHeight - 20);
-
-  // Footer text
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7);
-  doc.setTextColor(...C.textMuted);
-  doc.text(settings.footer_text || 'Documento generado por Yellow ERP', 15, pageHeight - 14);
-  doc.text(`Verificar: ${BASE_URL}/view/${getDocTypeRoute(data.type)}/${data.id}`, pageWidth - 15, pageHeight - 14, { align: 'right' });
+  if (template === 'minimal') {
+    doc.setDrawColor(...C.border);
+    doc.setLineWidth(0.2);
+    doc.line(15, pageHeight - 18, pageWidth - 15, pageHeight - 18);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(...C.textMuted);
+    doc.text(settings.footer_text || 'Documento generado por Yellow ERP', 15, pageHeight - 13);
+    doc.text(`Verificar: ${BASE_URL}/view/${getDocTypeRoute(data.type)}/${data.id}`, pageWidth - 15, pageHeight - 13, { align: 'right' });
+  } else if (template === 'bold') {
+    doc.setFillColor(...C.primary);
+    doc.rect(0, pageHeight - 16, pageWidth, 16, 'F');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(220, 220, 240);
+    doc.text(settings.footer_text || 'Documento generado por Yellow ERP', 15, pageHeight - 7);
+    doc.text(`Verificar: ${BASE_URL}/view/${getDocTypeRoute(data.type)}/${data.id}`, pageWidth - 15, pageHeight - 7, { align: 'right' });
+  } else {
+    doc.setDrawColor(...C.border);
+    doc.setLineWidth(0.3);
+    doc.line(15, pageHeight - 20, pageWidth - 15, pageHeight - 20);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(...C.textMuted);
+    doc.text(settings.footer_text || 'Documento generado por Yellow ERP', 15, pageHeight - 14);
+    doc.text(`Verificar: ${BASE_URL}/view/${getDocTypeRoute(data.type)}/${data.id}`, pageWidth - 15, pageHeight - 14, { align: 'right' });
+  }
 }
 
 export async function generateBoletaPDF(data: DocumentData): Promise<jsPDF> {
