@@ -228,7 +228,7 @@ export default function InventoryConfigPage() {
             if (activeTab === 'reasons') { setShowReasonForm(true); setEditingReason(null); setReasonForm({ name: '', description: '' }); }
             if (activeTab === 'tags') { setShowTagForm(true); setEditingTag(null); setTagForm({ name: '', color: '#6366f1' }); }
           }}
-            className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <Plus className="w-4 h-4" /> Nuevo
           </button>
         )}
@@ -268,7 +268,7 @@ export default function InventoryConfigPage() {
                         <input type="text" value={catForm.description} onChange={e => setCatForm({...catForm, description: e.target.value})} placeholder="Descripcion" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                         <div className="flex gap-2">
                           <input type="color" value={catForm.color} onChange={e => setCatForm({...catForm, color: e.target.value})} className="w-10 h-10 rounded border border-slate-200 cursor-pointer" />
-                          <button onClick={saveCat} className="bg-slate-900 hover:bg-black text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
+                          <button onClick={saveCat} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
                           <button onClick={() => setShowCatForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
@@ -311,7 +311,7 @@ export default function InventoryConfigPage() {
                           <select value={taxForm.type} onChange={e => setTaxForm({...taxForm, type: e.target.value})} className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                             <option value="iva">IVA</option><option value="exento">Exento</option><option value="otro">Otro</option>
                           </select>
-                          <button onClick={saveTax} className="bg-slate-900 hover:bg-black text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
+                          <button onClick={saveTax} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
                           <button onClick={() => setShowTaxForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
@@ -356,7 +356,7 @@ export default function InventoryConfigPage() {
                         </select>
                         <div className="flex gap-2">
                           <input type="number" step="0.000001" value={uomForm.conversion_factor} onChange={e => setUomForm({...uomForm, conversion_factor: e.target.value})} placeholder="Factor" className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
-                          <button onClick={saveUom} className="bg-slate-900 hover:bg-black text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
+                          <button onClick={saveUom} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
                           <button onClick={() => setShowUomForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
@@ -404,7 +404,7 @@ export default function InventoryConfigPage() {
                         <input type="number" value={batchForm.quantity} onChange={e => setBatchForm({...batchForm, quantity: e.target.value})} placeholder="Cantidad" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                         <input type="date" value={batchForm.expiry_date} onChange={e => setBatchForm({...batchForm, expiry_date: e.target.value})} className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                         <div className="flex gap-2">
-                          <button onClick={saveBatch} className="bg-slate-900 hover:bg-black text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
+                          <button onClick={saveBatch} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
                           <button onClick={() => setShowBatchForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
@@ -452,7 +452,7 @@ export default function InventoryConfigPage() {
                         <input type="number" value={variantForm.cost_price} onChange={e => setVariantForm({...variantForm, cost_price: e.target.value})} placeholder="Costo" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                         <input type="number" value={variantForm.sale_price} onChange={e => setVariantForm({...variantForm, sale_price: e.target.value})} placeholder="Precio" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                         <div className="flex gap-2">
-                          <button onClick={saveVariant} className="bg-slate-900 hover:bg-black text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
+                          <button onClick={saveVariant} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
                           <button onClick={() => setShowVariantForm(false)} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
@@ -543,7 +543,7 @@ export default function InventoryConfigPage() {
                         <input type="text" value={reasonForm.name} onChange={e => setReasonForm({...reasonForm, name: e.target.value})} placeholder="Nombre del motivo" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                         <input type="text" value={reasonForm.description} onChange={e => setReasonForm({...reasonForm, description: e.target.value})} placeholder="Descripcion (opcional)" className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
                         <div className="flex gap-2">
-                          <button onClick={saveReason} className="bg-slate-900 hover:bg-black text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">{editingReason ? 'Actualizar' : 'Guardar'}</button>
+                          <button onClick={saveReason} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">{editingReason ? 'Actualizar' : 'Guardar'}</button>
                           <button onClick={() => { setShowReasonForm(false); setEditingReason(null); }} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>
@@ -595,7 +595,7 @@ export default function InventoryConfigPage() {
                           ))}
                         </div>
                         <div className="flex gap-2">
-                          <button onClick={saveTag} className="bg-slate-900 hover:bg-black text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">{editingTag ? 'Actualizar' : 'Guardar'}</button>
+                          <button onClick={saveTag} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">{editingTag ? 'Actualizar' : 'Guardar'}</button>
                           <button onClick={() => { setShowTagForm(false); setEditingTag(null); }} className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors">X</button>
                         </div>
                       </div>

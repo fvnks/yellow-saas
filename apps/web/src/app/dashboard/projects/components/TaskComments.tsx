@@ -127,7 +127,7 @@ export default function TaskComments({ projectId, taskId, currentUserId }: TaskC
           placeholder="Escribe un comentario..."
         />
         <button onClick={handleSend} disabled={sending || !newComment.trim()}
-          className="bg-slate-900 hover:bg-black text-white p-2 rounded-lg transition-colors disabled:opacity-50">
+          className="bg-slate-900 hover:bg-slate-800 text-white p-2 rounded-lg transition-colors disabled:opacity-50">
           <Send className="w-3.5 h-3.5" />
         </button>
       </div>

@@ -122,8 +122,8 @@ export default function PriceListsPage() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Total Listas</p>
               <p className="text-2xl font-bold text-slate-900 mt-1">{priceLists.length}</p>
             </div>
-            <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-              <List className="w-5 h-5 text-indigo-600" />
+            <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+              <List className="w-5 h-5 text-slate-600" />
             </div>
           </div>
         </CardContent></Card>
@@ -133,8 +133,8 @@ export default function PriceListsPage() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Productos con Precio</p>
               <p className="text-2xl font-bold text-slate-900 mt-1">{totalProducts}</p>
             </div>
-            <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
-              <Tag className="w-5 h-5 text-emerald-600" />
+            <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+              <Tag className="w-5 h-5 text-slate-600" />
             </div>
           </div>
         </CardContent></Card>
@@ -144,8 +144,8 @@ export default function PriceListsPage() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Lista por Defecto</p>
               <p className="text-lg font-bold text-slate-900 mt-1">{defaultList}</p>
             </div>
-            <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
-              <Star className="w-5 h-5 text-amber-600" />
+            <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+              <Star className="w-5 h-5 text-slate-600" />
             </div>
           </div>
         </CardContent></Card>

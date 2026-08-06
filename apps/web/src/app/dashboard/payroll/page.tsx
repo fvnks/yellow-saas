@@ -287,7 +287,7 @@ function PayrollPage() {
             <div className="overflow-x-auto">
               {employees.length === 0 ? (
                 <div className="p-12 text-center">
-                  <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <Users className="w-8 h-8 text-slate-400" />
                   </div>
                   <h3 className="text-sm font-semibold text-slate-700 mb-1">No hay empleados registrados</h3>
@@ -376,7 +376,7 @@ function PayrollPage() {
           <div className="overflow-x-auto">
             {runs.length === 0 ? (
               <div className="p-12 text-center">
-                <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                   <FileText className="w-8 h-8 text-slate-400" />
                 </div>
                 <h3 className="text-sm font-semibold text-slate-700 mb-1">No hay periodos de nomina</h3>
@@ -541,7 +541,7 @@ function PayrollPage() {
               </button>
               <button
                 onClick={saveUF}
-                className="px-4 py-2 text-sm font-medium text-white bg-slate-900 rounded-lg hover:bg-black"
+                className="px-4 py-2 text-sm font-medium text-white bg-slate-900 rounded-lg hover:bg-slate-800"
               >
                 Guardar
               </button>

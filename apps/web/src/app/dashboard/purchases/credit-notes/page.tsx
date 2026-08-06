@@ -44,7 +44,7 @@ export default function PurchaseCreditNotesPage() {
           <h1 className="text-xl font-bold text-slate-900">Notas de Crédito de Compra</h1>
           <p className="text-sm text-slate-500 mt-1">Documentos de crédito recibidos de proveedores</p>
         </div>
-        <button className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+        <button className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" /> Nueva NC
         </button>
       </div>

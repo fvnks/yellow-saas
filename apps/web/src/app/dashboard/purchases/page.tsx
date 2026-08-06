@@ -121,7 +121,7 @@ export default function PurchasesPage() {
           <p className="text-sm text-slate-500 mt-1">Gesti�n de compras, facturas y proveedores</p>
         </div>
         <Link href="/dashboard/purchases/new">
-          <button className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          <button className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <Plus className="w-4 h-4" /> Nueva Orden
           </button>
         </Link>
@@ -282,19 +282,19 @@ export default function PurchasesPage() {
 
         {activeTab === 'receipts' && (
           <div className="p-6 text-center">
-            <Link href="/dashboard/purchases/receipts"><button className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Ver Recepciones</button></Link>
+            <Link href="/dashboard/purchases/receipts"><button className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Ver Recepciones</button></Link>
           </div>
         )}
 
         {activeTab === 'quotations' && (
           <div className="p-6 text-center">
-            <Link href="/dashboard/purchases/quotations"><button className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Ver Cotizaciones</button></Link>
+            <Link href="/dashboard/purchases/quotations"><button className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Ver Cotizaciones</button></Link>
           </div>
         )}
 
         {activeTab === 'register' && (
           <div className="p-6 text-center">
-            <Link href="/dashboard/purchases/register"><button className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Ver Registro</button></Link>
+            <Link href="/dashboard/purchases/register"><button className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Ver Registro</button></Link>
           </div>
         )}
 

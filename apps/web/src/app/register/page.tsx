@@ -107,7 +107,7 @@ function RegisterForm() {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
         <div className="w-full max-w-md text-center">
-          <div className="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="w-8 h-8 text-emerald-600" />
           </div>
           <h1 className="text-2xl font-bold text-slate-900">¡Cuenta creada!</h1>
@@ -116,7 +116,7 @@ function RegisterForm() {
           </p>
           <button
             onClick={() => router.push('/login')}
-            className="mt-8 w-full rounded-lg bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 text-sm font-medium transition-colors"
+            className="mt-8 w-full rounded-lg bg-slate-900 hover:bg-slate-800 text-white px-4 py-3 text-sm font-medium transition-all duration-150 active:scale-[0.98]"
           >
             Ir a Iniciar Sesión
           </button>

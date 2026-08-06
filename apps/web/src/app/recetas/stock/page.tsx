@@ -185,7 +185,7 @@ export default function StockEntryPage() {
           {/* Add Product Button */}
           <div className="flex justify-end">
             <button onClick={addLine}
-              className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
               <Plus className="w-4 h-4" /> Agregar producto
             </button>
           </div>
@@ -352,7 +352,7 @@ export default function StockEntryPage() {
                     Limpiar
                   </button>
                   <button onClick={handleSubmit} disabled={saving || validLineCount === 0}
-                    className="bg-slate-900 hover:bg-black text-white px-5 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+                    className="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
                     <Check className="w-4 h-4" />
                     {saving ? 'Guardando...' : `Aplicar ${validLineCount} cambio(s)`}
                   </button>

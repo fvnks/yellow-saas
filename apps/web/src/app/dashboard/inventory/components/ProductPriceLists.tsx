@@ -152,7 +152,7 @@ export default function ProductPriceLists() {
           </span>
         </div>
         <button onClick={() => setShowCreate(!showCreate)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-black text-white rounded-lg text-xs font-medium transition-colors">
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-medium transition-colors">
           <Plus className="w-3.5 h-3.5" /> Nueva Lista
         </button>
       </div>
@@ -192,7 +192,7 @@ export default function ProductPriceLists() {
             </label>
           </div>
           <button onClick={handleCreate}
-            className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Crear Lista
           </button>
         </div>
@@ -227,7 +227,7 @@ export default function ProductPriceLists() {
                 min={1} className="w-20 bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500"
                 placeholder="Min" />
               <button onClick={handleAddItem}
-                className="px-3 py-1.5 bg-slate-900 hover:bg-black text-white rounded-lg text-xs font-medium transition-colors">
+                className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-medium transition-colors">
                 <Plus className="w-3.5 h-3.5" />
               </button>
             </div>

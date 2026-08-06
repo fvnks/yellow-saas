@@ -83,7 +83,7 @@ export default function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps)
               <p className="text-sm text-slate-500 mb-4">{error}</p>
               <button
                 onClick={onClose}
-                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cerrar
               </button>

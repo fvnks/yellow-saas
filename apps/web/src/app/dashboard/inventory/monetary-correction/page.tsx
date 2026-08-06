@@ -172,7 +172,7 @@ export default function MonetaryCorrectionPage() {
 
       <div className="flex items-center justify-end gap-3">
         <button onClick={handleSave} disabled={saving || difference === 0}
-          className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
           <Save className="w-4 h-4" /> {saving ? 'Guardando...' : 'Aplicar Corrección'}
         </button>
       </div>

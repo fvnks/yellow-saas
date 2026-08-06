@@ -113,7 +113,7 @@ export default function PedidosImportPage() {
               {result.errors.map((e: string, i: number) => (<p key={i} className="text-xs text-rose-600">{e}</p>))}
             </div>
           )}
-          <button onClick={() => router.push('/dashboard/sales/pedidos')} className="mt-6 bg-slate-900 hover:bg-black text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">
+          <button onClick={() => router.push('/dashboard/sales/pedidos')} className="mt-6 bg-slate-900 hover:bg-slate-800 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">
             Ver Pedidos
           </button>
         </div>
@@ -176,7 +176,7 @@ export default function PedidosImportPage() {
                   </table>
                 </div>
                 <button onClick={handleImport} disabled={!selectedWarehouse || importing}
-                  className="mt-4 bg-slate-900 hover:bg-black text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                  className="mt-4 bg-slate-900 hover:bg-slate-800 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                   {importing ? 'Importando...' : `Importar ${rows.filter(r => resolveProduct(r)).length} items`}
                 </button>
               </div>

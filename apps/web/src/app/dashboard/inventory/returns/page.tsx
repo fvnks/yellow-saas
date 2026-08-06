@@ -110,7 +110,7 @@ export default function ReturnsPage() {
           </div>
         </div>
         <button onClick={() => setShowForm(true)}
-          className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" /> Nueva Devolucion
         </button>
       </div>
@@ -189,7 +189,7 @@ export default function ReturnsPage() {
           <div className="flex justify-end gap-2">
             <button onClick={() => { setShowForm(false); setForm({ warehouse_id: '', reason: '', items: [] }); setProductSearch(''); }}
               className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
-            <button onClick={saveReturn} className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
+            <button onClick={saveReturn} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
           </div>
         </div>
       )}

@@ -96,7 +96,7 @@ export default function PurchaseCategoriesTab() {
           <p className="text-xs text-slate-500 mt-0.5">Clasificar productos de facturas de compra</p>
         </div>
         <button onClick={openCreate}
-          className="bg-slate-900 hover:bg-black text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
+          className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
           <Plus className="w-3.5 h-3.5" /> Nueva
         </button>
       </div>
@@ -198,7 +198,7 @@ export default function PurchaseCategoriesTab() {
                 Cancelar
               </button>
               <button onClick={handleSave} disabled={saving}
-                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
                 {saving ? 'Guardando...' : editing ? 'Guardar Cambios' : 'Crear Categoría'}
               </button>
             </div>

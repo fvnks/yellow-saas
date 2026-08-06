@@ -91,7 +91,7 @@ export default function NotificationSettings({ projectId }: NotificationSettings
           <h3 className="text-sm font-semibold text-slate-900">Notificaciones</h3>
         </div>
         <button onClick={saveSettings} disabled={saving}
-          className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
           {saving ? 'Guardando...' : 'Guardar'}
         </button>
       </div>
@@ -130,7 +130,7 @@ export default function NotificationSettings({ projectId }: NotificationSettings
               onKeyDown={e => e.key === 'Enter' && addEmail()}
               className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               placeholder="correo@empresa.cl" />
-            <button onClick={addEmail} className="bg-slate-900 hover:bg-black text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+            <button onClick={addEmail} className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
               <Plus className="w-4 h-4" />
             </button>
           </div>

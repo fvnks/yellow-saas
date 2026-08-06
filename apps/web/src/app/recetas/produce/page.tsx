@@ -219,7 +219,7 @@ export default function ProducePage() {
           )}
           {selectedFormula?.output_product && (
             <button onClick={() => setShowQuickSell(true)}
-              className="mt-4 bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              className="mt-4 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
               <ShoppingCart className="w-4 h-4" /> Vender producto producido
             </button>
           )}

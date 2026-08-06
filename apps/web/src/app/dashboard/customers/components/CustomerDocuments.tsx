@@ -122,7 +122,7 @@ export default function CustomerDocuments({ customerId }: CustomerDocumentsProps
         <h3 className="text-sm font-semibold text-slate-900">Documentos Adjuntos</h3>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-slate-900 hover:bg-black text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors"
+          className="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors"
         >
           <Upload className="w-3.5 h-3.5" />
           Subir Documento
@@ -244,7 +244,7 @@ export default function CustomerDocuments({ customerId }: CustomerDocumentsProps
               <button
                 onClick={handleSave}
                 disabled={!newDoc.name || !fileData || saving}
-                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
               >
                 {saving ? 'Guardando...' : 'Guardar'}
               </button>

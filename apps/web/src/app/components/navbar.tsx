@@ -50,7 +50,7 @@ export function Navbar() {
           </Link>
           <Link
             href="/register"
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:bg-blue-500 active:scale-[0.98]"
+            className="rounded-lg bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 text-sm font-medium transition-all duration-150 active:scale-[0.98]"
           >
             Empezar Gratis
           </Link>
@@ -89,7 +89,7 @@ export function Navbar() {
             <Link href="/login" className="block text-sm font-medium text-slate-300" onClick={() => setMobileOpen(false)}>
               Iniciar Sesión
             </Link>
-            <Link href="/register" className="block rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white text-center" onClick={() => setMobileOpen(false)}>
+            <Link href="/register" className="block rounded-lg bg-slate-900 hover:bg-slate-800 px-4 py-2 text-sm font-medium text-white text-center" onClick={() => setMobileOpen(false)}>
               Empezar Gratis
             </Link>
           </div>

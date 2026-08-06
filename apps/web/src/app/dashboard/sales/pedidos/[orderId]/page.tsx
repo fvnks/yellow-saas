@@ -156,7 +156,7 @@ export default function PedidoDetailPage({ params }: { params: { orderId: string
         )}
         {order.status === 'approved' && (
           <button onClick={() => updateStatus('picking')}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98]">
             <Truck className="w-4 h-4" /> Iniciar Despacho
           </button>
         )}

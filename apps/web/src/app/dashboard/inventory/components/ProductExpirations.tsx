@@ -108,7 +108,7 @@ export default function ProductExpirations() {
           <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Vencimientos</span>
         </div>
         <button onClick={() => setShowCreate(!showCreate)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-black text-white rounded-lg text-xs font-medium transition-colors">
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-medium transition-colors">
           <Plus className="w-3.5 h-3.5" /> Registrar
         </button>
       </div>
@@ -167,7 +167,7 @@ export default function ProductExpirations() {
               placeholder="Notas" />
           </div>
           <button onClick={handleCreate}
-            className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Registrar
           </button>
         </div>

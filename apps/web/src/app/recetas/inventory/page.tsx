@@ -134,7 +134,7 @@ function ProductModal({ open, onClose, onSave, editProduct }: {
               Cancelar
             </button>
             <button type="submit" disabled={saving}
-              className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+              className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
               {saving ? 'Guardando...' : editProduct ? 'Guardar Cambios' : 'Crear Producto'}
             </button>
           </div>
@@ -245,7 +245,7 @@ export default function RecipeInventoryPage() {
             <Settings className="w-4 h-4" /> Configurar
           </Link>
           <button onClick={() => { setEditProduct(null); setModalOpen(true); }}
-            className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <Plus className="w-4 h-4" /> Nuevo
           </button>
         </div>

@@ -252,7 +252,7 @@ export default function StandalonePOSPage() {
             </button>
           </div>
           <button onClick={resetPOS}
-            className="w-full bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            className="w-full bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Nueva Venta
           </button>
         </div>
@@ -378,7 +378,7 @@ export default function StandalonePOSPage() {
             </div>
           </div>
           <button onClick={() => { setAmountPaid(total); setShowPaymentModal(true); }} disabled={cart.length === 0}
-            className="w-full bg-slate-900 hover:bg-black text-white px-4 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50">
+            className="w-full bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50">
             <CreditCard className="w-4 h-4" /> Cobrar
           </button>
         </div>
@@ -575,7 +575,7 @@ export default function StandalonePOSPage() {
               </button>
               <button onClick={handlePayment}
                 disabled={processing || (paymentMethod === 'cash' && amountPaid < total) || (paymentMethod === 'card' && !cardTransactionNumber.trim()) || (documentType === 'factura' && !selectedCustomer)}
-                className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+                className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
                 {processing ? (
                   <span className="flex items-center gap-2">
                     <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

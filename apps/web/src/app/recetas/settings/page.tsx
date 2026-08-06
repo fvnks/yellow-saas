@@ -73,7 +73,7 @@ export default function RecetasSettingsPage() {
         </div>
         {hasChanges && (
           <button onClick={handleSave} disabled={saving}
-            className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
             <Save className="w-4 h-4" /> {saving ? 'Guardando...' : `Guardar (${Object.keys(changes).length})`}
           </button>
         )}
@@ -164,7 +164,7 @@ export default function RecetasSettingsPage() {
       {hasChanges && (
         <div className="fixed bottom-6 right-6 z-40">
           <button onClick={handleSave} disabled={saving}
-            className="bg-slate-900 hover:bg-black text-white px-5 py-3 rounded-xl text-sm font-medium flex items-center gap-2 shadow-xl transition-colors disabled:opacity-50">
+            className="bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 rounded-xl text-sm font-medium flex items-center gap-2 shadow-xl transition-colors disabled:opacity-50">
             <Save className="w-4 h-4" /> Guardar cambios ({Object.keys(changes).length})
           </button>
         </div>

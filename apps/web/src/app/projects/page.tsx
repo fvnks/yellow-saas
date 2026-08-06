@@ -85,7 +85,7 @@ function ProjectDashboardInner() {
           <p className="text-sm text-slate-500 mt-1">Panel principal de proyectos y presupuestos</p>
         </div>
         <Link href="/projects/new"
-          className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" /> Nuevo Proyecto
         </Link>
       </div>

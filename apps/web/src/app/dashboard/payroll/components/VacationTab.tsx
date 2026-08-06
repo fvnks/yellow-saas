@@ -131,8 +131,8 @@ export default function VacationTab() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Días Ganados</p>
               <p className="text-2xl font-bold text-slate-900 mt-1">{totalDaysEarned}</p>
             </div>
-            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-blue-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <Calendar className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
@@ -142,8 +142,8 @@ export default function VacationTab() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Días Usados</p>
               <p className="text-2xl font-bold text-slate-900 mt-1">{totalDaysUsed}</p>
             </div>
-            <div className="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center">
-              <Plane className="w-6 h-6 text-rose-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <Plane className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
@@ -153,8 +153,8 @@ export default function VacationTab() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Disponibles</p>
               <p className="text-2xl font-bold text-emerald-600 mt-1">{totalDaysAvailable}</p>
             </div>
-            <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">
-              <Check className="w-6 h-6 text-emerald-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <Check className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
@@ -164,8 +164,8 @@ export default function VacationTab() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Pendientes</p>
               <p className="text-2xl font-bold text-amber-600 mt-1">{pendingRequests}</p>
             </div>
-            <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
-              <Clock className="w-6 h-6 text-amber-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <Clock className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>

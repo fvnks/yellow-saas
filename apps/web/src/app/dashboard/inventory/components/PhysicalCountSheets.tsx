@@ -137,7 +137,7 @@ export default function PhysicalCountSheets() {
           </span>
         </div>
         <button onClick={() => setShowCreate(!showCreate)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-black text-white rounded-lg text-xs font-medium transition-colors">
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-medium transition-colors">
           <Plus className="w-3.5 h-3.5" /> Nuevo Conteo
         </button>
       </div>
@@ -164,7 +164,7 @@ export default function PhysicalCountSheets() {
               placeholder="Notas (opcional)" />
           </div>
           <button onClick={handleCreate}
-            className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Crear Conteo
           </button>
         </div>
@@ -180,7 +180,7 @@ export default function PhysicalCountSheets() {
             <div className="flex gap-2">
               {selectedCount.status === 'draft' && (
                 <button onClick={() => handleStatus(selectedCount.id, 'in_progress')}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors">
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-medium transition-all duration-150 active:scale-[0.98]">
                   <Play className="w-3.5 h-3.5" /> Iniciar
                 </button>
               )}

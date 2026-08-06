@@ -237,8 +237,8 @@ export default function PayrollRunDetailPage() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Empleados</p>
               <p className="text-2xl font-bold text-slate-900 mt-1">{run.employee_count}</p>
             </div>
-            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
-              <Users className="w-6 h-6 text-blue-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <Users className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
@@ -248,8 +248,8 @@ export default function PayrollRunDetailPage() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Sueldo Imponible</p>
               <p className="text-2xl font-bold text-slate-900 mt-1">${(run.gross_amount || 0).toLocaleString('es-CL')}</p>
             </div>
-            <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
-              <DollarSign className="w-6 h-6 text-indigo-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <DollarSign className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
@@ -259,8 +259,8 @@ export default function PayrollRunDetailPage() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Retenciones</p>
               <p className="text-2xl font-bold text-slate-900 mt-1">${((run.total_deductions || 0) + (run.total_tax || 0)).toLocaleString('es-CL')}</p>
             </div>
-            <div className="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center">
-              <Calculator className="w-6 h-6 text-rose-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <Calculator className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>
@@ -270,8 +270,8 @@ export default function PayrollRunDetailPage() {
               <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Líquido a Pagar</p>
               <p className="text-2xl font-bold text-emerald-600 mt-1">${(run.net_amount || 0).toLocaleString('es-CL')}</p>
             </div>
-            <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">
-              <FileText className="w-6 h-6 text-emerald-600" />
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+              <FileText className="w-6 h-6 text-slate-600" />
             </div>
           </div>
         </div>

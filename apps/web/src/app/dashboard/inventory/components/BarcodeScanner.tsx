@@ -80,7 +80,7 @@ export default function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps)
                 className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 placeholder="Ingrese o pegue el codigo de barras" autoFocus />
               <button onClick={handleSubmitManual} disabled={!manualCode.trim()}
-                className="w-full bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                 Buscar Producto
               </button>
             </div>
