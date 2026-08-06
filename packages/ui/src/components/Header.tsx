@@ -1,6 +1,5 @@
-import { cn } from '../lib/utils';
 import { Bell, Search, Menu, User, LogOut, ChevronDown, Settings } from 'lucide-react';
-import { useState, useRef, RefObject, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 interface HeaderProps {
   title?: string;
