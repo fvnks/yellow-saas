@@ -139,49 +139,8 @@ export default function SettingsPage() {
         <p className="text-sm text-slate-500 mt-1">Administra la configuración de tu empresa</p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-5">
-        {/* Sidebar de Categorías */}
-        <div className="lg:col-span-1">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-            <div className="px-4 py-3 border-b border-slate-100">
-              <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Categorías</p>
-            </div>
-            <nav className="p-2">
-              {settingsCategories.map(category => (
-                <div key={category.id} className="mb-1">
-                  <button
-                    onClick={() => toggleCategory(category.id)}
-                    className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
-                  >
-                    <span>{category.label}</span>
-                    <ChevronRight className={`w-4 h-4 text-slate-400 transition-transform ${expandedCategories.includes(category.id) ? 'rotate-90' : ''}`} />
-                  </button>
-                  {expandedCategories.includes(category.id) && (
-                    <div className="ml-3 mt-1 space-y-0.5">
-                      {category.items.filter(item => item.id !== 'documentos' || company.canManageSettings).map(item => (
-                        <button
-                          key={item.id}
-                          onClick={() => setActiveTab(item.id)}
-                          className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
-                            activeTab === item.id
-                              ? 'bg-indigo-50 text-indigo-700 font-medium'
-                              : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
-                          }`}
-                        >
-                          <item.icon className="w-4 h-4" />
-                          {item.label}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </nav>
-          </div>
-        </div>
-
-        {/* Contenido */}
-        <div className="lg:col-span-4 space-y-6">
+      {/* Contenido */}
+        <div className="space-y-6">
           {activeTab === 'empresa' && (
             <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 text-center">
               <Building2 className="w-12 h-12 text-slate-300 mx-auto mb-3" />
@@ -213,7 +172,6 @@ export default function SettingsPage() {
 
           {activeTab === 'webhooks' && <WebhooksTab />}
         </div>
-      </div>
     </div>
   );
 }
