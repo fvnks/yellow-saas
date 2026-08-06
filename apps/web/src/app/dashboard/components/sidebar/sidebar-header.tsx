@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { SidebarMenu, SidebarMenuItem } from "@/components/ui/sidebar";
 import CompanySwitcher from '@/components/ui/company-switcher';
 import { getApiClient } from '@/lib/api-client';
+import { Building2 } from 'lucide-react';
 
 export default function SidebarBrandHeader() {
   const router = useRouter();
@@ -50,6 +51,8 @@ export default function SidebarBrandHeader() {
     }
   };
 
+  const currentCompany = companies.find(c => c.id === currentCompanyId);
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -57,13 +60,21 @@ export default function SidebarBrandHeader() {
           <Link href="/dashboard" className="flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden flex-shrink-0">
             <Image src="/logo/yellow-cube.svg" alt="Yellow" width={36} height={36} />
           </Link>
-          <div className="flex-1 min-w-0 group-data-[collapsible=icon]:hidden">
-            <CompanySwitcher
-              companies={companies}
-              currentCompanyId={currentCompanyId}
-              onSwitch={handleSwitch}
-              loading={loading}
-            />
+          <div className="flex-1 min-w-0 flex items-center gap-2 group-data-[collapsible=icon]:hidden">
+            {currentCompany && (
+              <div className="flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                <span className="text-sm font-semibold text-foreground truncate">{currentCompany.name}</span>
+              </div>
+            )}
+            {companies.length > 1 && (
+              <CompanySwitcher
+                companies={companies}
+                currentCompanyId={currentCompanyId}
+                onSwitch={handleSwitch}
+                loading={loading}
+              />
+            )}
           </div>
         </div>
       </SidebarMenuItem>
