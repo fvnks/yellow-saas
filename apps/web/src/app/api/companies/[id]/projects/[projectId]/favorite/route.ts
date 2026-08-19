@@ -1,53 +1,5 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server';
-
-export async function GET(req: NextRequest, { params }: { params: { id: string; projectId: string } }) {
-  try {
-    const companyId = await getCompanyId(req);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const url = new URL(req.url);
-    const userId = url.searchParams.get('user_id');
-
-    if (!userId) return errorResponse('user_id is required', 400);
-
-    const { rows } = await query(
-      'SELECT * FROM user_project_favorites WHERE company_id = $1 AND user_id = $2 AND project_id = $3',
-      [companyId, userId, params.projectId]
-    );
-
-    return successResponse({ is_favorite: rows.length > 0 });
-  } catch (e: any) {
-    return errorResponse(e.message, 500);
-  }
-}
-
-export async function POST(req: NextRequest, { params }: { params: { id: string; projectId: string } }) {
-  try {
-    const companyId = await getCompanyId(req);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const body = await req.json();
-    const { user_id, is_favorite } = body;
-
-    if (!user_id) return errorResponse('user_id is required', 400);
-
-    if (is_favorite) {
-      await query(
-        `INSERT INTO user_project_favorites (user_id, project_id, company_id)
-         VALUES ($1, $2, $3) ON CONFLICT (user_id, project_id) DO NOTHING`,
-        [user_id, params.projectId, companyId]
-      );
-    } else {
-      await query(
-        'DELETE FROM user_project_favorites WHERE user_id = $1 AND project_id = $2 AND company_id = $3',
-        [user_id, params.projectId, companyId]
-      );
-    }
-
-    return successResponse({ is_favorite });
-  } catch (e: any) {
-    return errorResponse(e.message, 500);
-  }
+import { NextRequest } from 'next/server'; export async function GET(req: NextRequest, { params }: { params: { id: string; projectId: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const url = new URL(req.url); const userId = url.searchParams.get('user_id'); if (!userId) return errorResponse('user_id is required', 400); const { rows } = await query( 'SELECT * FROM user_project_favorites WHERE company_id = $1 AND user_id = $2 AND project_id = $3', [companyId, userId, params.projectId] ); return successResponse({ is_favorite: rows.length > 0 }); } catch (e: any) { return errorResponse(e.message, 500); }
+} export async function POST(req: NextRequest, { params }: { params: { id: string; projectId: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const body = await req.json(); const { user_id, is_favorite } = body; if (!user_id) return errorResponse('user_id is required', 400); if (is_favorite) { await query( `INSERT INTO user_project_favorites (user_id, project_id, company_id) VALUES ($1, $2, $3) ON CONFLICT (user_id, project_id) DO NOTHING`, [user_id, params.projectId, companyId] ); } else { await query( 'DELETE FROM user_project_favorites WHERE user_id = $1 AND project_id = $2 AND company_id = $3', [user_id, params.projectId, companyId] ); } return successResponse({ is_favorite }); } catch (e: any) { return errorResponse(e.message, 500); }
 }

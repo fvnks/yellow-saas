@@ -1,67 +1,7 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server';
-
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string; inspectionId: string } }
-) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const result = await query(
-      `SELECT qii.*, qci.check_type, qci.description as check_description, qci.acceptance_criteria, qci.min_value, qci.max_value, qci.uom, qci.is_critical
-       FROM quality_inspection_items qii
-       LEFT JOIN quality_checklist_items qci ON qii.checklist_item_id = qci.id
-       WHERE qii.inspection_id = $1 AND qii.company_id = $2
-       ORDER BY qci.sequence`,
-      [params.inspectionId, companyId]
-    );
-
-    return successResponse(result.rows);
-  } catch (err) {
-    console.error('Get quality inspection items error:', err);
-    return errorResponse('Internal server error', 500);
-  }
-}
-
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string; inspectionId: string } }
-) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const body = await request.json();
-    const { checklist_item_id, product_id, result, measured_value, notes } = body;
-
-    if (!checklist_item_id) {
-      return errorResponse('checklist_item_id is required', 400);
-    }
-
-    const validResults = ['pending', 'pass', 'fail', 'na'];
-    if (result && !validResults.includes(result)) {
-      return errorResponse(`result must be one of: ${validResults.join(', ')}`, 400);
-    }
-
-    const inspectionCheck = await query(
-      `SELECT 1 FROM quality_inspections WHERE id = $1 AND company_id = $2`,
-      [params.inspectionId, companyId]
-    );
-    if (inspectionCheck.rows.length === 0) return errorResponse('Inspection not found', 404);
-
-    const insertResult = await query(
-      `INSERT INTO quality_inspection_items (company_id, inspection_id, checklist_item_id, product_id, result, measured_value, notes)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
-       RETURNING *`,
-      [companyId, params.inspectionId, checklist_item_id, product_id || null, result || 'pending', measured_value || null, notes || null]
-    );
-
-    return successResponse(insertResult.rows[0], 201);
-  } catch (err) {
-    console.error('Create quality inspection item error:', err);
-    return errorResponse('Internal server error', 500);
-  }
+import { NextRequest } from 'next/server'; export async function GET( request: NextRequest, { params }: { params: { id: string; inspectionId: string } }
+) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const result = await query( `SELECT qii.*, qci.check_type, qci.description as check_description, qci.acceptance_criteria, qci.min_value, qci.max_value, qci.uom, qci.is_critical FROM quality_inspection_items qii LEFT JOIN quality_checklist_items qci ON qii.checklist_item_id = qci.id WHERE qii.inspection_id = $1 AND qii.company_id = $2 ORDER BY qci.sequence`, [params.inspectionId, companyId] ); return successResponse(result.rows); } catch (err) { console.error('Get quality inspection items error:', err); return errorResponse('Internal server error', 500); }
+} export async function POST( request: NextRequest, { params }: { params: { id: string; inspectionId: string } }
+) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const { checklist_item_id, product_id, result, measured_value, notes } = body; if (!checklist_item_id) { return errorResponse('checklist_item_id is required', 400); } const validResults = ['pending', 'pass', 'fail', 'na']; if (result && !validResults.includes(result)) { return errorResponse(`result must be one of: ${validResults.join(', ')}`, 400); } const inspectionCheck = await query( `SELECT 1 FROM quality_inspections WHERE id = $1 AND company_id = $2`, [params.inspectionId, companyId] ); if (inspectionCheck.rows.length === 0) return errorResponse('Inspection not found', 404); const insertResult = await query( `INSERT INTO quality_inspection_items (company_id, inspection_id, checklist_item_id, product_id, result, measured_value, notes) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`, [companyId, params.inspectionId, checklist_item_id, product_id || null, result || 'pending', measured_value || null, notes || null] ); return successResponse(insertResult.rows[0], 201); } catch (err) { console.error('Create quality inspection item error:', err); return errorResponse('Internal server error', 500); }
 }

@@ -1,50 +1,6 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
-import crypto from 'crypto';
-
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string; projectId: string } }
-) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const body = await request.json();
-    const { enabled, show_budget, show_costs } = body;
-
-    let tokenResult = await query(
-      'SELECT portal_token FROM projects WHERE id = $1 AND company_id = $2',
-      [params.projectId, companyId]
-    );
-
-    let token = tokenResult.rows[0]?.portal_token;
-    if (!token) {
-      token = crypto.randomBytes(24).toString('hex');
-    }
-
-    const result = await query(
-      `UPDATE projects SET
-        portal_token = $1, portal_enabled = COALESCE($2, portal_enabled),
-        portal_show_budget = COALESCE($3, portal_show_budget),
-        portal_show_costs = COALESCE($4, portal_show_costs)
-       WHERE id = $5 AND company_id = $6 RETURNING portal_token, portal_enabled, portal_show_budget, portal_show_costs`,
-      [token, enabled !== undefined ? enabled : null,
-       show_budget !== undefined ? show_budget : null,
-       show_costs !== undefined ? show_costs : null,
-       params.projectId, companyId]
-    );
-
-    if (result.rows.length === 0) return errorResponse('Project not found', 404);
-
-    const portalUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/portal/${token}`;
-
-    return successResponse({
-      ...result.rows[0],
-      portal_url: portalUrl,
-    });
-  } catch {
-    return errorResponse('Internal server error', 500);
-  }
+import crypto from 'crypto'; export async function POST( request: NextRequest, { params }: { params: { id: string; projectId: string } }
+) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const { enabled, show_budget, show_costs } = body; let tokenResult = await query( 'SELECT portal_token FROM projects WHERE id = $1 AND company_id = $2', [params.projectId, companyId] ); let token = tokenResult.rows[0]?.portal_token; if (!token) { token = crypto.randomBytes(24).toString('hex'); } const result = await query( `UPDATE projects SET portal_token = $1, portal_enabled = COALESCE($2, portal_enabled), portal_show_budget = COALESCE($3, portal_show_budget), portal_show_costs = COALESCE($4, portal_show_costs) WHERE id = $5 AND company_id = $6 RETURNING portal_token, portal_enabled, portal_show_budget, portal_show_costs`, [token, enabled !== undefined ? enabled : null, show_budget !== undefined ? show_budget : null, show_costs !== undefined ? show_costs : null, params.projectId, companyId] ); if (result.rows.length === 0) return errorResponse('Project not found', 404); const portalUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/portal/${token}`; return successResponse({ ...result.rows[0], portal_url: portalUrl, }); } catch { return errorResponse('Internal server error', 500); }
 }

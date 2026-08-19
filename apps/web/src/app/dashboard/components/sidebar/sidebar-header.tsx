@@ -1,83 +1,9 @@
-'use client';
-
-import { useState, useEffect } from 'react';
+'use client'; import { useState, useEffect } from 'react';
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import { SidebarMenu, SidebarMenuItem } from "@/components/ui/sidebar";
 import CompanySwitcher from '@/components/ui/company-switcher';
 import { getApiClient } from '@/lib/api-client';
-import { Building2 } from 'lucide-react';
-
-export default function SidebarBrandHeader() {
-  const router = useRouter();
-  const [companies, setCompanies] = useState<any[]>([]);
-  const [currentCompanyId, setCurrentCompanyId] = useState<string>('');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const companyId = localStorage.getItem('company_id');
-    if (companyId) setCurrentCompanyId(companyId);
-
-    loadCompanies();
-  }, []);
-
-  const loadCompanies = async () => {
-    try {
-      const api = getApiClient();
-      const res = await api.getAuthCompanies();
-      setCompanies(res.companies || []);
-    } catch (err) {
-      console.error('Failed to load companies:', err);
-    }
-    setLoading(false);
-  };
-
-  const handleSwitch = async (companyId: string) => {
-    try {
-      const api = getApiClient();
-      const res = await api.switchCompany(companyId);
-
-      // Update token cookie
-      document.cookie = `auth-token=${res.token}; path=/; max-age=${7 * 24 * 60 * 60}`;
-
-      // Update localStorage
-      localStorage.setItem('company_id', companyId);
-
-      // Reload to refresh all data
-      window.location.reload();
-    } catch (err) {
-      console.error('Failed to switch company:', err);
-    }
-  };
-
-  const currentCompany = companies.find(c => c.id === currentCompanyId);
-
-  return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <div className="flex items-center gap-3 px-2 py-2 rounded-xl">
-          <Link href="/dashboard" className="flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden flex-shrink-0">
-            <Image src="/logo/yellow-cube.svg" alt="Yellow" width={36} height={36} />
-          </Link>
-          <div className="flex-1 min-w-0 flex items-center gap-2 group-data-[collapsible=icon]:hidden">
-            {currentCompany && (
-              <div className="flex items-center gap-2">
-                <Building2 className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                <span className="text-sm font-semibold text-foreground truncate">{currentCompany.name}</span>
-              </div>
-            )}
-            {companies.length > 1 && (
-              <CompanySwitcher
-                companies={companies}
-                currentCompanyId={currentCompanyId}
-                onSwitch={handleSwitch}
-                loading={loading}
-              />
-            )}
-          </div>
-        </div>
-      </SidebarMenuItem>
-    </SidebarMenu>
-  );
+import { Building2 } from 'lucide-react'; export default function SidebarBrandHeader() { const router = useRouter(); const [companies, setCompanies] = useState<any[]>([]); const [currentCompanyId, setCurrentCompanyId] = useState<string>(''); const [loading, setLoading] = useState(true); useEffect(() => { const companyId = localStorage.getItem('company_id'); if (companyId) setCurrentCompanyId(companyId); loadCompanies(); }, []); const loadCompanies = async () => { try { const api = getApiClient(); const res = await api.getAuthCompanies(); setCompanies(res.companies || []); } catch (err) { console.error('Failed to load companies:', err); } setLoading(false); }; const handleSwitch = async (companyId: string) => { try { const api = getApiClient(); const res = await api.switchCompany(companyId); // Update token cookie document.cookie = `auth-token=${res.token}; path=/; max-age=${7 * 24 * 60 * 60}`; // Update localStorage localStorage.setItem('company_id', companyId); // Reload to refresh all data window.location.reload(); } catch (err) { console.error('Failed to switch company:', err); } }; const currentCompany = companies.find(c => c.id === currentCompanyId); return ( <SidebarMenu> <SidebarMenuItem> <div className="flex items-center gap-3 px-2 py-2 rounded-xl"> <Link href="/dashboard" className="flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden flex-shrink-0"> <Image src="/logo/yellow-cube.svg" alt="Yellow" width={36} height={36} /> </Link> <div className="flex-1 min-w-0 flex items-center gap-2 group-data-[collapsible=icon]:hidden"> {currentCompany && ( <div className="flex items-center gap-2"> <Building2 className="w-4 h-4 text-muted-foreground flex-shrink-0" /> <span className="text-sm font-semibold text-foreground truncate">{currentCompany.name}</span> </div> )} {companies.length > 1 && ( <CompanySwitcher companies={companies} currentCompanyId={currentCompanyId} onSwitch={handleSwitch} loading={loading} /> )} </div> </div> </SidebarMenuItem> </SidebarMenu> );
 }

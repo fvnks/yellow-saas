@@ -1,80 +1,9 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server';
-
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string; contactId: string } }
-) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const result = await query(
-      'SELECT * FROM customer_contacts WHERE id = $1 AND company_id = $2',
-      [params.contactId, companyId]
-    );
-
-    if (result.rows.length === 0) return errorResponse('Contact not found', 404);
-
-    return successResponse(result.rows[0]);
-  } catch {
-    return errorResponse('Failed to fetch contact', 500);
-  }
-}
-
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string; contactId: string } }
-) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const body = await request.json();
-
-    if (body.is_primary) {
-      await query(
-        'UPDATE customer_contacts SET is_primary = false WHERE customer_id = (SELECT customer_id FROM customer_contacts WHERE id = $1 AND company_id = $2) AND company_id = $2',
-        [params.contactId, companyId]
-      );
-    }
-
-    const result = await query(
-      `UPDATE customer_contacts SET
-        name = $1, role = $2, email = $3, phone = $4, mobile = $5,
-        is_primary = $6, notes = $7, updated_at = NOW()
-       WHERE id = $8 AND company_id = $9
-       RETURNING *`,
-      [body.name, body.role, body.email, body.phone, body.mobile,
-       body.is_primary, body.notes, params.contactId, companyId]
-    );
-
-    if (result.rows.length === 0) return errorResponse('Contact not found', 404);
-
-    return successResponse(result.rows[0]);
-  } catch {
-    return errorResponse('Failed to update contact', 500);
-  }
-}
-
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string; contactId: string } }
-) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const result = await query(
-      'DELETE FROM customer_contacts WHERE id = $1 AND company_id = $2 RETURNING id',
-      [params.contactId, companyId]
-    );
-
-    if (result.rows.length === 0) return errorResponse('Contact not found', 404);
-
-    return successResponse({ message: 'Contact deleted successfully' });
-  } catch {
-    return errorResponse('Failed to delete contact', 500);
-  }
+import { NextRequest } from 'next/server'; export async function GET( request: NextRequest, { params }: { params: { id: string; contactId: string } }
+) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const result = await query( 'SELECT * FROM customer_contacts WHERE id = $1 AND company_id = $2', [params.contactId, companyId] ); if (result.rows.length === 0) return errorResponse('Contact not found', 404); return successResponse(result.rows[0]); } catch { return errorResponse('Failed to fetch contact', 500); }
+} export async function PUT( request: NextRequest, { params }: { params: { id: string; contactId: string } }
+) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); if (body.is_primary) { await query( 'UPDATE customer_contacts SET is_primary = false WHERE customer_id = (SELECT customer_id FROM customer_contacts WHERE id = $1 AND company_id = $2) AND company_id = $2', [params.contactId, companyId] ); } const result = await query( `UPDATE customer_contacts SET name = $1, role = $2, email = $3, phone = $4, mobile = $5, is_primary = $6, notes = $7, updated_at = NOW() WHERE id = $8 AND company_id = $9 RETURNING *`, [body.name, body.role, body.email, body.phone, body.mobile, body.is_primary, body.notes, params.contactId, companyId] ); if (result.rows.length === 0) return errorResponse('Contact not found', 404); return successResponse(result.rows[0]); } catch { return errorResponse('Failed to update contact', 500); }
+} export async function DELETE( request: NextRequest, { params }: { params: { id: string; contactId: string } }
+) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const result = await query( 'DELETE FROM customer_contacts WHERE id = $1 AND company_id = $2 RETURNING id', [params.contactId, companyId] ); if (result.rows.length === 0) return errorResponse('Contact not found', 404); return successResponse({ message: 'Contact deleted successfully' }); } catch { return errorResponse('Failed to delete contact', 500); }
 }

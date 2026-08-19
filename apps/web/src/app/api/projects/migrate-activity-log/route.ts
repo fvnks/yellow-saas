@@ -1,31 +1,4 @@
 import { query } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server';
-
-export async function POST(request: NextRequest) {
-  try {
-    await query(`CREATE TABLE IF NOT EXISTS project_activity_log (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
-      project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-      actor_id UUID REFERENCES profiles(id),
-      actor_name TEXT,
-      action TEXT NOT NULL,
-      entity_type TEXT NOT NULL,
-      entity_id UUID,
-      entity_name TEXT,
-      old_value JSONB,
-      new_value JSONB,
-      metadata JSONB,
-      created_at TIMESTAMPTZ DEFAULT now()
-    )`);
-    await query(`CREATE INDEX IF NOT EXISTS idx_project_activity_log_company ON project_activity_log(company_id)`);
-    await query(`CREATE INDEX IF NOT EXISTS idx_project_activity_log_project ON project_activity_log(project_id)`);
-    await query(`CREATE INDEX IF NOT EXISTS idx_project_activity_log_created ON project_activity_log(created_at DESC)`);
-    await query(`ALTER TABLE project_activity_log ENABLE ROW LEVEL SECURITY`);
-    await query(`DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'activity_log_company_isolation') THEN CREATE POLICY "activity_log_company_isolation" ON project_activity_log USING (company_id = current_setting('app.current_company_id')::uuid); END IF; END $$`);
-    return successResponse({ message: 'Activity log table created' });
-  } catch (err: any) {
-    return errorResponse(err.message, 500);
-  }
+import { NextRequest } from 'next/server'; export async function POST(request: NextRequest) { try { await query(`CREATE TABLE IF NOT EXISTS project_activity_log ( id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE, actor_id UUID REFERENCES profiles(id), actor_name TEXT, action TEXT NOT NULL, entity_type TEXT NOT NULL, entity_id UUID, entity_name TEXT, old_value JSONB, new_value JSONB, metadata JSONB, created_at TIMESTAMPTZ DEFAULT now() )`); await query(`CREATE INDEX IF NOT EXISTS idx_project_activity_log_company ON project_activity_log(company_id)`); await query(`CREATE INDEX IF NOT EXISTS idx_project_activity_log_project ON project_activity_log(project_id)`); await query(`CREATE INDEX IF NOT EXISTS idx_project_activity_log_created ON project_activity_log(created_at DESC)`); await query(`ALTER TABLE project_activity_log ENABLE ROW LEVEL SECURITY`); await query(`DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'activity_log_company_isolation') THEN CREATE POLICY "activity_log_company_isolation" ON project_activity_log USING (company_id = current_setting('app.current_company_id')::uuid); END IF; END $$`); return successResponse({ message: 'Activity log table created' }); } catch (err: any) { return errorResponse(err.message, 500); }
 }

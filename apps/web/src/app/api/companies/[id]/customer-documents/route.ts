@@ -1,54 +1,5 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server';
-
-export async function GET(request: NextRequest) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const url = new URL(request.url);
-    const customerId = url.searchParams.get('customer_id');
-    if (!customerId) return errorResponse('customer_id is required', 400);
-
-    const { rows } = await query(
-      `SELECT cd.*, p.full_name as uploader_name
-       FROM customer_documents cd
-       LEFT JOIN profiles p ON p.id = cd.uploaded_by
-       WHERE cd.company_id = $1 AND cd.customer_id = $2
-       ORDER BY cd.created_at DESC`,
-      [companyId, customerId]
-    );
-
-    return successResponse(rows);
-  } catch {
-    return errorResponse('Internal server error', 500);
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const body = await request.json();
-    const { customer_id, name, description, file_url, file_data, mime_type, file_size, category } = body;
-
-    if (!customer_id) return errorResponse('customer_id is required', 400);
-    if (!name) return errorResponse('name is required', 400);
-
-    const allowedCategories = ['contract', 'agreement', 'tax_id', 'invoice', 'certificate', 'other'];
-    const docCategory = allowedCategories.includes(category) ? category : 'other';
-
-    const { rows } = await query(
-      `INSERT INTO customer_documents (company_id, customer_id, name, description, file_url, file_data, mime_type, file_size, category)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-       RETURNING *`,
-      [companyId, customer_id, name, description || null, file_url || null, file_data || null, mime_type || null, file_size || null, docCategory]
-    );
-
-    return successResponse(rows[0], 201);
-  } catch {
-    return errorResponse('Internal server error', 500);
-  }
+import { NextRequest } from 'next/server'; export async function GET(request: NextRequest) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const url = new URL(request.url); const customerId = url.searchParams.get('customer_id'); if (!customerId) return errorResponse('customer_id is required', 400); const { rows } = await query( `SELECT cd.*, p.full_name as uploader_name FROM customer_documents cd LEFT JOIN profiles p ON p.id = cd.uploaded_by WHERE cd.company_id = $1 AND cd.customer_id = $2 ORDER BY cd.created_at DESC`, [companyId, customerId] ); return successResponse(rows); } catch { return errorResponse('Internal server error', 500); }
+} export async function POST(request: NextRequest) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const { customer_id, name, description, file_url, file_data, mime_type, file_size, category } = body; if (!customer_id) return errorResponse('customer_id is required', 400); if (!name) return errorResponse('name is required', 400); const allowedCategories = ['contract', 'agreement', 'tax_id', 'invoice', 'certificate', 'other']; const docCategory = allowedCategories.includes(category) ? category : 'other'; const { rows } = await query( `INSERT INTO customer_documents (company_id, customer_id, name, description, file_url, file_data, mime_type, file_size, category) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`, [companyId, customer_id, name, description || null, file_url || null, file_data || null, mime_type || null, file_size || null, docCategory] ); return successResponse(rows[0], 201); } catch { return errorResponse('Internal server error', 500); }
 }

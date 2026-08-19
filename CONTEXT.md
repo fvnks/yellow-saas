@@ -2,7 +2,7 @@
 
 ## Visión General
 
-Yellow ERP es un sistema ERP SaaS multi-tenant para PyMEs chilenas. Arquitectura monorepo con Turborepo, Next.js 14, React 18, Tailwind v3, PostgreSQL en Railway.
+Yellow ERP es un sistema ERP SaaS multi-tenant para PyMEs chilenas. Arquitectura monorepo con Turborepo, Next.js 14, React 18, Tailwind v3, PostgreSQL.
 
 ## Arquitectura
 
@@ -33,13 +33,13 @@ yellow-house/
 |------|-----------|
 | Frontend | Next.js 14.1.0, React 18, Tailwind CSS v3 |
 | Backend | Next.js API Routes (serverless) |
-| Base de datos | PostgreSQL (Railway, tokaido.proxy.rlwy.net:21360) |
+| Base de datos | PostgreSQL |
 | Auth | JWT + bcryptjs (custom, NO Supabase Auth) |
 | JWT lib | `jose` (migrado desde `jsonwebtoken`) |
 | Íconos | Lucide React (exclusivamente) |
 | Monorepo | Turborepo |
-| Deploy | Railway (project: protective-growth, service: yellow-saas) |
-| URL prod | https://yellow-saas-production.up.railway.app |
+| Deploy | VPS Propio |
+| URL prod | (Propio) |
 | Git | https://github.com/fvnks/yellow-saas.git |
 
 ## Multi-Tenancy
@@ -205,7 +205,7 @@ UNIQUE(company_id, module_name)
 
 - **68+ migraciones** en `packages/db/supabase/migrations/`
 - **Ejecución**: Script Node.js con `pg` (NO Supabase CLI)
-- **Conexión**: `tokaido.proxy.rlwy.net:21360/railway`
+- **Conexión**: Vía `DATABASE_URL` (VPS)
 - **Env vars**: `DATABASE_URL` y `JWT_SECRET` en `apps/web/.env.local`
 - **RLS**: Deshabilitado (migraciones usan SQL directo)
 - **Prefijo de tablas**: `module_tablename`

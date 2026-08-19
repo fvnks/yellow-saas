@@ -21,135 +21,6 @@ html {
   }
 }
 
-/* ============================================
-   DESIGN TOKENS - BankDash Modern Banking Dashboard
-   ============================================ */
-
-@layer base {
-  :root {
-    /* Background - Light Gray (#F5F7FA) */
-    --background: 220 14% 96%;
-    --foreground: 222 47% 11%;
-
-    /* Cards - White (#FFFFFF) */
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-
-    /* Popovers */
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-
-    /* Primary - BankDash Blue (#1814F3) */
-    --primary: 242 95% 47%;
-    --primary-foreground: 0 0% 100%;
-
-    /* Secondary - Light Blue (#E8F0FE) */
-    --secondary: 220 60% 95%;
-    --secondary-foreground: 222 47% 11%;
-
-    /* Muted - Soft Gray (#F8F9FA) */
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 17% 62%;
-
-    /* Accent */
-    --accent: 220 60% 95%;
-    --accent-foreground: 222 47% 11%;
-
-    /* Destructive - Red (#FE5C73) */
-    --destructive: 350 87% 67%;
-    --destructive-foreground: 0 0% 100%;
-
-    /* Success - Teal (#16DBCC) */
-    --success: 173 84% 48%;
-    --success-foreground: 0 0% 100%;
-
-    /* Warning - Amber (#FFBB38) */
-    --warning: 40 100% 61%;
-    --warning-foreground: 0 0% 100%;
-
-    /* Info - Bright Blue (#2D60FF) */
-    --info: 223 100% 56%;
-    --info-foreground: 0 0% 100%;
-
-    /* Borders & Inputs - Soft Gray (#E6EFF5, #DFEAF2) */
-    --border: 213 42% 89%;
-    --input: 213 42% 89%;
-    --ring: 242 95% 47%;
-
-    /* Radius - BankDash uses larger radius */
-    --radius: 0.75rem;
-
-    /* Sidebar - White bg with blue accent */
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222 47% 11%;
-    --sidebar-primary: 242 95% 47%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 96%;
-    --sidebar-accent-foreground: 222 47% 11%;
-    --sidebar-border: 213 42% 95%;
-    --sidebar-ring: 242 95% 47%;
-
-    /* Brand - BankDash Colors */
-    --brand-blue: 242 95% 47%;
-    --brand-blue-bright: 223 100% 56%;
-    --brand-teal: 173 84% 48%;
-    --brand-red: 350 87% 67%;
-    --brand-amber: 40 100% 61%;
-
-    /* Legacy brand (keep for compatibility) */
-    --brand-yellow: 45 93% 47%;
-    --brand-amber: 38 92% 50%;
-  }
-
-  .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
-
-    --card: 222 47% 11%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 242 95% 47%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-
-    --accent: 217 33% 17%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 350 87% 67%;
-    --destructive-foreground: 0 0% 100%;
-
-    --success: 173 84% 48%;
-    --success-foreground: 0 0% 100%;
-
-    --warning: 40 100% 61%;
-    --warning-foreground: 0 0% 100%;
-
-    --info: 223 100% 56%;
-    --info-foreground: 0 0% 100%;
-
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 242 95% 47%;
-
-    --sidebar-background: 222 47% 11%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 242 95% 47%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 217 33% 17%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 33% 17%;
-    --sidebar-ring: 242 95% 47%;
-  }
-}
-
 @layer base {
   * {
     @apply border-border;
@@ -157,11 +28,11 @@ html {
   body {
     @apply bg-background text-foreground antialiased;
   }
-  select {
-    @apply rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-colors duration-150;
+  select, textarea {
+    @apply rounded-xl border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 transition-colors duration-150;
   }
-  textarea {
-    @apply rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-colors duration-150;
+  input {
+    @apply rounded-xl border border-input bg-card text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 transition-colors duration-150;
   }
 }
 
