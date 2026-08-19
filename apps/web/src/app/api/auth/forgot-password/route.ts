@@ -2,69 +2,7 @@ import { query } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 import { SignJWT } from 'jose';
-import { getJwtSecret } from '@/lib/env';
-
-const JWT_SECRET = getJwtSecret();
-
-// Tiempo de trabajo similar al de firmar un token real, para no revelar
+import { getJwtSecret } from '@/lib/env'; const JWT_SECRET = getJwtSecret(); // Tiempo de trabajo similar al de firmar un token real, para no revelar
 // por latencia si el email existe.
-const DUMMY_HASH = 'dummy-reset-target';
-
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { email } = body;
-
-    if (!email || typeof email !== 'string') {
-      return errorResponse('El correo electrónico es requerido', 400);
-    }
-
-    const normalized = email.trim().toLowerCase();
-
-    // Siempre consultamos ambas tablas (mismo trabajo para emails existentes y no)
-    const [userResult, adminResult] = await Promise.all([
-      query('SELECT id FROM profiles WHERE email = $1 AND status = $2', [normalized, 'active']),
-      query('SELECT id FROM super_admins WHERE email = $1 AND is_active = true', [normalized]),
-    ]);
-
-    let targetType: 'user' | 'super_admin' | null = null;
-    let targetId: string | null = null;
-
-    if (userResult.rows.length > 0) {
-      targetType = 'user';
-      targetId = userResult.rows[0].id;
-    } else if (adminResult.rows.length > 0) {
-      targetType = 'super_admin';
-      targetId = adminResult.rows[0].id;
-    }
-
-    // Firmamos un JWT en ambos casos (dummy si no existe) para igualar el tiempo
-    const token = await new SignJWT({
-      purpose: 'password_reset',
-      target_type: targetType || 'user',
-      target_id: targetId || DUMMY_HASH,
-      email: normalized,
-    })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setIssuedAt()
-      .setExpirationTime('30m')
-      .sign(JWT_SECRET);
-
-    // En desarrollo devolvemos el link solo si el email existe, para poder probar sin SMTP.
-    // En producción el link se enviaría por email (pendiente de infraestructura).
-    const isDev = process.env.NODE_ENV !== 'production';
-    const message = 'Si el correo existe, recibirás instrucciones para restablecer tu contraseña.';
-
-    if (targetType && targetId) {
-      return successResponse({
-        message,
-        ...(isDev ? { resetLink: `/reset-password?token=${token}` } : {}),
-      });
-    }
-
-    return successResponse({ message });
-  } catch (err) {
-    console.error('Forgot password error:', err);
-    return errorResponse('Internal server error', 500);
-  }
+const DUMMY_HASH = 'dummy-reset-target'; export async function POST(request: NextRequest) { try { const body = await request.json(); const { email } = body; if (!email || typeof email !== 'string') { return errorResponse('El correo electrónico es requerido', 400); } const normalized = email.trim().toLowerCase(); // Siempre consultamos ambas tablas (mismo trabajo para emails existentes y no) const [userResult, adminResult] = await Promise.all([ query('SELECT id FROM profiles WHERE email = $1 AND status = $2', [normalized, 'active']), query('SELECT id FROM super_admins WHERE email = $1 AND is_active = true', [normalized]), ]); let targetType: 'user' | 'super_admin' | null = null; let targetId: string | null = null; if (userResult.rows.length > 0) { targetType = 'user'; targetId = userResult.rows[0].id; } else if (adminResult.rows.length > 0) { targetType = 'super_admin'; targetId = adminResult.rows[0].id; } // Firmamos un JWT en ambos casos (dummy si no existe) para igualar el tiempo const token = await new SignJWT({ purpose: 'password_reset', target_type: targetType || 'user', target_id: targetId || DUMMY_HASH, email: normalized, }) .setProtectedHeader({ alg: 'HS256' }) .setIssuedAt() .setExpirationTime('30m') .sign(JWT_SECRET); // En desarrollo devolvemos el link solo si el email existe, para poder probar sin SMTP. // En producción el link se enviaría por email (pendiente de infraestructura). const isDev = process.env.NODE_ENV !== 'production'; const message = 'Si el correo existe, recibirás instrucciones para restablecer tu contraseña.'; if (targetType && targetId) { return successResponse({ message, ...(isDev ? { resetLink: `/reset-password?token=${token}` } : {}), }); } return successResponse({ message }); } catch (err) { console.error('Forgot password error:', err); return errorResponse('Internal server error', 500); }
 }

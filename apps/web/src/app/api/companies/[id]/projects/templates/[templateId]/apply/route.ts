@@ -1,57 +1,5 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server';
-
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string; templateId: string } }
-) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const body = await request.json();
-    const { project_id } = body;
-
-    if (!project_id) return errorResponse('project_id is required', 400);
-
-    const templateResult = await query(
-      'SELECT * FROM project_templates WHERE id = $1 AND company_id = $2',
-      [params.templateId, companyId]
-    );
-
-    if (templateResult.rows.length === 0) return errorResponse('Template not found', 404);
-
-    const tasksResult = await query(
-      'SELECT * FROM project_template_tasks WHERE template_id = $1 AND company_id = $2 ORDER BY sort_order',
-      [params.templateId, companyId]
-    );
-
-    const milestonesResult = await query(
-      'SELECT * FROM project_template_milestones WHERE template_id = $1 AND company_id = $2 ORDER BY sort_order',
-      [params.templateId, companyId]
-    );
-
-    for (const task of tasksResult.rows) {
-      await query(
-        `INSERT INTO project_tasks (company_id, project_id, name, description, priority, estimated_hours, status)
-         VALUES ($1, $2, $3, $4, $5, $6, 'todo')`,
-        [companyId, project_id, task.name, task.description, task.priority, task.estimated_hours]
-      );
-    }
-
-    for (const milestone of milestonesResult.rows) {
-      const milestoneDate = new Date();
-      milestoneDate.setDate(milestoneDate.getDate() + (milestone.sort_order + 1) * 7);
-      await query(
-        `INSERT INTO project_milestones (company_id, project_id, name, description, due_date, sort_order)
-         VALUES ($1, $2, $3, $4, $5, $6)`,
-        [companyId, project_id, milestone.name, milestone.description, milestoneDate.toISOString().split('T')[0], milestone.sort_order]
-      );
-    }
-
-    return successResponse({ message: 'Template applied', tasks_created: tasksResult.rows.length, milestones_created: milestonesResult.rows.length });
-  } catch {
-    return errorResponse('Internal server error', 500);
-  }
+import { NextRequest } from 'next/server'; export async function POST( request: NextRequest, { params }: { params: { id: string; templateId: string } }
+) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const { project_id } = body; if (!project_id) return errorResponse('project_id is required', 400); const templateResult = await query( 'SELECT * FROM project_templates WHERE id = $1 AND company_id = $2', [params.templateId, companyId] ); if (templateResult.rows.length === 0) return errorResponse('Template not found', 404); const tasksResult = await query( 'SELECT * FROM project_template_tasks WHERE template_id = $1 AND company_id = $2 ORDER BY sort_order', [params.templateId, companyId] ); const milestonesResult = await query( 'SELECT * FROM project_template_milestones WHERE template_id = $1 AND company_id = $2 ORDER BY sort_order', [params.templateId, companyId] ); for (const task of tasksResult.rows) { await query( `INSERT INTO project_tasks (company_id, project_id, name, description, priority, estimated_hours, status) VALUES ($1, $2, $3, $4, $5, $6, 'todo')`, [companyId, project_id, task.name, task.description, task.priority, task.estimated_hours] ); } for (const milestone of milestonesResult.rows) { const milestoneDate = new Date(); milestoneDate.setDate(milestoneDate.getDate() + (milestone.sort_order + 1) * 7); await query( `INSERT INTO project_milestones (company_id, project_id, name, description, due_date, sort_order) VALUES ($1, $2, $3, $4, $5, $6)`, [companyId, project_id, milestone.name, milestone.description, milestoneDate.toISOString().split('T')[0], milestone.sort_order] ); } return successResponse({ message: 'Template applied', tasks_created: tasksResult.rows.length, milestones_created: milestonesResult.rows.length }); } catch { return errorResponse('Internal server error', 500); }
 }

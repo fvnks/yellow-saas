@@ -1,39 +1,5 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server';
-
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string; inspectionId: string; itemId: string } }
-) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const body = await request.json();
-    const { result, measured_value, notes } = body;
-
-    const validResults = ['pending', 'pass', 'fail', 'na'];
-    if (result && !validResults.includes(result)) {
-      return errorResponse(`result must be one of: ${validResults.join(', ')}`, 400);
-    }
-
-    const result_query = await query(
-      `UPDATE quality_inspection_items SET
-        result = COALESCE($1, result),
-        measured_value = COALESCE($2, measured_value),
-        notes = COALESCE($3, notes),
-        updated_at = NOW()
-       WHERE id = $4 AND inspection_id = $5 AND company_id = $6
-       RETURNING *`,
-      [result, measured_value, notes, params.itemId, params.inspectionId, companyId]
-    );
-
-    if (result_query.rows.length === 0) return errorResponse('Item not found', 404);
-
-    return successResponse(result_query.rows[0]);
-  } catch (err) {
-    console.error('Update quality inspection item error:', err);
-    return errorResponse('Internal server error', 500);
-  }
+import { NextRequest } from 'next/server'; export async function PUT( request: NextRequest, { params }: { params: { id: string; inspectionId: string; itemId: string } }
+) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const { result, measured_value, notes } = body; const validResults = ['pending', 'pass', 'fail', 'na']; if (result && !validResults.includes(result)) { return errorResponse(`result must be one of: ${validResults.join(', ')}`, 400); } const result_query = await query( `UPDATE quality_inspection_items SET result = COALESCE($1, result), measured_value = COALESCE($2, measured_value), notes = COALESCE($3, notes), updated_at = NOW() WHERE id = $4 AND inspection_id = $5 AND company_id = $6 RETURNING *`, [result, measured_value, notes, params.itemId, params.inspectionId, companyId] ); if (result_query.rows.length === 0) return errorResponse('Item not found', 404); return successResponse(result_query.rows[0]); } catch (err) { console.error('Update quality inspection item error:', err); return errorResponse('Internal server error', 500); }
 }

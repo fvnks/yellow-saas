@@ -1,39 +1,7 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server';
-
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string; projectId: string; expenseId: string } }
-) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-    const body = await request.json();
-
-    const result = await query(
-      `UPDATE project_expenses SET category=$1, description=$2, amount=$3, expense_date=$4, invoice_number=$5, supplier_name=$6, approved=$7, updated_at=NOW()
-       WHERE id=$8 AND project_id=$9 AND company_id=$10 RETURNING *`,
-      [body.category, body.description, body.amount, body.expense_date, body.invoice_number, body.supplier_name, body.approved || false,
-       params.expenseId, params.projectId, companyId]
-    );
-    if (result.rows.length === 0) return errorResponse('Expense not found', 404);
-    return successResponse(result.rows[0]);
-  } catch { return errorResponse('Internal server error', 500); }
-}
-
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string; projectId: string; expenseId: string } }
-) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-    const result = await query(
-      'DELETE FROM project_expenses WHERE id=$1 AND project_id=$2 AND company_id=$3 RETURNING id',
-      [params.expenseId, params.projectId, companyId]
-    );
-    if (result.rows.length === 0) return errorResponse('Expense not found', 404);
-    return successResponse({ message: 'Deleted' });
-  } catch { return errorResponse('Internal server error', 500); }
+import { NextRequest } from 'next/server'; export async function PUT( request: NextRequest, { params }: { params: { id: string; projectId: string; expenseId: string } }
+) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const result = await query( `UPDATE project_expenses SET category=$1, description=$2, amount=$3, expense_date=$4, invoice_number=$5, supplier_name=$6, approved=$7, updated_at=NOW() WHERE id=$8 AND project_id=$9 AND company_id=$10 RETURNING *`, [body.category, body.description, body.amount, body.expense_date, body.invoice_number, body.supplier_name, body.approved || false, params.expenseId, params.projectId, companyId] ); if (result.rows.length === 0) return errorResponse('Expense not found', 404); return successResponse(result.rows[0]); } catch { return errorResponse('Internal server error', 500); }
+} export async function DELETE( request: NextRequest, { params }: { params: { id: string; projectId: string; expenseId: string } }
+) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const result = await query( 'DELETE FROM project_expenses WHERE id=$1 AND project_id=$2 AND company_id=$3 RETURNING id', [params.expenseId, params.projectId, companyId] ); if (result.rows.length === 0) return errorResponse('Expense not found', 404); return successResponse({ message: 'Deleted' }); } catch { return errorResponse('Internal server error', 500); }
 }

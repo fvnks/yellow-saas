@@ -1,56 +1,5 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server';
-
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const { searchParams } = new URL(request.url);
-    const projectId = searchParams.get('projectId');
-
-    let taskFilter = '';
-    const args: any[] = [companyId];
-    if (projectId) {
-      args.push(projectId);
-      taskFilter = `AND t.project_id = $${args.length}`;
-    }
-
-    const result = await query(
-      `SELECT 
-         e.id as employee_id,
-         e.first_name || ' ' || e.last_name as employee_name,
-         e.position,
-         COUNT(t.id) as total_tasks,
-         COUNT(CASE WHEN t.status = 'done' THEN 1 END) as completed_tasks,
-         COUNT(CASE WHEN t.status IN ('todo', 'in_progress', 'review') THEN 1 END) as active_tasks,
-         COUNT(CASE WHEN t.status = 'in_progress' THEN 1 END) as in_progress_tasks,
-         COALESCE(SUM(CASE WHEN t.status != 'done' THEN t.estimated_hours END), 0) as pending_hours,
-         COALESCE(SUM(t.estimated_hours), 0) as total_estimated_hours,
-         COALESCE(ts.total_logged_hours, 0) as logged_hours,
-         COALESCE(ts.logged_this_week, 0) as logged_this_week
-       FROM employees e
-       LEFT JOIN project_tasks t ON t.assignee_id = e.id AND t.company_id = e.company_id ${taskFilter}
-       LEFT JOIN (
-         SELECT employee_id,
-           SUM(hours) as total_logged_hours,
-           SUM(CASE WHEN date >= CURRENT_DATE - INTERVAL '7 days' THEN hours ELSE 0 END) as logged_this_week
-         FROM project_timesheets
-         WHERE company_id = $1
-         GROUP BY employee_id
-       ) ts ON ts.employee_id = e.id
-       WHERE e.company_id = $1 AND e.status = 'active'
-       GROUP BY e.id, e.first_name, e.last_name, e.position, ts.total_logged_hours, ts.logged_this_week
-       ORDER BY active_tasks DESC, pending_hours DESC`,
-      args
-    );
-
-    return successResponse(result.rows);
-  } catch {
-    return errorResponse('Internal server error', 500);
-  }
+import { NextRequest } from 'next/server'; export async function GET( request: NextRequest, { params }: { params: { id: string } }
+) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const { searchParams } = new URL(request.url); const projectId = searchParams.get('projectId'); let taskFilter = ''; const args: any[] = [companyId]; if (projectId) { args.push(projectId); taskFilter = `AND t.project_id = $${args.length}`; } const result = await query( `SELECT e.id as employee_id, e.first_name || ' ' || e.last_name as employee_name, e.position, COUNT(t.id) as total_tasks, COUNT(CASE WHEN t.status = 'done' THEN 1 END) as completed_tasks, COUNT(CASE WHEN t.status IN ('todo', 'in_progress', 'review') THEN 1 END) as active_tasks, COUNT(CASE WHEN t.status = 'in_progress' THEN 1 END) as in_progress_tasks, COALESCE(SUM(CASE WHEN t.status != 'done' THEN t.estimated_hours END), 0) as pending_hours, COALESCE(SUM(t.estimated_hours), 0) as total_estimated_hours, COALESCE(ts.total_logged_hours, 0) as logged_hours, COALESCE(ts.logged_this_week, 0) as logged_this_week FROM employees e LEFT JOIN project_tasks t ON t.assignee_id = e.id AND t.company_id = e.company_id ${taskFilter} LEFT JOIN ( SELECT employee_id, SUM(hours) as total_logged_hours, SUM(CASE WHEN date >= CURRENT_DATE - INTERVAL '7 days' THEN hours ELSE 0 END) as logged_this_week FROM project_timesheets WHERE company_id = $1 GROUP BY employee_id ) ts ON ts.employee_id = e.id WHERE e.company_id = $1 AND e.status = 'active' GROUP BY e.id, e.first_name, e.last_name, e.position, ts.total_logged_hours, ts.logged_this_week ORDER BY active_tasks DESC, pending_hours DESC`, args ); return successResponse(result.rows); } catch { return errorResponse('Internal server error', 500); }
 }

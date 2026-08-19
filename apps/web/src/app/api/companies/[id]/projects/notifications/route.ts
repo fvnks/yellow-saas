@@ -1,72 +1,7 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server';
-
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
-    const unreadOnly = searchParams.get('unread') === 'true';
-
-    let sql = `SELECT pn.*, p.name as project_name
-       FROM project_notifications pn
-       JOIN projects p ON p.id = pn.project_id
-       WHERE pn.company_id = $1`;
-    const args: any[] = [companyId];
-
-    if (userId) {
-      args.push(userId);
-      sql += ` AND pn.user_id = $${args.length}`;
-    }
-
-    if (unreadOnly) {
-      sql += ' AND pn.is_read = false';
-    }
-
-    sql += ' ORDER BY pn.created_at DESC LIMIT 50';
-
-    const result = await query(sql, args);
-    return successResponse(result.rows);
-  } catch {
-    return errorResponse('Internal server error', 500);
-  }
-}
-
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const body = await request.json();
-    const { notification_ids, mark_all_read, userId } = body;
-
-    if (mark_all_read && userId) {
-      await query(
-        'UPDATE project_notifications SET is_read = true WHERE user_id = $1 AND company_id = $2 AND is_read = false',
-        [userId, companyId]
-      );
-      return successResponse({ message: 'All marked as read' });
-    }
-
-    if (notification_ids && notification_ids.length > 0) {
-      await query(
-        `UPDATE project_notifications SET is_read = true WHERE id = ANY($1) AND company_id = $2`,
-        [notification_ids, companyId]
-      );
-      return successResponse({ message: 'Notifications marked as read' });
-    }
-
-    return errorResponse('Invalid request', 400);
-  } catch {
-    return errorResponse('Internal server error', 500);
-  }
+import { NextRequest } from 'next/server'; export async function GET( request: NextRequest, { params }: { params: { id: string } }
+) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const { searchParams } = new URL(request.url); const userId = searchParams.get('userId'); const unreadOnly = searchParams.get('unread') === 'true'; let sql = `SELECT pn.*, p.name as project_name FROM project_notifications pn JOIN projects p ON p.id = pn.project_id WHERE pn.company_id = $1`; const args: any[] = [companyId]; if (userId) { args.push(userId); sql += ` AND pn.user_id = $${args.length}`; } if (unreadOnly) { sql += ' AND pn.is_read = false'; } sql += ' ORDER BY pn.created_at DESC LIMIT 50'; const result = await query(sql, args); return successResponse(result.rows); } catch { return errorResponse('Internal server error', 500); }
+} export async function PUT( request: NextRequest, { params }: { params: { id: string } }
+) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const { notification_ids, mark_all_read, userId } = body; if (mark_all_read && userId) { await query( 'UPDATE project_notifications SET is_read = true WHERE user_id = $1 AND company_id = $2 AND is_read = false', [userId, companyId] ); return successResponse({ message: 'All marked as read' }); } if (notification_ids && notification_ids.length > 0) { await query( `UPDATE project_notifications SET is_read = true WHERE id = ANY($1) AND company_id = $2`, [notification_ids, companyId] ); return successResponse({ message: 'Notifications marked as read' }); } return errorResponse('Invalid request', 400); } catch { return errorResponse('Internal server error', 500); }
 }

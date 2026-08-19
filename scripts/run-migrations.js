@@ -2,10 +2,9 @@ const { Pool } = require('pg');
 const fs = require('fs');
 const path = require('path');
 
-// Check all possible Railway variables
+// Check possible variables
 let connectionString = process.env.DATABASE_URL || 
-                     process.env.DATABASE_PUBLIC_URL || 
-                     process.env.RAILWAY_DATABASE_URL;
+                     process.env.DATABASE_PUBLIC_URL;
 
 if (!connectionString) {
   // Fallback to local PostgreSQL

@@ -1,78 +1,9 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server';
-
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const result = await query(
-      `SELECT t.*,
-        (SELECT COUNT(*) FROM project_task_tags pt WHERE pt.tag_id = t.id) as usage_count
-       FROM project_tags t
-       WHERE t.company_id = $1
-       ORDER BY t.name`,
-      [companyId]
-    );
-
-    return successResponse(result.rows);
-  } catch {
-    return errorResponse('Internal server error', 500);
-  }
-}
-
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const body = await request.json();
-    const { name, color } = body;
-
-    if (!name?.trim()) return errorResponse('Tag name is required', 400);
-
-    const result = await query(
-      `INSERT INTO project_tags (company_id, name, color)
-       VALUES ($1, $2, $3)
-       ON CONFLICT (company_id, name) DO UPDATE SET color = $3
-       RETURNING *`,
-      [companyId, name.trim(), color || '#6366f1']
-    );
-
-    return successResponse(result.rows[0], 201);
-  } catch {
-    return errorResponse('Internal server error', 500);
-  }
-}
-
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const { searchParams } = new URL(request.url);
-    const tagId = searchParams.get('tagId');
-    if (!tagId) return errorResponse('tagId required', 400);
-
-    const result = await query(
-      'DELETE FROM project_tags WHERE id = $1 AND company_id = $2 RETURNING id',
-      [tagId, companyId]
-    );
-
-    if (result.rows.length === 0) return errorResponse('Tag not found', 404);
-
-    return successResponse({ message: 'Tag deleted' });
-  } catch {
-    return errorResponse('Internal server error', 500);
-  }
+import { NextRequest } from 'next/server'; export async function GET( request: NextRequest, { params }: { params: { id: string } }
+) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const result = await query( `SELECT t.*, (SELECT COUNT(*) FROM project_task_tags pt WHERE pt.tag_id = t.id) as usage_count FROM project_tags t WHERE t.company_id = $1 ORDER BY t.name`, [companyId] ); return successResponse(result.rows); } catch { return errorResponse('Internal server error', 500); }
+} export async function POST( request: NextRequest, { params }: { params: { id: string } }
+) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const { name, color } = body; if (!name?.trim()) return errorResponse('Tag name is required', 400); const result = await query( `INSERT INTO project_tags (company_id, name, color) VALUES ($1, $2, $3) ON CONFLICT (company_id, name) DO UPDATE SET color = $3 RETURNING *`, [companyId, name.trim(), color || '#6366f1'] ); return successResponse(result.rows[0], 201); } catch { return errorResponse('Internal server error', 500); }
+} export async function DELETE( request: NextRequest, { params }: { params: { id: string } }
+) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const { searchParams } = new URL(request.url); const tagId = searchParams.get('tagId'); if (!tagId) return errorResponse('tagId required', 400); const result = await query( 'DELETE FROM project_tags WHERE id = $1 AND company_id = $2 RETURNING id', [tagId, companyId] ); if (result.rows.length === 0) return errorResponse('Tag not found', 404); return successResponse({ message: 'Tag deleted' }); } catch { return errorResponse('Internal server error', 500); }
 }

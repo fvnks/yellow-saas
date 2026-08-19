@@ -1,61 +1,6 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server';
-
-export async function GET(req: NextRequest, { params }: { params: { id: string; noteId: string } }) {
-  try {
-    const companyId = await getCompanyId(req);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const { rows: note } = await query(
-      `SELECT pdn.*, s.name as supplier_name
-       FROM purchase_debit_notes pdn
-       JOIN suppliers s ON s.id = pdn.supplier_id
-       WHERE pdn.id = $1 AND pdn.company_id = $2`,
-      [params.noteId, companyId]
-    );
-    if (note.length === 0) return errorResponse('ND no encontrada', 404);
-
-    const { rows: items } = await query(
-      `SELECT pdni.*, p.name as product_name
-       FROM purchase_debit_note_items pdni
-       LEFT JOIN products p ON p.id = pdni.product_id
-       WHERE pdni.note_id = $1 AND pdni.company_id = $2`,
-      [params.noteId, companyId]
-    );
-
-    return successResponse({ ...note[0], items });
-  } catch (e: any) {
-    return errorResponse(e.message, 500);
-  }
-}
-
-export async function PUT(req: NextRequest, { params }: { params: { id: string; noteId: string } }) {
-  try {
-    const companyId = await getCompanyId(req);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const body = await req.json();
-    if (body.status) {
-      await query(`UPDATE purchase_debit_notes SET status = $1, updated_at = NOW() WHERE id = $2 AND company_id = $3`, [body.status, params.noteId, companyId]);
-    }
-
-    return successResponse({ success: true });
-  } catch (e: any) {
-    return errorResponse(e.message, 500);
-  }
-}
-
-export async function DELETE(req: NextRequest, { params }: { params: { id: string; noteId: string } }) {
-  try {
-    const companyId = await getCompanyId(req);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    await query(`DELETE FROM purchase_debit_note_items WHERE note_id = $1 AND company_id = $2`, [params.noteId, companyId]);
-    await query(`DELETE FROM purchase_debit_notes WHERE id = $1 AND company_id = $2`, [params.noteId, companyId]);
-
-    return successResponse({ success: true });
-  } catch (e: any) {
-    return errorResponse(e.message, 500);
-  }
+import { NextRequest } from 'next/server'; export async function GET(req: NextRequest, { params }: { params: { id: string; noteId: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const { rows: note } = await query( `SELECT pdn.*, s.name as supplier_name FROM purchase_debit_notes pdn JOIN suppliers s ON s.id = pdn.supplier_id WHERE pdn.id = $1 AND pdn.company_id = $2`, [params.noteId, companyId] ); if (note.length === 0) return errorResponse('ND no encontrada', 404); const { rows: items } = await query( `SELECT pdni.*, p.name as product_name FROM purchase_debit_note_items pdni LEFT JOIN products p ON p.id = pdni.product_id WHERE pdni.note_id = $1 AND pdni.company_id = $2`, [params.noteId, companyId] ); return successResponse({ ...note[0], items }); } catch (e: any) { return errorResponse(e.message, 500); }
+} export async function PUT(req: NextRequest, { params }: { params: { id: string; noteId: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const body = await req.json(); if (body.status) { await query(`UPDATE purchase_debit_notes SET status = $1, updated_at = NOW() WHERE id = $2 AND company_id = $3`, [body.status, params.noteId, companyId]); } return successResponse({ success: true }); } catch (e: any) { return errorResponse(e.message, 500); }
+} export async function DELETE(req: NextRequest, { params }: { params: { id: string; noteId: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); await query(`DELETE FROM purchase_debit_note_items WHERE note_id = $1 AND company_id = $2`, [params.noteId, companyId]); await query(`DELETE FROM purchase_debit_notes WHERE id = $1 AND company_id = $2`, [params.noteId, companyId]); return successResponse({ success: true }); } catch (e: any) { return errorResponse(e.message, 500); }
 }

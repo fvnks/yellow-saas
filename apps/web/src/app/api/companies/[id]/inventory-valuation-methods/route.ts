@@ -1,66 +1,6 @@
 import { query } from '@/api/lib/db';
-import {
-  getCompanyId,
-  successResponse,
-  errorResponse,
-  parseSearchParams,
-  paginatedResponse,
+import { getCompanyId, successResponse, errorResponse, parseSearchParams, paginatedResponse,
 } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server';
-
-export async function GET(request: NextRequest) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const { page, limit, offset } = parseSearchParams(request);
-
-    const countResult = await query(
-      `SELECT COUNT(*) FROM inventory_valuation_methods WHERE company_id = $1`,
-      [companyId]
-    );
-
-    const dataResult = await query(
-      `SELECT * FROM inventory_valuation_methods WHERE company_id = $1 ORDER BY is_default DESC, name LIMIT $2 OFFSET $3`,
-      [companyId, limit, offset]
-    );
-
-    return paginatedResponse(dataResult.rows, parseInt(countResult.rows[0].count), page, limit);
-  } catch (err) {
-    console.error('Valuation methods error:', err);
-    return errorResponse('Internal server error', 500);
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const companyId = await getCompanyId(request);
-    if (!companyId) return errorResponse('Company ID not found', 400);
-
-    const body = await request.json();
-    const { code, name, description, is_default } = body;
-
-    if (!code || !name) {
-      return errorResponse('code and name are required', 400);
-    }
-
-    if (is_default) {
-      await query(
-        `UPDATE inventory_valuation_methods SET is_default = false WHERE company_id = $1`,
-        [companyId]
-      );
-    }
-
-    const result = await query(
-      `INSERT INTO inventory_valuation_methods (company_id, code, name, description, is_default)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING *`,
-      [companyId, code, name, description || null, is_default || false]
-    );
-
-    return successResponse(result.rows[0], 201);
-  } catch (err) {
-    console.error('Create valuation method error:', err);
-    return errorResponse('Internal server error', 500);
-  }
+import { NextRequest } from 'next/server'; export async function GET(request: NextRequest) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const { page, limit, offset } = parseSearchParams(request); const countResult = await query( `SELECT COUNT(*) FROM inventory_valuation_methods WHERE company_id = $1`, [companyId] ); const dataResult = await query( `SELECT * FROM inventory_valuation_methods WHERE company_id = $1 ORDER BY is_default DESC, name LIMIT $2 OFFSET $3`, [companyId, limit, offset] ); return paginatedResponse(dataResult.rows, parseInt(countResult.rows[0].count), page, limit); } catch (err) { console.error('Valuation methods error:', err); return errorResponse('Internal server error', 500); }
+} export async function POST(request: NextRequest) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const { code, name, description, is_default } = body; if (!code || !name) { return errorResponse('code and name are required', 400); } if (is_default) { await query( `UPDATE inventory_valuation_methods SET is_default = false WHERE company_id = $1`, [companyId] ); } const result = await query( `INSERT INTO inventory_valuation_methods (company_id, code, name, description, is_default) VALUES ($1, $2, $3, $4, $5) RETURNING *`, [companyId, code, name, description || null, is_default || false] ); return successResponse(result.rows[0], 201); } catch (err) { console.error('Create valuation method error:', err); return errorResponse('Internal server error', 500); }
 }

@@ -1,51 +1,6 @@
-'use client';
-
-import { cn } from '../lib/utils';
+'use client'; import { cn } from '../lib/utils';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
-import { ReactNode, useState } from 'react';
-
-interface LayoutProps {
-  children: ReactNode;
-  title?: string;
-  companyName?: string;
-  user?: { name: string; email: string; avatar?: string; role?: string };
-  onNavigate?: (path: string) => void;
-}
-
-export function Layout({ children, title, companyName, user, onNavigate }: LayoutProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  return (
-    <div className="min-h-screen bg-slate-50">
-      <Sidebar
-        companyName={companyName}
-        userName={user?.name}
-        userRole={user?.role}
-        onNavigate={onNavigate}
-        className={cn('transition-transform duration-200 ease-in-out', sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0')}
-      />
-
-      <Header
-        title={title}
-        onMenuClick={() => setSidebarOpen(true)}
-        user={user}
-        onNavigate={onNavigate}
-      />
-
-      <main className="ml-64 pt-16 min-h-screen transition-all duration-200 lg:ml-64">
-        <div className="p-6">
-          {children}
-        </div>
-      </main>
-
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-          aria-hidden="true"
-        />
-      )}
-    </div>
-  );
+import { ReactNode, useState } from 'react'; interface LayoutProps { children: ReactNode; title?: string; companyName?: string; user?: { name: string; email: string; avatar?: string; role?: string }; onNavigate?: (path: string) => void;
+} export function Layout({ children, title, companyName, user, onNavigate }: LayoutProps) { const [sidebarOpen, setSidebarOpen] = useState(false); return ( <div className="min-h-screen bg-slate-50"> <Sidebar companyName={companyName} userName={user?.name} userRole={user?.role} onNavigate={onNavigate} className={cn('transition-transform duration-200 ease-in-out', sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0')} /> <Header title={title} onMenuClick={() => setSidebarOpen(true)} user={user} onNavigate={onNavigate} /> <main className="ml-64 pt-16 min-h-screen transition-all duration-200 lg:ml-64"> <div className="p-6"> {children} </div> </main> {sidebarOpen && ( <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} aria-hidden="true" /> )} </div> );
 }
