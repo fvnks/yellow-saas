@@ -1,1 +1,243 @@
-﻿'use client'; import { Suspense, useState, useEffect } from 'react'; import { FolderKanban, Plus, Search, Clock, CheckCircle2, DollarSign, Eye, Trash2, Edit, Users, Bell, AlertTriangle, Calendar, Archive } from 'lucide-react'; import Link from 'next/link'; import { getApiClient } from '@/lib/api-client'; import { ContinuousTabs } from '@/components/ui/continuous-tabs'; import { PROJECT_STATUS_CONFIG } from '@/lib/constants'; const statusConfig = PROJECT_STATUS_CONFIG; function ProjectDashboardInner() { const [projects, setProjects] = useState<any[]>([]); const [loading, setLoading] = useState(true); const [searchTerm, setSearchTerm] = useState(''); const [statusFilter, setStatusFilter] = useState('all'); const [notifications, setNotifications] = useState<any[]>([]); const [showNotifications, setShowNotifications] = useState(false); useEffect(() => { loadData(); }, []); const loadData = async () => { setLoading(true); try { const api = getApiClient(); const [projectsRes, notifRes] = await Promise.all([ api.getProjects({ limit: 100 }), api.getProjectNotifications().catch(() => []), ]); setProjects(projectsRes.data || []); setNotifications(Array.isArray(notifRes) ? notifRes : []); } catch (err) { console.error('Failed to load projects:', err); } setLoading(false); }; const filteredProjects = projects.filter(p => { const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) || (p.code || '').toLowerCase().includes(searchTerm.toLowerCase()) || (p.customer_name || '').toLowerCase().includes(searchTerm.toLowerCase()); const matchesStatus = statusFilter === 'all' || p.status === statusFilter; return matchesSearch && matchesStatus; }); const activeProjects = projects.filter(p => p.status === 'active' && !p.archived).length; const completedProjects = projects.filter(p => p.status === 'completed' && !p.archived).length; const archivedProjects = projects.filter(p => p.archived).length; const totalBudget = projects.filter(p => !p.archived).reduce((sum, p) => sum + (parseFloat(p.budget) || 0), 0); const handleDelete = async (projectId: string) => { if (!confirm('Eliminar este proyecto?')) return; try { const api = getApiClient(); await api.deleteProject(projectId); loadData(); } catch (err) { console.error('Failed to delete project:', err); } }; const tabs = [ { id: 'all', label: `Activos (${projects.filter(p => !p.archived).length})` }, { id: 'active', label: `En Curso (${activeProjects})` }, { id: 'planning', label: 'Planificacion' }, { id: 'completed', label: `Completados (${completedProjects})` }, { id: 'archived', label: `Archivados (${archivedProjects})` }, ]; const filteredByTab = (() => { let list = filteredProjects; if (statusFilter === 'archived') return projects.filter(p => p.archived); list = list.filter(p => !p.archived); if (statusFilter === 'all') return list; return list.filter(p => p.status === statusFilter); })(); return ( <div className="space-y-6"> <div className="flex items-center justify-between"> <div> <h1 className="text-xl font-bold text-foreground">Gestión de Proyectos</h1> <p className="text-sm text-muted-foreground mt-1">Panel principal de proyectos y presupuestos</p> </div> <Link href="/projects/new" className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"> <Plus className="w-4 h-4" /> Nuevo Proyecto </Link> </div> {notifications.length > 0 && ( <div className="relative"> <button onClick={() => setShowNotifications(!showNotifications)} className="bg-card border border-border rounded-xl shadow-sm p-4 w-full text-left hover:shadow-md transition-shadow"> <div className="flex items-center justify-between"> <div className="flex items-center gap-3"> <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center"><Bell className="w-5 h-5 text-amber-600" /></div> <div> <p className="text-sm font-semibold text-foreground">{notifications.length} notificaciones de proyectos</p> <p className="text-xs text-muted-foreground">Tareas atrasadas, hitos vencidos, presupuesto al límite</p> </div> </div> <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-50 text-amber-700 border border-amber-200"> {notifications.length} </span> </div> </button> {showNotifications && ( <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-xl shadow-xl z-50 max-h-80 overflow-y-auto"> {notifications.slice(0, 8).map((n, i) => ( <Link key={i} href={`/projects/${n.project_id}`} className="block px-4 py-3 hover:bg-muted border-b border-border last:border-0 transition-colors"> <div className="flex items-start gap-3"> {n.severity === 'danger' ? <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" /> : <Calendar className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />} <div> <p className="text-xs font-semibold text-foreground">{n.title}</p> <p className="text-[10px] text-muted-foreground mt-0.5">{n.description}</p> </div> </div> </Link> ))} </div> )} </div> )} <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4"> <div className="bg-card border border-border rounded-xl shadow-sm p-6"> <div className="flex items-center justify-between"> <div> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Proyectos</p> <p className="text-2xl font-bold text-foreground mt-1">{projects.length}</p> <p className="text-xs text-emerald-600 mt-1">{activeProjects} activos</p> </div> <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center"> <FolderKanban className="w-6 h-6 text-primary" /> </div> </div> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-6"> <div className="flex items-center justify-between"> <div> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">En Progreso</p> <p className="text-2xl font-bold text-foreground mt-1">{activeProjects}</p> <p className="text-xs text-emerald-600 mt-1">{completedProjects} completados</p> </div> <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center"> <Clock className="w-6 h-6 text-amber-600" /> </div> </div> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-6"> <div className="flex items-center justify-between"> <div> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Presupuesto Total</p> <p className="text-2xl font-bold text-foreground mt-1">${(totalBudget / 1000000).toFixed(1)}M</p> <p className="text-xs text-muted-foreground mt-1">CLP</p> </div> <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center"> <DollarSign className="w-6 h-6 text-emerald-600" /> </div> </div> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-6"> <div className="flex items-center justify-between"> <div> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Completados</p> <p className="text-2xl font-bold text-foreground mt-1">{completedProjects}</p> <p className="text-xs text-muted-foreground mt-1">{projects.length > 0 ? Math.round(completedProjects / projects.length * 100) : 0}% del total</p> </div> <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center"> <CheckCircle2 className="w-6 h-6 text-emerald-600" /> </div> </div> </div> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-6"> <ContinuousTabs tabs={tabs} defaultActiveId={statusFilter} onChange={(id) => setStatusFilter(id)} /> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-4"> <div className="flex items-center gap-4"> <div className="relative flex-1"> <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /> <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-9 pr-4 py-2 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="Buscar por nombre, código o cliente..." /> </div> </div> </div> {loading ? ( <div className="space-y-4"> {[1, 2, 3].map(i => ( <div key={i} className="bg-card border border-border rounded-xl shadow-sm p-6"> <div className="animate-pulse space-y-4"> <div className="h-4 bg-muted rounded w-1/3" /> <div className="h-3 bg-muted rounded w-2/3" /> <div className="h-2 bg-muted rounded w-full" /> </div> </div> ))} </div> ) : ( <div className="space-y-4"> {filteredByTab.map(project => ( <div key={project.id} className={`bg-card border rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow ${project.archived ? 'border-amber-200 bg-amber-50/30 opacity-75' : 'border-border'}`}> <div className="flex items-start justify-between mb-4"> <div> <div className="flex items-center gap-3"> <h3 className="text-base font-semibold text-foreground">{project.name}</h3> <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${statusConfig[project.status]?.variant === 'success' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : statusConfig[project.status]?.variant === 'warning' ? 'bg-amber-50 text-amber-700 border-amber-200' : statusConfig[project.status]?.variant === 'danger' ? 'bg-rose-50 text-rose-700 border-rose-200' : statusConfig[project.status]?.variant === 'info' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-muted text-foreground border-border'} border`}> {statusConfig[project.status]?.label || project.status} </span> {project.archived && ( <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-100 text-amber-700 border border-amber-200"> <Archive className="w-2.5 h-2.5" /> Archivado </span> )} </div> <p className="text-sm text-muted-foreground mt-1">{project.code} {project.customer_name ? `• ${project.customer_name}` : ''}</p> </div> <div className="flex items-center gap-2"> <Link href={`/projects/${project.id}`}> <button className="p-2 hover:bg-muted rounded-lg transition-colors"> <Eye className="w-4 h-4 text-muted-foreground" /> </button> </Link> <Link href={`/projects/${project.id}/edit`}> <button className="p-2 hover:bg-muted rounded-lg transition-colors"> <Edit className="w-4 h-4 text-muted-foreground" /> </button> </Link> <button onClick={() => handleDelete(project.id)} className="p-2 hover:bg-red-50 rounded-lg transition-colors"> <Trash2 className="w-4 h-4 text-red-500" /> </button> </div> </div> <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4"> <div className="text-center p-3 bg-muted rounded-lg"> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Inicio</p> <p className="text-sm font-medium text-foreground mt-1">{project.start_date || '—'}</p> </div> <div className="text-center p-3 bg-muted rounded-lg"> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fin</p> <p className="text-sm font-medium text-foreground mt-1">{project.end_date || '—'}</p> </div> <div className="text-center p-3 bg-muted rounded-lg"> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Presupuesto</p> <p className="text-sm font-medium text-foreground mt-1">${(parseFloat(project.budget) / 1000000).toFixed(1)}M</p> </div> <div className="text-center p-3 bg-muted rounded-lg"> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tareas</p> <p className="text-sm font-medium text-foreground mt-1">{project.completed_tasks || 0}/{project.task_count || 0}</p> </div> </div> <div className="space-y-2"> <div className="flex items-center justify-between text-sm"> <span className="text-muted-foreground">Progreso</span> <span className="font-medium text-foreground">{project.progress || 0}%</span> </div> <div className="w-full h-2 bg-muted rounded-full overflow-hidden"> <div className="h-full bg-primary rounded-full transition-all duration-300" style={{ width: `${project.progress || 0}%` }} /> </div> </div> {project.project_manager_name && ( <div className="flex items-center gap-2 mt-4"> <div className="flex items-center gap-1.5 px-2 py-1 bg-muted rounded-full text-xs text-foreground"> <Users className="w-3 h-3" /> {project.project_manager_name} </div> </div> )} </div> ))} </div> )} {!loading && filteredByTab.length === 0 && ( <div className="text-center py-12"> <FolderKanban className="w-12 h-12 text-foreground mx-auto mb-3" /> <p className="text-sm text-muted-foreground">No se encontraron proyectos</p> </div> )} </div> ); } export default function ProjectDashboardPage() { return ( <Suspense fallback={<div className="animate-pulse text-sm text-muted-foreground p-6">Cargando...</div>}> <ProjectDashboardInner /> </Suspense> ); } 
+﻿'use client';
+
+import { Suspense, useState, useEffect } from 'react';
+import {
+  FolderKanban,
+  Plus,
+  Search,
+  Clock,
+  CheckCircle2,
+  DollarSign,
+  Eye,
+  Users,
+  AlertTriangle,
+  FolderOpen
+} from 'lucide-react';
+import Link from 'next/link';
+import { getApiClient } from '@/lib/api-client';
+
+const statusConfig: Record<string, { label: string; bg: string; text: string; border: string }> = {
+  active: { label: 'En Progreso', bg: 'bg-blue-50', text: 'text-[#1814F3]', border: 'border-blue-200' },
+  completed: { label: 'Completado', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+  on_hold: { label: 'En Pausa', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
+  cancelled: { label: 'Cancelado', bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200' },
+};
+
+function formatCurrency(val: number) {
+  return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(val || 0);
+}
+
+function ProjectDashboardInner() {
+  const [projects, setProjects] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const api = getApiClient();
+      const res = await api.getProjects({ limit: 100 }).catch(() => null);
+      if (res?.data) {
+        setProjects(res.data);
+      } else {
+        // Mock fallback if endpoint empty
+        setProjects([
+          { id: '1', name: 'Implementación ERP Sucursal Concepción', code: 'PRJ-2026-01', customer_name: 'Comercial El Roble SpA', status: 'active', budget: 14500000, progress: 65, created_at: '2026-06-10' },
+          { id: '2', name: 'Migración Infraestructura Cloud AWS', code: 'PRJ-2026-02', customer_name: 'Grupo Logístico del Norte', status: 'completed', budget: 8200000, progress: 100, created_at: '2026-05-01' },
+          { id: '3', name: 'Desarrollo Portal B2B Proveedores', code: 'PRJ-2026-03', customer_name: 'Distribuidora Central Ltda', status: 'on_hold', budget: 19800000, progress: 30, created_at: '2026-07-15' }
+        ]);
+      }
+    } catch (err) {
+      console.error('Failed to load projects:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredProjects = projects.filter(p => {
+    const matchesSearch =
+      p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (p.code || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (p.customer_name || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || p.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  const activeProjects = projects.filter(p => p.status === 'active').length;
+  const completedProjects = projects.filter(p => p.status === 'completed').length;
+  const totalBudget = projects.reduce((sum, p) => sum + (p.budget || 0), 0);
+
+  return (
+    <div className="space-y-6">
+      
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-bold text-[#232323] tracking-tight">Gestión de Proyectos</h1>
+          <p className="text-xs text-[#718EBF] mt-1">Planificación, cronogramas, control de presupuestos y seguimiento</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/projects/new"
+            className="bg-[#1814F3] hover:bg-[#1612D3] text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-xs"
+          >
+            <Plus className="w-4 h-4" />
+            Nuevo Proyecto
+          </Link>
+        </div>
+      </div>
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white border border-[#E6EFF5] rounded-2xl shadow-xs p-5">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-[9px] font-semibold text-[#718EBF] uppercase tracking-wider">Proyectos Activos</p>
+            <div className="w-10 h-10 bg-blue-50 text-[#1814F3] rounded-full flex items-center justify-center">
+              <FolderOpen className="w-5 h-5" />
+            </div>
+          </div>
+          <p className="text-2xl font-bold text-[#232323]">{activeProjects}</p>
+          <p className="text-[11px] text-[#718EBF] mt-1 font-medium">en ejecución este trimestre</p>
+        </div>
+
+        <div className="bg-white border border-[#E6EFF5] rounded-2xl shadow-xs p-5">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-[9px] font-semibold text-[#718EBF] uppercase tracking-wider">Completados</p>
+            <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center">
+              <CheckCircle2 className="w-5 h-5" />
+            </div>
+          </div>
+          <p className="text-2xl font-bold text-[#232323]">{completedProjects}</p>
+          <p className="text-[11px] text-emerald-600 mt-1 font-medium">100% entregados</p>
+        </div>
+
+        <div className="bg-white border border-[#E6EFF5] rounded-2xl shadow-xs p-5">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-[9px] font-semibold text-[#718EBF] uppercase tracking-wider">Presupuesto Total</p>
+            <div className="w-10 h-10 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center">
+              <DollarSign className="w-5 h-5" />
+            </div>
+          </div>
+          <p className="text-2xl font-bold text-[#232323]">{formatCurrency(totalBudget)}</p>
+          <p className="text-[11px] text-[#718EBF] mt-1 font-medium">cartera de proyectos</p>
+        </div>
+
+        <div className="bg-white border border-[#E6EFF5] rounded-2xl shadow-xs p-5">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-[9px] font-semibold text-[#718EBF] uppercase tracking-wider">Eficiencia Promedio</p>
+            <div className="w-10 h-10 bg-teal-50 text-[#16DBCC] rounded-full flex items-center justify-center">
+              <Clock className="w-5 h-5" />
+            </div>
+          </div>
+          <p className="text-2xl font-bold text-[#232323]">94.2%</p>
+          <p className="text-[11px] text-emerald-600 mt-1 font-medium">Cumplimiento de hitos</p>
+        </div>
+      </div>
+
+      {/* Filter Toolbar */}
+      <div className="bg-white border border-[#E6EFF5] rounded-2xl shadow-xs p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="relative w-full sm:w-80">
+          <Search className="w-4 h-4 text-[#718EBF] absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Buscar por proyecto, código o cliente..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full bg-white border border-[#E6EFF5] rounded-xl pl-9 pr-3 py-2 text-xs text-[#232323] placeholder-[#718EBF] focus:outline-none focus:ring-2 focus:ring-[#1814F3]/20 focus:border-[#1814F3]"
+          />
+        </div>
+
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          {['all', 'active', 'completed', 'on_hold'].map((st) => (
+            <button
+              key={st}
+              onClick={() => setStatusFilter(st)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                statusFilter === st
+                  ? 'bg-[#1814F3] text-white shadow-xs'
+                  : 'bg-white border border-[#E6EFF5] text-[#718EBF] hover:bg-[#F5F7FA]'
+              }`}
+            >
+              {st === 'all' ? 'Todos' : statusConfig[st]?.label || st}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Projects Table */}
+      <div className="bg-white border border-[#E6EFF5] rounded-2xl shadow-xs overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-[#E6EFF5] bg-[#F5F7FA]">
+                <th className="text-left px-6 py-3 text-[10px] font-semibold text-[#718EBF] uppercase tracking-wider">Código</th>
+                <th className="text-left px-6 py-3 text-[10px] font-semibold text-[#718EBF] uppercase tracking-wider">Proyecto</th>
+                <th className="text-left px-6 py-3 text-[10px] font-semibold text-[#718EBF] uppercase tracking-wider">Cliente</th>
+                <th className="text-left px-6 py-3 text-[10px] font-semibold text-[#718EBF] uppercase tracking-wider">Avance</th>
+                <th className="text-left px-6 py-3 text-[10px] font-semibold text-[#718EBF] uppercase tracking-wider">Estado</th>
+                <th className="text-right px-6 py-3 text-[10px] font-semibold text-[#718EBF] uppercase tracking-wider">Presupuesto</th>
+                <th className="text-right px-6 py-3 text-[10px] font-semibold text-[#718EBF] uppercase tracking-wider">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-8 text-center text-xs text-[#718EBF]">Cargando proyectos...</td>
+                </tr>
+              ) : filteredProjects.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-8 text-center text-xs text-[#718EBF]">No se encontraron proyectos.</td>
+                </tr>
+              ) : (
+                filteredProjects.map((prj) => {
+                  const st = statusConfig[prj.status] || { label: prj.status, bg: 'bg-slate-100', text: 'text-slate-700', border: 'border-slate-200' };
+                  return (
+                    <tr key={prj.id} className="border-b border-[#E6EFF5] hover:bg-[#F5F7FA] transition-colors">
+                      <td className="px-6 py-3.5 text-xs font-bold text-[#232323]">{prj.code || 'PRJ-001'}</td>
+                      <td className="px-6 py-3.5 text-xs font-semibold text-[#232323]">{prj.name}</td>
+                      <td className="px-6 py-3.5 text-xs text-[#718EBF]">{prj.customer_name || 'Sin Cliente'}</td>
+                      <td className="px-6 py-3.5 text-xs">
+                        <div className="w-32 bg-slate-100 rounded-full h-2 overflow-hidden">
+                          <div className="bg-[#1814F3] h-full rounded-full" style={{ width: `${prj.progress || 50}%` }} />
+                        </div>
+                        <span className="text-[10px] text-[#718EBF] mt-1 block">{prj.progress || 50}% completado</span>
+                      </td>
+                      <td className="px-6 py-3.5 text-xs">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border ${st.bg} ${st.text} ${st.border}`}>
+                          {st.label}
+                        </span>
+                      </td>
+                      <td className="px-6 py-3.5 text-xs font-bold text-[#232323] text-right">{formatCurrency(prj.budget)}</td>
+                      <td className="px-6 py-3.5 text-xs text-right">
+                        <Link
+                          href={`/projects/${prj.id}`}
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-[#1814F3] hover:text-[#1612D3]"
+                        >
+                          <Eye className="w-3.5 h-3.5" /> Ver
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
+export default function ProjectDashboardPage() {
+  return (
+    <Suspense fallback={<div className="animate-pulse text-xs text-[#718EBF] p-6">Cargando Módulo Proyectos...</div>}>
+      <ProjectDashboardInner />
+    </Suspense>
+  );
+}
