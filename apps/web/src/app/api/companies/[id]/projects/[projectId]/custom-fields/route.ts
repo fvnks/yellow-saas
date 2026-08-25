@@ -1,5 +1,39 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function GET(req: NextRequest, { params }: { params: { id: string; projectId: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const { rows } = await query( 'SELECT * FROM project_custom_fields WHERE company_id = $1 AND project_id = $2 ORDER BY sort_order', [companyId, params.projectId] ); return successResponse(rows); } catch (e: any) { return errorResponse(e.message, 500); }
-} export async function POST(req: NextRequest, { params }: { params: { id: string; projectId: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const body = await req.json(); const { name, field_type, options = [], required = false, sort_order = 0 } = body; if (!name || !field_type) return errorResponse('name and field_type are required', 400); const { rows } = await query( `INSERT INTO project_custom_fields (company_id, project_id, name, field_type, options, required, sort_order) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`, [companyId, params.projectId, name, field_type, JSON.stringify(options), required, sort_order] ); return successResponse(rows[0], 201); } catch (e: any) { return errorResponse(e.message, 500); }
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string; projectId: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { rows } = await query(
+      'SELECT * FROM project_custom_fields WHERE company_id = $1 AND project_id = $2 ORDER BY sort_order',
+      [companyId, params.projectId]
+    );
+    return successResponse(rows);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
+
+export async function POST(req: NextRequest, { params }: { params: { id: string; projectId: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await req.json();
+    const { name, field_type, options = [], required = false, sort_order = 0 } = body;
+
+    if (!name || !field_type) return errorResponse('name and field_type are required', 400);
+
+    const { rows } = await query(
+      `INSERT INTO project_custom_fields (company_id, project_id, name, field_type, options, required, sort_order)
+       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+      [companyId, params.projectId, name, field_type, JSON.stringify(options), required, sort_order]
+    );
+    return successResponse(rows[0], 201);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
 }

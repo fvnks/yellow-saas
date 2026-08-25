@@ -1,1 +1,248 @@
-﻿'use client'; import { ReactNode } from 'react'; import { LineChart as ReLineChart, BarChart as ReBarChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, } from 'recharts'; /* ── Theme colors ─────────────────────────────────── */ function useChartColors() { return { grid: 'var(--chart-grid, #f1f5f9)', axis: 'var(--chart-axis, #94a3b8)', tooltipBg: 'var(--chart-tooltip-bg, #ffffff)', tooltipBorder: 'var(--chart-tooltip-border, #e2e8f0)', tooltipText: 'var(--chart-tooltip-text, #0f172a)', marker: 'var(--chart-marker, #6366f1)', line1: 'var(--chart-line-1, #6366f1)', line2: 'var(--chart-line-2, #10b981)', line3: 'var(--chart-line-3, #f59e0b)', line4: 'var(--chart-line-4, #ef4444)', }; } /* ── ChartTooltip ─────────────────────────────────── */ interface ChartTooltipProps { active?: boolean; payload?: any[]; label?: string; formatter?: (value: any, name: string) => [string, string]; labelFormatter?: (label: string) => string; } export function ChartTooltip({ active, payload, label, formatter, labelFormatter }: ChartTooltipProps) { const colors = useChartColors(); if (!active || !payload?.length) return null; return ( <div className="rounded-lg border px-3 py-2 shadow-md" style={{ backgroundColor: colors.tooltipBg, borderColor: colors.tooltipBorder, }} > {label && ( <p className="mb-1 text-[10px] font-medium" style={{ color: colors.axis }}> {labelFormatter ? labelFormatter(label) : label} </p> )} {payload.map((entry: any, i: number) => { const [displayValue, displayName] = formatter ? formatter(entry.value, entry.name) : [entry.value.toLocaleString(), entry.name]; return ( <div key={i} className="flex items-center gap-2 text-xs"> <span className="h-2 w-2 rounded-full" style={{ backgroundColor: entry.color }} /> <span style={{ color: colors.tooltipText }}> {displayName}: <strong>{displayValue}</strong> </span> </div> ); })} </div> ); } /* ── ChartMarkers ─────────────────────────────────── */ interface MarkerItem { date: Date; icon: string; title: string; color?: string; } interface ChartMarkersProps { items: MarkerItem[]; data: any[]; dataKey: string; xKey?: string; } export function ChartMarkers({ items, data, dataKey, xKey = 'name' }: ChartMarkersProps) { const colors = useChartColors(); return ( <> {items.map((marker, i) => { const month = String(marker.date.getMonth() + 1).padStart(2, '0'); const point = data.find((d: any) => d[xKey] === month || d[xKey] === String(marker.date.getDate())); if (!point) return null; return ( <ReferenceLine key={i} x={point[xKey]} stroke={marker.color || colors.marker} strokeDasharray="4 4" strokeWidth={1.5} > <svg> <title>{marker.title}</title> </svg> </ReferenceLine> ); })} </> ); } /* ── ChartCard ─────────────────────────────────────── */ interface ChartCardProps { title: string; subtitle?: string; action?: ReactNode; children: ReactNode; } export function ChartCard({ title, subtitle, action, children }: ChartCardProps) { return ( <div className="bg-card border border-border rounded-xl shadow-sm p-6 "> <div className="flex items-center justify-between mb-4"> <div> <h3 className="text-sm font-semibold text-foreground ">{title}</h3> {subtitle && <p className="text-[10px] text-muted-foreground mt-0.5">{subtitle}</p>} </div> {action} </div> {children} </div> ); } /* ── Themed LineChart ──────────────────────────────── */ interface ThemedLineChartProps { data: any[]; lines: { dataKey: string; color?: string; label?: string }[]; markers?: MarkerItem[]; xKey?: string; height?: number; formatter?: (value: any, name: string) => [string, string]; } export function ThemedLineChart({ data, lines, markers, xKey = 'name', height = 256, formatter }: ThemedLineChartProps) { const colors = useChartColors(); const lineColors = [colors.line1, colors.line2, colors.line3, colors.line4]; return ( <ResponsiveContainer width="100%" height={height}> <ReLineChart data={data} margin={{ top: 8, right: 8, bottom: 40, left: 8 }}> <CartesianGrid horizontal strokeDasharray="3 3" stroke={colors.grid} /> <XAxis dataKey={xKey} tick={{ fontSize: 10, fill: colors.axis }} stroke={colors.axis} tickLine={false} axisLine={false} /> <YAxis tick={{ fontSize: 10, fill: colors.axis }} stroke={colors.axis} tickLine={false} axisLine={false} /> <Tooltip content={<ChartTooltip formatter={formatter} />} /> {lines.map((line, i) => ( <Line key={line.dataKey} type="monotone" dataKey={line.dataKey} stroke={line.color || lineColors[i % lineColors.length]} strokeWidth={2} dot={{ r: 3, strokeWidth: 0 }} activeDot={{ r: 5, strokeWidth: 0 }} /> ))} {markers && <ChartMarkers items={markers} data={data} dataKey={lines[0]?.dataKey || ''} xKey={xKey} />} </ReLineChart> </ResponsiveContainer> ); } /* ── Themed BarChart ───────────────────────────────── */ interface ThemedBarChartProps { data: any[]; bars: { dataKey: string; color?: string; label?: string }[]; markers?: MarkerItem[]; xKey?: string; height?: number; stacked?: boolean; formatter?: (value: any, name: string) => [string, string]; } export function ThemedBarChart({ data, bars, markers, xKey = 'name', height = 256, stacked, formatter }: ThemedBarChartProps) { const colors = useChartColors(); const barColors = [colors.line1, colors.line2, colors.line3, colors.line4]; return ( <ResponsiveContainer width="100%" height={height}> <ReBarChart data={data} margin={{ top: 8, right: 8, bottom: 40, left: 8 }}> <CartesianGrid horizontal strokeDasharray="3 3" stroke={colors.grid} /> <XAxis dataKey={xKey} tick={{ fontSize: 10, fill: colors.axis }} stroke={colors.axis} tickLine={false} axisLine={false} /> <YAxis tick={{ fontSize: 10, fill: colors.axis }} stroke={colors.axis} tickLine={false} axisLine={false} /> <Tooltip content={<ChartTooltip formatter={formatter} />} /> {bars.map((bar, i) => ( <ReBarComp key={bar.dataKey} dataKey={bar.dataKey} fill={bar.color || barColors[i % barColors.length]} radius={[4, 4, 0, 0]} stackId={stacked ? 'stack' : undefined} /> ))} {markers && <ChartMarkers items={markers} data={data} dataKey={bars[0]?.dataKey || ''} xKey={xKey} />} </ReBarChart> </ResponsiveContainer> ); } /* Need to import Bar from recharts */ import { Bar as ReBarComp } from 'recharts'; 
+﻿'use client';
+
+import { ReactNode } from 'react';
+import {
+  LineChart as ReLineChart,
+  BarChart as ReBarChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  ReferenceLine,
+} from 'recharts';
+
+/* ── Theme colors ─────────────────────────────────── */
+
+function useChartColors() {
+  return {
+    grid: 'var(--chart-grid, #f1f5f9)',
+    axis: 'var(--chart-axis, #94a3b8)',
+    tooltipBg: 'var(--chart-tooltip-bg, #ffffff)',
+    tooltipBorder: 'var(--chart-tooltip-border, #e2e8f0)',
+    tooltipText: 'var(--chart-tooltip-text, #0f172a)',
+    marker: 'var(--chart-marker, #6366f1)',
+    line1: 'var(--chart-line-1, #6366f1)',
+    line2: 'var(--chart-line-2, #10b981)',
+    line3: 'var(--chart-line-3, #f59e0b)',
+    line4: 'var(--chart-line-4, #ef4444)',
+  };
+}
+
+/* ── ChartTooltip ─────────────────────────────────── */
+
+interface ChartTooltipProps {
+  active?: boolean;
+  payload?: any[];
+  label?: string;
+  formatter?: (value: any, name: string) => [string, string];
+  labelFormatter?: (label: string) => string;
+}
+
+export function ChartTooltip({ active, payload, label, formatter, labelFormatter }: ChartTooltipProps) {
+  const colors = useChartColors();
+  if (!active || !payload?.length) return null;
+
+  return (
+    <div
+      className="rounded-lg border px-3 py-2 shadow-md"
+      style={{
+        backgroundColor: colors.tooltipBg,
+        borderColor: colors.tooltipBorder,
+      }}
+    >
+      {label && (
+        <p className="mb-1 text-[10px] font-medium" style={{ color: colors.axis }}>
+          {labelFormatter ? labelFormatter(label) : label}
+        </p>
+      )}
+      {payload.map((entry: any, i: number) => {
+        const [displayValue, displayName] = formatter
+          ? formatter(entry.value, entry.name)
+          : [entry.value.toLocaleString(), entry.name];
+        return (
+          <div key={i} className="flex items-center gap-2 text-xs">
+            <span
+              className="h-2 w-2 rounded-full"
+              style={{ backgroundColor: entry.color }}
+            />
+            <span style={{ color: colors.tooltipText }}>
+              {displayName}: <strong>{displayValue}</strong>
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ── ChartMarkers ─────────────────────────────────── */
+
+interface MarkerItem {
+  date: Date;
+  icon: string;
+  title: string;
+  color?: string;
+}
+
+interface ChartMarkersProps {
+  items: MarkerItem[];
+  data: any[];
+  dataKey: string;
+  xKey?: string;
+}
+
+export function ChartMarkers({ items, data, dataKey, xKey = 'name' }: ChartMarkersProps) {
+  const colors = useChartColors();
+
+  return (
+    <>
+      {items.map((marker, i) => {
+        const month = String(marker.date.getMonth() + 1).padStart(2, '0');
+        const point = data.find((d: any) => d[xKey] === month || d[xKey] === String(marker.date.getDate()));
+        if (!point) return null;
+
+        return (
+          <ReferenceLine
+            key={i}
+            x={point[xKey]}
+            stroke={marker.color || colors.marker}
+            strokeDasharray="4 4"
+            strokeWidth={1.5}
+          >
+            <svg>
+              <title>{marker.title}</title>
+            </svg>
+          </ReferenceLine>
+        );
+      })}
+    </>
+  );
+}
+
+/* ── ChartCard ─────────────────────────────────────── */
+
+interface ChartCardProps {
+  title: string;
+  subtitle?: string;
+  action?: ReactNode;
+  children: ReactNode;
+}
+
+export function ChartCard({ title, subtitle, action, children }: ChartCardProps) {
+  return (
+    <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h3 className="text-sm font-semibold text-foreground dark:text-white">{title}</h3>
+          {subtitle && <p className="text-[10px] text-muted-foreground mt-0.5">{subtitle}</p>}
+        </div>
+        {action}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+/* ── Themed LineChart ──────────────────────────────── */
+
+interface ThemedLineChartProps {
+  data: any[];
+  lines: { dataKey: string; color?: string; label?: string }[];
+  markers?: MarkerItem[];
+  xKey?: string;
+  height?: number;
+  formatter?: (value: any, name: string) => [string, string];
+}
+
+export function ThemedLineChart({ data, lines, markers, xKey = 'name', height = 256, formatter }: ThemedLineChartProps) {
+  const colors = useChartColors();
+  const lineColors = [colors.line1, colors.line2, colors.line3, colors.line4];
+
+  return (
+    <ResponsiveContainer width="100%" height={height}>
+      <ReLineChart data={data} margin={{ top: 8, right: 8, bottom: 40, left: 8 }}>
+        <CartesianGrid horizontal strokeDasharray="3 3" stroke={colors.grid} />
+        <XAxis
+          dataKey={xKey}
+          tick={{ fontSize: 10, fill: colors.axis }}
+          stroke={colors.axis}
+          tickLine={false}
+          axisLine={false}
+        />
+        <YAxis
+          tick={{ fontSize: 10, fill: colors.axis }}
+          stroke={colors.axis}
+          tickLine={false}
+          axisLine={false}
+        />
+        <Tooltip content={<ChartTooltip formatter={formatter} />} />
+        {lines.map((line, i) => (
+          <Line
+            key={line.dataKey}
+            type="monotone"
+            dataKey={line.dataKey}
+            stroke={line.color || lineColors[i % lineColors.length]}
+            strokeWidth={2}
+            dot={{ r: 3, strokeWidth: 0 }}
+            activeDot={{ r: 5, strokeWidth: 0 }}
+          />
+        ))}
+        {markers && <ChartMarkers items={markers} data={data} dataKey={lines[0]?.dataKey || ''} xKey={xKey} />}
+      </ReLineChart>
+    </ResponsiveContainer>
+  );
+}
+
+/* ── Themed BarChart ───────────────────────────────── */
+
+interface ThemedBarChartProps {
+  data: any[];
+  bars: { dataKey: string; color?: string; label?: string }[];
+  markers?: MarkerItem[];
+  xKey?: string;
+  height?: number;
+  stacked?: boolean;
+  formatter?: (value: any, name: string) => [string, string];
+}
+
+export function ThemedBarChart({ data, bars, markers, xKey = 'name', height = 256, stacked, formatter }: ThemedBarChartProps) {
+  const colors = useChartColors();
+  const barColors = [colors.line1, colors.line2, colors.line3, colors.line4];
+
+  return (
+    <ResponsiveContainer width="100%" height={height}>
+      <ReBarChart data={data} margin={{ top: 8, right: 8, bottom: 40, left: 8 }}>
+        <CartesianGrid horizontal strokeDasharray="3 3" stroke={colors.grid} />
+        <XAxis
+          dataKey={xKey}
+          tick={{ fontSize: 10, fill: colors.axis }}
+          stroke={colors.axis}
+          tickLine={false}
+          axisLine={false}
+        />
+        <YAxis
+          tick={{ fontSize: 10, fill: colors.axis }}
+          stroke={colors.axis}
+          tickLine={false}
+          axisLine={false}
+        />
+        <Tooltip content={<ChartTooltip formatter={formatter} />} />
+        {bars.map((bar, i) => (
+          <ReBarComp
+            key={bar.dataKey}
+            dataKey={bar.dataKey}
+            fill={bar.color || barColors[i % barColors.length]}
+            radius={[4, 4, 0, 0]}
+            stackId={stacked ? 'stack' : undefined}
+          />
+        ))}
+        {markers && <ChartMarkers items={markers} data={data} dataKey={bars[0]?.dataKey || ''} xKey={xKey} />}
+      </ReBarChart>
+    </ResponsiveContainer>
+  );
+}
+
+/* Need to import Bar from recharts */
+import { Bar as ReBarComp } from 'recharts';

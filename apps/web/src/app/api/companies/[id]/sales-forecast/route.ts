@@ -1,4 +1,82 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function GET(req: NextRequest, { params }: { params: { id: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const now = new Date(); const currentYear = now.getFullYear(); const currentMonth = now.getMonth() + 1; const { rows: monthlyData } = await query( `SELECT EXTRACT(YEAR FROM created_at) as year, EXTRACT(MONTH FROM created_at) as month, SUM(total_amount) as total, COUNT(*) as order_count FROM sales_orders WHERE company_id = $1 AND status != 'cancelled' AND created_at >= NOW() - INTERVAL '24 months' GROUP BY EXTRACT(YEAR FROM created_at), EXTRACT(MONTH FROM created_at) ORDER BY year, month`, [companyId] ); const { rows: productTrend } = await query( `SELECT p.name, p.sku, EXTRACT(MONTH FROM so.created_at) as month, SUM(soi.quantity) as qty, SUM(soi.line_total) as total FROM sales_order_items soi JOIN sales_orders so ON so.id = soi.order_id JOIN products p ON p.id = soi.product_id WHERE so.company_id = $1 AND so.status != 'cancelled' AND so.created_at >= NOW() - INTERVAL '12 months' GROUP BY p.id, p.name, p.sku, EXTRACT(MONTH FROM so.created_at) ORDER BY total DESC`, [companyId] ); const monthly = monthlyData.map(m => ({ year: parseInt(m.year), month: parseInt(m.month), total: parseFloat(m.total), order_count: parseInt(m.order_count), })); const last6Months = monthly.slice(-6); const avgMonthly = last6Months.length > 0 ? last6Months.reduce((s, m) => s + m.total, 0) / last6Months.length : 0; const avgOrders = last6Months.length > 0 ? last6Months.reduce((s, m) => s + m.order_count, 0) / last6Months.length : 0; const seasonalFactors: number[] = Array(12).fill(0); const seasonalCounts: number[] = Array(12).fill(0); for (const m of monthly) { seasonalFactors[m.month - 1] += m.total; seasonalCounts[m.month - 1] += 1; } const seasonality = seasonalFactors.map((f, i) => seasonalCounts[i] > 0 ? f / seasonalCounts[i] : 0); const overallAvg = seasonality.reduce((s, v) => s + v, 0) / 12 || 1; const seasonalIndex = seasonality.map(v => overallAvg > 0 ? v / overallAvg : 1); const forecast = []; for (let i = 1; i <= 3; i++) { const forecastMonth = currentMonth + i; const forecastYear = forecastMonth > 12 ? currentYear + 1 : currentYear; const adjustedMonth = forecastMonth > 12 ? forecastMonth - 12 : forecastMonth; const predicted = avgMonthly * seasonalIndex[adjustedMonth - 1]; const predictedOrders = Math.round(avgOrders * seasonalIndex[adjustedMonth - 1]); forecast.push({ year: forecastYear, month: adjustedMonth, predicted_total: Math.round(predicted), predicted_orders: predictedOrders, confidence_low: Math.round(predicted * 0.8), confidence_high: Math.round(predicted * 1.2), }); } return successResponse({ monthly, forecast, seasonality: seasonalIndex, avgMonthly, avgOrders }); } catch (e: any) { return errorResponse(e.message, 500); }
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+
+    const { rows: monthlyData } = await query(
+      `SELECT EXTRACT(YEAR FROM created_at) as year, EXTRACT(MONTH FROM created_at) as month,
+        SUM(total_amount) as total, COUNT(*) as order_count
+       FROM sales_orders
+       WHERE company_id = $1 AND status != 'cancelled'
+         AND created_at >= NOW() - INTERVAL '24 months'
+       GROUP BY EXTRACT(YEAR FROM created_at), EXTRACT(MONTH FROM created_at)
+       ORDER BY year, month`,
+      [companyId]
+    );
+
+    const { rows: productTrend } = await query(
+      `SELECT p.name, p.sku,
+        EXTRACT(MONTH FROM so.created_at) as month,
+        SUM(soi.quantity) as qty,
+        SUM(soi.line_total) as total
+       FROM sales_order_items soi
+       JOIN sales_orders so ON so.id = soi.order_id
+       JOIN products p ON p.id = soi.product_id
+       WHERE so.company_id = $1 AND so.status != 'cancelled'
+         AND so.created_at >= NOW() - INTERVAL '12 months'
+       GROUP BY p.id, p.name, p.sku, EXTRACT(MONTH FROM so.created_at)
+       ORDER BY total DESC`,
+      [companyId]
+    );
+
+    const monthly = monthlyData.map(m => ({
+      year: parseInt(m.year),
+      month: parseInt(m.month),
+      total: parseFloat(m.total),
+      order_count: parseInt(m.order_count),
+    }));
+
+    const last6Months = monthly.slice(-6);
+    const avgMonthly = last6Months.length > 0 ? last6Months.reduce((s, m) => s + m.total, 0) / last6Months.length : 0;
+    const avgOrders = last6Months.length > 0 ? last6Months.reduce((s, m) => s + m.order_count, 0) / last6Months.length : 0;
+
+    const seasonalFactors: number[] = Array(12).fill(0);
+    const seasonalCounts: number[] = Array(12).fill(0);
+    for (const m of monthly) {
+      seasonalFactors[m.month - 1] += m.total;
+      seasonalCounts[m.month - 1] += 1;
+    }
+    const seasonality = seasonalFactors.map((f, i) => seasonalCounts[i] > 0 ? f / seasonalCounts[i] : 0);
+    const overallAvg = seasonality.reduce((s, v) => s + v, 0) / 12 || 1;
+    const seasonalIndex = seasonality.map(v => overallAvg > 0 ? v / overallAvg : 1);
+
+    const forecast = [];
+    for (let i = 1; i <= 3; i++) {
+      const forecastMonth = currentMonth + i;
+      const forecastYear = forecastMonth > 12 ? currentYear + 1 : currentYear;
+      const adjustedMonth = forecastMonth > 12 ? forecastMonth - 12 : forecastMonth;
+      const predicted = avgMonthly * seasonalIndex[adjustedMonth - 1];
+      const predictedOrders = Math.round(avgOrders * seasonalIndex[adjustedMonth - 1]);
+      forecast.push({
+        year: forecastYear,
+        month: adjustedMonth,
+        predicted_total: Math.round(predicted),
+        predicted_orders: predictedOrders,
+        confidence_low: Math.round(predicted * 0.8),
+        confidence_high: Math.round(predicted * 1.2),
+      });
+    }
+
+    return successResponse({ monthly, forecast, seasonality: seasonalIndex, avgMonthly, avgOrders });
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
 }

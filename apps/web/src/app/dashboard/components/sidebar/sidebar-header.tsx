@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
+import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from 'next/navigation';
-import { SidebarMenu, SidebarMenuItem } from '@/components/ui/sidebar';
+import { SidebarMenu, SidebarMenuItem } from "@/components/ui/sidebar";
 import CompanySwitcher from '@/components/ui/company-switcher';
 import { getApiClient } from '@/lib/api-client';
 import { Building2 } from 'lucide-react';
@@ -18,6 +18,7 @@ export default function SidebarBrandHeader() {
   useEffect(() => {
     const companyId = localStorage.getItem('company_id');
     if (companyId) setCurrentCompanyId(companyId);
+
     loadCompanies();
   }, []);
 
@@ -36,8 +37,14 @@ export default function SidebarBrandHeader() {
     try {
       const api = getApiClient();
       const res = await api.switchCompany(companyId);
+
+      // Update token cookie
       document.cookie = `auth-token=${res.token}; path=/; max-age=${7 * 24 * 60 * 60}`;
+
+      // Update localStorage
       localStorage.setItem('company_id', companyId);
+
+      // Reload to refresh all data
       window.location.reload();
     } catch (err) {
       console.error('Failed to switch company:', err);
@@ -61,7 +68,12 @@ export default function SidebarBrandHeader() {
               </div>
             )}
             {companies.length > 1 && (
-              <CompanySwitcher companies={companies} currentCompanyId={currentCompanyId} onSwitch={handleSwitch} loading={loading} />
+              <CompanySwitcher
+                companies={companies}
+                currentCompanyId={currentCompanyId}
+                onSwitch={handleSwitch}
+                loading={loading}
+              />
             )}
           </div>
         </div>

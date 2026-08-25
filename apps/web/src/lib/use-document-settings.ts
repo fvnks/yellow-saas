@@ -1,4 +1,50 @@
 import { useCallback, useEffect, useState } from 'react';
 import { getCompanyIdFromToken } from '@/lib/api-client';
-import { DEFAULT_DOCUMENT_SETTINGS, type DocumentSettings } from '@/lib/document-settings'; export function useDocumentSettings() { const [settings, setSettings] = useState<DocumentSettings>(DEFAULT_DOCUMENT_SETTINGS); const [loading, setLoading] = useState(true); const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1]; const reload = useCallback(async () => { const companyId = getCompanyIdFromToken(); if (!companyId) return; try { const res = await fetch(`/api/companies/${companyId}/settings/documents`, { headers: { Authorization: `Bearer ${getToken()}` }, }); if (!res.ok) return; const data = await res.json(); if (data.success) setSettings(data.data); } finally { setLoading(false); } }, []); useEffect(() => { reload(); }, [reload]); const save = useCallback(async (next: DocumentSettings): Promise<boolean> => { const companyId = getCompanyIdFromToken(); if (!companyId) return false; try { const res = await fetch(`/api/companies/${companyId}/settings/documents`, { method: 'PUT', headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' }, body: JSON.stringify(next), }); if (!res.ok) return false; const data = await res.json(); if (data.success) { setSettings(data.data); return true; } return false; } catch { return false; } }, []); return { settings, setSettings, save, reload, loading };
+import { DEFAULT_DOCUMENT_SETTINGS, type DocumentSettings } from '@/lib/document-settings';
+
+export function useDocumentSettings() {
+  const [settings, setSettings] = useState<DocumentSettings>(DEFAULT_DOCUMENT_SETTINGS);
+  const [loading, setLoading] = useState(true);
+
+  const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+
+  const reload = useCallback(async () => {
+    const companyId = getCompanyIdFromToken();
+    if (!companyId) return;
+    try {
+      const res = await fetch(`/api/companies/${companyId}/settings/documents`, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      const data = await res.json();
+      if (data.success) setSettings(data.data);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    reload();
+  }, [reload]);
+
+  const save = useCallback(async (next: DocumentSettings): Promise<boolean> => {
+    const companyId = getCompanyIdFromToken();
+    if (!companyId) return false;
+    try {
+      const res = await fetch(`/api/companies/${companyId}/settings/documents`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(next),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSettings(data.data);
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  }, []);
+
+  return { settings, setSettings, save, reload, loading };
 }

@@ -10,7 +10,7 @@ async function setupDatabase() {
     await runMigrations(connectionString);
   } else {
     console.log('No DATABASE_URL provided. Skipping database setup.\n');
-    console.log('You can set DATABASE_URL or run migrations locally.');
+    console.log('You can set DATABASE_URL for Railway PostgreSQL or run migrations locally.');
   }
 }
 

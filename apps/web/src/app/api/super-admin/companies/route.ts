@@ -2,6 +2,71 @@ import { query } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 import { verifySuperAdmin } from '@/api/super-admin/lib/auth';
-import bcrypt from 'bcryptjs'; export async function GET(request: NextRequest) { const admin = await verifySuperAdmin(request); if (!admin) return errorResponse('No autorizado', 401); try { const result = await query(` SELECT c.id, c.name, c.slug, c.plan, c.status, c.created_at, c.trial_ends_at, (SELECT COUNT(*) FROM profiles WHERE company_id = c.id) as user_count FROM companies c ORDER BY c.created_at DESC `); return successResponse(result.rows); } catch (err) { console.error('Companies list error:', err); return errorResponse('Error al obtener empresas', 500); }
-} export async function POST(request: NextRequest) { const admin = await verifySuperAdmin(request); if (!admin) return errorResponse('No autorizado', 401); try { const body = await request.json(); const { name, slug, plan, email, password, modules } = body; if (!name || !slug) return errorResponse('Nombre y slug son requeridos', 400); if (!email || !password) return errorResponse('Email y password son requeridos', 400); const existing = await query('SELECT id FROM companies WHERE slug = $1', [slug]); if (existing.rows.length > 0) return errorResponse('Ya existe una empresa con ese slug', 409); const companyResult = await query( `INSERT INTO companies (name, slug, plan, status, trial_ends_at) VALUES ($1, $2, $3, 'active', NOW() + INTERVAL '14 days') RETURNING *`, [name, slug, plan || 'professional'] ); const company = companyResult.rows[0]; const passwordHash = await bcrypt.hash(password, 12); await query( `INSERT INTO profiles (company_id, email, full_name, password_hash, role, role_type, status) VALUES ($1, $2, $3, $4, 'owner', 'company', 'active')`, [company.id, email, name, passwordHash] ); if (Array.isArray(modules) && modules.length > 0) { for (const moduleName of modules) { await query( `INSERT INTO module_activations (company_id, module_name, status, activated_at) VALUES ($1, $2, 'active', now()) ON CONFLICT (company_id, module_name) DO UPDATE SET status = 'active', activated_at = now()`, [company.id, moduleName] ); } } return successResponse({ company, modules: modules || [] }, 201); } catch (err) { console.error('Create company error:', err); return errorResponse(err instanceof Error ? err.message : 'Error al crear empresa', 500); }
+import bcrypt from 'bcryptjs';
+
+export async function GET(request: NextRequest) {
+  const admin = await verifySuperAdmin(request);
+  if (!admin) return errorResponse('No autorizado', 401);
+
+  try {
+    const result = await query(`
+      SELECT 
+        c.id, c.name, c.slug, c.plan, c.status, c.created_at, c.trial_ends_at,
+        (SELECT COUNT(*) FROM profiles WHERE company_id = c.id) as user_count
+      FROM companies c
+      ORDER BY c.created_at DESC
+    `);
+
+    return successResponse(result.rows);
+  } catch (err) {
+    console.error('Companies list error:', err);
+    return errorResponse('Error al obtener empresas', 500);
+  }
+}
+
+export async function POST(request: NextRequest) {
+  const admin = await verifySuperAdmin(request);
+  if (!admin) return errorResponse('No autorizado', 401);
+
+  try {
+    const body = await request.json();
+    const { name, slug, plan, email, password, modules } = body;
+
+    if (!name || !slug) return errorResponse('Nombre y slug son requeridos', 400);
+    if (!email || !password) return errorResponse('Email y password son requeridos', 400);
+
+    const existing = await query('SELECT id FROM companies WHERE slug = $1', [slug]);
+    if (existing.rows.length > 0) return errorResponse('Ya existe una empresa con ese slug', 409);
+
+    const companyResult = await query(
+      `INSERT INTO companies (name, slug, plan, status, trial_ends_at)
+       VALUES ($1, $2, $3, 'active', NOW() + INTERVAL '14 days')
+       RETURNING *`,
+      [name, slug, plan || 'professional']
+    );
+    const company = companyResult.rows[0];
+
+    const passwordHash = await bcrypt.hash(password, 12);
+    await query(
+      `INSERT INTO profiles (company_id, email, full_name, password_hash, role, role_type, status)
+       VALUES ($1, $2, $3, $4, 'owner', 'company', 'active')`,
+      [company.id, email, name, passwordHash]
+    );
+
+    if (Array.isArray(modules) && modules.length > 0) {
+      for (const moduleName of modules) {
+        await query(
+          `INSERT INTO module_activations (company_id, module_name, status, activated_at)
+           VALUES ($1, $2, 'active', now())
+           ON CONFLICT (company_id, module_name) DO UPDATE SET status = 'active', activated_at = now()`,
+          [company.id, moduleName]
+        );
+      }
+    }
+
+    return successResponse({ company, modules: modules || [] }, 201);
+  } catch (err) {
+    console.error('Create company error:', err);
+    return errorResponse(err instanceof Error ? err.message : 'Error al crear empresa', 500);
+  }
 }

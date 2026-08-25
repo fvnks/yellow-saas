@@ -1,9 +1,82 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function GET( request: NextRequest, { params }: { params: { id: string; projectId: string } }
-) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const result = await query( 'SELECT * FROM project_phases WHERE project_id = $1 AND company_id = $2 ORDER BY sort_order', [params.projectId, companyId] ); return successResponse(result.rows); } catch { return errorResponse('Internal server error', 500); }
-} export async function POST( request: NextRequest, { params }: { params: { id: string; projectId: string } }
-) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const { name, description, budget, start_date, end_date } = body; if (!name) return errorResponse('Phase name is required', 400); const maxOrder = await query( 'SELECT COALESCE(MAX(sort_order), -1) + 1 as next_order FROM project_phases WHERE project_id = $1 AND company_id = $2', [params.projectId, companyId] ); const result = await query( `INSERT INTO project_phases (company_id, project_id, name, description, budget, start_date, end_date, sort_order) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`, [companyId, params.projectId, name, description || null, budget || 0, start_date || null, end_date || null, maxOrder.rows[0].next_order] ); return successResponse(result.rows[0], 201); } catch { return errorResponse('Internal server error', 500); }
-} export async function PUT( request: NextRequest, { params }: { params: { id: string; projectId: string } }
-) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const { name, description, budget, spent, start_date, end_date, status, sort_order } = body; const result = await query( `UPDATE project_phases SET name = COALESCE($1, name), description = COALESCE($2, description), budget = COALESCE($3, budget), spent = COALESCE($4, spent), start_date = COALESCE($5, start_date), end_date = COALESCE($6, end_date), status = COALESCE($7, status), sort_order = COALESCE($8, sort_order), updated_at = now() WHERE project_id = $9 AND company_id = $10 RETURNING *`, [name, description, budget, spent, start_date, end_date, status, sort_order, params.projectId, companyId] ); if (result.rows.length === 0) return errorResponse('Phase not found', 404); return successResponse(result.rows[0]); } catch { return errorResponse('Internal server error', 500); }
+import { NextRequest } from 'next/server';
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string; projectId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const result = await query(
+      'SELECT * FROM project_phases WHERE project_id = $1 AND company_id = $2 ORDER BY sort_order',
+      [params.projectId, companyId]
+    );
+
+    return successResponse(result.rows);
+  } catch {
+    return errorResponse('Internal server error', 500);
+  }
+}
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { id: string; projectId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+    const { name, description, budget, start_date, end_date } = body;
+
+    if (!name) return errorResponse('Phase name is required', 400);
+
+    const maxOrder = await query(
+      'SELECT COALESCE(MAX(sort_order), -1) + 1 as next_order FROM project_phases WHERE project_id = $1 AND company_id = $2',
+      [params.projectId, companyId]
+    );
+
+    const result = await query(
+      `INSERT INTO project_phases (company_id, project_id, name, description, budget, start_date, end_date, sort_order)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+       RETURNING *`,
+      [companyId, params.projectId, name, description || null, budget || 0, start_date || null, end_date || null, maxOrder.rows[0].next_order]
+    );
+
+    return successResponse(result.rows[0], 201);
+  } catch {
+    return errorResponse('Internal server error', 500);
+  }
+}
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string; projectId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+    const { name, description, budget, spent, start_date, end_date, status, sort_order } = body;
+
+    const result = await query(
+      `UPDATE project_phases 
+       SET name = COALESCE($1, name), description = COALESCE($2, description), budget = COALESCE($3, budget),
+           spent = COALESCE($4, spent), start_date = COALESCE($5, start_date), end_date = COALESCE($6, end_date),
+           status = COALESCE($7, status), sort_order = COALESCE($8, sort_order), updated_at = now()
+       WHERE project_id = $9 AND company_id = $10
+       RETURNING *`,
+      [name, description, budget, spent, start_date, end_date, status, sort_order, params.projectId, companyId]
+    );
+
+    if (result.rows.length === 0) return errorResponse('Phase not found', 404);
+
+    return successResponse(result.rows[0]);
+  } catch {
+    return errorResponse('Internal server error', 500);
+  }
 }

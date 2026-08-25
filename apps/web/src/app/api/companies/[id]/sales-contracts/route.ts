@@ -1,5 +1,52 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function GET(req: NextRequest, { params }: { params: { id: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const { rows: contracts } = await query( `SELECT sc.*, c.name as customer_name, c.tax_id as customer_tax_id, e.name as employee_name FROM sales_contracts sc JOIN customers c ON c.id = sc.customer_id LEFT JOIN employees e ON e.id = sc.employee_id WHERE sc.company_id = $1 ORDER BY sc.created_at DESC`, [companyId] ); return successResponse(contracts); } catch (e: any) { return errorResponse(e.message, 500); }
-} export async function POST(req: NextRequest, { params }: { params: { id: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const body = await req.json(); const { customer_id, employee_id, title, description, start_date, end_date, total_amount, payment_terms, status, items } = body; if (!customer_id || !title || !start_date) { return errorResponse('customer_id, title, start_date son requeridos', 400); } const contractNumber = `CTR-${Date.now().toString(36).toUpperCase()}`; const { rows } = await query( `INSERT INTO sales_contracts (company_id, customer_id, employee_id, contract_number, title, description, start_date, end_date, total_amount, payment_terms, status, items) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *`, [companyId, customer_id, employee_id || null, contractNumber, title, description || null, start_date, end_date || null, total_amount || 0, payment_terms || null, status || 'draft', JSON.stringify(items || [])] ); return successResponse(rows[0], 201); } catch (e: any) { return errorResponse(e.message, 500); }
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { rows: contracts } = await query(
+      `SELECT sc.*, c.name as customer_name, c.tax_id as customer_tax_id,
+        e.name as employee_name
+       FROM sales_contracts sc
+       JOIN customers c ON c.id = sc.customer_id
+       LEFT JOIN employees e ON e.id = sc.employee_id
+       WHERE sc.company_id = $1
+       ORDER BY sc.created_at DESC`,
+      [companyId]
+    );
+
+    return successResponse(contracts);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
+
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await req.json();
+    const { customer_id, employee_id, title, description, start_date, end_date, total_amount, payment_terms, status, items } = body;
+
+    if (!customer_id || !title || !start_date) {
+      return errorResponse('customer_id, title, start_date son requeridos', 400);
+    }
+
+    const contractNumber = `CTR-${Date.now().toString(36).toUpperCase()}`;
+
+    const { rows } = await query(
+      `INSERT INTO sales_contracts (company_id, customer_id, employee_id, contract_number, title, description, start_date, end_date, total_amount, payment_terms, status, items)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+       RETURNING *`,
+      [companyId, customer_id, employee_id || null, contractNumber, title, description || null, start_date, end_date || null, total_amount || 0, payment_terms || null, status || 'draft', JSON.stringify(items || [])]
+    );
+
+    return successResponse(rows[0], 201);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
 }

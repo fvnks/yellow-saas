@@ -1,7 +1,68 @@
 import { query } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
-import { verifySuperAdmin } from '@/api/super-admin/lib/auth'; const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB per file
+import { verifySuperAdmin } from '@/api/super-admin/lib/auth';
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB per file
 const MAX_FILES = 5;
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml', 'application/pdf', 'text/plain', 'text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']; export async function POST(request: NextRequest, { params }: { params: { id: string } }) { const admin = await verifySuperAdmin(request); if (!admin) return errorResponse('No autorizado', 401); const contentType = request.headers.get('content-type') || ''; let message = ''; const files: File[] = []; try { if (contentType.includes('multipart/form-data')) { const formData = await request.formData(); message = (formData.get('message') as string) || ''; for (let i = 0; i < MAX_FILES; i++) { const file = formData.get(`file${i}`); if (file && file instanceof File) files.push(file); } } else { const body = await request.json(); message = body?.message || ''; } if (!message.trim() && files.length === 0) return errorResponse('Mensaje o archivo es requerido', 400); const { rows: ticketRows } = await query( 'SELECT company_id FROM support_tickets WHERE id = $1', [params.id] ); if (ticketRows.length === 0) return errorResponse('Ticket no encontrado', 404); const companyId = ticketRows[0].company_id; if (files.length > MAX_FILES) return errorResponse(`Máximo ${MAX_FILES} archivos por mensaje`, 400); for (const f of files) { if (f.size > MAX_FILE_SIZE) return errorResponse(`Archivo "${f.name}" supera 10MB`, 400); if (f.type && !ALLOWED_TYPES.includes(f.type)) return errorResponse(`Tipo de archivo no permitido: ${f.name}`, 400); } const messageResult = await query( 'INSERT INTO ticket_messages (ticket_id, sender_type, sender_id, message) VALUES ($1, $2, $3, $4) RETURNING id', [params.id, 'super_admin', admin.id, message.trim()] ); const messageId = messageResult.rows[0].id; for (const f of files) { const buffer = Buffer.from(await f.arrayBuffer()); await query( `INSERT INTO ticket_attachments (message_id, company_id, name, mime_type, file_size, file_data) VALUES ($1, $2, $3, $4, $5, $6)`, [messageId, companyId, f.name, f.type || 'application/octet-stream', f.size, buffer.toString('base64')] ); } await query('UPDATE support_tickets SET updated_at = now() WHERE id = $1', [params.id]); return successResponse({ success: true }); } catch (err) { console.error('Ticket message create error:', err); return errorResponse('Error al enviar mensaje', 500); }
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml', 'application/pdf', 'text/plain', 'text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+  const admin = await verifySuperAdmin(request);
+  if (!admin) return errorResponse('No autorizado', 401);
+
+  const contentType = request.headers.get('content-type') || '';
+  let message = '';
+  const files: File[] = [];
+
+  try {
+    if (contentType.includes('multipart/form-data')) {
+      const formData = await request.formData();
+      message = (formData.get('message') as string) || '';
+      for (let i = 0; i < MAX_FILES; i++) {
+        const file = formData.get(`file${i}`);
+        if (file && file instanceof File) files.push(file);
+      }
+    } else {
+      const body = await request.json();
+      message = body?.message || '';
+    }
+
+    if (!message.trim() && files.length === 0) return errorResponse('Mensaje o archivo es requerido', 400);
+
+    const { rows: ticketRows } = await query(
+      'SELECT company_id FROM support_tickets WHERE id = $1',
+      [params.id]
+    );
+    if (ticketRows.length === 0) return errorResponse('Ticket no encontrado', 404);
+    const companyId = ticketRows[0].company_id;
+
+    if (files.length > MAX_FILES) return errorResponse(`Máximo ${MAX_FILES} archivos por mensaje`, 400);
+    for (const f of files) {
+      if (f.size > MAX_FILE_SIZE) return errorResponse(`Archivo "${f.name}" supera 10MB`, 400);
+      if (f.type && !ALLOWED_TYPES.includes(f.type)) return errorResponse(`Tipo de archivo no permitido: ${f.name}`, 400);
+    }
+
+    const messageResult = await query(
+      'INSERT INTO ticket_messages (ticket_id, sender_type, sender_id, message) VALUES ($1, $2, $3, $4) RETURNING id',
+      [params.id, 'super_admin', admin.id, message.trim()]
+    );
+    const messageId = messageResult.rows[0].id;
+
+    for (const f of files) {
+      const buffer = Buffer.from(await f.arrayBuffer());
+      await query(
+        `INSERT INTO ticket_attachments (message_id, company_id, name, mime_type, file_size, file_data)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [messageId, companyId, f.name, f.type || 'application/octet-stream', f.size, buffer.toString('base64')]
+      );
+    }
+
+    await query('UPDATE support_tickets SET updated_at = now() WHERE id = $1', [params.id]);
+
+    return successResponse({ success: true });
+  } catch (err) {
+    console.error('Ticket message create error:', err);
+    return errorResponse('Error al enviar mensaje', 500);
+  }
 }

@@ -1,5 +1,106 @@
-import { PaymentProvider, CheckoutData, CheckoutSession, PaymentStatus, CustomerData, Customer, Invoice,
-} from './types'; const MACH_API_BASE = process.env.MACH_API_BASE || 'https://api.mach.cl/v1';
-const MACH_API_KEY = process.env.MACH_API_KEY || ''; async function machRequest(path: string, options: RequestInit = {}): Promise<any> { const url = `${MACH_API_BASE}${path}`; const response = await fetch(url, { ...options, headers: { Authorization: `Bearer ${MACH_API_KEY}`, 'Content-Type': 'application/json', ...options.headers, }, }); if (!response.ok) { const err = await response.json().catch(() => ({})); throw new Error(err.message || `Mach API error: ${response.status}`); } return response.json();
-} export class MachProvider implements PaymentProvider { name = 'mach'; async createCheckout(data: CheckoutData): Promise<CheckoutSession> { const result = await machRequest('/payments', { method: 'POST', body: JSON.stringify({ amount: 0, // Will be set by plan lookup currency: 'CLP', description: `Yellow ERP - ${data.planName} (${data.billingPeriod === 'monthly' ? 'Mensual' : 'Anual'})`, metadata: { company_id: data.companyId, plan_name: data.planName, billing_period: data.billingPeriod, }, success_url: data.successUrl, cancel_url: data.cancelUrl, customer_email: data.customerEmail, }), }); return { sessionId: result.id || result.session_id, url: result.payment_url || result.url, provider: 'mach', }; } async getPaymentStatus(sessionId: string): Promise<PaymentStatus> { const result = await machRequest(`/payments/${sessionId}`); return { sessionId: result.id, status: result.status === 'completed' ? 'completed' : result.status === 'failed' ? 'failed' : 'pending', amount: result.amount, currency: result.currency, }; } async createCustomer(data: CustomerData): Promise<Customer> { const result = await machRequest('/customers', { method: 'POST', body: JSON.stringify({ email: data.email, name: data.name, tax_id: data.taxId, address: data.address, city: data.city, country: data.country || 'CL', }), }); return { id: result.id, provider: 'mach', email: result.email, }; } async getInvoices(customerId: string): Promise<Invoice[]> { const result = await machRequest(`/customers/${customerId}/invoices`); return (result.data || result.invoices || []).map((inv: any) => ({ id: inv.id, number: inv.number || inv.id, amount: inv.amount, currency: inv.currency || 'CLP', status: inv.status === 'paid' ? 'paid' : inv.status === 'pending' ? 'pending' : 'overdue', pdfUrl: inv.pdf_url, createdAt: inv.created_at || inv.createdAt, })); } async getInvoicePdfUrl(invoiceId: string): Promise<string | null> { const result = await machRequest(`/invoices/${invoiceId}`); return result.pdf_url || null; }
+import {
+  PaymentProvider,
+  CheckoutData,
+  CheckoutSession,
+  PaymentStatus,
+  CustomerData,
+  Customer,
+  Invoice,
+} from './types';
+
+const MACH_API_BASE = process.env.MACH_API_BASE || 'https://api.mach.cl/v1';
+const MACH_API_KEY = process.env.MACH_API_KEY || '';
+
+async function machRequest(path: string, options: RequestInit = {}): Promise<any> {
+  const url = `${MACH_API_BASE}${path}`;
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      Authorization: `Bearer ${MACH_API_KEY}`,
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.message || `Mach API error: ${response.status}`);
+  }
+  return response.json();
+}
+
+export class MachProvider implements PaymentProvider {
+  name = 'mach';
+
+  async createCheckout(data: CheckoutData): Promise<CheckoutSession> {
+    const result = await machRequest('/payments', {
+      method: 'POST',
+      body: JSON.stringify({
+        amount: 0, // Will be set by plan lookup
+        currency: 'CLP',
+        description: `Yellow ERP - ${data.planName} (${data.billingPeriod === 'monthly' ? 'Mensual' : 'Anual'})`,
+        metadata: {
+          company_id: data.companyId,
+          plan_name: data.planName,
+          billing_period: data.billingPeriod,
+        },
+        success_url: data.successUrl,
+        cancel_url: data.cancelUrl,
+        customer_email: data.customerEmail,
+      }),
+    });
+
+    return {
+      sessionId: result.id || result.session_id,
+      url: result.payment_url || result.url,
+      provider: 'mach',
+    };
+  }
+
+  async getPaymentStatus(sessionId: string): Promise<PaymentStatus> {
+    const result = await machRequest(`/payments/${sessionId}`);
+    return {
+      sessionId: result.id,
+      status: result.status === 'completed' ? 'completed' : result.status === 'failed' ? 'failed' : 'pending',
+      amount: result.amount,
+      currency: result.currency,
+    };
+  }
+
+  async createCustomer(data: CustomerData): Promise<Customer> {
+    const result = await machRequest('/customers', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: data.email,
+        name: data.name,
+        tax_id: data.taxId,
+        address: data.address,
+        city: data.city,
+        country: data.country || 'CL',
+      }),
+    });
+
+    return {
+      id: result.id,
+      provider: 'mach',
+      email: result.email,
+    };
+  }
+
+  async getInvoices(customerId: string): Promise<Invoice[]> {
+    const result = await machRequest(`/customers/${customerId}/invoices`);
+    return (result.data || result.invoices || []).map((inv: any) => ({
+      id: inv.id,
+      number: inv.number || inv.id,
+      amount: inv.amount,
+      currency: inv.currency || 'CLP',
+      status: inv.status === 'paid' ? 'paid' : inv.status === 'pending' ? 'pending' : 'overdue',
+      pdfUrl: inv.pdf_url,
+      createdAt: inv.created_at || inv.createdAt,
+    }));
+  }
+
+  async getInvoicePdfUrl(invoiceId: string): Promise<string | null> {
+    const result = await machRequest(`/invoices/${invoiceId}`);
+    return result.pdf_url || null;
+  }
 }

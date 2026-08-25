@@ -1,5 +1,57 @@
 import { query } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function GET(request: NextRequest, { params }: { params: { id: string } }) { try { const companyId = params.id; const result = await query( `SELECT * FROM billing_accounts WHERE company_id = $1`, [companyId] ); if (result.rows.length === 0) { return successResponse({ account: null, company: (await query(`SELECT name, plan, status FROM companies WHERE id = $1`, [companyId])).rows[0] || null, }); } return successResponse({ account: result.rows[0] }); } catch (err) { console.error('Get billing account error:', err); return errorResponse(err instanceof Error ? err.message : 'Internal server error', 500); }
-} export async function PUT(request: NextRequest, { params }: { params: { id: string } }) { try { const companyId = params.id; const body = await request.json(); const { tax_id, business_name, address, city, region, country, billing_email, phone, payment_provider } = body; const result = await query( `INSERT INTO billing_accounts (company_id, tax_id, business_name, address, city, region, country, billing_email, phone, payment_provider) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) ON CONFLICT (company_id) DO UPDATE SET tax_id = COALESCE($2, tax_id), business_name = COALESCE($3, business_name), address = COALESCE($4, address), city = COALESCE($5, city), region = COALESCE($6, region), country = COALESCE($7, country), billing_email = COALESCE($8, billing_email), phone = COALESCE($9, phone), payment_provider = COALESCE($10, payment_provider), updated_at = now() RETURNING *`, [companyId, tax_id, business_name, address, city, region, country || 'CL', billing_email, phone, payment_provider || 'stripe'] ); return successResponse({ account: result.rows[0] }); } catch (err) { console.error('Update billing account error:', err); return errorResponse(err instanceof Error ? err.message : 'Internal server error', 500); }
+import { NextRequest } from 'next/server';
+
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = params.id;
+
+    const result = await query(
+      `SELECT * FROM billing_accounts WHERE company_id = $1`,
+      [companyId]
+    );
+
+    if (result.rows.length === 0) {
+      return successResponse({
+        account: null,
+        company: (await query(`SELECT name, plan, status FROM companies WHERE id = $1`, [companyId])).rows[0] || null,
+      });
+    }
+
+    return successResponse({ account: result.rows[0] });
+  } catch (err) {
+    console.error('Get billing account error:', err);
+    return errorResponse(err instanceof Error ? err.message : 'Internal server error', 500);
+  }
+}
+
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = params.id;
+    const body = await request.json();
+    const { tax_id, business_name, address, city, region, country, billing_email, phone, payment_provider } = body;
+
+    const result = await query(
+      `INSERT INTO billing_accounts (company_id, tax_id, business_name, address, city, region, country, billing_email, phone, payment_provider)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+       ON CONFLICT (company_id) DO UPDATE SET
+         tax_id = COALESCE($2, tax_id),
+         business_name = COALESCE($3, business_name),
+         address = COALESCE($4, address),
+         city = COALESCE($5, city),
+         region = COALESCE($6, region),
+         country = COALESCE($7, country),
+         billing_email = COALESCE($8, billing_email),
+         phone = COALESCE($9, phone),
+         payment_provider = COALESCE($10, payment_provider),
+         updated_at = now()
+       RETURNING *`,
+      [companyId, tax_id, business_name, address, city, region, country || 'CL', billing_email, phone, payment_provider || 'stripe']
+    );
+
+    return successResponse({ account: result.rows[0] });
+  } catch (err) {
+    console.error('Update billing account error:', err);
+    return errorResponse(err instanceof Error ? err.message : 'Internal server error', 500);
+  }
 }

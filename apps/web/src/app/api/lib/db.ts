@@ -1,5 +1,46 @@
-import { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg'; const ssl = process.env.DATABASE_SSL === 'false' ? false : process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false; const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl, max: 20, idleTimeoutMillis: 30000, connectionTimeoutMillis: 5000,
-}); pool.on('error', (err) => { console.error('Unexpected error on idle client', err);
-}); export async function query<T extends QueryResultRow = any>(text: string, params?: any[]): Promise<QueryResult<T>> { const client = await pool.connect(); try { return await client.query<T>(text, params); } finally { client.release(); }
-} export async function transaction<T>(fn: (client: PoolClient) => Promise<T>): Promise<T> { const client = await pool.connect(); try { await client.query('BEGIN'); const result = await fn(client); await client.query('COMMIT'); return result; } catch (e) { await client.query('ROLLBACK'); throw e; } finally { client.release(); }
-} export { pool };
+import { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg';
+
+const ssl =
+  process.env.DATABASE_SSL === 'false'
+    ? false
+    : process.env.NODE_ENV === 'production'
+      ? { rejectUnauthorized: false }
+      : false;
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000,
+});
+
+pool.on('error', (err) => {
+  console.error('Unexpected error on idle client', err);
+});
+
+export async function query<T extends QueryResultRow = any>(text: string, params?: any[]): Promise<QueryResult<T>> {
+  const client = await pool.connect();
+  try {
+    return await client.query<T>(text, params);
+  } finally {
+    client.release();
+  }
+}
+
+export async function transaction<T>(fn: (client: PoolClient) => Promise<T>): Promise<T> {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const result = await fn(client);
+    await client.query('COMMIT');
+    return result;
+  } catch (e) {
+    await client.query('ROLLBACK');
+    throw e;
+  } finally {
+    client.release();
+  }
+}
+
+export { pool };

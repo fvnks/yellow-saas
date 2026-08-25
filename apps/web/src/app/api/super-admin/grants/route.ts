@@ -1,6 +1,79 @@
 import { query } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
-import { verifySuperAdmin } from '@/api/super-admin/lib/auth'; export async function GET(request: NextRequest) { const admin = await verifySuperAdmin(request); if (!admin) return errorResponse('No autorizado', 401); try { const result = await query(` SELECT g.id, g.company_id, g.access_level, g.reason, g.is_active, g.expires_at, g.created_at, c.name as company_name, sa.name as super_admin_name, sa.email as super_admin_email, p.full_name as granted_by_name FROM company_access_grants g JOIN companies c ON c.id = g.company_id JOIN super_admins sa ON sa.id = g.super_admin_id LEFT JOIN profiles p ON p.id = g.granted_by ORDER BY g.created_at DESC `); return successResponse(result.rows); } catch (err) { console.error('Grants list error:', err); return errorResponse('Error al obtener accesos', 500); }
-} export async function POST(request: NextRequest) { const admin = await verifySuperAdmin(request); if (!admin) return errorResponse('No autorizado', 401); const body = await request.json(); const { company_id, access_level, reason, expires_at } = body; if (!company_id) return errorResponse('company_id es requerido', 400); try { // Check if grant already exists const existing = await query( 'SELECT id, is_active FROM company_access_grants WHERE company_id = $1 AND super_admin_id = $2', [company_id, admin.id] ); if (existing.rows.length > 0) { // Update existing grant await query(` UPDATE company_access_grants SET is_active = true, access_level = $1, reason = $2, expires_at = $3, updated_at = now() WHERE id = $4 `, [access_level || 'read', reason, expires_at, existing.rows[0].id]); } else { // Find a company user to use as granted_by (use the owner) const ownerResult = await query( "SELECT id FROM profiles WHERE company_id = $1 AND role = 'owner' LIMIT 1", [company_id] ); const grantedBy = ownerResult.rows[0]?.id || admin.id; await query(` INSERT INTO company_access_grants (company_id, super_admin_id, granted_by, access_level, reason, expires_at) VALUES ($1, $2, $3, $4, $5, $6) `, [company_id, admin.id, grantedBy, access_level || 'read', reason, expires_at]); } // Log the action await query(` INSERT INTO access_audit_log (super_admin_id, company_id, action, details) VALUES ($1, $2, 'access', $3) `, [admin.id, company_id, JSON.stringify({ access_level, reason })]); return successResponse({ success: true }); } catch (err) { console.error('Grant create error:', err); return errorResponse('Error al crear acceso', 500); }
+import { verifySuperAdmin } from '@/api/super-admin/lib/auth';
+
+export async function GET(request: NextRequest) {
+  const admin = await verifySuperAdmin(request);
+  if (!admin) return errorResponse('No autorizado', 401);
+
+  try {
+    const result = await query(`
+      SELECT 
+        g.id, g.company_id, g.access_level, g.reason, g.is_active, g.expires_at, g.created_at,
+        c.name as company_name,
+        sa.name as super_admin_name, sa.email as super_admin_email,
+        p.full_name as granted_by_name
+      FROM company_access_grants g
+      JOIN companies c ON c.id = g.company_id
+      JOIN super_admins sa ON sa.id = g.super_admin_id
+      LEFT JOIN profiles p ON p.id = g.granted_by
+      ORDER BY g.created_at DESC
+    `);
+
+    return successResponse(result.rows);
+  } catch (err) {
+    console.error('Grants list error:', err);
+    return errorResponse('Error al obtener accesos', 500);
+  }
+}
+
+export async function POST(request: NextRequest) {
+  const admin = await verifySuperAdmin(request);
+  if (!admin) return errorResponse('No autorizado', 401);
+
+  const body = await request.json();
+  const { company_id, access_level, reason, expires_at } = body;
+
+  if (!company_id) return errorResponse('company_id es requerido', 400);
+
+  try {
+    // Check if grant already exists
+    const existing = await query(
+      'SELECT id, is_active FROM company_access_grants WHERE company_id = $1 AND super_admin_id = $2',
+      [company_id, admin.id]
+    );
+
+    if (existing.rows.length > 0) {
+      // Update existing grant
+      await query(`
+        UPDATE company_access_grants 
+        SET is_active = true, access_level = $1, reason = $2, expires_at = $3, updated_at = now()
+        WHERE id = $4
+      `, [access_level || 'read', reason, expires_at, existing.rows[0].id]);
+    } else {
+      // Find a company user to use as granted_by (use the owner)
+      const ownerResult = await query(
+        "SELECT id FROM profiles WHERE company_id = $1 AND role = 'owner' LIMIT 1",
+        [company_id]
+      );
+      const grantedBy = ownerResult.rows[0]?.id || admin.id;
+
+      await query(`
+        INSERT INTO company_access_grants (company_id, super_admin_id, granted_by, access_level, reason, expires_at)
+        VALUES ($1, $2, $3, $4, $5, $6)
+      `, [company_id, admin.id, grantedBy, access_level || 'read', reason, expires_at]);
+    }
+
+    // Log the action
+    await query(`
+      INSERT INTO access_audit_log (super_admin_id, company_id, action, details)
+      VALUES ($1, $2, 'access', $3)
+    `, [admin.id, company_id, JSON.stringify({ access_level, reason })]);
+
+    return successResponse({ success: true });
+  } catch (err) {
+    console.error('Grant create error:', err);
+    return errorResponse('Error al crear acceso', 500);
+  }
 }

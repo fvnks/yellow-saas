@@ -1,4 +1,30 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function GET(req: NextRequest, { params }: { params: { id: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const { searchParams } = new URL(req.url); const entityType = searchParams.get('entity_type'); const entityId = searchParams.get('entity_id'); const limit = parseInt(searchParams.get('limit') || '100'); let sql = 'SELECT * FROM inventory_audit_log WHERE company_id = $1'; const sqlParams: any[] = [companyId]; let idx = 2; if (entityType) { sql += ` AND entity_type = $${idx}`; sqlParams.push(entityType); idx++; } if (entityId) { sql += ` AND entity_id = $${idx}`; sqlParams.push(entityId); idx++; } sql += ` ORDER BY created_at DESC LIMIT $${idx}`; sqlParams.push(limit); const { rows } = await query(sql, sqlParams); return successResponse(rows); } catch (e: any) { return errorResponse(e.message, 500); }
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { searchParams } = new URL(req.url);
+    const entityType = searchParams.get('entity_type');
+    const entityId = searchParams.get('entity_id');
+    const limit = parseInt(searchParams.get('limit') || '100');
+
+    let sql = 'SELECT * FROM inventory_audit_log WHERE company_id = $1';
+    const sqlParams: any[] = [companyId];
+    let idx = 2;
+
+    if (entityType) { sql += ` AND entity_type = $${idx}`; sqlParams.push(entityType); idx++; }
+    if (entityId) { sql += ` AND entity_id = $${idx}`; sqlParams.push(entityId); idx++; }
+
+    sql += ` ORDER BY created_at DESC LIMIT $${idx}`;
+    sqlParams.push(limit);
+
+    const { rows } = await query(sql, sqlParams);
+    return successResponse(rows);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
 }

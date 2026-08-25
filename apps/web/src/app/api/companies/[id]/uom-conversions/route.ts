@@ -1,5 +1,60 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function GET(req: NextRequest, { params }: { params: { id: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const { searchParams } = new URL(req.url); const productId = searchParams.get('product_id'); let sql = 'SELECT * FROM uom_conversions WHERE company_id = $1'; const sqlParams: any[] = [companyId]; if (productId) { sql += ' AND product_id = $2'; sqlParams.push(productId); } sql += ' ORDER BY product_id, from_uom'; const { rows } = await query(sql, sqlParams); return successResponse(rows); } catch (e: any) { return errorResponse(e.message, 500); }
-} export async function POST(req: NextRequest, { params }: { params: { id: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const body = await req.json(); const { product_id, from_uom, to_uom, conversion_factor, is_base = false } = body; if (!product_id || !from_uom || !to_uom || !conversion_factor) { return errorResponse('product_id, from_uom, to_uom, conversion_factor required', 400); } if (is_base) { await query( 'UPDATE uom_conversions SET is_base = FALSE WHERE company_id = $1 AND product_id = $2', [companyId, product_id] ); } const { rows } = await query( `INSERT INTO uom_conversions (company_id, product_id, from_uom, to_uom, conversion_factor, is_base) VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT (company_id, product_id, from_uom, to_uom) DO UPDATE SET conversion_factor = $5, is_base = $6 RETURNING *`, [companyId, product_id, from_uom, to_uom, conversion_factor, is_base] ); return successResponse(rows[0], 201); } catch (e: any) { return errorResponse(e.message, 500); }
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { searchParams } = new URL(req.url);
+    const productId = searchParams.get('product_id');
+
+    let sql = 'SELECT * FROM uom_conversions WHERE company_id = $1';
+    const sqlParams: any[] = [companyId];
+
+    if (productId) {
+      sql += ' AND product_id = $2';
+      sqlParams.push(productId);
+    }
+
+    sql += ' ORDER BY product_id, from_uom';
+    const { rows } = await query(sql, sqlParams);
+    return successResponse(rows);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
+
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await req.json();
+    const { product_id, from_uom, to_uom, conversion_factor, is_base = false } = body;
+
+    if (!product_id || !from_uom || !to_uom || !conversion_factor) {
+      return errorResponse('product_id, from_uom, to_uom, conversion_factor required', 400);
+    }
+
+    if (is_base) {
+      await query(
+        'UPDATE uom_conversions SET is_base = FALSE WHERE company_id = $1 AND product_id = $2',
+        [companyId, product_id]
+      );
+    }
+
+    const { rows } = await query(
+      `INSERT INTO uom_conversions (company_id, product_id, from_uom, to_uom, conversion_factor, is_base)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       ON CONFLICT (company_id, product_id, from_uom, to_uom)
+       DO UPDATE SET conversion_factor = $5, is_base = $6
+       RETURNING *`,
+      [companyId, product_id, from_uom, to_uom, conversion_factor, is_base]
+    );
+    return successResponse(rows[0], 201);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
 }

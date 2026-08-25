@@ -1,1 +1,235 @@
-'use client'; import { useState, useEffect } from 'react'; import { Badge } from '@yellow-erp/ui'; import { CircleDollarSign, Plus, Search, Edit, Trash2, ArrowLeftRight, Package, FolderKanban } from 'lucide-react'; import { toast } from 'sonner'; import { getApiClient } from '@/lib/api-client'; export default function CostCentersPage() { const [costCenters, setCostCenters] = useState<any[]>([]); const [loading, setLoading] = useState(true); const [search, setSearch] = useState(''); const [showForm, setShowForm] = useState(false); const [editing, setEditing] = useState<any>(null); const [form, setForm] = useState({ code: '', name: '', description: '', parent_id: '' }); const [saving, setSaving] = useState(false); useEffect(() => { loadData(); }, []); const loadData = async () => { const api = getApiClient(); setLoading(true); try { const res = await api.getCostCenters({ limit: 200 }); setCostCenters(res.data || []); } catch (err) { toast.error('Error al cargar centros de costo'); } setLoading(false); }; const filtered = costCenters.filter(cc => cc.name.toLowerCase().includes(search.toLowerCase()) || cc.code.toLowerCase().includes(search.toLowerCase()) ); const openCreate = () => { setEditing(null); setForm({ code: '', name: '', description: '', parent_id: '' }); setShowForm(true); }; const openEdit = (cc: any) => { setEditing(cc); setForm({ code: cc.code, name: cc.name, description: cc.description || '', parent_id: cc.parent_id || '' }); setShowForm(true); }; const handleSave = async () => { if (!form.code || !form.name) return; setSaving(true); const api = getApiClient(); try { const data = { ...form, parent_id: form.parent_id || undefined }; if (editing) { await api.updateCostCenter(editing.id, data); } else { await api.createCostCenter(data); } setShowForm(false); setEditing(null); loadData(); } catch (err: any) { toast.error(err?.message || 'Error al guardar'); } setSaving(false); }; const handleDelete = async (id: string) => { if (!confirm('Eliminar este centro de costo?')) return; const api = getApiClient(); try { await api.deleteCostCenter(id); loadData(); } catch (err: any) { toast.error(err?.message || 'No se puede eliminar — tiene productos asignados'); } }; const parentOptions = costCenters.filter(cc => !cc.parent_id && (!editing || cc.id !== editing.id)); return ( <div className="space-y-6"> <div className="flex items-center justify-between"> <div> <h1 className="text-xl font-bold text-foreground">Centros de Costo</h1> <p className="text-sm text-muted-foreground mt-1">Gestion de centros de costo para asignacion contable</p> </div> <button onClick={openCreate} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"> <Plus className="w-4 h-4" /> Nuevo Centro </button> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-4 "> <div className="relative"> <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /> <input type="text" value={search} onChange={e => setSearch(e.target.value)} className="w-full pl-9 pr-4 py-2 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="Buscar por nombre o codigo..." /> </div> </div> {loading ? ( <div className="space-y-3"> {[1, 2, 3].map(i => ( <div key={i} className="bg-card border border-border rounded-xl shadow-sm p-6 "> <div className="animate-pulse space-y-3"> <div className="h-4 bg-muted rounded w-1/3" /> <div className="h-3 bg-muted rounded w-2/3" /> </div> </div> ))} </div> ) : filtered.length === 0 ? ( <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm "> <CircleDollarSign className="w-12 h-12 text-foreground mx-auto mb-3" /> <p className="text-sm text-muted-foreground">No se encontraron centros de costo</p> </div> ) : ( <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden "> <table className="w-full"> <thead> <tr className="border-b border-border"> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Codigo</th> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nombre</th> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Descripcion</th> <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Productos</th> <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Proyectos</th> <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Movimientos</th> <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Subcentros</th> <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th> </tr> </thead> <tbody> {filtered.map(cc => { const children = costCenters.filter(c => c.parent_id === cc.id); const isChild = !!cc.parent_id; return ( <tr key={cc.id} className={`border-b border-border hover:bg-muted transition-colors ${isChild ? 'bg-muted/50' : ''}`}> <td className="px-4 py-3 text-xs font-mono font-medium text-foreground"> {isChild && <span className="text-foreground mr-1">└</span>} {cc.code} </td> <td className="px-4 py-3 text-xs text-foreground font-medium">{cc.name}</td> <td className="px-4 py-3 text-xs text-muted-foreground max-w-[200px] truncate">{cc.description || '—'}</td> <td className="px-4 py-3 text-center"> <span className="inline-flex items-center gap-1 text-xs text-foreground"> <Package className="w-3 h-3" /> {cc.product_count || 0} </span> </td> <td className="px-4 py-3 text-center"> <span className="inline-flex items-center gap-1 text-xs text-foreground"> <FolderKanban className="w-3 h-3" /> {cc.project_count || 0} </span> </td> <td className="px-4 py-3 text-center"> <span className="inline-flex items-center gap-1 text-xs text-foreground"> <ArrowLeftRight className="w-3 h-3" /> {cc.movement_count || 0} </span> </td> <td className="px-4 py-3 text-center"> <span className="inline-flex items-center gap-1 text-xs text-foreground"> {children.length} </span> </td> <td className="px-4 py-3 text-right"> <div className="flex items-center justify-end gap-1"> <button onClick={() => openEdit(cc)} className="p-1.5 hover:bg-muted rounded-lg transition-colors"> <Edit className="w-3.5 h-3.5 text-muted-foreground" /> </button> <button onClick={() => handleDelete(cc.id)} className="p-1.5 hover:bg-red-50 rounded-lg transition-colors"> <Trash2 className="w-3.5 h-3.5 text-red-500" /> </button> </div> </td> </tr> ); })} </tbody> </table> </div> )} {showForm && ( <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"> <div className="bg-card rounded-xl shadow-xl w-full max-w- mx-4"> <div className="px-6 py-4 border-b border-border flex items-center justify-between"> <h2 className="text-lg font-semibold text-foreground">{editing ? 'Editar Centro de Costo' : 'Nuevo Centro de Costo'}</h2> <button onClick={() => { setShowForm(false); setEditing(null); }} className="text-muted-foreground hover:text-foreground">X</button> </div> <div className="p-6 space-y-4"> <div className="grid grid-cols-2 gap-4"> <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Codigo *</label> <input type="text" value={form.code} onChange={e => setForm({ ...form, code: e.target.value })} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="CC-001" /> </div> <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Nombre *</label> <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="Nombre del centro" /> </div> </div> <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Descripcion</label> <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={2} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="Descripcion del centro de costo..." /> </div> <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Centro Padre</label> <select value={form.parent_id} onChange={e => setForm({ ...form, parent_id: e.target.value })} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"> <option value="">Sin padre (centro principal)</option> {parentOptions.map(cc => ( <option key={cc.id} value={cc.id}>{cc.code} - {cc.name}</option> ))} </select> </div> </div> <div className="px-6 py-4 border-t border-border flex justify-end gap-3"> <button onClick={() => { setShowForm(false); setEditing(null); }} className="bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button> <button onClick={handleSave} disabled={saving || !form.code || !form.name} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"> {saving ? 'Guardando...' : editing ? 'Actualizar' : 'Crear Centro'} </button> </div> </div> </div> )} </div> ); } 
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Badge } from '@yellow-erp/ui';
+import { CircleDollarSign, Plus, Search, Edit, Trash2, ArrowLeftRight, Package, FolderKanban } from 'lucide-react';
+import { toast } from 'sonner';
+import { getApiClient } from '@/lib/api-client';
+
+export default function CostCentersPage() {
+  const [costCenters, setCostCenters] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<any>(null);
+  const [form, setForm] = useState({ code: '', name: '', description: '', parent_id: '' });
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => { loadData(); }, []);
+
+  const loadData = async () => {
+    const api = getApiClient();
+    setLoading(true);
+    try {
+      const res = await api.getCostCenters({ limit: 200 });
+      setCostCenters(res.data || []);
+    } catch (err) { toast.error('Error al cargar centros de costo'); }
+    setLoading(false);
+  };
+
+  const filtered = costCenters.filter(cc =>
+    cc.name.toLowerCase().includes(search.toLowerCase()) ||
+    cc.code.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const openCreate = () => {
+    setEditing(null);
+    setForm({ code: '', name: '', description: '', parent_id: '' });
+    setShowForm(true);
+  };
+
+  const openEdit = (cc: any) => {
+    setEditing(cc);
+    setForm({ code: cc.code, name: cc.name, description: cc.description || '', parent_id: cc.parent_id || '' });
+    setShowForm(true);
+  };
+
+  const handleSave = async () => {
+    if (!form.code || !form.name) return;
+    setSaving(true);
+    const api = getApiClient();
+    try {
+      const data = { ...form, parent_id: form.parent_id || undefined };
+      if (editing) {
+        await api.updateCostCenter(editing.id, data);
+      } else {
+        await api.createCostCenter(data);
+      }
+      setShowForm(false);
+      setEditing(null);
+      loadData();
+    } catch (err: any) {
+      toast.error(err?.message || 'Error al guardar');
+    }
+    setSaving(false);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Eliminar este centro de costo?')) return;
+    const api = getApiClient();
+    try {
+      await api.deleteCostCenter(id);
+      loadData();
+    } catch (err: any) {
+      toast.error(err?.message || 'No se puede eliminar — tiene productos asignados');
+    }
+  };
+
+  const parentOptions = costCenters.filter(cc => !cc.parent_id && (!editing || cc.id !== editing.id));
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-foreground">Centros de Costo</h1>
+          <p className="text-sm text-muted-foreground mt-1">Gestion de centros de costo para asignacion contable</p>
+        </div>
+        <button onClick={openCreate}
+          className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          <Plus className="w-4 h-4" /> Nuevo Centro
+        </button>
+      </div>
+
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <input type="text" value={search} onChange={e => setSearch(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+            placeholder="Buscar por nombre o codigo..." />
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="space-y-3">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+              <div className="animate-pulse space-y-3">
+                <div className="h-4 bg-muted rounded w-1/3" />
+                <div className="h-3 bg-muted rounded w-2/3" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+          <CircleDollarSign className="w-12 h-12 text-foreground mx-auto mb-3" />
+          <p className="text-sm text-muted-foreground">No se encontraron centros de costo</p>
+        </div>
+      ) : (
+        <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Codigo</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nombre</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Descripcion</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Productos</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Proyectos</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Movimientos</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Subcentros</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map(cc => {
+                const children = costCenters.filter(c => c.parent_id === cc.id);
+                const isChild = !!cc.parent_id;
+                return (
+                  <tr key={cc.id} className={`border-b border-border hover:bg-muted transition-colors ${isChild ? 'bg-muted/50' : ''}`}>
+                    <td className="px-4 py-3 text-xs font-mono font-medium text-foreground">
+                      {isChild && <span className="text-foreground mr-1">└</span>}
+                      {cc.code}
+                    </td>
+                    <td className="px-4 py-3 text-xs text-foreground font-medium">{cc.name}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground max-w-[200px] truncate">{cc.description || '—'}</td>
+                    <td className="px-4 py-3 text-center">
+                      <span className="inline-flex items-center gap-1 text-xs text-foreground">
+                        <Package className="w-3 h-3" /> {cc.product_count || 0}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <span className="inline-flex items-center gap-1 text-xs text-foreground">
+                        <FolderKanban className="w-3 h-3" /> {cc.project_count || 0}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <span className="inline-flex items-center gap-1 text-xs text-foreground">
+                        <ArrowLeftRight className="w-3 h-3" /> {cc.movement_count || 0}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <span className="inline-flex items-center gap-1 text-xs text-foreground">
+                        {children.length}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button onClick={() => openEdit(cc)} className="p-1.5 hover:bg-muted rounded-lg transition-colors">
+                          <Edit className="w-3.5 h-3.5 text-muted-foreground" />
+                        </button>
+                        <button onClick={() => handleDelete(cc.id)} className="p-1.5 hover:bg-red-50 rounded-lg transition-colors">
+                          <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {showForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">{editing ? 'Editar Centro de Costo' : 'Nuevo Centro de Costo'}</h2>
+              <button onClick={() => { setShowForm(false); setEditing(null); }} className="text-muted-foreground hover:text-foreground">X</button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-foreground">Codigo *</label>
+                  <input type="text" value={form.code} onChange={e => setForm({ ...form, code: e.target.value })}
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                    placeholder="CC-001" />
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-foreground">Nombre *</label>
+                  <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                    placeholder="Nombre del centro" />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-foreground">Descripcion</label>
+                <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={2}
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                  placeholder="Descripcion del centro de costo..." />
+              </div>
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-foreground">Centro Padre</label>
+                <select value={form.parent_id} onChange={e => setForm({ ...form, parent_id: e.target.value })}
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
+                  <option value="">Sin padre (centro principal)</option>
+                  {parentOptions.map(cc => (
+                    <option key={cc.id} value={cc.id}>{cc.code} - {cc.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
+              <button onClick={() => { setShowForm(false); setEditing(null); }}
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={handleSave} disabled={saving || !form.code || !form.name}
+                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                {saving ? 'Guardando...' : editing ? 'Actualizar' : 'Crear Centro'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -1,1 +1,168 @@
-﻿'use client'; import { useState } from 'react'; import { UserPlus, Trash2, Shield, MoreVertical } from 'lucide-react'; import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'; interface Member { id: string; user_id: string; user_name?: string; email?: string; role: string; created_at?: string; } interface ProjectMembersProps { projectId: string; members: Member[]; onRefresh: () => void; } const ROLE_OPTIONS = [ { value: 'owner', label: 'Propietario', color: 'bg-amber-50 text-amber-700 border-amber-200' }, { value: 'admin', label: 'Administrador', color: 'bg-blue-50 text-primary border-primary/20' }, { value: 'member', label: 'Miembro', color: 'bg-blue-50 text-blue-700 border-blue-200' }, { value: 'viewer', label: 'Observador', color: 'bg-muted text-foreground border-border' }, ]; export default function ProjectMembers({ projectId, members, onRefresh }: ProjectMembersProps) { const [showAdd, setShowAdd] = useState(false); const [selectedUserId, setSelectedUserId] = useState(''); const [selectedRole, setSelectedRole] = useState('member'); const [availableUsers, setAvailableUsers] = useState<any[]>([]); const loadUsers = async () => { const api = (await import('@/lib/api-client')).getApiClient(); try { const data = await api.getUsers ? await api.getUsers() : { data: [] }; setAvailableUsers((data.data || data || []).filter((u: any) => !members.some(m => m.user_id === u.id))); } catch { setAvailableUsers([]); } }; const handleAdd = async () => { if (!selectedUserId) return; const api = (await import('@/lib/api-client')).getApiClient(); await api.addProjectMember(projectId, { user_id: selectedUserId, role: selectedRole }); setShowAdd(false); setSelectedUserId(''); onRefresh(); }; const handleRemove = async (userId: string) => { if (!confirm('Quitar este miembro del proyecto?')) return; const api = (await import('@/lib/api-client')).getApiClient(); await api.removeProjectMember(projectId, userId); onRefresh(); }; const handleRoleChange = async (userId: string, newRole: string) => { const api = (await import('@/lib/api-client')).getApiClient(); await api.addProjectMember(projectId, { user_id: userId, role: newRole }); onRefresh(); }; const getRole = (r: string) => ROLE_OPTIONS.find(o => o.value === r) || ROLE_OPTIONS[2]; return ( <div className="space-y-4"> <div className="flex items-center justify-between"> <p className="text-sm font-medium text-foreground">{members.length} miembro{members.length !== 1 ? 's' : ''}</p> <button onClick={() => { setShowAdd(true); loadUsers(); }} className="bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors"> <UserPlus className="w-3.5 h-3.5" /> Agregar Miembro </button> </div> <div className="bg-card border border-border rounded-xl overflow-hidden"> <table className="w-full"> <thead> <tr className="border-b border-border"> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Miembro</th> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Email</th> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Rol</th> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Desde</th> <th className="w-12 px-4 py-3"></th> </tr> </thead> <tbody> {members.map(member => { const role = getRole(member.role); return ( <tr key={member.id} className="border-b border-border hover:bg-muted transition-colors"> <td className="px-4 py-3"> <div className="flex items-center gap-3"> <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center"> <span className="text-xs font-semibold text-primary"> {(member.user_name || member.email || '?')[0].toUpperCase()} </span> </div> <span className="text-xs font-medium text-foreground">{member.user_name || 'Usuario'}</span> </div> </td> <td className="px-4 py-3 text-xs text-muted-foreground">{member.email || '—'}</td> <td className="px-4 py-3"> <select value={member.role} onChange={e => handleRoleChange(member.user_id, e.target.value)} className="bg-transparent border-0 text-[10px] font-semibold cursor-pointer focus:outline-none"> {ROLE_OPTIONS.map(r => <option key={r.value} value={r.value}>{r.label}</option>)} </select> </td> <td className="px-4 py-3 text-xs text-foreground">{member.created_at?.split('T')[0] || '—'}</td> <td className="px-4 py-3"> <DropdownMenu> <DropdownMenuTrigger asChild> <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"> <MoreVertical className="w-4 h-4" /> </button> </DropdownMenuTrigger> <DropdownMenuContent align="end" className="w-40"> <DropdownMenuItem onClick={() => handleRemove(member.user_id)} className="text-red-600"> <Trash2 className="w-4 h-4 mr-2" /> Quitar del proyecto </DropdownMenuItem> </DropdownMenuContent> </DropdownMenu> </td> </tr> ); })} {members.length === 0 && ( <tr><td colSpan={5} className="text-center py-8 text-xs text-muted-foreground">No hay miembros asignados</td></tr> )} </tbody> </table> </div> {showAdd && ( <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowAdd(false)}> <div className="bg-card rounded-xl shadow-xl w-full max-w-md" onClick={e => e.stopPropagation()}> <div className="px-6 py-4 border-b border-border flex items-center justify-between"> <h2 className="text-lg font-semibold text-foreground">Agregar Miembro</h2> <button onClick={() => setShowAdd(false)} className="text-muted-foreground hover:text-foreground text-xl">&times;</button> </div> <div className="p-6 space-y-4"> <div> <label className="block text-xs font-medium text-foreground mb-1">Usuario</label> <select value={selectedUserId} onChange={e => setSelectedUserId(e.target.value)} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"> <option value="">Seleccionar usuario...</option> {availableUsers.map((u: any) => <option key={u.id} value={u.id}>{u.full_name || u.email}</option>)} </select> </div> <div> <label className="block text-xs font-medium text-foreground mb-1">Rol</label> <select value={selectedRole} onChange={e => setSelectedRole(e.target.value)} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"> {ROLE_OPTIONS.map(r => <option key={r.value} value={r.value}>{r.label}</option>)} </select> </div> </div> <div className="px-6 py-4 border-t border-border flex justify-end gap-3"> <button onClick={() => setShowAdd(false)} className="bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button> <button onClick={handleAdd} disabled={!selectedUserId} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">Agregar</button> </div> </div> </div> )} </div> ); } 
+﻿'use client';
+
+import { useState } from 'react';
+import { UserPlus, Trash2, Shield, MoreVertical } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+
+interface Member {
+  id: string;
+  user_id: string;
+  user_name?: string;
+  email?: string;
+  role: string;
+  created_at?: string;
+}
+
+interface ProjectMembersProps {
+  projectId: string;
+  members: Member[];
+  onRefresh: () => void;
+}
+
+const ROLE_OPTIONS = [
+  { value: 'owner', label: 'Propietario', color: 'bg-amber-50 text-amber-700 border-amber-200' },
+  { value: 'admin', label: 'Administrador', color: 'bg-blue-50 text-primary border-primary/20' },
+  { value: 'member', label: 'Miembro', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+  { value: 'viewer', label: 'Observador', color: 'bg-muted text-foreground border-border' },
+];
+
+export default function ProjectMembers({ projectId, members, onRefresh }: ProjectMembersProps) {
+  const [showAdd, setShowAdd] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState('');
+  const [selectedRole, setSelectedRole] = useState('member');
+  const [availableUsers, setAvailableUsers] = useState<any[]>([]);
+
+  const loadUsers = async () => {
+    const api = (await import('@/lib/api-client')).getApiClient();
+    try {
+      const data = await api.getUsers ? await api.getUsers() : { data: [] };
+      setAvailableUsers((data.data || data || []).filter((u: any) => !members.some(m => m.user_id === u.id)));
+    } catch { setAvailableUsers([]); }
+  };
+
+  const handleAdd = async () => {
+    if (!selectedUserId) return;
+    const api = (await import('@/lib/api-client')).getApiClient();
+    await api.addProjectMember(projectId, { user_id: selectedUserId, role: selectedRole });
+    setShowAdd(false);
+    setSelectedUserId('');
+    onRefresh();
+  };
+
+  const handleRemove = async (userId: string) => {
+    if (!confirm('Quitar este miembro del proyecto?')) return;
+    const api = (await import('@/lib/api-client')).getApiClient();
+    await api.removeProjectMember(projectId, userId);
+    onRefresh();
+  };
+
+  const handleRoleChange = async (userId: string, newRole: string) => {
+    const api = (await import('@/lib/api-client')).getApiClient();
+    await api.addProjectMember(projectId, { user_id: userId, role: newRole });
+    onRefresh();
+  };
+
+  const getRole = (r: string) => ROLE_OPTIONS.find(o => o.value === r) || ROLE_OPTIONS[2];
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-medium text-foreground">{members.length} miembro{members.length !== 1 ? 's' : ''}</p>
+        <button onClick={() => { setShowAdd(true); loadUsers(); }}
+          className="bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors">
+          <UserPlus className="w-3.5 h-3.5" /> Agregar Miembro
+        </button>
+      </div>
+
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-border">
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Miembro</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Email</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Rol</th>
+              <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Desde</th>
+              <th className="w-12 px-4 py-3"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {members.map(member => {
+              const role = getRole(member.role);
+              return (
+                <tr key={member.id} className="border-b border-border hover:bg-muted transition-colors">
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center">
+                        <span className="text-xs font-semibold text-primary">
+                          {(member.user_name || member.email || '?')[0].toUpperCase()}
+                        </span>
+                      </div>
+                      <span className="text-xs font-medium text-foreground">{member.user_name || 'Usuario'}</span>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-xs text-muted-foreground">{member.email || '—'}</td>
+                  <td className="px-4 py-3">
+                    <select value={member.role} onChange={e => handleRoleChange(member.user_id, e.target.value)}
+                      className="bg-transparent border-0 text-[10px] font-semibold cursor-pointer focus:outline-none">
+                      {ROLE_OPTIONS.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
+                    </select>
+                  </td>
+                  <td className="px-4 py-3 text-xs text-foreground">{member.created_at?.split('T')[0] || '—'}</td>
+                  <td className="px-4 py-3">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
+                          <MoreVertical className="w-4 h-4" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-40">
+                        <DropdownMenuItem onClick={() => handleRemove(member.user_id)} className="text-red-600">
+                          <Trash2 className="w-4 h-4 mr-2" /> Quitar del proyecto
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </td>
+                </tr>
+              );
+            })}
+            {members.length === 0 && (
+              <tr><td colSpan={5} className="text-center py-8 text-xs text-muted-foreground">No hay miembros asignados</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {showAdd && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowAdd(false)}>
+          <div className="bg-card rounded-xl shadow-xl w-full max-w-md" onClick={e => e.stopPropagation()}>
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">Agregar Miembro</h2>
+              <button onClick={() => setShowAdd(false)} className="text-muted-foreground hover:text-foreground text-xl">&times;</button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-foreground mb-1">Usuario</label>
+                <select value={selectedUserId} onChange={e => setSelectedUserId(e.target.value)}
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
+                  <option value="">Seleccionar usuario...</option>
+                  {availableUsers.map((u: any) => <option key={u.id} value={u.id}>{u.full_name || u.email}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-foreground mb-1">Rol</label>
+                <select value={selectedRole} onChange={e => setSelectedRole(e.target.value)}
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
+                  {ROLE_OPTIONS.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
+              <button onClick={() => setShowAdd(false)} className="bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={handleAdd} disabled={!selectedUserId} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">Agregar</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

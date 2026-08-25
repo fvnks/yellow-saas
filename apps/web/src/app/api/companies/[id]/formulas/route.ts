@@ -1,5 +1,85 @@
 import { NextRequest } from 'next/server';
 import { query } from '@/api/lib/db';
-import { getCompanyId, successResponse, errorResponse, parseSearchParams, paginatedResponse } from '@/api/lib/helpers'; export async function GET(request: NextRequest) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const { page, limit, search, offset } = parseSearchParams(request); const url = new URL(request.url); const active = url.searchParams.get('active'); const params: any[] = [companyId]; let where = 'WHERE f.company_id = $1'; let paramIndex = 2; if (search) { where += ` AND (f.name ILIKE $${paramIndex} OR f.description ILIKE $${paramIndex})`; params.push(`%${search}%`); paramIndex++; } if (active !== null && active !== undefined) { where += ` AND f.is_active = $${paramIndex}`; params.push(active === 'true'); paramIndex++; } const countResult = await query(`SELECT COUNT(*) as count FROM formulas f ${where}`, params); const total = parseInt(countResult.rows[0]?.count || '0'); params.push(offset, limit); const { rows } = await query( `SELECT f.*, (SELECT json_build_object('id', rp.id, 'name', rp.name, 'sku', rp.sku) FROM recipe_products rp WHERE rp.id = f.output_product_id) as output_product, (SELECT COUNT(*) FROM formula_ingredients fi WHERE fi.formula_id = f.id) as ingredient_count, (SELECT COALESCE(SUM(fp.quantity), 0) FROM formula_productions fp WHERE fp.formula_id = f.id) as total_produced FROM formulas f ${where} ORDER BY f.name ASC OFFSET $${paramIndex} LIMIT $${paramIndex + 1}`, params ); return paginatedResponse(rows, total, page, limit); } catch (e: any) { return errorResponse(e.message, 500); }
-} export async function POST(request: NextRequest) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const { name, description, output_product_id, yield_quantity, yield_unit, ingredients, min_margin_pct, max_margin_pct } = body; if (!name) return errorResponse('name es requerido', 400); if (!ingredients?.length) return errorResponse('Al menos un ingrediente es requerido', 400); const { rows: formulaRows } = await query( `INSERT INTO formulas (company_id, name, description, output_product_id, yield_quantity, yield_unit, min_margin_pct, max_margin_pct) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`, [companyId, name, description || null, output_product_id || null, yield_quantity || 1, yield_unit || 'un', min_margin_pct ?? null, max_margin_pct ?? null] ); const formula = formulaRows[0]; for (const ing of ingredients) { if (!ing.product_id || !ing.quantity) continue; await query( `INSERT INTO formula_ingredients (formula_id, company_id, product_id, quantity, unit) VALUES ($1, $2, $3, $4, $5)`, [formula.id, companyId, ing.product_id, ing.quantity, ing.unit || 'un'] ); } return successResponse(formula, 201); } catch (e: any) { return errorResponse(e.message, 500); }
+import { getCompanyId, successResponse, errorResponse, parseSearchParams, paginatedResponse } from '@/api/lib/helpers';
+
+export async function GET(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { page, limit, search, offset } = parseSearchParams(request);
+    const url = new URL(request.url);
+    const active = url.searchParams.get('active');
+
+    const params: any[] = [companyId];
+    let where = 'WHERE f.company_id = $1';
+    let paramIndex = 2;
+
+    if (search) {
+      where += ` AND (f.name ILIKE $${paramIndex} OR f.description ILIKE $${paramIndex})`;
+      params.push(`%${search}%`);
+      paramIndex++;
+    }
+
+    if (active !== null && active !== undefined) {
+      where += ` AND f.is_active = $${paramIndex}`;
+      params.push(active === 'true');
+      paramIndex++;
+    }
+
+    const countResult = await query(`SELECT COUNT(*) as count FROM formulas f ${where}`, params);
+    const total = parseInt(countResult.rows[0]?.count || '0');
+
+    params.push(offset, limit);
+    const { rows } = await query(
+      `SELECT f.*,
+        (SELECT json_build_object('id', rp.id, 'name', rp.name, 'sku', rp.sku) FROM recipe_products rp WHERE rp.id = f.output_product_id) as output_product,
+        (SELECT COUNT(*) FROM formula_ingredients fi WHERE fi.formula_id = f.id) as ingredient_count,
+        (SELECT COALESCE(SUM(fp.quantity), 0) FROM formula_productions fp WHERE fp.formula_id = f.id) as total_produced
+       FROM formulas f
+       ${where}
+       ORDER BY f.name ASC
+       OFFSET $${paramIndex} LIMIT $${paramIndex + 1}`,
+      params
+    );
+
+    return paginatedResponse(rows, total, page, limit);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+    const { name, description, output_product_id, yield_quantity, yield_unit, ingredients, min_margin_pct, max_margin_pct } = body;
+
+    if (!name) return errorResponse('name es requerido', 400);
+    if (!ingredients?.length) return errorResponse('Al menos un ingrediente es requerido', 400);
+
+    const { rows: formulaRows } = await query(
+      `INSERT INTO formulas (company_id, name, description, output_product_id, yield_quantity, yield_unit, min_margin_pct, max_margin_pct)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+       RETURNING *`,
+      [companyId, name, description || null, output_product_id || null, yield_quantity || 1, yield_unit || 'un', min_margin_pct ?? null, max_margin_pct ?? null]
+    );
+
+    const formula = formulaRows[0];
+
+    for (const ing of ingredients) {
+      if (!ing.product_id || !ing.quantity) continue;
+      await query(
+        `INSERT INTO formula_ingredients (formula_id, company_id, product_id, quantity, unit)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [formula.id, companyId, ing.product_id, ing.quantity, ing.unit || 'un']
+      );
+    }
+
+    return successResponse(formula, 201);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
 }

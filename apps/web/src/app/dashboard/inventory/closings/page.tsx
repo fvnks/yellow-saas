@@ -1,2 +1,161 @@
-﻿'use client'; import { useState, useEffect } from 'react'; import { Lock, Unlock, Calendar, CheckCircle2, Clock, AlertTriangle } from 'lucide-react'; import { Badge } from '@yellow-erp/ui'; interface InventoryClosing { id: string; period: string; status: string; warehouse_name: string; total_products: number; total_value: number; closed_at: string; closed_by: string; } const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral'; icon: any }> = { open: { label: 'Abierto', variant: 'warning', icon: Uconst months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']; 
-nlock }, closed: { label: 'Cerrado', variant: 'success', icon: Lock }, in_progress: { label: 'En Proceso', variant: 'info', icon: Clock }, }; export default function ClosingsPage() { const [closings, setClosings] = useState<InventoryClosing[]>([]); const [loading, setLoading] = useState(true); const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString()); useEffect(() => { setLoading(true); const companyId = localStorage.getItem('company_id'); fetch(`/api/companies/${companyId}/inventory-counts`) .then(r => r.json()) .then(res => { const counts = (res.data || []).map((c: any) => ({ id: c.id, period: c.count_date || c.created_at?.split('T')[0] || '—', status: c.status || 'open', warehouse_name: c.warehouse_name || 'General', total_products: c.total_items || c.items_count || 0, total_value: 0, closed_at: c.completed_at || '', closed_by: c.counted_by_name || '', })); setClosings(counts); }) .catch(() => {}) .finally(() => setLoading(false)); }, [selectedYear]); return ( <div className="space-y-6"> <div className="flex items-center justify-between"> <div> <h1 className="text-xl font-bold text-foreground">Cierres de Inventario</h1> <p className="text-sm text-muted-foreground mt-1">Cierres mensuales de inventario y conteos físicos</p> </div> <select value={selectedYear} onChange={e => setSelectedYear(e.target.value)} className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"> <option value="2026">2026</option> <option value="2025">2025</option> <option value="2024">2024</option> </select> </div> <div className="grid grid-cols-2 md:grid-cols-4 gap-4"> <div className="bg-card border border-border rounded-xl shadow-sm p-4"> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Cierres</p> <p className="text-2xl font-bold text-foreground mt-1">{closings.length}</p> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-4"> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cerrados</p> <p className="text-2xl font-bold text-emerald-600 mt-1">{closings.filter(c => c.status === 'closed').length}</p> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-4"> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Abiertos</p> <p className="text-2xl font-bold text-amber-600 mt-1">{closings.filter(c => c.status === 'open').length}</p> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-4"> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Último Cierre</p> <p className="text-sm font-bold text-foreground mt-1"> {closings.filter(c => c.status === 'closed').length > 0 ? closings.filter(c => c.status === 'closed')[0].period : '—'} </p> </div> </div> <div className="bg-card border border-border rounded-xl shadow-sm"> <div className="px-6 py-4 border-b border-border"> <h3 className="text-sm font-semibold text-foreground">Calendario de Cierres {selectedYear}</h3> </div> <div className="p-6"> <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"> {months.map((month, i) => { const monthClosings = closings.filter(c => { const d = new Date(c.period); return d.getFullYear().toString() === selectedYear && d.getMonth() === i; }); const isClosed = monthClosings.some(c => c.status === 'closed'); const isOpen = monthClosings.some(c => c.status === 'open'); const st = isClosed ? statusConfig.closed : isOpen ? statusConfig.open : { label: 'Sin Datos', variant: 'neutral' as const, icon: Clock }; return ( <div key={i} className={`border rounded-xl p-4 transition-colors ${isClosed ? 'bg-emerald-50 border-emerald-200' : isOpen ? 'bg-amber-50 border-amber-200' : 'bg-muted border-border'}`}> <div className="flex items-center justify-between mb-2"> <p className="text-sm font-semibold text-foreground">{month}</p> <Badge variant={st.variant}>{st.label}</Badge> </div> <p className="text-xs text-muted-foreground">{monthClosings.length} conteo{monthClosings.length !== 1 ? 's' : ''}</p> {isClosed && monthClosings[0]?.closed_at && ( <p className="text-[10px] text-emerald-600 mt-1">Cerrado: {monthClosings[0].closed_at.split('T')[0]}</p> )} </div> ); })} </div> </div> </div> <div className="bg-card border border-border rounded-xl shadow-sm"> <div className="px-6 py-4 border-b border-border"> <h3 className="text-sm font-semibold text-foreground">Historial de Conteos</h3> </div> <div className="overflow-x-auto"> <table className="w-full"> <thead> <tr className="border-b border-border"> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Bodega</th> <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Productos</th> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cerrado Por</th> </tr> </thead> <tbody> {loading ? ( <tr><td colSpan={5} className="px-4 py-12 text-center text-sm text-muted-foreground">Cargando...</td></tr> ) : closings.length === 0 ? ( <tr><td colSpan={5} className="px-4 py-12 text-center text-sm text-muted-foreground">No hay cierres registrados</td></tr> ) : closings.map(c => { const st = statusConfig[c.status] || statusConfig.open; return ( <tr key={c.id} className="border-b border-border hover:bg-muted transition-colors"> <td className="px-4 py-3 text-xs text-foreground">{c.period}</td> <td className="px-4 py-3 text-xs text-foreground">{c.warehouse_name}</td> <td className="px-4 py-3 text-xs text-foreground text-center">{c.total_products}</td> <td className="px-4 py-3"><Badge variant={st.variant}>{st.label}</Badge></td> <td className="px-4 py-3 text-xs text-muted-foreground">{c.closed_by || '—'}</td> </tr> ); })} </tbody> </table> </div> </div> </div> ); } 
+﻿'use client';
+
+import { useState, useEffect } from 'react';
+import { Lock, Unlock, Calendar, CheckCircle2, Clock, AlertTriangle } from 'lucide-react';
+import { Badge } from '@yellow-erp/ui';
+
+interface InventoryClosing {
+  id: string;
+  period: string;
+  status: string;
+  warehouse_name: string;
+  total_products: number;
+  total_value: number;
+  closed_at: string;
+  closed_by: string;
+}
+
+const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral'; icon: any }> = {
+  open: { label: 'Abierto', variant: 'warning', icon: Unlock },
+  closed: { label: 'Cerrado', variant: 'success', icon: Lock },
+  in_progress: { label: 'En Proceso', variant: 'info', icon: Clock },
+};
+
+export default function ClosingsPage() {
+  const [closings, setClosings] = useState<InventoryClosing[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
+
+  useEffect(() => {
+    setLoading(true);
+    const companyId = localStorage.getItem('company_id');
+    fetch(`/api/companies/${companyId}/inventory-counts`)
+      .then(r => r.json())
+      .then(res => {
+        const counts = (res.data || []).map((c: any) => ({
+          id: c.id,
+          period: c.count_date || c.created_at?.split('T')[0] || '—',
+          status: c.status || 'open',
+          warehouse_name: c.warehouse_name || 'General',
+          total_products: c.total_items || c.items_count || 0,
+          total_value: 0,
+          closed_at: c.completed_at || '',
+          closed_by: c.counted_by_name || '',
+        }));
+        setClosings(counts);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [selectedYear]);
+
+  const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-foreground">Cierres de Inventario</h1>
+          <p className="text-sm text-muted-foreground mt-1">Cierres mensuales de inventario y conteos físicos</p>
+        </div>
+        <select value={selectedYear} onChange={e => setSelectedYear(e.target.value)}
+          className="bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
+          <option value="2026">2026</option>
+          <option value="2025">2025</option>
+          <option value="2024">2024</option>
+        </select>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Cierres</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{closings.length}</p>
+        </div>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cerrados</p>
+          <p className="text-2xl font-bold text-emerald-600 mt-1">{closings.filter(c => c.status === 'closed').length}</p>
+        </div>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Abiertos</p>
+          <p className="text-2xl font-bold text-amber-600 mt-1">{closings.filter(c => c.status === 'open').length}</p>
+        </div>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Último Cierre</p>
+          <p className="text-sm font-bold text-foreground mt-1">
+            {closings.filter(c => c.status === 'closed').length > 0
+              ? closings.filter(c => c.status === 'closed')[0].period
+              : '—'}
+          </p>
+        </div>
+      </div>
+
+      <div className="bg-card border border-border rounded-xl shadow-sm">
+        <div className="px-6 py-4 border-b border-border">
+          <h3 className="text-sm font-semibold text-foreground">Calendario de Cierres {selectedYear}</h3>
+        </div>
+        <div className="p-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {months.map((month, i) => {
+              const monthClosings = closings.filter(c => {
+                const d = new Date(c.period);
+                return d.getFullYear().toString() === selectedYear && d.getMonth() === i;
+              });
+              const isClosed = monthClosings.some(c => c.status === 'closed');
+              const isOpen = monthClosings.some(c => c.status === 'open');
+              const st = isClosed ? statusConfig.closed : isOpen ? statusConfig.open : { label: 'Sin Datos', variant: 'neutral' as const, icon: Clock };
+
+              return (
+                <div key={i} className={`border rounded-xl p-4 transition-colors ${isClosed ? 'bg-emerald-50 border-emerald-200' : isOpen ? 'bg-amber-50 border-amber-200' : 'bg-muted border-border'}`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-semibold text-foreground">{month}</p>
+                    <Badge variant={st.variant}>{st.label}</Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{monthClosings.length} conteo{monthClosings.length !== 1 ? 's' : ''}</p>
+                  {isClosed && monthClosings[0]?.closed_at && (
+                    <p className="text-[10px] text-emerald-600 mt-1">Cerrado: {monthClosings[0].closed_at.split('T')[0]}</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-card border border-border rounded-xl shadow-sm">
+        <div className="px-6 py-4 border-b border-border">
+          <h3 className="text-sm font-semibold text-foreground">Historial de Conteos</h3>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Bodega</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Productos</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cerrado Por</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr><td colSpan={5} className="px-4 py-12 text-center text-sm text-muted-foreground">Cargando...</td></tr>
+              ) : closings.length === 0 ? (
+                <tr><td colSpan={5} className="px-4 py-12 text-center text-sm text-muted-foreground">No hay cierres registrados</td></tr>
+              ) : closings.map(c => {
+                const st = statusConfig[c.status] || statusConfig.open;
+                return (
+                  <tr key={c.id} className="border-b border-border hover:bg-muted transition-colors">
+                    <td className="px-4 py-3 text-xs text-foreground">{c.period}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{c.warehouse_name}</td>
+                    <td className="px-4 py-3 text-xs text-foreground text-center">{c.total_products}</td>
+                    <td className="px-4 py-3"><Badge variant={st.variant}>{st.label}</Badge></td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{c.closed_by || '—'}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}

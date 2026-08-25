@@ -1,5 +1,47 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function GET(req: NextRequest, { params }: { params: { id: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const { rows } = await query( `SELECT * FROM cost_centers WHERE company_id = $1 AND is_active = true ORDER BY code ASC`, [companyId] ); return successResponse(rows); } catch (e: any) { return errorResponse(e.message, 500); }
-} export async function POST(req: NextRequest, { params }: { params: { id: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const body = await req.json(); const { code, name, description, parent_id } = body; if (!code || !name) return errorResponse('code y name son requeridos', 400); const { rows } = await query( `INSERT INTO cost_centers (company_id, code, name, description, parent_id) VALUES ($1, $2, $3, $4, $5) RETURNING *`, [companyId, code, name, description || null, parent_id || null] ); return successResponse(rows[0], 201); } catch (e: any) { if (e.message.includes('unique')) { return errorResponse('Ya existe un centro de costo con ese código', 409); } return errorResponse(e.message, 500); }
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { rows } = await query(
+      `SELECT * FROM cost_centers
+       WHERE company_id = $1 AND is_active = true
+       ORDER BY code ASC`,
+      [companyId]
+    );
+
+    return successResponse(rows);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
+
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await req.json();
+    const { code, name, description, parent_id } = body;
+
+    if (!code || !name) return errorResponse('code y name son requeridos', 400);
+
+    const { rows } = await query(
+      `INSERT INTO cost_centers (company_id, code, name, description, parent_id)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING *`,
+      [companyId, code, name, description || null, parent_id || null]
+    );
+
+    return successResponse(rows[0], 201);
+  } catch (e: any) {
+    if (e.message.includes('unique')) {
+      return errorResponse('Ya existe un centro de costo con ese código', 409);
+    }
+    return errorResponse(e.message, 500);
+  }
 }

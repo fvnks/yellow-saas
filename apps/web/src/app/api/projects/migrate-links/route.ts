@@ -1,29 +1,30 @@
-const stmts = [
-  `ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS project_id UUID REFERENCES projects(id) ON DELETE SET NULL`,
-  `CREATE INDEX IF NOT EXISTS idx_purchase_orders_project ON purchase_orders(project_id)`,
-  `ALTER TABLE purchase_order_items ADD COLUMN IF NOT EXISTS project_id UUID REFERENCES projects(id) ON DELETE SET NULL`,
-  `ALTER TABLE sales_orders ADD COLUMN IF NOT EXISTS project_id UUID REFERENCES projects(id) ON DELETE SET NULL`,
-  `CREATE INDEX IF NOT EXISTS idx_sales_orders_project ON sales_orders(project_id)`,
-  `ALTER TABLE stock_movements ADD COLUMN IF NOT EXISTS project_id UUID REFERENCES projects(id) ON DELETE SET NULL`,
-  `CREATE INDEX IF NOT EXISTS idx_stock_movements_project ON stock_movements(project_id)`,
-  `ALTER TABLE invoices ADD COLUMN IF NOT EXISTS project_id UUID REFERENCES projects(id) ON DELETE SET NULL`,
-  `CREATE INDEX IF NOT EXISTS idx_invoices_project ON invoices(project_id)`,
-];
-import { query } from "@/api/lib/db";
-import { successResponse, errorResponse } from "@/api/lib/helpers";
-import { NextRequest } from "next/server";
+import { query } from '@/api/lib/db';
+import { successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+
 export async function POST(request: NextRequest) {
   try {
     const results: string[] = [];
+
+    const stmts = [
+      `ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS project_id UUID REFERENCES projects(id) ON DELETE SET NULL`,
+      `CREATE INDEX IF NOT EXISTS idx_purchase_orders_project ON purchase_orders(project_id)`,
+      `ALTER TABLE purchase_order_items ADD COLUMN IF NOT EXISTS project_id UUID REFERENCES projects(id) ON DELETE SET NULL`,
+      `ALTER TABLE sales_orders ADD COLUMN IF NOT EXISTS project_id UUID REFERENCES projects(id) ON DELETE SET NULL`,
+      `CREATE INDEX IF NOT EXISTS idx_sales_orders_project ON sales_orders(project_id)`,
+      `ALTER TABLE stock_movements ADD COLUMN IF NOT EXISTS project_id UUID REFERENCES projects(id) ON DELETE SET NULL`,
+      `CREATE INDEX IF NOT EXISTS idx_stock_movements_project ON stock_movements(project_id)`,
+      `ALTER TABLE invoices ADD COLUMN IF NOT EXISTS project_id UUID REFERENCES projects(id) ON DELETE SET NULL`,
+      `CREATE INDEX IF NOT EXISTS idx_invoices_project ON invoices(project_id)`,
+    ];
+
     for (const sql of stmts) {
       await query(sql);
-      results.push("OK");
+      results.push('OK');
     }
-    return successResponse({
-      message: "Project links migration completed",
-      statements: results.length,
-    });
+
+    return successResponse({ message: 'Project links migration completed', statements: results.length });
   } catch (err: any) {
-    return errorResponse(err.message || "Migration failed", 500);
+    return errorResponse(err.message || 'Migration failed', 500);
   }
 }

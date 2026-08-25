@@ -1,1 +1,240 @@
-﻿'use client'; import { useState } from 'react'; import { useRouter } from 'next/navigation'; import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select } from '@yellow-erp/ui'; import { ArrowLeft, Save, Plus, Trash2, UserPlus, Building2 } from 'lucide-react'; import Link from 'next/link'; import { getApiClient } from '@/lib/api-client'; const regions = [ { value: '15', label: 'Metropolitana de Santiago' }, { value: '1', label: 'Tarapacá' }, { value: '2', label: 'Antofagasta' }, { value: '3', label: 'Atacama' }, { value: '4', label: 'Coquimbo' }, { value: '5', label: 'Valparaíso' }, { value: '6', label: "O'Higgins" }, { value: '7', label: 'Maule' }, { value: '8', label: 'Biobío' }, { value: '9', label: 'La Araucanía' }, { value: '10', label: 'Los Ríos' }, { value: '11', label: 'Los Lagos' }, { value: '12', label: 'Aysén' }, { value: '13', label: 'Magallanes' }, { value: '14', label: 'Arica y Parinacota' }, { value: '16', label: 'Ñuble' }, ]; interface Contact { name: string; email: string; phone: string; role: string; } export default function NewSupplierPage() { const router = useRouter(); const [loading, setLoading] = useState(false); const [error, setError] = useState(''); const [formData, setFormData] = useState({ name: '', razonSocial: '', rut: '', email: '', phone: '', website: '', address: '', city: '', region: '', notes: '', }); const [contacts, setContacts] = useState<Contact[]>([ { name: '', email: '', phone: '', role: '' }, ]); const handleFormChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => { setFormData(prev => ({ ...prev, [field]: e.target.value })); }; const handleContactChange = (index: number, field: keyof Contact, value: string) => { setContacts(prev => { const newContacts = [...prev]; newContacts[index] = { ...newContacts[index], [field]: value }; return newContacts; }); }; const addContact = () => setContacts(prev => [...prev, { name: '', email: '', phone: '', role: '' }]); const removeContact = (index: number) => { if (contacts.length > 1) setContacts(prev => prev.filter((_, i) => i !== index)); }; const handleSubmit = async (e: React.FormEvent) => { e.preventDefault(); setLoading(true); setError(''); try { const api = getApiClient(); await api.createSupplier({ name: formData.name, trade_name: formData.razonSocial, tax_id: formData.rut, email: formData.email, phone: formData.phone, website: formData.website, address: formData.address, city: formData.city, region: formData.region, contact_person: contacts[0]?.name || '', contact_phone: contacts[0]?.phone || '', contact_email: contacts[0]?.email || '', }); router.push('/dashboard/suppliers'); } catch (err: unknown) { setError(err instanceof Error ? err.message : 'Error al crear el proveedor'); } finally { setLoading(false); } }; return ( <div className="space-y-6"> <div className="flex items-center gap-4"> <Link href="/dashboard/suppliers" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"> <ArrowLeft className="w-5 h-5" /> </Link> <div> <h1 className="text-xl font-bold text-foreground">Nuevo Proveedor</h1> <p className="text-sm text-muted-foreground mt-1">Registrar un nuevo proveedor en el sistema</p> </div> </div> {error && <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-sm mb-4">{error}</div>} <form onSubmit={handleSubmit} className="space-y-6"> <div className="grid gap-6 lg:grid-cols-3"> <div className="lg:col-span-2 space-y-6"> {/* Company Data */} <Card> <CardHeader className="flex items-center gap-2"> <Building2 className="w-5 h-5 text-muted-foreground" /> <CardTitle>Datos de la Empresa</CardTitle> </CardHeader> <CardContent className="space-y-4"> <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> <Input label="Nombre / Fantasía" value={formData.name} onChange={handleFormChange('name')} placeholder="Ej: Suministros Tecnológicos" required /> <Input label="Razón Social" value={formData.razonSocial} onChange={handleFormChange('razonSocial')} placeholder="Ej: Suministros Tecnológicos SpA" /> <Input label="RUT" value={formData.rut} onChange={handleFormChange('rut')} placeholder="XX.XXX.XXX-X" /> <Input label="Email" type="email" value={formData.email} onChange={handleFormChange('email')} placeholder="contacto@proveedor.cl" /> <Input label="Teléfono" value={formData.phone} onChange={handleFormChange('phone')} placeholder="+56 9 XXXX XXXX" /> <Input label="Sitio Web" value={formData.website} onChange={handleFormChange('website')} placeholder="https://proveedor.cl" /> </div> </CardContent> </Card> {/* Address */} <Card> <CardHeader> <CardTitle>Dirección</CardTitle> </CardHeader> <CardContent className="space-y-4"> <Input label="Dirección" value={formData.address} onChange={handleFormChange('address')} placeholder="Av. Ejemplo 1234, Oficina 501" /> <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> <Input label="Ciudad" value={formData.city} onChange={handleFormChange('city')} placeholder="Santiago" /> <Select label="Región" value={formData.region} onChange={handleFormChange('region')} options={[{ value: '', label: 'Seleccionar región...' }, ...regions]} /> </div> </CardContent> </Card> {/* Contacts */} <Card> <CardHeader className="flex flex-row items-center justify-between"> <div className="flex items-center gap-2"> <UserPlus className="w-5 h-5 text-muted-foreground" /> <CardTitle>Contactos</CardTitle> </div> <Button type="button" variant="secondary" size="sm" onClick={addContact}> <Plus className="w-4 h-4 mr-2" /> Agregar Contacto </Button> </CardHeader> <CardContent className="space-y-4"> {contacts.map((contact, index) => ( <div key={index} className="p-4 bg-muted rounded-lg border border-border space-y-3"> <div className="flex items-center justify-between"> <span className="text-xs font-medium text-muted-foreground">Contacto {index + 1}</span> <button type="button" onClick={() => removeContact(index)} className="p-1 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors" disabled={contacts.length === 1} > <Trash2 className="w-4 h-4" /> </button> </div> <div className="grid grid-cols-1 md:grid-cols-2 gap-3"> <Input label="Nombre" value={contact.name} onChange={(e) => handleContactChange(index, 'name', e.target.value)} placeholder="Nombre del contacto" /> <Input label="Cargo" value={contact.role} onChange={(e) => handleContactChange(index, 'role', e.target.value)} placeholder="Ej: Ventas" /> <Input label="Email" type="email" value={contact.email} onChange={(e) => handleContactChange(index, 'email', e.target.value)} placeholder="contacto@proveedor.cl" /> <Input label="Teléfono" value={contact.phone} onChange={(e) => handleContactChange(index, 'phone', e.target.value)} placeholder="+56 9 XXXX XXXX" /> </div> </div> ))} </CardContent> </Card> {/* Notes */} <Card> <CardHeader> <CardTitle>Notas</CardTitle> </CardHeader> <CardContent> <textarea value={formData.notes} onChange={handleFormChange('notes')} rows={3} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none" placeholder="Notas sobre el proveedor, condiciones especiales, etc." /> </CardContent> </Card> </div> {/* Summary Sidebar */} <div> <Card className="sticky top-24"> <CardHeader> <CardTitle>Resumen</CardTitle> </CardHeader> <CardContent className="space-y-4"> <div className="space-y-3 text-sm"> <div className="flex items-center justify-between"> <span className="text-muted-foreground">Estado</span> <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Activo</span> </div> <div className="flex items-center justify-between"> <span className="text-muted-foreground">Contactos</span> <span className="font-medium">{contacts.filter(c => c.name).length}</span> </div> <div className="flex items-center justify-between"> <span className="text-muted-foreground">Moneda</span> <span className="font-medium">CLP</span> </div> </div> <div className="flex flex-col gap-2 pt-4"> <Button type="submit" className="w-full" loading={loading}> <Save className="w-4 h-4 mr-2" /> Guardar Proveedor </Button> <Link href="/dashboard/suppliers" className="w-full"> <Button type="button" variant="secondary" className="w-full">Cancelar</Button> </Link> </div> </CardContent> </Card> </div> </div> </form> </div> ); } 
+﻿'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select } from '@yellow-erp/ui';
+import { ArrowLeft, Save, Plus, Trash2, UserPlus, Building2 } from 'lucide-react';
+import Link from 'next/link';
+import { getApiClient } from '@/lib/api-client';
+
+const regions = [
+  { value: '15', label: 'Metropolitana de Santiago' },
+  { value: '1', label: 'Tarapacá' },
+  { value: '2', label: 'Antofagasta' },
+  { value: '3', label: 'Atacama' },
+  { value: '4', label: 'Coquimbo' },
+  { value: '5', label: 'Valparaíso' },
+  { value: '6', label: "O'Higgins" },
+  { value: '7', label: 'Maule' },
+  { value: '8', label: 'Biobío' },
+  { value: '9', label: 'La Araucanía' },
+  { value: '10', label: 'Los Ríos' },
+  { value: '11', label: 'Los Lagos' },
+  { value: '12', label: 'Aysén' },
+  { value: '13', label: 'Magallanes' },
+  { value: '14', label: 'Arica y Parinacota' },
+  { value: '16', label: 'Ñuble' },
+];
+
+interface Contact {
+  name: string;
+  email: string;
+  phone: string;
+  role: string;
+}
+
+export default function NewSupplierPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    razonSocial: '',
+    rut: '',
+    email: '',
+    phone: '',
+    website: '',
+    address: '',
+    city: '',
+    region: '',
+    notes: '',
+  });
+  const [contacts, setContacts] = useState<Contact[]>([
+    { name: '', email: '', phone: '', role: '' },
+  ]);
+
+  const handleFormChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setFormData(prev => ({ ...prev, [field]: e.target.value }));
+  };
+
+  const handleContactChange = (index: number, field: keyof Contact, value: string) => {
+    setContacts(prev => {
+      const newContacts = [...prev];
+      newContacts[index] = { ...newContacts[index], [field]: value };
+      return newContacts;
+    });
+  };
+
+  const addContact = () => setContacts(prev => [...prev, { name: '', email: '', phone: '', role: '' }]);
+  const removeContact = (index: number) => { if (contacts.length > 1) setContacts(prev => prev.filter((_, i) => i !== index)); };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      const api = getApiClient();
+      await api.createSupplier({
+        name: formData.name,
+        trade_name: formData.razonSocial,
+        tax_id: formData.rut,
+        email: formData.email,
+        phone: formData.phone,
+        website: formData.website,
+        address: formData.address,
+        city: formData.city,
+        region: formData.region,
+        contact_person: contacts[0]?.name || '',
+        contact_phone: contacts[0]?.phone || '',
+        contact_email: contacts[0]?.email || '',
+      });
+      router.push('/dashboard/suppliers');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error al crear el proveedor');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-4">
+        <Link href="/dashboard/suppliers" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
+          <ArrowLeft className="w-5 h-5" />
+        </Link>
+        <div>
+          <h1 className="text-xl font-bold text-foreground">Nuevo Proveedor</h1>
+          <p className="text-sm text-muted-foreground mt-1">Registrar un nuevo proveedor en el sistema</p>
+        </div>
+      </div>
+
+      {error && <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-sm mb-4">{error}</div>}
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2 space-y-6">
+            {/* Company Data */}
+            <Card>
+              <CardHeader className="flex items-center gap-2">
+                <Building2 className="w-5 h-5 text-muted-foreground" />
+                <CardTitle>Datos de la Empresa</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Input label="Nombre / Fantasía" value={formData.name} onChange={handleFormChange('name')} placeholder="Ej: Suministros Tecnológicos" required />
+                  <Input label="Razón Social" value={formData.razonSocial} onChange={handleFormChange('razonSocial')} placeholder="Ej: Suministros Tecnológicos SpA" />
+                  <Input label="RUT" value={formData.rut} onChange={handleFormChange('rut')} placeholder="XX.XXX.XXX-X" />
+                  <Input label="Email" type="email" value={formData.email} onChange={handleFormChange('email')} placeholder="contacto@proveedor.cl" />
+                  <Input label="Teléfono" value={formData.phone} onChange={handleFormChange('phone')} placeholder="+56 9 XXXX XXXX" />
+                  <Input label="Sitio Web" value={formData.website} onChange={handleFormChange('website')} placeholder="https://proveedor.cl" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Address */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Dirección</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Input label="Dirección" value={formData.address} onChange={handleFormChange('address')} placeholder="Av. Ejemplo 1234, Oficina 501" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Input label="Ciudad" value={formData.city} onChange={handleFormChange('city')} placeholder="Santiago" />
+                  <Select label="Región" value={formData.region} onChange={handleFormChange('region')} options={[{ value: '', label: 'Seleccionar región...' }, ...regions]} />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Contacts */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <UserPlus className="w-5 h-5 text-muted-foreground" />
+                  <CardTitle>Contactos</CardTitle>
+                </div>
+                <Button type="button" variant="secondary" size="sm" onClick={addContact}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Agregar Contacto
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {contacts.map((contact, index) => (
+                  <div key={index} className="p-4 bg-muted rounded-lg border border-border space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-muted-foreground">Contacto {index + 1}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeContact(index)}
+                        className="p-1 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                        disabled={contacts.length === 1}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <Input label="Nombre" value={contact.name} onChange={(e) => handleContactChange(index, 'name', e.target.value)} placeholder="Nombre del contacto" />
+                      <Input label="Cargo" value={contact.role} onChange={(e) => handleContactChange(index, 'role', e.target.value)} placeholder="Ej: Ventas" />
+                      <Input label="Email" type="email" value={contact.email} onChange={(e) => handleContactChange(index, 'email', e.target.value)} placeholder="contacto@proveedor.cl" />
+                      <Input label="Teléfono" value={contact.phone} onChange={(e) => handleContactChange(index, 'phone', e.target.value)} placeholder="+56 9 XXXX XXXX" />
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Notes */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Notas</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <textarea
+                  value={formData.notes}
+                  onChange={handleFormChange('notes')}
+                  rows={3}
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent transition-colors resize-none"
+                  placeholder="Notas sobre el proveedor, condiciones especiales, etc."
+                />
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Summary Sidebar */}
+          <div>
+            <Card className="sticky top-24">
+              <CardHeader>
+                <CardTitle>Resumen</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Estado</span>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Activo</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Contactos</span>
+                    <span className="font-medium">{contacts.filter(c => c.name).length}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Moneda</span>
+                    <span className="font-medium">CLP</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-2 pt-4">
+                  <Button type="submit" className="w-full" loading={loading}>
+                    <Save className="w-4 h-4 mr-2" />
+                    Guardar Proveedor
+                  </Button>
+                  <Link href="/dashboard/suppliers" className="w-full">
+                    <Button type="button" variant="secondary" className="w-full">Cancelar</Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+}

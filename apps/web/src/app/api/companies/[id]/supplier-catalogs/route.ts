@@ -1,5 +1,90 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function GET(req: NextRequest, { params }: { params: { id: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const { rows } = await query( `SELECT sc.*, s.name as supplier_name FROM supplier_catalogs sc LEFT JOIN suppliers s ON s.id = sc.supplier_id WHERE sc.company_id = $1 ORDER BY sc.created_at DESC`, [companyId] ); return successResponse(rows); } catch (e: any) { return errorResponse(e.message, 500); }
-} export async function POST(req: NextRequest, { params }: { params: { id: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const body = await req.json(); const { supplier_id, name, rows: catalogRows } = body; if (!name || !catalogRows || !Array.isArray(catalogRows)) { return errorResponse('name and rows array required', 400); } const { rows: catalog } = await query( `INSERT INTO supplier_catalogs (company_id, supplier_id, name, status, total_rows) VALUES ($1, $2, $3, 'processing', $4) RETURNING *`, [companyId, supplier_id || null, name, catalogRows.length] ); let imported = 0; let errors: any[] = []; for (let i = 0; i < catalogRows.length; i++) { const row = catalogRows[i]; try { if (!row.sku && !row.name) { errors.push({ row: i + 1, error: 'sku or name required' }); continue; } const existing = row.sku ? await query('SELECT id FROM products WHERE company_id = $1 AND sku = $2', [companyId, row.sku]) : await query('SELECT id FROM products WHERE company_id = $1 AND name = $2', [companyId, row.name]); if (existing.rows.length > 0) { await query( `UPDATE products SET cost_price = COALESCE($3, cost_price), sale_price = COALESCE($4, sale_price), barcode = COALESCE($5, barcode), description = COALESCE($6, description) WHERE company_id = $1 AND id = $2`, [companyId, existing.rows[0].id, row.cost_price, row.sale_price, row.barcode, row.description] ); } else { await query( `INSERT INTO products (company_id, name, sku, cost_price, sale_price, barcode, description, unit_of_measure, type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`, [companyId, row.name, row.sku || `CAT-${Date.now()}-${i}`, row.cost_price || 0, row.sale_price || 0, row.barcode || '', row.description || '', row.unit_of_measure || 'Unidad', row.type || 'product'] ); } imported++; } catch (e: any) { errors.push({ row: i + 1, error: e.message }); } } await query( `UPDATE supplier_catalogs SET status = 'completed', imported_rows = $1, error_rows = $2, errors = $3, completed_at = NOW() WHERE id = $4`, [imported, errors.length, JSON.stringify(errors), catalog[0].id] ); return successResponse({ catalog: catalog[0], imported, errors: errors.length }); } catch (e: any) { return errorResponse(e.message, 500); }
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { rows } = await query(
+      `SELECT sc.*, s.name as supplier_name
+       FROM supplier_catalogs sc
+       LEFT JOIN suppliers s ON s.id = sc.supplier_id
+       WHERE sc.company_id = $1
+       ORDER BY sc.created_at DESC`,
+      [companyId]
+    );
+    return successResponse(rows);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
+
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await req.json();
+    const { supplier_id, name, rows: catalogRows } = body;
+
+    if (!name || !catalogRows || !Array.isArray(catalogRows)) {
+      return errorResponse('name and rows array required', 400);
+    }
+
+    const { rows: catalog } = await query(
+      `INSERT INTO supplier_catalogs (company_id, supplier_id, name, status, total_rows)
+       VALUES ($1, $2, $3, 'processing', $4) RETURNING *`,
+      [companyId, supplier_id || null, name, catalogRows.length]
+    );
+
+    let imported = 0;
+    let errors: any[] = [];
+
+    for (let i = 0; i < catalogRows.length; i++) {
+      const row = catalogRows[i];
+      try {
+        if (!row.sku && !row.name) {
+          errors.push({ row: i + 1, error: 'sku or name required' });
+          continue;
+        }
+
+        const existing = row.sku
+          ? await query('SELECT id FROM products WHERE company_id = $1 AND sku = $2', [companyId, row.sku])
+          : await query('SELECT id FROM products WHERE company_id = $1 AND name = $2', [companyId, row.name]);
+
+        if (existing.rows.length > 0) {
+          await query(
+            `UPDATE products SET
+              cost_price = COALESCE($3, cost_price),
+              sale_price = COALESCE($4, sale_price),
+              barcode = COALESCE($5, barcode),
+              description = COALESCE($6, description)
+             WHERE company_id = $1 AND id = $2`,
+            [companyId, existing.rows[0].id, row.cost_price, row.sale_price, row.barcode, row.description]
+          );
+        } else {
+          await query(
+            `INSERT INTO products (company_id, name, sku, cost_price, sale_price, barcode, description, unit_of_measure, type)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+            [companyId, row.name, row.sku || `CAT-${Date.now()}-${i}`, row.cost_price || 0, row.sale_price || 0, row.barcode || '', row.description || '', row.unit_of_measure || 'Unidad', row.type || 'product']
+          );
+        }
+        imported++;
+      } catch (e: any) {
+        errors.push({ row: i + 1, error: e.message });
+      }
+    }
+
+    await query(
+      `UPDATE supplier_catalogs SET status = 'completed', imported_rows = $1, error_rows = $2, errors = $3, completed_at = NOW()
+       WHERE id = $4`,
+      [imported, errors.length, JSON.stringify(errors), catalog[0].id]
+    );
+
+    return successResponse({ catalog: catalog[0], imported, errors: errors.length });
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
 }

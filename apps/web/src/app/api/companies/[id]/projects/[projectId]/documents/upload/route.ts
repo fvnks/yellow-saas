@@ -1,5 +1,37 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function POST( request: NextRequest, { params }: { params: { id: string; projectId: string } }
-) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const formData = await request.formData(); const file = formData.get('file') as File; const category = formData.get('category') as string || 'general'; const description = formData.get('description') as string || ''; if (!file) return errorResponse('No file provided', 400); const maxSize = 10 * 1024 * 1024; // 10MB if (file.size > maxSize) return errorResponse('File too large (max 10MB)', 400); const bytes = await file.arrayBuffer(); const base64 = Buffer.from(bytes).toString('base64'); const result = await query( `INSERT INTO project_documents (company_id, project_id, name, file_url, file_type, file_size, category, description, file_data, mime_type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id, name, file_type, file_size, category, mime_type, created_at`, [companyId, params.projectId, file.name, `uploaded://${file.name}`, file.type || 'application/octet-stream', file.size, category, description, base64, file.type] ); return successResponse(result.rows[0]); } catch (err: any) { return errorResponse(err.message, 500); }
+import { NextRequest } from 'next/server';
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { id: string; projectId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const formData = await request.formData();
+    const file = formData.get('file') as File;
+    const category = formData.get('category') as string || 'general';
+    const description = formData.get('description') as string || '';
+
+    if (!file) return errorResponse('No file provided', 400);
+
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) return errorResponse('File too large (max 10MB)', 400);
+
+    const bytes = await file.arrayBuffer();
+    const base64 = Buffer.from(bytes).toString('base64');
+
+    const result = await query(
+      `INSERT INTO project_documents (company_id, project_id, name, file_url, file_type, file_size, category, description, file_data, mime_type)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+       RETURNING id, name, file_type, file_size, category, mime_type, created_at`,
+      [companyId, params.projectId, file.name, `uploaded://${file.name}`, file.type || 'application/octet-stream', file.size, category, description, base64, file.type]
+    );
+
+    return successResponse(result.rows[0]);
+  } catch (err: any) {
+    return errorResponse(err.message, 500);
+  }
 }

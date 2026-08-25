@@ -1,1 +1,294 @@
-﻿'use client'; import { useState, useEffect } from 'react'; import { DollarSign, ShoppingCart, TrendingUp, Clock, CreditCard, AlertTriangle, FileText, BarChart3, Calendar } from 'lucide-react'; import { getApiClient } from '@/lib/api-client'; const monthLabels: Record<string, string> = { '01': 'Ene', '02': 'Feb', '03': 'Mar', '04': 'Abr', '05': 'May', '06': 'Jun', '07': 'Jul', '08': 'Ago', '09': 'Sep', '10': 'Oct', '11': 'Nov', '12': 'Dic' }; interface SalesOrder { id: string; order_number: string; total_amount: number; created_at: string; status: string; } interface Invoice { id: string; invoice_number: string; total_amount: number; status: string; created_at: string; } interface Props { customerId: string; } export default function CustomerAnalytics({ customerId }: Props) { const [orders, setOrders] = useState<SalesOrder[]>([]); const [invoices, setInvoices] = useState<Invoice[]>([]); const [loading, setLoading] = useState(true); useEffect(() => { const api = getApiClient(); Promise.all([ api.getSalesOrders({ customer_id: customerId }), api.getInvoices({ customer_id: customerId }), ]).then(([ordersRes, invoicesRes]) => { setOrders((ordersRes.data || []) as SalesOrder[]); setInvoices((invoicesRes.data || []) as Invoice[]); setLoading(false); }).catch(() => { setLoading(false); }); }, [customerId]); const computeMetrics = () => { if (orders.length === 0 && invoices.length === 0) { return null; } const ltv = invoices.reduce((sum, inv) => sum + (inv.total_amount || 0), 0); const ticketPromedio = orders.length > 0 ? ltv / orders.length : 0; let frecuenciaCompra = 0; if (orders.length > 1) { const sortedOrders = [...orders].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()); const firstDate = new Date(sortedOrders[0].created_at).getTime(); const lastDate = new Date(sortedOrders[sortedOrders.length - 1].created_at).getTime(); const daysDiff = (lastDate - firstDate) / (1000 * 60 * 60 * 24); frecuenciaCompra = daysDiff / (orders.length - 1); } const sortedOrders = [...orders].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()); const primeraCompra = sortedOrders.length > 0 ? sortedOrders[0].created_at : null; const ultimaCompra = sortedOrders.length > 0 ? sortedOrders[sortedOrders.length - 1].created_at : null; const pedidosTotales = orders.length; const paidInvoices = invoices.filter(inv => inv.status === 'paid'); const facturasPagadas = paidInvoices.length; const pendingInvoices = invoices.filter(inv => inv.status === 'pending' || inv.status === 'overdue'); const facturasPendientes = pendingInvoices.length; const montoPendiente = pendingInvoices.reduce((sum, inv) => sum + (inv.total_amount || 0), 0); const monthlyRevenue: Record<string, number> = {}; const now = new Date(); for (let i = 11; i >= 0; i--) { const d = new Date(now.getFullYear(), now.getMonth() - i, 1); const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; monthlyRevenue[key] = 0; } invoices.forEach(inv => { const d = new Date(inv.created_at); const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; if (key in monthlyRevenue) { monthlyRevenue[key] += inv.total_amount || 0; } }); return { ltv, ticketPromedio, frecuenciaCompra, primeraCompra, ultimaCompra, pedidosTotales, facturasPagadas, facturasPendientes, montoPendiente, monthlyRevenue, }; }; const formatDate = (dateStr: string | null) => { if (!dateStr) return '—'; return new Date(dateStr).toLocaleDateString('es-CL'); }; const formatCurrency = (value: number) => { return `$${value.toLocaleString('es-CL')}`; }; const formatDays = (days: number) => { if (days === 0) return '—'; if (days < 1) return 'Menos de 1 día'; return `${Math.round(days)} días`; }; if (loading) { return ( <div className="bg-card border border-border rounded-xl shadow-sm "> <div className="px-6 py-4 border-b border-border"> <div className="h-4 w-36 bg-muted rounded animate-pulse" /> </div> <div className="p-6 grid grid-cols-2 gap-4"> {[1, 2, 3, 4, 5, 6].map(i => ( <div key={i} className="h-24 bg-muted rounded animate-pulse" /> ))} </div> </div> ); } const metrics = computeMetrics(); if (!metrics) { return ( <div className="bg-card border border-border rounded-xl shadow-sm "> <div className="px-6 py-4 border-b border-border"> <h3 className="text-sm font-semibold text-foreground">Analytics</h3> </div> <div className="text-center py-12"> <BarChart3 className="w-8 h-8 text-foreground mx-auto mb-2" /> <p className="text-sm text-muted-foreground">Sin datos suficientes para analytics</p> </div> </div> ); } const monthlyEntries = Object.entries(metrics.monthlyRevenue); const maxRevenue = Math.max(...monthlyEntries.map(([, v]) => v), 1); return ( <div className="bg-card border border-border rounded-xl shadow-sm "> <div className="px-6 py-4 border-b border-border"> <h3 className="text-sm font-semibold text-foreground">Analytics</h3> </div> <div className="p-6 space-y-6"> <div className="grid grid-cols-2 gap-4"> <div className="bg-card border border-border rounded-xl shadow-sm p-6 "> <div className="flex items-center justify-between"> <div> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Valor de Vida (LTV)</p> <p className="text-2xl font-bold text-foreground mt-1">{formatCurrency(metrics.ltv)}</p> </div> <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center"> <DollarSign className="w-6 h-6 text-primary" /> </div> </div> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-6 "> <div className="flex items-center justify-between"> <div> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Ticket Promedio</p> <p className="text-2xl font-bold text-foreground mt-1">{formatCurrency(metrics.ticketPromedio)}</p> </div> <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center"> <TrendingUp className="w-6 h-6 text-emerald-600" /> </div> </div> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-6 "> <div className="flex items-center justify-between"> <div> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Frecuencia de Compra</p> <p className="text-2xl font-bold text-foreground mt-1">{formatDays(metrics.frecuenciaCompra)}</p> </div> <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center"> <Clock className="w-6 h-6 text-amber-600" /> </div> </div> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-6 "> <div className="flex items-center justify-between"> <div> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Pedidos Totales</p> <p className="text-2xl font-bold text-foreground mt-1">{metrics.pedidosTotales}</p> </div> <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center"> <ShoppingCart className="w-6 h-6 text-blue-600" /> </div> </div> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-6 "> <div className="flex items-center justify-between"> <div> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Primera Compra</p> <p className="text-2xl font-bold text-foreground mt-1">{formatDate(metrics.primeraCompra)}</p> </div> <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center"> <Calendar className="w-6 h-6 text-foreground" /> </div> </div> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-6 "> <div className="flex items-center justify-between"> <div> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Última Compra</p> <p className="text-2xl font-bold text-foreground mt-1">{formatDate(metrics.ultimaCompra)}</p> </div> <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center"> <Calendar className="w-6 h-6 text-foreground" /> </div> </div> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-6 "> <div className="flex items-center justify-between"> <div> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Facturas Pagadas</p> <p className="text-2xl font-bold text-foreground mt-1">{metrics.facturasPagadas}</p> </div> <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center"> <CreditCard className="w-6 h-6 text-emerald-600" /> </div> </div> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-6 "> <div className="flex items-center justify-between"> <div> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Facturas Pendientes</p> <p className="text-2xl font-bold text-foreground mt-1">{metrics.facturasPendientes}</p> <p className="text-xs text-amber-600 mt-1">{formatCurrency(metrics.montoPendiente)}</p> </div> <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center"> <AlertTriangle className="w-6 h-6 text-amber-600" /> </div> </div> </div> </div> <div className="bg-card border border-border rounded-xl shadow-sm "> <div className="px-6 py-4 border-b border-border"> <h4 className="text-sm font-semibold text-foreground">Ingresos Mensuales (Últimos 12 meses)</h4> </div> <div className="p-6"> <div className="flex items-end gap-2 h-40"> {monthlyEntries.map(([key, value]) => { const [, month] = key.split('-'); const height = value > 0 ? Math.max((value / maxRevenue) * 100, 4) : 0; return ( <div key={key} className="flex-1 flex flex-col items-center gap-1"> <span className="text-[8px] text-muted-foreground">{value > 0 ? formatCurrency(value) : ''}</span> <div className="w-full flex justify-center"> <div className="w-full max-w-[40px] bg-primary rounded-t transition-all" style={{ height: `${height}%` }} /> </div> <span className="text-[8px] text-muted-foreground">{monthLabels[month]}</span> </div> ); })} </div> </div> </div> </div> </div> ); } 
+﻿'use client';
+
+import { useState, useEffect } from 'react';
+import { DollarSign, ShoppingCart, TrendingUp, Clock, CreditCard, AlertTriangle, FileText, BarChart3, Calendar } from 'lucide-react';
+import { getApiClient } from '@/lib/api-client';
+
+interface SalesOrder {
+  id: string;
+  order_number: string;
+  total: number;
+  created_at: string;
+  status: string;
+}
+
+interface Invoice {
+  id: string;
+  invoice_number: string;
+  total_amount: number;
+  status: string;
+  created_at: string;
+}
+
+interface Props {
+  customerId: string;
+}
+
+export default function CustomerAnalytics({ customerId }: Props) {
+  const [orders, setOrders] = useState<SalesOrder[]>([]);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const api = getApiClient();
+    Promise.all([
+      api.getSalesOrders({ customer_id: customerId }),
+      api.getInvoices({ customer_id: customerId }),
+    ]).then(([ordersRes, invoicesRes]) => {
+      setOrders((ordersRes.data || []) as SalesOrder[]);
+      setInvoices((invoicesRes.data || []) as Invoice[]);
+      setLoading(false);
+    }).catch(() => {
+      setLoading(false);
+    });
+  }, [customerId]);
+
+  const computeMetrics = () => {
+    if (orders.length === 0 && invoices.length === 0) {
+      return null;
+    }
+
+    const ltv = invoices.reduce((sum, inv) => sum + (inv.total_amount || 0), 0);
+    const ticketPromedio = orders.length > 0 ? ltv / orders.length : 0;
+
+    let frecuenciaCompra = 0;
+    if (orders.length > 1) {
+      const sortedOrders = [...orders].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+      const firstDate = new Date(sortedOrders[0].created_at).getTime();
+      const lastDate = new Date(sortedOrders[sortedOrders.length - 1].created_at).getTime();
+      const daysDiff = (lastDate - firstDate) / (1000 * 60 * 60 * 24);
+      frecuenciaCompra = daysDiff / (orders.length - 1);
+    }
+
+    const sortedOrders = [...orders].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+    const primeraCompra = sortedOrders.length > 0 ? sortedOrders[0].created_at : null;
+    const ultimaCompra = sortedOrders.length > 0 ? sortedOrders[sortedOrders.length - 1].created_at : null;
+
+    const pedidosTotales = orders.length;
+
+    const paidInvoices = invoices.filter(inv => inv.status === 'paid');
+    const facturasPagadas = paidInvoices.length;
+
+    const pendingInvoices = invoices.filter(inv => inv.status === 'pending' || inv.status === 'overdue');
+    const facturasPendientes = pendingInvoices.length;
+    const montoPendiente = pendingInvoices.reduce((sum, inv) => sum + (inv.total_amount || 0), 0);
+
+    const monthlyRevenue: Record<string, number> = {};
+    const now = new Date();
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      monthlyRevenue[key] = 0;
+    }
+    invoices.forEach(inv => {
+      const d = new Date(inv.created_at);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      if (key in monthlyRevenue) {
+        monthlyRevenue[key] += inv.total_amount || 0;
+      }
+    });
+
+    return {
+      ltv,
+      ticketPromedio,
+      frecuenciaCompra,
+      primeraCompra,
+      ultimaCompra,
+      pedidosTotales,
+      facturasPagadas,
+      facturasPendientes,
+      montoPendiente,
+      monthlyRevenue,
+    };
+  };
+
+  const formatDate = (dateStr: string | null) => {
+    if (!dateStr) return '—';
+    return new Date(dateStr).toLocaleDateString('es-CL');
+  };
+
+  const formatCurrency = (value: number) => {
+    return `$${value.toLocaleString('es-CL')}`;
+  };
+
+  const formatDays = (days: number) => {
+    if (days === 0) return '—';
+    if (days < 1) return 'Menos de 1 día';
+    return `${Math.round(days)} días`;
+  };
+
+  if (loading) {
+    return (
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+        <div className="px-6 py-4 border-b border-border">
+          <div className="h-4 w-36 bg-muted rounded animate-pulse" />
+        </div>
+        <div className="p-6 grid grid-cols-2 gap-4">
+          {[1, 2, 3, 4, 5, 6].map(i => (
+            <div key={i} className="h-24 bg-muted rounded animate-pulse" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  const metrics = computeMetrics();
+
+  if (!metrics) {
+    return (
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+        <div className="px-6 py-4 border-b border-border">
+          <h3 className="text-sm font-semibold text-foreground">Analytics</h3>
+        </div>
+        <div className="text-center py-12">
+          <BarChart3 className="w-8 h-8 text-foreground mx-auto mb-2" />
+          <p className="text-sm text-muted-foreground">Sin datos suficientes para analytics</p>
+        </div>
+      </div>
+    );
+  }
+
+  const monthLabels: Record<string, string> = {
+    '01': 'Ene', '02': 'Feb', '03': 'Mar', '04': 'Abr', '05': 'May', '06': 'Jun',
+    '07': 'Jul', '08': 'Ago', '09': 'Sep', '10': 'Oct', '11': 'Nov', '12': 'Dic',
+  };
+
+  const monthlyEntries = Object.entries(metrics.monthlyRevenue);
+  const maxRevenue = Math.max(...monthlyEntries.map(([, v]) => v), 1);
+
+  return (
+    <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+      <div className="px-6 py-4 border-b border-border">
+        <h3 className="text-sm font-semibold text-foreground">Analytics</h3>
+      </div>
+
+      <div className="p-6 space-y-6">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Valor de Vida (LTV)</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{formatCurrency(metrics.ltv)}</p>
+              </div>
+              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                <DollarSign className="w-6 h-6 text-primary" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Ticket Promedio</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{formatCurrency(metrics.ticketPromedio)}</p>
+              </div>
+              <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-emerald-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Frecuencia de Compra</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{formatDays(metrics.frecuenciaCompra)}</p>
+              </div>
+              <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
+                <Clock className="w-6 h-6 text-amber-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Pedidos Totales</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{metrics.pedidosTotales}</p>
+              </div>
+              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                <ShoppingCart className="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Primera Compra</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{formatDate(metrics.primeraCompra)}</p>
+              </div>
+              <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
+                <Calendar className="w-6 h-6 text-foreground" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Última Compra</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{formatDate(metrics.ultimaCompra)}</p>
+              </div>
+              <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
+                <Calendar className="w-6 h-6 text-foreground" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Facturas Pagadas</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{metrics.facturasPagadas}</p>
+              </div>
+              <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">
+                <CreditCard className="w-6 h-6 text-emerald-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Facturas Pendientes</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{metrics.facturasPendientes}</p>
+                <p className="text-xs text-amber-600 mt-1">{formatCurrency(metrics.montoPendiente)}</p>
+              </div>
+              <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-amber-600" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+          <div className="px-6 py-4 border-b border-border">
+            <h4 className="text-sm font-semibold text-foreground">Ingresos Mensuales (Últimos 12 meses)</h4>
+          </div>
+          <div className="p-6">
+            <div className="flex items-end gap-2 h-40">
+              {monthlyEntries.map(([key, value]) => {
+                const [, month] = key.split('-');
+                const height = value > 0 ? Math.max((value / maxRevenue) * 100, 4) : 0;
+                return (
+                  <div key={key} className="flex-1 flex flex-col items-center gap-1">
+                    <span className="text-[8px] text-muted-foreground">{value > 0 ? formatCurrency(value) : ''}</span>
+                    <div className="w-full flex justify-center">
+                      <div
+                        className="w-full max-w-[40px] bg-primary rounded-t transition-all"
+                        style={{ height: `${height}%` }}
+                      />
+                    </div>
+                    <span className="text-[8px] text-muted-foreground">{monthLabels[month]}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+

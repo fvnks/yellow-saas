@@ -1,3 +1,17 @@
-/** * Hook de instrumentación de Next.js. * Se ejecuta una vez al iniciar el servidor (Node.js runtime). * Valida que las variables de entorno críticas estén configuradas, * fallando explícitamente en lugar de arrancar en un estado inseguro. */
-export async function register() { // Solo corre en el runtime de Node.js (no en Edge/middleware). if (process.env.NEXT_RUNTIME !== 'nodejs') return; // No bloquear el build (next build): la validación es para el arranque // del servidor en runtime, donde las env vars deben estar presentes. if (process.env.NEXT_PHASE === 'phase-production-build') return; const { validateEnvVars } = await import('@/lib/env'); validateEnvVars();
+/**
+ * Hook de instrumentación de Next.js.
+ * Se ejecuta una vez al iniciar el servidor (Node.js runtime).
+ * Valida que las variables de entorno críticas estén configuradas,
+ * fallando explícitamente en lugar de arrancar en un estado inseguro.
+ */
+export async function register() {
+  // Solo corre en el runtime de Node.js (no en Edge/middleware).
+  if (process.env.NEXT_RUNTIME !== 'nodejs') return;
+
+  // No bloquear el build (next build): la validación es para el arranque
+  // del servidor en runtime, donde las env vars deben estar presentes.
+  if (process.env.NEXT_PHASE === 'phase-production-build') return;
+
+  const { validateEnvVars } = await import('@/lib/env');
+  validateEnvVars();
 }

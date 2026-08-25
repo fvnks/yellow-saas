@@ -1,1 +1,207 @@
-'use client'; import { useState, useEffect } from 'react'; import { useRouter, useParams } from 'next/navigation'; import { ArrowLeft, Save } from 'lucide-react'; import Link from 'next/link'; import { getApiClient } from '@/lib/api-client'; import { PROJECT_STATUSES } from '@/lib/constants'; export default function EditProjectPage() { const router = useRouter(); const params = useParams(); const id = params.id as string; const [loading, setLoading] = useState(true); const [saving, setSaving] = useState(false); const [error, setError] = useState(''); const [customers, setCustomers] = useState<{ id: string; name: string }[]>([]); const [users, setUsers] = useState<{ id: string; full_name: string; email: string }[]>([]); const [costCenters, setCostCenters] = useState<{ id: string; code: string; name: string }[]>([]); const [form, setForm] = useState({ name: '', code: '', description: '', customer_id: '', start_date: '', end_date: '', budget: '', status: 'planning', project_manager_id: '', cost_center_id: '', }); useEffect(() => { const api = getApiClient(); Promise.all([ api.getProject(id), api.getCustomers({ limit: '100' }).catch(() => ({ data: [] })), api.getUsers({ limit: 100 }).catch(() => ({ data: [] })), api.getCostCenters({ limit: 200 }).catch(() => ({ data: [] })), ]).then(([projectRes, customersRes, usersRes, ccRes]) => { const p = projectRes as any; setForm({ name: p.name || '', code: p.code || '', description: p.description || '', customer_id: p.customer_id || '', start_date: p.start_date || '', end_date: p.end_date || '', budget: p.budget || '', status: p.status || 'planning', project_manager_id: p.project_manager_id || '', cost_center_id: p.cost_center_id || '', }); setCustomers((customersRes.data || []).map((c: any) => ({ id: c.id, name: c.name }))); setUsers((usersRes.data || []).map((u: any) => ({ id: u.id, full_name: u.full_name || u.email, email: u.email }))); setCostCenters((ccRes.data || []).map((cc: any) => ({ id: cc.id, code: cc.code, name: cc.name }))); setLoading(false); }).catch(() => { setError('No se pudo cargar el proyecto'); setLoading(false); }); }, [id]); const handleSubmit = async (e: React.FormEvent) => { e.preventDefault(); if (!form.name || !form.code) return; setSaving(true); try { const api = getApiClient(); await api.updateProject(id, { ...form, budget: form.budget ? parseFloat(form.budget) : 0, customer_id: form.customer_id || null, project_manager_id: form.project_manager_id || null, cost_center_id: form.cost_center_id || null, }); router.push(`/dashboard/projects/${id}`); } catch { setError('Error al guardar'); setSaving(false); } }; if (loading) { return ( <div className="space-y-6"> <div className="flex items-center gap-4"> <div className="w-9 h-9 bg-muted rounded-lg animate-pulse" /> <div className="space-y-2"> <div className="h-6 w-48 bg-muted rounded animate-pulse" /> <div className="h-4 w-32 bg-muted rounded animate-pulse" /> </div> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-6 "> <div className="h-64 bg-muted rounded animate-pulse" /> </div> </div> ); } return ( <div className="space-y-6"> <div className="flex items-center gap-4"> <Link href={`/dashboard/projects/${id}`}> <button className="p-2 hover:bg-muted rounded-lg transition-colors"> <ArrowLeft className="w-5 h-5 text-foreground" /> </button> </Link> <div> <h1 className="text-xl font-bold text-foreground">Editar Proyecto</h1> <p className="text-sm text-muted-foreground mt-1">{form.code} — {form.name}</p> </div> </div> {error && ( <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm"> {error} </div> )} <form onSubmit={handleSubmit}> <div className="bg-card border border-border rounded-xl shadow-sm p-6 space-y-6"> <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Nombre *</label> <input type="text" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" /> </div> <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Codigo *</label> <input type="text" required value={form.code} onChange={e => setForm({ ...form, code: e.target.value })} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" /> </div> </div> <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Descripcion</label> <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" /> </div> <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Cliente</label> <select value={form.customer_id} onChange={e => setForm({ ...form, customer_id: e.target.value })} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"> <option value="">Sin cliente</option> {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)} </select> </div> <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Gerente del Proyecto</label> <select value={form.project_manager_id} onChange={e => setForm({ ...form, project_manager_id: e.target.value })} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"> <option value="">Sin asignar</option> {users.map(u => <option key={u.id} value={u.id}>{u.full_name}</option>)} </select> </div> </div> <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Centro de Costo</label> <select value={form.cost_center_id} onChange={e => setForm({ ...form, cost_center_id: e.target.value })} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"> <option value="">Sin centro de costo</option> {costCenters.map(cc => <option key={cc.id} value={cc.id}>{cc.code} - {cc.name}</option>)} </select> </div> </div> <div className="grid grid-cols-1 md:grid-cols-4 gap-6"> <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Fecha Inicio</label> <input type="date" value={form.start_date} onChange={e => setForm({ ...form, start_date: e.target.value })} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" /> </div> <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Fecha Fin</label> <input type="date" value={form.end_date} onChange={e => setForm({ ...form, end_date: e.target.value })} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" /> </div> <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Presupuesto (CLP)</label> <input type="number" value={form.budget} onChange={e => setForm({ ...form, budget: e.target.value })} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" /> </div> <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Estado</label> <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"> {PROJECT_STATUSES.map(s => ( <option key={s.value} value={s.value}>{s.label}</option> ))} </select> </div> </div> </div> <div className="flex items-center justify-end gap-3 mt-6"> <Link href={`/dashboard/projects/${id}`}> <button type="button" className="bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"> Cancelar </button> </Link> <button type="submit" disabled={saving || !form.name || !form.code} className="bg-primary hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"> <Save className="w-4 h-4" /> {saving ? 'Guardando...' : 'Guardar Cambios'} </button> </div> </form> </div> ); } 
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import { ArrowLeft, Save } from 'lucide-react';
+import Link from 'next/link';
+import { getApiClient } from '@/lib/api-client';
+import { PROJECT_STATUSES } from '@/lib/constants';
+
+export default function EditProjectPage() {
+  const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [customers, setCustomers] = useState<{ id: string; name: string }[]>([]);
+  const [users, setUsers] = useState<{ id: string; full_name: string; email: string }[]>([]);
+  const [costCenters, setCostCenters] = useState<{ id: string; code: string; name: string }[]>([]);
+  const [form, setForm] = useState({
+    name: '', code: '', description: '', customer_id: '', start_date: '', end_date: '',
+    budget: '', status: 'planning', project_manager_id: '', cost_center_id: '',
+  });
+
+  useEffect(() => {
+    const api = getApiClient();
+    Promise.all([
+      api.getProject(id),
+      api.getCustomers({ limit: '100' }).catch(() => ({ data: [] })),
+      api.getUsers({ limit: 100 }).catch(() => ({ data: [] })),
+      api.getCostCenters({ limit: 200 }).catch(() => ({ data: [] })),
+    ]).then(([projectRes, customersRes, usersRes, ccRes]) => {
+      const p = projectRes as any;
+      setForm({
+        name: p.name || '',
+        code: p.code || '',
+        description: p.description || '',
+        customer_id: p.customer_id || '',
+        start_date: p.start_date || '',
+        end_date: p.end_date || '',
+        budget: p.budget || '',
+        status: p.status || 'planning',
+        project_manager_id: p.project_manager_id || '',
+        cost_center_id: p.cost_center_id || '',
+      });
+      setCustomers((customersRes.data || []).map((c: any) => ({ id: c.id, name: c.name })));
+      setUsers((usersRes.data || []).map((u: any) => ({ id: u.id, full_name: u.full_name || u.email, email: u.email })));
+      setCostCenters((ccRes.data || []).map((cc: any) => ({ id: cc.id, code: cc.code, name: cc.name })));
+      setLoading(false);
+    }).catch(() => {
+      setError('No se pudo cargar el proyecto');
+      setLoading(false);
+    });
+  }, [id]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name || !form.code) return;
+    setSaving(true);
+    try {
+      const api = getApiClient();
+      await api.updateProject(id, {
+        ...form,
+        budget: form.budget ? parseFloat(form.budget) : 0,
+        customer_id: form.customer_id || null,
+        project_manager_id: form.project_manager_id || null,
+        cost_center_id: form.cost_center_id || null,
+      });
+      router.push(`/dashboard/projects/${id}`);
+    } catch {
+      setError('Error al guardar');
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <div className="w-9 h-9 bg-muted rounded-lg animate-pulse" />
+          <div className="space-y-2">
+            <div className="h-6 w-48 bg-muted rounded animate-pulse" />
+            <div className="h-4 w-32 bg-muted rounded animate-pulse" />
+          </div>
+        </div>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border">
+          <div className="h-64 bg-muted rounded animate-pulse" />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-4">
+        <Link href={`/dashboard/projects/${id}`}>
+          <button className="p-2 hover:bg-muted rounded-lg transition-colors">
+            <ArrowLeft className="w-5 h-5 text-foreground" />
+          </button>
+        </Link>
+        <div>
+          <h1 className="text-xl font-bold text-foreground">Editar Proyecto</h1>
+          <p className="text-sm text-muted-foreground mt-1">{form.code} — {form.name}</p>
+        </div>
+      </div>
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit}>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-foreground">Nombre *</label>
+              <input type="text" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+            </div>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-foreground">Codigo *</label>
+              <input type="text" required value={form.code} onChange={e => setForm({ ...form, code: e.target.value })}
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <label className="block text-xs font-medium text-foreground">Descripcion</label>
+            <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3}
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-foreground">Cliente</label>
+              <select value={form.customer_id} onChange={e => setForm({ ...form, customer_id: e.target.value })}
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
+                <option value="">Sin cliente</option>
+                {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-foreground">Gerente del Proyecto</label>
+              <select value={form.project_manager_id} onChange={e => setForm({ ...form, project_manager_id: e.target.value })}
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
+                <option value="">Sin asignar</option>
+                {users.map(u => <option key={u.id} value={u.id}>{u.full_name}</option>)}
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-foreground">Centro de Costo</label>
+              <select value={form.cost_center_id} onChange={e => setForm({ ...form, cost_center_id: e.target.value })}
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
+                <option value="">Sin centro de costo</option>
+                {costCenters.map(cc => <option key={cc.id} value={cc.id}>{cc.code} - {cc.name}</option>)}
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-foreground">Fecha Inicio</label>
+              <input type="date" value={form.start_date} onChange={e => setForm({ ...form, start_date: e.target.value })}
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+            </div>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-foreground">Fecha Fin</label>
+              <input type="date" value={form.end_date} onChange={e => setForm({ ...form, end_date: e.target.value })}
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+            </div>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-foreground">Presupuesto (CLP)</label>
+              <input type="number" value={form.budget} onChange={e => setForm({ ...form, budget: e.target.value })}
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+            </div>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-foreground">Estado</label>
+              <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
+                {PROJECT_STATUSES.map(s => (
+                  <option key={s.value} value={s.value}>{s.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-end gap-3 mt-6">
+          <Link href={`/dashboard/projects/${id}`}>
+            <button type="button" className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+              Cancelar
+            </button>
+          </Link>
+          <button type="submit" disabled={saving || !form.name || !form.code}
+            className="bg-primary hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+            <Save className="w-4 h-4" />
+            {saving ? 'Guardando...' : 'Guardar Cambios'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}

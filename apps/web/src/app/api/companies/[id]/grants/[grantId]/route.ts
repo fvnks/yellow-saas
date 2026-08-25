@@ -1,1 +1,54 @@
-import { query } from '@/api/lib/db'; import { successResponse, errorResponse } from '@/api/lib/helpers'; import { NextRequest } from 'next/server'; import { jwtVerify } from 'jose'; import { getJwtSecret } from '@/lib/env'; const JWT_SECRET = getJwtSecret(); async function getUserFromRequest(request: NextRequest): Promise<{ id: string; company_id: string; role: string } | null> { const authHeader = request.headers.get('Authorization'); const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : request.cookies.get('auth-token')?.value; if (!token) return null; try { const { payload } = await jwtVerify(token, JWT_SECRET); if (!payload.company_id) return null; return { id: payload.id as string, company_id: payload.company_id as string, role: payload.role as string }; } catch { return null; } } export async function DELETE(request: NextRequest, { params }: { params: { id: string; grantId: string } }) { const user = await getUserFromRequest(request); if (!user) return errorResponse('No autorizado', 401); if (user.company_id !== params.id) return errorResponse('Acceso denegado', 403); if (!['owner', 'admin'].includes(user.role)) return errorResponse('Solo owner o admin pueden revocar accesos', 403); try { const grant = await query( 'SELECT id, super_admin_id FROM company_access_grants WHERE id = $1 AND company_id = $2', [params.grantId, params.id] ); if (grant.rows.length === 0) { return errorResponse('Acceso no encontrado', 404); } await query( 'UPDATE company_access_grants SET is_active = false, updated_at = now() WHERE id = $1', [params.grantId] ); // Log the action await query(` INSERT INTO access_audit_log (super_admin_id, company_id, action, details) VALUES ($1, $2, 'logout', $3) `, [grant.rows[0].super_admin_id, params.id, JSON.stringify({ grant_id: params.grantId, revoked_by: user.id })]); return successResponse({ success: true }); } catch (err) { console.error('Company grant revoke error:', err); return errorResponse('Error al revocar acceso', 500); } } 
+import { query } from '@/api/lib/db';
+import { successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+import { jwtVerify } from 'jose';
+import { getJwtSecret } from '@/lib/env';
+
+const JWT_SECRET = getJwtSecret();
+
+async function getUserFromRequest(request: NextRequest): Promise<{ id: string; company_id: string; role: string } | null> {
+  const authHeader = request.headers.get('Authorization');
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : request.cookies.get('auth-token')?.value;
+  if (!token) return null;
+  try {
+    const { payload } = await jwtVerify(token, JWT_SECRET);
+    if (!payload.company_id) return null;
+    return { id: payload.id as string, company_id: payload.company_id as string, role: payload.role as string };
+  } catch {
+    return null;
+  }
+}
+
+export async function DELETE(request: NextRequest, { params }: { params: { id: string; grantId: string } }) {
+  const user = await getUserFromRequest(request);
+  if (!user) return errorResponse('No autorizado', 401);
+  if (user.company_id !== params.id) return errorResponse('Acceso denegado', 403);
+  if (!['owner', 'admin'].includes(user.role)) return errorResponse('Solo owner o admin pueden revocar accesos', 403);
+
+  try {
+    const grant = await query(
+      'SELECT id, super_admin_id FROM company_access_grants WHERE id = $1 AND company_id = $2',
+      [params.grantId, params.id]
+    );
+
+    if (grant.rows.length === 0) {
+      return errorResponse('Acceso no encontrado', 404);
+    }
+
+    await query(
+      'UPDATE company_access_grants SET is_active = false, updated_at = now() WHERE id = $1',
+      [params.grantId]
+    );
+
+    // Log the action
+    await query(`
+      INSERT INTO access_audit_log (super_admin_id, company_id, action, details)
+      VALUES ($1, $2, 'logout', $3)
+    `, [grant.rows[0].super_admin_id, params.id, JSON.stringify({ grant_id: params.grantId, revoked_by: user.id })]);
+
+    return successResponse({ success: true });
+  } catch (err) {
+    console.error('Company grant revoke error:', err);
+    return errorResponse('Error al revocar acceso', 500);
+  }
+}

@@ -1,5 +1,108 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function POST( request: NextRequest, { params }: { params: { id: string; scheduleId: string } }
-) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const scheduleResult = await query( `SELECT * FROM cycle_count_schedules WHERE id = $1 AND company_id = $2`, [params.scheduleId, companyId] ); if (scheduleResult.rows.length === 0) return errorResponse('Schedule not found', 404); const schedule = scheduleResult.rows[0]; const countNumber = `CC-${schedule.frequency.toUpperCase()}-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`; let whereClause = 'WHERE p.company_id = $1 AND p.is_active = true AND p.track_stock = true'; const countParams: any[] = [companyId]; let paramIndex = 2; if (schedule.abc_classification) { whereClause += ` AND p.abc_classification = $${paramIndex}`; countParams.push(schedule.abc_classification); paramIndex++; } if (schedule.category_id) { whereClause += ` AND p.category_id = $${paramIndex}`; countParams.push(schedule.category_id); paramIndex++; } const productsResult = await query( `SELECT p.id, p.name, p.sku, sl.id as stock_level_id, sl.quantity, sl.warehouse_id FROM products p JOIN stock_levels sl ON p.id = sl.product_id AND sl.company_id = p.company_id ${whereClause} AND sl.warehouse_id = $${paramIndex}`, [...countParams, schedule.warehouse_id] ); if (productsResult.rows.length === 0) { return errorResponse('No products found for this schedule', 400); } const countResult = await query( `INSERT INTO inventory_counts (company_id, count_number, warehouse_id, status, count_type, notes, created_by, started_at) VALUES ($1, $2, $3, 'in_progress', 'cycle', $4, $5, NOW()) RETURNING *`, [companyId, countNumber, schedule.warehouse_id, `Conteo cíclico automático - ${schedule.name}`, schedule.responsible_id] ); const count = countResult.rows[0]; for (const product of productsResult.rows) { await query( `INSERT INTO inventory_count_items (company_id, count_id, product_id, system_quantity, counted_quantity, status) VALUES ($1, $2, $3, $4, NULL, 'pending')`, [companyId, count.id, product.id, product.quantity] ); } await query( `INSERT INTO cycle_count_runs (company_id, schedule_id, count_id, status) VALUES ($1, $2, $3, 'in_progress')`, [companyId, schedule.id, count.id] ); if (schedule.frequency === 'daily') { await query( `UPDATE cycle_count_schedules SET next_run_date = next_run_date + INTERVAL '1 day' WHERE id = $1`, [schedule.id] ); } else if (schedule.frequency === 'weekly') { await query( `UPDATE cycle_count_schedules SET next_run_date = next_run_date + INTERVAL '7 days' WHERE id = $1`, [schedule.id] ); } else if (schedule.frequency === 'monthly') { await query( `UPDATE cycle_count_schedules SET next_run_date = next_run_date + INTERVAL '1 month' WHERE id = $1`, [schedule.id] ); } else if (schedule.frequency === 'quarterly') { await query( `UPDATE cycle_count_schedules SET next_run_date = next_run_date + INTERVAL '3 months' WHERE id = $1`, [schedule.id] ); } return successResponse({ count, schedule_id: schedule.id, items_created: productsResult.rows.length, message: `Conteo cíclico creado: ${countNumber} con ${productsResult.rows.length} items` }, 201); } catch (err) { console.error('Run cycle count schedule error:', err); return errorResponse('Internal server error', 500); }
+import { NextRequest } from 'next/server';
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { id: string; scheduleId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const scheduleResult = await query(
+      `SELECT * FROM cycle_count_schedules WHERE id = $1 AND company_id = $2`,
+      [params.scheduleId, companyId]
+    );
+
+    if (scheduleResult.rows.length === 0) return errorResponse('Schedule not found', 404);
+
+    const schedule = scheduleResult.rows[0];
+
+    const countNumber = `CC-${schedule.frequency.toUpperCase()}-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+
+    let whereClause = 'WHERE p.company_id = $1 AND p.is_active = true AND p.track_stock = true';
+    const countParams: any[] = [companyId];
+    let paramIndex = 2;
+
+    if (schedule.abc_classification) {
+      whereClause += ` AND p.abc_classification = $${paramIndex}`;
+      countParams.push(schedule.abc_classification);
+      paramIndex++;
+    }
+
+    if (schedule.category_id) {
+      whereClause += ` AND p.category_id = $${paramIndex}`;
+      countParams.push(schedule.category_id);
+      paramIndex++;
+    }
+
+    const productsResult = await query(
+      `SELECT p.id, p.name, p.sku, sl.id as stock_level_id, sl.quantity, sl.warehouse_id
+       FROM products p
+       JOIN stock_levels sl ON p.id = sl.product_id AND sl.company_id = p.company_id
+       ${whereClause}
+       AND sl.warehouse_id = $${paramIndex}`,
+      [...countParams, schedule.warehouse_id]
+    );
+
+    if (productsResult.rows.length === 0) {
+      return errorResponse('No products found for this schedule', 400);
+    }
+
+    const countResult = await query(
+      `INSERT INTO inventory_counts (company_id, count_number, warehouse_id, status, count_type, notes, created_by, started_at)
+       VALUES ($1, $2, $3, 'in_progress', 'cycle', $4, $5, NOW())
+       RETURNING *`,
+      [companyId, countNumber, schedule.warehouse_id, `Conteo cíclico automático - ${schedule.name}`, schedule.responsible_id]
+    );
+
+    const count = countResult.rows[0];
+
+    for (const product of productsResult.rows) {
+      await query(
+        `INSERT INTO inventory_count_items (company_id, count_id, product_id, system_quantity, counted_quantity, status)
+         VALUES ($1, $2, $3, $4, NULL, 'pending')`,
+        [companyId, count.id, product.id, product.quantity]
+      );
+    }
+
+    await query(
+      `INSERT INTO cycle_count_runs (company_id, schedule_id, count_id, status)
+       VALUES ($1, $2, $3, 'in_progress')`,
+      [companyId, schedule.id, count.id]
+    );
+
+    if (schedule.frequency === 'daily') {
+      await query(
+        `UPDATE cycle_count_schedules SET next_run_date = next_run_date + INTERVAL '1 day' WHERE id = $1`,
+        [schedule.id]
+      );
+    } else if (schedule.frequency === 'weekly') {
+      await query(
+        `UPDATE cycle_count_schedules SET next_run_date = next_run_date + INTERVAL '7 days' WHERE id = $1`,
+        [schedule.id]
+      );
+    } else if (schedule.frequency === 'monthly') {
+      await query(
+        `UPDATE cycle_count_schedules SET next_run_date = next_run_date + INTERVAL '1 month' WHERE id = $1`,
+        [schedule.id]
+      );
+    } else if (schedule.frequency === 'quarterly') {
+      await query(
+        `UPDATE cycle_count_schedules SET next_run_date = next_run_date + INTERVAL '3 months' WHERE id = $1`,
+        [schedule.id]
+      );
+    }
+
+    return successResponse({
+      count,
+      schedule_id: schedule.id,
+      items_created: productsResult.rows.length,
+      message: `Conteo cíclico creado: ${countNumber} con ${productsResult.rows.length} items`
+    }, 201);
+  } catch (err) {
+    console.error('Run cycle count schedule error:', err);
+    return errorResponse('Internal server error', 500);
+  }
 }

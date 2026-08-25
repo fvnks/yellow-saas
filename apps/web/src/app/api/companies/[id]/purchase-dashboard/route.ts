@@ -1,4 +1,82 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function GET(req: NextRequest, { params }: { params: { id: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const now = new Date(); const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1); const thisYear = new Date(now.getFullYear(), 0, 1); const { rows: monthlyPo } = await query( `SELECT COALESCE(SUM(total_amount), 0) as total, COUNT(*) as count FROM purchase_orders WHERE company_id = $1 AND created_at >= $2 AND status != 'cancelled'`, [companyId, thisMonth.toISOString()] ); const { rows: pendingPo } = await query( `SELECT COUNT(*) as count FROM purchase_orders WHERE company_id = $1 AND status IN ('pending', 'confirmed', 'partial')`, [companyId] ); const { rows: pendingReceipts } = await query( `SELECT COUNT(*) as count FROM goods_receipts WHERE company_id = $1 AND status IN ('pending', 'received')`, [companyId] ); const { rows: pendingPayments } = await query( `SELECT COALESCE(SUM(total_amount - paid_amount), 0) as total, COUNT(*) as count FROM purchase_invoices WHERE company_id = $1 AND status IN ('pending', 'partial', 'overdue')`, [companyId] ); const { rows: yearlyPo } = await query( `SELECT COALESCE(SUM(total_amount), 0) as total FROM purchase_orders WHERE company_id = $1 AND created_at >= $2 AND status != 'cancelled'`, [companyId, thisYear.toISOString()] ); const { rows: topSuppliers } = await query( `SELECT s.name, s.tax_id, SUM(po.total_amount) as total_value, COUNT(*) as order_count FROM purchase_orders po JOIN suppliers s ON s.id = po.supplier_id WHERE po.company_id = $1 AND po.created_at >= $2 AND po.status != 'cancelled' GROUP BY s.id, s.name, s.tax_id ORDER BY total_value DESC LIMIT 10`, [companyId, thisYear.toISOString()] ); const { rows: monthlyTrend } = await query( `SELECT DATE_TRUNC('month', created_at) as month, SUM(total_amount) as total, COUNT(*) as count FROM purchase_orders WHERE company_id = $1 AND created_at >= $2 AND status != 'cancelled' GROUP BY DATE_TRUNC('month', created_at) ORDER BY month ASC`, [companyId, new Date(now.getFullYear() - 1, now.getMonth(), 1).toISOString()] ); const { rows: statusBreakdown } = await query( `SELECT status, COUNT(*) as count, SUM(total_amount) as total FROM purchase_orders WHERE company_id = $1 AND created_at >= $2 GROUP BY status`, [companyId, thisYear.toISOString()] ); return successResponse({ kpis: { monthlySpend: parseFloat(monthlyPo[0].total), monthlyOrders: parseInt(monthlyPo[0].count), pendingOrders: parseInt(pendingPo[0].count), pendingReceipts: parseInt(pendingReceipts[0].count), pendingPayments: parseFloat(pendingPayments[0].total), pendingPaymentCount: parseInt(pendingPayments[0].count), yearlySpend: parseFloat(yearlyPo[0].total), }, topSuppliers, monthlyTrend, statusBreakdown, }); } catch (e: any) { return errorResponse(e.message, 500); }
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const now = new Date();
+    const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const thisYear = new Date(now.getFullYear(), 0, 1);
+
+    const { rows: monthlyPo } = await query(
+      `SELECT COALESCE(SUM(total_amount), 0) as total, COUNT(*) as count
+       FROM purchase_orders WHERE company_id = $1 AND created_at >= $2 AND status != 'cancelled'`,
+      [companyId, thisMonth.toISOString()]
+    );
+
+    const { rows: pendingPo } = await query(
+      `SELECT COUNT(*) as count FROM purchase_orders
+       WHERE company_id = $1 AND status IN ('pending', 'confirmed', 'partial')`,
+      [companyId]
+    );
+
+    const { rows: pendingReceipts } = await query(
+      `SELECT COUNT(*) as count FROM goods_receipts
+       WHERE company_id = $1 AND status IN ('pending', 'received')`,
+      [companyId]
+    );
+
+    const { rows: pendingPayments } = await query(
+      `SELECT COALESCE(SUM(total_amount - paid_amount), 0) as total, COUNT(*) as count
+       FROM purchase_invoices WHERE company_id = $1 AND status IN ('pending', 'partial', 'overdue')`,
+      [companyId]
+    );
+
+    const { rows: yearlyPo } = await query(
+      `SELECT COALESCE(SUM(total_amount), 0) as total
+       FROM purchase_orders WHERE company_id = $1 AND created_at >= $2 AND status != 'cancelled'`,
+      [companyId, thisYear.toISOString()]
+    );
+
+    const { rows: topSuppliers } = await query(
+      `SELECT s.name, s.tax_id, SUM(po.total_amount) as total_value, COUNT(*) as order_count
+       FROM purchase_orders po JOIN suppliers s ON s.id = po.supplier_id
+       WHERE po.company_id = $1 AND po.created_at >= $2 AND po.status != 'cancelled'
+       GROUP BY s.id, s.name, s.tax_id ORDER BY total_value DESC LIMIT 10`,
+      [companyId, thisYear.toISOString()]
+    );
+
+    const { rows: monthlyTrend } = await query(
+      `SELECT DATE_TRUNC('month', created_at) as month, SUM(total_amount) as total, COUNT(*) as count
+       FROM purchase_orders WHERE company_id = $1 AND created_at >= $2 AND status != 'cancelled'
+       GROUP BY DATE_TRUNC('month', created_at) ORDER BY month ASC`,
+      [companyId, new Date(now.getFullYear() - 1, now.getMonth(), 1).toISOString()]
+    );
+
+    const { rows: statusBreakdown } = await query(
+      `SELECT status, COUNT(*) as count, SUM(total_amount) as total
+       FROM purchase_orders WHERE company_id = $1 AND created_at >= $2 GROUP BY status`,
+      [companyId, thisYear.toISOString()]
+    );
+
+    return successResponse({
+      kpis: {
+        monthlySpend: parseFloat(monthlyPo[0].total),
+        monthlyOrders: parseInt(monthlyPo[0].count),
+        pendingOrders: parseInt(pendingPo[0].count),
+        pendingReceipts: parseInt(pendingReceipts[0].count),
+        pendingPayments: parseFloat(pendingPayments[0].total),
+        pendingPaymentCount: parseInt(pendingPayments[0].count),
+        yearlySpend: parseFloat(yearlyPo[0].total),
+      },
+      topSuppliers,
+      monthlyTrend,
+      statusBreakdown,
+    });
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
 }

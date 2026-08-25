@@ -1,1 +1,226 @@
-﻿'use client'; import { useState, useEffect, useCallback } from 'react'; import { Search, Receipt, Banknote, CreditCard, ArrowLeftRight, TrendingUp, Filter, ChevronLeft, ChevronRight, Printer, FileText } from 'lucide-react'; import { getApiClient } from '@/lib/api-client'; import { toast } from 'sonner'; import { useRecetasRefresh } from '@/components/recetas/RefreshContext'; interface Sale { id: string; invoice_number: string; document_type: 'boleta' | 'factura'; status: string; invoice_date: string; created_at: string; total_amount: number; payment_method: string | null; card_transaction_number: string | null; customer: { id: string; name: string; tax_id: string } | null; } const paymentLabels: Record<string, { label: string; icon: any; badge: string }> = { cash: { label: 'Efectivo', icon: Banknote, badge: 'bg-emerald-50 text-emerald-700 border-emerald-200' }, card: { label: 'Tarjeta', icon: CreditCard, badge: 'bg-blue-50 text-blue-700 border-blue-200' }, transfer: { label: 'Transferencia', icon: ArrowLeftRight, badge: 'bg-blue-50 text-blue-700 border-blue-200' }, }; export default function SalesHistoryPage() { const { refreshKey } = useRecetasRefresh(); const [sales, setSales] = useState<Sale[]>([]); const [loading, setLoading] = useState(true); const [search, setSearch] = useState(''); const [paymentFilter, setPaymentFilter] = useState(''); const [docFilter, setDocFilter] = useState(''); const [page, setPage] = useState(1); const [total, setTotal] = useState(0); const limit = 20; const loadData = useCallback(async () => { try { const api = getApiClient(); const params: Record<string, string> = { sort: 'created_at', order: 'desc', page: String(page), limit: String(limit), }; if (search) params.search = search; if (paymentFilter) params.payment_method = paymentFilter; if (docFilter) params.document_type = docFilter; const res = await api.getInvoices(params) as unknown as { data: Sale[]; pagination: { total: number } }; setSales(res.data || []); setTotal(res.pagination?.total || 0); } catch (err) { toast.error('Error al cargar historial de ventas'); } setLoading(false); }, [search, paymentFilter, docFilter, page, refreshKey]); useEffect(() => { loadData(); }, [loadData]); const totalAmount = sales.reduce((sum, s) => sum + Number(s.total_amount), 0); const cardCount = sales.filter(s => s.payment_method === 'card').length; const totalPages = Math.max(1, Math.ceil(total / limit)); const formatMoney = (v: number) => '$' + (v || 0).toLocaleString('es-CL'); const formatDate = (d: string) => { if (!d) return '-'; return new Date(d).toLocaleDateString('es-CL'); }; const getPaymentInfo = (method: string | null) => paymentLabels[method || ''] || { label: 'Otro', icon: Receipt, badge: 'bg-muted text-foreground border-border' }; return ( <div className="space-y-6"> {/* Header */} <div className="flex items-center justify-between"> <div> <h1 className="text-xl font-bold text-foreground">Historial de Ventas</h1> <p className="text-sm text-muted-foreground mt-1">Todas las ventas registradas en el POS</p> </div> </div> {/* KPIs */} <div className="grid grid-cols-2 md:grid-cols-4 gap-4"> <div className="bg-card border border-border rounded-xl shadow-sm p-5"> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Ventas esta página</p> <p className="text-2xl font-bold text-foreground mt-1">{sales.length}</p> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-5"> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total esta página</p> <p className="text-2xl font-bold text-foreground mt-1">{formatMoney(totalAmount)}</p> <p className="text-xs text-emerald-600 mt-1 flex items-center gap-1"><TrendingUp className="w-3 h-3" /> Página {page} de {totalPages}</p> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-5"> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Pagos con tarjeta</p> <p className="text-2xl font-bold text-foreground mt-1">{cardCount}</p> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-5"> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total registros</p> <p className="text-2xl font-bold text-foreground mt-1">{total}</p> </div> </div> {/* Filters */} <div className="bg-card border border-border rounded-xl shadow-sm p-4"> <div className="flex items-center gap-4 flex-wrap"> <div className="relative flex-1 min-w-[220px]"> <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /> <input type="text" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="w-full pl-9 pr-3 py-2 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="Buscar por N° venta o cliente..." /> </div> <div className="flex items-center gap-2"> <Filter className="w-4 h-4 text-muted-foreground" /> <select value={docFilter} onChange={(e) => { setDocFilter(e.target.value); setPage(1); }} className="bg-muted border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"> <option value="">Tipo: Todos</option> <option value="boleta">Boleta</option> <option value="factura">Factura</option> </select> <select value={paymentFilter} onChange={(e) => { setPaymentFilter(e.target.value); setPage(1); }} className="bg-muted border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"> <option value="">Pago: Todos</option> <option value="cash">Efectivo</option> <option value="card">Tarjeta</option> <option value="transfer">Transferencia</option> </select> </div> </div> </div> {/* Table */} <div className="bg-card border border-border rounded-xl shadow-sm"> <div className="overflow-x-auto"> <table className="w-full"> <thead> <tr className="border-b border-border"> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">N° Venta</th> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tipo</th> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cliente</th> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Pago</th> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">N° Transacción</th> <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total</th> </tr> </thead> <tbody> {loading ? ( Array.from({ length: 6 }).map((_, i) => ( <tr key={i} className="border-b border-border"> <td colSpan={7} className="px-4 py-3"> <div className="h-4 bg-muted rounded animate-pulse" /> </td> </tr> )) ) : sales.length === 0 ? ( <tr> <td colSpan={7} className="px-4 py-10 text-center"> <Receipt className="w-10 h-10 text-foreground mx-auto mb-2" /> <p className="text-sm text-muted-foreground">No hay ventas registradas</p> </td> </tr> ) : sales.map((sale) => { const pay = getPaymentInfo(sale.payment_method); const PayIcon = pay.icon; return ( <tr key={sale.id} className="border-b border-border hover:bg-muted transition-colors"> <td className="px-4 py-3 text-xs font-medium text-foreground">{sale.invoice_number}</td> <td className="px-4 py-3 text-xs text-foreground">{formatDate(sale.invoice_date || sale.created_at)}</td> <td className="px-4 py-3"> <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${ sale.document_type === 'boleta' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-blue-50 text-primary border border-primary/20' }`}> {sale.document_type === 'boleta' ? 'Boleta' : 'Factura'} </span> </td> <td className="px-4 py-3 text-xs text-foreground">{sale.customer?.name || 'Consumidor Final'}</td> <td className="px-4 py-3"> <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold border ${pay.badge}`}> <PayIcon className="w-3 h-3" /> {pay.label} </span> </td> <td className="px-4 py-3"> {sale.card_transaction_number ? ( <span className="text-xs font-mono text-foreground">{sale.card_transaction_number}</span> ) : ( <span className="text-xs text-muted-foreground">—</span> )} </td> <td className="px-4 py-3 text-xs font-bold text-foreground text-right">{formatMoney(sale.total_amount)}</td> </tr> ); })} </tbody> </table> </div> </div> {/* Pagination */} <div className="flex items-center justify-between text-xs text-muted-foreground"> <p>Mostrando {sales.length > 0 ? ((page - 1) * limit) + 1 : 0}-{Math.min(page * limit, total)} de {total}</p> <div className="flex items-center gap-2"> <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page <= 1} className="p-2 bg-card border border-border rounded-lg hover:bg-muted transition-colors disabled:opacity-40 flex items-center gap-1"> <ChevronLeft className="w-4 h-4" /> Anterior </button> <span className="px-3 py-2 bg-primary text-white rounded-lg font-medium">Página {page} de {totalPages}</span> <button onClick={() => setPage(Math.min(totalPages, page + 1))} disabled={page >= totalPages} className="p-2 bg-card border border-border rounded-lg hover:bg-muted transition-colors disabled:opacity-40 flex items-center gap-1"> Siguiente <ChevronRight className="w-4 h-4" /> </button> </div> </div> </div> ); } 
+﻿'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import { Search, Receipt, Banknote, CreditCard, ArrowLeftRight, TrendingUp, Filter, ChevronLeft, ChevronRight, Printer, FileText } from 'lucide-react';
+import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
+import { useRecetasRefresh } from '@/components/recetas/RefreshContext';
+
+interface Sale {
+  id: string;
+  invoice_number: string;
+  document_type: 'boleta' | 'factura';
+  status: string;
+  invoice_date: string;
+  created_at: string;
+  total_amount: number;
+  payment_method: string | null;
+  card_transaction_number: string | null;
+  customer: { id: string; name: string; tax_id: string } | null;
+}
+
+const paymentLabels: Record<string, { label: string; icon: any; badge: string }> = {
+  cash: { label: 'Efectivo', icon: Banknote, badge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  card: { label: 'Tarjeta', icon: CreditCard, badge: 'bg-blue-50 text-blue-700 border-blue-200' },
+  transfer: { label: 'Transferencia', icon: ArrowLeftRight, badge: 'bg-blue-50 text-blue-700 border-blue-200' },
+};
+
+export default function SalesHistoryPage() {
+  const { refreshKey } = useRecetasRefresh();
+  const [sales, setSales] = useState<Sale[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [paymentFilter, setPaymentFilter] = useState('');
+  const [docFilter, setDocFilter] = useState('');
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const limit = 20;
+
+  const loadData = useCallback(async () => {
+    try {
+      const api = getApiClient();
+      const params: Record<string, string> = {
+        sort: 'created_at',
+        order: 'desc',
+        page: String(page),
+        limit: String(limit),
+      };
+      if (search) params.search = search;
+      if (paymentFilter) params.payment_method = paymentFilter;
+      if (docFilter) params.document_type = docFilter;
+      const res = await api.getInvoices(params) as unknown as { data: Sale[]; pagination: { total: number } };
+      setSales(res.data || []);
+      setTotal(res.pagination?.total || 0);
+    } catch (err) {
+      toast.error('Error al cargar historial de ventas');
+    }
+    setLoading(false);
+  }, [search, paymentFilter, docFilter, page, refreshKey]);
+
+  useEffect(() => { loadData(); }, [loadData]);
+
+  const totalAmount = sales.reduce((sum, s) => sum + Number(s.total_amount), 0);
+  const cardCount = sales.filter(s => s.payment_method === 'card').length;
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+
+  const formatMoney = (v: number) => '$' + (v || 0).toLocaleString('es-CL');
+  const formatDate = (d: string) => {
+    if (!d) return '-';
+    return new Date(d).toLocaleDateString('es-CL');
+  };
+
+  const getPaymentInfo = (method: string | null) => paymentLabels[method || ''] || { label: 'Otro', icon: Receipt, badge: 'bg-muted text-foreground border-border' };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-foreground">Historial de Ventas</h1>
+          <p className="text-sm text-muted-foreground mt-1">Todas las ventas registradas en el POS</p>
+        </div>
+      </div>
+
+      {/* KPIs */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-5">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Ventas esta página</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{sales.length}</p>
+        </div>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-5">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total esta página</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{formatMoney(totalAmount)}</p>
+          <p className="text-xs text-emerald-600 mt-1 flex items-center gap-1"><TrendingUp className="w-3 h-3" /> Página {page} de {totalPages}</p>
+        </div>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-5">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Pagos con tarjeta</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{cardCount}</p>
+        </div>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-5">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total registros</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{total}</p>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4">
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="relative flex-1 min-w-[220px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+              className="w-full pl-9 pr-3 py-2 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              placeholder="Buscar por N° venta o cliente..."
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-muted-foreground" />
+            <select value={docFilter} onChange={(e) => { setDocFilter(e.target.value); setPage(1); }}
+              className="bg-muted border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20">
+              <option value="">Tipo: Todos</option>
+              <option value="boleta">Boleta</option>
+              <option value="factura">Factura</option>
+            </select>
+            <select value={paymentFilter} onChange={(e) => { setPaymentFilter(e.target.value); setPage(1); }}
+              className="bg-muted border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20">
+              <option value="">Pago: Todos</option>
+              <option value="cash">Efectivo</option>
+              <option value="card">Tarjeta</option>
+              <option value="transfer">Transferencia</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="bg-card border border-border rounded-xl shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">N° Venta</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tipo</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cliente</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Pago</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">N° Transacción</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                Array.from({ length: 6 }).map((_, i) => (
+                  <tr key={i} className="border-b border-border">
+                    <td colSpan={7} className="px-4 py-3">
+                      <div className="h-4 bg-muted rounded animate-pulse" />
+                    </td>
+                  </tr>
+                ))
+              ) : sales.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-4 py-10 text-center">
+                    <Receipt className="w-10 h-10 text-foreground mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground">No hay ventas registradas</p>
+                  </td>
+                </tr>
+              ) : sales.map((sale) => {
+                const pay = getPaymentInfo(sale.payment_method);
+                const PayIcon = pay.icon;
+                return (
+                  <tr key={sale.id} className="border-b border-border hover:bg-muted transition-colors">
+                    <td className="px-4 py-3 text-xs font-medium text-foreground">{sale.invoice_number}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{formatDate(sale.invoice_date || sale.created_at)}</td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
+                        sale.document_type === 'boleta' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-blue-50 text-primary border border-primary/20'
+                      }`}>
+                        {sale.document_type === 'boleta' ? 'Boleta' : 'Factura'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-xs text-foreground">{sale.customer?.name || 'Consumidor Final'}</td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold border ${pay.badge}`}>
+                        <PayIcon className="w-3 h-3" />
+                        {pay.label}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      {sale.card_transaction_number ? (
+                        <span className="text-xs font-mono text-foreground">{sale.card_transaction_number}</span>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-xs font-bold text-foreground text-right">{formatMoney(sale.total_amount)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <p>Mostrando {sales.length > 0 ? ((page - 1) * limit) + 1 : 0}-{Math.min(page * limit, total)} de {total}</p>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setPage(Math.max(1, page - 1))}
+            disabled={page <= 1}
+            className="p-2 bg-card border border-border rounded-lg hover:bg-muted transition-colors disabled:opacity-40 flex items-center gap-1">
+            <ChevronLeft className="w-4 h-4" /> Anterior
+          </button>
+          <span className="px-3 py-2 bg-primary text-white rounded-lg font-medium">Página {page} de {totalPages}</span>
+          <button
+            onClick={() => setPage(Math.min(totalPages, page + 1))}
+            disabled={page >= totalPages}
+            className="p-2 bg-card border border-border rounded-lg hover:bg-muted transition-colors disabled:opacity-40 flex items-center gap-1">
+            Siguiente <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

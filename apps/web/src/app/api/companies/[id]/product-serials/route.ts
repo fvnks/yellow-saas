@@ -1,5 +1,60 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function GET(req: NextRequest, { params }: { params: { id: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const { searchParams } = new URL(req.url); const productId = searchParams.get('product_id'); const status = searchParams.get('status'); const serial = searchParams.get('serial'); let sql = ` SELECT ps.*, p.name as product_name, p.sku, w.name as warehouse_name FROM product_serials ps JOIN products p ON p.id = ps.product_id JOIN warehouses w ON w.id = ps.warehouse_id WHERE ps.company_id = $1 `; const sqlParams: any[] = [companyId]; let idx = 2; if (productId) { sql += ` AND ps.product_id = $${idx}`; sqlParams.push(productId); idx++; } if (status) { sql += ` AND ps.status = $${idx}`; sqlParams.push(status); idx++; } if (serial) { sql += ` AND ps.serial_number ILIKE $${idx}`; sqlParams.push(`%${serial}%`); idx++; } sql += ' ORDER BY ps.created_at DESC LIMIT 200'; const { rows } = await query(sql, sqlParams); return successResponse(rows); } catch (e: any) { return errorResponse(e.message, 500); }
-} export async function POST(req: NextRequest, { params }: { params: { id: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const body = await req.json(); const { product_id, warehouse_id, serial_number, batch_number, notes } = body; if (!product_id || !warehouse_id || !serial_number) { return errorResponse('product_id, warehouse_id, serial_number required', 400); } const { rows } = await query( `INSERT INTO product_serials (company_id, product_id, warehouse_id, serial_number, batch_number, notes) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`, [companyId, product_id, warehouse_id, serial_number, batch_number || '', notes || ''] ); return successResponse(rows[0], 201); } catch (e: any) { if (e.message?.includes('unique')) return errorResponse('Serial number already exists', 409); return errorResponse(e.message, 500); }
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { searchParams } = new URL(req.url);
+    const productId = searchParams.get('product_id');
+    const status = searchParams.get('status');
+    const serial = searchParams.get('serial');
+
+    let sql = `
+      SELECT ps.*, p.name as product_name, p.sku, w.name as warehouse_name
+      FROM product_serials ps
+      JOIN products p ON p.id = ps.product_id
+      JOIN warehouses w ON w.id = ps.warehouse_id
+      WHERE ps.company_id = $1
+    `;
+    const sqlParams: any[] = [companyId];
+    let idx = 2;
+
+    if (productId) { sql += ` AND ps.product_id = $${idx}`; sqlParams.push(productId); idx++; }
+    if (status) { sql += ` AND ps.status = $${idx}`; sqlParams.push(status); idx++; }
+    if (serial) { sql += ` AND ps.serial_number ILIKE $${idx}`; sqlParams.push(`%${serial}%`); idx++; }
+
+    sql += ' ORDER BY ps.created_at DESC LIMIT 200';
+
+    const { rows } = await query(sql, sqlParams);
+    return successResponse(rows);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
+
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await req.json();
+    const { product_id, warehouse_id, serial_number, batch_number, notes } = body;
+
+    if (!product_id || !warehouse_id || !serial_number) {
+      return errorResponse('product_id, warehouse_id, serial_number required', 400);
+    }
+
+    const { rows } = await query(
+      `INSERT INTO product_serials (company_id, product_id, warehouse_id, serial_number, batch_number, notes)
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [companyId, product_id, warehouse_id, serial_number, batch_number || '', notes || '']
+    );
+    return successResponse(rows[0], 201);
+  } catch (e: any) {
+    if (e.message?.includes('unique')) return errorResponse('Serial number already exists', 409);
+    return errorResponse(e.message, 500);
+  }
 }

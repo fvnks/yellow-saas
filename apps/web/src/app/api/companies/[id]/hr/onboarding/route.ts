@@ -1,5 +1,43 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function GET(request: NextRequest) { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); try { const result = await query( `SELECT ho.*, e.first_name || ' ' || e.last_name as employee_name, e.rut as employee_rut FROM hr_onboarding ho JOIN employees e ON e.id = ho.employee_id WHERE ho.company_id = $1 ORDER BY ho.created_at DESC`, [companyId] ); return successResponse(result.rows); } catch (err: any) { return errorResponse(err.message, 500); }
-} export async function POST(request: NextRequest) { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const { employee_id, start_date, mentor_name, notes } = body; if (!employee_id || !start_date) return errorResponse('employee_id y start_date son requeridos', 400); try { const result = await query( `INSERT INTO hr_onboarding (company_id, employee_id, start_date, mentor_name, notes, status, progress, tasks_total, tasks_completed) VALUES ($1, $2, $3, $4, $5, 'in_progress', 0, 10, 0) RETURNING *`, [companyId, employee_id, start_date, mentor_name || null, notes || null] ); return successResponse(result.rows[0]); } catch (err: any) { return errorResponse(err.message, 500); }
+import { NextRequest } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  const companyId = await getCompanyId(request);
+  if (!companyId) return errorResponse('Company ID not found', 400);
+
+  try {
+    const result = await query(
+      `SELECT ho.*, e.first_name || ' ' || e.last_name as employee_name, e.rut as employee_rut
+       FROM hr_onboarding ho
+       JOIN employees e ON e.id = ho.employee_id
+       WHERE ho.company_id = $1
+       ORDER BY ho.created_at DESC`,
+      [companyId]
+    );
+    return successResponse(result.rows);
+  } catch (err: any) {
+    return errorResponse(err.message, 500);
+  }
+}
+
+export async function POST(request: NextRequest) {
+  const companyId = await getCompanyId(request);
+  if (!companyId) return errorResponse('Company ID not found', 400);
+
+  const body = await request.json();
+  const { employee_id, start_date, mentor_name, notes } = body;
+
+  if (!employee_id || !start_date) return errorResponse('employee_id y start_date son requeridos', 400);
+
+  try {
+    const result = await query(
+      `INSERT INTO hr_onboarding (company_id, employee_id, start_date, mentor_name, notes, status, progress, tasks_total, tasks_completed)
+       VALUES ($1, $2, $3, $4, $5, 'in_progress', 0, 10, 0) RETURNING *`,
+      [companyId, employee_id, start_date, mentor_name || null, notes || null]
+    );
+    return successResponse(result.rows[0]);
+  } catch (err: any) {
+    return errorResponse(err.message, 500);
+  }
 }

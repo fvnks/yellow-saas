@@ -1,5 +1,114 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse, checkAndCreateLowStockNotification } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function POST( request: NextRequest, { params }: { params: { id: string; transferId: string } }
-) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const transferCheck = await query( `SELECT st.*, (SELECT json_agg(json_build_object( 'product_id', sti.product_id, 'quantity', sti.quantity, 'unit_cost', sti.unit_cost )) FROM stock_transfer_items sti WHERE sti.transfer_id = st.id) as items FROM stock_transfers st WHERE st.id = $1 AND st.company_id = $2`, [params.transferId, companyId] ); if (transferCheck.rows.length === 0) return errorResponse('Transfer not found', 404); const transfer = transferCheck.rows[0]; if (transfer.status !== 'draft' && transfer.status !== 'pending') { return errorResponse('Transfer cannot be confirmed in its current status', 400); } // Check stock availability for all items for (const item of transfer.items) { const stockCheck = await query( `SELECT quantity FROM stock_levels WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`, [companyId, item.product_id, transfer.source_warehouse_id] ); const currentStock = stockCheck.rows.length > 0 ? Number(stockCheck.rows[0].quantity) : 0; if (currentStock < Number(item.quantity)) { const prodCheck = await query('SELECT name FROM products WHERE id = $1', [item.product_id]); const prodName = prodCheck.rows[0]?.name || item.product_id; return errorResponse(`Stock insuficiente para "${prodName}": disponible ${currentStock}, solicitado ${item.quantity}`, 400); } } // Execute transfer in a transaction await query('BEGIN'); try { for (const item of transfer.items) { const qty = Number(item.quantity); const cost = Number(item.unit_cost) || 0; // Create transfer_out movement at source await query( `INSERT INTO stock_movements (company_id, product_id, warehouse_id, type, quantity, unit_cost, notes, created_by) VALUES ($1, $2, $3, 'transfer_out', $4, $5, $6, $7)`, [companyId, item.product_id, transfer.source_warehouse_id, -qty, cost, `Transferencia ${transfer.transfer_number}`, transfer.created_by] ); // Create transfer_in movement at destination await query( `INSERT INTO stock_movements (company_id, product_id, warehouse_id, type, quantity, unit_cost, notes, created_by) VALUES ($1, $2, $3, 'transfer_in', $4, $5, $6, $7)`, [companyId, item.product_id, transfer.destination_warehouse_id, qty, cost, `Transferencia ${transfer.transfer_number}`, transfer.created_by] ); // Update source stock await query( `UPDATE stock_levels SET quantity = quantity - $4, updated_at = NOW() WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`, [companyId, item.product_id, transfer.source_warehouse_id, qty] ); checkAndCreateLowStockNotification(companyId, item.product_id, transfer.source_warehouse_id); // Update destination stock (create if not exists) const destStock = await query( `SELECT id FROM stock_levels WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`, [companyId, item.product_id, transfer.destination_warehouse_id] ); if (destStock.rows.length > 0) { await query( `UPDATE stock_levels SET quantity = quantity + $4, updated_at = NOW() WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`, [companyId, item.product_id, transfer.destination_warehouse_id, qty] ); } else { await query( `INSERT INTO stock_levels (company_id, product_id, warehouse_id, quantity) VALUES ($1, $2, $3, $4)`, [companyId, item.product_id, transfer.destination_warehouse_id, qty] ); } } // Update transfer status await query( `UPDATE stock_transfers SET status = 'delivered', updated_at = NOW() WHERE id = $1 AND company_id = $2`, [params.transferId, companyId] ); await query('COMMIT'); return successResponse({ message: 'Transfer confirmed successfully' }); } catch (err) { await query('ROLLBACK'); throw err; } } catch { return errorResponse('Failed to confirm transfer', 500); }
+import { NextRequest } from 'next/server';
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { id: string; transferId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const transferCheck = await query(
+      `SELECT st.*, 
+        (SELECT json_agg(json_build_object(
+          'product_id', sti.product_id,
+          'quantity', sti.quantity,
+          'unit_cost', sti.unit_cost
+        )) FROM stock_transfer_items sti WHERE sti.transfer_id = st.id) as items
+       FROM stock_transfers st
+       WHERE st.id = $1 AND st.company_id = $2`,
+      [params.transferId, companyId]
+    );
+
+    if (transferCheck.rows.length === 0) return errorResponse('Transfer not found', 404);
+
+    const transfer = transferCheck.rows[0];
+    if (transfer.status !== 'draft' && transfer.status !== 'pending') {
+      return errorResponse('Transfer cannot be confirmed in its current status', 400);
+    }
+
+    // Check stock availability for all items
+    for (const item of transfer.items) {
+      const stockCheck = await query(
+        `SELECT quantity FROM stock_levels WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`,
+        [companyId, item.product_id, transfer.source_warehouse_id]
+      );
+      const currentStock = stockCheck.rows.length > 0 ? Number(stockCheck.rows[0].quantity) : 0;
+      if (currentStock < Number(item.quantity)) {
+        const prodCheck = await query('SELECT name FROM products WHERE id = $1', [item.product_id]);
+        const prodName = prodCheck.rows[0]?.name || item.product_id;
+        return errorResponse(`Stock insuficiente para "${prodName}": disponible ${currentStock}, solicitado ${item.quantity}`, 400);
+      }
+    }
+
+    // Execute transfer in a transaction
+    await query('BEGIN');
+
+    try {
+      for (const item of transfer.items) {
+        const qty = Number(item.quantity);
+        const cost = Number(item.unit_cost) || 0;
+
+        // Create transfer_out movement at source
+        await query(
+          `INSERT INTO stock_movements (company_id, product_id, warehouse_id, type, quantity, unit_cost, notes, created_by)
+           VALUES ($1, $2, $3, 'transfer_out', $4, $5, $6, $7)`,
+          [companyId, item.product_id, transfer.source_warehouse_id, -qty, cost, `Transferencia ${transfer.transfer_number}`, transfer.created_by]
+        );
+
+        // Create transfer_in movement at destination
+        await query(
+          `INSERT INTO stock_movements (company_id, product_id, warehouse_id, type, quantity, unit_cost, notes, created_by)
+           VALUES ($1, $2, $3, 'transfer_in', $4, $5, $6, $7)`,
+          [companyId, item.product_id, transfer.destination_warehouse_id, qty, cost, `Transferencia ${transfer.transfer_number}`, transfer.created_by]
+        );
+
+        // Update source stock
+        await query(
+          `UPDATE stock_levels SET quantity = quantity - $4, updated_at = NOW()
+           WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`,
+          [companyId, item.product_id, transfer.source_warehouse_id, qty]
+        );
+
+        checkAndCreateLowStockNotification(companyId, item.product_id, transfer.source_warehouse_id);
+
+        // Update destination stock (create if not exists)
+        const destStock = await query(
+          `SELECT id FROM stock_levels WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`,
+          [companyId, item.product_id, transfer.destination_warehouse_id]
+        );
+
+        if (destStock.rows.length > 0) {
+          await query(
+            `UPDATE stock_levels SET quantity = quantity + $4, updated_at = NOW()
+             WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`,
+            [companyId, item.product_id, transfer.destination_warehouse_id, qty]
+          );
+        } else {
+          await query(
+            `INSERT INTO stock_levels (company_id, product_id, warehouse_id, quantity)
+             VALUES ($1, $2, $3, $4)`,
+            [companyId, item.product_id, transfer.destination_warehouse_id, qty]
+          );
+        }
+      }
+
+      // Update transfer status
+      await query(
+        `UPDATE stock_transfers SET status = 'delivered', updated_at = NOW()
+         WHERE id = $1 AND company_id = $2`,
+        [params.transferId, companyId]
+      );
+
+      await query('COMMIT');
+      return successResponse({ message: 'Transfer confirmed successfully' });
+    } catch (err) {
+      await query('ROLLBACK');
+      throw err;
+    }
+  } catch {
+    return errorResponse('Failed to confirm transfer', 500);
+  }
 }

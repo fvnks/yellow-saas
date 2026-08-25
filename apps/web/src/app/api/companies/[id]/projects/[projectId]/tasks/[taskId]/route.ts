@@ -1,9 +1,84 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function GET( request: NextRequest, { params }: { params: { id: string; projectId: string; taskId: string } }
-) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const result = await query( `SELECT pt.*, prof.full_name as assignee_name FROM project_tasks pt LEFT JOIN profiles prof ON pt.assignee_id = prof.id WHERE pt.id = $1 AND pt.project_id = $2 AND pt.company_id = $3`, [params.taskId, params.projectId, companyId] ); if (result.rows.length === 0) return errorResponse('Task not found', 404); return successResponse(result.rows[0]); } catch { return errorResponse('Failed to fetch task', 500); }
-} export async function PUT( request: NextRequest, { params }: { params: { id: string; projectId: string; taskId: string } }
-) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const result = await query( `UPDATE project_tasks SET name = $1, description = $2, assignee_id = $3, status = $4, priority = $5, start_date = $6, due_date = $7, estimated_hours = $8, actual_hours = $9, progress = $10, parent_id = $11, updated_at = NOW() WHERE id = $12 AND project_id = $13 AND company_id = $14 RETURNING *`, [body.name, body.description, body.assignee_id, body.status, body.priority, body.start_date, body.due_date, body.estimated_hours, body.actual_hours, body.progress, body.parent_id, params.taskId, params.projectId, companyId] ); if (result.rows.length === 0) return errorResponse('Task not found', 404); return successResponse(result.rows[0]); } catch { return errorResponse('Failed to update task', 500); }
-} export async function DELETE( request: NextRequest, { params }: { params: { id: string; projectId: string; taskId: string } }
-) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); await query( 'UPDATE project_tasks SET parent_id = NULL WHERE parent_id = $1 AND company_id = $2', [params.taskId, companyId] ); const result = await query( 'DELETE FROM project_tasks WHERE id = $1 AND project_id = $2 AND company_id = $3 RETURNING id', [params.taskId, params.projectId, companyId] ); if (result.rows.length === 0) return errorResponse('Task not found', 404); return successResponse({ message: 'Task deleted successfully' }); } catch { return errorResponse('Failed to delete task', 500); }
+import { NextRequest } from 'next/server';
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string; projectId: string; taskId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const result = await query(
+      `SELECT pt.*,
+        prof.full_name as assignee_name
+       FROM project_tasks pt
+       LEFT JOIN profiles prof ON pt.assignee_id = prof.id
+       WHERE pt.id = $1 AND pt.project_id = $2 AND pt.company_id = $3`,
+      [params.taskId, params.projectId, companyId]
+    );
+
+    if (result.rows.length === 0) return errorResponse('Task not found', 404);
+
+    return successResponse(result.rows[0]);
+  } catch {
+    return errorResponse('Failed to fetch task', 500);
+  }
+}
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string; projectId: string; taskId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+
+    const result = await query(
+      `UPDATE project_tasks SET
+        name = $1, description = $2, assignee_id = $3, status = $4, priority = $5,
+        start_date = $6, due_date = $7, estimated_hours = $8, actual_hours = $9,
+        progress = $10, parent_id = $11, updated_at = NOW()
+       WHERE id = $12 AND project_id = $13 AND company_id = $14
+       RETURNING *`,
+      [body.name, body.description, body.assignee_id, body.status, body.priority,
+       body.start_date, body.due_date, body.estimated_hours, body.actual_hours,
+       body.progress, body.parent_id, params.taskId, params.projectId, companyId]
+    );
+
+    if (result.rows.length === 0) return errorResponse('Task not found', 404);
+
+    return successResponse(result.rows[0]);
+  } catch {
+    return errorResponse('Failed to update task', 500);
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string; projectId: string; taskId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    await query(
+      'UPDATE project_tasks SET parent_id = NULL WHERE parent_id = $1 AND company_id = $2',
+      [params.taskId, companyId]
+    );
+
+    const result = await query(
+      'DELETE FROM project_tasks WHERE id = $1 AND project_id = $2 AND company_id = $3 RETURNING id',
+      [params.taskId, params.projectId, companyId]
+    );
+
+    if (result.rows.length === 0) return errorResponse('Task not found', 404);
+
+    return successResponse({ message: 'Task deleted successfully' });
+  } catch {
+    return errorResponse('Failed to delete task', 500);
+  }
 }

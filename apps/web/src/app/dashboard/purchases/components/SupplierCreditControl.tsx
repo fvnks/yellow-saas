@@ -1,15 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { AlertTriangle, DollarSign, Users } from 'lucide-react';
-
-const bucketCfg: Record<string, { label: string; color: string; bg: string }> = {
-  current: { label: 'Corriente', color: 'text-emerald-700', bg: 'bg-emerald-50' },
-  '1-30': { label: '1-30 días', color: 'text-amber-700', bg: 'bg-amber-50' },
-  '31-60': { label: '31-60 días', color: 'text-orange-700', bg: 'bg-orange-50' },
-  '61-90': { label: '61-90 días', color: 'text-red-700', bg: 'bg-red-50' },
-  '90+': { label: '90+ días', color: 'text-red-900', bg: 'bg-red-100' },
-};
+import { AlertTriangle, DollarSign, Users, TrendingDown } from 'lucide-react';
 
 export default function SupplierCreditControl() {
   const [supplierTotals, setSupplierTotals] = useState<any[]>([]);
@@ -18,27 +10,25 @@ export default function SupplierCreditControl() {
   const [expandedSupplier, setExpandedSupplier] = useState<string | null>(null);
   const [agingDetails, setAgingDetails] = useState<any[]>([]);
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  useEffect(() => { loadData(); }, []);
 
   const loadData = async () => {
     try {
       const companyId = localStorage.getItem('company_id');
       const res = await fetch(`/api/companies/${companyId}/supplier-credit-control`);
-      if (res.ok) {
-        const j = await res.json();
-        setSupplierTotals(j.data.supplierTotals || []);
-        setSummary(j.data.summary || null);
-        setAgingDetails(j.data.aging || []);
-      }
-    } catch (e) {
-      console.error(e);
-    }
+      if (res.ok) { const j = await res.json(); setSupplierTotals(j.data.supplierTotals || []); setSummary(j.data.summary || null); setAgingDetails(j.data.aging || []); }
+    } catch (e) { console.error(e); }
     setLoading(false);
   };
 
   const fmt = (v: number) => `$${v.toLocaleString('en-US', { minimumFractionDigits: 0 })}`;
+  const bucketCfg: Record<string, { label: string; color: string; bg: string }> = {
+    current: { label: 'Corriente', color: 'text-emerald-700', bg: 'bg-emerald-50' },
+    '1-30': { label: '1-30 días', color: 'text-amber-700', bg: 'bg-amber-50' },
+    '31-60': { label: '31-60 días', color: 'text-orange-700', bg: 'bg-orange-50' },
+    '61-90': { label: '61-90 días', color: 'text-red-700', bg: 'bg-red-50' },
+    '90+': { label: '90+ días', color: 'text-red-900', bg: 'bg-red-100' },
+  };
 
   if (loading) return null;
 
@@ -75,7 +65,7 @@ export default function SupplierCreditControl() {
           const details = agingDetails.filter(a => a.id === s.id);
           const isExpanded = expandedSupplier === s.id;
           return (
-            <div key={s.id} className="bg-card border border-border rounded-xl overflow-hidden ">
+            <div key={s.id} className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-border">
               <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-muted" onClick={() => setExpandedSupplier(isExpanded ? null : s.id)}>
                 <div className="flex items-center gap-3">
                   <Users className="w-5 h-5 text-muted-foreground" />
@@ -89,7 +79,6 @@ export default function SupplierCreditControl() {
                   {s.overdue_amount > 0 && <div className="text-right"><p className="text-xs font-bold text-red-600">{fmt(s.overdue_amount)}</p><p className="text-[9px] text-red-500">Vencido</p></div>}
                 </div>
               </div>
-
               {isExpanded && details.length > 0 && (
                 <div className="border-t border-border px-4 pb-4">
                   <table className="w-full mt-2">

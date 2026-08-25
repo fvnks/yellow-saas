@@ -1,13 +1,118 @@
-export interface DocumentSettings { template_id: 'classic' | 'minimal' | 'bold'; primary_color: string; accent_color: string; show_logo: boolean; show_qr: boolean; language: 'es' | 'en'; currency: 'CLP' | 'USD' | 'EUR'; tax_label: string; header_text: string; footer_text: string; default_notes: string; document_titles: { boleta: string; factura: string; cotizacion: string; orden_venta: string; orden_compra: string; };
-} export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = { template_id: 'classic', primary_color: '#1e293b', accent_color: '#4f46e5', show_logo: true, show_qr: true, language: 'es', currency: 'CLP', tax_label: 'IVA (19%)', header_text: '', footer_text: 'Documento generado por Yellow ERP', default_notes: '', document_titles: { boleta: 'BOLETA DE VENTA', factura: 'FACTURA DE VENTA', cotizacion: 'COTIZACIÓN', orden_venta: 'ORDEN DE VENTA', orden_compra: 'ORDEN DE COMPRA', },
-}; export const DOCUMENT_TEMPLATES: { id: DocumentSettings['template_id']; name: string; description: string }[] = [ { id: 'classic', name: 'Clásico', description: 'Estilo corporativo con encabezado sobrio y QR' }, { id: 'minimal', name: 'Minimalista', description: 'Limpio y simple, sin QR' }, { id: 'bold', name: 'Enérgico', description: 'Acento de color fuerte y tablas destacadas' },
-]; export const CURRENCIES: { code: DocumentSettings['currency']; symbol: string; label: string }[] = [ { code: 'CLP', symbol: '$', label: 'Peso chileno (CLP)' }, { code: 'USD', symbol: 'US$', label: 'Dólar estadounidense (USD)' }, { code: 'EUR', symbol: '€', label: 'Euro (EUR)' },
-]; export const LANGUAGES: { code: DocumentSettings['language']; label: string }[] = [ { code: 'es', label: 'Español' }, { code: 'en', label: 'Inglés' },
-]; export function hexToRgb(hex: string): [number, number, number] { const clean = hex.replace('#', ''); const full = clean.length === 3 ? clean.split('').map(c => c + c).join('') : clean; const num = parseInt(full, 16); if (isNaN(num) || full.length !== 6) return [30, 41, 59]; return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
-} export function mergeSettings(raw: unknown): DocumentSettings { const r = (raw || {}) as Partial<DocumentSettings>; return { ...DEFAULT_DOCUMENT_SETTINGS, ...r, document_titles: { ...DEFAULT_DOCUMENT_SETTINGS.document_titles, ...(r.document_titles || {}), }, } as DocumentSettings;
-} export function formatCurrency(amount: number, settings?: DocumentSettings): string { const s = resolveSettings(settings); const locale = s.language === 'en' ? 'en-US' : 'es-CL'; return new Intl.NumberFormat(locale, { style: 'currency', currency: s.currency, maximumFractionDigits: 0 }).format(amount);
-} export function formatDate(dateStr: string, settings?: DocumentSettings): string { if (!dateStr) return '—'; try { const d = new Date(dateStr); const s = resolveSettings(settings); const locale = s.language === 'en' ? 'en-US' : 'es-CL'; return d.toLocaleDateString(locale, { day: '2-digit', month: 'long', year: 'numeric' }); } catch { return dateStr; }
-} export function formatDateShort(dateStr: string, settings?: DocumentSettings): string { if (!dateStr) return '—'; try { const d = new Date(dateStr); const s = resolveSettings(settings); const locale = s.language === 'en' ? 'en-US' : 'es-CL'; return d.toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }); } catch { return dateStr; }
-} function resolveSettings(settings?: DocumentSettings): DocumentSettings { return mergeSettings(settings);
-} export function getDocumentTitle(settings: DocumentSettings, type: string): string { const key = type.replace('_venta', '_venta') as keyof DocumentSettings['document_titles']; if (key in settings.document_titles) return settings.document_titles[key as keyof DocumentSettings['document_titles']]; return (DEFAULT_DOCUMENT_SETTINGS.document_titles as Record<string, string>)[type] || type.toUpperCase();
+export interface DocumentSettings {
+  template_id: 'classic' | 'minimal' | 'bold';
+  primary_color: string;
+  accent_color: string;
+  show_logo: boolean;
+  show_qr: boolean;
+  language: 'es' | 'en';
+  currency: 'CLP' | 'USD' | 'EUR';
+  tax_label: string;
+  header_text: string;
+  footer_text: string;
+  default_notes: string;
+  document_titles: {
+    boleta: string;
+    factura: string;
+    cotizacion: string;
+    orden_venta: string;
+    orden_compra: string;
+  };
+}
+
+export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
+  template_id: 'classic',
+  primary_color: '#1e293b',
+  accent_color: '#4f46e5',
+  show_logo: true,
+  show_qr: true,
+  language: 'es',
+  currency: 'CLP',
+  tax_label: 'IVA (19%)',
+  header_text: '',
+  footer_text: 'Documento generado por Yellow ERP',
+  default_notes: '',
+  document_titles: {
+    boleta: 'BOLETA DE VENTA',
+    factura: 'FACTURA DE VENTA',
+    cotizacion: 'COTIZACIÓN',
+    orden_venta: 'ORDEN DE VENTA',
+    orden_compra: 'ORDEN DE COMPRA',
+  },
+};
+
+export const DOCUMENT_TEMPLATES: { id: DocumentSettings['template_id']; name: string; description: string }[] = [
+  { id: 'classic', name: 'Clásico', description: 'Estilo corporativo con encabezado sobrio y QR' },
+  { id: 'minimal', name: 'Minimalista', description: 'Limpio y simple, sin QR' },
+  { id: 'bold', name: 'Enérgico', description: 'Acento de color fuerte y tablas destacadas' },
+];
+
+export const CURRENCIES: { code: DocumentSettings['currency']; symbol: string; label: string }[] = [
+  { code: 'CLP', symbol: '$', label: 'Peso chileno (CLP)' },
+  { code: 'USD', symbol: 'US$', label: 'Dólar estadounidense (USD)' },
+  { code: 'EUR', symbol: '€', label: 'Euro (EUR)' },
+];
+
+export const LANGUAGES: { code: DocumentSettings['language']; label: string }[] = [
+  { code: 'es', label: 'Español' },
+  { code: 'en', label: 'Inglés' },
+];
+
+export function hexToRgb(hex: string): [number, number, number] {
+  const clean = hex.replace('#', '');
+  const full = clean.length === 3 ? clean.split('').map(c => c + c).join('') : clean;
+  const num = parseInt(full, 16);
+  if (isNaN(num) || full.length !== 6) return [30, 41, 59];
+  return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+}
+
+export function mergeSettings(raw: unknown): DocumentSettings {
+  const r = (raw || {}) as Partial<DocumentSettings>;
+  return {
+    ...DEFAULT_DOCUMENT_SETTINGS,
+    ...r,
+    document_titles: {
+      ...DEFAULT_DOCUMENT_SETTINGS.document_titles,
+      ...(r.document_titles || {}),
+    },
+  } as DocumentSettings;
+}
+
+export function formatCurrency(amount: number, settings?: DocumentSettings): string {
+  const s = resolveSettings(settings);
+  const locale = s.language === 'en' ? 'en-US' : 'es-CL';
+  return new Intl.NumberFormat(locale, { style: 'currency', currency: s.currency, maximumFractionDigits: 0 }).format(amount);
+}
+
+export function formatDate(dateStr: string, settings?: DocumentSettings): string {
+  if (!dateStr) return '—';
+  try {
+    const d = new Date(dateStr);
+    const s = resolveSettings(settings);
+    const locale = s.language === 'en' ? 'en-US' : 'es-CL';
+    return d.toLocaleDateString(locale, { day: '2-digit', month: 'long', year: 'numeric' });
+  } catch {
+    return dateStr;
+  }
+}
+
+export function formatDateShort(dateStr: string, settings?: DocumentSettings): string {
+  if (!dateStr) return '—';
+  try {
+    const d = new Date(dateStr);
+    const s = resolveSettings(settings);
+    const locale = s.language === 'en' ? 'en-US' : 'es-CL';
+    return d.toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' });
+  } catch {
+    return dateStr;
+  }
+}
+
+function resolveSettings(settings?: DocumentSettings): DocumentSettings {
+  return mergeSettings(settings);
+}
+
+export function getDocumentTitle(settings: DocumentSettings, type: string): string {
+  const key = type.replace('_venta', '_venta') as keyof DocumentSettings['document_titles'];
+  if (key in settings.document_titles) return settings.document_titles[key as keyof DocumentSettings['document_titles']];
+  return (DEFAULT_DOCUMENT_SETTINGS.document_titles as Record<string, string>)[type] || type.toUpperCase();
 }

@@ -1,1 +1,599 @@
-'use client'; import { useState, useEffect } from 'react'; import { Monitor, ShoppingCart, Search, CreditCard, Banknote, Receipt, Package, X, Check, User, FileText, Printer, Download } from 'lucide-react'; import { getApiClient } from '@/lib/api-client'; import { generatePOSVoucher } from '@/lib/pdf-design'; import { formatQuantity } from '@/lib/utils'; import { toast } from 'sonner'; import { useRecetasRefresh } from '@/components/recetas/RefreshContext'; interface CartItem { id: string; name: string; sku: string; price: number; quantity: number; } interface Product { id: string; name: string; sku: string; price: number; stock: number; unit_of_measure?: string; formula?: any; } interface Customer { id: string; name: string; tax_id: string; email: string; phone: string; address: string; } export default function StandalonePOSPage() { const { refreshKey } = useRecetasRefresh(); const [products, setProducts] = useState<Product[]>([]); const [loading, setLoading] = useState(true); const [cart, setCart] = useState<CartItem[]>([]); const [searchTerm, setSearchTerm] = useState(''); const [showPaymentModal, setShowPaymentModal] = useState(false); const [paymentMethod, setPaymentMethod] = useState('cash'); const [amountPaid, setAmountPaid] = useState(0); const [documentType, setDocumentType] = useState<'boleta' | 'factura'>('boleta'); const [customers, setCustomers] = useState<Customer[]>([]); const [customerSearch, setCustomerSearch] = useState(''); const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null); const [showCustomerDropdown, setShowCustomerDropdown] = useState(false); const [processing, setProcessing] = useState(false); const [company, setCompany] = useState<any>(null); const [cardTransactionNumber, setCardTransactionNumber] = useState(''); const [completedInvoice, setCompletedInvoice] = useState<{ id: string; invoice_number: string; total: number; document_type: 'boleta' | 'factura'; cart: CartItem[]; customer: Customer | null; paymentMethod: string; amountPaid: number; card_transaction_number?: string } | null>(null); useEffect(() => { const api = getApiClient(); Promise.all([ api.getRecipeProducts({ limit: '500', sellable: 'true' }), api.getCustomers().catch(() => ({ data: [] })), api.getCompany().catch(() => null), ]).then(([productsRes, customersRes, companyRes]) => { console.log('[POS] Products response:', productsRes); if (companyRes) setCompany(companyRes); const items = (productsRes.data || []) .map((p: any) => ({ id: p.id, name: p.name || '', sku: p.sku || '', price: p.sale_price || 0, stock: Number(p.stock) || 0, unit_of_measure: p.unit_of_measure || 'UN', formula: p.formula || null, })); setProducts(items); setCustomers((customersRes.data || []).map((c: any) => ({ id: c.id, name: c.name || '', tax_id: c.tax_id || '', email: c.email || '', phone: c.phone || '', address: c.address || '', }))); setLoading(false); }).catch(() => setLoading(false)); }, [refreshKey]); const filteredProducts = products.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()) || p.sku.toLowerCase().includes(searchTerm.toLowerCase()) ); const filteredCustomers = customers.filter(c => c.name.toLowerCase().includes(customerSearch.toLowerCase()) || c.tax_id.toLowerCase().includes(customerSearch.toLowerCase()) ); const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0); const taxAmount = Math.round(subtotal * 0.19); const total = subtotal + taxAmount; const addToCart = (product: Product) => { setCart(prev => { const existing = prev.find(i => i.id === product.id); if (existing) { return prev.map(i => i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i); } return [...prev, { ...product, quantity: 1 }]; }); }; const removeFromCart = (id: string) => { setCart(prev => prev.filter(i => i.id !== id)); }; const updateQuantity = (id: string, quantity: number) => { if (quantity <= 0) { removeFromCart(id); return; } setCart(prev => prev.map(i => i.id === id ? { ...i, quantity } : i)); }; const handlePayment = async () => { if (documentType === 'factura' && !selectedCustomer) return; if (cart.length === 0) return; if (paymentMethod === 'card' && !cardTransactionNumber.trim()) { toast.error('Ingresa el número de transacción de la tarjeta'); return; } setProcessing(true); try { const api = getApiClient(); const invoiceResult = await api.createInvoice({ customer_id: selectedCustomer?.id || undefined, invoice_date: new Date().toISOString().split('T')[0], due_date: documentType === 'boleta' ? undefined : new Date().toISOString().split('T')[0], payment_method: paymentMethod, document_type: documentType, card_transaction_number: paymentMethod === 'card' ? cardTransactionNumber.trim() : undefined, items: cart.map(item => ({ product_id: item.id, quantity: item.quantity, unit_price: item.price, description: item.name, })), }); const invoiceId = invoiceResult?.id || ''; const invoiceNumber = invoiceResult?.invoice_number || ''; setCompletedInvoice({ id: invoiceId, invoice_number: invoiceNumber, total, document_type: documentType, cart: [...cart], customer: selectedCustomer, paymentMethod, amountPaid: paymentMethod === 'cash' ? amountPaid : total, card_transaction_number: paymentMethod === 'card' ? cardTransactionNumber.trim() : undefined, }); setCart([]); setShowPaymentModal(false); setAmountPaid(0); setCardTransactionNumber(''); setSelectedCustomer(null); setCustomerSearch(''); } catch (err) { toast.error('Error al procesar pago'); } finally { setProcessing(false); } }; const buildVoucherData = () => { if (!completedInvoice) return null; return { id: completedInvoice.id, number: completedInvoice.invoice_number, type: completedInvoice.document_type, date: new Date().toLocaleDateString('es-CL'), company: company ? { name: company.name, tax_id: company.tax_id || undefined, razon_social: company.razon_social || undefined, giro: company.giro || undefined, address: company.address || undefined, city: company.city || undefined, region: company.region || undefined, phone: company.phone || undefined, email: company.email || undefined, logo_url: company.logo_url || undefined, } : { name: 'Empresa' }, customer: completedInvoice.customer ? { name: completedInvoice.customer.name, rut: completedInvoice.customer.tax_id } : undefined, items: completedInvoice.cart.map(item => ({ name: item.name, quantity: item.quantity, unit_price: item.price, total: (item.price || 0) * (item.quantity || 0), })), subtotal: Math.round(completedInvoice.total / 1.19), tax_amount: completedInvoice.total - Math.round(completedInvoice.total / 1.19), total: completedInvoice.total, payment_method: completedInvoice.paymentMethod, card_transaction_number: completedInvoice.card_transaction_number, amount_paid: completedInvoice.amountPaid, change: completedInvoice.paymentMethod === 'cash' ? Math.max(0, completedInvoice.amountPaid - completedInvoice.total) : undefined, }; }; const handlePrint = () => { const voucherData = buildVoucherData(); if (!voucherData) return; const doc = generatePOSVoucher(voucherData); const blob = doc.output('blob'); const url = URL.createObjectURL(blob); window.open(url, '_blank'); }; const handleDownloadPDF = async () => { const voucherData = buildVoucherData(); if (!voucherData) return; const doc = generatePOSVoucher(voucherData); doc.save(`${voucherData.number}.pdf`); }; const resetPOS = () => { setCompletedInvoice(null); }; if (completedInvoice) { return ( <div className="h-[calc(100vh-3.5rem)] flex items-center justify-center"> <div className="bg-card border border-border rounded-xl shadow-sm p-8 w-full max-w-md text-center"> <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4"> <Check className="w-8 h-8 text-emerald-600" /> </div> <h2 className="text-xl font-bold text-foreground mb-2">Venta Registrada</h2> <p className="text-sm text-muted-foreground mb-4">{completedInvoice.invoice_number}</p> <p className="text-3xl font-bold text-foreground mb-6"> ${(completedInvoice.total || 0).toLocaleString('es-CL')} </p> <div className="flex gap-3 mb-4"> <button onClick={handlePrint} className="flex-1 bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors"> <Printer className="w-4 h-4" /> Imprimir </button> <button onClick={handleDownloadPDF} className="flex-1 bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors"> <Download className="w-4 h-4" /> Descargar PDF </button> </div> <button onClick={resetPOS} className="w-full bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"> Nueva Venta </button> </div> </div> ); } return ( <div className="h-[calc(100vh-3.5rem)] flex gap-6"> {/* Products Grid */} <div className="flex-1 flex flex-col min-w-0"> <div className="mb-4"> <div className="relative"> <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" /> <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-10 pr-4 py-3 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="Buscar producto por nombre o SKU..." /> </div> </div> <div className="flex-1 overflow-y-auto"> <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3"> {loading ? ( Array.from({ length: 8 }).map((_, i) => ( <div key={i} className="p-4 bg-card border border-border rounded-xl animate-pulse"> <div className="w-10 h-10 bg-muted rounded-lg mb-3" /> <div className="h-3 bg-muted rounded w-16 mb-2" /> <div className="h-4 bg-muted rounded w-3/4 mb-2" /> <div className="h-5 bg-muted rounded w-20" /> </div> )) ) : filteredProducts.map(product => ( <button key={product.id} onClick={() => product.stock > 0 && addToCart(product)} disabled={product.stock <= 0} className={`p-4 bg-card border rounded-xl text-left transition-all group ${ product.stock > 0 ? 'border-border hover:border-primary/30 hover:shadow-md cursor-pointer' : 'border-border opacity-50 cursor-not-allowed' }`} > <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center mb-3 group-hover:bg-blue-50 transition-colors"> <Package className="w-5 h-5 text-muted-foreground group-hover:text-primary" /> </div> <p className="text-xs text-muted-foreground font-mono">{product.sku}</p> <p className="text-sm font-medium text-foreground mt-1 line-clamp-2">{product.name}</p> <div className="flex items-center justify-between mt-2"> <p className="text-lg font-bold text-foreground">${(product.price || 0).toLocaleString('es-CL')}</p> <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${ product.stock > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700' }`}> {formatQuantity(product.stock, product.unit_of_measure)} </span> </div> </button> ))} </div> </div> </div> {/* Cart Sidebar */} <div className="w-96 bg-card border border-border rounded-xl flex flex-col"> <div className="px-4 py-3 border-b border-border flex items-center justify-between"> <div className="flex items-center gap-2"> <ShoppingCart className="w-5 h-5 text-muted-foreground" /> <h2 className="font-semibold text-foreground">Carrito</h2> </div> <span className="text-xs text-muted-foreground">{cart.length} items</span> </div> <div className="flex-1 overflow-y-auto p-4 space-y-3"> {cart.length === 0 ? ( <div className="text-center py-12"> <ShoppingCart className="w-12 h-12 text-foreground mx-auto mb-3" /> <p className="text-sm text-muted-foreground">Carrito vacío</p> <p className="text-xs text-muted-foreground mt-1">Selecciona productos para agregar</p> </div> ) : ( cart.map(item => ( <div key={item.id} className="p-3 bg-muted rounded-lg border border-border"> <div className="flex items-start justify-between"> <div className="flex-1 min-w-0"> <p className="text-sm font-medium text-foreground truncate">{item.name}</p> <p className="text-xs text-muted-foreground">${(item.price || 0).toLocaleString('es-CL')} c/u</p> </div> <button onClick={() => removeFromCart(item.id)} className="p-1 text-muted-foreground hover:text-rose-600 rounded"> <X className="w-4 h-4" /> </button> </div> <div className="flex items-center justify-between mt-2"> <div className="flex items-center gap-2"> <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="w-7 h-7 bg-card border border-border rounded-md flex items-center justify-center text-foreground hover:bg-muted">-</button> <span className="text-sm font-medium w-8 text-center">{item.quantity}</span> <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-7 h-7 bg-card border border-border rounded-md flex items-center justify-center text-foreground hover:bg-muted">+</button> </div> <p className="text-sm font-bold text-foreground">${((item.price || 0) * (item.quantity || 0)).toLocaleString('es-CL')}</p> </div> </div> )) )} </div> <div className="p-4 border-t border-border space-y-3"> <div className="space-y-2 text-sm"> <div className="flex justify-between"> <span className="text-muted-foreground">Subtotal</span> <span className="font-medium">${subtotal.toLocaleString('es-CL')}</span> </div> <div className="flex justify-between"> <span className="text-muted-foreground">IVA (19%)</span> <span className="font-medium">${taxAmount.toLocaleString('es-CL')}</span> </div> <hr className="border-border" /> <div className="flex justify-between"> <span className="font-semibold text-foreground">Total</span> <span className="text-xl font-bold text-foreground">${total.toLocaleString('es-CL')}</span> </div> </div> <button onClick={() => { setAmountPaid(total); setShowPaymentModal(true); }} disabled={cart.length === 0} className="w-full bg-primary hover:bg-primary/90 text-white px-4 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50"> <CreditCard className="w-4 h-4" /> Cobrar </button> </div> </div> {/* Payment Modal */} {showPaymentModal && ( <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"> <div className="bg-card rounded-xl shadow-xl w-full max-w-lg mx-4"> <div className="px-6 py-4 border-b border-border flex items-center justify-between"> <h2 className="text-lg font-semibold text-foreground">Cobrar Venta</h2> <button onClick={() => setShowPaymentModal(false)} className="text-muted-foreground hover:text-foreground"> <X className="w-5 h-5" /> </button> </div> <div className="p-6 space-y-4"> {/* Document Type */} <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Tipo de Documento</label> <div className="grid grid-cols-2 gap-2"> <button onClick={() => { setDocumentType('boleta'); setSelectedCustomer(null); setCustomerSearch(''); }} className={`p-3 rounded-lg border-2 flex flex-col items-center gap-1 transition-colors ${ documentType === 'boleta' ? 'border-primary bg-blue-50 text-primary' : 'border-border text-foreground hover:border-border' }`}> <Receipt className="w-5 h-5" /> <span className="text-xs font-medium">Boleta</span> <span className="text-[9px] text-muted-foreground">Sin RUT</span> </button> <button onClick={() => setDocumentType('factura')} className={`p-3 rounded-lg border-2 flex flex-col items-center gap-1 transition-colors ${ documentType === 'factura' ? 'border-primary bg-blue-50 text-primary' : 'border-border text-foreground hover:border-border' }`}> <FileText className="w-5 h-5" /> <span className="text-xs font-medium">Factura</span> <span className="text-[9px] text-muted-foreground">Requiere RUT</span> </button> </div> </div> {/* Customer Search */} {documentType === 'factura' ? ( <div className="space-y-1 relative"> <label className="block text-xs font-medium text-foreground">Cliente (Requerido) *</label> <div className="relative"> <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /> <input type="text" value={customerSearch} onChange={(e) => { setCustomerSearch(e.target.value); setShowCustomerDropdown(true); }} onFocus={() => setShowCustomerDropdown(true)} placeholder="Buscar por nombre o RUT..." className="w-full pl-9 pr-3 py-2 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" /> </div> {selectedCustomer && ( <div className="flex items-center gap-2 p-2 bg-blue-50 rounded-lg border border-primary/20"> <User className="w-4 h-4 text-primary" /> <div className="flex-1 min-w-0"> <p className="text-sm font-medium text-foreground truncate">{selectedCustomer.name}</p> <p className="text-[9px] text-muted-foreground">RUT: {selectedCustomer.tax_id}</p> </div> <button onClick={() => { setSelectedCustomer(null); setCustomerSearch(''); }} className="p-1 text-muted-foreground hover:text-rose-600"> <X className="w-3 h-3" /> </button> </div> )} {showCustomerDropdown && !selectedCustomer && customerSearch && ( <div className="absolute z-10 w-full mt-1 bg-card border border-border rounded-lg shadow-lg max-h-48 overflow-y-auto"> {filteredCustomers.length === 0 ? ( <div className="p-3 text-center text-sm text-muted-foreground">No se encontraron clientes</div> ) : ( filteredCustomers.slice(0, 10).map(c => ( <button key={c.id} onClick={() => { setSelectedCustomer(c); setCustomerSearch(''); setShowCustomerDropdown(false); }} className="w-full text-left px-3 py-2 hover:bg-muted flex items-center gap-2 border-b border-border last:border-0"> <User className="w-4 h-4 text-muted-foreground" /> <div> <p className="text-sm font-medium text-foreground">{c.name}</p> <p className="text-[9px] text-muted-foreground">RUT: {c.tax_id}</p> </div> </button> )) )} </div> )} </div> ) : ( <div className="space-y-1 relative"> <label className="block text-xs font-medium text-foreground">Cliente (Opcional)</label> <div className="relative"> <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /> <input type="text" value={customerSearch} onChange={(e) => { setCustomerSearch(e.target.value); setShowCustomerDropdown(true); }} onFocus={() => setShowCustomerDropdown(true)} placeholder="Consumidor Final (sin cliente)" className="w-full pl-9 pr-3 py-2 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" /> </div> {selectedCustomer && ( <div className="flex items-center gap-2 p-2 bg-muted rounded-lg border border-border"> <User className="w-4 h-4 text-muted-foreground" /> <div className="flex-1 min-w-0"> <p className="text-sm font-medium text-foreground truncate">{selectedCustomer.name}</p> <p className="text-[9px] text-muted-foreground">RUT: {selectedCustomer.tax_id}</p> </div> <button onClick={() => { setSelectedCustomer(null); setCustomerSearch(''); }} className="p-1 text-muted-foreground hover:text-rose-600"> <X className="w-3 h-3" /> </button> </div> )} {showCustomerDropdown && !selectedCustomer && customerSearch && ( <div className="absolute z-10 w-full mt-1 bg-card border border-border rounded-lg shadow-lg max-h-48 overflow-y-auto"> {filteredCustomers.length === 0 ? ( <div className="p-3 text-center text-sm text-muted-foreground">No se encontraron clientes</div> ) : ( filteredCustomers.slice(0, 10).map(c => ( <button key={c.id} onClick={() => { setSelectedCustomer(c); setCustomerSearch(''); setShowCustomerDropdown(false); }} className="w-full text-left px-3 py-2 hover:bg-muted flex items-center gap-2 border-b border-border last:border-0"> <User className="w-4 h-4 text-muted-foreground" /> <div> <p className="text-sm font-medium text-foreground">{c.name}</p> <p className="text-[9px] text-muted-foreground">RUT: {c.tax_id}</p> </div> </button> )) )} </div> )} </div> )} <div className="text-center p-4 bg-muted rounded-lg"> <p className="text-sm text-muted-foreground">Total a cobrar</p> <p className="text-3xl font-bold text-foreground">${total.toLocaleString('es-CL')}</p> <p className="text-xs text-muted-foreground mt-1"> {documentType === 'boleta' ? 'Boleta' : 'Factura'} {selectedCustomer ? ` - ${selectedCustomer.name}` : ' - Consumidor Final'} </p> </div> <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Método de Pago</label> <div className="grid grid-cols-3 gap-2"> {[ { id: 'cash', label: 'Efectivo', icon: Banknote }, { id: 'card', label: 'Tarjeta', icon: CreditCard }, { id: 'transfer', label: 'Transferencia', icon: Receipt }, ].map(method => ( <button key={method.id} onClick={() => setPaymentMethod(method.id)} className={`p-3 rounded-lg border-2 flex flex-col items-center gap-1 transition-colors ${ paymentMethod === method.id ? 'border-primary bg-blue-50 text-primary' : 'border-border text-foreground hover:border-border' }`}> <method.icon className="w-5 h-5" /> <span className="text-xs font-medium">{method.label}</span> </button> ))} </div> </div> {paymentMethod === 'card' && ( <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">N° Transacción / Voucher Tarjeta *</label> <input type="text" value={cardTransactionNumber} onChange={(e) => setCardTransactionNumber(e.target.value)} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground font-mono placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="Ej: 1234567890" autoFocus /> <p className="text-[10px] text-muted-foreground">Obligatorio. Número que aparece en el comprobante de la maquina de tarjetas.</p> </div> )} {paymentMethod === 'cash' && ( <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Monto Recibido</label> <input type="number" value={amountPaid || ''} onChange={(e) => setAmountPaid(parseInt(e.target.value) || 0)} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" placeholder="0" /> </div> )} {paymentMethod === 'cash' && amountPaid > 0 && ( <div className="p-3 bg-emerald-50 rounded-lg border border-emerald-200"> <div className="flex justify-between text-sm"> <span className="text-emerald-700">Vuelto</span> <span className="font-bold text-emerald-700">${Math.max(0, amountPaid - total).toLocaleString('es-CL')}</span> </div> </div> )} </div> <div className="px-6 py-4 border-t border-border flex justify-end gap-3"> <button onClick={() => setShowPaymentModal(false)} disabled={processing} className="bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"> Cancelar </button> <button onClick={handlePayment} disabled={processing || (paymentMethod === 'cash' && amountPaid < total) || (paymentMethod === 'card' && !cardTransactionNumber.trim()) || (documentType === 'factura' && !selectedCustomer)} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"> {processing ? ( <span className="flex items-center gap-2"> <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Procesando... </span> ) : ( <> <Check className="w-4 h-4" /> Confirmar Pago </> )} </button> </div> </div> </div> )} {/* Card Transaction Modal */} </div> ); } 
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Monitor, ShoppingCart, Search, CreditCard, Banknote, Receipt, Package, X, Check, User, FileText, Printer, Download } from 'lucide-react';
+import { getApiClient } from '@/lib/api-client';
+import { generatePOSVoucher } from '@/lib/pdf-design';
+import { formatQuantity } from '@/lib/utils';
+import { toast } from 'sonner';
+import { useRecetasRefresh } from '@/components/recetas/RefreshContext';
+
+interface CartItem {
+  id: string;
+  name: string;
+  sku: string;
+  price: number;
+  quantity: number;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  sku: string;
+  price: number;
+  stock: number;
+  unit_of_measure?: string;
+  formula?: any;
+}
+
+interface Customer {
+  id: string;
+  name: string;
+  tax_id: string;
+  email: string;
+  phone: string;
+  address: string;
+}
+
+export default function StandalonePOSPage() {
+  const { refreshKey } = useRecetasRefresh();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('cash');
+  const [amountPaid, setAmountPaid] = useState(0);
+
+  const [documentType, setDocumentType] = useState<'boleta' | 'factura'>('boleta');
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [customerSearch, setCustomerSearch] = useState('');
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [showCustomerDropdown, setShowCustomerDropdown] = useState(false);
+
+  const [processing, setProcessing] = useState(false);
+  const [company, setCompany] = useState<any>(null);
+  const [cardTransactionNumber, setCardTransactionNumber] = useState('');
+  const [completedInvoice, setCompletedInvoice] = useState<{ id: string; invoice_number: string; total: number; document_type: 'boleta' | 'factura'; cart: CartItem[]; customer: Customer | null; paymentMethod: string; amountPaid: number; card_transaction_number?: string } | null>(null);
+
+  useEffect(() => {
+    const api = getApiClient();
+    Promise.all([
+      api.getRecipeProducts({ limit: '500', sellable: 'true' }),
+      api.getCustomers().catch(() => ({ data: [] })),
+      api.getCompany().catch(() => null),
+    ]).then(([productsRes, customersRes, companyRes]) => {
+      console.log('[POS] Products response:', productsRes);
+      if (companyRes) setCompany(companyRes);
+      const items = (productsRes.data || [])
+        .map((p: any) => ({
+          id: p.id,
+          name: p.name || '',
+          sku: p.sku || '',
+          price: p.sale_price || 0,
+          stock: Number(p.stock) || 0,
+          unit_of_measure: p.unit_of_measure || 'UN',
+          formula: p.formula || null,
+        }));
+      setProducts(items);
+      setCustomers((customersRes.data || []).map((c: any) => ({
+        id: c.id,
+        name: c.name || '',
+        tax_id: c.tax_id || '',
+        email: c.email || '',
+        phone: c.phone || '',
+        address: c.address || '',
+      })));
+      setLoading(false);
+    }).catch(() => setLoading(false));
+  }, [refreshKey]);
+
+  const filteredProducts = products.filter(p =>
+    p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    p.sku.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredCustomers = customers.filter(c =>
+    c.name.toLowerCase().includes(customerSearch.toLowerCase()) ||
+    c.tax_id.toLowerCase().includes(customerSearch.toLowerCase())
+  );
+
+  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const taxAmount = Math.round(subtotal * 0.19);
+  const total = subtotal + taxAmount;
+
+  const addToCart = (product: Product) => {
+    setCart(prev => {
+      const existing = prev.find(i => i.id === product.id);
+      if (existing) {
+        return prev.map(i => i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i);
+      }
+      return [...prev, { ...product, quantity: 1 }];
+    });
+  };
+
+  const removeFromCart = (id: string) => {
+    setCart(prev => prev.filter(i => i.id !== id));
+  };
+
+  const updateQuantity = (id: string, quantity: number) => {
+    if (quantity <= 0) {
+      removeFromCart(id);
+      return;
+    }
+    setCart(prev => prev.map(i => i.id === id ? { ...i, quantity } : i));
+  };
+
+  const handlePayment = async () => {
+    if (documentType === 'factura' && !selectedCustomer) return;
+    if (cart.length === 0) return;
+    if (paymentMethod === 'card' && !cardTransactionNumber.trim()) {
+      toast.error('Ingresa el número de transacción de la tarjeta');
+      return;
+    }
+
+    setProcessing(true);
+    try {
+      const api = getApiClient();
+
+      const invoiceResult = await api.createInvoice({
+        customer_id: selectedCustomer?.id || undefined,
+        invoice_date: new Date().toISOString().split('T')[0],
+        due_date: documentType === 'boleta' ? undefined : new Date().toISOString().split('T')[0],
+        payment_method: paymentMethod,
+        document_type: documentType,
+        card_transaction_number: paymentMethod === 'card' ? cardTransactionNumber.trim() : undefined,
+        items: cart.map(item => ({
+          product_id: item.id,
+          quantity: item.quantity,
+          unit_price: item.price,
+          description: item.name,
+        })),
+      });
+
+      const invoiceId = invoiceResult?.id || '';
+      const invoiceNumber = invoiceResult?.invoice_number || '';
+
+      setCompletedInvoice({
+        id: invoiceId,
+        invoice_number: invoiceNumber,
+        total,
+        document_type: documentType,
+        cart: [...cart],
+        customer: selectedCustomer,
+        paymentMethod,
+        amountPaid: paymentMethod === 'cash' ? amountPaid : total,
+        card_transaction_number: paymentMethod === 'card' ? cardTransactionNumber.trim() : undefined,
+      });
+
+      setCart([]);
+      setShowPaymentModal(false);
+      setAmountPaid(0);
+      setCardTransactionNumber('');
+      setSelectedCustomer(null);
+      setCustomerSearch('');
+    } catch (err) {
+      toast.error('Error al procesar pago');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const buildVoucherData = () => {
+    if (!completedInvoice) return null;
+    return {
+      id: completedInvoice.id,
+      number: completedInvoice.invoice_number,
+      type: completedInvoice.document_type,
+      date: new Date().toLocaleDateString('es-CL'),
+      company: company ? {
+        name: company.name, tax_id: company.tax_id || undefined, razon_social: company.razon_social || undefined,
+        giro: company.giro || undefined, address: company.address || undefined, city: company.city || undefined,
+        region: company.region || undefined, phone: company.phone || undefined, email: company.email || undefined,
+        logo_url: company.logo_url || undefined,
+      } : { name: 'Empresa' },
+      customer: completedInvoice.customer ? { name: completedInvoice.customer.name, rut: completedInvoice.customer.tax_id } : undefined,
+      items: completedInvoice.cart.map(item => ({
+        name: item.name,
+        quantity: item.quantity,
+        unit_price: item.price,
+        total: (item.price || 0) * (item.quantity || 0),
+      })),
+      subtotal: Math.round(completedInvoice.total / 1.19),
+      tax_amount: completedInvoice.total - Math.round(completedInvoice.total / 1.19),
+      total: completedInvoice.total,
+      payment_method: completedInvoice.paymentMethod,
+      card_transaction_number: completedInvoice.card_transaction_number,
+      amount_paid: completedInvoice.amountPaid,
+      change: completedInvoice.paymentMethod === 'cash' ? Math.max(0, completedInvoice.amountPaid - completedInvoice.total) : undefined,
+    };
+  };
+
+  const handlePrint = () => {
+    const voucherData = buildVoucherData();
+    if (!voucherData) return;
+    const doc = generatePOSVoucher(voucherData);
+    const blob = doc.output('blob');
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+  };
+
+  const handleDownloadPDF = async () => {
+    const voucherData = buildVoucherData();
+    if (!voucherData) return;
+    const doc = generatePOSVoucher(voucherData);
+    doc.save(`${voucherData.number}.pdf`);
+  };
+
+  const resetPOS = () => {
+    setCompletedInvoice(null);
+  };
+
+  if (completedInvoice) {
+    return (
+      <div className="h-[calc(100vh-3.5rem)] flex items-center justify-center">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-8 w-full max-w-md text-center">
+          <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Check className="w-8 h-8 text-emerald-600" />
+          </div>
+          <h2 className="text-xl font-bold text-foreground mb-2">Venta Registrada</h2>
+          <p className="text-sm text-muted-foreground mb-4">{completedInvoice.invoice_number}</p>
+          <p className="text-3xl font-bold text-foreground mb-6">
+            ${(completedInvoice.total || 0).toLocaleString('es-CL')}
+          </p>
+          <div className="flex gap-3 mb-4">
+            <button onClick={handlePrint}
+              className="flex-1 bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors">
+              <Printer className="w-4 h-4" /> Imprimir
+            </button>
+            <button onClick={handleDownloadPDF}
+              className="flex-1 bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors">
+              <Download className="w-4 h-4" /> Descargar PDF
+            </button>
+          </div>
+          <button onClick={resetPOS}
+            className="w-full bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            Nueva Venta
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="h-[calc(100vh-3.5rem)] flex gap-6">
+      {/* Products Grid */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <div className="mb-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+              placeholder="Buscar producto por nombre o SKU..."
+            />
+          </div>
+        </div>
+        <div className="flex-1 overflow-y-auto">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+            {loading ? (
+              Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="p-4 bg-card border border-border rounded-xl animate-pulse">
+                  <div className="w-10 h-10 bg-muted rounded-lg mb-3" />
+                  <div className="h-3 bg-muted rounded w-16 mb-2" />
+                  <div className="h-4 bg-muted rounded w-3/4 mb-2" />
+                  <div className="h-5 bg-muted rounded w-20" />
+                </div>
+              ))
+            ) : filteredProducts.map(product => (
+              <button
+                key={product.id}
+                onClick={() => product.stock > 0 && addToCart(product)}
+                disabled={product.stock <= 0}
+                className={`p-4 bg-card border rounded-xl text-left transition-all group ${
+                  product.stock > 0
+                    ? 'border-border hover:border-primary/30 hover:shadow-md cursor-pointer'
+                    : 'border-border opacity-50 cursor-not-allowed'
+                }`}
+              >
+                <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center mb-3 group-hover:bg-blue-50 transition-colors">
+                  <Package className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
+                </div>
+                <p className="text-xs text-muted-foreground font-mono">{product.sku}</p>
+                <p className="text-sm font-medium text-foreground mt-1 line-clamp-2">{product.name}</p>
+                <div className="flex items-center justify-between mt-2">
+                  <p className="text-lg font-bold text-foreground">${(product.price || 0).toLocaleString('es-CL')}</p>
+                  <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${
+                    product.stock > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
+                  }`}>
+                    {formatQuantity(product.stock, product.unit_of_measure)}
+                  </span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Cart Sidebar */}
+      <div className="w-96 bg-card border border-border rounded-xl flex flex-col">
+        <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <ShoppingCart className="w-5 h-5 text-muted-foreground" />
+            <h2 className="font-semibold text-foreground">Carrito</h2>
+          </div>
+          <span className="text-xs text-muted-foreground">{cart.length} items</span>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          {cart.length === 0 ? (
+            <div className="text-center py-12">
+              <ShoppingCart className="w-12 h-12 text-foreground mx-auto mb-3" />
+              <p className="text-sm text-muted-foreground">Carrito vacío</p>
+              <p className="text-xs text-muted-foreground mt-1">Selecciona productos para agregar</p>
+            </div>
+          ) : (
+            cart.map(item => (
+              <div key={item.id} className="p-3 bg-muted rounded-lg border border-border">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">{item.name}</p>
+                    <p className="text-xs text-muted-foreground">${(item.price || 0).toLocaleString('es-CL')} c/u</p>
+                  </div>
+                  <button onClick={() => removeFromCart(item.id)} className="p-1 text-muted-foreground hover:text-rose-600 rounded">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      className="w-7 h-7 bg-card border border-border rounded-md flex items-center justify-center text-foreground hover:bg-muted">-</button>
+                    <span className="text-sm font-medium w-8 text-center">{item.quantity}</span>
+                    <button onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      className="w-7 h-7 bg-card border border-border rounded-md flex items-center justify-center text-foreground hover:bg-muted">+</button>
+                  </div>
+                  <p className="text-sm font-bold text-foreground">${((item.price || 0) * (item.quantity || 0)).toLocaleString('es-CL')}</p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        <div className="p-4 border-t border-border space-y-3">
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Subtotal</span>
+              <span className="font-medium">${subtotal.toLocaleString('es-CL')}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">IVA (19%)</span>
+              <span className="font-medium">${taxAmount.toLocaleString('es-CL')}</span>
+            </div>
+            <hr className="border-border" />
+            <div className="flex justify-between">
+              <span className="font-semibold text-foreground">Total</span>
+              <span className="text-xl font-bold text-foreground">${total.toLocaleString('es-CL')}</span>
+            </div>
+          </div>
+          <button onClick={() => { setAmountPaid(total); setShowPaymentModal(true); }} disabled={cart.length === 0}
+            className="w-full bg-primary hover:bg-primary/90 text-white px-4 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50">
+            <CreditCard className="w-4 h-4" /> Cobrar
+          </button>
+        </div>
+      </div>
+
+      {/* Payment Modal */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-card rounded-xl shadow-xl w-full max-w-lg mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">Cobrar Venta</h2>
+              <button onClick={() => setShowPaymentModal(false)} className="text-muted-foreground hover:text-foreground">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              {/* Document Type */}
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-foreground">Tipo de Documento</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button onClick={() => { setDocumentType('boleta'); setSelectedCustomer(null); setCustomerSearch(''); }}
+                    className={`p-3 rounded-lg border-2 flex flex-col items-center gap-1 transition-colors ${
+                      documentType === 'boleta' ? 'border-primary bg-blue-50 text-primary' : 'border-border text-foreground hover:border-border'
+                    }`}>
+                    <Receipt className="w-5 h-5" />
+                    <span className="text-xs font-medium">Boleta</span>
+                    <span className="text-[9px] text-muted-foreground">Sin RUT</span>
+                  </button>
+                  <button onClick={() => setDocumentType('factura')}
+                    className={`p-3 rounded-lg border-2 flex flex-col items-center gap-1 transition-colors ${
+                      documentType === 'factura' ? 'border-primary bg-blue-50 text-primary' : 'border-border text-foreground hover:border-border'
+                    }`}>
+                    <FileText className="w-5 h-5" />
+                    <span className="text-xs font-medium">Factura</span>
+                    <span className="text-[9px] text-muted-foreground">Requiere RUT</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Customer Search */}
+              {documentType === 'factura' ? (
+                <div className="space-y-1 relative">
+                  <label className="block text-xs font-medium text-foreground">Cliente (Requerido) *</label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <input type="text" value={customerSearch}
+                      onChange={(e) => { setCustomerSearch(e.target.value); setShowCustomerDropdown(true); }}
+                      onFocus={() => setShowCustomerDropdown(true)}
+                      placeholder="Buscar por nombre o RUT..."
+                      className="w-full pl-9 pr-3 py-2 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                  </div>
+                  {selectedCustomer && (
+                    <div className="flex items-center gap-2 p-2 bg-blue-50 rounded-lg border border-primary/20">
+                      <User className="w-4 h-4 text-primary" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground truncate">{selectedCustomer.name}</p>
+                        <p className="text-[9px] text-muted-foreground">RUT: {selectedCustomer.tax_id}</p>
+                      </div>
+                      <button onClick={() => { setSelectedCustomer(null); setCustomerSearch(''); }} className="p-1 text-muted-foreground hover:text-rose-600">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )}
+                  {showCustomerDropdown && !selectedCustomer && customerSearch && (
+                    <div className="absolute z-10 w-full mt-1 bg-card border border-border rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                      {filteredCustomers.length === 0 ? (
+                        <div className="p-3 text-center text-sm text-muted-foreground">No se encontraron clientes</div>
+                      ) : (
+                        filteredCustomers.slice(0, 10).map(c => (
+                          <button key={c.id}
+                            onClick={() => { setSelectedCustomer(c); setCustomerSearch(''); setShowCustomerDropdown(false); }}
+                            className="w-full text-left px-3 py-2 hover:bg-muted flex items-center gap-2 border-b border-border last:border-0">
+                            <User className="w-4 h-4 text-muted-foreground" />
+                            <div>
+                              <p className="text-sm font-medium text-foreground">{c.name}</p>
+                              <p className="text-[9px] text-muted-foreground">RUT: {c.tax_id}</p>
+                            </div>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-1 relative">
+                  <label className="block text-xs font-medium text-foreground">Cliente (Opcional)</label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <input type="text" value={customerSearch}
+                      onChange={(e) => { setCustomerSearch(e.target.value); setShowCustomerDropdown(true); }}
+                      onFocus={() => setShowCustomerDropdown(true)}
+                      placeholder="Consumidor Final (sin cliente)"
+                      className="w-full pl-9 pr-3 py-2 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                  </div>
+                  {selectedCustomer && (
+                    <div className="flex items-center gap-2 p-2 bg-muted rounded-lg border border-border">
+                      <User className="w-4 h-4 text-muted-foreground" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground truncate">{selectedCustomer.name}</p>
+                        <p className="text-[9px] text-muted-foreground">RUT: {selectedCustomer.tax_id}</p>
+                      </div>
+                      <button onClick={() => { setSelectedCustomer(null); setCustomerSearch(''); }} className="p-1 text-muted-foreground hover:text-rose-600">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )}
+                  {showCustomerDropdown && !selectedCustomer && customerSearch && (
+                    <div className="absolute z-10 w-full mt-1 bg-card border border-border rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                      {filteredCustomers.length === 0 ? (
+                        <div className="p-3 text-center text-sm text-muted-foreground">No se encontraron clientes</div>
+                      ) : (
+                        filteredCustomers.slice(0, 10).map(c => (
+                          <button key={c.id}
+                            onClick={() => { setSelectedCustomer(c); setCustomerSearch(''); setShowCustomerDropdown(false); }}
+                            className="w-full text-left px-3 py-2 hover:bg-muted flex items-center gap-2 border-b border-border last:border-0">
+                            <User className="w-4 h-4 text-muted-foreground" />
+                            <div>
+                              <p className="text-sm font-medium text-foreground">{c.name}</p>
+                              <p className="text-[9px] text-muted-foreground">RUT: {c.tax_id}</p>
+                            </div>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="text-center p-4 bg-muted rounded-lg">
+                <p className="text-sm text-muted-foreground">Total a cobrar</p>
+                <p className="text-3xl font-bold text-foreground">${total.toLocaleString('es-CL')}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {documentType === 'boleta' ? 'Boleta' : 'Factura'}
+                  {selectedCustomer ? ` - ${selectedCustomer.name}` : ' - Consumidor Final'}
+                </p>
+              </div>
+
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-foreground">Método de Pago</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { id: 'cash', label: 'Efectivo', icon: Banknote },
+                    { id: 'card', label: 'Tarjeta', icon: CreditCard },
+                    { id: 'transfer', label: 'Transferencia', icon: Receipt },
+                  ].map(method => (
+                    <button key={method.id} onClick={() => setPaymentMethod(method.id)}
+                      className={`p-3 rounded-lg border-2 flex flex-col items-center gap-1 transition-colors ${
+                        paymentMethod === method.id ? 'border-primary bg-blue-50 text-primary' : 'border-border text-foreground hover:border-border'
+                      }`}>
+                      <method.icon className="w-5 h-5" />
+                      <span className="text-xs font-medium">{method.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {paymentMethod === 'card' && (
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-foreground">N° Transacción / Voucher Tarjeta *</label>
+                  <input
+                    type="text"
+                    value={cardTransactionNumber}
+                    onChange={(e) => setCardTransactionNumber(e.target.value)}
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground font-mono placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                    placeholder="Ej: 1234567890"
+                    autoFocus
+                  />
+                  <p className="text-[10px] text-muted-foreground">Obligatorio. Número que aparece en el comprobante de la maquina de tarjetas.</p>
+                </div>
+              )}
+
+              {paymentMethod === 'cash' && (
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-foreground">Monto Recibido</label>
+                  <input type="number" value={amountPaid || ''} onChange={(e) => setAmountPaid(parseInt(e.target.value) || 0)}
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                    placeholder="0" />
+                </div>
+              )}
+
+              {paymentMethod === 'cash' && amountPaid > 0 && (
+                <div className="p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-emerald-700">Vuelto</span>
+                    <span className="font-bold text-emerald-700">${Math.max(0, amountPaid - total).toLocaleString('es-CL')}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
+              <button onClick={() => setShowPaymentModal(false)} disabled={processing}
+                className="bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                Cancelar
+              </button>
+              <button onClick={handlePayment}
+                disabled={processing || (paymentMethod === 'cash' && amountPaid < total) || (paymentMethod === 'card' && !cardTransactionNumber.trim()) || (documentType === 'factura' && !selectedCustomer)}
+                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+                {processing ? (
+                  <span className="flex items-center gap-2">
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Procesando...
+                  </span>
+                ) : (
+                  <>
+                    <Check className="w-4 h-4" />
+                    Confirmar Pago
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Card Transaction Modal */}
+    </div>
+  );
+}

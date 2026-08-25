@@ -1,1 +1,223 @@
-'use client'; import { useState } from 'react'; import { CheckSquare, Square, Trash2, ArrowRight, Tag, User, AlertTriangle } from 'lucide-react'; import { getApiClient } from '@/lib/api-client'; import { toast } from 'sonner'; interface BulkTaskActionsProps { selectedTasks: string[]; onClearSelection: () => void; onRefresh: () => void; users: any[]; } const statusOptions = [ { value: 'todo', label: 'Por Hacer' }, { value: 'in_progress', label: 'En Progreso' }, { value: 'review', label: 'En Revision' }, { value: 'done', label: 'Completada' }, ]; const priorityOptions = [ { value: 'low', label: 'Baja' }, { value: 'medium', label: 'Media' }, { value: 'high', label: 'Alta' }, { value: 'urgent', label: 'Urgente' }, ]; export default function BulkTaskActions({ selectedTasks, onClearSelection, onRefresh, users }: BulkTaskActionsProps) { const [showConfirmDelete, setShowConfirmDelete] = useState(false); const [bulkAction, setBulkAction] = useState<'status' | 'priority' | 'assignee' | null>(null); const [bulkValue, setBulkValue] = useState(''); if (selectedTasks.length === 0) return null; const handleBulkStatus = async () => { if (!bulkValue) return; try { const api = getApiClient(); const companyId = localStorage.getItem('company_id'); for (const taskId of selectedTasks) { await fetch(`/api/companies/${companyId}/projects/tasks/${taskId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: bulkValue }), }); } toast.success(`${selectedTasks.length} tareas actualizadas`); onClearSelection(); onRefresh(); } catch (e) { toast.error('Error al actualizar tareas'); } setBulkAction(null); setBulkValue(''); }; const handleBulkPriority = async () => { if (!bulkValue) return; try { const companyId = localStorage.getItem('company_id'); for (const taskId of selectedTasks) { await fetch(`/api/companies/${companyId}/projects/tasks/${taskId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ priority: bulkValue }), }); } toast.success(`${selectedTasks.length} tareas actualizadas`); onClearSelection(); onRefresh(); } catch (e) { toast.error('Error al actualizar tareas'); } setBulkAction(null); setBulkValue(''); }; const handleBulkAssignee = async () => { if (!bulkValue) return; try { const companyId = localStorage.getItem('company_id'); for (const taskId of selectedTasks) { await fetch(`/api/companies/${companyId}/projects/tasks/${taskId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ assignee_id: bulkValue || null }), }); } toast.success(`${selectedTasks.length} tareas actualizadas`); onClearSelection(); onRefresh(); } catch (e) { toast.error('Error al actualizar tareas'); } setBulkAction(null); setBulkValue(''); }; const handleBulkDelete = async () => { try { const companyId = localStorage.getItem('company_id'); for (const taskId of selectedTasks) { await fetch(`/api/companies/${companyId}/projects/tasks/${taskId}`, { method: 'DELETE', }); } toast.success(`${selectedTasks.length} tareas eliminadas`); onClearSelection(); onRefresh(); } catch (e) { toast.error('Error al eliminar tareas'); } setShowConfirmDelete(false); }; return ( <div className="bg-blue-50 border border-primary/20 rounded-xl p-3"> <div className="flex items-center justify-between"> <div className="flex items-center gap-3"> <span className="text-sm font-medium text-primary"> {selectedTasks.length} tarea{selectedTasks.length > 1 ? 's' : ''} seleccionada{selectedTasks.length > 1 ? 's' : ''} </span> <button onClick={onClearSelection} className="text-xs text-primary hover:text-primary underline"> Limpiar </button> </div> <div className="flex items-center gap-2"> <div className="relative"> <button onClick={() => { setBulkAction(bulkAction === 'status' ? null : 'status'); setBulkValue(''); }} className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-primary/20 rounded-lg text-xs font-medium text-primary hover:bg-blue-50 transition-colors"> <ArrowRight className="w-3.5 h-3.5" /> Estado </button> {bulkAction === 'status' && ( <div className="absolute top-full left-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-20 py-1 min-w-[150px]"> {statusOptions.map(opt => ( <button key={opt.value} onClick={() => { setBulkValue(opt.value); handleBulkStatus(); }} className="w-full text-left px-3 py-1.5 text-xs text-foreground hover:bg-muted"> {opt.label} </button> ))} </div> )} </div> <div className="relative"> <button onClick={() => { setBulkAction(bulkAction === 'priority' ? null : 'priority'); setBulkValue(''); }} className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-primary/20 rounded-lg text-xs font-medium text-primary hover:bg-blue-50 transition-colors"> <Tag className="w-3.5 h-3.5" /> Prioridad </button> {bulkAction === 'priority' && ( <div className="absolute top-full left-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-20 py-1 min-w-[150px]"> {priorityOptions.map(opt => ( <button key={opt.value} onClick={() => { setBulkValue(opt.value); handleBulkPriority(); }} className="w-full text-left px-3 py-1.5 text-xs text-foreground hover:bg-muted"> {opt.label} </button> ))} </div> )} </div> <div className="relative"> <button onClick={() => { setBulkAction(bulkAction === 'assignee' ? null : 'assignee'); setBulkValue(''); }} className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-primary/20 rounded-lg text-xs font-medium text-primary hover:bg-blue-50 transition-colors"> <User className="w-3.5 h-3.5" /> Asignar </button> {bulkAction === 'assignee' && ( <div className="absolute top-full left-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-20 py-1 min-w-[200px] max-h-[200px] overflow-y-auto"> <button onClick={() => { setBulkValue(''); handleBulkAssignee(); }} className="w-full text-left px-3 py-1.5 text-xs text-muted-foreground hover:bg-muted"> Sin asignar </button> {users.map(u => ( <button key={u.id} onClick={() => { setBulkValue(u.id); handleBulkAssignee(); }} className="w-full text-left px-3 py-1.5 text-xs text-foreground hover:bg-muted"> {u.full_name || u.email} </button> ))} </div> )} </div> <button onClick={() => setShowConfirmDelete(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-red-200 rounded-lg text-xs font-medium text-red-600 hover:bg-red-50 transition-colors"> <Trash2 className="w-3.5 h-3.5" /> Eliminar </button> </div> </div> {showConfirmDelete && ( <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"> <div className="bg-card rounded-xl shadow-xl w-full max-w- mx-4"> <div className="px-6 py-4 border-b border-border flex items-center gap-3"> <div className="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center"> <AlertTriangle className="w-5 h-5 text-red-600" /> </div> <div> <h2 className="text-sm font-semibold text-foreground">Eliminar tareas</h2> <p className="text-xs text-muted-foreground">Esta accion no se puede deshacer</p> </div> </div> <div className="p-6"> <p className="text-sm text-foreground"> Se eliminaran <strong>{selectedTasks.length} tarea{selectedTasks.length > 1 ? 's' : ''}</strong> permanentemente. </p> </div> <div className="px-6 py-4 border-t border-border flex justify-end gap-3"> <button onClick={() => setShowConfirmDelete(false)} className="bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"> Cancelar </button> <button onClick={handleBulkDelete} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"> Eliminar {selectedTasks.length} tarea{selectedTasks.length > 1 ? 's' : ''} </button> </div> </div> </div> )} </div> ); } 
+'use client';
+
+import { useState } from 'react';
+import { CheckSquare, Square, Trash2, ArrowRight, Tag, User, AlertTriangle } from 'lucide-react';
+import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
+
+interface BulkTaskActionsProps {
+  selectedTasks: string[];
+  onClearSelection: () => void;
+  onRefresh: () => void;
+  users: any[];
+}
+
+const statusOptions = [
+  { value: 'todo', label: 'Por Hacer' },
+  { value: 'in_progress', label: 'En Progreso' },
+  { value: 'review', label: 'En Revision' },
+  { value: 'done', label: 'Completada' },
+];
+
+const priorityOptions = [
+  { value: 'low', label: 'Baja' },
+  { value: 'medium', label: 'Media' },
+  { value: 'high', label: 'Alta' },
+  { value: 'urgent', label: 'Urgente' },
+];
+
+export default function BulkTaskActions({ selectedTasks, onClearSelection, onRefresh, users }: BulkTaskActionsProps) {
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [bulkAction, setBulkAction] = useState<'status' | 'priority' | 'assignee' | null>(null);
+  const [bulkValue, setBulkValue] = useState('');
+
+  if (selectedTasks.length === 0) return null;
+
+  const handleBulkStatus = async () => {
+    if (!bulkValue) return;
+    try {
+      const api = getApiClient();
+      const companyId = localStorage.getItem('company_id');
+      for (const taskId of selectedTasks) {
+        await fetch(`/api/companies/${companyId}/projects/tasks/${taskId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: bulkValue }),
+        });
+      }
+      toast.success(`${selectedTasks.length} tareas actualizadas`);
+      onClearSelection();
+      onRefresh();
+    } catch (e) {
+      toast.error('Error al actualizar tareas');
+    }
+    setBulkAction(null);
+    setBulkValue('');
+  };
+
+  const handleBulkPriority = async () => {
+    if (!bulkValue) return;
+    try {
+      const companyId = localStorage.getItem('company_id');
+      for (const taskId of selectedTasks) {
+        await fetch(`/api/companies/${companyId}/projects/tasks/${taskId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ priority: bulkValue }),
+        });
+      }
+      toast.success(`${selectedTasks.length} tareas actualizadas`);
+      onClearSelection();
+      onRefresh();
+    } catch (e) {
+      toast.error('Error al actualizar tareas');
+    }
+    setBulkAction(null);
+    setBulkValue('');
+  };
+
+  const handleBulkAssignee = async () => {
+    if (!bulkValue) return;
+    try {
+      const companyId = localStorage.getItem('company_id');
+      for (const taskId of selectedTasks) {
+        await fetch(`/api/companies/${companyId}/projects/tasks/${taskId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ assignee_id: bulkValue || null }),
+        });
+      }
+      toast.success(`${selectedTasks.length} tareas actualizadas`);
+      onClearSelection();
+      onRefresh();
+    } catch (e) {
+      toast.error('Error al actualizar tareas');
+    }
+    setBulkAction(null);
+    setBulkValue('');
+  };
+
+  const handleBulkDelete = async () => {
+    try {
+      const companyId = localStorage.getItem('company_id');
+      for (const taskId of selectedTasks) {
+        await fetch(`/api/companies/${companyId}/projects/tasks/${taskId}`, {
+          method: 'DELETE',
+        });
+      }
+      toast.success(`${selectedTasks.length} tareas eliminadas`);
+      onClearSelection();
+      onRefresh();
+    } catch (e) {
+      toast.error('Error al eliminar tareas');
+    }
+    setShowConfirmDelete(false);
+  };
+
+  return (
+    <div className="bg-blue-50 border border-primary/20 rounded-xl p-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-medium text-primary">
+            {selectedTasks.length} tarea{selectedTasks.length > 1 ? 's' : ''} seleccionada{selectedTasks.length > 1 ? 's' : ''}
+          </span>
+          <button onClick={onClearSelection} className="text-xs text-primary hover:text-primary underline">
+            Limpiar
+          </button>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="relative">
+            <button onClick={() => { setBulkAction(bulkAction === 'status' ? null : 'status'); setBulkValue(''); }}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-primary/20 rounded-lg text-xs font-medium text-primary dark:bg-primary/10 dark:border-primary/20 dark:text-primary/70 hover:bg-blue-50 transition-colors">
+              <ArrowRight className="w-3.5 h-3.5" /> Estado
+            </button>
+            {bulkAction === 'status' && (
+              <div className="absolute top-full left-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-20 dark:bg-primary dark:border-border py-1 min-w-[150px]">
+                {statusOptions.map(opt => (
+                  <button key={opt.value} onClick={() => { setBulkValue(opt.value); handleBulkStatus(); }}
+                    className="w-full text-left px-3 py-1.5 text-xs text-foreground hover:bg-muted">
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="relative">
+            <button onClick={() => { setBulkAction(bulkAction === 'priority' ? null : 'priority'); setBulkValue(''); }}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-primary/20 rounded-lg text-xs font-medium text-primary dark:bg-primary/10 dark:border-primary/20 dark:text-primary/70 hover:bg-blue-50 transition-colors">
+              <Tag className="w-3.5 h-3.5" /> Prioridad
+            </button>
+            {bulkAction === 'priority' && (
+              <div className="absolute top-full left-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-20 dark:bg-primary dark:border-border py-1 min-w-[150px]">
+                {priorityOptions.map(opt => (
+                  <button key={opt.value} onClick={() => { setBulkValue(opt.value); handleBulkPriority(); }}
+                    className="w-full text-left px-3 py-1.5 text-xs text-foreground hover:bg-muted">
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="relative">
+            <button onClick={() => { setBulkAction(bulkAction === 'assignee' ? null : 'assignee'); setBulkValue(''); }}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-primary/20 rounded-lg text-xs font-medium text-primary dark:bg-primary/10 dark:border-primary/20 dark:text-primary/70 hover:bg-blue-50 transition-colors">
+              <User className="w-3.5 h-3.5" /> Asignar
+            </button>
+            {bulkAction === 'assignee' && (
+              <div className="absolute top-full left-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-20 dark:bg-primary dark:border-border py-1 min-w-[200px] max-h-[200px] overflow-y-auto">
+                <button onClick={() => { setBulkValue(''); handleBulkAssignee(); }}
+                  className="w-full text-left px-3 py-1.5 text-xs text-muted-foreground hover:bg-muted">
+                  Sin asignar
+                </button>
+                {users.map(u => (
+                  <button key={u.id} onClick={() => { setBulkValue(u.id); handleBulkAssignee(); }}
+                    className="w-full text-left px-3 py-1.5 text-xs text-foreground hover:bg-muted">
+                    {u.full_name || u.email}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <button onClick={() => setShowConfirmDelete(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-red-200 rounded-lg text-xs font-medium text-red-600 hover:bg-red-50 transition-colors">
+            <Trash2 className="w-3.5 h-3.5" /> Eliminar
+          </button>
+        </div>
+      </div>
+
+      {showConfirmDelete && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-card rounded-xl shadow-xl w-full dark:bg-primary max-w- dark:bg-primarymd mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center gap-3">
+              <div className="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5 text-red-600" />
+              </div>
+              <div>
+                <h2 className="text-sm font-semibold text-foreground">Eliminar tareas</h2>
+                <p className="text-xs text-muted-foreground">Esta accion no se puede deshacer</p>
+              </div>
+            </div>
+            <div className="p-6">
+              <p className="text-sm text-foreground">
+                Se eliminaran <strong>{selectedTasks.length} tarea{selectedTasks.length > 1 ? 's' : ''}</strong> permanentemente.
+              </p>
+            </div>
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
+              <button onClick={() => setShowConfirmDelete(false)}
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                Cancelar
+              </button>
+              <button onClick={handleBulkDelete}
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                Eliminar {selectedTasks.length} tarea{selectedTasks.length > 1 ? 's' : ''}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
