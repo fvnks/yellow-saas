@@ -1,1 +1,238 @@
-'use client'; import { useState, useEffect } from 'react'; import { ArrowLeft, Trash2, CheckCircle2, Clock, AlertCircle, Send, FileText, Printer } from 'lucide-react'; import Link from 'next/link'; import { useRouter, useParams } from 'next/navigation'; import { getApiClient } from '@/lib/api-client'; import { getCompanyIdFromToken } from '@/lib/api-client'; import { toast } from 'sonner'; import { usePrintDocument } from '@/components/print/use-print'; import { type DocumentSettings, mergeSettings, DEFAULT_DOCUMENT_SETTINGS } from '@/lib/document-settings'; const statusConfig: Record<string, { label: string; color: string; icon: any }> = { draft: { label: 'Borrador', color: 'bg-muted text-foreground', icon: Clock }, sent: { label: 'Enviada', color: 'bg-blue-100 text-blue-700', icon: Send }, paid: { label: 'Pagada', color: 'bg-emerald-100 text-emerald-700', icon: CheckCircle2 }, overdue: { label: 'Vencida', color: 'bg-red-100 text-red-700', icon: AlertCircle }, partial: { label: 'Pago Parcial', color: 'bg-amber-100 text-amber-700', icon: Clock }, }; export default function InvoiceDetailPage() { const params = useParams(); const router = useRouter(); const invoiceId = params.id as string; const [invoice, setInvoice] = useState<any>(null); const [companyName, setCompanyName] = useState('Empresa'); const [settings, setSettings] = useState<DocumentSettings>(DEFAULT_DOCUMENT_SETTINGS); const [loading, setLoading] = useState(true); const { print } = usePrintDocument(); useEffect(() => { const companyId = getCompanyIdFromToken(); if (companyId) { const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1]; if (token) { fetch(`/api/companies/${companyId}/settings/documents`, { headers: { Authorization: `Bearer ${token}` }, }).then(r => r.json()).then(d => { if (d.success) setSettings(mergeSettings(d.data)); }).catch(() => {}); } } }, []); useEffect(() => { loadInvoice(); }, [invoiceId]); useEffect(() => { const api = getApiClient(); api.getCompany().then((res: any) => { if (res?.name) setCompanyName(res.name); }).catch(() => {}); }, []); const loadInvoice = async () => { try { const api = getApiClient(); const res = await api.getInvoice(invoiceId); setInvoice(res); } catch (err) { toast.error('Error al cargar factura'); } setLoading(false); }; const handlePrint = () => { if (!invoice) return; print(invoice.document_type === 'boleta' ? 'boleta' : 'factura', { id: invoice.id, number: invoice.invoice_number, type: invoice.document_type || 'factura', date: invoice.invoice_date, due_date: invoice.due_date, status: invoice.status, company: { name: companyName }, customer: invoice.customer ? { name: invoice.customer.name, tax_id: invoice.customer.tax_id } : undefined, items: (invoice.items || []).map((item: any) => ({ name: item.product?.name || item.description || '', quantity: item.quantity, unit_price: item.unit_price, discount: item.discount, tax_rate: item.tax_rate, total: item.quantity * item.unit_price, })), subtotal: invoice.subtotal || 0, tax_amount: invoice.tax_amount || 0, total: invoice.total_amount || 0, notes: invoice.notes, settings, }); }; const handleStatus = async (status: string) => { try { const api = getApiClient(); await api.updateInvoice(invoiceId, { status }); loadInvoice(); } catch (err: any) { toast.error(err?.message || 'Error'); } }; const handleDelete = async () => { if (!confirm('Eliminar esta factura?')) return; try { const api = getApiClient(); await api.deleteInvoice(invoiceId); router.push('/dashboard/billing'); } catch (err: any) { toast.error(err?.message || 'Error'); } }; if (loading) return <div className="animate-pulse space-y-4"><div className="h-8 bg-muted rounded w-1/3" /></div>; if (!invoice) return <div className="text-center py-12 text-sm text-muted-foreground">Factura no encontrada</div>; const st = statusConfig[invoice.status] || statusConfig.draft; const StatusIcon = st.icon; const items = invoice.items || []; return ( <div className="space-y-6"> <div className="flex items-center gap-4"> <Link href="/dashboard/billing" className="p-2 hover:bg-muted rounded-lg transition-colors"> <ArrowLeft className="w-5 h-5 text-foreground" /> </Link> <div className="flex-1"> <div className="flex items-center gap-3"> <h1 className="text-xl font-bold text-foreground">{invoice.invoice_number}</h1> <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold ${st.color}`}> <StatusIcon className="w-3 h-3" /> {st.label} </span> </div> <p className="text-sm text-muted-foreground mt-1">{invoice.customer?.name || 'Sin cliente'}</p> </div> <div className="flex items-center gap-2"> <button onClick={handlePrint} className="bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"> <Printer className="w-4 h-4" /> Imprimir </button> {invoice.status === 'draft' && ( <button onClick={() => handleStatus('sent')} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98]"> <Send className="w-4 h-4" /> Enviar </button> )} {['sent', 'overdue', 'partial'].includes(invoice.status) && ( <button onClick={() => handleStatus('paid')} className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"> <CheckCircle2 className="w-4 h-4" /> Marcar Pagada </button> )} {invoice.status === 'draft' && ( <button onClick={handleDelete} className="bg-card border border-border hover:bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"> <Trash2 className="w-4 h-4" /> Eliminar </button> )} </div> </div> <div className="grid grid-cols-4 gap-4"> <div className="bg-card border border-border rounded-xl shadow-sm p-4 "> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Subtotal</p> <p className="text-sm font-semibold text-foreground mt-1">${Number(invoice.subtotal || 0).toLocaleString('es-CL')}</p> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-4 "> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">IVA</p> <p className="text-sm font-semibold text-foreground mt-1">${Number(invoice.tax_amount || 0).toLocaleString('es-CL')}</p> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-4 "> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Descuento</p> <p className="text-sm font-semibold text-foreground mt-1">${Number(invoice.discount_amount || 0).toLocaleString('es-CL')}</p> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-4 "> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total</p> <p className="text-lg font-bold text-foreground mt-1">${Number(invoice.total_amount || 0).toLocaleString('es-CL')}</p> </div> </div> <div className="grid grid-cols-3 gap-4"> <div className="bg-card border border-border rounded-xl shadow-sm p-4 "> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha Emision</p> <p className="text-sm text-foreground mt-1">{invoice.invoice_date ? new Date(invoice.invoice_date).toLocaleDateString('es-CL') : '—'}</p> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-4 "> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha Vencimiento</p> <p className="text-sm text-foreground mt-1">{invoice.due_date ? new Date(invoice.due_date).toLocaleDateString('es-CL') : '—'}</p> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-4 "> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tipo Documento</p> <p className="text-sm text-foreground mt-1 capitalize">{invoice.document_type || 'factura'}</p> </div> </div> <div className="bg-card border border-border rounded-xl shadow-sm "> <div className="px-6 py-4 border-b border-border"> <h3 className="text-sm font-semibold text-foreground">Detalle de Items</h3> </div> <div className="overflow-x-auto"> <table className="w-full"> <thead> <tr className="border-b border-border"> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Descripcion</th> <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cant.</th> <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Precio</th> <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Dto%</th> <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">IVA%</th> <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Subtotal</th> </tr> </thead> <tbody> {items.map((item: any, i: number) => { const qty = parseFloat(item.quantity) || 0; const price = parseFloat(item.unit_price) || 0; const disc = parseFloat(item.discount) || 0; const lineTotal = qty * price * (1 - disc / 100); return ( <tr key={i} className="border-b border-border hover:bg-muted transition-colors"> <td className="px-4 py-3 text-xs font-medium text-foreground">{item.product?.name || '—'}</td> <td className="px-4 py-3 text-xs text-foreground">{item.description || '—'}</td> <td className="px-4 py-3 text-xs text-center text-foreground">{qty}</td> <td className="px-4 py-3 text-xs text-right text-foreground">${price.toLocaleString('es-CL')}</td> <td className="px-4 py-3 text-xs text-center text-foreground">{disc}%</td> <td className="px-4 py-3 text-xs text-center text-foreground">{item.tax_rate || 19}%</td> <td className="px-4 py-3 text-xs text-right font-medium text-foreground">${lineTotal.toLocaleString('es-CL')}</td> </tr> ); })} </tbody> <tfoot> <tr className="border-t-2 border-border bg-muted"> <td colSpan={6} className="px-4 py-3 text-xs font-semibold text-foreground">Totales</td> <td className="px-4 py-3 text-xs text-right font-bold text-foreground">${Number(invoice.total_amount || 0).toLocaleString('es-CL')}</td> </tr> </tfoot> </table> </div> </div> {invoice.notes && ( <div className="bg-card border border-border rounded-xl shadow-sm p-6 "> <h3 className="text-sm font-semibold text-foreground mb-2">Notas</h3> <p className="text-xs text-foreground">{invoice.notes}</p> </div> )} </div> ); } 
+'use client';
+
+import { useState, useEffect } from 'react';
+import { ArrowLeft, Trash2, CheckCircle2, Clock, AlertCircle, Send, FileText, Printer } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter, useParams } from 'next/navigation';
+import { getApiClient } from '@/lib/api-client';
+import { getCompanyIdFromToken } from '@/lib/api-client';
+import { toast } from 'sonner';
+import { usePrintDocument } from '@/components/print/use-print';
+import { type DocumentSettings, mergeSettings, DEFAULT_DOCUMENT_SETTINGS } from '@/lib/document-settings';
+
+const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
+  draft: { label: 'Borrador', color: 'bg-muted text-foreground', icon: Clock },
+  sent: { label: 'Enviada', color: 'bg-blue-100 text-blue-700', icon: Send },
+  paid: { label: 'Pagada', color: 'bg-emerald-100 text-emerald-700', icon: CheckCircle2 },
+  overdue: { label: 'Vencida', color: 'bg-red-100 text-red-700', icon: AlertCircle },
+  partial: { label: 'Pago Parcial', color: 'bg-amber-100 text-amber-700', icon: Clock },
+};
+
+export default function InvoiceDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const invoiceId = params.id as string;
+  const [invoice, setInvoice] = useState<any>(null);
+  const [companyName, setCompanyName] = useState('Empresa');
+  const [settings, setSettings] = useState<DocumentSettings>(DEFAULT_DOCUMENT_SETTINGS);
+  const [loading, setLoading] = useState(true);
+  const { print } = usePrintDocument();
+
+  useEffect(() => {
+    const companyId = getCompanyIdFromToken();
+    if (companyId) {
+      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+      if (token) {
+        fetch(`/api/companies/${companyId}/settings/documents`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }).then(r => r.json()).then(d => { if (d.success) setSettings(mergeSettings(d.data)); }).catch(() => {});
+      }
+    }
+  }, []);
+
+  useEffect(() => { loadInvoice(); }, [invoiceId]);
+
+  useEffect(() => {
+    const api = getApiClient();
+    api.getCompany().then((res: any) => {
+      if (res?.name) setCompanyName(res.name);
+    }).catch(() => {});
+  }, []);
+
+  const loadInvoice = async () => {
+    try {
+      const api = getApiClient();
+      const res = await api.getInvoice(invoiceId);
+      setInvoice(res);
+    } catch (err) { toast.error('Error al cargar factura'); }
+    setLoading(false);
+  };
+
+  const handlePrint = () => {
+    if (!invoice) return;
+    print(invoice.document_type === 'boleta' ? 'boleta' : 'factura', {
+      id: invoice.id,
+      number: invoice.invoice_number,
+      type: invoice.document_type || 'factura',
+      date: invoice.invoice_date,
+      due_date: invoice.due_date,
+      status: invoice.status,
+      company: { name: companyName },
+      customer: invoice.customer ? { name: invoice.customer.name, tax_id: invoice.customer.tax_id } : undefined,
+      items: (invoice.items || []).map((item: any) => ({
+        name: item.product?.name || item.description || '',
+        quantity: item.quantity, unit_price: item.unit_price,
+        discount: item.discount, tax_rate: item.tax_rate,
+        total: item.quantity * item.unit_price,
+      })),
+      subtotal: invoice.subtotal || 0,
+      tax_amount: invoice.tax_amount || 0,
+      total: invoice.total_amount || 0,
+      notes: invoice.notes,
+      settings,
+    });
+  };
+
+  const handleStatus = async (status: string) => {
+    try {
+      const api = getApiClient();
+      await api.updateInvoice(invoiceId, { status });
+      loadInvoice();
+    } catch (err: any) { toast.error(err?.message || 'Error'); }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm('Eliminar esta factura?')) return;
+    try {
+      const api = getApiClient();
+      await api.deleteInvoice(invoiceId);
+      router.push('/dashboard/billing');
+    } catch (err: any) { toast.error(err?.message || 'Error'); }
+  };
+
+  if (loading) return <div className="animate-pulse space-y-4"><div className="h-8 bg-muted rounded w-1/3" /></div>;
+  if (!invoice) return <div className="text-center py-12 text-sm text-muted-foreground">Factura no encontrada</div>;
+
+  const st = statusConfig[invoice.status] || statusConfig.draft;
+  const StatusIcon = st.icon;
+  const items = invoice.items || [];
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-4">
+        <Link href="/dashboard/billing" className="p-2 hover:bg-muted rounded-lg transition-colors">
+          <ArrowLeft className="w-5 h-5 text-foreground" />
+        </Link>
+        <div className="flex-1">
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl font-bold text-foreground">{invoice.invoice_number}</h1>
+            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold ${st.color}`}>
+              <StatusIcon className="w-3 h-3" /> {st.label}
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground mt-1">{invoice.customer?.name || 'Sin cliente'}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={handlePrint} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            <Printer className="w-4 h-4" /> Imprimir
+          </button>
+          {invoice.status === 'draft' && (
+            <button onClick={() => handleStatus('sent')}
+              className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98]">
+              <Send className="w-4 h-4" /> Enviar
+            </button>
+          )}
+          {['sent', 'overdue', 'partial'].includes(invoice.status) && (
+            <button onClick={() => handleStatus('paid')}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              <CheckCircle2 className="w-4 h-4" /> Marcar Pagada
+            </button>
+          )}
+          {invoice.status === 'draft' && (
+            <button onClick={handleDelete}
+              className="bg-card border border-border hover:bg-red-50 text-red-600 dark:bg-card dark:border-border dark:hover:bg-red-500/10 dark:text-red-400 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              <Trash2 className="w-4 h-4" /> Eliminar
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-4 gap-4">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Subtotal</p>
+          <p className="text-sm font-semibold text-foreground mt-1">${Number(invoice.subtotal || 0).toLocaleString('es-CL')}</p>
+        </div>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">IVA</p>
+          <p className="text-sm font-semibold text-foreground mt-1">${Number(invoice.tax_amount || 0).toLocaleString('es-CL')}</p>
+        </div>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Descuento</p>
+          <p className="text-sm font-semibold text-foreground mt-1">${Number(invoice.discount_amount || 0).toLocaleString('es-CL')}</p>
+        </div>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total</p>
+          <p className="text-lg font-bold text-foreground mt-1">${Number(invoice.total_amount || 0).toLocaleString('es-CL')}</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha Emision</p>
+          <p className="text-sm text-foreground mt-1">{invoice.invoice_date ? new Date(invoice.invoice_date).toLocaleDateString('es-CL') : '—'}</p>
+        </div>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha Vencimiento</p>
+          <p className="text-sm text-foreground mt-1">{invoice.due_date ? new Date(invoice.due_date).toLocaleDateString('es-CL') : '—'}</p>
+        </div>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tipo Documento</p>
+          <p className="text-sm text-foreground mt-1 capitalize">{invoice.document_type || 'factura'}</p>
+        </div>
+      </div>
+
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+        <div className="px-6 py-4 border-b border-border">
+          <h3 className="text-sm font-semibold text-foreground">Detalle de Items</h3>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th>
+                <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Descripcion</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cant.</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Precio</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Dto%</th>
+                <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">IVA%</th>
+                <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item: any, i: number) => {
+                const qty = parseFloat(item.quantity) || 0;
+                const price = parseFloat(item.unit_price) || 0;
+                const disc = parseFloat(item.discount) || 0;
+                const lineTotal = qty * price * (1 - disc / 100);
+                return (
+                  <tr key={i} className="border-b border-border hover:bg-muted transition-colors">
+                    <td className="px-4 py-3 text-xs font-medium text-foreground">{item.product?.name || '—'}</td>
+                    <td className="px-4 py-3 text-xs text-foreground">{item.description || '—'}</td>
+                    <td className="px-4 py-3 text-xs text-center text-foreground">{qty}</td>
+                    <td className="px-4 py-3 text-xs text-right text-foreground">${price.toLocaleString('es-CL')}</td>
+                    <td className="px-4 py-3 text-xs text-center text-foreground">{disc}%</td>
+                    <td className="px-4 py-3 text-xs text-center text-foreground">{item.tax_rate || 19}%</td>
+                    <td className="px-4 py-3 text-xs text-right font-medium text-foreground">${lineTotal.toLocaleString('es-CL')}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+            <tfoot>
+              <tr className="border-t-2 border-border bg-muted">
+                <td colSpan={6} className="px-4 py-3 text-xs font-semibold text-foreground">Totales</td>
+                <td className="px-4 py-3 text-xs text-right font-bold text-foreground">${Number(invoice.total_amount || 0).toLocaleString('es-CL')}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+      {invoice.notes && (
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border">
+          <h3 className="text-sm font-semibold text-foreground mb-2">Notas</h3>
+          <p className="text-xs text-foreground">{invoice.notes}</p>
+        </div>
+      )}
+    </div>
+  );
+}

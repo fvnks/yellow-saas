@@ -1,1 +1,207 @@
-'use client'; import { useState, useEffect } from 'react'; import { ArrowLeft, Plus, Search, Trash2, Link2 } from 'lucide-react'; import Link from 'next/link'; import { getApiClient } from '@/lib/api-client'; interface ProductRelation { id: string; relation_type: string; product: { id: string; name: string; sku: string }; related_product: { id: string; name: string; sku: string } | null; } const TYPE_MAP: Record<string, { label: string; className: string }> = { cross_sell: { label: 'Cross-sell', className: 'bg-blue-50 text-primary border border-primary/20' }, up_sell: { label: 'Up-sell', className: 'bg-emerald-50 text-emerald-700 border border-emerald-200' }, substitute: { label: 'Sustituto', className: 'bg-amber-50 text-amber-700 border border-amber-200' }, component: { label: 'Componente', className: 'bg-blue-50 text-blue-700 border border-blue-200' }, }; export default function RelationsPage() { const [relations, setRelations] = useState<ProductRelation[]>([]); const [products, setProducts] = useState<any[]>([]); const [loading, setLoading] = useState(true); const [showForm, setShowForm] = useState(false); const [search, setSearch] = useState(''); const [sourceSearch, setSourceSearch] = useState(''); const [relatedSearch, setRelatedSearch] = useState(''); const [form, setForm] = useState({ product_id: '', related_product_id: '', relation_type: 'cross_sell' }); useEffect(() => { loadData(); }, [search]); const loadData = async () => { setLoading(true); try { const api = getApiClient(); const params: Record<string, string> = { limit: '200' }; if (search) params.search = search; const [rRes, pRes] = await Promise.all([ api.getProductRelations(params), api.getProducts({ limit: '500' }), ]); setRelations(rRes.data || []); setProducts(pRes.data || []); } catch (e) { console.error(e); } setLoading(false); }; const filteredSource = products.filter((p: any) => p.name?.toLowerCase().includes(sourceSearch.toLowerCase()) || p.sku?.toLowerCase().includes(sourceSearch.toLowerCase()) ); const filteredRelated = products.filter((p: any) => p.name?.toLowerCase().includes(relatedSearch.toLowerCase()) || p.sku?.toLowerCase().includes(relatedSearch.toLowerCase()) ); const saveRelation = async () => { if (!form.product_id || !form.related_product_id || form.product_id === form.related_product_id) return; await getApiClient().createProductRelation(form); setShowForm(false); setForm({ product_id: '', related_product_id: '', relation_type: 'cross_sell' }); setSourceSearch(''); setRelatedSearch(''); loadData(); }; const deleteRelation = async (id: string) => { if (!confirm('Eliminar esta relacion?')) return; await getApiClient().deleteProductRelation(id); loadData(); }; return ( <div className="space-y-6"> <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"> <div className="flex items-center gap-3"> <Link href="/dashboard/inventory" className="p-2 hover:bg-muted rounded-lg transition-colors"> <ArrowLeft className="w-5 h-5 text-foreground" /> </Link> <div> <h1 className="text-xl font-bold text-foreground">Relaciones de Productos</h1> <p className="text-sm text-muted-foreground mt-1">Conecta productos relacionados entre si</p> </div> </div> <button onClick={() => setShowForm(true)} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"> <Plus className="w-4 h-4" /> Nueva Relacion </button> </div> {/* Form */} {showForm && ( <div className="bg-card border border-border rounded-xl shadow-sm p-6 "> <div className="flex items-center justify-between mb-4"> <h3 className="text-sm font-semibold text-foreground">Nueva Relacion</h3> <button onClick={() => { setShowForm(false); setForm({ product_id: '', related_product_id: '', relation_type: 'cross_sell' }); setSourceSearch(''); setRelatedSearch(''); }} className="text-muted-foreground hover:text-foreground text-sm">Cancelar</button> </div> <div className="grid grid-cols-1 sm:grid-cols-3 gap-4"> <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Producto Origen</label> <div className="relative"> <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /> <input type="text" placeholder="Buscar producto..." value={sourceSearch} onChange={e => setSourceSearch(e.target.value)} className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" /> </div> {sourceSearch && ( <div className="border border-border rounded-lg max-h-40 overflow-y-auto bg-card "> {filteredSource.slice(0, 10).map((p: any) => ( <button key={p.id} onClick={() => { setForm({ ...form, product_id: p.id }); setSourceSearch(p.name); }} className="w-full text-left px-3 py-2 text-sm hover:bg-muted border-b border-border last:border-0"> <span className="font-medium text-foreground">{p.name}</span> <span className="text-muted-foreground ml-2">{p.sku}</span> </button> ))} {filteredSource.length === 0 && <div className="px-3 py-2 text-sm text-muted-foreground">Sin resultados</div>} </div> )} </div> <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Producto Relacionado</label> <div className="relative"> <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /> <input type="text" placeholder="Buscar producto..." value={relatedSearch} onChange={e => setRelatedSearch(e.target.value)} className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" /> </div> {relatedSearch && ( <div className="border border-border rounded-lg max-h-40 overflow-y-auto bg-card "> {filteredRelated.slice(0, 10).map((p: any) => ( <button key={p.id} onClick={() => { setForm({ ...form, related_product_id: p.id }); setRelatedSearch(p.name); }} className="w-full text-left px-3 py-2 text-sm hover:bg-muted border-b border-border last:border-0"> <span className="font-medium text-foreground">{p.name}</span> <span className="text-muted-foreground ml-2">{p.sku}</span> </button> ))} {filteredRelated.length === 0 && <div className="px-3 py-2 text-sm text-muted-foreground">Sin resultados</div>} </div> )} </div> <div className="space-y-1"> <label className="block text-xs font-medium text-foreground">Tipo</label> <select value={form.relation_type} onChange={e => setForm({ ...form, relation_type: e.target.value })} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"> {Object.entries(TYPE_MAP).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)} </select> </div> </div> <div className="flex justify-end gap-2 mt-4"> <button onClick={() => { setShowForm(false); setForm({ product_id: '', related_product_id: '', relation_type: 'cross_sell' }); setSourceSearch(''); setRelatedSearch(''); }} className="bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button> <button onClick={saveRelation} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button> </div> </div> )} {/* Search */} <div className="bg-card border border-border rounded-xl shadow-sm p-4 "> <div className="relative max-w-md"> <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /> <input type="text" placeholder="Buscar relaciones..." value={search} onChange={e => setSearch(e.target.value)} className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" /> </div> </div> {/* Table */} <div className="bg-card border border-border rounded-xl shadow-sm "> {loading ? ( <div className="p-6 space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-12 bg-muted rounded-lg animate-pulse" />)}</div> ) : ( <div className="overflow-x-auto"> <table className="w-full"> <thead> <tr className="border-b border-border"> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto Origen</th> <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider"></th> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto Relacionado</th> <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tipo</th> <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th> </tr> </thead> <tbody> {relations.map(r => ( <tr key={r.id} className="border-b border-border hover:bg-muted transition-colors"> <td className="px-4 py-3"> <p className="text-xs font-medium text-foreground">{r.product?.name}</p> <p className="text-[9px] text-muted-foreground">{r.product?.sku}</p> </td> <td className="px-4 py-3 text-center"> <Link2 className="w-4 h-4 text-muted-foreground mx-auto" /> </td> <td className="px-4 py-3"> <p className="text-xs font-medium text-foreground">{r.related_product?.name}</p> <p className="text-[9px] text-muted-foreground">{r.related_product?.sku}</p> </td> <td className="px-4 py-3 text-center"> <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${TYPE_MAP[r.relation_type]?.className || 'bg-muted text-foreground border border-border'}`}> {TYPE_MAP[r.relation_type]?.label || r.relation_type} </span> </td> <td className="px-4 py-3"> <div className="flex justify-end"> <button onClick={() => deleteRelation(r.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"> <Trash2 className="w-3.5 h-3.5" /> </button> </div> </td> </tr> ))} </tbody> </table> {relations.length === 0 && <div className="p-8 text-center text-sm text-muted-foreground">No hay relaciones registradas</div>} </div> )} </div> </div> ); } 
+'use client';
+
+import { useState, useEffect } from 'react';
+import { ArrowLeft, Plus, Search, Trash2, Link2 } from 'lucide-react';
+import Link from 'next/link';
+import { getApiClient } from '@/lib/api-client';
+
+interface ProductRelation { id: string; relation_type: string; product: { id: string; name: string; sku: string }; related_product: { id: string; name: string; sku: string } | null; }
+
+const TYPE_MAP: Record<string, { label: string; className: string }> = {
+  cross_sell: { label: 'Cross-sell', className: 'bg-blue-50 text-primary border border-primary/20' },
+  up_sell: { label: 'Up-sell', className: 'bg-emerald-50 text-emerald-700 border border-emerald-200' },
+  substitute: { label: 'Sustituto', className: 'bg-amber-50 text-amber-700 border border-amber-200' },
+  component: { label: 'Componente', className: 'bg-blue-50 text-blue-700 border border-blue-200' },
+};
+
+export default function RelationsPage() {
+  const [relations, setRelations] = useState<ProductRelation[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [search, setSearch] = useState('');
+  const [sourceSearch, setSourceSearch] = useState('');
+  const [relatedSearch, setRelatedSearch] = useState('');
+  const [form, setForm] = useState({ product_id: '', related_product_id: '', relation_type: 'cross_sell' });
+
+  useEffect(() => { loadData(); }, [search]);
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const api = getApiClient();
+      const params: Record<string, string> = { limit: '200' };
+      if (search) params.search = search;
+      const [rRes, pRes] = await Promise.all([
+        api.getProductRelations(params),
+        api.getProducts({ limit: '500' }),
+      ]);
+      setRelations(rRes.data || []);
+      setProducts(pRes.data || []);
+    } catch (e) { console.error(e); }
+    setLoading(false);
+  };
+
+  const filteredSource = products.filter((p: any) =>
+    p.name?.toLowerCase().includes(sourceSearch.toLowerCase()) || p.sku?.toLowerCase().includes(sourceSearch.toLowerCase())
+  );
+  const filteredRelated = products.filter((p: any) =>
+    p.name?.toLowerCase().includes(relatedSearch.toLowerCase()) || p.sku?.toLowerCase().includes(relatedSearch.toLowerCase())
+  );
+
+  const saveRelation = async () => {
+    if (!form.product_id || !form.related_product_id || form.product_id === form.related_product_id) return;
+    await getApiClient().createProductRelation(form);
+    setShowForm(false); setForm({ product_id: '', related_product_id: '', relation_type: 'cross_sell' }); setSourceSearch(''); setRelatedSearch(''); loadData();
+  };
+
+  const deleteRelation = async (id: string) => {
+    if (!confirm('Eliminar esta relacion?')) return;
+    await getApiClient().deleteProductRelation(id); loadData();
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <Link href="/dashboard/inventory" className="p-2 hover:bg-muted rounded-lg transition-colors">
+            <ArrowLeft className="w-5 h-5 text-foreground" />
+          </Link>
+          <div>
+            <h1 className="text-xl font-bold text-foreground">Relaciones de Productos</h1>
+            <p className="text-sm text-muted-foreground mt-1">Conecta productos relacionados entre si</p>
+          </div>
+        </div>
+        <button onClick={() => setShowForm(true)}
+          className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+          <Plus className="w-4 h-4" /> Nueva Relacion
+        </button>
+      </div>
+
+      {/* Form */}
+      {showForm && (
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-semibold text-foreground">Nueva Relacion</h3>
+            <button onClick={() => { setShowForm(false); setForm({ product_id: '', related_product_id: '', relation_type: 'cross_sell' }); setSourceSearch(''); setRelatedSearch(''); }}
+              className="text-muted-foreground hover:text-foreground text-sm">Cancelar</button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-foreground">Producto Origen</label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <input type="text" placeholder="Buscar producto..." value={sourceSearch} onChange={e => setSourceSearch(e.target.value)}
+                  className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+              </div>
+              {sourceSearch && (
+                <div className="border border-border rounded-lg max-h-40 overflow-y-auto bg-card dark:bg-primary dark:border-border">
+                  {filteredSource.slice(0, 10).map((p: any) => (
+                    <button key={p.id} onClick={() => { setForm({ ...form, product_id: p.id }); setSourceSearch(p.name); }}
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-muted border-b border-border last:border-0">
+                      <span className="font-medium text-foreground">{p.name}</span>
+                      <span className="text-muted-foreground ml-2">{p.sku}</span>
+                    </button>
+                  ))}
+                  {filteredSource.length === 0 && <div className="px-3 py-2 text-sm text-muted-foreground">Sin resultados</div>}
+                </div>
+              )}
+            </div>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-foreground">Producto Relacionado</label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <input type="text" placeholder="Buscar producto..." value={relatedSearch} onChange={e => setRelatedSearch(e.target.value)}
+                  className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+              </div>
+              {relatedSearch && (
+                <div className="border border-border rounded-lg max-h-40 overflow-y-auto bg-card dark:bg-primary dark:border-border">
+                  {filteredRelated.slice(0, 10).map((p: any) => (
+                    <button key={p.id} onClick={() => { setForm({ ...form, related_product_id: p.id }); setRelatedSearch(p.name); }}
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-muted border-b border-border last:border-0">
+                      <span className="font-medium text-foreground">{p.name}</span>
+                      <span className="text-muted-foreground ml-2">{p.sku}</span>
+                    </button>
+                  ))}
+                  {filteredRelated.length === 0 && <div className="px-3 py-2 text-sm text-muted-foreground">Sin resultados</div>}
+                </div>
+              )}
+            </div>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-foreground">Tipo</label>
+              <select value={form.relation_type} onChange={e => setForm({ ...form, relation_type: e.target.value })}
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
+                {Object.entries(TYPE_MAP).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+              </select>
+            </div>
+          </div>
+          <div className="flex justify-end gap-2 mt-4">
+            <button onClick={() => { setShowForm(false); setForm({ product_id: '', related_product_id: '', relation_type: 'cross_sell' }); setSourceSearch(''); setRelatedSearch(''); }}
+              className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+            <button onClick={saveRelation} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Guardar</button>
+          </div>
+        </div>
+      )}
+
+      {/* Search */}
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+        <div className="relative max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <input type="text" placeholder="Buscar relaciones..." value={search} onChange={e => setSearch(e.target.value)}
+            className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+        {loading ? (
+          <div className="p-6 space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-12 bg-muted rounded-lg animate-pulse" />)}</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto Origen</th>
+                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider"></th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto Relacionado</th>
+                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tipo</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {relations.map(r => (
+                  <tr key={r.id} className="border-b border-border hover:bg-muted transition-colors">
+                    <td className="px-4 py-3">
+                      <p className="text-xs font-medium text-foreground">{r.product?.name}</p>
+                      <p className="text-[9px] text-muted-foreground">{r.product?.sku}</p>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <Link2 className="w-4 h-4 text-muted-foreground mx-auto" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <p className="text-xs font-medium text-foreground">{r.related_product?.name}</p>
+                      <p className="text-[9px] text-muted-foreground">{r.related_product?.sku}</p>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${TYPE_MAP[r.relation_type]?.className || 'bg-muted text-foreground border border-border'}`}>
+                        {TYPE_MAP[r.relation_type]?.label || r.relation_type}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex justify-end">
+                        <button onClick={() => deleteRelation(r.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors">
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {relations.length === 0 && <div className="p-8 text-center text-sm text-muted-foreground">No hay relaciones registradas</div>}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

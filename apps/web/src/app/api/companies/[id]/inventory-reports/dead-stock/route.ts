@@ -1,4 +1,58 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function GET(req: NextRequest, { params }: { params: { id: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const { searchParams } = new URL(req.url); const days = parseInt(searchParams.get('days') || '90'); const warehouseId = searchParams.get('warehouse_id'); const cutoffDate = new Date(); cutoffDate.setDate(cutoffDate.getDate() - days); let sql = ` SELECT p.id, p.name, p.sku, p.cost_price, p.sale_price, COALESCE(SUM(sl.quantity), 0) as current_stock, MAX(sm.created_at) as last_movement_date, COUNT(DISTINCT sm.id) as total_movements, COALESCE(SUM(CASE WHEN sm.type = 'out' THEN ABS(sm.quantity) ELSE 0 END), 0) as total_out FROM products p LEFT JOIN stock_levels sl ON sl.product_id = p.id AND sl.company_id = p.company_id LEFT JOIN stock_movements sm ON sm.product_id = p.id AND sm.company_id = p.company_id WHERE p.company_id = $1 AND p.is_active = TRUE `; const sqlParams: any[] = [companyId]; let idx = 2; if (warehouseId) { sql += ` AND sl.warehouse_id = $${idx}`; sqlParams.push(warehouseId); idx++; } sql += ` GROUP BY p.id, p.name, p.sku, p.cost_price, p.sale_price HAVING COALESCE(SUM(sl.quantity), 0) > 0 AND (MAX(sm.created_at) IS NULL OR MAX(sm.created_at) < $${idx}) ORDER BY COALESCE(SUM(sl.quantity), 0) * p.cost_price DESC `; sqlParams.push(cutoffDate.toISOString()); const { rows } = await query(sql, sqlParams); const totalDeadStockValue = rows.reduce((sum: number, r: any) => sum + (parseFloat(r.current_stock) * parseFloat(r.cost_price || 0)), 0); return successResponse({ products: rows, totalValue: totalDeadStockValue, days, count: rows.length, }); } catch (e: any) { return errorResponse(e.message, 500); }
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { searchParams } = new URL(req.url);
+    const days = parseInt(searchParams.get('days') || '90');
+    const warehouseId = searchParams.get('warehouse_id');
+
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+
+    let sql = `
+      SELECT p.id, p.name, p.sku, p.cost_price, p.sale_price,
+        COALESCE(SUM(sl.quantity), 0) as current_stock,
+        MAX(sm.created_at) as last_movement_date,
+        COUNT(DISTINCT sm.id) as total_movements,
+        COALESCE(SUM(CASE WHEN sm.type = 'out' THEN ABS(sm.quantity) ELSE 0 END), 0) as total_out
+      FROM products p
+      LEFT JOIN stock_levels sl ON sl.product_id = p.id AND sl.company_id = p.company_id
+      LEFT JOIN stock_movements sm ON sm.product_id = p.id AND sm.company_id = p.company_id
+      WHERE p.company_id = $1 AND p.is_active = TRUE
+    `;
+    const sqlParams: any[] = [companyId];
+    let idx = 2;
+
+    if (warehouseId) {
+      sql += ` AND sl.warehouse_id = $${idx}`;
+      sqlParams.push(warehouseId);
+      idx++;
+    }
+
+    sql += `
+      GROUP BY p.id, p.name, p.sku, p.cost_price, p.sale_price
+      HAVING COALESCE(SUM(sl.quantity), 0) > 0
+        AND (MAX(sm.created_at) IS NULL OR MAX(sm.created_at) < $${idx})
+      ORDER BY COALESCE(SUM(sl.quantity), 0) * p.cost_price DESC
+    `;
+    sqlParams.push(cutoffDate.toISOString());
+
+    const { rows } = await query(sql, sqlParams);
+
+    const totalDeadStockValue = rows.reduce((sum: number, r: any) => sum + (parseFloat(r.current_stock) * parseFloat(r.cost_price || 0)), 0);
+
+    return successResponse({
+      products: rows,
+      totalValue: totalDeadStockValue,
+      days,
+      count: rows.length,
+    });
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
 }

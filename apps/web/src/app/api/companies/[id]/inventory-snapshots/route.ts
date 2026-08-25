@@ -1,5 +1,81 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function GET(req: NextRequest, { params }: { params: { id: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const { searchParams } = new URL(req.url); const dateFrom = searchParams.get('from'); const dateTo = searchParams.get('to'); const productId = searchParams.get('product_id'); let sql = ` SELECT is2.*, p.name as product_name, p.sku, w.name as warehouse_name FROM inventory_snapshots is2 JOIN products p ON p.id = is2.product_id JOIN warehouses w ON w.id = is2.warehouse_id WHERE is2.company_id = $1 `; const sqlParams: any[] = [companyId]; let idx = 2; if (dateFrom) { sql += ` AND is2.snapshot_date >= $${idx}`; sqlParams.push(dateFrom); idx++; } if (dateTo) { sql += ` AND is2.snapshot_date <= $${idx}`; sqlParams.push(dateTo); idx++; } if (productId) { sql += ` AND is2.product_id = $${idx}`; sqlParams.push(productId); idx++; } sql += ' ORDER BY is2.snapshot_date DESC, p.name'; const { rows } = await query(sql, sqlParams); const dates = [...new Set(rows.map((r: any) => r.snapshot_date))].sort().reverse(); const totalValue = rows.reduce((sum: number, r: any) => sum + parseFloat(r.total_value || 0), 0); return successResponse({ snapshots: rows, dates, totalValue, count: rows.length }); } catch (e: any) { return errorResponse(e.message, 500); }
-} export async function POST(req: NextRequest, { params }: { params: { id: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const body = await req.json(); const { snapshot_date } = body; const date = snapshot_date || new Date().toISOString().split('T')[0]; const existing = await query( 'SELECT COUNT(*) FROM inventory_snapshots WHERE company_id = $1 AND snapshot_date = $2', [companyId, date] ); if (parseInt(existing.rows[0].count) > 0) { await query('DELETE FROM inventory_snapshots WHERE company_id = $1 AND snapshot_date = $2', [companyId, date]); } const { rows: stockLevels } = await query( `SELECT sl.*, p.cost_price FROM stock_levels sl JOIN products p ON p.id = sl.product_id WHERE sl.company_id = $1 AND sl.quantity > 0`, [companyId] ); for (const sl of stockLevels) { await query( `INSERT INTO inventory_snapshots (company_id, snapshot_date, product_id, warehouse_id, quantity, unit_cost, total_value) VALUES ($1, $2, $3, $4, $5, $6, $7)`, [companyId, date, sl.product_id, sl.warehouse_id, sl.quantity, sl.cost_price, sl.quantity * sl.cost_price] ); } return successResponse({ date, items: stockLevels.length }, 201); } catch (e: any) { return errorResponse(e.message, 500); }
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { searchParams } = new URL(req.url);
+    const dateFrom = searchParams.get('from');
+    const dateTo = searchParams.get('to');
+    const productId = searchParams.get('product_id');
+
+    let sql = `
+      SELECT is2.*, p.name as product_name, p.sku, w.name as warehouse_name
+      FROM inventory_snapshots is2
+      JOIN products p ON p.id = is2.product_id
+      JOIN warehouses w ON w.id = is2.warehouse_id
+      WHERE is2.company_id = $1
+    `;
+    const sqlParams: any[] = [companyId];
+    let idx = 2;
+
+    if (dateFrom) { sql += ` AND is2.snapshot_date >= $${idx}`; sqlParams.push(dateFrom); idx++; }
+    if (dateTo) { sql += ` AND is2.snapshot_date <= $${idx}`; sqlParams.push(dateTo); idx++; }
+    if (productId) { sql += ` AND is2.product_id = $${idx}`; sqlParams.push(productId); idx++; }
+
+    sql += ' ORDER BY is2.snapshot_date DESC, p.name';
+
+    const { rows } = await query(sql, sqlParams);
+
+    const dates = [...new Set(rows.map((r: any) => r.snapshot_date))].sort().reverse();
+    const totalValue = rows.reduce((sum: number, r: any) => sum + parseFloat(r.total_value || 0), 0);
+
+    return successResponse({ snapshots: rows, dates, totalValue, count: rows.length });
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
+
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await req.json();
+    const { snapshot_date } = body;
+
+    const date = snapshot_date || new Date().toISOString().split('T')[0];
+
+    const existing = await query(
+      'SELECT COUNT(*) FROM inventory_snapshots WHERE company_id = $1 AND snapshot_date = $2',
+      [companyId, date]
+    );
+
+    if (parseInt(existing.rows[0].count) > 0) {
+      await query('DELETE FROM inventory_snapshots WHERE company_id = $1 AND snapshot_date = $2', [companyId, date]);
+    }
+
+    const { rows: stockLevels } = await query(
+      `SELECT sl.*, p.cost_price
+       FROM stock_levels sl
+       JOIN products p ON p.id = sl.product_id
+       WHERE sl.company_id = $1 AND sl.quantity > 0`,
+      [companyId]
+    );
+
+    for (const sl of stockLevels) {
+      await query(
+        `INSERT INTO inventory_snapshots (company_id, snapshot_date, product_id, warehouse_id, quantity, unit_cost, total_value)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [companyId, date, sl.product_id, sl.warehouse_id, sl.quantity, sl.cost_price, sl.quantity * sl.cost_price]
+      );
+    }
+
+    return successResponse({ date, items: stockLevels.length }, 201);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
 }

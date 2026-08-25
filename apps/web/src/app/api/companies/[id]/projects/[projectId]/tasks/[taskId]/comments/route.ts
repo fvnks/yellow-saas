@@ -1,9 +1,77 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function GET( request: NextRequest, { params }: { params: { id: string; projectId: string; taskId: string } }
-) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const result = await query( `SELECT c.*, p.first_name || ' ' || p.last_name as user_name, p.avatar_url FROM project_task_comments c JOIN profiles p ON p.id = c.user_id WHERE c.task_id = $1 AND c.company_id = $2 ORDER BY c.created_at ASC`, [params.taskId, companyId] ); return successResponse(result.rows); } catch { return errorResponse('Internal server error', 500); }
-} export async function POST( request: NextRequest, { params }: { params: { id: string; projectId: string; taskId: string } }
-) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const { user_id, content } = body; if (!user_id || !content?.trim()) return errorResponse('user_id and content are required', 400); const result = await query( `INSERT INTO project_task_comments (company_id, task_id, user_id, content) VALUES ($1, $2, $3, $4) RETURNING *`, [companyId, params.taskId, user_id, content.trim()] ); return successResponse(result.rows[0], 201); } catch { return errorResponse('Internal server error', 500); }
-} export async function DELETE( request: NextRequest, { params }: { params: { id: string; projectId: string; taskId: string } }
-) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const { searchParams } = new URL(request.url); const commentId = searchParams.get('commentId'); if (!commentId) return errorResponse('commentId required', 400); const result = await query( 'DELETE FROM project_task_comments WHERE id = $1 AND task_id = $2 AND company_id = $3 RETURNING id', [commentId, params.taskId, companyId] ); if (result.rows.length === 0) return errorResponse('Comment not found', 404); return successResponse({ message: 'Comment deleted' }); } catch { return errorResponse('Internal server error', 500); }
+import { NextRequest } from 'next/server';
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string; projectId: string; taskId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const result = await query(
+      `SELECT c.*, p.first_name || ' ' || p.last_name as user_name, p.avatar_url
+       FROM project_task_comments c
+       JOIN profiles p ON p.id = c.user_id
+       WHERE c.task_id = $1 AND c.company_id = $2
+       ORDER BY c.created_at ASC`,
+      [params.taskId, companyId]
+    );
+
+    return successResponse(result.rows);
+  } catch {
+    return errorResponse('Internal server error', 500);
+  }
+}
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { id: string; projectId: string; taskId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+    const { user_id, content } = body;
+
+    if (!user_id || !content?.trim()) return errorResponse('user_id and content are required', 400);
+
+    const result = await query(
+      `INSERT INTO project_task_comments (company_id, task_id, user_id, content)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [companyId, params.taskId, user_id, content.trim()]
+    );
+
+    return successResponse(result.rows[0], 201);
+  } catch {
+    return errorResponse('Internal server error', 500);
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string; projectId: string; taskId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { searchParams } = new URL(request.url);
+    const commentId = searchParams.get('commentId');
+    if (!commentId) return errorResponse('commentId required', 400);
+
+    const result = await query(
+      'DELETE FROM project_task_comments WHERE id = $1 AND task_id = $2 AND company_id = $3 RETURNING id',
+      [commentId, params.taskId, companyId]
+    );
+
+    if (result.rows.length === 0) return errorResponse('Comment not found', 404);
+
+    return successResponse({ message: 'Comment deleted' });
+  } catch {
+    return errorResponse('Internal server error', 500);
+  }
 }

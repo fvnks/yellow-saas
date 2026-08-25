@@ -13,18 +13,6 @@ interface ToastContextValue {
   toast: (message: string, type?: Toast['type']) => void;
 }
 
-const bgColors = {
-  success: 'bg-emerald-50 border-emerald-200 text-emerald-800',
-  error: 'bg-rose-50 border-rose-200 text-rose-800',
-  info: 'bg-blue-50 border-blue-200 text-blue-800',
-};
-
-const icons = {
-  success: <CheckCircle className="w-4 h-4 text-emerald-500" />,
-  error: <AlertTriangle className="w-4 h-4 text-rose-500" />,
-  info: <Info className="w-4 h-4 text-blue-500" />,
-};
-
 const ToastContext = createContext<ToastContextValue>({ toast: () => {} });
 
 export function useToast() {
@@ -45,6 +33,18 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   const dismiss = useCallback((id: string) => {
     setToasts(prev => prev.filter(t => t.id !== id));
   }, []);
+
+  const icons = {
+    success: <CheckCircle className="w-4 h-4 text-emerald-500" />,
+    error: <AlertTriangle className="w-4 h-4 text-rose-500" />,
+    info: <Info className="w-4 h-4 text-blue-500" />,
+  };
+
+  const bgColors = {
+    success: 'bg-emerald-50 border-emerald-200 text-emerald-800',
+    error: 'bg-rose-50 border-rose-200 text-rose-800',
+    info: 'bg-blue-50 border-blue-200 text-blue-800',
+  };
 
   return (
     <ToastContext.Provider value={{ toast }}>

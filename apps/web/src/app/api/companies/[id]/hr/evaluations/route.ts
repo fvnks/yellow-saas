@@ -1,5 +1,45 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function GET(request: NextRequest) { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); try { const result = await query( `SELECT he.*, e.first_name || ' ' || e.last_name as employee_name, e.rut as employee_rut, COALESCE(ev.first_name || ' ' || ev.last_name, 'Sistema') as evaluator_name FROM hr_evaluations he JOIN employees e ON e.id = he.employee_id LEFT JOIN profiles ev ON ev.id = he.evaluator_id WHERE he.company_id = $1 ORDER BY he.created_at DESC`, [companyId] ); return successResponse(result.rows); } catch (err: any) { return errorResponse(err.message, 500); }
-} export async function POST(request: NextRequest) { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const { employee_id, period, overall_score, competencies_score, goals_score, comments } = body; if (!employee_id || !period) return errorResponse('employee_id y period son requeridos', 400); try { const result = await query( `INSERT INTO hr_evaluations (company_id, employee_id, period, overall_score, competencies_score, goals_score, comments, status) VALUES ($1, $2, $3, $4, $5, $6, $7, 'completed') RETURNING *`, [companyId, employee_id, period, overall_score || 0, competencies_score || 0, goals_score || 0, comments || null] ); return successResponse(result.rows[0]); } catch (err: any) { return errorResponse(err.message, 500); }
+import { NextRequest } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  const companyId = await getCompanyId(request);
+  if (!companyId) return errorResponse('Company ID not found', 400);
+
+  try {
+    const result = await query(
+      `SELECT he.*, e.first_name || ' ' || e.last_name as employee_name, e.rut as employee_rut,
+        COALESCE(ev.first_name || ' ' || ev.last_name, 'Sistema') as evaluator_name
+       FROM hr_evaluations he
+       JOIN employees e ON e.id = he.employee_id
+       LEFT JOIN profiles ev ON ev.id = he.evaluator_id
+       WHERE he.company_id = $1
+       ORDER BY he.created_at DESC`,
+      [companyId]
+    );
+    return successResponse(result.rows);
+  } catch (err: any) {
+    return errorResponse(err.message, 500);
+  }
+}
+
+export async function POST(request: NextRequest) {
+  const companyId = await getCompanyId(request);
+  if (!companyId) return errorResponse('Company ID not found', 400);
+
+  const body = await request.json();
+  const { employee_id, period, overall_score, competencies_score, goals_score, comments } = body;
+
+  if (!employee_id || !period) return errorResponse('employee_id y period son requeridos', 400);
+
+  try {
+    const result = await query(
+      `INSERT INTO hr_evaluations (company_id, employee_id, period, overall_score, competencies_score, goals_score, comments, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, 'completed') RETURNING *`,
+      [companyId, employee_id, period, overall_score || 0, competencies_score || 0, goals_score || 0, comments || null]
+    );
+    return successResponse(result.rows[0]);
+  } catch (err: any) {
+    return errorResponse(err.message, 500);
+  }
 }

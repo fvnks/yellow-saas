@@ -1,20 +1,416 @@
-"use client"; import { useEffect, useLayoutEffect, useState, useMemo, useRef } from "react";
+"use client";
+
+import { useEffect, useLayoutEffect, useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { SidebarGroup, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem,
+import {
+  SidebarGroup,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { NavGroup, NavMainItem, NavSubItem, resolveIcon, ICON_MAP } from "@/navigation/sidebar/sidebar-items";
-import { usePermissions } from "@/lib/permissions"; // Find the nearest scrollable ancestor in the sidebar
-function findScrollableAncestor(el: HTMLElement | null): HTMLElement | null { let node: HTMLElement | null = el; while (node && node !== document.body) { // First check for the sidebar content data attribute (most reliable) if (node.getAttribute("data-sidebar") === "content") { return node; } // Fallback: check for overflow-auto/scroll styling const style = window.getComputedStyle(node); const overflowY = style.overflowY; if (overflowY === "auto" || overflowY === "scroll") { return node; } node = node.parentElement; } return null;
-} // Scroll an element into view inside its scrollable sidebar ancestor.
+import { usePermissions } from "@/lib/permissions";
+
+// Find the nearest scrollable ancestor in the sidebar
+function findScrollableAncestor(el: HTMLElement | null): HTMLElement | null {
+  let node: HTMLElement | null = el;
+  while (node && node !== document.body) {
+    // First check for the sidebar content data attribute (most reliable)
+    if (node.getAttribute("data-sidebar") === "content") {
+      return node;
+    }
+    // Fallback: check for overflow-auto/scroll styling
+    const style = window.getComputedStyle(node);
+    const overflowY = style.overflowY;
+    if (overflowY === "auto" || overflowY === "scroll") {
+      return node;
+    }
+    node = node.parentElement;
+  }
+  return null;
+}
+
+// Scroll an element into view inside its scrollable sidebar ancestor.
 // When a dropdown opens, position the trigger near the top of the viewport
 // so the expanded content has room below it.
-function scrollIntoSidebarView(el: HTMLElement | null) { if (!el) return; const scrollContainer = findScrollableAncestor(el); if (!scrollContainer) return; const containerRect = scrollContainer.getBoundingClientRect(); const elRect = el.getBoundingClientRect(); // If trigger is already fully visible, don't scroll if (elRect.top >= containerRect.top && elRect.bottom <= containerRect.bottom) { return; } // Calculate target scroll position: trigger at top of container + small offset // This ensures the expanded content has room below the trigger const targetScrollTop = scrollContainer.scrollTop + (elRect.top - containerRect.top) - 8; scrollContainer.scrollTo({ top: Math.max(0, targetScrollTop), behavior: "smooth", });
-} interface SidebarNavigationProps { sidebarItems: NavGroup[];
-} const IsComingSoon = () => ( <span className="ml-auto rounded-md bg-amber-100 px-2 py-0.5 text-[9px] font-semibold text-amber-700 "> Próximamente </span>
-); export default function SidebarNavigation({ sidebarItems }: SidebarNavigationProps) { const { hasPermission } = usePermissions(); const path = usePathname(); const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({}); const [openItems, setOpenItems] = useState<Record<string, boolean>>({}); // Refs to track trigger buttons for auto-scroll const groupTriggerRefs = useRef<Record<string, HTMLButtonElement | null>>({}); const itemTriggerRefs = useRef<Record<string, HTMLElement | null>>({}); // Track previous open state so we only auto-scroll on user-initiated toggle, not the auto-open-on-active mount const prevOpenGroups = useRef<Record<string, boolean>>({}); const prevOpenItems = useRef<Record<string, boolean>>({}); const mountedRef = useRef(false); // Filter sidebar items based on permissions const filteredItems = useMemo(() => { const filterSubItems = (items: any[]): any[] => { return items.filter(sub => { if (sub.requiredPermission && !hasPermission(sub.requiredPermission.module, sub.requiredPermission.action)) { return false; } if (sub.subItems) { sub.subItems = filterSubItems(sub.subItems); } return true; }); }; return sidebarItems.map(group => ({ ...group, items: group.items.filter(item => { if (item.requiredPermission && !hasPermission(item.requiredPermission.module, item.requiredPermission.action)) { return false; } if (item.subItems) { item.subItems = filterSubItems(item.subItems); } return true; }) })).filter(group => group.items.length > 0); }, [sidebarItems, hasPermission]); useEffect(() => { const updatedGroups: Record<string, boolean> = {}; const updatedItems: Record<string, boolean> = {}; for (const group of filteredItems) { for (const item of group.items) { const itemHasSubs = !!item.subItems; const isItemActive = path.startsWith(item.path) || (itemHasSubs && item.subItems!.some((sub) => { const subPath = sub.path.split("?")[0]; return path.startsWith(subPath); })); if (isItemActive) { updatedGroups[group.id] = true; } if (itemHasSubs) { updatedItems[item.title] = isItemActive; } } } setOpenGroups((prev) => ({ ...prev, ...updatedGroups })); setOpenItems((prev) => ({ ...prev, ...updatedItems })); }, [path, filteredItems]); // Single useLayoutEffect to handle ALL scroll cases (manual toggle + auto-open on path change)
-useLayoutEffect(() => { // Skip the very first effect run after mount so we don't scroll when the sidebar first opens if (!mountedRef.current) { mountedRef.current = true; prevOpenGroups.current = { ...openGroups }; prevOpenItems.current = { ...openItems }; return; } const newlyOpenedGroups = Object.entries(openGroups).filter( ([id, isOpen]) => isOpen && !prevOpenGroups.current[id] ); const newlyOpenedItems = Object.entries(openItems).filter( ([title, isOpen]) => isOpen && !prevOpenItems.current[title] ); // If both groups and items opened, prioritize items (deeper level = more important to see) const allNewlyOpened: Array<{ type: 'group' | 'item'; key: string }> = [ ...newlyOpenedItems.map(([title]) => ({ type: 'item' as const, key: title })), ...newlyOpenedGroups.map(([id]) => ({ type: 'group' as const, key: id })), ]; if (allNewlyOpened.length > 0) { // Use requestAnimationFrame to wait for layout to settle after Collapsible expansion requestAnimationFrame(() => { allNewlyOpened.forEach(({ type, key }, index) => { // Stagger scrolls slightly to handle multiple opens in same frame setTimeout(() => { if (type === 'group') { const trigger = groupTriggerRefs.current[key]; scrollIntoSidebarView(trigger ?? null); } else { const trigger = itemTriggerRefs.current[key]; scrollIntoSidebarView(trigger ?? null); } }, index * 50); }); }); } prevOpenGroups.current = { ...openGroups }; prevOpenItems.current = { ...openItems }; }, [openGroups, openItems]); const toggleGroup = (groupId: string | number) => { const nextOpen = !(openGroups[groupId] ?? false); setOpenGroups((prev) => ({ ...prev, [groupId]: nextOpen })); }; const toggleItem = (title: string) => { const nextOpen = !(openItems[title] ?? false); setOpenItems((prev) => ({ ...prev, [title]: nextOpen })); }; const renderIcon = (iconName: keyof typeof ICON_MAP | undefined): React.ReactNode => { const Icon = resolveIcon(iconName); return <Icon className="h-4 w-4" />; }; const isActive = (itemPath: string, subItems?: NavMainItem["subItems"]) => { if (subItems) { return subItems.some((subItem) => { const subPath = subItem.path.split("?")[0]; if (path.startsWith(subPath)) return true; if (subItem.subItems) { return subItem.subItems.some((nested) => { return path.startsWith(nested.path.split("?")[0]); }); } return false; }); } return path.startsWith(itemPath); }; const isGroupActive = (group: NavGroup) => { const checkSubItems = (subItems: any[]): boolean => { return subItems.some((sub) => { if (path.startsWith(sub.path.split("?")[0])) return true; if (sub.subItems) return checkSubItems(sub.subItems); return false; }); }; return group.items.some((item) => { if (path.startsWith(item.path)) return true; if (item.subItems) return checkSubItems(item.subItems); return false; }); }; return ( <div className="flex flex-col gap-1 px-2"> {filteredItems.map((navGroup, groupIndex) => { const groupActive = isGroupActive(navGroup); const groupOpen = openGroups[navGroup.id] ?? false; return ( <Collapsible key={navGroup.id} open={groupOpen} onOpenChange={() => toggleGroup(navGroup.id)} className="group/collapsible-group" > <div className={cn( "rounded-xl transition-all duration-150", groupOpen && "bg-background" )}> {navGroup.label && ( <CollapsibleTrigger asChild> <button ref={(el) => { groupTriggerRefs.current[String(navGroup.id)] = el; }} className={cn( "flex w-full items-center gap-2 px-3 py-2.5 rounded-xl", "text-[11px] font-semibold uppercase tracking-wider", "transition-all duration-150 cursor-pointer", groupActive ? "text-foreground" : "text-muted-foreground hover:text-foreground", "hover:bg-muted" )}> <ChevronDown className={cn( "h-3 w-3 flex-shrink-0 transition-transform duration-200", !groupOpen && "-rotate-90" )} /> <span className="truncate">{navGroup.label}</span> {groupActive && !groupOpen && ( <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" /> )} </button> </CollapsibleTrigger> )} <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down"> <div className="pb-1.5"> <SidebarMenu> {navGroup.items.map((item) => { const itemActive = isActive(item.path, item.subItems); return ( <Collapsible open={openItems[item.title] ?? false} onOpenChange={() => toggleItem(item.title)} key={item.title} asChild className="group/collapsible" > <SidebarMenuItem> <CollapsibleTrigger asChild> {item.subItems ? ( <SidebarMenuButton isActive={itemActive} tooltip={item.title} ref={(el) => { itemTriggerRefs.current[item.title] = el; }} className={cn( "whitespace-nowrap rounded-xl transition-all duration-150", itemActive ? "bg-secondary text-primary font-medium border-l-3 border-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted" )} > {renderIcon(item.icon)} <span>{item.title}</span> {item.comingSoon && <IsComingSoon />} <ChevronRight className={cn( "ml-auto transition-transform duration-200", "group-data-[state=open]/collapsible:rotate-90" )} /> </SidebarMenuButton> ) : ( <Link href={item.path}> <SidebarMenuButton disabled={item.comingSoon} isActive={itemActive} tooltip={item.title} className={cn( "rounded-xl transition-all duration-150", itemActive ? "bg-secondary text-primary font-medium border-l-3 border-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted" )} > {renderIcon(item.icon)} <span>{item.title}</span> {item.comingSoon && <IsComingSoon />} </SidebarMenuButton> </Link> )} </CollapsibleTrigger> {item.subItems && ( <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down"> <SidebarMenuSub> {item.subItems.map((subItem) => ( <SidebarMenuSubItem key={subItem.title}> {subItem.subItems ? ( <Collapsible open={openItems[subItem.title] ?? false} onOpenChange={() => toggleItem(subItem.title)} > <CollapsibleTrigger asChild> <SidebarMenuSubButton isActive={isActive(subItem.path, subItem.subItems)} ref={(el) => { itemTriggerRefs.current[subItem.title] = el; }} className="rounded-xl justify-between" > <div className="flex items-center gap-2"> {renderIcon(subItem.icon)} <span>{subItem.title}</span> </div> <ChevronRight className={cn( "h-3 w-3 transition-transform duration-200", "group-data-[state=open]/collapsible:rotate-90" )} /> </SidebarMenuSubButton> </CollapsibleTrigger> <CollapsibleContent> <SidebarMenuSub className="ml-4"> {subItem.subItems.map((nestedItem) => ( <SidebarMenuSubItem key={nestedItem.title}> <SidebarMenuSubButton asChild className="rounded-xl" isActive={isActive(nestedItem.path)} > <a href={nestedItem.path}> {renderIcon(nestedItem.icon)} <span>{nestedItem.title}</span> </a> </SidebarMenuSubButton> </SidebarMenuSubItem> ))} </SidebarMenuSub> </CollapsibleContent> </Collapsible> ) : ( <SidebarMenuSubButton aria-disabled={subItem.comingSoon} isActive={isActive(subItem.path)} asChild className="rounded-xl" > <a href={subItem.path}> {renderIcon(subItem.icon)} <span>{subItem.title}</span> {subItem.comingSoon && <IsComingSoon />} </a> </SidebarMenuSubButton> )} </SidebarMenuSubItem> ))} </SidebarMenuSub> </CollapsibleContent> )} </SidebarMenuItem> </Collapsible> ); })} </SidebarMenu> </div> </CollapsibleContent> </div> {groupIndex < sidebarItems.length - 1 && ( <div className="my-2 mx-3 h-px bg-border" /> )} </Collapsible> ); })} </div> );
+function scrollIntoSidebarView(el: HTMLElement | null) {
+  if (!el) return;
+  const scrollContainer = findScrollableAncestor(el);
+  if (!scrollContainer) return;
+
+  const containerRect = scrollContainer.getBoundingClientRect();
+  const elRect = el.getBoundingClientRect();
+
+  // If trigger is already fully visible, don't scroll
+  if (elRect.top >= containerRect.top && elRect.bottom <= containerRect.bottom) {
+    return;
+  }
+
+  // Calculate target scroll position: trigger at top of container + small offset
+  // This ensures the expanded content has room below the trigger
+  const targetScrollTop = scrollContainer.scrollTop + (elRect.top - containerRect.top) - 8;
+
+  scrollContainer.scrollTo({
+    top: Math.max(0, targetScrollTop),
+    behavior: "smooth",
+  });
+}
+
+interface SidebarNavigationProps {
+  sidebarItems: NavGroup[];
+}
+
+const IsComingSoon = () => (
+  <span className="ml-auto rounded-md bg-amber-100 px-2 py-0.5 text-[9px] font-semibold text-amber-700 dark:bg-amber-500/10 dark:text-amber-400">
+    Próximamente
+  </span>
+);
+
+export default function SidebarNavigation({ sidebarItems }: SidebarNavigationProps) {
+  const { hasPermission } = usePermissions();
+  const path = usePathname();
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
+  const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
+
+  // Refs to track trigger buttons for auto-scroll
+  const groupTriggerRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const itemTriggerRefs = useRef<Record<string, HTMLElement | null>>({});
+  // Track previous open state so we only auto-scroll on user-initiated toggle, not the auto-open-on-active mount
+  const prevOpenGroups = useRef<Record<string, boolean>>({});
+  const prevOpenItems = useRef<Record<string, boolean>>({});
+  const mountedRef = useRef(false);
+
+  // Filter sidebar items based on permissions
+  const filteredItems = useMemo(() => {
+    const filterSubItems = (items: any[]): any[] => {
+      return items.filter(sub => {
+        if (sub.requiredPermission && !hasPermission(sub.requiredPermission.module, sub.requiredPermission.action)) {
+          return false;
+        }
+        if (sub.subItems) {
+          sub.subItems = filterSubItems(sub.subItems);
+        }
+        return true;
+      });
+    };
+
+    return sidebarItems.map(group => ({
+      ...group,
+      items: group.items.filter(item => {
+        if (item.requiredPermission && !hasPermission(item.requiredPermission.module, item.requiredPermission.action)) {
+          return false;
+        }
+        if (item.subItems) {
+          item.subItems = filterSubItems(item.subItems);
+        }
+        return true;
+      })
+    })).filter(group => group.items.length > 0);
+  }, [sidebarItems, hasPermission]);
+
+  useEffect(() => {
+    const updatedGroups: Record<string, boolean> = {};
+    const updatedItems: Record<string, boolean> = {};
+
+    for (const group of filteredItems) {
+      for (const item of group.items) {
+        const itemHasSubs = !!item.subItems;
+        const isItemActive = path.startsWith(item.path) ||
+          (itemHasSubs && item.subItems!.some((sub) => {
+            const subPath = sub.path.split("?")[0];
+            return path.startsWith(subPath);
+          }));
+
+        if (isItemActive) {
+          updatedGroups[group.id] = true;
+        }
+
+        if (itemHasSubs) {
+          updatedItems[item.title] = isItemActive;
+        }
+      }
+    }
+
+    setOpenGroups((prev) => ({ ...prev, ...updatedGroups }));
+    setOpenItems((prev) => ({ ...prev, ...updatedItems }));
+  }, [path, filteredItems]);
+
+// Single useLayoutEffect to handle ALL scroll cases (manual toggle + auto-open on path change)
+// Runs after DOM mutations but before paint, so scroll is smooth
+  useLayoutEffect(() => {
+    // Skip the very first effect run after mount so we don't scroll when the sidebar first opens
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      prevOpenGroups.current = { ...openGroups };
+      prevOpenItems.current = { ...openItems };
+      return;
+    }
+
+    const newlyOpenedGroups = Object.entries(openGroups).filter(
+      ([id, isOpen]) => isOpen && !prevOpenGroups.current[id]
+    );
+    const newlyOpenedItems = Object.entries(openItems).filter(
+      ([title, isOpen]) => isOpen && !prevOpenItems.current[title]
+    );
+
+    // If both groups and items opened, prioritize items (deeper level = more important to see)
+    const allNewlyOpened: Array<{ type: 'group' | 'item'; key: string }> = [
+      ...newlyOpenedItems.map(([title]) => ({ type: 'item' as const, key: title })),
+      ...newlyOpenedGroups.map(([id]) => ({ type: 'group' as const, key: id })),
+    ];
+
+    if (allNewlyOpened.length > 0) {
+      // Use requestAnimationFrame to wait for layout to settle after Collapsible expansion
+      requestAnimationFrame(() => {
+        allNewlyOpened.forEach(({ type, key }, index) => {
+          // Stagger scrolls slightly to handle multiple opens in same frame
+          setTimeout(() => {
+            if (type === 'group') {
+              const trigger = groupTriggerRefs.current[key];
+              scrollIntoSidebarView(trigger ?? null);
+            } else {
+              const trigger = itemTriggerRefs.current[key];
+              scrollIntoSidebarView(trigger ?? null);
+            }
+          }, index * 50);
+        });
+      });
+    }
+
+    prevOpenGroups.current = { ...openGroups };
+    prevOpenItems.current = { ...openItems };
+  }, [openGroups, openItems]);
+
+  const toggleGroup = (groupId: string | number) => {
+    const nextOpen = !(openGroups[groupId] ?? false);
+    setOpenGroups((prev) => ({ ...prev, [groupId]: nextOpen }));
+  };
+
+  const toggleItem = (title: string) => {
+    const nextOpen = !(openItems[title] ?? false);
+    setOpenItems((prev) => ({ ...prev, [title]: nextOpen }));
+  };
+
+  const renderIcon = (iconName: keyof typeof ICON_MAP | undefined): React.ReactNode => {
+    const Icon = resolveIcon(iconName);
+    return <Icon className="h-4 w-4" />;
+  };
+
+  const isActive = (itemPath: string, subItems?: NavMainItem["subItems"]) => {
+    if (subItems) {
+      return subItems.some((subItem) => {
+        const subPath = subItem.path.split("?")[0];
+        if (path.startsWith(subPath)) return true;
+        if (subItem.subItems) {
+          return subItem.subItems.some((nested) => {
+            return path.startsWith(nested.path.split("?")[0]);
+          });
+        }
+        return false;
+      });
+    }
+    return path.startsWith(itemPath);
+  };
+
+  const isGroupActive = (group: NavGroup) => {
+    const checkSubItems = (subItems: any[]): boolean => {
+      return subItems.some((sub) => {
+        if (path.startsWith(sub.path.split("?")[0])) return true;
+        if (sub.subItems) return checkSubItems(sub.subItems);
+        return false;
+      });
+    };
+
+    return group.items.some((item) => {
+      if (path.startsWith(item.path)) return true;
+      if (item.subItems) return checkSubItems(item.subItems);
+      return false;
+    });
+  };
+
+  return (
+    <div className="flex flex-col gap-1 px-2">
+      {filteredItems.map((navGroup, groupIndex) => {
+        const groupActive = isGroupActive(navGroup);
+        const groupOpen = openGroups[navGroup.id] ?? false;
+
+        return (
+          <Collapsible
+            key={navGroup.id}
+            open={groupOpen}
+            onOpenChange={() => toggleGroup(navGroup.id)}
+            className="group/collapsible-group"
+          >
+            <div className={cn(
+              "rounded-xl transition-all duration-150",
+              groupOpen && "bg-background"
+            )}>
+              {navGroup.label && (
+                <CollapsibleTrigger asChild>
+                  <button
+                    ref={(el) => { groupTriggerRefs.current[String(navGroup.id)] = el; }}
+                    className={cn(
+                    "flex w-full items-center gap-2 px-3 py-2.5 rounded-xl",
+                    "text-[11px] font-semibold uppercase tracking-wider",
+                    "transition-all duration-150 cursor-pointer",
+                    groupActive
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground",
+                    "hover:bg-muted"
+                  )}>
+                    <ChevronDown className={cn(
+                      "h-3 w-3 flex-shrink-0 transition-transform duration-200",
+                      !groupOpen && "-rotate-90"
+                    )} />
+                    <span className="truncate">{navGroup.label}</span>
+                    {groupActive && !groupOpen && (
+                      <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                    )}
+                  </button>
+                </CollapsibleTrigger>
+              )}
+
+              <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+                <div className="pb-1.5">
+                  <SidebarMenu>
+                    {navGroup.items.map((item) => {
+                      const itemActive = isActive(item.path, item.subItems);
+                      return (
+                        <Collapsible
+                          open={openItems[item.title] ?? false}
+                          onOpenChange={() => toggleItem(item.title)}
+                          key={item.title}
+                          asChild
+                          className="group/collapsible"
+                        >
+                          <SidebarMenuItem>
+                            <CollapsibleTrigger asChild>
+                              {item.subItems ? (
+                                <SidebarMenuButton
+                                  isActive={itemActive}
+                                  tooltip={item.title}
+                                  ref={(el) => { itemTriggerRefs.current[item.title] = el; }}
+                                  className={cn(
+                                    "whitespace-nowrap rounded-xl transition-all duration-150",
+                                    itemActive
+                                      ? "bg-secondary text-primary font-medium border-l-3 border-primary"
+                                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                                  )}
+                                >
+                                  {renderIcon(item.icon)}
+                                  <span>{item.title}</span>
+                                  {item.comingSoon && <IsComingSoon />}
+                                  <ChevronRight className={cn(
+                                    "ml-auto transition-transform duration-200",
+                                    "group-data-[state=open]/collapsible:rotate-90"
+                                  )} />
+                                </SidebarMenuButton>
+                              ) : (
+                                <Link href={item.path}>
+                                  <SidebarMenuButton
+                                    disabled={item.comingSoon}
+                                    isActive={itemActive}
+                                    tooltip={item.title}
+                                    className={cn(
+                                      "rounded-xl transition-all duration-150",
+                                      itemActive 
+                                        ? "bg-secondary text-primary font-medium border-l-3 border-primary"
+                                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                                    )}
+                                  >
+                                    {renderIcon(item.icon)}
+                                    <span>{item.title}</span>
+                                    {item.comingSoon && <IsComingSoon />}
+                                  </SidebarMenuButton>
+                                </Link>
+                              )}
+                            </CollapsibleTrigger>
+                            {item.subItems && (
+                              <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+                                <SidebarMenuSub>
+                                  {item.subItems.map((subItem) => (
+                                    <SidebarMenuSubItem key={subItem.title}>
+                                      {subItem.subItems ? (
+                                        <Collapsible
+                                          open={openItems[subItem.title] ?? false}
+                                          onOpenChange={() => toggleItem(subItem.title)}
+                                        >
+                                          <CollapsibleTrigger asChild>
+                                            <SidebarMenuSubButton
+                                              isActive={isActive(subItem.path, subItem.subItems)}
+                                              ref={(el) => { itemTriggerRefs.current[subItem.title] = el; }}
+                                              className="rounded-xl justify-between"
+                                            >
+                                              <div className="flex items-center gap-2">
+                                                {renderIcon(subItem.icon)}
+                                                <span>{subItem.title}</span>
+                                              </div>
+                                              <ChevronRight className={cn(
+                                                "h-3 w-3 transition-transform duration-200",
+                                                "group-data-[state=open]/collapsible:rotate-90"
+                                              )} />
+                                            </SidebarMenuSubButton>
+                                          </CollapsibleTrigger>
+                                          <CollapsibleContent>
+                                            <SidebarMenuSub className="ml-4">
+                                              {subItem.subItems.map((nestedItem) => (
+                                                <SidebarMenuSubItem key={nestedItem.title}>
+                                                  <SidebarMenuSubButton
+                                                    asChild
+                                                    className="rounded-xl"
+                                                    isActive={isActive(nestedItem.path)}
+                                                  >
+                                                    <a href={nestedItem.path}>
+                                                      {renderIcon(nestedItem.icon)}
+                                                      <span>{nestedItem.title}</span>
+                                                    </a>
+                                                  </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                              ))}
+                                            </SidebarMenuSub>
+                                          </CollapsibleContent>
+                                        </Collapsible>
+                                      ) : (
+                                        <SidebarMenuSubButton
+                                          aria-disabled={subItem.comingSoon}
+                                          isActive={isActive(subItem.path)}
+                                          asChild
+                                          className="rounded-xl"
+                                        >
+                                          <a href={subItem.path}>
+                                            {renderIcon(subItem.icon)}
+                                            <span>{subItem.title}</span>
+                                            {subItem.comingSoon && <IsComingSoon />}
+                                          </a>
+                                        </SidebarMenuSubButton>
+                                      )}
+                                    </SidebarMenuSubItem>
+                                  ))}
+                                </SidebarMenuSub>
+                              </CollapsibleContent>
+                            )}
+                          </SidebarMenuItem>
+                        </Collapsible>
+                      );
+                    })}
+                  </SidebarMenu>
+                </div>
+              </CollapsibleContent>
+            </div>
+
+            {groupIndex < sidebarItems.length - 1 && (
+              <div className="my-2 mx-3 h-px bg-border" />
+            )}
+          </Collapsible>
+        );
+      })}
+    </div>
+  );
 }

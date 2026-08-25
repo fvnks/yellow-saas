@@ -1,6 +1,98 @@
 import { query } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
-import { verifySuperAdmin } from '@/api/super-admin/lib/auth'; export async function GET(request: NextRequest, { params }: { params: { id: string } }) { const admin = await verifySuperAdmin(request); if (!admin) return errorResponse('No autorizado', 401); const { id } = params; try { const companyResult = await query('SELECT * FROM companies WHERE id = $1', [id]); if (companyResult.rows.length === 0) return errorResponse('Empresa no encontrada', 404); const usersResult = await query( 'SELECT id, email, full_name, role, status, created_at FROM profiles WHERE company_id = $1 ORDER BY created_at', [id] ); const grantsResult = await query(` SELECT g.id, g.access_level, g.reason, g.is_active, g.expires_at, g.created_at, sa.name as super_admin_name, sa.email as super_admin_email FROM company_access_grants g JOIN super_admins sa ON sa.id = g.super_admin_id WHERE g.company_id = $1 ORDER BY g.created_at DESC `, [id]); let modulesResult = { rows: [] as Record<string, unknown>[] }; let catalogResult = { rows: [] as Record<string, unknown>[] }; try { modulesResult = await query( `SELECT m.*, mc.name as catalog_name, mc.description as catalog_description FROM module_activations m LEFT JOIN module_catalog mc ON mc.name = m.module_name WHERE m.company_id = $1 ORDER BY m.activated_at DESC`, [id] ); catalogResult = await query('SELECT * FROM module_catalog ORDER BY name', []); } catch (e) { console.warn('Module tables not available:', (e as Error).message); } return successResponse({ ...companyResult.rows[0], users: usersResult.rows, grants: grantsResult.rows, modules: modulesResult.rows, module_catalog: catalogResult.rows, }); } catch (err) { console.error('Company detail error:', err); return errorResponse('Error al obtener empresa', 500); }
-} export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) { const admin = await verifySuperAdmin(request); if (!admin) return errorResponse('No autorizado', 401); const { id } = params; const body = await request.json(); const { action, module_name } = body; if (!action || !module_name) return errorResponse('action y module_name son requeridos', 400); try { const companyResult = await query('SELECT id FROM companies WHERE id = $1', [id]); if (companyResult.rows.length === 0) return errorResponse('Empresa no encontrada', 404); const catalogResult = await query('SELECT name FROM module_catalog WHERE name = $1', [module_name]); if (catalogResult.rows.length === 0) return errorResponse('Módulo no encontrado en catálogo', 404); if (action === 'activate') { await query( `INSERT INTO module_activations (company_id, module_name, status, activated_at, activated_by) VALUES ($1, $2, 'active', now(), $3) ON CONFLICT (company_id, module_name) DO UPDATE SET status = 'active', activated_at = now()`, [id, module_name, admin.id] ); } else if (action === 'deactivate') { await query( 'DELETE FROM module_activations WHERE company_id = $1 AND module_name = $2', [id, module_name] ); } else { return errorResponse('action debe ser activate o deactivate', 400); } return successResponse({ success: true }); } catch (err) { console.error('Module toggle error:', err); return errorResponse('Error al actualizar módulo', 500); }
+import { verifySuperAdmin } from '@/api/super-admin/lib/auth';
+
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+  const admin = await verifySuperAdmin(request);
+  if (!admin) return errorResponse('No autorizado', 401);
+
+  const { id } = params;
+
+  try {
+    const companyResult = await query('SELECT * FROM companies WHERE id = $1', [id]);
+    if (companyResult.rows.length === 0) return errorResponse('Empresa no encontrada', 404);
+
+    const usersResult = await query(
+      'SELECT id, email, full_name, role, status, created_at FROM profiles WHERE company_id = $1 ORDER BY created_at',
+      [id]
+    );
+
+    const grantsResult = await query(`
+      SELECT 
+        g.id, g.access_level, g.reason, g.is_active, g.expires_at, g.created_at,
+        sa.name as super_admin_name, sa.email as super_admin_email
+      FROM company_access_grants g
+      JOIN super_admins sa ON sa.id = g.super_admin_id
+      WHERE g.company_id = $1
+      ORDER BY g.created_at DESC
+    `, [id]);
+
+    let modulesResult = { rows: [] as Record<string, unknown>[] };
+    let catalogResult = { rows: [] as Record<string, unknown>[] };
+    try {
+      modulesResult = await query(
+        `SELECT m.*, mc.name as catalog_name, mc.description as catalog_description
+         FROM module_activations m
+         LEFT JOIN module_catalog mc ON mc.name = m.module_name
+         WHERE m.company_id = $1
+         ORDER BY m.activated_at DESC`,
+        [id]
+      );
+      catalogResult = await query('SELECT * FROM module_catalog ORDER BY name', []);
+    } catch (e) {
+      console.warn('Module tables not available:', (e as Error).message);
+    }
+
+    return successResponse({
+      ...companyResult.rows[0],
+      users: usersResult.rows,
+      grants: grantsResult.rows,
+      modules: modulesResult.rows,
+      module_catalog: catalogResult.rows,
+    });
+  } catch (err) {
+    console.error('Company detail error:', err);
+    return errorResponse('Error al obtener empresa', 500);
+  }
+}
+
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+  const admin = await verifySuperAdmin(request);
+  if (!admin) return errorResponse('No autorizado', 401);
+
+  const { id } = params;
+  const body = await request.json();
+  const { action, module_name } = body;
+
+  if (!action || !module_name) return errorResponse('action y module_name son requeridos', 400);
+
+  try {
+    const companyResult = await query('SELECT id FROM companies WHERE id = $1', [id]);
+    if (companyResult.rows.length === 0) return errorResponse('Empresa no encontrada', 404);
+
+    const catalogResult = await query('SELECT name FROM module_catalog WHERE name = $1', [module_name]);
+    if (catalogResult.rows.length === 0) return errorResponse('Módulo no encontrado en catálogo', 404);
+
+    if (action === 'activate') {
+      await query(
+        `INSERT INTO module_activations (company_id, module_name, status, activated_at, activated_by)
+         VALUES ($1, $2, 'active', now(), $3)
+         ON CONFLICT (company_id, module_name) DO UPDATE SET status = 'active', activated_at = now()`,
+        [id, module_name, admin.id]
+      );
+    } else if (action === 'deactivate') {
+      await query(
+        'DELETE FROM module_activations WHERE company_id = $1 AND module_name = $2',
+        [id, module_name]
+      );
+    } else {
+      return errorResponse('action debe ser activate o deactivate', 400);
+    }
+
+    return successResponse({ success: true });
+  } catch (err) {
+    console.error('Module toggle error:', err);
+    return errorResponse('Error al actualizar módulo', 500);
+  }
 }

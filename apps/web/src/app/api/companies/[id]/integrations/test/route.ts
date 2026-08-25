@@ -1,3 +1,78 @@
 import { NextRequest } from 'next/server';
-import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers'; export async function POST(req: NextRequest, { params }: { params: { id: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const body = await req.json(); const { integration_id, config } = body; if (!integration_id) return errorResponse('integration_id is required'); switch (integration_id) { case 'sii': if (!config?.sii_username || !config?.sii_password) { return successResponse({ success: false, message: 'Usuario y contraseña requeridos' }); } // SII requires digital certificate - validate basic format if (config.sii_username.length < 5) { return successResponse({ success: false, message: 'Usuario SII inválido' }); } return successResponse({ success: true, message: 'Configuración SII válida. La conexión real requiere certificado digital.' }); case 'stripe': if (!config?.stripe_secret_key) { return successResponse({ success: false, message: 'Secret key requerida' }); } // Validate Stripe key format if (!config.stripe_secret_key.startsWith('sk_live_') && !config.stripe_secret_key.startsWith('sk_test_')) { return successResponse({ success: false, message: 'Formato de clave Stripe inválido. Debe comenzar con sk_live_ o sk_test_' }); } // Try Stripe API health check try { const response = await fetch('https://api.stripe.com/v1/balance', { headers: { Authorization: `Bearer ${config.stripe_secret_key}` }, }); if (response.ok) { return successResponse({ success: true, message: 'Stripe conectado exitosamente' }); } const data = await response.json(); return successResponse({ success: false, message: data?.error?.message || 'Error al conectar con Stripe' }); } catch { return successResponse({ success: false, message: 'No se pudo conectar con Stripe' }); } case 'mach': if (!config?.mach_api_key || !config?.mach_secret) { return successResponse({ success: false, message: 'API Key y Secret requeridos' }); } // Validate Mach key format (basic length check) if (config.mach_api_key.length < 10 || config.mach_secret.length < 10) { return successResponse({ success: false, message: 'Credenciales Mach inválidas' }); } return successResponse({ success: true, message: 'Credenciales Mach válidas. La conexión real requiere configuración adicional.' }); case 'email': if (!config?.smtp_host || !config?.smtp_user || !config?.smtp_password) { return successResponse({ success: false, message: 'Servidor, usuario y contraseña requeridos' }); } // Try SMTP connection test via TCP try { const port = config.smtp_port || 587; const host = config.smtp_host.replace(/^https?:\/\//, '').replace(/:\d+$/, ''); // Basic DNS resolution check const response = await fetch(`https://${host}`, { method: 'HEAD', signal: AbortSignal.timeout(5000) }).catch(() => null); // Even if the fetch fails, if the host exists it's likely valid return successResponse({ success: true, message: `Configuración SMTP para ${host}:${port} verificada` }); } catch { return successResponse({ success: false, message: 'No se pudo verificar el servidor SMTP' }); } default: return errorResponse('Integración no soportada'); } } catch (error: any) { return errorResponse(error.message || 'Error testing integration'); }
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await req.json();
+    const { integration_id, config } = body;
+    if (!integration_id) return errorResponse('integration_id is required');
+
+    switch (integration_id) {
+      case 'sii':
+        if (!config?.sii_username || !config?.sii_password) {
+          return successResponse({ success: false, message: 'Usuario y contraseña requeridos' });
+        }
+        // SII requires digital certificate - validate basic format
+        if (config.sii_username.length < 5) {
+          return successResponse({ success: false, message: 'Usuario SII inválido' });
+        }
+        return successResponse({ success: true, message: 'Configuración SII válida. La conexión real requiere certificado digital.' });
+
+      case 'stripe':
+        if (!config?.stripe_secret_key) {
+          return successResponse({ success: false, message: 'Secret key requerida' });
+        }
+        // Validate Stripe key format
+        if (!config.stripe_secret_key.startsWith('sk_live_') && !config.stripe_secret_key.startsWith('sk_test_')) {
+          return successResponse({ success: false, message: 'Formato de clave Stripe inválido. Debe comenzar con sk_live_ o sk_test_' });
+        }
+        // Try Stripe API health check
+        try {
+          const response = await fetch('https://api.stripe.com/v1/balance', {
+            headers: { Authorization: `Bearer ${config.stripe_secret_key}` },
+          });
+          if (response.ok) {
+            return successResponse({ success: true, message: 'Stripe conectado exitosamente' });
+          }
+          const data = await response.json();
+          return successResponse({ success: false, message: data?.error?.message || 'Error al conectar con Stripe' });
+        } catch {
+          return successResponse({ success: false, message: 'No se pudo conectar con Stripe' });
+        }
+
+      case 'mach':
+        if (!config?.mach_api_key || !config?.mach_secret) {
+          return successResponse({ success: false, message: 'API Key y Secret requeridos' });
+        }
+        // Validate Mach key format (basic length check)
+        if (config.mach_api_key.length < 10 || config.mach_secret.length < 10) {
+          return successResponse({ success: false, message: 'Credenciales Mach inválidas' });
+        }
+        return successResponse({ success: true, message: 'Credenciales Mach válidas. La conexión real requiere configuración adicional.' });
+
+      case 'email':
+        if (!config?.smtp_host || !config?.smtp_user || !config?.smtp_password) {
+          return successResponse({ success: false, message: 'Servidor, usuario y contraseña requeridos' });
+        }
+        // Try SMTP connection test via TCP
+        try {
+          const port = config.smtp_port || 587;
+          const host = config.smtp_host.replace(/^https?:\/\//, '').replace(/:\d+$/, '');
+          // Basic DNS resolution check
+          const response = await fetch(`https://${host}`, { method: 'HEAD', signal: AbortSignal.timeout(5000) }).catch(() => null);
+          // Even if the fetch fails, if the host exists it's likely valid
+          return successResponse({ success: true, message: `Configuración SMTP para ${host}:${port} verificada` });
+        } catch {
+          return successResponse({ success: false, message: 'No se pudo verificar el servidor SMTP' });
+        }
+
+      default:
+        return errorResponse('Integración no soportada');
+    }
+  } catch (error: any) {
+    return errorResponse(error.message || 'Error testing integration');
+  }
 }

@@ -1,5 +1,134 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function POST( request: NextRequest, { params }: { params: { id: string; waveId: string } }
-) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const { order_ids, delivery_guide_ids } = body; const waveResult = await query( `SELECT * FROM pick_waves WHERE id = $1 AND company_id = $2`, [params.waveId, companyId] ); if (waveResult.rows.length === 0) return errorResponse('Pick wave not found', 404); if (waveResult.rows[0].status !== 'draft') { return errorResponse('Can only release draft waves', 400); } await query( `UPDATE pick_waves SET status = 'released', updated_at = NOW() WHERE id = $1`, [params.waveId] ); const ordersToPick: string[] = []; if (order_ids && Array.isArray(order_ids)) { ordersToPick.push(...order_ids); } const guidesToPick: string[] = []; if (delivery_guide_ids && Array.isArray(delivery_guide_ids)) { guidesToPick.push(...delivery_guide_ids); } const itemsToPick: any[] = []; if (ordersToPick.length > 0) { const orderItems = await query( `SELECT soi.*, so.id as order_id, so.order_number, soi.product_id, p.name as product_name, p.sku, wz.id as zone_id, ws.id as shelf_id, wp.id as position_id FROM sales_order_items soi JOIN sales_orders so ON soi.order_id = so.id JOIN products p ON soi.product_id = p.id LEFT JOIN stock_levels sl ON sl.product_id = p.id AND sl.company_id = $1 LEFT JOIN warehouse_positions wp ON wp.warehouse_id = sl.warehouse_id AND wp.is_active = true LEFT JOIN warehouse_shelves ws ON ws.id = wp.shelf_id LEFT JOIN warehouse_zones wz ON wz.id = ws.zone_id WHERE so.id = ANY($2) AND so.company_id = $1 AND so.status IN ('confirmed', 'processing') ORDER BY wz.code, ws.code, wp.code`, [companyId, ordersToPick] ); for (const item of orderItems.rows) { itemsToPick.push({ order_id: item.order_id, order_number: item.order_number, product_id: item.product_id, product_name: item.product_name, product_sku: item.sku, quantity_requested: parseFloat(item.quantity), zone_id: item.zone_id, shelf_id: item.shelf_id, position_id: item.position_id, }); } } if (guidesToPick.length > 0) { const guideItems = await query( `SELECT dgi.*, dg.id as guide_id, dg.guide_number, dgi.product_id, p.name as product_name, p.sku, wz.id as zone_id, ws.id as shelf_id, wp.id as position_id FROM delivery_guide_items dgi JOIN delivery_guides dg ON dgi.guide_id = dg.id JOIN products p ON dgi.product_id = p.id LEFT JOIN stock_levels sl ON sl.product_id = p.id AND sl.company_id = $1 LEFT JOIN warehouse_positions wp ON wp.warehouse_id = sl.warehouse_id AND wp.is_active = true LEFT JOIN warehouse_shelves ws ON ws.id = wp.shelf_id LEFT JOIN warehouse_zones wz ON wz.id = ws.zone_id WHERE dg.id = ANY($2) AND dg.company_id = $1 AND dg.status IN ('pending', 'in_transit') ORDER BY wz.code, ws.code, wp.code`, [companyId, guidesToPick] ); for (const item of guideItems.rows) { itemsToPick.push({ delivery_guide_id: item.guide_id, delivery_guide_number: item.guide_number, product_id: item.product_id, product_name: item.product_name, product_sku: item.sku, quantity_requested: parseFloat(item.quantity), zone_id: item.zone_id, shelf_id: item.shelf_id, position_id: item.position_id, }); } } let sequence = 1; for (const item of itemsToPick) { await query( `INSERT INTO pick_tasks (company_id, wave_id, warehouse_id, order_id, delivery_guide_id, product_id, zone_id, shelf_id, position_id, quantity_requested, sequence) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`, [ companyId, params.waveId, waveResult.rows[0].warehouse_id, item.order_id || null, item.delivery_guide_id || null, item.product_id, item.zone_id, item.shelf_id, item.position_id, item.quantity_requested, sequence++, ] ); } await query( `UPDATE pick_waves SET status = 'released', total_tasks = $1, updated_at = NOW() WHERE id = $2`, [itemsToPick.length, params.waveId] ); return successResponse({ message: 'Wave released successfully', tasks_created: itemsToPick.length }); } catch (err) { console.error('Release pick wave error:', err); return errorResponse('Internal server error', 500); }
+import { NextRequest } from 'next/server';
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { id: string; waveId: string } }
+) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+    const { order_ids, delivery_guide_ids } = body;
+
+    const waveResult = await query(
+      `SELECT * FROM pick_waves WHERE id = $1 AND company_id = $2`,
+      [params.waveId, companyId]
+    );
+
+    if (waveResult.rows.length === 0) return errorResponse('Pick wave not found', 404);
+    if (waveResult.rows[0].status !== 'draft') {
+      return errorResponse('Can only release draft waves', 400);
+    }
+
+    await query(
+      `UPDATE pick_waves SET status = 'released', updated_at = NOW() WHERE id = $1`,
+      [params.waveId]
+    );
+
+    const ordersToPick: string[] = [];
+    if (order_ids && Array.isArray(order_ids)) {
+      ordersToPick.push(...order_ids);
+    }
+
+    const guidesToPick: string[] = [];
+    if (delivery_guide_ids && Array.isArray(delivery_guide_ids)) {
+      guidesToPick.push(...delivery_guide_ids);
+    }
+
+    const itemsToPick: any[] = [];
+
+    if (ordersToPick.length > 0) {
+      const orderItems = await query(
+        `SELECT soi.*, so.id as order_id, so.order_number, soi.product_id, p.name as product_name, p.sku,
+                wz.id as zone_id, ws.id as shelf_id, wp.id as position_id
+         FROM sales_order_items soi
+         JOIN sales_orders so ON soi.order_id = so.id
+         JOIN products p ON soi.product_id = p.id
+         LEFT JOIN stock_levels sl ON sl.product_id = p.id AND sl.company_id = $1
+         LEFT JOIN warehouse_positions wp ON wp.warehouse_id = sl.warehouse_id AND wp.is_active = true
+         LEFT JOIN warehouse_shelves ws ON ws.id = wp.shelf_id
+         LEFT JOIN warehouse_zones wz ON wz.id = ws.zone_id
+         WHERE so.id = ANY($2) AND so.company_id = $1 AND so.status IN ('confirmed', 'processing')
+         ORDER BY wz.code, ws.code, wp.code`,
+        [companyId, ordersToPick]
+      );
+      for (const item of orderItems.rows) {
+        itemsToPick.push({
+          order_id: item.order_id,
+          order_number: item.order_number,
+          product_id: item.product_id,
+          product_name: item.product_name,
+          product_sku: item.sku,
+          quantity_requested: parseFloat(item.quantity),
+          zone_id: item.zone_id,
+          shelf_id: item.shelf_id,
+          position_id: item.position_id,
+        });
+      }
+    }
+
+    if (guidesToPick.length > 0) {
+      const guideItems = await query(
+        `SELECT dgi.*, dg.id as guide_id, dg.guide_number, dgi.product_id, p.name as product_name, p.sku,
+                wz.id as zone_id, ws.id as shelf_id, wp.id as position_id
+         FROM delivery_guide_items dgi
+         JOIN delivery_guides dg ON dgi.guide_id = dg.id
+         JOIN products p ON dgi.product_id = p.id
+         LEFT JOIN stock_levels sl ON sl.product_id = p.id AND sl.company_id = $1
+         LEFT JOIN warehouse_positions wp ON wp.warehouse_id = sl.warehouse_id AND wp.is_active = true
+         LEFT JOIN warehouse_shelves ws ON ws.id = wp.shelf_id
+         LEFT JOIN warehouse_zones wz ON wz.id = ws.zone_id
+         WHERE dg.id = ANY($2) AND dg.company_id = $1 AND dg.status IN ('pending', 'in_transit')
+         ORDER BY wz.code, ws.code, wp.code`,
+        [companyId, guidesToPick]
+      );
+      for (const item of guideItems.rows) {
+        itemsToPick.push({
+          delivery_guide_id: item.guide_id,
+          delivery_guide_number: item.guide_number,
+          product_id: item.product_id,
+          product_name: item.product_name,
+          product_sku: item.sku,
+          quantity_requested: parseFloat(item.quantity),
+          zone_id: item.zone_id,
+          shelf_id: item.shelf_id,
+          position_id: item.position_id,
+        });
+      }
+    }
+
+    let sequence = 1;
+    for (const item of itemsToPick) {
+      await query(
+        `INSERT INTO pick_tasks (company_id, wave_id, warehouse_id, order_id, delivery_guide_id, product_id, zone_id, shelf_id, position_id, quantity_requested, sequence)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        [
+          companyId,
+          params.waveId,
+          waveResult.rows[0].warehouse_id,
+          item.order_id || null,
+          item.delivery_guide_id || null,
+          item.product_id,
+          item.zone_id,
+          item.shelf_id,
+          item.position_id,
+          item.quantity_requested,
+          sequence++,
+        ]
+      );
+    }
+
+    await query(
+      `UPDATE pick_waves SET status = 'released', total_tasks = $1, updated_at = NOW() WHERE id = $2`,
+      [itemsToPick.length, params.waveId]
+    );
+
+    return successResponse({ message: 'Wave released successfully', tasks_created: itemsToPick.length });
+  } catch (err) {
+    console.error('Release pick wave error:', err);
+    return errorResponse('Internal server error', 500);
+  }
 }

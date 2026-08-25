@@ -2,10 +2,98 @@ import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 import bcrypt from 'bcryptjs';
-import crypto from 'crypto';
 
-export async function GET(request: NextRequest) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const { searchParams } = new URL(request.url); const limit = searchParams.get('limit'); const { rows } = await query( `SELECT id, email, full_name, avatar_url, role, status, last_login_at, created_at FROM profiles WHERE company_id = $1 ORDER BY created_at ASC${limit ? ` LIMIT $2` : ''}`, limit ? [companyId, parseInt(limit)] : [companyId] ); return successResponse(rows); } catch { return errorResponse('Failed to fetch users', 500); }
-} export async function POST(request: NextRequest) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const { email, full_name, role } = body; if (!email) return errorResponse('Email is required', 400); const existing = await query('SELECT id FROM profiles WHERE email = $1 AND company_id = $2', [email, companyId]); if (existing.rows.length > 0) return errorResponse('User already exists in this company', 409);     const tempPassword = crypto.randomBytes(12).toString('base64url') + 'A1!'; const passwordHash = await bcrypt.hash(tempPassword, 12); const { rows } = await query( `INSERT INTO profiles (id, company_id, email, full_name, password_hash, role, status) VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, 'invited') RETURNING id, email, full_name, role, status, created_at`, [companyId, email, full_name || email.split('@')[0], passwordHash, role || 'member'] ); return successResponse(rows[0], 201); } catch { return errorResponse('Failed to create user', 500); }
-} export async function PUT(request: NextRequest) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const { id, full_name, role, status } = body; if (!id) return errorResponse('User ID is required', 400); const { rows } = await query( `UPDATE profiles SET full_name = COALESCE($1, full_name), role = COALESCE($2, role), status = COALESCE($3, status), updated_at = NOW() WHERE id = $4 AND company_id = $5 RETURNING id, email, full_name, role, status`, [full_name, role, status, id, companyId] ); if (rows.length === 0) return errorResponse('User not found', 404); return successResponse(rows[0]); } catch { return errorResponse('Failed to update user', 500); }
-} export async function DELETE(request: NextRequest) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const { searchParams } = new URL(request.url); const userId = searchParams.get('userId'); if (!userId) return errorResponse('User ID is required', 400); const result = await query( 'DELETE FROM profiles WHERE id = $1 AND company_id = $2 AND role != $3', [userId, companyId, 'owner'] ); if (result.rowCount === 0) return errorResponse('Cannot delete this user', 400); return successResponse({ deleted: true }); } catch { return errorResponse('Failed to delete user', 500); }
+export async function GET(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { searchParams } = new URL(request.url);
+    const limit = searchParams.get('limit');
+
+    const { rows } = await query(
+      `SELECT id, email, full_name, avatar_url, role, status, last_login_at, created_at
+       FROM profiles WHERE company_id = $1 ORDER BY created_at ASC${limit ? ` LIMIT $2` : ''}`,
+      limit ? [companyId, parseInt(limit)] : [companyId]
+    );
+
+    return successResponse(rows);
+  } catch {
+    return errorResponse('Failed to fetch users', 500);
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+    const { email, full_name, role } = body;
+
+    if (!email) return errorResponse('Email is required', 400);
+
+    const existing = await query('SELECT id FROM profiles WHERE email = $1 AND company_id = $2', [email, companyId]);
+    if (existing.rows.length > 0) return errorResponse('User already exists in this company', 409);
+
+    const tempPassword = Math.random().toString(36).slice(-12) + 'A1!';
+    const passwordHash = await bcrypt.hash(tempPassword, 12);
+
+    const { rows } = await query(
+      `INSERT INTO profiles (id, company_id, email, full_name, password_hash, role, status)
+       VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, 'invited')
+       RETURNING id, email, full_name, role, status, created_at`,
+      [companyId, email, full_name || email.split('@')[0], passwordHash, role || 'member']
+    );
+
+    return successResponse(rows[0], 201);
+  } catch {
+    return errorResponse('Failed to create user', 500);
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+    const { id, full_name, role, status } = body;
+
+    if (!id) return errorResponse('User ID is required', 400);
+
+    const { rows } = await query(
+      `UPDATE profiles SET full_name = COALESCE($1, full_name), role = COALESCE($2, role),
+       status = COALESCE($3, status), updated_at = NOW()
+       WHERE id = $4 AND company_id = $5
+       RETURNING id, email, full_name, role, status`,
+      [full_name, role, status, id, companyId]
+    );
+
+    if (rows.length === 0) return errorResponse('User not found', 404);
+    return successResponse(rows[0]);
+  } catch {
+    return errorResponse('Failed to update user', 500);
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
+    if (!userId) return errorResponse('User ID is required', 400);
+
+    const result = await query(
+      'DELETE FROM profiles WHERE id = $1 AND company_id = $2 AND role != $3',
+      [userId, companyId, 'owner']
+    );
+
+    if (result.rowCount === 0) return errorResponse('Cannot delete this user', 400);
+    return successResponse({ deleted: true });
+  } catch {
+    return errorResponse('Failed to delete user', 500);
+  }
 }

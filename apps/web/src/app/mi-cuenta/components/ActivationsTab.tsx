@@ -1,1 +1,127 @@
-﻿'use client'; import { useState, useEffect } from 'react'; import { History, CheckCircle2, XCircle, Clock, Calendar } from 'lucide-react'; import { getApiClient } from '@/lib/api-client'; interface Activation { id: string; module_name: string; status: string; activated_at: string; expires_at: string | null; cancelled_at: string | null; label: string; description: string; category: string; } export default function ActivationsTab() { const [activations, setActivations] = useState<Activation[]>([]); const [loading, setLoading] = useState(true); useEffect(() => { loadData(); }, []); const loadData = async () => { try { const api = getApiClient(); const companyId = api['companyId']; const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1]; const res = await fetch(`/api/companies/${companyId}/modules`, { headers: { Authorization: `Bearer ${token}` }, }); const data = await res.json(); setActivations(data.data?.modules || []); } catch (err) { console.error('Failed to load activations:', err); } setLoading(false); }; const getStatusConfig = (status: string) => { switch (status) { case 'active': return { label: 'Activo', icon: CheckCircle2, color: 'text-emerald-500', bgColor: 'bg-emerald-50 text-emerald-700 border border-emerald-200' }; case 'inactive': return { label: 'Inactivo', icon: XCircle, color: 'text-muted-foreground', bgColor: 'bg-muted text-foreground border border-border' }; case 'expired': return { label: 'Expirado', icon: Clock, color: 'text-amber-500', bgColor: 'bg-amber-50 text-amber-700 border border-amber-200' }; case 'cancelled': return { label: 'Cancelado', icon: XCircle, color: 'text-rose-500', bgColor: 'bg-rose-50 text-rose-700 border border-rose-200' }; default: return { label: status, icon: Clock, color: 'text-muted-foreground', bgColor: 'bg-muted text-foreground border border-border' }; } }; if (loading) { return <div className="space-y-4">{[1, 2, 3].map(i => <div key={i} className="h-24 bg-muted rounded-xl animate-pulse" />)}</div>; } return ( <div className="space-y-6"> <div> <h3 className="text-lg font-semibold text-foreground">Mis Activaciones</h3> <p className="text-sm text-muted-foreground">Historial de módulos activados</p> </div> {activations.length === 0 ? ( <div className="text-center py-12 bg-card border border-border rounded-xl"> <History className="w-12 h-12 text-foreground mx-auto mb-3" /> <p className="text-sm text-muted-foreground">No hay activaciones registradas</p> <p className="text-xs text-muted-foreground mt-1">Los módulos que actives aparecerán aquí</p> </div> ) : ( <div className="space-y-3"> {activations.map((activation) => { const statusConfig = getStatusConfig(activation.status); const StatusIcon = statusConfig.icon; return ( <div key={activation.id} className="bg-card border border-border rounded-xl p-5 hover:shadow-md transition-shadow"> <div className="flex items-start justify-between"> <div className="flex items-center gap-3"> <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${activation.status === 'active' ? 'bg-emerald-50' : 'bg-muted'}`}> <StatusIcon className={`w-5 h-5 ${statusConfig.color}`} /> </div> <div> <h4 className="text-sm font-semibold text-foreground">{activation.label || activation.module_name}</h4> <p className="text-xs text-muted-foreground mt-0.5">{activation.description}</p> </div> </div> <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${statusConfig.bgColor}`}> {statusConfig.label} </span> </div> <div className="flex items-center gap-6 mt-4 text-xs text-muted-foreground"> <div className="flex items-center gap-1.5"> <Calendar className="w-3.5 h-3.5" /> <span>Activado: {new Date(activation.activated_at).toLocaleDateString('es-CL')}</span> </div> {activation.expires_at && ( <div className="flex items-center gap-1.5"> <Clock className="w-3.5 h-3.5" /> <span>Expira: {new Date(activation.expires_at).toLocaleDateString('es-CL')}</span> </div> )} {activation.cancelled_at && ( <div className="flex items-center gap-1.5"> <XCircle className="w-3.5 h-3.5 text-rose-400" /> <span>Cancelado: {new Date(activation.cancelled_at).toLocaleDateString('es-CL')}</span> </div> )} <span className="px-2 py-0.5 bg-muted text-foreground rounded text-[10px] font-medium capitalize"> {activation.category} </span> </div> </div> ); })} </div> )} </div> ); } 
+﻿'use client';
+
+import { useState, useEffect } from 'react';
+import { History, CheckCircle2, XCircle, Clock, Calendar } from 'lucide-react';
+import { getApiClient } from '@/lib/api-client';
+
+interface Activation {
+  id: string;
+  module_name: string;
+  status: string;
+  activated_at: string;
+  expires_at: string | null;
+  cancelled_at: string | null;
+  label: string;
+  description: string;
+  category: string;
+}
+
+export default function ActivationsTab() {
+  const [activations, setActivations] = useState<Activation[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      const api = getApiClient();
+      const companyId = api['companyId'];
+      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+
+      const res = await fetch(`/api/companies/${companyId}/modules`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setActivations(data.data?.modules || []);
+    } catch (err) {
+      console.error('Failed to load activations:', err);
+    }
+    setLoading(false);
+  };
+
+  const getStatusConfig = (status: string) => {
+    switch (status) {
+      case 'active':
+        return { label: 'Activo', icon: CheckCircle2, color: 'text-emerald-500', bgColor: 'bg-emerald-50 text-emerald-700 border border-emerald-200' };
+      case 'inactive':
+        return { label: 'Inactivo', icon: XCircle, color: 'text-muted-foreground', bgColor: 'bg-muted text-foreground border border-border' };
+      case 'expired':
+        return { label: 'Expirado', icon: Clock, color: 'text-amber-500', bgColor: 'bg-amber-50 text-amber-700 border border-amber-200' };
+      case 'cancelled':
+        return { label: 'Cancelado', icon: XCircle, color: 'text-rose-500', bgColor: 'bg-rose-50 text-rose-700 border border-rose-200' };
+      default:
+        return { label: status, icon: Clock, color: 'text-muted-foreground', bgColor: 'bg-muted text-foreground border border-border' };
+    }
+  };
+
+  if (loading) {
+    return <div className="space-y-4">{[1, 2, 3].map(i => <div key={i} className="h-24 bg-muted rounded-xl animate-pulse" />)}</div>;
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-lg font-semibold text-foreground">Mis Activaciones</h3>
+        <p className="text-sm text-muted-foreground">Historial de módulos activados</p>
+      </div>
+
+      {activations.length === 0 ? (
+        <div className="text-center py-12 bg-card border border-border rounded-xl">
+          <History className="w-12 h-12 text-foreground mx-auto mb-3" />
+          <p className="text-sm text-muted-foreground">No hay activaciones registradas</p>
+          <p className="text-xs text-muted-foreground mt-1">Los módulos que actives aparecerán aquí</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {activations.map((activation) => {
+            const statusConfig = getStatusConfig(activation.status);
+            const StatusIcon = statusConfig.icon;
+
+            return (
+              <div key={activation.id} className="bg-card border border-border rounded-xl p-5 hover:shadow-md transition-shadow">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${activation.status === 'active' ? 'bg-emerald-50' : 'bg-muted'}`}>
+                      <StatusIcon className={`w-5 h-5 ${statusConfig.color}`} />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-semibold text-foreground">{activation.label || activation.module_name}</h4>
+                      <p className="text-xs text-muted-foreground mt-0.5">{activation.description}</p>
+                    </div>
+                  </div>
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${statusConfig.bgColor}`}>
+                    {statusConfig.label}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-6 mt-4 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5" />
+                    <span>Activado: {new Date(activation.activated_at).toLocaleDateString('es-CL')}</span>
+                  </div>
+                  {activation.expires_at && (
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>Expira: {new Date(activation.expires_at).toLocaleDateString('es-CL')}</span>
+                    </div>
+                  )}
+                  {activation.cancelled_at && (
+                    <div className="flex items-center gap-1.5">
+                      <XCircle className="w-3.5 h-3.5 text-rose-400" />
+                      <span>Cancelado: {new Date(activation.cancelled_at).toLocaleDateString('es-CL')}</span>
+                    </div>
+                  )}
+                  <span className="px-2 py-0.5 bg-muted text-foreground rounded text-[10px] font-medium capitalize">
+                    {activation.category}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}

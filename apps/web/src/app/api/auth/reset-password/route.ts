@@ -3,6 +3,79 @@ import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { jwtVerify } from 'jose';
-import { getJwtSecret } from '@/lib/env'; const JWT_SECRET = getJwtSecret(); // Misma política de complejidad que el formulario de registro
-const PASSWORD_REGEX = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/; export async function POST(request: NextRequest) { try { const body = await request.json(); const { token, password } = body; if (!token || !password) { return errorResponse('Token y contraseña son requeridos', 400); } if (password.length < 8) { return errorResponse('La contraseña debe tener al menos 8 caracteres', 400); } if (!PASSWORD_REGEX.test(password)) { return errorResponse('La contraseña debe incluir mayúsculas, minúsculas, números y un carácter especial', 400); } let payload; try { const result = await jwtVerify(token, JWT_SECRET); payload = result.payload as Record<string, unknown>; } catch { return errorResponse('El enlace es inválido o ha expirado', 400); } if (payload.purpose !== 'password_reset') { return errorResponse('El enlace es inválido', 400); } const targetType = payload.target_type as string; const targetId = payload.target_id as string; const issuedAt = payload.iat as number | undefined; if (!targetId || (targetType !== 'user' && targetType !== 'super_admin')) { return errorResponse('El enlace es inválido', 400); } // Rechazar tokens ya utilizados: si el registro fue modificado después de // emitirse el token (el reset actualiza updated_at), el enlace está gastado. const table = targetType === 'user' ? 'profiles' : 'super_admins'; const current = await query(`SELECT updated_at FROM ${table} WHERE id = $1`, [targetId]); if (current.rows.length === 0) { return errorResponse('La cuenta ya no existe', 400); } if (issuedAt && current.rows[0]?.updated_at) { const updatedAt = new Date(current.rows[0].updated_at).getTime() / 1000; if (updatedAt > issuedAt) { return errorResponse('El enlace ya fue utilizado', 400); } } const passwordHash = await bcrypt.hash(password, 12); const result = await query( `UPDATE ${table} SET password_hash = $1, updated_at = now() WHERE id = $2 RETURNING id`, [passwordHash, targetId] ); if (result.rows.length === 0) { return errorResponse('La cuenta ya no existe', 400); } return successResponse({ message: 'Contraseña actualizada correctamente' }); } catch (err) { console.error('Reset password error:', err); return errorResponse('Internal server error', 500); }
+import { getJwtSecret } from '@/lib/env';
+
+const JWT_SECRET = getJwtSecret();
+
+// Misma política de complejidad que el formulario de registro
+const PASSWORD_REGEX = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/;
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { token, password } = body;
+
+    if (!token || !password) {
+      return errorResponse('Token y contraseña son requeridos', 400);
+    }
+
+    if (password.length < 8) {
+      return errorResponse('La contraseña debe tener al menos 8 caracteres', 400);
+    }
+
+    if (!PASSWORD_REGEX.test(password)) {
+      return errorResponse('La contraseña debe incluir mayúsculas, minúsculas, números y un carácter especial', 400);
+    }
+
+    let payload;
+    try {
+      const result = await jwtVerify(token, JWT_SECRET);
+      payload = result.payload as Record<string, unknown>;
+    } catch {
+      return errorResponse('El enlace es inválido o ha expirado', 400);
+    }
+
+    if (payload.purpose !== 'password_reset') {
+      return errorResponse('El enlace es inválido', 400);
+    }
+
+    const targetType = payload.target_type as string;
+    const targetId = payload.target_id as string;
+    const issuedAt = payload.iat as number | undefined;
+
+    if (!targetId || (targetType !== 'user' && targetType !== 'super_admin')) {
+      return errorResponse('El enlace es inválido', 400);
+    }
+
+    // Rechazar tokens ya utilizados: si el registro fue modificado después de
+    // emitirse el token (el reset actualiza updated_at), el enlace está gastado.
+    const table = targetType === 'user' ? 'profiles' : 'super_admins';
+    const current = await query(`SELECT updated_at FROM ${table} WHERE id = $1`, [targetId]);
+    if (current.rows.length === 0) {
+      return errorResponse('La cuenta ya no existe', 400);
+    }
+
+    if (issuedAt && current.rows[0]?.updated_at) {
+      const updatedAt = new Date(current.rows[0].updated_at).getTime() / 1000;
+      if (updatedAt > issuedAt) {
+        return errorResponse('El enlace ya fue utilizado', 400);
+      }
+    }
+
+    const passwordHash = await bcrypt.hash(password, 12);
+
+    const result = await query(
+      `UPDATE ${table} SET password_hash = $1, updated_at = now() WHERE id = $2 RETURNING id`,
+      [passwordHash, targetId]
+    );
+
+    if (result.rows.length === 0) {
+      return errorResponse('La cuenta ya no existe', 400);
+    }
+
+    return successResponse({ message: 'Contraseña actualizada correctamente' });
+  } catch (err) {
+    console.error('Reset password error:', err);
+    return errorResponse('Internal server error', 500);
+  }
 }

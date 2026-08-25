@@ -1,1 +1,374 @@
-﻿'use client'; import { useMemo, useState, useRef } from 'react'; import { Calendar, Route, Download } from 'lucide-react'; import html2canvas from 'html2canvas'; interface Task { id: string; name: string; start_date: string | null; due_date: string | null; status: string; progress?: number; assignee_name?: string; } interface Dependency { task_id: string; depends_on_id: string; dependency_type: string; } interface GanttChartProps { tasks: Task[]; dependencies?: Dependency[]; startDate?: string; endDate?: string; } const statusColors: Record<string, string> = { todo: 'bg-muted', in_progress: 'bg-blue-500', review: 'bg-amber-500', done: 'bg-emerald-500', }; function parseDate(d: string | null): Date | null { if (!d) return null; const date = new Date(d); return isNaN(date.getTime()) ? null : date; } function daysBetween(a: Date, b: Date): number { return Math.round((b.getTime() - a.getTime()) / (1000 * 60 * 60 * 24)); } function calculateCriticalPath(tasks: Task[], dependencies: Dependency[]): Set<string> { const criticalIds = new Set<string>(); if (tasks.length === 0) return criticalIds; const taskMap = new Map(tasks.map(t => [t.id, t])); const duration = new Map<string, number>(); const es = new Map<string, number>(); const ef = new Map<string, number>(); const ls = new Map<string, number>(); const lf = new Map<string, number>(); const predecessors = new Map<string, string[]>(); const successors = new Map<string, string[]>(); for (const t of tasks) { predecessors.set(t.id, []); successors.set(t.id, []); } for (const dep of dependencies) { predecessors.get(dep.task_id)?.push(dep.depends_on_id); successors.get(dep.depends_on_id)?.push(dep.task_id); } for (const t of tasks) { const s = parseDate(t.start_date); const e = parseDate(t.due_date); if (s && e) { duration.set(t.id, Math.max(daysBetween(s, e) + 1, 1)); } else { duration.set(t.id, 7); } } const visited = new Set<string>(); const order: string[] = []; function topoSort(id: string) { if (visited.has(id)) return; visited.add(id); for (const pred of predecessors.get(id) || []) { topoSort(pred); } order.push(id); } for (const t of tasks) topoSort(t.id); for (const id of order) { const preds = predecessors.get(id) || []; let maxEf = 0; for (const p of preds) { maxEf = Math.max(maxEf, ef.get(p) || 0); } es.set(id, maxEf); ef.set(id, maxEf + (duration.get(id) || 7)); } let projectEnd = 0; for (const t of tasks) { projectEnd = Math.max(projectEnd, ef.get(t.id) || 0); } const reversedOrder = [...order].reverse(); for (const id of reversedOrder) { const succs = successors.get(id) || []; if (succs.length === 0) { lf.set(id, projectEnd); } else { let minLs = Infinity; for (const s of succs) { minLs = Math.min(minLs, ls.get(s) || 0); } lf.set(id, minLs); } ls.set(id, (lf.get(id) || 0) - (duration.get(id) || 7)); } for (const id of order) { const slack = (ls.get(id) || 0) - (es.get(id) || 0); if (Math.abs(slack) < 0.001) { criticalIds.add(id); } } return criticalIds; } export default function GanttChart({ tasks, dependencies = [], startDate, endDate }: GanttChartProps) { const [showCriticalPath, setShowCriticalPath] = useState(false); const [exporting, setExporting] = useState(false); const ganttRef = useRef<HTMLDivElement>(null); const handleExportImage = async () => { if (!ganttRef.current) return; setExporting(true); try { const canvas = await html2canvas(ganttRef.current, { backgroundColor: '#ffffff', scale: 2 }); const link = document.createElement('a'); link.download = `gantt_${new Date().toISOString().split('T')[0]}.png`; link.href = canvas.toDataURL('image/png'); link.click(); } catch (e) { console.error('Error exporting:', e); } setExporting(false); }; const { chartStart, chartEnd, totalDays, tasks: enrichedTasks, months, criticalPath } = useMemo(() => { const allDates = tasks.flatMap(t => [parseDate(t.start_date), parseDate(t.due_date)]).filter(Boolean) as Date[]; if (allDates.length === 0) { const now = new Date(); return { chartStart: now, chartEnd: new Date(now.getTime() + 30 * 86400000), totalDays: 30, tasks: [], months: [], criticalPath: new Set<string>() }; } const cs = startDate ? new Date(startDate) : new Date(Math.min(...allDates.map(d => d.getTime()))); const ce = endDate ? new Date(endDate) : new Date(Math.max(...allDates.map(d => d.getTime()))); cs.setDate(1); ce.setMonth(ce.getMonth() + 1, 0); const td = daysBetween(cs, ce) + 1; const enriched = tasks.map(t => { const s = parseDate(t.start_date); const e = parseDate(t.due_date); return { ...t, _start: s ? daysBetween(cs, s) : 0, _width: s && e ? Math.max(daysBetween(s, e) + 1, 1) : 7, }; }); const ms: { label: string; days: number }[] = []; const d = new Date(cs); while (d <= ce) { const monthStart = new Date(d); const monthEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0); const end = monthEnd > ce ? ce : monthEnd; ms.push({ label: d.toLocaleDateString('es-CL', { month: 'short', year: '2-digit' }), days: daysBetween(monthStart, end) + 1, }); d.setMonth(d.getMonth() + 1); } const cp = calculateCriticalPath(tasks, dependencies); return { chartStart: cs, chartEnd: ce, totalDays: td, tasks: enriched, months: ms, criticalPath: cp }; }, [tasks, dependencies, startDate, endDate]); if (tasks.length === 0) { return ( <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm "> <Calendar className="w-12 h-12 text-foreground mx-auto mb-3" /> <p className="text-sm text-muted-foreground">No hay tareas con fechas para mostrar en el Gantt</p> </div> ); } const dayWidth = 28; const rowHeight = 40; const labelWidth = 220; const taskIndexMap = new Map(enrichedTasks.map((t, i) => [t.id, i])); return ( <div ref={ganttRef} className="bg-card border border-border rounded-xl shadow-sm overflow-hidden "> <div className="px-6 py-4 border-b border-border flex items-center justify-between"> <h3 className="text-sm font-semibold text-foreground">Diagrama de Gantt</h3> <div className="flex items-center gap-3"> <button onClick={handleExportImage} disabled={exporting} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border bg-card text-foreground border-border hover:bg-muted disabled:opacity-50"> <Download className="w-3.5 h-3.5" /> {exporting ? 'Exportando...' : 'PNG'} </button> <button onClick={() => setShowCriticalPath(!showCriticalPath)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${ showCriticalPath ? 'bg-red-50 text-red-700 border-red-200' : 'bg-card text-foreground border-border hover:bg-muted' }`} > <Route className="w-3.5 h-3.5" /> Critical Path </button> <span className="text-xs text-muted-foreground">{chartStart.toLocaleDateString('es-CL')} — {chartEnd.toLocaleDateString('es-CL')}</span> </div> </div> <div className="overflow-x-auto"> <div style={{ minWidth: labelWidth + totalDays * dayWidth }}> {/* Month headers */} <div className="flex border-b border-border sticky top-0 bg-card z-10"> <div style={{ width: labelWidth }} className="px-4 py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider border-r border-border"> Tarea </div> <div className="flex flex-1"> {months.map((m, i) => ( <div key={i} style={{ width: m.days * dayWidth }} className="px-2 py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider border-r border-border text-center"> {m.label} </div> ))} </div> </div> {/* Task rows */} {enrichedTasks.map((task, idx) => { const isCritical = showCriticalPath && criticalPath.has(task.id); return ( <div key={task.id} className={`flex border-b border-border ${idx % 2 === 0 ? 'bg-card' : 'bg-muted/50'} ${isCritical ? 'bg-red-50/30' : ''}`} style={{ height: rowHeight }}> <div style={{ width: labelWidth }} className={`px-4 py-2 border-r border-border flex flex-col justify-center ${isCritical ? 'border-l-2 border-l-red-500' : ''}`}> <span className={`text-xs font-medium truncate ${isCritical ? 'text-red-700' : 'text-foreground'}`}>{task.name}</span> {task.assignee_name && <span className="text-[9px] text-muted-foreground truncate">{task.assignee_name}</span>} </div> <div className="flex-1 relative"> {/* Grid lines */} <div className="absolute inset-0 flex"> {months.map((m, i) => ( <div key={i} style={{ width: m.days * dayWidth }} className="border-r border-border" /> ))} </div> {/* Today line */} {(() => { const today = new Date(); const dayOffset = daysBetween(chartStart, today); if (dayOffset >= 0 && dayOffset <= totalDays) { return ( <div className="absolute top-0 bottom-0 w-px bg-red-400 z-10" style={{ left: dayOffset * dayWidth + dayWidth / 2 }} /> ); } return null; })()} {/* Task bar */} <div className={`absolute top-2 bottom-2 rounded-md shadow-sm flex items-center px-2 transition-all ${ isCritical ? 'bg-red-500 ring-2 ring-red-300' : statusColors[task.status] || 'bg-muted' }`} style={{ left: task._start * dayWidth + 2, width: task._width * dayWidth - 4, minWidth: 20, }} > {task.progress !== undefined && task.progress > 0 && ( <div className="absolute left-0 top-0 bottom-0 rounded-md opacity-30 bg-card" style={{ width: `${task.progress}%` }} /> )} <span className="text-[9px] font-semibold text-white truncate relative z-10"> {task.progress !== undefined ? `${task.progress}%` : ''} </span> </div> </div> </div> ); })} {/* Dependency arrows */} {dependencies.length > 0 && ( <svg className="absolute pointer-events-none" style={{ top: 0, left: labelWidth, width: totalDays * dayWidth, height: enrichedTasks.length * rowHeight }} > <defs> <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"> <polygon points="0 0, 8 3, 0 6" fill="#6366f1" /> </marker> <marker id="arrowhead-critical" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"> <polygon points="0 0, 8 3, 0 6" fill="#ef4444" /> </marker> </defs> {dependencies.map((dep, i) => { const fromIdx = taskIndexMap.get(dep.depends_on_id); const toIdx = taskIndexMap.get(dep.task_id); if (fromIdx === undefined || toIdx === undefined) return null; const fromTask = enrichedTasks[fromIdx]; const toTask = enrichedTasks[toIdx]; const fromX = (fromTask._start + fromTask._width) * dayWidth; const fromY = fromIdx * rowHeight + rowHeight / 2; const toX = toTask._start * dayWidth; const toY = toIdx * rowHeight + rowHeight / 2; const midX = fromX + (toX - fromX) / 2; const isCriticalArrow = showCriticalPath && criticalPath.has(dep.depends_on_id) && criticalPath.has(dep.task_id); return ( <path key={i} d={`M ${fromX} ${fromY} C ${midX} ${fromY}, ${midX} ${toY}, ${toX} ${toY}`} fill="none" stroke={isCriticalArrow ? '#ef4444' : '#6366f1'} strokeWidth={isCriticalArrow ? 2.5 : 1.5} strokeDasharray={isCriticalArrow ? 'none' : '4 2'} markerEnd={isCriticalArrow ? 'url(#arrowhead-critical)' : 'url(#arrowhead)'} opacity={showCriticalPath && !isCriticalArrow ? 0.3 : 0.6} /> ); })} </svg> )} </div> </div> {/* Legend */} <div className="px-6 py-3 border-t border-border flex items-center gap-4 flex-wrap"> {Object.entries(statusColors).map(([status, color]) => ( <div key={status} className="flex items-center gap-1.5"> <div className={`w-3 h-3 rounded-sm ${color}`} /> <span className="text-[9px] text-muted-foreground capitalize">{status === 'in_progress' ? 'En Progreso' : status === 'todo' ? 'Por Hacer' : status === 'review' ? 'Revision' : 'Hecho'}</span> </div> ))} {showCriticalPath && ( <div className="flex items-center gap-1.5"> <div className="w-3 h-3 rounded-sm bg-red-500 ring-1 ring-red-300" /> <span className="text-[9px] text-red-600 font-semibold">Ruta Critica</span> </div> )} {dependencies.length > 0 && ( <div className="flex items-center gap-1.5"> <svg width="20" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="#6366f1" strokeWidth="1.5" strokeDasharray="4 2" /><polygon points="16,2 20,5 16,8" fill="#6366f1" /></svg> <span className="text-[9px] text-muted-foreground">Dependencia</span> </div> )} </div> </div> ); } 
+﻿'use client';
+
+import { useMemo, useState, useRef } from 'react';
+import { Calendar, Route, Download } from 'lucide-react';
+import html2canvas from 'html2canvas';
+
+interface Task {
+  id: string;
+  name: string;
+  start_date: string | null;
+  due_date: string | null;
+  status: string;
+  progress?: number;
+  assignee_name?: string;
+}
+
+interface Dependency {
+  task_id: string;
+  depends_on_id: string;
+  dependency_type: string;
+}
+
+interface GanttChartProps {
+  tasks: Task[];
+  dependencies?: Dependency[];
+  startDate?: string;
+  endDate?: string;
+}
+
+const statusColors: Record<string, string> = {
+  todo: 'bg-muted',
+  in_progress: 'bg-blue-500',
+  review: 'bg-amber-500',
+  done: 'bg-emerald-500',
+};
+
+function parseDate(d: string | null): Date | null {
+  if (!d) return null;
+  const date = new Date(d);
+  return isNaN(date.getTime()) ? null : date;
+}
+
+function daysBetween(a: Date, b: Date): number {
+  return Math.round((b.getTime() - a.getTime()) / (1000 * 60 * 60 * 24));
+}
+
+function calculateCriticalPath(tasks: Task[], dependencies: Dependency[]): Set<string> {
+  const criticalIds = new Set<string>();
+  if (tasks.length === 0) return criticalIds;
+
+  const taskMap = new Map(tasks.map(t => [t.id, t]));
+  const duration = new Map<string, number>();
+  const es = new Map<string, number>();
+  const ef = new Map<string, number>();
+  const ls = new Map<string, number>();
+  const lf = new Map<string, number>();
+
+  const predecessors = new Map<string, string[]>();
+  const successors = new Map<string, string[]>();
+
+  for (const t of tasks) {
+    predecessors.set(t.id, []);
+    successors.set(t.id, []);
+  }
+
+  for (const dep of dependencies) {
+    predecessors.get(dep.task_id)?.push(dep.depends_on_id);
+    successors.get(dep.depends_on_id)?.push(dep.task_id);
+  }
+
+  for (const t of tasks) {
+    const s = parseDate(t.start_date);
+    const e = parseDate(t.due_date);
+    if (s && e) {
+      duration.set(t.id, Math.max(daysBetween(s, e) + 1, 1));
+    } else {
+      duration.set(t.id, 7);
+    }
+  }
+
+  const visited = new Set<string>();
+  const order: string[] = [];
+
+  function topoSort(id: string) {
+    if (visited.has(id)) return;
+    visited.add(id);
+    for (const pred of predecessors.get(id) || []) {
+      topoSort(pred);
+    }
+    order.push(id);
+  }
+
+  for (const t of tasks) topoSort(t.id);
+
+  for (const id of order) {
+    const preds = predecessors.get(id) || [];
+    let maxEf = 0;
+    for (const p of preds) {
+      maxEf = Math.max(maxEf, ef.get(p) || 0);
+    }
+    es.set(id, maxEf);
+    ef.set(id, maxEf + (duration.get(id) || 7));
+  }
+
+  let projectEnd = 0;
+  for (const t of tasks) {
+    projectEnd = Math.max(projectEnd, ef.get(t.id) || 0);
+  }
+
+  const reversedOrder = [...order].reverse();
+
+  for (const id of reversedOrder) {
+    const succs = successors.get(id) || [];
+    if (succs.length === 0) {
+      lf.set(id, projectEnd);
+    } else {
+      let minLs = Infinity;
+      for (const s of succs) {
+        minLs = Math.min(minLs, ls.get(s) || 0);
+      }
+      lf.set(id, minLs);
+    }
+    ls.set(id, (lf.get(id) || 0) - (duration.get(id) || 7));
+  }
+
+  for (const id of order) {
+    const slack = (ls.get(id) || 0) - (es.get(id) || 0);
+    if (Math.abs(slack) < 0.001) {
+      criticalIds.add(id);
+    }
+  }
+
+  return criticalIds;
+}
+
+export default function GanttChart({ tasks, dependencies = [], startDate, endDate }: GanttChartProps) {
+  const [showCriticalPath, setShowCriticalPath] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const ganttRef = useRef<HTMLDivElement>(null);
+
+  const handleExportImage = async () => {
+    if (!ganttRef.current) return;
+    setExporting(true);
+    try {
+      const canvas = await html2canvas(ganttRef.current, { backgroundColor: '#ffffff', scale: 2 });
+      const link = document.createElement('a');
+      link.download = `gantt_${new Date().toISOString().split('T')[0]}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (e) { console.error('Error exporting:', e); }
+    setExporting(false);
+  };
+
+  const { chartStart, chartEnd, totalDays, tasks: enrichedTasks, months, criticalPath } = useMemo(() => {
+    const allDates = tasks.flatMap(t => [parseDate(t.start_date), parseDate(t.due_date)]).filter(Boolean) as Date[];
+    if (allDates.length === 0) {
+      const now = new Date();
+      return { chartStart: now, chartEnd: new Date(now.getTime() + 30 * 86400000), totalDays: 30, tasks: [], months: [], criticalPath: new Set<string>() };
+    }
+
+    const cs = startDate ? new Date(startDate) : new Date(Math.min(...allDates.map(d => d.getTime())));
+    const ce = endDate ? new Date(endDate) : new Date(Math.max(...allDates.map(d => d.getTime())));
+    cs.setDate(1);
+    ce.setMonth(ce.getMonth() + 1, 0);
+    const td = daysBetween(cs, ce) + 1;
+
+    const enriched = tasks.map(t => {
+      const s = parseDate(t.start_date);
+      const e = parseDate(t.due_date);
+      return {
+        ...t,
+        _start: s ? daysBetween(cs, s) : 0,
+        _width: s && e ? Math.max(daysBetween(s, e) + 1, 1) : 7,
+      };
+    });
+
+    const ms: { label: string; days: number }[] = [];
+    const d = new Date(cs);
+    while (d <= ce) {
+      const monthStart = new Date(d);
+      const monthEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+      const end = monthEnd > ce ? ce : monthEnd;
+      ms.push({
+        label: d.toLocaleDateString('es-CL', { month: 'short', year: '2-digit' }),
+        days: daysBetween(monthStart, end) + 1,
+      });
+      d.setMonth(d.getMonth() + 1);
+    }
+
+    const cp = calculateCriticalPath(tasks, dependencies);
+
+    return { chartStart: cs, chartEnd: ce, totalDays: td, tasks: enriched, months: ms, criticalPath: cp };
+  }, [tasks, dependencies, startDate, endDate]);
+
+  if (tasks.length === 0) {
+    return (
+      <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+        <Calendar className="w-12 h-12 text-foreground mx-auto mb-3" />
+        <p className="text-sm text-muted-foreground">No hay tareas con fechas para mostrar en el Gantt</p>
+      </div>
+    );
+  }
+
+  const dayWidth = 28;
+  const rowHeight = 40;
+  const labelWidth = 220;
+
+  const taskIndexMap = new Map(enrichedTasks.map((t, i) => [t.id, i]));
+
+  return (
+    <div ref={ganttRef} className="bg-card border border-border rounded-xl shadow-sm overflow-hidden dark:bg-primary dark:border-border dark:bg-primary dark:border-border">
+      <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+        <h3 className="text-sm font-semibold text-foreground">Diagrama de Gantt</h3>
+        <div className="flex items-center gap-3">
+          <button onClick={handleExportImage} disabled={exporting}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border bg-card text-foreground border-border hover:bg-muted disabled:opacity-50">
+            <Download className="w-3.5 h-3.5" />
+            {exporting ? 'Exportando...' : 'PNG'}
+          </button>
+          <button
+            onClick={() => setShowCriticalPath(!showCriticalPath)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${
+              showCriticalPath
+                ? 'bg-red-50 text-red-700 border-red-200'
+                : 'bg-card text-foreground border-border hover:bg-muted'
+            }`}
+          >
+            <Route className="w-3.5 h-3.5" />
+            Critical Path
+          </button>
+          <span className="text-xs text-muted-foreground">{chartStart.toLocaleDateString('es-CL')} — {chartEnd.toLocaleDateString('es-CL')}</span>
+        </div>
+      </div>
+      <div className="overflow-x-auto">
+        <div style={{ minWidth: labelWidth + totalDays * dayWidth }}>
+          {/* Month headers */}
+          <div className="flex border-b border-border sticky top-0 bg-card dark:bg-primary z-10">
+            <div style={{ width: labelWidth }} className="px-4 py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider border-r border-border">
+              Tarea
+            </div>
+            <div className="flex flex-1">
+              {months.map((m, i) => (
+                <div key={i} style={{ width: m.days * dayWidth }} className="px-2 py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider border-r border-border text-center">
+                  {m.label}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Task rows */}
+          {enrichedTasks.map((task, idx) => {
+            const isCritical = showCriticalPath && criticalPath.has(task.id);
+            return (
+              <div key={task.id} className={`flex border-b border-border ${idx % 2 === 0 ? 'bg-card' : 'bg-muted/50'} ${isCritical ? 'bg-red-50/30' : ''}`} style={{ height: rowHeight }}>
+                <div style={{ width: labelWidth }} className={`px-4 py-2 border-r border-border flex flex-col justify-center ${isCritical ? 'border-l-2 border-l-red-500' : ''}`}>
+                  <span className={`text-xs font-medium truncate ${isCritical ? 'text-red-700' : 'text-foreground'}`}>{task.name}</span>
+                  {task.assignee_name && <span className="text-[9px] text-muted-foreground truncate">{task.assignee_name}</span>}
+                </div>
+                <div className="flex-1 relative">
+                  {/* Grid lines */}
+                  <div className="absolute inset-0 flex">
+                    {months.map((m, i) => (
+                      <div key={i} style={{ width: m.days * dayWidth }} className="border-r border-border" />
+                    ))}
+                  </div>
+
+                  {/* Today line */}
+                  {(() => {
+                    const today = new Date();
+                    const dayOffset = daysBetween(chartStart, today);
+                    if (dayOffset >= 0 && dayOffset <= totalDays) {
+                      return (
+                        <div className="absolute top-0 bottom-0 w-px bg-red-400 z-10" style={{ left: dayOffset * dayWidth + dayWidth / 2 }} />
+                      );
+                    }
+                    return null;
+                  })()}
+
+                  {/* Task bar */}
+                  <div
+                    className={`absolute top-2 bottom-2 rounded-md shadow-sm flex items-center px-2 transition-all ${
+                      isCritical
+                        ? 'bg-red-500 ring-2 ring-red-300'
+                        : statusColors[task.status] || 'bg-muted'
+                    }`}
+                    style={{
+                      left: task._start * dayWidth + 2,
+                      width: task._width * dayWidth - 4,
+                      minWidth: 20,
+                    }}
+                  >
+                    {task.progress !== undefined && task.progress > 0 && (
+                      <div
+                        className="absolute left-0 top-0 bottom-0 rounded-md opacity-30 bg-card"
+                        style={{ width: `${task.progress}%` }}
+                      />
+                    )}
+                    <span className="text-[9px] font-semibold text-white truncate relative z-10">
+                      {task.progress !== undefined ? `${task.progress}%` : ''}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Dependency arrows */}
+          {dependencies.length > 0 && (
+            <svg
+              className="absolute pointer-events-none"
+              style={{ top: 0, left: labelWidth, width: totalDays * dayWidth, height: enrichedTasks.length * rowHeight }}
+            >
+              <defs>
+                <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                  <polygon points="0 0, 8 3, 0 6" fill="#6366f1" />
+                </marker>
+                <marker id="arrowhead-critical" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                  <polygon points="0 0, 8 3, 0 6" fill="#ef4444" />
+                </marker>
+              </defs>
+              {dependencies.map((dep, i) => {
+                const fromIdx = taskIndexMap.get(dep.depends_on_id);
+                const toIdx = taskIndexMap.get(dep.task_id);
+                if (fromIdx === undefined || toIdx === undefined) return null;
+                const fromTask = enrichedTasks[fromIdx];
+                const toTask = enrichedTasks[toIdx];
+                const fromX = (fromTask._start + fromTask._width) * dayWidth;
+                const fromY = fromIdx * rowHeight + rowHeight / 2;
+                const toX = toTask._start * dayWidth;
+                const toY = toIdx * rowHeight + rowHeight / 2;
+                const midX = fromX + (toX - fromX) / 2;
+                const isCriticalArrow = showCriticalPath && criticalPath.has(dep.depends_on_id) && criticalPath.has(dep.task_id);
+                return (
+                  <path
+                    key={i}
+                    d={`M ${fromX} ${fromY} C ${midX} ${fromY}, ${midX} ${toY}, ${toX} ${toY}`}
+                    fill="none"
+                    stroke={isCriticalArrow ? '#ef4444' : '#6366f1'}
+                    strokeWidth={isCriticalArrow ? 2.5 : 1.5}
+                    strokeDasharray={isCriticalArrow ? 'none' : '4 2'}
+                    markerEnd={isCriticalArrow ? 'url(#arrowhead-critical)' : 'url(#arrowhead)'}
+                    opacity={showCriticalPath && !isCriticalArrow ? 0.3 : 0.6}
+                  />
+                );
+              })}
+            </svg>
+          )}
+        </div>
+      </div>
+
+      {/* Legend */}
+      <div className="px-6 py-3 border-t border-border flex items-center gap-4 flex-wrap">
+        {Object.entries(statusColors).map(([status, color]) => (
+          <div key={status} className="flex items-center gap-1.5">
+            <div className={`w-3 h-3 rounded-sm ${color}`} />
+            <span className="text-[9px] text-muted-foreground capitalize">{status === 'in_progress' ? 'En Progreso' : status === 'todo' ? 'Por Hacer' : status === 'review' ? 'Revision' : 'Hecho'}</span>
+          </div>
+        ))}
+        {showCriticalPath && (
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded-sm bg-red-500 ring-1 ring-red-300" />
+            <span className="text-[9px] text-red-600 font-semibold">Ruta Critica</span>
+          </div>
+        )}
+        {dependencies.length > 0 && (
+          <div className="flex items-center gap-1.5">
+            <svg width="20" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="#6366f1" strokeWidth="1.5" strokeDasharray="4 2" /><polygon points="16,2 20,5 16,8" fill="#6366f1" /></svg>
+            <span className="text-[9px] text-muted-foreground">Dependencia</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

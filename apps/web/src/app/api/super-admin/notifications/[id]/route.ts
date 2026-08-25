@@ -1,6 +1,46 @@
 import { query } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
-import { verifySuperAdmin } from '@/api/super-admin/lib/auth'; export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) { const admin = await verifySuperAdmin(request); if (!admin) return errorResponse('No autorizado', 401); const { id } = params; const body = await request.json(); const { is_read } = body; if (is_read === undefined) return errorResponse('is_read es requerido', 400); try { const existing = await query('SELECT id FROM platform_notifications WHERE id = $1', [id]); if (existing.rows.length === 0) return errorResponse('Notificación no encontrada', 404); await query('UPDATE platform_notifications SET is_read = $1 WHERE id = $2', [is_read, id]); return successResponse({ success: true }); } catch (err) { console.error('Notification update error:', err); return errorResponse('Error al actualizar notificación', 500); }
-} export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) { const admin = await verifySuperAdmin(request); if (!admin) return errorResponse('No autorizado', 401); const { id } = params; try { const existing = await query('SELECT id FROM platform_notifications WHERE id = $1', [id]); if (existing.rows.length === 0) return errorResponse('Notificación no encontrada', 404); await query('DELETE FROM platform_notifications WHERE id = $1', [id]); return successResponse({ success: true }); } catch (err) { console.error('Notification delete error:', err); return errorResponse('Error al eliminar notificación', 500); }
+import { verifySuperAdmin } from '@/api/super-admin/lib/auth';
+
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+  const admin = await verifySuperAdmin(request);
+  if (!admin) return errorResponse('No autorizado', 401);
+
+  const { id } = params;
+  const body = await request.json();
+  const { is_read } = body;
+
+  if (is_read === undefined) return errorResponse('is_read es requerido', 400);
+
+  try {
+    const existing = await query('SELECT id FROM platform_notifications WHERE id = $1', [id]);
+    if (existing.rows.length === 0) return errorResponse('Notificación no encontrada', 404);
+
+    await query('UPDATE platform_notifications SET is_read = $1 WHERE id = $2', [is_read, id]);
+
+    return successResponse({ success: true });
+  } catch (err) {
+    console.error('Notification update error:', err);
+    return errorResponse('Error al actualizar notificación', 500);
+  }
+}
+
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  const admin = await verifySuperAdmin(request);
+  if (!admin) return errorResponse('No autorizado', 401);
+
+  const { id } = params;
+
+  try {
+    const existing = await query('SELECT id FROM platform_notifications WHERE id = $1', [id]);
+    if (existing.rows.length === 0) return errorResponse('Notificación no encontrada', 404);
+
+    await query('DELETE FROM platform_notifications WHERE id = $1', [id]);
+
+    return successResponse({ success: true });
+  } catch (err) {
+    console.error('Notification delete error:', err);
+    return errorResponse('Error al eliminar notificación', 500);
+  }
 }

@@ -1,22 +1,20 @@
-import { query } from "@/api/lib/db";
-import { successResponse, errorResponse } from "@/api/lib/helpers";
-import { NextRequest } from "next/server";
-import { jwtVerify, SignJWT } from "jose";
-import { getJwtSecret } from "@/lib/env";
+import { query } from '@/api/lib/db';
+import { successResponse, errorResponse } from '@/api/lib/helpers';
+import { NextRequest } from 'next/server';
+import { jwtVerify, SignJWT } from 'jose';
+import { getJwtSecret } from '@/lib/env';
 
 const JWT_SECRET = getJwtSecret();
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
-    const authHeader = request.headers.get("authorization");
-    const token =
-      authHeader?.startsWith("Bearer ")
-        ? authHeader.slice(7)
-        : request.cookies.get("auth-token")?.value ?? null;
+    const authHeader = request.headers.get('authorization');
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
+
     if (!token) {
-      return errorResponse("No autorizado", 401);
+      return errorResponse('No autorizado', 401);
     }
 
     let payload;
@@ -24,21 +22,22 @@ export async function POST(request: NextRequest) {
       const { payload: verified } = await jwtVerify(token, JWT_SECRET);
       payload = verified as any;
     } catch {
-      return errorResponse("Token inválido", 401);
+      return errorResponse('Token inválido', 401);
     }
 
     const body = await request.json();
     const { company_id } = body;
 
     if (!company_id) {
-      return errorResponse("company_id es requerido", 400);
+      return errorResponse('company_id es requerido', 400);
     }
 
     const userId = payload.id;
 
     // Check if user has access to the target company
     let hasAccess = false;
-    let userRole = "member";
+    let userRole = 'member';
+
     try {
       const result = await query(
         `SELECT role FROM user_companies WHERE user_id = $1 AND company_id = $2`,
@@ -61,7 +60,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (!hasAccess) {
-      return errorResponse("No tienes acceso a esta empresa", 403);
+      return errorResponse('No tienes acceso a esta empresa', 403);
     }
 
     // Get company info
@@ -71,7 +70,7 @@ export async function POST(request: NextRequest) {
     );
 
     if (companyResult.rows.length === 0) {
-      return errorResponse("Empresa no encontrada", 404);
+      return errorResponse('Empresa no encontrada', 404);
     }
 
     const company = companyResult.rows[0];
@@ -84,13 +83,13 @@ export async function POST(request: NextRequest) {
       company_id: company_id,
       role: userRole,
     })
-      .setProtectedHeader({ alg: "HS256" })
+      .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
-      .setExpirationTime("7d")
+      .setExpirationTime('7d')
       .sign(JWT_SECRET);
 
-    const maxAge = 7 * 24 * 60 * 60;
-    const response = successResponse({
+    return successResponse({
+      token: newToken,
       company: {
         id: company.id,
         name: company.name,
@@ -101,37 +100,8 @@ export async function POST(request: NextRequest) {
         role: userRole,
       },
     });
-    response.cookies.set("auth-token", newToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge,
-    });
-    response.cookies.set(
-      "yellow-profile",
-      Buffer.from(
-        JSON.stringify({
-          name: payload.name ?? null,
-          email: payload.email ?? null,
-          role: userRole,
-          company_id: company_id,
-        })
-      ).toString("base64url"),
-      {
-        httpOnly: false,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-        maxAge,
-      }
-    );
-    return response;
   } catch (err) {
-    console.error("Switch company error:", err);
-    return errorResponse(
-      err instanceof Error ? err.message : "Internal server error",
-      500
-    );
+    console.error('Switch company error:', err);
+    return errorResponse(err instanceof Error ? err.message : 'Internal server error', 500);
   }
 }

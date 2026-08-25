@@ -1,1 +1,317 @@
-'use client'; import { useState, useEffect } from 'react'; import { ArrowLeft, Printer, Download, CreditCard, User, Calendar, FileText } from 'lucide-react'; import Link from 'next/link'; import { useRouter } from 'next/navigation'; import { getApiClient } from '@/lib/api-client'; import { getCompanyIdFromToken } from '@/lib/api-client'; import { generateBoletaPDF } from '@/lib/pdf-design'; import { usePrintDocument } from '@/components/print/use-print'; import { type DocumentSettings, mergeSettings, DEFAULT_DOCUMENT_SETTINGS } from '@/lib/document-settings'; interface InvoiceItem { id: string; product_id: string; quantity: number; unit_price: number; discount_percent: number; tax_rate: number; tax_amount: number; line_total: number; product?: { id: string; name: string; sku: string }; } interface InvoiceDetail { id: string; invoice_number: string; document_type: string; status: string; invoice_date: string; due_date: string; payment_terms: number; subtotal: number; tax_amount: number; total_amount: number; notes: string; created_at: string; customer?: { id: string; name: string; tax_id: string }; warehouse?: { id: string; name: string; code: string }; items?: InvoiceItem[]; } const STATUS_MAP: Record<string, { label: string; class: string }> = { pending: { label: 'Pendiente', class: 'bg-amber-50 text-amber-700 border border-amber-200' }, paid: { label: 'Pagada', class: 'bg-emerald-50 text-emerald-700 border border-emerald-200' }, issued: { label: 'Emitida', class: 'bg-blue-50 text-blue-700 border border-blue-200' }, cancelled: { label: 'Anulada', class: 'bg-rose-50 text-rose-700 border border-rose-200' }, draft: { label: 'Borrador', class: 'bg-muted text-foreground border border-border' }, }; export default function InvoiceDetailPage({ params }: { params: { id: string } }) { const { id } = params; const [invoice, setInvoice] = useState<InvoiceDetail | null>(null); const [company, setCompany] = useState<any>(null); const [settings, setSettings] = useState<DocumentSettings>(DEFAULT_DOCUMENT_SETTINGS); const [loading, setLoading] = useState(true); const { print } = usePrintDocument(); useEffect(() => { const api = getApiClient(); Promise.all([ api.getInvoice(id), api.getCompany().catch(() => null), fetchDocumentSettings(), ]).then(([data, companyRes, settingsRes]) => { setInvoice(data as unknown as InvoiceDetail); if (companyRes) setCompany(companyRes); if (settingsRes) setSettings(settingsRes); setLoading(false); }).catch(() => setLoading(false)); }, [id]); async function fetchDocumentSettings() { try { const companyId = getCompanyIdFromToken(); if (!companyId) return; const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1]; if (!token) return; const res = await fetch(`/api/companies/${companyId}/settings/documents`, { headers: { Authorization: `Bearer ${token}` }, }); const data = await res.json(); if (data.success) return mergeSettings(data.data); } catch {} return DEFAULT_DOCUMENT_SETTINGS; } const handlePrint = () => { if (!invoice) return; const c = company || {}; const items = invoice.items || []; const subtotal = invoice.subtotal || items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0); const tax = invoice.tax_amount || Math.round(subtotal * 0.19); const total = invoice.total_amount || subtotal + tax; const docType = invoice.document_type === 'boleta' ? 'boleta' : 'factura'; print(docType, { id: invoice.id, number: invoice.invoice_number, type: invoice.document_type || 'factura', date: invoice.invoice_date, due_date: invoice.due_date, status: invoice.status, company: { name: c.name || 'Empresa', tax_id: c.tax_id, razon_social: c.razon_social, giro: c.giro, address: c.address, city: c.city, region: c.region, phone: c.phone, email: c.email, logo_url: c.logo_url, }, customer: invoice.customer ? { name: invoice.customer.name, tax_id: invoice.customer.tax_id } : undefined, items: items.map(item => ({ name: item.product?.name || '', sku: item.product?.sku, quantity: item.quantity, unit_price: item.unit_price, discount: item.discount_percent, tax_rate: item.tax_rate || 19, total: item.line_total, })), subtotal, tax_amount: tax, total, notes: invoice.notes, settings, }); }; const handleDownloadPDF = async () => { if (!invoice) return; const c = company || {}; const doc = await generateBoletaPDF({ id: invoice.id, number: invoice.invoice_number, type: (invoice.document_type as 'boleta' | 'cotizacion') || 'boleta', date: invoice.invoice_date, due_date: invoice.due_date, company: { name: c.name || 'Empresa', tax_id: c.tax_id || undefined, razon_social: c.razon_social || undefined, giro: c.giro || undefined, address: c.address || undefined, city: c.city || undefined, region: c.region || undefined, phone: c.phone || undefined, email: c.email || undefined, logo_url: c.logo_url || undefined, }, customer: invoice.customer ? { name: invoice.customer.name, tax_id: invoice.customer.tax_id } : undefined, items: (invoice.items || []).map(item => ({ name: item.product?.name || '', sku: item.product?.sku || '', quantity: item.quantity, unit_price: item.unit_price, discount: item.discount_percent, tax_rate: item.tax_rate, total: item.line_total, })), subtotal, tax_amount: tax, total, notes: invoice.notes, settings, }); doc.save(`${invoice.invoice_number}.pdf`); }; if (loading) { return ( <div className="space-y-6"> <div className="flex items-center gap-4"><div className="w-9 h-9 bg-muted rounded-lg animate-pulse" /><div className="h-6 w-48 bg-muted rounded animate-pulse" /></div> <div className="grid grid-cols-1 lg:grid-cols-3 gap-6"> <div className="lg:col-span-2 space-y-6">{[1, 2].map(i => <div key={i} className="animate-pulse bg-muted h-48 rounded-xl" />)}</div> <div className="animate-pulse bg-muted h-64 rounded-xl" /> </div> </div> ); } if (!invoice) { return ( <div className="space-y-6"> <Link href="/dashboard/sales" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"> <ArrowLeft className="w-4 h-4" /> Volver </Link> <div className="bg-card border border-border rounded-xl shadow-sm p-12 text-center"> <p className="text-sm text-muted-foreground">Factura no encontrada</p> </div> </div> ); } const status = STATUS_MAP[invoice.status] || STATUS_MAP.draft; const subtotal = invoice.subtotal || (invoice.items || []).reduce((sum, item) => sum + item.line_total, 0); const tax = invoice.tax_amount || Math.round(subtotal * 0.19); const total = invoice.total_amount || subtotal + tax; return ( <div className="space-y-6 print:space-y-0"> {/* Header - hidden on print */} <div className="flex items-center justify-between print:hidden"> <div className="flex items-center gap-4"> <Link href="/dashboard/sales" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"> <ArrowLeft className="w-5 h-5" /> </Link> <div> <h1 className="text-xl font-bold text-foreground">Factura {invoice.invoice_number}</h1> <p className="text-sm text-muted-foreground mt-1">{invoice.invoice_date}</p> </div> <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-semibold ${status.class}`}> {status.label} </span> </div> <div className="flex items-center gap-2"> <button onClick={handlePrint} className="bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"> <Printer className="w-4 h-4" /> Imprimir </button> <button onClick={handleDownloadPDF} className="bg-primary hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"> <Download className="w-4 h-4" /> Descargar PDF </button> </div> </div> {/* Document */} <div className="bg-card border border-border rounded-xl shadow-sm print:shadow-none print:border-0 print:rounded-none" id="print-area"> <div className="p-8 print:p-4"> {/* Company header */} <div className="flex items-start justify-between mb-8 pb-6 border-b border-border"> <div> {company?.logo_url ? ( <img src={company.logo_url} alt="Logo" className="h-16 w-auto mb-3" /> ) : ( <div className="w-16 h-16 bg-amber-400 rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-3"> {(company?.name || 'E')[0]} </div> )} <p className="text-lg font-bold text-foreground">{company?.name || 'Empresa'}</p> {company?.tax_id && <p className="text-xs text-muted-foreground">RUT: {company.tax_id}</p>} {company?.address && <p className="text-xs text-muted-foreground">{company.address}</p>} {company?.phone && <p className="text-xs text-muted-foreground">Tel: {company.phone}</p>} </div> <div className="text-right"> <h2 className="text-2xl font-bold text-foreground mb-1">FACTURA</h2> <p className="text-sm font-mono text-foreground">{invoice.invoice_number}</p> <p className="text-xs text-muted-foreground mt-2">Fecha: {invoice.invoice_date}</p> {invoice.due_date && <p className="text-xs text-muted-foreground">Vence: {invoice.due_date}</p>} </div> </div> {/* Customer info */} <div className="grid grid-cols-2 gap-8 mb-8"> <div> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Cliente</p> <p className="text-sm font-medium text-foreground">{invoice.customer?.name || '—'}</p> <p className="text-xs text-muted-foreground">RUT: {invoice.customer?.tax_id || '—'}</p> </div> <div className="text-right"> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Bodega</p> <p className="text-sm font-medium text-foreground">{invoice.warehouse?.name || '—'}</p> <p className="text-xs text-muted-foreground">{invoice.warehouse?.code || ''}</p> </div> </div> {/* Items table */} <div className="mb-8"> <table className="w-full"> <thead> <tr className="border-b border-border"> <th className="text-left py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th> <th className="text-right py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cant.</th> <th className="text-right py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Precio</th> <th className="text-right py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Desc.</th> <th className="text-right py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">IVA</th> <th className="text-right py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total</th> </tr> </thead> <tbody> {(invoice.items || []).map((item) => ( <tr key={item.id} className="border-b border-border"> <td className="py-3"> <p className="text-xs font-medium text-foreground">{item.product?.name || '—'}</p> <p className="text-[10px] text-muted-foreground font-mono">{item.product?.sku}</p> </td> <td className="py-3 text-xs text-right text-foreground">{item.quantity}</td> <td className="py-3 text-xs text-right text-foreground">${item.unit_price.toLocaleString('es-CL')}</td> <td className="py-3 text-xs text-right text-foreground">{item.discount_percent}%</td> <td className="py-3 text-xs text-right text-foreground">{item.tax_rate}%</td> <td className="py-3 text-xs text-right font-medium text-foreground">${item.line_total.toLocaleString('es-CL')}</td> </tr> ))} {(!invoice.items || invoice.items.length === 0) && ( <tr><td colSpan={6} className="py-8 text-center text-xs text-muted-foreground">Sin items</td></tr> )} </tbody> </table> </div> {/* Totals */} <div className="flex justify-end"> <div className="w-72 space-y-2"> <div className="flex justify-between text-xs text-foreground"> <span>Subtotal</span> <span>${subtotal.toLocaleString('es-CL')}</span> </div> <div className="flex justify-between text-xs text-foreground"> <span>IVA (19%)</span> <span>${tax.toLocaleString('es-CL')}</span> </div> <div className="flex justify-between text-sm font-bold text-foreground pt-2 border-t border-border"> <span>Total</span> <span>${total.toLocaleString('es-CL')}</span> </div> </div> </div> {/* Notes */} {invoice.notes && ( <div className="mt-8 pt-6 border-t border-border"> <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Observaciones</p> <p className="text-xs text-foreground">{invoice.notes}</p> </div> )} {/* Footer */} <div className="mt-8 pt-6 border-t border-border text-center"> <p className="text-[10px] text-muted-foreground">Documento generado por Yellow ERP</p> </div> </div> </div> </div> ); } 
+'use client';
+
+import { useState, useEffect } from 'react';
+import { ArrowLeft, Printer, Download, CreditCard, User, Calendar, FileText } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { getApiClient } from '@/lib/api-client';
+import { getCompanyIdFromToken } from '@/lib/api-client';
+import { generateBoletaPDF } from '@/lib/pdf-design';
+import { usePrintDocument } from '@/components/print/use-print';
+import { type DocumentSettings, mergeSettings, DEFAULT_DOCUMENT_SETTINGS } from '@/lib/document-settings';
+
+interface InvoiceItem {
+  id: string;
+  product_id: string;
+  quantity: number;
+  unit_price: number;
+  discount_percent: number;
+  tax_rate: number;
+  tax_amount: number;
+  line_total: number;
+  product?: { id: string; name: string; sku: string };
+}
+
+interface InvoiceDetail {
+  id: string;
+  invoice_number: string;
+  document_type: string;
+  status: string;
+  invoice_date: string;
+  due_date: string;
+  payment_terms: number;
+  subtotal: number;
+  tax_amount: number;
+  total_amount: number;
+  notes: string;
+  created_at: string;
+  customer?: { id: string; name: string; tax_id: string };
+  warehouse?: { id: string; name: string; code: string };
+  items?: InvoiceItem[];
+}
+
+const STATUS_MAP: Record<string, { label: string; class: string }> = {
+  pending: { label: 'Pendiente', class: 'bg-amber-50 text-amber-700 border border-amber-200' },
+  paid: { label: 'Pagada', class: 'bg-emerald-50 text-emerald-700 border border-emerald-200' },
+  issued: { label: 'Emitida', class: 'bg-blue-50 text-blue-700 border border-blue-200' },
+  cancelled: { label: 'Anulada', class: 'bg-rose-50 text-rose-700 border border-rose-200' },
+  draft: { label: 'Borrador', class: 'bg-muted text-foreground border border-border' },
+};
+
+export default function InvoiceDetailPage({ params }: { params: { id: string } }) {
+  const { id } = params;
+  const [invoice, setInvoice] = useState<InvoiceDetail | null>(null);
+  const [company, setCompany] = useState<any>(null);
+  const [settings, setSettings] = useState<DocumentSettings>(DEFAULT_DOCUMENT_SETTINGS);
+  const [loading, setLoading] = useState(true);
+  const { print } = usePrintDocument();
+
+  useEffect(() => {
+    const api = getApiClient();
+    Promise.all([
+      api.getInvoice(id),
+      api.getCompany().catch(() => null),
+      fetchDocumentSettings(),
+    ]).then(([data, companyRes, settingsRes]) => {
+      setInvoice(data as unknown as InvoiceDetail);
+      if (companyRes) setCompany(companyRes);
+      if (settingsRes) setSettings(settingsRes);
+      setLoading(false);
+    }).catch(() => setLoading(false));
+  }, [id]);
+
+  async function fetchDocumentSettings() {
+    try {
+      const companyId = getCompanyIdFromToken();
+      if (!companyId) return;
+      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+      if (!token) return;
+      const res = await fetch(`/api/companies/${companyId}/settings/documents`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.success) return mergeSettings(data.data);
+    } catch {}
+    return DEFAULT_DOCUMENT_SETTINGS;
+  }
+
+  const handlePrint = () => {
+    if (!invoice) return;
+    const c = company || {};
+    const items = invoice.items || [];
+    const subtotal = invoice.subtotal || items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0);
+    const tax = invoice.tax_amount || Math.round(subtotal * 0.19);
+    const total = invoice.total_amount || subtotal + tax;
+    const docType = invoice.document_type === 'boleta' ? 'boleta' : 'factura';
+    print(docType, {
+      id: invoice.id,
+      number: invoice.invoice_number,
+      type: invoice.document_type || 'factura',
+      date: invoice.invoice_date,
+      due_date: invoice.due_date,
+      status: invoice.status,
+      company: {
+        name: c.name || 'Empresa', tax_id: c.tax_id, razon_social: c.razon_social,
+        giro: c.giro, address: c.address, city: c.city, region: c.region,
+        phone: c.phone, email: c.email, logo_url: c.logo_url,
+      },
+      customer: invoice.customer ? { name: invoice.customer.name, tax_id: invoice.customer.tax_id } : undefined,
+      items: items.map(item => ({
+        name: item.product?.name || '', sku: item.product?.sku,
+        quantity: item.quantity, unit_price: item.unit_price,
+        discount: item.discount_percent, tax_rate: item.tax_rate || 19, total: item.line_total,
+      })),
+      subtotal, tax_amount: tax, total, notes: invoice.notes,
+      settings,
+    });
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!invoice) return;
+    const c = company || {};
+    const doc = await generateBoletaPDF({
+      id: invoice.id,
+      number: invoice.invoice_number,
+      type: (invoice.document_type as 'boleta' | 'cotizacion') || 'boleta',
+      date: invoice.invoice_date,
+      due_date: invoice.due_date,
+      company: {
+        name: c.name || 'Empresa', tax_id: c.tax_id || undefined, razon_social: c.razon_social || undefined,
+        giro: c.giro || undefined, address: c.address || undefined, city: c.city || undefined,
+        region: c.region || undefined, phone: c.phone || undefined, email: c.email || undefined,
+        logo_url: c.logo_url || undefined,
+      },
+      customer: invoice.customer ? { name: invoice.customer.name, tax_id: invoice.customer.tax_id } : undefined,
+      items: (invoice.items || []).map(item => ({
+        name: item.product?.name || '',
+        sku: item.product?.sku || '',
+        quantity: item.quantity,
+        unit_price: item.unit_price,
+        discount: item.discount_percent,
+        tax_rate: item.tax_rate,
+        total: item.line_total,
+      })),
+      subtotal,
+      tax_amount: tax,
+      total,
+      notes: invoice.notes,
+      settings,
+    });
+    doc.save(`${invoice.invoice_number}.pdf`);
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4"><div className="w-9 h-9 bg-muted rounded-lg animate-pulse" /><div className="h-6 w-48 bg-muted rounded animate-pulse" /></div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">{[1, 2].map(i => <div key={i} className="animate-pulse bg-muted h-48 rounded-xl" />)}</div>
+          <div className="animate-pulse bg-muted h-64 rounded-xl" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!invoice) {
+    return (
+      <div className="space-y-6">
+        <Link href="/dashboard/sales" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="w-4 h-4" /> Volver
+        </Link>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-12 dark:bg-primary dark:border-border text-center">
+          <p className="text-sm text-muted-foreground">Factura no encontrada</p>
+        </div>
+      </div>
+    );
+  }
+
+  const status = STATUS_MAP[invoice.status] || STATUS_MAP.draft;
+  const subtotal = invoice.subtotal || (invoice.items || []).reduce((sum, item) => sum + item.line_total, 0);
+  const tax = invoice.tax_amount || Math.round(subtotal * 0.19);
+  const total = invoice.total_amount || subtotal + tax;
+
+  return (
+    <div className="space-y-6 print:space-y-0">
+      {/* Header - hidden on print */}
+      <div className="flex items-center justify-between print:hidden">
+        <div className="flex items-center gap-4">
+          <Link href="/dashboard/sales" className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+          <div>
+            <h1 className="text-xl font-bold text-foreground">Factura {invoice.invoice_number}</h1>
+            <p className="text-sm text-muted-foreground mt-1">{invoice.invoice_date}</p>
+          </div>
+          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-semibold ${status.class}`}>
+            {status.label}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={handlePrint} className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            <Printer className="w-4 h-4" /> Imprimir
+          </button>
+          <button onClick={handleDownloadPDF} className="bg-primary hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            <Download className="w-4 h-4" /> Descargar PDF
+          </button>
+        </div>
+      </div>
+
+      {/* Document */}
+      <div className="bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border print:shadow-none print:border-0 print:rounded-none" id="print-area">
+        <div className="p-8 print:p-4">
+          {/* Company header */}
+          <div className="flex items-start justify-between mb-8 pb-6 border-b border-border">
+            <div>
+              {company?.logo_url ? (
+                <img src={company.logo_url} alt="Logo" className="h-16 w-auto mb-3" />
+              ) : (
+                <div className="w-16 h-16 bg-amber-400 rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-3">
+                  {(company?.name || 'E')[0]}
+                </div>
+              )}
+              <p className="text-lg font-bold text-foreground">{company?.name || 'Empresa'}</p>
+              {company?.tax_id && <p className="text-xs text-muted-foreground">RUT: {company.tax_id}</p>}
+              {company?.address && <p className="text-xs text-muted-foreground">{company.address}</p>}
+              {company?.phone && <p className="text-xs text-muted-foreground">Tel: {company.phone}</p>}
+            </div>
+            <div className="text-right">
+              <h2 className="text-2xl font-bold text-foreground mb-1">FACTURA</h2>
+              <p className="text-sm font-mono text-foreground">{invoice.invoice_number}</p>
+              <p className="text-xs text-muted-foreground mt-2">Fecha: {invoice.invoice_date}</p>
+              {invoice.due_date && <p className="text-xs text-muted-foreground">Vence: {invoice.due_date}</p>}
+            </div>
+          </div>
+
+          {/* Customer info */}
+          <div className="grid grid-cols-2 gap-8 mb-8">
+            <div>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Cliente</p>
+              <p className="text-sm font-medium text-foreground">{invoice.customer?.name || '—'}</p>
+              <p className="text-xs text-muted-foreground">RUT: {invoice.customer?.tax_id || '—'}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Bodega</p>
+              <p className="text-sm font-medium text-foreground">{invoice.warehouse?.name || '—'}</p>
+              <p className="text-xs text-muted-foreground">{invoice.warehouse?.code || ''}</p>
+            </div>
+          </div>
+
+          {/* Items table */}
+          <div className="mb-8">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Producto</th>
+                  <th className="text-right py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cant.</th>
+                  <th className="text-right py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Precio</th>
+                  <th className="text-right py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Desc.</th>
+                  <th className="text-right py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">IVA</th>
+                  <th className="text-right py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(invoice.items || []).map((item) => (
+                  <tr key={item.id} className="border-b border-border">
+                    <td className="py-3">
+                      <p className="text-xs font-medium text-foreground">{item.product?.name || '—'}</p>
+                      <p className="text-[10px] text-muted-foreground font-mono">{item.product?.sku}</p>
+                    </td>
+                    <td className="py-3 text-xs text-right text-foreground">{item.quantity}</td>
+                    <td className="py-3 text-xs text-right text-foreground">${item.unit_price.toLocaleString('es-CL')}</td>
+                    <td className="py-3 text-xs text-right text-foreground">{item.discount_percent}%</td>
+                    <td className="py-3 text-xs text-right text-foreground">{item.tax_rate}%</td>
+                    <td className="py-3 text-xs text-right font-medium text-foreground">${item.line_total.toLocaleString('es-CL')}</td>
+                  </tr>
+                ))}
+                {(!invoice.items || invoice.items.length === 0) && (
+                  <tr><td colSpan={6} className="py-8 text-center text-xs text-muted-foreground">Sin items</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Totals */}
+          <div className="flex justify-end">
+            <div className="w-72 space-y-2">
+              <div className="flex justify-between text-xs text-foreground">
+                <span>Subtotal</span>
+                <span>${subtotal.toLocaleString('es-CL')}</span>
+              </div>
+              <div className="flex justify-between text-xs text-foreground">
+                <span>IVA (19%)</span>
+                <span>${tax.toLocaleString('es-CL')}</span>
+              </div>
+              <div className="flex justify-between text-sm font-bold text-foreground pt-2 border-t border-border">
+                <span>Total</span>
+                <span>${total.toLocaleString('es-CL')}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Notes */}
+          {invoice.notes && (
+            <div className="mt-8 pt-6 border-t border-border">
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Observaciones</p>
+              <p className="text-xs text-foreground">{invoice.notes}</p>
+            </div>
+          )}
+
+          {/* Footer */}
+          <div className="mt-8 pt-6 border-t border-border text-center">
+            <p className="text-[10px] text-muted-foreground">Documento generado por Yellow ERP</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

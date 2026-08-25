@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Upload, FileText, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { Upload, FileText, CheckCircle, XCircle, AlertTriangle, Download, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface CatalogImport {
@@ -16,13 +16,6 @@ interface CatalogImport {
   created_at: string;
 }
 
-const statusConfig: Record<string, { label: string; icon: typeof CheckCircle; color: string }> = {
-  pending: { label: 'Pendiente', icon: AlertTriangle, color: 'text-foreground' },
-  processing: { label: 'Procesando', icon: AlertTriangle, color: 'text-blue-600' },
-  completed: { label: 'Completado', icon: CheckCircle, color: 'text-emerald-600' },
-  failed: { label: 'Error', icon: XCircle, color: 'text-red-600' },
-};
-
 export default function SupplierCatalogImport() {
   const [catalogs, setCatalogs] = useState<CatalogImport[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,10 +25,7 @@ export default function SupplierCatalogImport() {
   const [catalogName, setCatalogName] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    loadCatalogs();
-    loadSuppliers();
-  }, []);
+  useEffect(() => { loadCatalogs(); loadSuppliers(); }, []);
 
   const loadCatalogs = async () => {
     try {
@@ -45,9 +35,7 @@ export default function SupplierCatalogImport() {
         const json = await res.json();
         setCatalogs(Array.isArray(json.data) ? json.data : []);
       }
-    } catch (e) {
-      console.error(e);
-    }
+    } catch (e) { console.error(e); }
     setLoading(false);
   };
 
@@ -59,22 +47,20 @@ export default function SupplierCatalogImport() {
         const json = await res.json();
         setSuppliers(Array.isArray(json.data) ? json.data : []);
       }
-    } catch (e) {
-      console.error(e);
-    }
+    } catch (e) { console.error(e); }
   };
 
   const parseCSV = (text: string): any[] => {
     const lines = text.split('\n').filter(l => l.trim());
     if (lines.length < 2) return [];
+
     const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/['"]/g, ''));
     const rows = [];
+
     for (let i = 1; i < lines.length; i++) {
       const values = lines[i].split(',').map(v => v.trim().replace(/['"]/g, ''));
       const row: any = {};
-      headers.forEach((h, idx) => {
-        row[h] = values[idx] || '';
-      });
+      headers.forEach((h, idx) => { row[h] = values[idx] || ''; });
       rows.push(row);
     }
     return rows;
@@ -83,6 +69,7 @@ export default function SupplierCatalogImport() {
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
     if (!catalogName) {
       toast.error('Ingrese un nombre para el catalogo');
       return;
@@ -92,6 +79,7 @@ export default function SupplierCatalogImport() {
     try {
       const text = await file.text();
       const rows = parseCSV(text);
+
       if (rows.length === 0) {
         toast.error('Archivo CSV vacio o formato invalido');
         setImporting(false);
@@ -117,11 +105,16 @@ export default function SupplierCatalogImport() {
         setSelectedSupplier('');
         loadCatalogs();
       }
-    } catch (e) {
-      toast.error('Error al importar');
-    }
+    } catch (e) { toast.error('Error al importar'); }
     setImporting(false);
     if (fileRef.current) fileRef.current.value = '';
+  };
+
+  const statusConfig: Record<string, { label: string; icon: typeof CheckCircle; color: string }> = {
+    pending: { label: 'Pendiente', icon: AlertTriangle, color: 'text-foreground' },
+    processing: { label: 'Procesando', icon: AlertTriangle, color: 'text-blue-600' },
+    completed: { label: 'Completado', icon: CheckCircle, color: 'text-emerald-600' },
+    failed: { label: 'Error', icon: XCircle, color: 'text-red-600' },
   };
 
   return (
@@ -129,48 +122,26 @@ export default function SupplierCatalogImport() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Upload className="w-4 h-4 text-muted-foreground" />
-          <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
-            Importar Catalogo Proveedor
-          </span>
+          <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Importar Catalogo Proveedor</span>
         </div>
       </div>
 
       <div className="bg-muted border border-border rounded-xl p-4 space-y-3">
         <div className="grid grid-cols-2 gap-3">
-          <input
-            type="text"
-            value={catalogName}
-            onChange={e => setCatalogName(e.target.value)}
-            className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-            placeholder="Nombre del catalogo"
-          />
-          <select
-            value={selectedSupplier}
-            onChange={e => setSelectedSupplier(e.target.value)}
-            className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-          >
+          <input type="text" value={catalogName} onChange={e => setCatalogName(e.target.value)}
+            className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white"
+            placeholder="Nombre del catalogo" />
+          <select value={selectedSupplier} onChange={e => setSelectedSupplier(e.target.value)}
+            className="bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-card dark:border-border dark:text-white">
             <option value="">Proveedor (opcional)</option>
-            {suppliers.map(s => (
-              <option key={s.id} value={s.id}>
-                {s.name}
-              </option>
-            ))}
+            {suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
           </select>
         </div>
-
         <div className="flex items-center gap-3">
-          <input
-            ref={fileRef}
-            type="file"
-            accept=".csv,.txt"
-            onChange={handleFile}
-            className="hidden"
-            id="catalog-upload"
-          />
-          <label
-            htmlFor="catalog-upload"
-            className="flex items-center gap-2 px-4 py-2 bg-card border border-border hover:bg-muted rounded-lg text-sm font-medium text-foreground cursor-pointer transition-colors"
-          >
+          <input ref={fileRef} type="file" accept=".csv,.txt" onChange={handleFile}
+            className="hidden" id="catalog-upload" />
+          <label htmlFor="catalog-upload"
+            className="flex items-center gap-2 px-4 py-2 bg-card border border-border hover:bg-muted rounded-lg text-sm font-medium text-foreground cursor-pointer transition-colors">
             <FileText className="w-4 h-4" /> Seleccionar CSV
           </label>
           {importing && <span className="text-xs text-muted-foreground">Importando...</span>}
@@ -182,9 +153,7 @@ export default function SupplierCatalogImport() {
 
       {loading ? (
         <div className="space-y-2">
-          {[1, 2].map(i => (
-            <div key={i} className="h-16 bg-muted rounded-xl animate-pulse" />
-          ))}
+          {[1, 2].map(i => <div key={i} className="h-16 bg-muted rounded-xl animate-pulse" />)}
         </div>
       ) : catalogs.length === 0 ? (
         <div className="text-center py-12 bg-muted border border-dashed border-border rounded-xl">
@@ -195,9 +164,8 @@ export default function SupplierCatalogImport() {
         <div className="space-y-2">
           {catalogs.map(c => {
             const cfg = statusConfig[c.status] || statusConfig.pending;
-            const Icon = cfg.icon;
             return (
-              <div key={c.id} className="flex items-center justify-between p-3 bg-card border border-border rounded-xl">
+              <div key={c.id} className="flex items-center justify-between p-3 bg-card border border-border rounded-xl dark:bg-primary dark:border-border">
                 <div className="flex items-center gap-3">
                   <FileText className="w-5 h-5 text-muted-foreground" />
                   <div>
@@ -209,12 +177,10 @@ export default function SupplierCatalogImport() {
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="text-right">
-                    <p className="text-xs text-foreground">
-                      {c.imported_rows}/{c.total_rows} importados
-                    </p>
+                    <p className="text-xs text-foreground">{c.imported_rows}/{c.total_rows} importados</p>
                     {c.error_rows > 0 && <p className="text-[9px] text-red-600">{c.error_rows} errores</p>}
                   </div>
-                  <Icon className={`w-5 h-5 ${cfg.color}`} />
+                  <cfg.icon className={`w-5 h-5 ${cfg.color}`} />
                 </div>
               </div>
             );

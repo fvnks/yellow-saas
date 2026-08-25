@@ -1,4 +1,617 @@
-'use client'; import { useEffect, useRef, useState } from 'react'; import { Headphones, Plus, Search, Building2, AlertTriangle, CheckCircle, Clock, MessageSquare, Send, X, UserCheck, Star, Paperclip, FileText, Image as ImageIcon, History, CheckCircle2 } from 'lucide-react'; interface Ticket { id: string; subject: string; status: string; priority: string; created_at: string; updated_at: string; company_name: string; company_id: string; created_by_name: string; assigned_to_name: string; assigned_to: string | null; } interface Attachment { id: string; name: string; mime_type: string; file_size: number; } interface Message { id: string; sender_type: string; sender_name: string; message: string; created_at: string; attachments?: Attachment[]; } interface StatusHistory { id: string; from_status: string; to_status: string; changed_by_type: string; changed_by_name: string | null; created_at: string; } interface TicketDetail extends Ticket { messages: Message[]; feedback: { rating: number; comment: string | null; created_aconst statusColors: Record<string, string> = { open: 'bg-blue-500/10 text-blue-400 border-blue-500/20', in_progress: 'bg-amber-500/10 text-amber-400 border-amber-500/20', resolved: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', closed: 'bg-muted0/10 text-muted-foreground border-border/20', }; 
-t: string } | nulconst priorityColors: Record<string, string> = { low: 'bg-muted0/10 text-muted-foreground border-border/20', medium: 'bg-blue-500/10 text-blue-400 border-blue-500/20', high: 'bg-amber-500/10 text-amber-400 border-amber-500/20', urgent: 'bg-rose-500/10 text-rose-400 border-rose-500/20', }; 
-l; status_historyconst statusLabels: Record<string, string> = { open: 'Abierto', in_progress: 'En progreso', resolved: 'Resuelto', closed: 'Cerrado', }; 
-?: StatusHistory[]; } interface Company { id: string; name: string; } interface SuperAdmin { id: string; name: string; email: string; } export default function AdminSupportPage() { const [tickets, setTickets] = useState<Ticket[]>([]); const [companies, setCompanies] = useState<Company[]>([]); const [superAdmins, setSuperAdmins] = useState<SuperAdmin[]>([]); const [loading, setLoading] = useState(true); const [filter, setFilter] = useState('all'); const [search, setSearch] = useState(''); const [showCreate, setShowCreate] = useState(false); const [selectedTicket, setSelectedTicket] = useState<TicketDetail | null>(null); const [loadingDetail, setLoadingDetail] = useState(false); const [replyText, setReplyText] = useState(''); const [sending, setSending] = useState(false); const [pendingFiles, setPendingFiles] = useState<File[]>([]); const fileInputRef = useRef<HTMLInputElement>(null); const [form, setForm] = useState({ company_id: '', subject: '', priority: 'medium', message: '' }); const [saving, setSaving] = useState(false); const [message, setMessage] = useState({ type: '', text: '' }); useEffect(() => { fetchTickets(); fetchCompanies(); fetchSuperAdmins(); }, []); const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1]; const fetchTickets = async () => { try { const res = await fetch('/api/super-admin/support', { headers: { Authorization: `Bearer ${getToken()}` }, }); const data = await res.json(); if (data.success) setTickets(data.data); } catch (err) { console.error('Failed to load tickets:', err); } finally { setLoading(false); } }; const fetchCompanies = async () => { try { const res = await fetch('/api/super-admin/companies', { headers: { Authorization: `Bearer ${getToken()}` }, }); const data = await res.json(); if (data.success) setCompanies(data.data); } catch (err) { console.error('Failed to load companies:', err); } }; const fetchSuperAdmins = async () => { try { const res = await fetch('/api/super-admin/super-admins', { headers: { Authorization: `Bearer ${getToken()}` }, }); const data = await res.json(); if (data.success) setSuperAdmins(data.data); } catch (err) { console.error('Failed to load super admins:', err); } }; const handleAssign = async (ticketId: string, assignedTo: string) => { try { await fetch(`/api/super-admin/support/${ticketId}`, { method: 'PATCH', headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ assigned_to: assignedTo || null }), }); fetchTickets(); if (selectedTicket?.id === ticketId) fetchTicketDetail(ticketId); } catch (err) { console.error('Failed to assign ticket:', err); } }; const fetchTicketDetail = async (ticketId: string) => { setLoadingDetail(true); try { const res = await fetch(`/api/super-admin/support/${ticketId}`, { headers: { Authorization: `Bearer ${getToken()}` }, }); const data = await res.json(); if (data.success) setSelectedTicket(data.data); } catch (err) { console.error('Failed to load ticket:', err); } finally { setLoadingDetail(false); } }; const handleCreate = async (e: React.FormEvent) => { e.preventDefault(); setSaving(true); setMessage({ type: '', text: '' }); try { const res = await fetch('/api/super-admin/support', { method: 'POST', headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' }, body: JSON.stringify(form), }); const data = await res.json(); if (data.success) { setMessage({ type: 'success', text: 'Ticket creado correctamente' }); setForm({ company_id: '', subject: '', priority: 'medium', message: '' }); setShowCreate(false); fetchTickets(); } else { setMessage({ type: 'error', text: data.error?.message || 'Error al crear' }); } } catch { setMessage({ type: 'error', text: 'Error de conexión' }); } finally { setSaving(false); } }; const handleSendReply = async () => { if (!selectedTicket || (!replyText.trim() && pendingFiles.length === 0)) return; setSending(true); try { const formData = new FormData(); formData.append('message', replyText); pendingFiles.forEach((f, i) => formData.append(`file${i}`, f)); const res = await fetch(`/api/super-admin/support/${selectedTicket.id}/messages`, { method: 'POST', headers: { Authorization: `Bearer ${getToken()}` }, body: formData, }); const data = await res.json(); if (data.success) { setReplyText(''); setPendingFiles([]); fetchTicketDetail(selectedTicket.id); } } catch (err) { console.error('Failed to send reply:', err); } finally { setSending(false); } }; const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => { const files = Array.from(e.target.files || []); if (files.length === 0) return; setPendingFiles(prev => [...prev, ...files].slice(0, 5)); if (e.target) e.target.value = ''; }; const handleStatusChange = async (ticketId: string, status: string) => { try { await fetch(`/api/super-admin/support/${ticketId}`, { method: 'PATCH', headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ status }), }); fetchTickets(); if (selectedTicket?.id === ticketId) fetchTicketDetail(ticketId); } catch (err) { console.error('Failed to update status:', err); } }; const filtered = tickets.filter(t => { const matchFilter = filter === 'all' || t.status === filter; const matchSearch = search === '' || t.subject.toLowerCase().includes(search.toLowerCase()) || t.company_name.toLowerCase().includes(search.toLowerCase()); return matchFilter && matchSearch; }); if (selectedTicket) { return ( <div className="space-y-6"> <div className="flex items-center gap-4"> <button onClick={() => setSelectedTicket(null)} className="p-2 hover:bg-primary/90 rounded-lg transition-colors"> <X className="w-5 h-5 text-muted-foreground" /> </button> <div className="flex-1"> <div className="flex items-center gap-3"> <h1 className="text-xl font-bold text-white">{selectedTicket.subject}</h1> <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${priorityColors[selectedTicket.priority]}`}> {selectedTicket.priority} </span> <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${statusColors[selectedTicket.status]}`}> {selectedTicket.status} </span> </div> <p className="text-xs text-muted-foreground mt-1">{selectedTicket.company_name} — {new Date(selectedTicket.created_at).toLocaleString('es-CL')}</p> </div> <div className="flex items-center gap-2"> {['open', 'in_progress', 'resolved', 'closed'].map((s) => ( <button key={s} onClick={() => handleStatusChange(selectedTicket.id, s)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${ selectedTicket.status === s ? 'bg-primary text-white' : 'bg-card text-muted-foreground hover:text-white' }`} > {s === 'in_progress' ? 'En progreso' : s === 'open' ? 'Abierto' : s === 'resolved' ? 'Resuelto' : 'Cerrado'} </button> ))} </div> <div className="flex items-center gap-2 ml-auto"> <UserCheck className="w-4 h-4 text-muted-foreground" /> <select value={selectedTicket.assigned_to || ''} onChange={(e) => handleAssign(selectedTicket.id, e.target.value)} className="bg-card/50 border border-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-primary/20" > <option value="">Sin asignar</option> {superAdmins.map((admin) => ( <option key={admin.id} value={admin.id}>{admin.name}</option> ))} </select> </div> </div> <div className="bg-primary border border-border rounded-xl p-6 space-y-4 max-h-[500px] overflow-y-auto"> {loadingDetail ? ( <div className="space-y-3"> {Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-16 bg-card rounded-lg animate-pulse" />)} </div> ) : selectedTicket.messages.length === 0 ? ( <p className="text-center text-sm text-muted-foreground py-8">No hay mensajes aún</p> ) : ( selectedTicket.messages.map((msg) => ( <div key={msg.id} className={`flex ${msg.sender_type === 'super_admin' ? 'justify-end' : 'justify-start'}`}> <div className={`max-w-[70%] rounded-xl px-4 py-3 ${ msg.sender_type === 'super_admin' ? 'bg-primary/20 border border-primary/20' : 'bg-card border border-border' }`}> <p className="text-[10px] font-bold text-muted-foreground mb-1">{msg.sender_name} — {new Date(msg.created_at).toLocaleString('es-CL')}</p> <p className="text-sm text-white">{msg.message}</p> {msg.attachments?.length ? ( <div className="mt-2 space-y-1.5"> {msg.attachments.map(att => ( <a key={att.id} href={`/api/super-admin/support/${selectedTicket.id}/attachments/${att.id}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-2 py-1.5 rounded-lg border border-border bg-card/50 text-xs font-medium text-foreground hover:bg-primary/90 hover:text-white transition-colors" > {(att.mime_type || '').startsWith('image/') ? <ImageIcon className="w-3.5 h-3.5 flex-shrink-0" /> : <FileText className="w-3.5 h-3.5 flex-shrink-0" />} <span className="text-xs truncate">{att.name}</span> </a> ))} </div> ) : null} </div> </div> )) )} </div> {selectedTicket.feedback && ( <div className="bg-primary border border-border rounded-xl p-4 flex items-center gap-4"> <div className="flex items-center gap-1"> {[1, 2, 3, 4, 5].map((i) => ( <Star key={i} className={`w-5 h-5 ${i <= selectedTicket.feedback!.rating ? 'text-amber-400 fill-amber-400' : 'text-foreground'}`} /> ))} </div> <div className="flex-1"> <p className="text-xs font-semibold text-white">Valoración del cliente: {selectedTicket.feedback.rating}/5</p> {selectedTicket.feedback.comment && ( <p className="text-xs text-muted-foreground mt-0.5">{selectedTicket.feedback.comment}</p> )} </div> <p className="text-[10px] text-muted-foreground">{new Date(selectedTicket.feedback.created_at).toLocaleString('es-CL')}</p> </div> )} {selectedTicket.status_history && selectedTicket.status_history.length > 0 && ( <div className="bg-primary border border-border rounded-xl p-4"> <div className="flex items-center gap-2 mb-3"> <History className="w-4 h-4 text-muted-foreground" /> <h3 className="text-sm font-semibold text-white">Historial de estados</h3> </div> <div className="space-y-2"> {selectedTicket.status_history.map((h) => ( <div key={h.id} className="flex items-center gap-3 text-xs"> <CheckCircle2 className="w-3.5 h-3.5 text-primary/70 flex-shrink-0" /> <span className="text-foreground"> {statusLabels[h.from_status]} <span className="text-muted-foreground">→</span> {statusLabels[h.to_status]} </span> <span className="text-muted-foreground">· {h.changed_by_name || 'Sistema'}</span> <span className="text-foreground ml-auto">{new Date(h.created_at).toLocaleString('es-CL')}</span> </div> ))} </div> </div> )} <div className="bg-primary border border-border rounded-xl p-4"> {pendingFiles.length > 0 && ( <div className="flex flex-wrap gap-2 mb-3"> {pendingFiles.map((f, i) => ( <div key={i} className="flex items-center gap-1.5 bg-card border border-border rounded-lg px-2 py-1"> {f.type.startsWith('image/') ? <ImageIcon className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" /> : <FileText className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />} <span className="text-xs text-foreground max-w-[120px] truncate">{f.name}</span> <button onClick={() => setPendingFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-muted-foreground hover:text-foreground"> <X className="w-3.5 h-3.5" /> </button> </div> ))} </div> )} <div className="flex items-center gap-3"> <input type="file" ref={fileInputRef} onChange={handleFileSelect} multiple className="hidden" /> <button onClick={() => fileInputRef.current?.click()} disabled={sending || pendingFiles.length >= 5} className="w-10 h-10 bg-card hover:bg-primary/90 border border-border rounded-lg text-muted-foreground hover:text-white flex items-center justify-center transition-colors disabled:opacity-50 flex-shrink-0" title="Adjuntar archivo" > <Paperclip className="w-4 h-4" /> </button> <input type="text" value={replyText} onChange={(e) => setReplyText(e.target.value)} placeholder="Escribe tu respuesta..." onKeyDown={(e) => e.key === 'Enter' && handleSendReply()} className="flex-1 bg-card/50 border border-border rounded-lg px-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20" /> <button onClick={handleSendReply} disabled={sending || (!replyText.trim() && pendingFiles.length === 0)} className="px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50 flex items-center gap-2" > <Send className="w-4 h-4" /> </button> </div> </div> </div> ); } return ( <div className="space-y-6"> <div className="flex items-center justify-between"> <div> <h1 className="text-2xl font-bold text-white">Soporte</h1> <p className="text-sm text-muted-foreground mt-1">Gestiona tickets de soporte de las empresas</p> </div> <button onClick={() => { setShowCreate(!showCreate); setMessage({ type: '', text: '' }); }} className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors" > <Plus className="w-4 h-4" /> {showCreate ? 'Cancelar' : 'Nuevo Ticket'} </button> </div> {showCreate && ( <div className="bg-primary border border-border rounded-xl p-6"> <h3 className="text-sm font-semibold text-white mb-4">Crear Ticket de Soporte</h3> {message.text && ( <div className={`mb-4 flex items-center gap-2 p-3 rounded-lg text-sm ${ message.type === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20' }`}> {message.type === 'success' ? <CheckCircle className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />} {message.text} </div> )} <form onSubmit={handleCreate} className="space-y-4"> <div className="grid grid-cols-1 md:grid-cols-3 gap-4"> <div className="space-y-1"> <label className="text-xs font-medium text-muted-foreground">Empresa</label> <select value={form.company_id} onChange={(e) => setForm({ ...form, company_id: e.target.value })} required className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20" > <option value="">Seleccionar...</option> {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)} </select> </div> <div className="space-y-1"> <label className="text-xs font-medium text-muted-foreground">Asunto</label> <input type="text" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} placeholder="Asunto del ticket" required className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20" /> </div> <div className="space-y-1"> <label className="text-xs font-medium text-muted-foreground">Prioridad</label> <select value={form.priority} onChange={(e) => setForm({ ...form, priority: e.target.value })} className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20" > <option value="low">Baja</option> <option value="medium">Media</option> <option value="high">Alta</option> <option value="urgent">Urgente</option> </select> </div> </div> <div className="space-y-1"> <label className="text-xs font-medium text-muted-foreground">Mensaje</label> <textarea value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="Descripción del problema..." rows={3} className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20 resize-none" /> </div> <div className="flex justify-end"> <button type="submit" disabled={saving} className="px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"> {saving ? 'Creando...' : 'Crear Ticket'} </button> </div> </form> </div> )} <div className="bg-primary border border-border rounded-xl p-4 flex items-center gap-4"> <div className="relative flex-1"> <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /> <input type="text" placeholder="Buscar tickets..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full bg-card/50 border border-border rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20" /> </div> <div className="flex items-center gap-2"> {['all', 'open', 'in_progress', 'resolved', 'closed'].map((f) => ( <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${ filter === f ? 'bg-primary text-white' : 'bg-card text-muted-foreground hover:text-white hover:bg-primary/90' }`} > {f === 'all' ? 'Todos' : f === 'in_progress' ? 'En progreso' : f === 'open' ? 'Abiertos' : f === 'resolved' ? 'Resueltos' : 'Cerrados'} </button> ))} </div> </div> <div className="bg-primary border border-border rounded-xl overflow-hidden"> <table className="w-full"> <thead> <tr className="border-b border-border"> <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Ticket</th> <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Empresa</th> <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Asignado a</th> <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Prioridad</th> <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Estado</th> <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Fecha</th> <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Acciones</th> </tr> </thead> <tbody> {loading ? ( Array.from({ length: 3 }).map((_, i) => ( <tr key={i} className="border-b border-border/50"> <td colSpan={7} className="px-6 py-4"><div className="h-4 bg-card rounded animate-pulse" /></td> </tr> )) ) : filtered.length === 0 ? ( <tr> <td colSpan={7} className="px-6 py-12 text-center"> <Headphones className="w-12 h-12 text-foreground mx-auto mb-3" /> <p className="text-sm text-muted-foreground">No hay tickets de soporte</p> </td> </tr> ) : ( filtered.map((ticket) => ( <tr key={ticket.id} className="border-b border-border/50 hover:bg-primary/90/30 transition-colors"> <td className="px-6 py-4"> <p className="text-sm font-medium text-white">{ticket.subject}</p> <p className="text-[10px] text-muted-foreground">{ticket.id.slice(0, 8)}</p> </td> <td className="px-6 py-4"> <div className="flex items-center gap-1.5 text-xs text-foreground"> <Building2 className="w-3 h-3 text-muted-foreground" /> {ticket.company_name} </div> </td> <td className="px-6 py-4 text-xs text-muted-foreground"> {ticket.assigned_to_name || <span className="text-foreground">—</span>} </td> <td className="px-6 py-4"> <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${priorityColors[ticket.priority]}`}> {ticket.priority} </span> </td> <td className="px-6 py-4"> <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${statusColors[ticket.status]}`}> {ticket.status === 'in_progress' ? 'En progreso' : ticket.status === 'open' ? 'Abierto' : ticket.status === 'resolved' ? 'Resuelto' : 'Cerrado'} </span> </td> <td className="px-6 py-4 text-xs text-muted-foreground"> {new Date(ticket.created_at).toLocaleDateString('es-CL')} </td> <td className="px-6 py-4"> <button onClick={() => fetchTicketDetail(ticket.id)} className="flex items-center gap-1.5 px-3 py-1.5 bg-card hover:bg-primary/90 rounded-lg text-xs font-medium text-foreground hover:text-white transition-colors" > <MessageSquare className="w-3.5 h-3.5" /> Ver </button> </td> </tr> )) )} </tbody> </table> </div> </div> ); } 
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import { Headphones, Plus, Search, Building2, AlertTriangle, CheckCircle, Clock, MessageSquare, Send, X, UserCheck, Star, Paperclip, FileText, Image as ImageIcon, History, CheckCircle2 } from 'lucide-react';
+
+interface Ticket {
+  id: string;
+  subject: string;
+  status: string;
+  priority: string;
+  created_at: string;
+  updated_at: string;
+  company_name: string;
+  company_id: string;
+  created_by_name: string;
+  assigned_to_name: string;
+  assigned_to: string | null;
+}
+
+interface Attachment {
+  id: string;
+  name: string;
+  mime_type: string;
+  file_size: number;
+}
+
+interface Message {
+  id: string;
+  sender_type: string;
+  sender_name: string;
+  message: string;
+  created_at: string;
+  attachments?: Attachment[];
+}
+
+interface StatusHistory {
+  id: string;
+  from_status: string;
+  to_status: string;
+  changed_by_type: string;
+  changed_by_name: string | null;
+  created_at: string;
+}
+
+interface TicketDetail extends Ticket {
+  messages: Message[];
+  feedback: { rating: number; comment: string | null; created_at: string } | null;
+  status_history?: StatusHistory[];
+}
+
+interface Company {
+  id: string;
+  name: string;
+}
+
+interface SuperAdmin {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export default function AdminSupportPage() {
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [superAdmins, setSuperAdmins] = useState<SuperAdmin[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all');
+  const [search, setSearch] = useState('');
+  const [showCreate, setShowCreate] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState<TicketDetail | null>(null);
+  const [loadingDetail, setLoadingDetail] = useState(false);
+  const [replyText, setReplyText] = useState('');
+  const [sending, setSending] = useState(false);
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [form, setForm] = useState({ company_id: '', subject: '', priority: 'medium', message: '' });
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState({ type: '', text: '' });
+
+  useEffect(() => {
+    fetchTickets();
+    fetchCompanies();
+    fetchSuperAdmins();
+  }, []);
+
+  const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+
+  const fetchTickets = async () => {
+    try {
+      const res = await fetch('/api/super-admin/support', {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      const data = await res.json();
+      if (data.success) setTickets(data.data);
+    } catch (err) {
+      console.error('Failed to load tickets:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCompanies = async () => {
+    try {
+      const res = await fetch('/api/super-admin/companies', {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      const data = await res.json();
+      if (data.success) setCompanies(data.data);
+    } catch (err) {
+      console.error('Failed to load companies:', err);
+    }
+  };
+
+  const fetchSuperAdmins = async () => {
+    try {
+      const res = await fetch('/api/super-admin/super-admins', {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      const data = await res.json();
+      if (data.success) setSuperAdmins(data.data);
+    } catch (err) {
+      console.error('Failed to load super admins:', err);
+    }
+  };
+
+  const handleAssign = async (ticketId: string, assignedTo: string) => {
+    try {
+      await fetch(`/api/super-admin/support/${ticketId}`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ assigned_to: assignedTo || null }),
+      });
+      fetchTickets();
+      if (selectedTicket?.id === ticketId) fetchTicketDetail(ticketId);
+    } catch (err) {
+      console.error('Failed to assign ticket:', err);
+    }
+  };
+
+  const fetchTicketDetail = async (ticketId: string) => {
+    setLoadingDetail(true);
+    try {
+      const res = await fetch(`/api/super-admin/support/${ticketId}`, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      const data = await res.json();
+      if (data.success) setSelectedTicket(data.data);
+    } catch (err) {
+      console.error('Failed to load ticket:', err);
+    } finally {
+      setLoadingDetail(false);
+    }
+  };
+
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    setMessage({ type: '', text: '' });
+
+    try {
+      const res = await fetch('/api/super-admin/support', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setMessage({ type: 'success', text: 'Ticket creado correctamente' });
+        setForm({ company_id: '', subject: '', priority: 'medium', message: '' });
+        setShowCreate(false);
+        fetchTickets();
+      } else {
+        setMessage({ type: 'error', text: data.error?.message || 'Error al crear' });
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'Error de conexión' });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSendReply = async () => {
+    if (!selectedTicket || (!replyText.trim() && pendingFiles.length === 0)) return;
+    setSending(true);
+    try {
+      const formData = new FormData();
+      formData.append('message', replyText);
+      pendingFiles.forEach((f, i) => formData.append(`file${i}`, f));
+      const res = await fetch(`/api/super-admin/support/${selectedTicket.id}/messages`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${getToken()}` },
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.success) {
+        setReplyText('');
+        setPendingFiles([]);
+        fetchTicketDetail(selectedTicket.id);
+      }
+    } catch (err) {
+      console.error('Failed to send reply:', err);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+    setPendingFiles(prev => [...prev, ...files].slice(0, 5));
+    if (e.target) e.target.value = '';
+  };
+
+  const handleStatusChange = async (ticketId: string, status: string) => {
+    try {
+      await fetch(`/api/super-admin/support/${ticketId}`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      fetchTickets();
+      if (selectedTicket?.id === ticketId) fetchTicketDetail(ticketId);
+    } catch (err) {
+      console.error('Failed to update status:', err);
+    }
+  };
+
+  const filtered = tickets.filter(t => {
+    const matchFilter = filter === 'all' || t.status === filter;
+    const matchSearch = search === '' || t.subject.toLowerCase().includes(search.toLowerCase()) || t.company_name.toLowerCase().includes(search.toLowerCase());
+    return matchFilter && matchSearch;
+  });
+
+  const priorityColors: Record<string, string> = {
+    low: 'bg-muted0/10 text-muted-foreground border-border/20',
+    medium: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+    high: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    urgent: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
+  };
+
+  const statusColors: Record<string, string> = {
+    open: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+    in_progress: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    resolved: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+    closed: 'bg-muted0/10 text-muted-foreground border-border/20',
+  };
+
+  const statusLabels: Record<string, string> = {
+    open: 'Abierto',
+    in_progress: 'En progreso',
+    resolved: 'Resuelto',
+    closed: 'Cerrado',
+  };
+
+  if (selectedTicket) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <button onClick={() => setSelectedTicket(null)} className="p-2 hover:bg-primary/90 rounded-lg transition-colors">
+            <X className="w-5 h-5 text-muted-foreground" />
+          </button>
+          <div className="flex-1">
+            <div className="flex items-center gap-3">
+              <h1 className="text-xl font-bold text-white">{selectedTicket.subject}</h1>
+              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${priorityColors[selectedTicket.priority]}`}>
+                {selectedTicket.priority}
+              </span>
+              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${statusColors[selectedTicket.status]}`}>
+                {selectedTicket.status}
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">{selectedTicket.company_name} — {new Date(selectedTicket.created_at).toLocaleString('es-CL')}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            {['open', 'in_progress', 'resolved', 'closed'].map((s) => (
+              <button
+                key={s}
+                onClick={() => handleStatusChange(selectedTicket.id, s)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  selectedTicket.status === s ? 'bg-primary text-white' : 'bg-card text-muted-foreground hover:text-white'
+                }`}
+              >
+                {s === 'in_progress' ? 'En progreso' : s === 'open' ? 'Abierto' : s === 'resolved' ? 'Resuelto' : 'Cerrado'}
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center gap-2 ml-auto">
+            <UserCheck className="w-4 h-4 text-muted-foreground" />
+            <select
+              value={selectedTicket.assigned_to || ''}
+              onChange={(e) => handleAssign(selectedTicket.id, e.target.value)}
+              className="bg-card/50 border border-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+            >
+              <option value="">Sin asignar</option>
+              {superAdmins.map((admin) => (
+                <option key={admin.id} value={admin.id}>{admin.name}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="bg-primary border border-border rounded-xl p-6 space-y-4 max-h-[500px] overflow-y-auto">
+          {loadingDetail ? (
+            <div className="space-y-3">
+              {Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-16 bg-card rounded-lg animate-pulse" />)}
+            </div>
+          ) : selectedTicket.messages.length === 0 ? (
+            <p className="text-center text-sm text-muted-foreground py-8">No hay mensajes aún</p>
+          ) : (
+            selectedTicket.messages.map((msg) => (
+              <div key={msg.id} className={`flex ${msg.sender_type === 'super_admin' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[70%] rounded-xl px-4 py-3 ${
+                  msg.sender_type === 'super_admin' ? 'bg-primary/20 border border-primary/20' : 'bg-card border border-border'
+                }`}>
+                  <p className="text-[10px] font-bold text-muted-foreground mb-1">{msg.sender_name} — {new Date(msg.created_at).toLocaleString('es-CL')}</p>
+                  <p className="text-sm text-white">{msg.message}</p>
+                  {msg.attachments?.length ? (
+                    <div className="mt-2 space-y-1.5">
+                      {msg.attachments.map(att => (
+                        <a
+                          key={att.id}
+                          href={`/api/super-admin/support/${selectedTicket.id}/attachments/${att.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 px-2 py-1.5 rounded-lg border border-border bg-card/50 text-xs font-medium text-foreground hover:bg-primary/90 hover:text-white transition-colors"
+                        >
+                          {(att.mime_type || '').startsWith('image/')
+                            ? <ImageIcon className="w-3.5 h-3.5 flex-shrink-0" />
+                            : <FileText className="w-3.5 h-3.5 flex-shrink-0" />}
+                          <span className="text-xs truncate">{att.name}</span>
+                        </a>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {selectedTicket.feedback && (
+          <div className="bg-primary border border-border rounded-xl p-4 flex items-center gap-4">
+            <div className="flex items-center gap-1">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Star key={i} className={`w-5 h-5 ${i <= selectedTicket.feedback!.rating ? 'text-amber-400 fill-amber-400' : 'text-foreground'}`} />
+              ))}
+            </div>
+            <div className="flex-1">
+              <p className="text-xs font-semibold text-white">Valoración del cliente: {selectedTicket.feedback.rating}/5</p>
+              {selectedTicket.feedback.comment && (
+                <p className="text-xs text-muted-foreground mt-0.5">{selectedTicket.feedback.comment}</p>
+              )}
+            </div>
+            <p className="text-[10px] text-muted-foreground">{new Date(selectedTicket.feedback.created_at).toLocaleString('es-CL')}</p>
+          </div>
+        )}
+
+        {selectedTicket.status_history && selectedTicket.status_history.length > 0 && (
+          <div className="bg-primary border border-border rounded-xl p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <History className="w-4 h-4 text-muted-foreground" />
+              <h3 className="text-sm font-semibold text-white">Historial de estados</h3>
+            </div>
+            <div className="space-y-2">
+              {selectedTicket.status_history.map((h) => (
+                <div key={h.id} className="flex items-center gap-3 text-xs">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-primary/70 flex-shrink-0" />
+                  <span className="text-foreground">
+                    {statusLabels[h.from_status]} <span className="text-muted-foreground">→</span> {statusLabels[h.to_status]}
+                  </span>
+                  <span className="text-muted-foreground">· {h.changed_by_name || 'Sistema'}</span>
+                  <span className="text-foreground ml-auto">{new Date(h.created_at).toLocaleString('es-CL')}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="bg-primary border border-border rounded-xl p-4">
+          {pendingFiles.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-3">
+              {pendingFiles.map((f, i) => (
+                <div key={i} className="flex items-center gap-1.5 bg-card border border-border rounded-lg px-2 py-1">
+                  {f.type.startsWith('image/')
+                    ? <ImageIcon className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                    : <FileText className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />}
+                  <span className="text-xs text-foreground max-w-[120px] truncate">{f.name}</span>
+                  <button onClick={() => setPendingFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-muted-foreground hover:text-foreground">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="flex items-center gap-3">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileSelect}
+              multiple
+              className="hidden"
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={sending || pendingFiles.length >= 5}
+              className="w-10 h-10 bg-card hover:bg-primary/90 border border-border rounded-lg text-muted-foreground hover:text-white flex items-center justify-center transition-colors disabled:opacity-50 flex-shrink-0"
+              title="Adjuntar archivo"
+            >
+              <Paperclip className="w-4 h-4" />
+            </button>
+            <input
+              type="text"
+              value={replyText}
+              onChange={(e) => setReplyText(e.target.value)}
+              placeholder="Escribe tu respuesta..."
+              onKeyDown={(e) => e.key === 'Enter' && handleSendReply()}
+              className="flex-1 bg-card/50 border border-border rounded-lg px-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
+            />
+            <button
+              onClick={handleSendReply}
+              disabled={sending || (!replyText.trim() && pendingFiles.length === 0)}
+              className="px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50 flex items-center gap-2"
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Soporte</h1>
+          <p className="text-sm text-muted-foreground mt-1">Gestiona tickets de soporte de las empresas</p>
+        </div>
+        <button
+          onClick={() => { setShowCreate(!showCreate); setMessage({ type: '', text: '' }); }}
+          className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors"
+        >
+          <Plus className="w-4 h-4" />
+          {showCreate ? 'Cancelar' : 'Nuevo Ticket'}
+        </button>
+      </div>
+
+      {showCreate && (
+        <div className="bg-primary border border-border rounded-xl p-6">
+          <h3 className="text-sm font-semibold text-white mb-4">Crear Ticket de Soporte</h3>
+          {message.text && (
+            <div className={`mb-4 flex items-center gap-2 p-3 rounded-lg text-sm ${
+              message.type === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+            }`}>
+              {message.type === 'success' ? <CheckCircle className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
+              {message.text}
+            </div>
+          )}
+          <form onSubmit={handleCreate} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">Empresa</label>
+                <select
+                  value={form.company_id}
+                  onChange={(e) => setForm({ ...form, company_id: e.target.value })}
+                  required
+                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                >
+                  <option value="">Seleccionar...</option>
+                  {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">Asunto</label>
+                <input
+                  type="text"
+                  value={form.subject}
+                  onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                  placeholder="Asunto del ticket"
+                  required
+                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">Prioridad</label>
+                <select
+                  value={form.priority}
+                  onChange={(e) => setForm({ ...form, priority: e.target.value })}
+                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                >
+                  <option value="low">Baja</option>
+                  <option value="medium">Media</option>
+                  <option value="high">Alta</option>
+                  <option value="urgent">Urgente</option>
+                </select>
+              </div>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-muted-foreground">Mensaje</label>
+              <textarea
+                value={form.message}
+                onChange={(e) => setForm({ ...form, message: e.target.value })}
+                placeholder="Descripción del problema..."
+                rows={3}
+                className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20 resize-none"
+              />
+            </div>
+            <div className="flex justify-end">
+              <button type="submit" disabled={saving} className="px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50">
+                {saving ? 'Creando...' : 'Crear Ticket'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      <div className="bg-primary border border-border rounded-xl p-4 flex items-center gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Buscar tickets..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full bg-card/50 border border-border rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          {['all', 'open', 'in_progress', 'resolved', 'closed'].map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                filter === f ? 'bg-primary text-white' : 'bg-card text-muted-foreground hover:text-white hover:bg-primary/90'
+              }`}
+            >
+              {f === 'all' ? 'Todos' : f === 'in_progress' ? 'En progreso' : f === 'open' ? 'Abiertos' : f === 'resolved' ? 'Resueltos' : 'Cerrados'}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="bg-primary border border-border rounded-xl overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-border">
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Ticket</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Empresa</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Asignado a</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Prioridad</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Estado</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Fecha</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <tr key={i} className="border-b border-border/50">
+                  <td colSpan={7} className="px-6 py-4"><div className="h-4 bg-card rounded animate-pulse" /></td>
+                </tr>
+              ))
+            ) : filtered.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="px-6 py-12 text-center">
+                  <Headphones className="w-12 h-12 text-foreground mx-auto mb-3" />
+                  <p className="text-sm text-muted-foreground">No hay tickets de soporte</p>
+                </td>
+              </tr>
+            ) : (
+              filtered.map((ticket) => (
+                <tr key={ticket.id} className="border-b border-border/50 hover:bg-primary/90/30 transition-colors">
+                  <td className="px-6 py-4">
+                    <p className="text-sm font-medium text-white">{ticket.subject}</p>
+                    <p className="text-[10px] text-muted-foreground">{ticket.id.slice(0, 8)}</p>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-1.5 text-xs text-foreground">
+                      <Building2 className="w-3 h-3 text-muted-foreground" />
+                      {ticket.company_name}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-xs text-muted-foreground">
+                    {ticket.assigned_to_name || <span className="text-foreground">—</span>}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${priorityColors[ticket.priority]}`}>
+                      {ticket.priority}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${statusColors[ticket.status]}`}>
+                      {ticket.status === 'in_progress' ? 'En progreso' : ticket.status === 'open' ? 'Abierto' : ticket.status === 'resolved' ? 'Resuelto' : 'Cerrado'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-xs text-muted-foreground">
+                    {new Date(ticket.created_at).toLocaleDateString('es-CL')}
+                  </td>
+                  <td className="px-6 py-4">
+                    <button
+                      onClick={() => fetchTicketDetail(ticket.id)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-card hover:bg-primary/90 rounded-lg text-xs font-medium text-foreground hover:text-white transition-colors"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5" />
+                      Ver
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}

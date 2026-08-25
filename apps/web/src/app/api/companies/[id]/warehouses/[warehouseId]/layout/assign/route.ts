@@ -1,5 +1,37 @@
 import { query } from '@/api/lib/db';
-import { getCompanyId, successResponse, errorResponse,
+import {
+  getCompanyId,
+  successResponse,
+  errorResponse,
 } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function PUT(request: NextRequest, { params }: { params: { id: string; warehouseId: string } }) { try { const { warehouseId } = params; const body = await request.json(); const { position_id, product_id } = body; const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); // Clear product from any other position in this warehouse first if (product_id) { await query( `UPDATE warehouse_positions SET product_id = NULL WHERE warehouse_id = $1 AND company_id = $2 AND product_id = $3`, [warehouseId, companyId, product_id] ); } // Assign product to position await query( `UPDATE warehouse_positions SET product_id = $1, updated_at = NOW() WHERE id = $2 AND warehouse_id = $3 AND company_id = $4`, [product_id || null, position_id, warehouseId, companyId] ); return successResponse({ assigned: true, position_id, product_id }); } catch { return errorResponse('Internal server error', 500); }
+import { NextRequest } from 'next/server';
+
+export async function PUT(request: NextRequest, { params }: { params: { id: string; warehouseId: string } }) {
+  try {
+    const { warehouseId } = params;
+    const body = await request.json();
+    const { position_id, product_id } = body;
+
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    // Clear product from any other position in this warehouse first
+    if (product_id) {
+      await query(
+        `UPDATE warehouse_positions SET product_id = NULL WHERE warehouse_id = $1 AND company_id = $2 AND product_id = $3`,
+        [warehouseId, companyId, product_id]
+      );
+    }
+
+    // Assign product to position
+    await query(
+      `UPDATE warehouse_positions SET product_id = $1, updated_at = NOW()
+       WHERE id = $2 AND warehouse_id = $3 AND company_id = $4`,
+      [product_id || null, position_id, warehouseId, companyId]
+    );
+
+    return successResponse({ assigned: true, position_id, product_id });
+  } catch {
+    return errorResponse('Internal server error', 500);
+  }
 }

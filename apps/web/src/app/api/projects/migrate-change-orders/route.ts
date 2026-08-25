@@ -1,4 +1,35 @@
 import { query } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function POST(request: NextRequest) { try { await query(`DROP TABLE IF EXISTS project_change_orders CASCADE`); await query(`CREATE TABLE project_change_orders ( id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE, order_number SERIAL, title TEXT NOT NULL, description TEXT, reason TEXT, status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'implemented')), type TEXT NOT NULL DEFAULT 'scope' CHECK (type IN ('scope', 'timeline', 'budget', 'resource', 'other')), budget_impact DECIMAL(14,2) DEFAULT 0, timeline_impact_days INTEGER DEFAULT 0, requested_by TEXT, reviewed_by UUID REFERENCES profiles(id), reviewed_at TIMESTAMPTZ, review_notes TEXT, created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now() )`); await query(`CREATE INDEX idx_change_orders_company ON project_change_orders(company_id)`); await query(`CREATE INDEX idx_change_orders_project ON project_change_orders(project_id)`); await query(`ALTER TABLE project_change_orders ENABLE ROW LEVEL SECURITY`); await query(`CREATE POLICY "change_orders_company_isolation" ON project_change_orders USING (company_id = current_setting('app.current_company_id')::uuid)`); return successResponse({ message: 'Change orders table created' }); } catch (err: any) { return errorResponse(err.message, 500); }
+import { NextRequest } from 'next/server';
+
+export async function POST(request: NextRequest) {
+  try {
+    await query(`DROP TABLE IF EXISTS project_change_orders CASCADE`);
+    await query(`CREATE TABLE project_change_orders (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+      project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+      order_number SERIAL,
+      title TEXT NOT NULL,
+      description TEXT,
+      reason TEXT,
+      status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'implemented')),
+      type TEXT NOT NULL DEFAULT 'scope' CHECK (type IN ('scope', 'timeline', 'budget', 'resource', 'other')),
+      budget_impact DECIMAL(14,2) DEFAULT 0,
+      timeline_impact_days INTEGER DEFAULT 0,
+      requested_by TEXT,
+      reviewed_by UUID REFERENCES profiles(id),
+      reviewed_at TIMESTAMPTZ,
+      review_notes TEXT,
+      created_at TIMESTAMPTZ DEFAULT now(),
+      updated_at TIMESTAMPTZ DEFAULT now()
+    )`);
+    await query(`CREATE INDEX idx_change_orders_company ON project_change_orders(company_id)`);
+    await query(`CREATE INDEX idx_change_orders_project ON project_change_orders(project_id)`);
+    await query(`ALTER TABLE project_change_orders ENABLE ROW LEVEL SECURITY`);
+    await query(`CREATE POLICY "change_orders_company_isolation" ON project_change_orders USING (company_id = current_setting('app.current_company_id')::uuid)`);
+    return successResponse({ message: 'Change orders table created' });
+  } catch (err: any) {
+    return errorResponse(err.message, 500);
+  }
 }

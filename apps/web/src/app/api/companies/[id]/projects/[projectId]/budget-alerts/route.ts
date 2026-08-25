@@ -1,5 +1,52 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function GET(req: NextRequest, { params }: { params: { id: string; projectId: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const { rows } = await query( 'SELECT * FROM project_budget_alerts WHERE company_id = $1 AND project_id = $2 ORDER BY triggered_at DESC', [companyId, params.projectId] ); return successResponse(rows); } catch (e: any) { return errorResponse(e.message, 500); }
-} export async function POST(req: NextRequest, { params }: { params: { id: string; projectId: string } }) { try { const companyId = await getCompanyId(req); if (!companyId) return errorResponse('Company ID not found', 400); const body = await req.json(); const { threshold_percent, alert_type = 'warning', message } = body; if (!threshold_percent || threshold_percent <= 0 || threshold_percent > 100) { return errorResponse('threshold_percent must be between 1 and 100', 400); } const { rows: existing } = await query( 'SELECT id FROM project_budget_alerts WHERE company_id = $1 AND project_id = $2 AND threshold_percent = $3', [companyId, params.projectId, threshold_percent] ); if (existing.length > 0) { return errorResponse('Alert for this threshold already exists', 409); } const { rows } = await query( `INSERT INTO project_budget_alerts (company_id, project_id, threshold_percent, alert_type, message) VALUES ($1, $2, $3, $4, $5) RETURNING *`, [companyId, params.projectId, threshold_percent, alert_type, message || `Presupuesto al ${threshold_percent}%`] ); return successResponse(rows[0], 201); } catch (e: any) { return errorResponse(e.message, 500); }
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string; projectId: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const { rows } = await query(
+      'SELECT * FROM project_budget_alerts WHERE company_id = $1 AND project_id = $2 ORDER BY triggered_at DESC',
+      [companyId, params.projectId]
+    );
+
+    return successResponse(rows);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}
+
+export async function POST(req: NextRequest, { params }: { params: { id: string; projectId: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await req.json();
+    const { threshold_percent, alert_type = 'warning', message } = body;
+
+    if (!threshold_percent || threshold_percent <= 0 || threshold_percent > 100) {
+      return errorResponse('threshold_percent must be between 1 and 100', 400);
+    }
+
+    const { rows: existing } = await query(
+      'SELECT id FROM project_budget_alerts WHERE company_id = $1 AND project_id = $2 AND threshold_percent = $3',
+      [companyId, params.projectId, threshold_percent]
+    );
+
+    if (existing.length > 0) {
+      return errorResponse('Alert for this threshold already exists', 409);
+    }
+
+    const { rows } = await query(
+      `INSERT INTO project_budget_alerts (company_id, project_id, threshold_percent, alert_type, message)
+       VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [companyId, params.projectId, threshold_percent, alert_type, message || `Presupuesto al ${threshold_percent}%`]
+    );
+
+    return successResponse(rows[0], 201);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
 }

@@ -1,5 +1,40 @@
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server'; export async function PUT(request: NextRequest, { params }: { params: { id: string; uomId: string } }) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const body = await request.json(); const { code, name, type, base_unit, conversion_factor, is_active } = body; const result = await query( `UPDATE units_of_measure SET code = COALESCE($1, code), name = COALESCE($2, name), type = COALESCE($3, type), base_unit = COALESCE($4, base_unit), conversion_factor = COALESCE($5, conversion_factor), is_active = COALESCE($6, is_active) WHERE id = $7 AND company_id = $8 RETURNING *`, [code, name, type, base_unit, conversion_factor, is_active, params.uomId, companyId] ); if (result.rows.length === 0) return errorResponse('UOM not found', 404); return successResponse(result.rows[0]); } catch (err) { return errorResponse('Internal server error', 500); }
-} export async function DELETE(request: NextRequest, { params }: { params: { id: string; uomId: string } }) { try { const companyId = await getCompanyId(request); if (!companyId) return errorResponse('Company ID not found', 400); const result = await query(`DELETE FROM units_of_measure WHERE id = $1 AND company_id = $2 RETURNING id`, [params.uomId, companyId]); if (result.rows.length === 0) return errorResponse('UOM not found', 404); return successResponse({ message: 'UOM deleted' }); } catch (err) { return errorResponse('Internal server error', 500); }
+import { NextRequest } from 'next/server';
+
+export async function PUT(request: NextRequest, { params }: { params: { id: string; uomId: string } }) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await request.json();
+    const { code, name, type, base_unit, conversion_factor, is_active } = body;
+
+    const result = await query(
+      `UPDATE units_of_measure SET
+        code = COALESCE($1, code), name = COALESCE($2, name), type = COALESCE($3, type),
+        base_unit = COALESCE($4, base_unit), conversion_factor = COALESCE($5, conversion_factor),
+        is_active = COALESCE($6, is_active)
+       WHERE id = $7 AND company_id = $8 RETURNING *`,
+      [code, name, type, base_unit, conversion_factor, is_active, params.uomId, companyId]
+    );
+
+    if (result.rows.length === 0) return errorResponse('UOM not found', 404);
+    return successResponse(result.rows[0]);
+  } catch (err) {
+    return errorResponse('Internal server error', 500);
+  }
+}
+
+export async function DELETE(request: NextRequest, { params }: { params: { id: string; uomId: string } }) {
+  try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const result = await query(`DELETE FROM units_of_measure WHERE id = $1 AND company_id = $2 RETURNING id`, [params.uomId, companyId]);
+    if (result.rows.length === 0) return errorResponse('UOM not found', 404);
+    return successResponse({ message: 'UOM deleted' });
+  } catch (err) {
+    return errorResponse('Internal server error', 500);
+  }
 }

@@ -1,1 +1,215 @@
-'use client'; import { useState, useEffect } from 'react'; import { useParams } from 'next/navigation'; import { User, ShoppingCart, FileText, AlertCircle, Package } from 'lucide-react'; interface PortalData { customer: { name: string; trade_name: string; tax_id: string; email: string; }; orders: { order_number: string; status: string; total: number; created_at: string; items_summary: string[]; }[]; invoices: { invoice_number: string; status: string; total: number; created_at: string; }[]; } const orderStatusColors: Record<string, string> = { draft: 'bg-muted text-foreground', confirmed: 'bg-blue-100 text-blue-700', processing: 'bg-amber-100 text-amber-700', shipped: 'bg-blue-50 text-primary', delivered: 'bg-emerald-100 text-emerald-700', cancelled: 'bg-red-100 text-red-700', }; const invoiceStatusColors: Record<string, string> = { draft: 'bg-muted text-foreground', issued: 'bg-blue-100 text-blue-700', sent: 'bg-blue-50 text-primary', paid: 'bg-emerald-100 text-emerald-700', overdue: 'bg-red-100 text-red-700', cancelled: 'bg-red-100 text-red-700', }; const orderStatusLabel: Record<string, string> = { draft: 'Borrador', confirmed: 'Confirmada', processing: 'Procesando', shipped: 'Enviada', delivered: 'Entregada', cancelled: 'Cancelada', }; const invoiceStatusLabel: Record<string, string> = { draft: 'Borrador', issued: 'Emitida', sent: 'Enviada', paid: 'Pagada', overdue: 'Vencida', cancelled: 'Cancelada', }; export default function CustomerPortalPage() { const params = useParams(); const token = params.token as string; const [data, setData] = useState<PortalData | null>(null); const [loading, setLoading] = useState(true); const [error, setError] = useState(''); useEffect(() => { fetch(`/api/portal/customer/${token}`) .then(r => r.json()) .then(d => { if (d.error) setError(d.error); else setData(d); setLoading(false); }) .catch(() => { setError('Error al cargar portal'); setLoading(false); }); }, [token]); if (loading) return ( <div className="min-h-screen bg-muted flex items-center justify-center"> <div className="animate-pulse text-center"> <div className="w-16 h-16 bg-muted rounded-xl mx-auto mb-4" /> <div className="h-4 bg-muted rounded w-48 mx-auto" /> </div> </div> ); if (error || !data) return ( <div className="min-h-screen bg-muted flex items-center justify-center"> <div className="text-center"> <AlertCircle className="w-16 h-16 text-foreground mx-auto mb-4" /> <h1 className="text-xl font-bold text-foreground">Portal no encontrado</h1> <p className="text-sm text-muted-foreground mt-2">{error || 'No se pudo cargar la información'}</p> </div> </div> ); const { customer, orders, invoices } = data; return ( <div className="min-h-screen bg-muted"> <div className="max-w-4xl mx-auto px-4 py-8"> <div className="bg-card border border-border rounded-xl shadow-sm p-6 mb-6"> <div className="flex items-start gap-4"> <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0"> <User className="w-6 h-6 text-primary" /> </div> <div> <h1 className="text-2xl font-bold text-foreground">{customer.name}</h1> {customer.trade_name && <p className="text-sm text-muted-foreground mt-1">{customer.trade_name}</p>} <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground"> {customer.tax_id && <span>RUT: {customer.tax_id}</span>} {customer.email && <span>{customer.email}</span>} </div> </div> </div> </div> <div className="bg-card border border-border rounded-xl shadow-sm p-6 mb-6"> <div className="flex items-center gap-2 mb-4"> <ShoppingCart className="w-4 h-4 text-foreground" /> <h2 className="text-sm font-semibold text-foreground">Órdenes de Venta</h2> </div> {orders.length === 0 ? ( <p className="text-xs text-muted-foreground">No hay órdenes registradas.</p> ) : ( <div className="overflow-x-auto"> <table className="w-full"> <thead> <tr className="border-b border-border"> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nº Orden</th> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Artículos</th> <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total</th> <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th> </tr> </thead> <tbody> {orders.map((order, i) => ( <tr key={i} className="border-b border-border hover:bg-muted transition-colors"> <td className="px-4 py-3 text-xs font-mono text-foreground">{order.order_number}</td> <td className="px-4 py-3"> <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${orderStatusColors[order.status] || 'bg-muted text-foreground'}`}> {orderStatusLabel[order.status] || order.status} </span> </td> <td className="px-4 py-3 text-xs text-muted-foreground"> {order.items_summary.length > 0 ? order.items_summary.join(', ') : '—'} </td> <td className="px-4 py-3 text-xs text-foreground text-right font-medium"> ${Number(order.total || 0).toLocaleString('es-CL')} </td> <td className="px-4 py-3 text-xs text-muted-foreground text-right"> {new Date(order.created_at).toLocaleDateString('es-CL')} </td> </tr> ))} </tbody> </table> </div> )} </div> <div className="bg-card border border-border rounded-xl shadow-sm p-6 mb-6"> <div className="flex items-center gap-2 mb-4"> <FileText className="w-4 h-4 text-foreground" /> <h2 className="text-sm font-semibold text-foreground">Facturas</h2> </div> {invoices.length === 0 ? ( <p className="text-xs text-muted-foreground">No hay facturas registradas.</p> ) : ( <div className="overflow-x-auto"> <table className="w-full"> <thead> <tr className="border-b border-border"> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nº Factura</th> <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th> <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total</th> <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th> </tr> </thead> <tbody> {invoices.map((inv, i) => ( <tr key={i} className="border-b border-border hover:bg-muted transition-colors"> <td className="px-4 py-3 text-xs font-mono text-foreground">{inv.invoice_number}</td> <td className="px-4 py-3"> <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${invoiceStatusColors[inv.status] || 'bg-muted text-foreground'}`}> {invoiceStatusLabel[inv.status] || inv.status} </span> </td> <td className="px-4 py-3 text-xs text-foreground text-right font-medium"> ${Number(inv.total || 0).toLocaleString('es-CL')} </td> <td className="px-4 py-3 text-xs text-muted-foreground text-right"> {new Date(inv.created_at).toLocaleDateString('es-CL')} </td> </tr> ))} </tbody> </table> </div> )} </div> <div className="text-center text-[10px] text-muted-foreground mt-8"> Portal generado por Yellow ERP </div> </div> </div> ); } 
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
+import { User, ShoppingCart, FileText, AlertCircle, Package } from 'lucide-react';
+
+interface PortalData {
+  customer: {
+    name: string;
+    trade_name: string;
+    tax_id: string;
+    email: string;
+  };
+  orders: {
+    order_number: string;
+    status: string;
+    total: number;
+    created_at: string;
+    items_summary: string[];
+  }[];
+  invoices: {
+    invoice_number: string;
+    status: string;
+    total: number;
+    created_at: string;
+  }[];
+}
+
+const orderStatusColors: Record<string, string> = {
+  draft: 'bg-muted text-foreground',
+  confirmed: 'bg-blue-100 text-blue-700',
+  processing: 'bg-amber-100 text-amber-700',
+  shipped: 'bg-blue-50 text-primary',
+  delivered: 'bg-emerald-100 text-emerald-700',
+  cancelled: 'bg-red-100 text-red-700',
+};
+
+const invoiceStatusColors: Record<string, string> = {
+  draft: 'bg-muted text-foreground',
+  issued: 'bg-blue-100 text-blue-700',
+  sent: 'bg-blue-50 text-primary',
+  paid: 'bg-emerald-100 text-emerald-700',
+  overdue: 'bg-red-100 text-red-700',
+  cancelled: 'bg-red-100 text-red-700',
+};
+
+const orderStatusLabel: Record<string, string> = {
+  draft: 'Borrador',
+  confirmed: 'Confirmada',
+  processing: 'Procesando',
+  shipped: 'Enviada',
+  delivered: 'Entregada',
+  cancelled: 'Cancelada',
+};
+
+const invoiceStatusLabel: Record<string, string> = {
+  draft: 'Borrador',
+  issued: 'Emitida',
+  sent: 'Enviada',
+  paid: 'Pagada',
+  overdue: 'Vencida',
+  cancelled: 'Cancelada',
+};
+
+export default function CustomerPortalPage() {
+  const params = useParams();
+  const token = params.token as string;
+  const [data, setData] = useState<PortalData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    fetch(`/api/portal/customer/${token}`)
+      .then(r => r.json())
+      .then(d => {
+        if (d.error) setError(d.error);
+        else setData(d);
+        setLoading(false);
+      })
+      .catch(() => { setError('Error al cargar portal'); setLoading(false); });
+  }, [token]);
+
+  if (loading) return (
+    <div className="min-h-screen bg-muted flex items-center justify-center">
+      <div className="animate-pulse text-center">
+        <div className="w-16 h-16 bg-muted rounded-xl mx-auto mb-4" />
+        <div className="h-4 bg-muted rounded w-48 mx-auto" />
+      </div>
+    </div>
+  );
+
+  if (error || !data) return (
+    <div className="min-h-screen bg-muted flex items-center justify-center">
+      <div className="text-center">
+        <AlertCircle className="w-16 h-16 text-foreground mx-auto mb-4" />
+        <h1 className="text-xl font-bold text-foreground">Portal no encontrado</h1>
+        <p className="text-sm text-muted-foreground mt-2">{error || 'No se pudo cargar la información'}</p>
+      </div>
+    </div>
+  );
+
+  const { customer, orders, invoices } = data;
+
+  return (
+    <div className="min-h-screen bg-muted">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 mb-6">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <User className="w-6 h-6 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">{customer.name}</h1>
+              {customer.trade_name && <p className="text-sm text-muted-foreground mt-1">{customer.trade_name}</p>}
+              <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
+                {customer.tax_id && <span>RUT: {customer.tax_id}</span>}
+                {customer.email && <span>{customer.email}</span>}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 mb-6">
+          <div className="flex items-center gap-2 mb-4">
+            <ShoppingCart className="w-4 h-4 text-foreground" />
+            <h2 className="text-sm font-semibold text-foreground">Órdenes de Venta</h2>
+          </div>
+          {orders.length === 0 ? (
+            <p className="text-xs text-muted-foreground">No hay órdenes registradas.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nº Orden</th>
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Artículos</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.map((order, i) => (
+                    <tr key={i} className="border-b border-border hover:bg-muted transition-colors">
+                      <td className="px-4 py-3 text-xs font-mono text-foreground">{order.order_number}</td>
+                      <td className="px-4 py-3">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${orderStatusColors[order.status] || 'bg-muted text-foreground'}`}>
+                          {orderStatusLabel[order.status] || order.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-xs text-muted-foreground">
+                        {order.items_summary.length > 0 ? order.items_summary.join(', ') : '—'}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-foreground text-right font-medium">
+                        ${Number(order.total || 0).toLocaleString('es-CL')}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-muted-foreground text-right">
+                        {new Date(order.created_at).toLocaleDateString('es-CL')}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 mb-6">
+          <div className="flex items-center gap-2 mb-4">
+            <FileText className="w-4 h-4 text-foreground" />
+            <h2 className="text-sm font-semibold text-foreground">Facturas</h2>
+          </div>
+          {invoices.length === 0 ? (
+            <p className="text-xs text-muted-foreground">No hay facturas registradas.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nº Factura</th>
+                    <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {invoices.map((inv, i) => (
+                    <tr key={i} className="border-b border-border hover:bg-muted transition-colors">
+                      <td className="px-4 py-3 text-xs font-mono text-foreground">{inv.invoice_number}</td>
+                      <td className="px-4 py-3">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${invoiceStatusColors[inv.status] || 'bg-muted text-foreground'}`}>
+                          {invoiceStatusLabel[inv.status] || inv.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-xs text-foreground text-right font-medium">
+                        ${Number(inv.total || 0).toLocaleString('es-CL')}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-muted-foreground text-right">
+                        {new Date(inv.created_at).toLocaleDateString('es-CL')}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        <div className="text-center text-[10px] text-muted-foreground mt-8">
+          Portal generado por Yellow ERP
+        </div>
+      </div>
+    </div>
+  );
+}
