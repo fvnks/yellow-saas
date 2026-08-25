@@ -13,10 +13,12 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "db:push": "turbo run db:push --filter=db",
-    "db:studio": "turbo run db:studio --filter=db"
+    "db:studio": "turbo run db:studio --filter=db",
+    "doctor": "npx react-doctor@latest"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "react-doctor": "^0.9.12",
     "turbo": "^1.13.0",
     "typescript": "^5.4.0"
   },

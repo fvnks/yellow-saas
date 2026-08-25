@@ -180,22 +180,26 @@ async function processOfflineQueue() {
   const queue = await response.json();
   if (queue.length === 0) return;
 
-  const failed = [];
-  for (const item of queue) {
-    try {
-      const req = new Request(item.url, {
-        method: item.method,
-        headers: item.headers,
-        body: item.body,
-      });
-      const response = await fetch(req);
-      if (!response.ok) {
-        failed.push(item);
+  const results = await Promise.all(
+    queue.map(async (item) => {
+      try {
+        const req = new Request(item.url, {
+          method: item.method,
+          headers: item.headers,
+          body: item.body,
+        });
+        const response = await fetch(req);
+        if (response.ok) {
+          return null;
+        }
+        return item;
+      } catch (error) {
+        return item;
       }
-    } catch (error) {
-      failed.push(item);
-    }
-  }
+    })
+  );
+
+  const failed = results.filter((item) => item !== null);
 
   await cache.put(OFFLINE_QUEUE_NAME, new Response(JSON.stringify(failed)));
   

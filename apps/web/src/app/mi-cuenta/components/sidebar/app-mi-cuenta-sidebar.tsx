@@ -1,10 +1,76 @@
-﻿'use client'; import { Suspense, useEffect, useState } from 'react';
+﻿'use client'; import { Suspense, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarSeparator, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
 import { miCuentaSidebarItems } from "@/navigation/sidebar/mi-cuenta-sidebar-items";
 import MiCuentaSidebarFooterMenu from "./mi-cuenta-sidebar-footer-menu";
 import MiCuentaSidebarBrandHeader from "./mi-cuenta-sidebar-header";
-import MiCuentaSidebarNavigation from "./mi-cuenta-sidebar-navigation"; function getUserFromCookie() { if (typeof window === 'undefined') return { name: 'Usuario', email: '', avatar: '', role: 'member' }; const cookies = document.cookie.split(';'); const authCookie = cookies.find(c => c.trim().startsWith('auth-token=')); if (!authCookie) return { name: 'Usuario', email: '', avatar: '', role: 'member' }; try { const token = authCookie.split('=')[1]; const payload = JSON.parse(atob(token.split('.')[1])); return { name: payload.name || 'Usuario', email: payload.email || '', avatar: '', role: payload.role || 'member', }; } catch { return { name: 'Usuario', email: '', avatar: '', role: 'member' }; }
-} export function MiCuentaSidebar(props: React.ComponentProps<typeof Sidebar>) { const [user, setUser] = useState({ name: 'Usuario', email: '', avatar: '', role: 'member' }); useEffect(() => { setUser(getUserFromCookie()); }, []); return ( <Sidebar className="border-none" collapsible="icon" {...props}> <SidebarHeader> <MiCuentaSidebarBrandHeader /> <SidebarSeparator className="mx-3 opacity-30" /> </SidebarHeader> <SidebarContent> <SidebarMenu className="px-2 mb-1 space-y-0.5"> <SidebarMenuItem> <Link href="/select"> <SidebarMenuButton tooltip="Volver al selector" className="rounded-xl transition-all duration-200 text-muted-foreground hover:text-foreground" > <ArrowLeft className="h-4 w-4" /> <span>Volver al selector</span> </SidebarMenuButton> </Link> </SidebarMenuItem> </SidebarMenu> <Suspense fallback={<div className="p-2 text-xs text-muted-foreground">Cargando...</div>}> <MiCuentaSidebarNavigation sidebarItems={miCuentaSidebarItems} /> </Suspense> </SidebarContent> <SidebarFooter> <SidebarSeparator className="mx-3 opacity-30" /> <div className="px-2 py-1"> <MiCuentaSidebarFooterMenu user={user} /> </div> </SidebarFooter> <SidebarRail /> </Sidebar> );
+import MiCuentaSidebarNavigation from "./mi-cuenta-sidebar-navigation";
+
+const DEFAULT_USER = { name: 'Usuario', email: '', avatar: '', role: 'member' };
+let cachedCookie = '';
+let cachedUser = DEFAULT_USER;
+
+function getUserFromCookie() {
+  if (typeof window === 'undefined') return DEFAULT_USER;
+  const cookies = document.cookie.split(';');
+  const authCookie = cookies.find(c => c.trim().startsWith('auth-token='));
+  if (!authCookie) return DEFAULT_USER;
+  try {
+    const token = authCookie.split('=')[1];
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return { name: payload.name || 'Usuario', email: payload.email || '', avatar: '', role: payload.role || 'member' };
+  } catch {
+    return DEFAULT_USER;
+  }
+}
+
+function getUserSnapshot() {
+  if (typeof window === 'undefined') return DEFAULT_USER;
+  if (document.cookie === cachedCookie) return cachedUser;
+  cachedCookie = document.cookie;
+  cachedUser = getUserFromCookie();
+  return cachedUser;
+}
+
+function getServerUserSnapshot() {
+  return DEFAULT_USER;
+}
+
+function subscribeToCookie() {
+  return () => {};
+}
+
+export function MiCuentaSidebar(props: React.ComponentProps<typeof Sidebar>) {
+  const user = useSyncExternalStore(subscribeToCookie, getUserSnapshot, getServerUserSnapshot);
+  return (
+    <Sidebar className="border-none" collapsible="icon" {...props}>
+      <SidebarHeader>
+        <MiCuentaSidebarBrandHeader />
+        <SidebarSeparator className="mx-3 opacity-30" />
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarMenu className="px-2 mb-1 space-y-0.5">
+          <SidebarMenuItem>
+            <Link href="/select">
+              <SidebarMenuButton tooltip="Volver al selector" className="rounded-xl transition-colors duration-200 text-muted-foreground hover:text-foreground">
+                <ArrowLeft className="h-4 w-4" />
+                <span>Volver al selector</span>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
+        </SidebarMenu>
+        <Suspense fallback={<div className="p-2 text-xs text-muted-foreground">Cargando...</div>}>
+          <MiCuentaSidebarNavigation sidebarItems={miCuentaSidebarItems} />
+        </Suspense>
+      </SidebarContent>
+      <SidebarFooter>
+        <SidebarSeparator className="mx-3 opacity-30" />
+        <div className="px-2 py-1">
+          <MiCuentaSidebarFooterMenu user={user} />
+        </div>
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
+  );
 }
