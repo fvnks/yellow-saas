@@ -36,30 +36,30 @@ export function ProjectSidebar(props: React.ComponentProps<typeof Sidebar>) {
   }, []);
 
   return (
-    <Sidebar className="border-none" collapsible="icon" {...props}>
-      <SidebarHeader>
+    <Sidebar className="border-r border-slate-800 bg-[#0F172A] text-slate-300 select-none shadow-xl" collapsible="icon" {...props}>
+      <SidebarHeader className="bg-[#0F172A] pt-3">
         <ProjectSidebarBrandHeader />
-        <SidebarSeparator className="mx-3 opacity-30" />
+        <SidebarSeparator className="mx-3 bg-slate-800/80 my-2" />
       </SidebarHeader>
-      <SidebarContent>
-        <SidebarMenu className="px-2 mb-1 space-y-0.5">
+      <SidebarContent className="bg-[#0F172A] scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
+        <SidebarMenu className="px-2 mb-2 space-y-1">
           <SidebarMenuItem>
             <Link href="/select">
               <SidebarMenuButton
                 tooltip="Volver al selector"
-                className="rounded-xl transition-all duration-200 text-muted-foreground hover:text-foreground"
+                className="rounded-xl transition-all duration-150 text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 group-data-[collapsible=icon]:justify-center"
               >
-                <ArrowLeft className="h-4 w-4" />
-                <span>Volver al selector</span>
+                <ArrowLeft className="h-4 w-4 text-amber-400 shrink-0" />
+                <span className="text-xs font-medium">Volver a Empresas</span>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
         </SidebarMenu>
         <ProjectSidebarNavigation sidebarItems={projectSidebarItems} />
       </SidebarContent>
-      <SidebarFooter>
-        <SidebarSeparator className="mx-3 opacity-30" />
-        <div className="px-2 py-1">
+      <SidebarFooter className="bg-[#0F172A] pb-3">
+        <SidebarSeparator className="mx-3 bg-slate-800/80 mb-2" />
+        <div className="px-1 py-0.5">
           <ProjectSidebarFooterMenu user={user} />
         </div>
       </SidebarFooter>
