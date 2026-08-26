@@ -49,6 +49,7 @@ import {
   Lock,
   FlaskConical,
   Play,
+  Building,
 } from "lucide-react";
 
 export const ICON_MAP = {
@@ -101,6 +102,7 @@ export const ICON_MAP = {
   Lock,
   FlaskConical,
   Play,
+  Building,
 };
 
 export const resolveIcon = (iconName: keyof typeof ICON_MAP | undefined): LucideIcon => {
@@ -409,6 +411,11 @@ export const sidebarItems: NavGroup[] = [
     label: "Herramientas",
     requiredModule: "erp",
     items: [
+      {
+        title: "Mi Condominio",
+        path: "/condominio",
+        icon: "Building",
+      },
       {
         title: "Alertas",
         path: "/dashboard/alerts",
