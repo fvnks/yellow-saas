@@ -100,15 +100,20 @@ export default function InventoryPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-foreground">Inventario</h1>
-          <p className="text-sm text-muted-foreground mt-1">Gestin de productos y stock</p>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold text-slate-900">Control de Inventario & Bodegas</h1>
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              Multibodega & SKU
+            </span>
+          </div>
+          <p className="text-sm text-slate-500 mt-1">Gestión de stock, lector de códigos de barra, lotes y valorización ABC</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm" onClick={() => window.location.href = '/dashboard/inventory/import'}>
-            <Upload className="w-4 h-4 mr-2" />
-            Importar
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="secondary" size="sm" className="rounded-xl border-slate-200" onClick={() => window.location.href = '/dashboard/inventory/import'}>
+            <Upload className="w-4 h-4 mr-2 text-slate-600" />
+            Importar CSV
           </Button>
-          <Button variant="secondary" size="sm" onClick={() => {
+          <Button variant="secondary" size="sm" className="rounded-xl border-slate-200" onClick={() => {
             const headers = ['Nombre', 'SKU', 'Categoria', 'Stock', 'Minimo', 'Costo', 'Precio', 'Estado', 'Bodega'];
             const rows = filteredProducts.map(p => [p.name, p.sku, p.category, p.stock, p.minStock, p.cost, p.price, p.status, p.warehouse]);
             const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
@@ -117,10 +122,10 @@ export default function InventoryPage() {
             const a = document.createElement('a'); a.href = url; a.download = 'inventario.csv'; a.click();
             URL.revokeObjectURL(url);
           }}>
-            <Download className="w-4 h-4 mr-2" />
+            <Download className="w-4 h-4 mr-2 text-slate-600" />
             Exportar
           </Button>
-          <Button variant="secondary" size="sm" onClick={() => {
+          <Button variant="secondary" size="sm" className="rounded-xl border-slate-200" onClick={() => {
             if (filteredProducts.length === 0) return;
             generateBarcodeLabelsPDF(filteredProducts.map(p => ({
               name: p.name,
@@ -130,14 +135,14 @@ export default function InventoryPage() {
               image_url: p.imageUrl || undefined,
             })), 'medium');
           }}>
-            <Printer className="w-4 h-4 mr-2" />
-            Imprimir Etiquetas
+            <Printer className="w-4 h-4 mr-2 text-slate-600" />
+            Etiquetas Barcode
           </Button>
           <Link href="/dashboard/inventory/new">
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
+            <button className="bg-[#10B981] hover:bg-[#059669] text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm">
+              <Plus className="w-4 h-4" />
               Nuevo Producto
-            </Button>
+            </button>
           </Link>
         </div>
       </div>
