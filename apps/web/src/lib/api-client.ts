@@ -570,6 +570,11 @@ export class ApiClient {
     return this.request<any>('/settings/uf', { method: 'PUT', body: JSON.stringify({ uf_value }) });
   }
 
+  // Mi Condominio
+  async getCondominioData() {
+    return this.request<any>('/condominio');
+  }
+
   // Liquidation
   async calculateLiquidation(data: { employee_id: string; termination_type: string; termination_date: string; notice_given?: boolean }) {
     return this.request<any>('/payroll/liquidation', { method: 'POST', body: JSON.stringify(data) });
