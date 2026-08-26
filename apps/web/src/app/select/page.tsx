@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
-import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight, X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail } from 'lucide-react';
+import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight, X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail, Sparkles } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import {
   DropdownMenu,
@@ -20,10 +20,8 @@ interface ModuleOption {
   subtitle: string;
   description: string[];
   icon: any;
-  gradient: string;
   iconBg: string;
   iconColor: string;
-  hoverBorder: string;
   href: string;
   requiredModules: string[];
   moduleName: string;
@@ -44,28 +42,24 @@ interface Company {
 const modules: ModuleOption[] = [
   {
     id: 'erp',
-    title: 'ERP',
-    subtitle: 'Gestión Empresarial',
-    description: ['Inventario y Bodegas', 'Ventas y Compras', 'Contabilidad', 'CRM'],
+    title: 'ERP & Gestión',
+    subtitle: 'Módulo Principal',
+    description: ['Inventario y Bodegas', 'Ventas y Compras', 'Contabilidad', 'CRM & Clientes'],
     icon: Package,
-    gradient: 'from-slate-700 to-slate-900',
-    iconBg: 'bg-muted',
-    iconColor: 'text-foreground',
-    hoverBorder: 'hover:border-border',
+    iconBg: 'bg-blue-50',
+    iconColor: 'text-[#1814F3]',
     href: '/dashboard',
     requiredModules: ['inventory', 'products', 'sales', 'purchases', 'accounting', 'projects', 'crm'],
     moduleName: 'erp',
   },
   {
     id: 'hr',
-    title: 'RRHH',
-    subtitle: 'Recursos Humanos',
+    title: 'Recursos Humanos',
+    subtitle: 'Nómina y Asistencia',
     description: ['Contratos', 'Asistencia', 'Evaluaciones', 'Capacitación'],
     icon: UsersRound,
-    gradient: 'from-slate-700 to-slate-900',
-    iconBg: 'bg-muted',
-    iconColor: 'text-foreground',
-    hoverBorder: 'hover:border-border',
+    iconBg: 'bg-[#16DBCC]/15',
+    iconColor: 'text-[#00A896]',
     href: '/hr',
     requiredModules: ['hr'],
     moduleName: 'hr',
@@ -73,27 +67,23 @@ const modules: ModuleOption[] = [
   {
     id: 'projects',
     title: 'Proyectos',
-    subtitle: 'Gestión de Proyectos',
-    description: ['Cronogramas', 'Tareas', 'Tiempo', 'Reportes'],
+    subtitle: 'Seguimiento y Horas',
+    description: ['Cronogramas Gantt', 'Tableros Kanban', 'Control de Tiempos', 'Reportes de Costo'],
     icon: FolderKanban,
-    gradient: 'from-slate-700 to-slate-900',
-    iconBg: 'bg-muted',
-    iconColor: 'text-foreground',
-    hoverBorder: 'hover:border-border',
+    iconBg: 'bg-indigo-50',
+    iconColor: 'text-[#2D60FF]',
     href: '/projects',
     requiredModules: ['projects'],
     moduleName: 'projects',
   },
   {
     id: 'formulas',
-    title: 'Recetas',
-    subtitle: 'Recetas y Producción',
-    description: ['Recetas con ingredientes', 'Producción por lotes', 'Control de stock decimal'],
+    title: 'Recetas & Producción',
+    subtitle: 'Cálculo de Ingredientes',
+    description: ['Recetas y Fórmulas', 'Producción por Lotes', 'Stock Decimal'],
     icon: FlaskConical,
-    gradient: 'from-slate-700 to-slate-900',
-    iconBg: 'bg-muted',
-    iconColor: 'text-foreground',
-    hoverBorder: 'hover:border-border',
+    iconBg: 'bg-amber-50',
+    iconColor: 'text-[#FFBB38]',
     href: '/recetas',
     requiredModules: [],
     moduleName: 'recetas',
@@ -101,27 +91,23 @@ const modules: ModuleOption[] = [
   {
     id: 'mi-cuenta',
     title: 'Mi Cuenta',
-    subtitle: 'Facturación y Configuración',
-    description: ['Mi Plan', 'Facturación', 'Módulos', 'Activaciones'],
+    subtitle: 'Planes y Facturación',
+    description: ['Mi Plan ERP', 'Facturación SaaS', 'Módulos Adicionales', 'Activaciones'],
     icon: CreditCard,
-    gradient: 'from-slate-700 to-slate-900',
-    iconBg: 'bg-muted',
-    iconColor: 'text-foreground',
-    hoverBorder: 'hover:border-border',
+    iconBg: 'bg-[#FE5C73]/15',
+    iconColor: 'text-[#FE5C73]',
     href: '/mi-cuenta',
     requiredModules: [],
     moduleName: 'mi-cuenta',
   },
   {
     id: 'ayuda',
-    title: 'Ayuda',
-    subtitle: 'Soporte y Preguntas Frecuentes',
-    description: ['Preguntas frecuentes', 'Tickets de soporte', 'Atención a fallas'],
+    title: 'Soporte & Ayuda',
+    subtitle: 'Centro de Asistencia',
+    description: ['Preguntas Frecuentes', 'Tickets de Soporte', 'Atención Técnica'],
     icon: LifeBuoy,
-    gradient: 'from-slate-700 to-slate-900',
-    iconBg: 'bg-muted',
-    iconColor: 'text-foreground',
-    hoverBorder: 'hover:border-border',
+    iconBg: 'bg-purple-50',
+    iconColor: 'text-purple-600',
     href: '/ayuda',
     requiredModules: [],
     moduleName: 'ayuda',
@@ -192,7 +178,6 @@ export default function SelectPage() {
   const [lastAccess, setLastAccess] = useState<string | null>(null);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [companiesLoading, setCompaniesLoading] = useState(true);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   useEffect(() => {
     const userData = getUserFromCookie();
@@ -305,165 +290,175 @@ export default function SelectPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-muted flex items-center justify-center">
+      <div className="min-h-screen bg-[#F5F7FA] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-border border-t-slate-900 rounded-full animate-spin" />
-          <p className="text-xs text-muted-foreground">Cargando...</p>
+          <div className="w-9 h-9 border-3 border-[#1814F3]/30 border-t-[#1814F3] rounded-full animate-spin" />
+          <p className="text-xs text-[#718EBF] font-medium">Cargando módulos de Yellow ERP...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-muted flex flex-col">
+    <div className="min-h-screen bg-[#F5F7FA] flex flex-col font-sans">
       {/* Header */}
-      <div className="bg-card border-b border-border px-6 py-4">
+      <div className="bg-white border-b border-[#E6EFF5] px-6 py-3.5 sticky top-0 z-30 shadow-xs">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center overflow-hidden bg-primary">
-              <Image src="/logo/yellow-cube.svg" alt="Yellow" width={28} height={28} className="brightness-0 invert" />
+            <div className="w-10 h-10 rounded-xl bg-[#1814F3] flex items-center justify-center shadow-md shadow-[#1814F3]/20">
+              <span className="text-white font-bold text-lg">Y</span>
             </div>
             <div>
-              <h1 className="text-sm font-semibold text-foreground">{company?.name || 'Yellow ERP'}</h1>
-              <p className="text-[11px] text-muted-foreground">Bienvenido, {user?.name}</p>
+              <div className="flex items-center gap-2">
+                <h1 className="text-sm font-bold text-[#232323]">{company?.name || 'Yellow ERP'}</h1>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  Activo
+                </span>
+              </div>
+              <p className="text-[11px] text-[#718EBF]">Plataforma Empresarial · Chile</p>
             </div>
           </div>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-muted transition-colors">
-                <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <User className="w-4 h-4 text-primary" />
+              <button className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-[#E6EFF5] bg-[#F5F7FA] hover:bg-white transition-all duration-150">
+                <div className="w-7 h-7 rounded-full bg-[#1814F3]/10 flex items-center justify-center flex-shrink-0">
+                  <User className="w-4 h-4 text-[#1814F3]" />
                 </div>
-                <span className="text-xs font-medium text-foreground hidden sm:block">{user?.name}</span>
-                <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
+                <div className="text-left hidden sm:block">
+                  <p className="text-xs font-semibold text-[#232323] leading-none">{user?.name}</p>
+                  <p className="text-[9px] text-[#718EBF] mt-0.5 uppercase tracking-wider">{user?.role}</p>
+                </div>
+                <ChevronDown className="w-3.5 h-3.5 text-[#718EBF]" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent side="bottom" align="end" className="w-56">
-              {/* User Info */}
-              <div className="px-3 py-2 border-b border-border">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <User className="w-4 h-4 text-primary" />
+            <DropdownMenuContent side="bottom" align="end" className="w-60 bg-white border border-[#E6EFF5] rounded-2xl shadow-lg p-1.5">
+              <div className="px-3 py-2 border-b border-[#E6EFF5]">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-full bg-[#1814F3]/10 flex items-center justify-center flex-shrink-0">
+                    <User className="w-4 h-4 text-[#1814F3]" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-foreground truncate">{user?.name}</p>
-                    <p className="text-[10px] text-muted-foreground truncate flex items-center gap-1">
-                      <Mail className="w-3 h-3 flex-shrink-0" />
-                      {user?.email}
-                    </p>
+                    <p className="text-xs font-bold text-[#232323] truncate">{user?.name}</p>
+                    <p className="text-[10px] text-[#718EBF] truncate">{user?.email}</p>
                   </div>
                 </div>
               </div>
-              
-              {/* Company Switcher */}
+
               {!companiesLoading && companies.length > 1 && (
                 <>
-                  <DropdownMenuSeparator />
                   <div className="px-3 py-2">
-                    <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                      Cambiar Empresa
+                    <p className="text-[9px] font-semibold text-[#718EBF] uppercase tracking-wider">
+                      Empresas Disponibles
                     </p>
                   </div>
-                  <DropdownMenuSeparator />
                   {companies.map((c) => (
                     <DropdownMenuItem
                       key={c.id}
                       onClick={() => handleCompanySwitch(c.id)}
-                      className="cursor-pointer flex items-center gap-2 px-2 py-2"
+                      className="cursor-pointer flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-[#F5F7FA] transition-colors"
                       disabled={c.id === company?.id}
                     >
-                      <div className="w-7 h-7 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="w-7 h-7 bg-[#1814F3] rounded-lg flex items-center justify-center flex-shrink-0">
                         <Building2 className="w-3.5 h-3.5 text-white" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-foreground truncate">{c.name}</p>
-                        <p className="text-[10px] text-muted-foreground capitalize">{c.role}</p>
+                        <p className="text-xs font-medium text-[#232323] truncate">{c.name}</p>
+                        <p className="text-[10px] text-[#718EBF] capitalize">{c.role}</p>
                       </div>
                       {c.id === company?.id && (
-                        <svg className="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0" />
                       )}
                     </DropdownMenuItem>
                   ))}
+                  <DropdownMenuSeparator className="bg-[#E6EFF5]" />
                 </>
               )}
-              
-              <DropdownMenuSeparator />
+
               <DropdownMenuItem
                 onClick={logout}
-                className="flex items-center gap-2 px-2 py-2 text-rose-600 hover:bg-rose-50"
+                className="flex items-center gap-2 px-3 py-2 text-[#FE5C73] hover:bg-rose-50 rounded-xl cursor-pointer transition-colors"
               >
                 <LogOut className="w-4 h-4" />
-                <span>Cerrar sesión</span>
+                <span className="text-xs font-medium">Cerrar sesión</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 flex items-center justify-center p-6">
+      {/* Main Content */}
+      <div className="flex-1 flex items-center justify-center p-6 sm:p-10">
         <div className="max-w-4xl w-full">
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.25 }}
             className="text-center mb-10"
           >
-            <h2 className="text-2xl font-bold text-foreground tracking-tight">
-              Hola {user?.name || 'Usuario'}
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#E6EFF5] text-xs font-medium text-[#718EBF] shadow-xs mb-3">
+              <Sparkles className="w-3.5 h-3.5 text-[#1814F3]" />
+              <span>Yellow ERP Hub</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#232323] tracking-tight">
+              Bienvenido de nuevo, {user?.name || 'Usuario'}
             </h2>
-            <p className="text-sm text-muted-foreground mt-2">
-              Selecciona un módulo para comenzar
+            <p className="text-xs sm:text-sm text-[#718EBF] mt-1.5">
+              Selecciona el módulo empresarial que deseas gestionar hoy
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {modules.filter(mod => isModuleActivated(mod)).length === 0 ? (
-              <div className="col-span-full text-center py-16">
-                <div className="w-16 h-16 bg-muted rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <Lock className="w-7 h-7 text-muted-foreground" />
-                </div>
-                <p className="text-sm font-medium text-foreground">No hay módulos activos</p>
-                <p className="text-xs text-muted-foreground mt-1">Contacta al administrador para activar módulos</p>
-              </div>
-            ) : modules.filter(mod => isModuleActivated(mod)).map((mod, i) => {
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {modules.map((mod, i) => {
               const Icon = mod.icon;
               const activated = isModuleActivated(mod);
               return (
                 <motion.button
                   key={mod.id}
-                  initial={{ opacity: 0, y: 12 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.25, delay: 0.05 + i * 0.05 }}
+                  transition={{ duration: 0.2, delay: 0.04 * i }}
                   onClick={() => handleModuleClick(mod)}
-                  className="group relative bg-card border border-border hover:border-border rounded-xl p-5 text-left transition-all duration-200 hover:shadow-lg hover:shadow-slate-200/50"
+                  className="group bg-white border border-[#E6EFF5] rounded-2xl p-6 text-left transition-all duration-150 hover:shadow-md hover:border-[#1814F3]/30 active:scale-[0.99] flex flex-col justify-between"
                 >
-                  <div className="flex items-start gap-4">
-                    <div className={`w-11 h-11 ${mod.iconBg} rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-200 group-hover:scale-105`}>
-                      <Icon className={`w-5 h-5 ${mod.iconColor}`} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="text-sm font-semibold text-foreground">{mod.title}</h3>
-                          <p className="text-[11px] text-muted-foreground mt-0.5">{mod.subtitle}</p>
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className={`w-12 h-12 ${mod.iconBg} rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform duration-150 group-hover:scale-105 shadow-xs`}>
+                        <Icon className={`w-6 h-6 ${mod.iconColor}`} />
+                      </div>
+                      {activated ? (
+                        <div className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center group-hover:bg-[#1814F3] group-hover:text-white transition-colors duration-150">
+                          <ArrowRight className="w-4 h-4 text-[#718EBF] group-hover:text-white transition-colors" />
                         </div>
-                        {activated ? (
-                          <ArrowRight className="w-4 h-4 text-foreground group-hover:text-muted-foreground group-hover:translate-x-0.5 transition-all duration-150 flex-shrink-0" />
-                        ) : (
-                          <Lock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                        )}
-                      </div>
-                      <div className="flex flex-wrap gap-1.5 mt-3">
-                        {mod.description.map((item, j) => (
-                          <span key={j} className="inline-flex items-center px-2 py-0.5 bg-muted text-foreground text-[10px] font-medium rounded-md border border-border">
-                            {item}
-                          </span>
-                        ))}
-                      </div>
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center">
+                          <Lock className="w-4 h-4 text-[#8BA3CB]" />
+                        </div>
+                      )}
                     </div>
+                    
+                    <h3 className="text-base font-bold text-[#232323] mb-0.5">{mod.title}</h3>
+                    <p className="text-xs text-[#718EBF] mb-4 font-normal">{mod.subtitle}</p>
+
+                    <div className="flex flex-wrap gap-1.5">
+                      {mod.description.map((item, j) => (
+                        <span
+                          key={j}
+                          className="inline-flex items-center px-2.5 py-1 bg-[#F5F7FA] text-[#232323] text-[10px] font-medium rounded-lg border border-[#E6EFF5]"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-5 pt-3 border-t border-[#E6EFF5] flex items-center justify-between text-[10px]">
+                    <span className={activated ? 'text-emerald-600 font-semibold' : 'text-[#718EBF]'}>
+                      {activated ? '● Módulo Activo' : '🔒 Requiere Activación'}
+                    </span>
+                    <span className="text-[#1814F3] font-medium group-hover:underline">
+                      Ingresar &rarr;
+                    </span>
                   </div>
                 </motion.button>
               );
@@ -473,10 +468,10 @@ export default function SelectPage() {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.3, delay: 0.3 }}
-            className="text-center text-[11px] text-muted-foreground mt-8"
+            transition={{ duration: 0.25, delay: 0.2 }}
+            className="text-center text-xs text-[#718EBF] mt-10"
           >
-            Puedes cambiar de módulo en cualquier momento desde el menú lateral
+            ¿Necesitas ayuda o un nuevo módulo? Accede directamente desde el menú lateral en cualquier momento.
           </motion.p>
         </div>
       </div>
@@ -492,44 +487,40 @@ export default function SelectPage() {
             onClick={() => setModalOpen(false)}
           >
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 12 }}
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 12 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ duration: 0.15 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-card rounded-xl shadow-xl w-full max-w-sm"
+              className="bg-white rounded-2xl border border-[#E6EFF5] shadow-xl w-full max-w-sm overflow-hidden"
             >
               <div className="p-6 text-center">
-                <div className="w-14 h-14 bg-muted rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <Lock className="w-6 h-6 text-muted-foreground" />
+                <div className="w-14 h-14 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-200">
+                  <Lock className="w-6 h-6 text-[#FFBB38]" />
                 </div>
-                <h2 className="text-base font-semibold text-foreground">Módulo no activado</h2>
-                <p className="text-sm text-muted-foreground mt-2">
-                  <span className="font-medium text-foreground">{user?.name}</span>, el módulo{' '}
-                  <span className="font-medium text-foreground">{selectedModule.title}</span> aún no está activado.
-                </p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  ¿Deseas activarlo ahora?
+                <h2 className="text-lg font-bold text-[#232323]">Activar Módulo</h2>
+                <p className="text-xs text-[#718EBF] mt-2 leading-relaxed">
+                  El módulo <span className="font-semibold text-[#232323]">{selectedModule.title}</span> requiere ser activado para tu empresa.
                 </p>
               </div>
               <div className="px-6 pb-6 flex gap-3">
                 <button
                   onClick={() => setModalOpen(false)}
-                  className="flex-1 bg-card border border-border hover:bg-muted text-foreground px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                  className="flex-1 bg-white border border-[#E6EFF5] hover:bg-[#F5F7FA] text-[#232323] px-4 py-2.5 rounded-xl text-xs font-medium transition-all duration-150"
                 >
-                  Ahora no
+                  Cancelar
                 </button>
                 <button
                   onClick={handleActivate}
                   disabled={activating}
-                  className="flex-1 bg-primary hover:bg-primary/90 text-white px-4 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                  className="flex-1 bg-[#1814F3] hover:bg-[#1612D3] text-white px-4 py-2.5 rounded-xl text-xs font-medium flex items-center justify-center gap-2 shadow-sm shadow-[#1814F3]/25 transition-all duration-150 active:scale-[0.98] disabled:opacity-50"
                 >
                   {activating ? (
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
                     <>
                       <Zap className="w-4 h-4" />
-                      Activar
+                      Activar Ahora
                     </>
                   )}
                 </button>
@@ -539,9 +530,9 @@ export default function SelectPage() {
         )}
       </AnimatePresence>
 
-      {/* Last Access */}
+      {/* Footer Access Log */}
       {lastAccess && (
-        <div className="fixed bottom-4 right-5 text-[10px] text-muted-foreground select-none">
+        <div className="fixed bottom-4 right-5 text-[10px] text-[#718EBF] select-none bg-white border border-[#E6EFF5] px-3 py-1 rounded-full shadow-xs">
           Último acceso: {lastAccess}
         </div>
       )}

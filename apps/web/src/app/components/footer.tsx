@@ -20,43 +20,43 @@ const footerLinks = {
   ],
   Soporte: [
     { label: 'Documentación', href: '/docs' },
-    { label: 'Centro de Ayuda', href: '/help' },
+    { label: 'Centro de Ayuda', href: '/ayuda' },
     { label: 'Estado del Sistema', href: 'https://status.yellow-erp.cl' },
   ],
 };
 
 export function Footer() {
   return (
-    <footer className="border-t border-border dark:border-border bg-muted dark:bg-primary/50">
+    <footer className="border-t border-[#E6EFF5] bg-white text-[#232323]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-primary flex items-center justify-center shadow-sm">
-                <span className="text-white font-bold text-sm">Y</span>
+            <Link href="/" className="flex items-center gap-2.5 mb-4 group">
+              <div className="w-9 h-9 rounded-xl bg-[#1814F3] flex items-center justify-center shadow-md shadow-[#1814F3]/20">
+                <span className="text-white font-bold text-base">Y</span>
               </div>
-              <span className="text-lg font-bold text-foreground dark:text-white">
-                Yellow <span className="text-muted-foreground font-normal dark:text-muted-foreground">ERP</span>
+              <span className="text-lg font-bold text-[#232323]">
+                Yellow <span className="text-[#1814F3]">ERP</span>
               </span>
             </Link>
-            <p className="text-sm text-muted-foreground dark:text-muted-foreground leading-relaxed">
-              ERP multi-tenant para PyMEs chilenas. Facturación electrónica SII, nómina y más.
+            <p className="text-xs text-[#718EBF] leading-relaxed">
+              ERP multi-tenant para PyMEs chilenas. Facturación electrónica SII, nómina y gestión integral.
             </p>
           </div>
 
           {/* Links */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h3 className="text-xs font-semibold text-foreground dark:text-white uppercase tracking-wider mb-4">
+              <h3 className="text-[10px] font-semibold text-[#718EBF] uppercase tracking-wider mb-4">
                 {category}
               </h3>
-              <ul className="space-y-2">
+              <ul className="space-y-2.5">
                 {links.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors dark:text-muted-foreground dark:hover:text-white"
+                      className="text-xs text-[#718EBF] hover:text-[#1814F3] transition-colors duration-150"
                     >
                       {link.label}
                     </Link>
@@ -68,12 +68,12 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="mt-12 pt-8 border-t border-border dark:border-border flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted-foreground dark:text-muted-foreground">
-            &copy; {new Date().getFullYear()} Yellow ERP. Todos los derechos reservados.
+        <div className="mt-12 pt-8 border-t border-[#E6EFF5] flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-[#718EBF]">
+            &copy; {new Date().getFullYear()} Yellow ERP Chile. Todos los derechos reservados.
           </p>
-          <p className="text-xs text-muted-foreground dark:text-muted-foreground">
-            Hecho con dedicación en Chile
+          <p className="text-xs text-[#718EBF] font-medium">
+            Diseñado para la realidad empresarial chilena 🇨🇱
           </p>
         </div>
       </div>
