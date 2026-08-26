@@ -8,6 +8,7 @@ const routesMap: Record<string, string> = {
   '/condominio': 'Layout & Unidades',
   '/condominio/gastos-comunes': 'Gastos Comunes',
   '/condominio/pagos': 'Pagos & Conciliación',
+  '/condominio/espacios': 'Espacios & Conserjería',
   '/condominio/importar': 'Importar Planillas',
   '/condominio/comunicaciones': 'Comunicaciones',
   '/condominio/portal': 'Portal Residentes',
