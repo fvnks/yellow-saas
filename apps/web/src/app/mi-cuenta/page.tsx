@@ -29,14 +29,20 @@ function MiCuentaPageInner() {
 
   return (
     <div className="space-y-6">
+      {/* Header with Account Blue Personality */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-foreground">Mi Cuenta</h1>
-          <p className="text-sm text-muted-foreground mt-1">Gestiona tu plan, facturación y módulos</p>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold text-[#232323]">Mi Cuenta</h1>
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+              Suscripción ERP
+            </span>
+          </div>
+          <p className="text-sm text-[#718EBF] mt-1">Gestiona tu plan activo, facturación electrónica, datos de empresa y módulos habilitados</p>
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm">
+      <div className="bg-white border border-[#E6EFF5] rounded-2xl shadow-sm overflow-hidden">
         <ContinuousTabs
           tabs={tabs}
           defaultActiveId={activeTab}
