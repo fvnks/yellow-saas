@@ -103,15 +103,23 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6 pt-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+      {/* Header with Sun Yellow Accent & Quick DTE Actions */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white p-6 rounded-2xl shadow-sm border border-slate-800">
         <div>
-          <h1 className="text-xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-sm text-muted-foreground mt-1">Resumen general de tu empresa</p>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold text-white">Dashboard Operativo ERP</h1>
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#FACC15] text-slate-950">
+              PYME Chile
+            </span>
+          </div>
+          <p className="text-sm text-slate-300 mt-1">Resumen financiero, facturación SII, inventario y ventas en tiempo real</p>
         </div>
-        <Link href="/dashboard/sales" className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-xl text-sm font-medium transition-all duration-150 active:scale-[0.98]">
-          Nueva Venta
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link href="/dashboard/sales/new" className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2">
+            <ShoppingCart className="w-4 h-4" />
+            Nueva Factura SII
+          </Link>
+        </div>
       </div>
 
       {/* KPI Cards */}
