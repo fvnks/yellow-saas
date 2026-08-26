@@ -8,29 +8,27 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import SidebarBreadcrumbs from "./components/sidebar/sidebar-breadcrumbs";
 import NotificationsDropdown from "./components/NotificationsDropdown";
 import ThemeToggle from "@/components/ui/theme-toggle";
-import { getApiClient } from "@/lib/api-client";
-import { TrendingUp, ShieldCheck } from "lucide-react";
+import { getChileanIndicators, ChileanIndicators } from "@/lib/indicators";
+import { TrendingUp, ShieldCheck, DollarSign } from "lucide-react";
 
 interface LayoutProps {
   readonly children: ReactNode;
 }
 
 function ChileanIndicatorsPill() {
-  const [ufValue, setUfValue] = useState<number>(38500);
+  const [indicators, setIndicators] = useState<ChileanIndicators | null>(null);
 
   useEffect(() => {
-    const api = getApiClient();
-    api.getUFValue()
-      .then((res: any) => {
-        if (res?.data?.uf_value) setUfValue(res.data.uf_value);
-      })
-      .catch(() => {});
+    getChileanIndicators().then(setIndicators);
   }, []);
 
   return (
     <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full text-xs font-semibold text-slate-800 dark:text-amber-300">
       <TrendingUp className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-      <span>UF: ${ufValue.toLocaleString('es-CL')}</span>
+      <span>UF: ${indicators ? indicators.uf.toLocaleString('es-CL') : '38.500'}</span>
+      <span className="opacity-40">|</span>
+      <DollarSign className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 -mr-1" />
+      <span>USD: ${indicators ? indicators.dolar.toLocaleString('es-CL') : '950'}</span>
       <span className="opacity-40">|</span>
       <span className="flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-bold">
         <ShieldCheck className="w-3.5 h-3.5" /> SII En Línea

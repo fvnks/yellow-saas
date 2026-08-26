@@ -4,8 +4,9 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
-import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight, X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail, Sparkles, TrendingUp, ShieldCheck } from 'lucide-react';
+import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight, X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail, Sparkles, TrendingUp, ShieldCheck, DollarSign } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
+import { getChileanIndicators, ChileanIndicators } from '@/lib/indicators';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -185,7 +186,11 @@ export default function SelectPage() {
   const [lastAccess, setLastAccess] = useState<string | null>(null);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [companiesLoading, setCompaniesLoading] = useState(true);
-  const [ufValue, setUfValue] = useState<number>(38500);
+  const [indicators, setIndicators] = useState<ChileanIndicators | null>(null);
+
+  useEffect(() => {
+    getChileanIndicators().then(setIndicators);
+  }, []);
 
   useEffect(() => {
     const userData = getUserFromCookie();
@@ -225,10 +230,6 @@ export default function SelectPage() {
       if (companyRes) setCompany(companyRes);
       setLoading(false);
     }).catch(() => setLoading(false));
-
-    api.getUFValue()
-      .then((res: any) => { if (res?.data?.uf_value) setUfValue(res.data.uf_value); })
-      .catch(() => {});
   }, [router]);
 
   const loadActivatedModules = async () => {
@@ -336,7 +337,10 @@ export default function SelectPage() {
           <div className="flex items-center gap-4">
             <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full text-xs font-semibold text-slate-800">
               <TrendingUp className="w-3.5 h-3.5 text-amber-600" />
-              <span>UF: ${ufValue.toLocaleString('es-CL')}</span>
+              <span>UF: ${indicators ? indicators.uf.toLocaleString('es-CL') : '38.500'}</span>
+              <span className="opacity-40">|</span>
+              <DollarSign className="w-3.5 h-3.5 text-blue-600 -mr-1" />
+              <span>USD: ${indicators ? indicators.dolar.toLocaleString('es-CL') : '950'}</span>
             </div>
 
             <DropdownMenu>
