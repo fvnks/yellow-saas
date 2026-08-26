@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Input, Select } from '@yellow-erp/ui';
 import { Plus, Search, Filter, Download, MoreVertical, Edit, Trash2, Package, Eye, ScanBarcode, Upload, Printer } from 'lucide-react';
 import Link from 'next/link';
@@ -75,7 +75,9 @@ export default function InventoryPage() {
     }).catch(() => setLoading(false));
   }, []);
 
-  const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
+  const categories = useMemo(() => {
+    return Array.from(new Set(products.flatMap(p => p.category ? [p.category] : [])));
+  }, [products]);
 
   const filteredProducts = products.filter(p => {
     const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase()) || p.sku.toLowerCase().includes(search.toLowerCase());
@@ -84,16 +86,16 @@ export default function InventoryPage() {
     return matchesSearch && matchesStatus && matchesCategory;
   });
 
-  const getStockStatus = (stock: number, minStock: number) => {
-    if (stock === 0) return { label: 'Sin stock', variant: 'danger' as const };
-    if (stock <= minStock) return { label: 'Bajo', variant: 'warning' as const };
-    return { label: 'Normal', variant: 'success' as const };
-  };
+function getStockStatus(stock: number, minStock: number) {
+  if (stock === 0) return { label: 'Sin stock', variant: 'danger' as const };
+  if (stock <= minStock) return { label: 'Bajo', variant: 'warning' as const };
+  return { label: 'Normal', variant: 'success' as const };
+}
 
-  const getStatusConfig = (status: string) => {
-    if (status === 'active') return { label: 'Activo', variant: 'success' as const };
-    return { label: 'Inactivo', variant: 'neutral' as const };
-  };
+function getStatusConfig(status: string) {
+  if (status === 'active') return { label: 'Activo', variant: 'success' as const };
+  return { label: 'Inactivo', variant: 'neutral' as const };
+}
 
   return (
     <div className="space-y-6 animate-fade-in-up">

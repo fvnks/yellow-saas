@@ -51,7 +51,7 @@ export default function RecetasPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in-up">
       {/* Header with Recetas Amber Personality */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
