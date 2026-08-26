@@ -55,16 +55,7 @@ const DEFAULT_SPOTS: VisitorParkingSpot[] = [
     code: 'V-02',
     sectorId: 'sec-superficie',
     type: 'estandar',
-    status: 'ocupado',
-    parkedVisitor: {
-      visitorName: 'Claudia Rojas B.',
-      visitorRut: '16.442.110-K',
-      vehiclePlate: 'PZ-10-99',
-      destinationUnitNumber: 'Dpto 102',
-      entryTime: '11:15',
-      entryTimestamp: Date.now() - 3600000 * 2.5, // 2.5 hours ago
-      notes: 'Visita técnica autorizada',
-    },
+    status: 'disponible',
   },
   {
     id: 'spot-v03',
@@ -78,15 +69,7 @@ const DEFAULT_SPOTS: VisitorParkingSpot[] = [
     code: 'V-04',
     sectorId: 'sec-superficie',
     type: 'estandar',
-    status: 'ocupado',
-    parkedVisitor: {
-      visitorName: 'Juan Pablo Morales',
-      visitorRut: '18.990.120-4',
-      vehiclePlate: 'KJ-88-21',
-      destinationUnitNumber: 'Dpto 202',
-      entryTime: '14:30',
-      entryTimestamp: Date.now() - 3600000 * 1.2, // 1.2 hours ago
-    },
+    status: 'disponible',
   },
   {
     id: 'spot-v05',
@@ -128,7 +111,7 @@ const DEFAULT_SPOTS: VisitorParkingSpot[] = [
     code: 'V-10',
     sectorId: 'sec-sub-1',
     type: 'estandar',
-    status: 'mantenimiento',
+    status: 'disponible',
   },
 ];
 

@@ -31,53 +31,8 @@ interface VisitorEntry {
   status: 'activo' | 'salio';
 }
 
-const INITIAL_RESERVATIONS: CommonAreaReservation[] = [
-  {
-    id: 'res-1',
-    spaceName: 'Quincho Principal',
-    unitNumber: 'Dpto 101',
-    reserverName: 'Carlos Silva M.',
-    date: '2026-04-04',
-    timeSlot: '13:00 - 19:00',
-    feeCLP: 25000,
-    depositCLP: 50000,
-    status: 'confirmada',
-  },
-  {
-    id: 'res-2',
-    spaceName: 'Salón de Eventos',
-    unitNumber: 'Parcela 01',
-    reserverName: 'Fernando Araya T.',
-    date: '2026-04-11',
-    timeSlot: '18:00 - 02:00',
-    feeCLP: 45000,
-    depositCLP: 100000,
-    status: 'confirmada',
-  },
-];
-
-const INITIAL_VISITORS: VisitorEntry[] = [
-  {
-    id: 'vis-1',
-    visitorName: 'Juan Pablo Morales',
-    visitorRut: '18.990.120-4',
-    vehiclePlate: 'KJ-88-21',
-    destinationUnitNumber: 'Dpto 202',
-    entryTime: '14:30',
-    parkingSpot: 'Visita V-04',
-    status: 'activo',
-  },
-  {
-    id: 'vis-2',
-    visitorName: 'Claudia Rojas B.',
-    visitorRut: '16.442.110-K',
-    vehiclePlate: 'PZ-10-99',
-    destinationUnitNumber: 'Dpto 102',
-    entryTime: '11:15',
-    parkingSpot: 'Visita V-02',
-    status: 'salio',
-  },
-];
+const INITIAL_RESERVATIONS: CommonAreaReservation[] = [];
+const INITIAL_VISITORS: VisitorEntry[] = [];
 
 export default function EspaciosConsergeriaPage() {
   const [activeTab, setActiveTab] = useState<'parking_map' | 'reservations' | 'consergeria_log'>('parking_map');
