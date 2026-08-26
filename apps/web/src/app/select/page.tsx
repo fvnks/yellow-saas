@@ -271,13 +271,15 @@ export default function SelectPage() {
       const companyId = api['companyId'];
       const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
 
-      for (const moduleName of selectedModule.requiredModules) {
-        await fetch(`/api/companies/${companyId}/modules/activate`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ module_name: moduleName }),
-        });
-      }
+      await Promise.all(
+        selectedModule.requiredModules.map((moduleName) =>
+          fetch(`/api/companies/${companyId}/modules/activate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ module_name: moduleName }),
+          })
+        )
+      );
 
       await loadActivatedModules();
       setModalOpen(false);

@@ -104,8 +104,10 @@ const pricingPlans = [
   },
 ];
 
+const clpFormatter = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 });
+
 function formatPrice(price: number) {
-  return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(price);
+  return clpFormatter.format(price);
 }
 
 export default function HomePage() {
