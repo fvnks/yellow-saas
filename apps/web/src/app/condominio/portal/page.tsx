@@ -204,6 +204,71 @@ export default function PortalResidentePage() {
           </p>
         </div>
       </div>
+
+      {/* Official Condo Documents Section */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-cyan-600" />
+              Documentos Oficiales de Copropiedad (Ley 21.442)
+            </h2>
+            <p className="text-xs text-slate-500 font-medium mt-0.5">
+              Descarga el Reglamento Interno, Actas de Asamblea y Pólizas de Seguro del Condominio
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="border border-slate-200/80 rounded-xl p-4 bg-slate-50/50 flex flex-col justify-between space-y-3">
+            <div>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-50 text-cyan-700 border border-cyan-200">
+                Reglamento
+              </span>
+              <h3 className="text-xs font-bold text-slate-900 mt-2">Reglamento Interno Copropiedad</h3>
+              <p className="text-[11px] text-slate-500 mt-1">Normas de convivencia, tenencia de mascotas y ruidos molestos.</p>
+            </div>
+            <button
+              onClick={() => alert('Descargando Reglamento Interno en PDF...')}
+              className="text-xs font-bold text-cyan-700 hover:text-cyan-900 flex items-center gap-1"
+            >
+              <Download className="w-3.5 h-3.5" /> Descargar PDF
+            </button>
+          </div>
+
+          <div className="border border-slate-200/80 rounded-xl p-4 bg-slate-50/50 flex flex-col justify-between space-y-3">
+            <div>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                Asamblea
+              </span>
+              <h3 className="text-xs font-bold text-slate-900 mt-2">Acta Asamblea Ordinaria 2026</h3>
+              <p className="text-[11px] text-slate-500 mt-1">Aprobación de balances, presupuesto y rendición de cuentas.</p>
+            </div>
+            <button
+              onClick={() => alert('Descargando Acta de Asamblea en PDF...')}
+              className="text-xs font-bold text-emerald-700 hover:text-emerald-900 flex items-center gap-1"
+            >
+              <Download className="w-3.5 h-3.5" /> Descargar PDF
+            </button>
+          </div>
+
+          <div className="border border-slate-200/80 rounded-xl p-4 bg-slate-50/50 flex flex-col justify-between space-y-3">
+            <div>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                Seguros
+              </span>
+              <h3 className="text-xs font-bold text-slate-900 mt-2">Póliza Colectiva Espacios Comunes</h3>
+              <p className="text-[11px] text-slate-500 mt-1">Cobertura de Incendio y Sismo Ley de Copropiedad.</p>
+            </div>
+            <button
+              onClick={() => alert('Descargando Póliza Colectiva de Seguro...')}
+              className="text-xs font-bold text-amber-700 hover:text-amber-900 flex items-center gap-1"
+            >
+              <Download className="w-3.5 h-3.5" /> Descargar PDF
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
