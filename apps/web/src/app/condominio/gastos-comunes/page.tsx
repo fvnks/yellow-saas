@@ -36,7 +36,28 @@ export default function GastosComunesPage() {
   const [newReservePercentage, setNewReservePercentage] = useState('10');
   const [newLateInterest, setNewLateInterest] = useState('1.5');
 
-  // Add Item to Period
+  // Simulator modal
+  const [showSimuladorModal, setShowSimuladorModal] = useState(false);
+  const [extraSimulatedAmount, setExtraSimulatedAmount] = useState('500000');
+
+  // Export report to CSV
+  const handleExportCSV = () => {
+    if (!activePeriod) return;
+    let csv = `Unidad,Copropietario,Alicuota,CobroBaseCLP,FondoReservaCLP,InteresMoraCLP,SaldoAnteriorCLP,TotalCLP\n`;
+    INITIAL_UNITS.forEach((unit) => {
+      const calc = calculateUnitExpense(unit, activePeriod);
+      csv += `"${unit.number}","${unit.ownerName}",${unit.alicuotaPercentage},${calc.baseAmountCLP},${calc.reserveFundCLP},${calc.lateInterestCLP},${calc.previousBalanceCLP},${calc.totalToPayCLP}\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `gastos_comunes_${activePeriod.periodDate}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newDescription || !newAmount || !activePeriod) return;
@@ -128,13 +149,31 @@ export default function GastosComunesPage() {
           </p>
         </div>
 
-        <button
-          onClick={() => setShowAddPeriodModal(true)}
-          className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-150 shadow-xs flex items-center gap-2 active:scale-[0.98]"
-        >
-          <Plus className="w-4 h-4" />
-          Crear Nuevo Período
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setShowSimuladorModal(true)}
+            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs"
+          >
+            <Calculator className="w-4 h-4 text-cyan-600" />
+            Simulador Extraordinario
+          </button>
+
+          <button
+            onClick={handleExportCSV}
+            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs"
+          >
+            <Download className="w-4 h-4 text-slate-500" />
+            Exportar CSV
+          </button>
+
+          <button
+            onClick={() => setShowAddPeriodModal(true)}
+            className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-150 shadow-xs flex items-center gap-2 active:scale-[0.98]"
+          >
+            <Plus className="w-4 h-4" />
+            Crear Nuevo Período
+          </button>
+        </div>
       </div>
 
       {/* Period Selector Tabs */}
@@ -468,6 +507,67 @@ export default function GastosComunesPage() {
               </button>
             </div>
           </form>
+        </div>
+      )}
+
+      {/* Modal Simulador Extraordinario */}
+      {showSimuladorModal && (
+        <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 space-y-4">
+            <div className="flex items-center justify-between border-b pb-3">
+              <div className="flex items-center gap-2">
+                <Calculator className="w-5 h-5 text-cyan-600" />
+                <h3 className="text-base font-black text-slate-900">Simulador de Cuota Extraordinaria</h3>
+              </div>
+              <button type="button" onClick={() => setShowSimuladorModal(false)} className="text-slate-400 font-bold">✕</button>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <p className="text-slate-500">
+                Calcula en tiempo real el impacto individual por unidad de un gasto imprevisto (ej. reparación de bomba de agua, mantención extraordinaria o pintura de fachada).
+              </p>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Monto Imprevisto a Simular (CLP)</label>
+                <input
+                  type="number"
+                  placeholder="500000"
+                  value={extraSimulatedAmount}
+                  onChange={(e) => setExtraSimulatedAmount(e.target.value)}
+                  className="w-full p-2.5 border border-slate-200 rounded-xl font-black text-slate-900 text-sm"
+                />
+              </div>
+
+              <div className="max-h-56 overflow-y-auto border border-slate-200 rounded-xl divide-y divide-slate-100 p-2">
+                {INITIAL_UNITS.map((u) => {
+                  const extraAmount = parseInt(extraSimulatedAmount, 10) || 0;
+                  const unitExtraCLP = Math.round(extraAmount * (u.alicuotaPercentage / 100));
+                  return (
+                    <div key={u.id} className="p-2 flex items-center justify-between">
+                      <div>
+                        <p className="font-bold text-slate-900">{u.number}</p>
+                        <p className="text-[10px] text-slate-500">{u.ownerName} ({u.alicuotaPercentage}%)</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs font-black text-cyan-600">+{formatCLP(unitExtraCLP)}</p>
+                        <p className="text-[10px] text-slate-400">adicionales</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="pt-3 border-t flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowSimuladorModal(false)}
+                className="bg-slate-900 text-white font-bold px-4 py-2 rounded-xl text-xs"
+              >
+                Cerrar Simulador
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
