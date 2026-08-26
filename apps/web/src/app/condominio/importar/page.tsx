@@ -17,15 +17,10 @@ interface ImportedRow {
   validationError?: string;
 }
 
-const DEMO_CSV_SAMPLE = `Unidad,Propietario,RUT,Alicuota,SaldoInicial
-Dpto 101,Carlos Silva M.,15.420.192-4,4.5,0
-Dpto 102,María José Morales,17.882.311-K,4.5,112500
-Dpto 201,Inversiones Norte,76.192.480-K,5.0,245000
-Dpto 202,Gonzalo Pérez R.,16.510.992-1,5.0,0
-Parcela 01,Fernando Araya T.,12.980.443-8,15.0,0`;
+const DEFAULT_CSV_TEMPLATE = `Unidad,Propietario,RUT,Alicuota,SaldoInicial`;
 
 export default function ImportarPlanillasPage() {
-  const [csvContent, setCsvContent] = useState<string>(DEMO_CSV_SAMPLE);
+  const [csvContent, setCsvContent] = useState<string>(DEFAULT_CSV_TEMPLATE);
   const [parsedRows, setParsedRows] = useState<ImportedRow[]>([]);
   const [hasProcessed, setHasProcessed] = useState(false);
   const [importSuccess, setImportSuccess] = useState(false);
@@ -124,10 +119,10 @@ export default function ImportarPlanillasPage() {
 
           <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
             <button
-              onClick={() => setCsvContent(DEMO_CSV_SAMPLE)}
+              onClick={() => setCsvContent(DEFAULT_CSV_TEMPLATE)}
               className="text-xs text-slate-500 underline hover:text-slate-900 font-semibold"
             >
-              Cargar Ejemplo Sintético
+              Restablecer Formato Base
             </button>
 
             <button
