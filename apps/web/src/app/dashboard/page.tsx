@@ -22,10 +22,16 @@ const statusLabels: Record<string, string> = {
   paid: 'Pagado', pending: 'Pendiente',
 };
 
+const clpFormatter = new Intl.NumberFormat('es-CL', {
+  style: 'currency',
+  currency: 'CLP',
+  maximumFractionDigits: 0,
+});
+
 function formatCurrency(amount: number): string {
   if (amount >= 1000000) return `$${(amount / 1000000).toFixed(1)}M`;
   if (amount >= 1000) return `$${(amount / 1000).toFixed(0)}K`;
-  return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(amount);
+  return clpFormatter.format(amount);
 }
 
 function ChangeIndicator({ value }: { value: number }) {
@@ -187,8 +193,8 @@ export default function DashboardPage() {
           <ResponsiveContainer width="100%" height={224}>
             <PieChart>
               <Pie data={salesByStatus} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={2} dataKey="value">
-                {salesByStatus.map((_: any, i: number) => (
-                  <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                {salesByStatus.map((item: any, i: number) => (
+                  <Cell key={item.name || `sale-status-${i}`} fill={PIE_COLORS[i % PIE_COLORS.length]} />
                 ))}
               </Pie>
               <Tooltip />
@@ -201,8 +207,8 @@ export default function DashboardPage() {
           <ResponsiveContainer width="100%" height={224}>
             <PieChart>
               <Pie data={purchasesByStatus} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={2} dataKey="value">
-                {purchasesByStatus.map((_: any, i: number) => (
-                  <Cell key={i} fill={PIE_COLORS[(i + 1) % PIE_COLORS.length]} />
+                {purchasesByStatus.map((item: any, i: number) => (
+                  <Cell key={item.name || `purchase-status-${i}`} fill={PIE_COLORS[(i + 1) % PIE_COLORS.length]} />
                 ))}
               </Pie>
               <Tooltip />
@@ -228,15 +234,15 @@ export default function DashboardPage() {
           ) : (
             <div className="space-y-3">
               {topProducts.map((p: any, i: number) => (
-                <div key={i} className="flex items-center justify-between group/item">
+                <div key={p.id || p.sku || `top-prod-${i}`} className="flex items-center justify-between group/item">
                   <div className="flex items-center gap-3 min-w-0">
                     <span className="text-xs font-bold text-foreground w-5 group-hover/item:text-amber-500 transition-colors">{i + 1}</span>
                     <div className="min-w-0">
                       <p className="text-xs font-medium text-foreground truncate">{p.name}</p>
-                      <p className="text-[10px] text-muted-foreground">{p.sku}</p>
+                      <p className="text-[10px] text-muted-foreground font-mono">{p.sku}</p>
                     </div>
                   </div>
-                  <span className="text-xs font-semibold text-foreground">{p.total_sold} u.</span>
+                  <span className="text-xs font-semibold text-foreground font-mono">{p.total_sold} u.</span>
                 </div>
               ))}
             </div>

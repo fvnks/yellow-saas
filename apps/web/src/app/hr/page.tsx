@@ -30,7 +30,7 @@ function HRPageInner() {
   }, [searchParams]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in-up">
       {/* Header with HR Rose Personality */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -50,48 +50,48 @@ function HRPageInner() {
 
       {/* HR Highlights Cards */}
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="bg-white border border-[#E6EFF5] rounded-2xl p-5 shadow-sm hover:border-rose-200 transition-all duration-150">
+        <div className="animate-fade-in-up stagger-1 bg-white border border-[#E6EFF5] rounded-2xl p-5 shadow-sm hover:border-rose-300 hover:shadow-md transition-all duration-200 ease-out hover:-translate-y-0.5">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-[9px] font-semibold text-[#718EBF] uppercase tracking-wider">Dotación Total</p>
+            <p className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Dotación Total</p>
             <div className="w-10 h-10 bg-rose-50 rounded-full flex items-center justify-center">
               <Users className="w-5 h-5 text-rose-600" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-[#232323]">48</p>
-          <p className="text-[11px] text-emerald-600 mt-1 font-medium">+3 incorporaciones este mes</p>
+          <p className="text-2xl font-black text-slate-900 tracking-tight">48</p>
+          <p className="text-[11px] text-emerald-600 mt-1 font-semibold">+3 incorporaciones este mes</p>
         </div>
 
-        <div className="bg-white border border-[#E6EFF5] rounded-2xl p-5 shadow-sm hover:border-rose-200 transition-all duration-150">
+        <div className="animate-fade-in-up stagger-2 bg-white border border-[#E6EFF5] rounded-2xl p-5 shadow-sm hover:border-rose-300 hover:shadow-md transition-all duration-200 ease-out hover:-translate-y-0.5">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-[9px] font-semibold text-[#718EBF] uppercase tracking-wider">Asistencia Hoy</p>
+            <p className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Asistencia Hoy</p>
             <div className="w-10 h-10 bg-emerald-50 rounded-full flex items-center justify-center">
               <UserCheck className="w-5 h-5 text-emerald-600" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-[#232323]">96.8%</p>
-          <p className="text-[11px] text-[#718EBF] mt-1">45/48 presentes a tiempo</p>
+          <p className="text-2xl font-black text-slate-900 tracking-tight">96.8%</p>
+          <p className="text-[11px] text-slate-500 mt-1">45/48 presentes a tiempo</p>
         </div>
 
-        <div className="bg-white border border-[#E6EFF5] rounded-2xl p-5 shadow-sm hover:border-rose-200 transition-all duration-150">
+        <div className="animate-fade-in-up stagger-3 bg-white border border-[#E6EFF5] rounded-2xl p-5 shadow-sm hover:border-rose-300 hover:shadow-md transition-all duration-200 ease-out hover:-translate-y-0.5">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-[9px] font-semibold text-[#718EBF] uppercase tracking-wider">Evaluaciones Pendientes</p>
+            <p className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Evaluaciones Pendientes</p>
             <div className="w-10 h-10 bg-amber-50 rounded-full flex items-center justify-center">
               <Award className="w-5 h-5 text-amber-600" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-[#232323]">7</p>
-          <p className="text-[11px] text-amber-600 mt-1 font-medium">Ciclo de desempeño Q3</p>
+          <p className="text-2xl font-black text-slate-900 tracking-tight">7</p>
+          <p className="text-[11px] text-amber-600 mt-1 font-semibold">Ciclo de desempeño Q3</p>
         </div>
 
-        <div className="bg-white border border-[#E6EFF5] rounded-2xl p-5 shadow-sm hover:border-rose-200 transition-all duration-150">
+        <div className="animate-fade-in-up stagger-4 bg-white border border-[#E6EFF5] rounded-2xl p-5 shadow-sm hover:border-rose-300 hover:shadow-md transition-all duration-200 ease-out hover:-translate-y-0.5">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-[9px] font-semibold text-[#718EBF] uppercase tracking-wider">En Onboarding</p>
+            <p className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">En Onboarding</p>
             <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
               <GraduationCap className="w-5 h-5 text-blue-600" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-[#232323]">4</p>
-          <p className="text-[11px] text-[#718EBF] mt-1">Nuevos ingresos en inducción</p>
+          <p className="text-2xl font-black text-slate-900 tracking-tight">4</p>
+          <p className="text-[11px] text-slate-500 mt-1">Nuevos ingresos en inducción</p>
         </div>
       </div>
 
