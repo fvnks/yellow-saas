@@ -14,9 +14,35 @@ import {
 } from '@/lib/condominio-client';
 
 export default function PortalResidentePage() {
-  const [selectedUnitId, setSelectedUnitId] = useState<string>(INITIAL_UNITS[1].id); // Dpto 102
-  const activeUnit = INITIAL_UNITS.find((u) => u.id === selectedUnitId) || INITIAL_UNITS[0];
-  const activePeriod = INITIAL_PERIODS[0];
+  const [selectedUnitId, setSelectedUnitId] = useState<string>(INITIAL_UNITS[1]?.id || INITIAL_UNITS[0]?.id || 'u-102'); // Dpto 102
+  const activeUnit = INITIAL_UNITS.find((u) => u.id === selectedUnitId) || INITIAL_UNITS[0] || {
+    id: 'u-102',
+    number: 'Dpto 102',
+    type: 'departamento',
+    sectorId: 'sec-torre-a',
+    sectorName: 'Torre A',
+    ownerName: 'María José Fernández',
+    ownerRut: '12.876.543-2',
+    ownerEmail: 'mj.fernandez@email.cl',
+    ownerPhone: '+56 9 7654 3210',
+    alicuotaPercentage: 2.50,
+    areaM2: 85,
+    unpaidBalanceCLP: 112500,
+    status: 'pendiente',
+  };
+  const activePeriod = INITIAL_PERIODS[0] || {
+    id: 'per-2026-03',
+    periodName: 'Marzo 2026',
+    periodDate: '2026-03',
+    dueDate: '2026-04-10',
+    status: 'emitido',
+    reserveFundPercentage: 10,
+    lateInterestRate: 1.5,
+    items: [],
+    totalExpensesCLP: 4500000,
+    totalReserveFundCLP: 450000,
+    totalBilledCLP: 4950000,
+  };
 
   const calc = calculateUnitExpense(activeUnit, activePeriod);
 
