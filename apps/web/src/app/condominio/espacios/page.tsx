@@ -3,9 +3,10 @@
 import { useState } from 'react';
 import {
   CalendarDays, Plus, Clock, Car, ShieldCheck, CheckCircle2,
-  Users, DollarSign, Sparkles, Building, AlertTriangle, Trash2
+  Users, DollarSign, Sparkles, Building, AlertTriangle, Trash2, MapPin
 } from 'lucide-react';
 import { INITIAL_UNITS, formatCLP } from '@/lib/condominio-client';
+import VisitorParkingLayout from './components/visitor-parking-layout';
 
 interface CommonAreaReservation {
   id: string;
@@ -79,6 +80,7 @@ const INITIAL_VISITORS: VisitorEntry[] = [
 ];
 
 export default function EspaciosConsergeriaPage() {
+  const [activeTab, setActiveTab] = useState<'parking_map' | 'reservations' | 'consergeria_log'>('parking_map');
   const [reservations, setReservations] = useState<CommonAreaReservation[]>(INITIAL_RESERVATIONS);
   const [visitors, setVisitors] = useState<VisitorEntry[]>(INITIAL_VISITORS);
 
@@ -206,112 +208,160 @@ export default function EspaciosConsergeriaPage() {
         </div>
       </div>
 
-      {/* Section 1: Common Area Reservations */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-            <CalendarDays className="w-4 h-4 text-cyan-600" />
-            Reservas de Espacios Comunes (Quinchos, Salón de Eventos, Multicancha)
-          </h2>
-        </div>
+      {/* Module Navigation Tabs */}
+      <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
+        <button
+          onClick={() => setActiveTab('parking_map')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+            activeTab === 'parking_map'
+              ? 'bg-slate-900 text-white shadow-xs'
+              : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+          }`}
+        >
+          <Car className="w-4 h-4 text-cyan-400" />
+          Layout Estacionamientos Visita
+        </button>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead>
-              <tr className="border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px] bg-slate-50">
-                <th className="p-3">Espacio</th>
-                <th className="p-3">Unidad Responsable</th>
-                <th className="p-3">Copropietario</th>
-                <th className="p-3">Fecha & Horario</th>
-                <th className="p-3 text-right">Tarifa Reserva</th>
-                <th className="p-3 text-right">Garantía</th>
-                <th className="p-3 text-center">Estado</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 font-medium">
-              {reservations.map((r) => (
-                <tr key={r.id} className="hover:bg-slate-50/80">
-                  <td className="p-3 font-bold text-slate-900">
-                    <span className="px-2 py-0.5 rounded text-[10px] bg-cyan-50 text-cyan-800 border border-cyan-200">
-                      {r.spaceName}
-                    </span>
-                  </td>
-                  <td className="p-3 font-black text-slate-900">{r.unitNumber}</td>
-                  <td className="p-3 text-slate-800">{r.reserverName}</td>
-                  <td className="p-3 text-slate-600 font-semibold">{r.date} ({r.timeSlot})</td>
-                  <td className="p-3 text-right font-black text-slate-900">{formatCLP(r.feeCLP)}</td>
-                  <td className="p-3 text-right text-slate-500">{formatCLP(r.depositCLP)}</td>
-                  <td className="p-3 text-center">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
-                      ✓ {r.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <button
+          onClick={() => setActiveTab('reservations')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+            activeTab === 'reservations'
+              ? 'bg-slate-900 text-white shadow-xs'
+              : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+          }`}
+        >
+          <CalendarDays className="w-4 h-4 text-cyan-400" />
+          Reservas Espacios Comunes
+        </button>
+
+        <button
+          onClick={() => setActiveTab('consergeria_log')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+            activeTab === 'consergeria_log'
+              ? 'bg-slate-900 text-white shadow-xs'
+              : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+          }`}
+        >
+          <ShieldCheck className="w-4 h-4 text-cyan-400" />
+          Bitácora Conserjería ({activeVisitorsCount} activos)
+        </button>
       </div>
 
-      {/* Section 2: Conserjería & Visitors Parking Log */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-            <Car className="w-4 h-4 text-cyan-600" />
-            Bitácora de Conserjería - Ingreso de Visitas & Estacionamientos
-          </h2>
-        </div>
+      {/* Tab Content 1: Visual Visitor Parking Layout */}
+      {activeTab === 'parking_map' && (
+        <VisitorParkingLayout />
+      )}
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead>
-              <tr className="border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px] bg-slate-50">
-                <th className="p-3">Hora Ingreso</th>
-                <th className="p-3">Nombre Visita</th>
-                <th className="p-3">RUT Visita</th>
-                <th className="p-3">Patente Vehículo</th>
-                <th className="p-3">Unidad a Visitar</th>
-                <th className="p-3">Estacionamiento</th>
-                <th className="p-3 text-center">Estado</th>
-                <th className="p-3 text-center">Acción</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 font-medium">
-              {visitors.map((v) => (
-                <tr key={v.id} className="hover:bg-slate-50/80">
-                  <td className="p-3 text-slate-600 font-semibold">{v.entryTime}</td>
-                  <td className="p-3 font-bold text-slate-900">{v.visitorName}</td>
-                  <td className="p-3 text-slate-500">{v.visitorRut}</td>
-                  <td className="p-3 font-mono font-bold text-slate-900 uppercase">{v.vehiclePlate}</td>
-                  <td className="p-3 font-bold text-slate-800">{v.destinationUnitNumber}</td>
-                  <td className="p-3 text-slate-600 font-semibold">{v.parkingSpot}</td>
-                  <td className="p-3 text-center">
-                    {v.status === 'activo' ? (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] bg-amber-100 text-amber-800 font-bold border border-amber-200">
-                        ● Dentro del Condominio
-                      </span>
-                    ) : (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-600 font-medium">
-                        Retirado
-                      </span>
-                    )}
-                  </td>
-                  <td className="p-3 text-center">
-                    {v.status === 'activo' && (
-                      <button
-                        onClick={() => handleMarkVisitorDeparture(v.id)}
-                        className="bg-slate-800 hover:bg-slate-900 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-xs"
-                      >
-                        Marcar Salida
-                      </button>
-                    )}
-                  </td>
+      {/* Tab Content 2: Reservations */}
+      {activeTab === 'reservations' && (
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <CalendarDays className="w-4 h-4 text-cyan-600" />
+              Reservas de Espacios Comunes (Quinchos, Salón de Eventos, Multicancha)
+            </h2>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead>
+                <tr className="border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px] bg-slate-50">
+                  <th className="p-3">Espacio</th>
+                  <th className="p-3">Unidad Responsable</th>
+                  <th className="p-3">Copropietario</th>
+                  <th className="p-3">Fecha & Horario</th>
+                  <th className="p-3 text-right">Tarifa Reserva</th>
+                  <th className="p-3 text-right">Garantía</th>
+                  <th className="p-3 text-center">Estado</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-slate-100 font-medium">
+                {reservations.map((r) => (
+                  <tr key={r.id} className="hover:bg-slate-50/80">
+                    <td className="p-3 font-bold text-slate-900">
+                      <span className="px-2 py-0.5 rounded text-[10px] bg-cyan-50 text-cyan-800 border border-cyan-200">
+                        {r.spaceName}
+                      </span>
+                    </td>
+                    <td className="p-3 font-black text-slate-900">{r.unitNumber}</td>
+                    <td className="p-3 text-slate-800">{r.reserverName}</td>
+                    <td className="p-3 text-slate-600 font-semibold">{r.date} ({r.timeSlot})</td>
+                    <td className="p-3 text-right font-black text-slate-900">{formatCLP(r.feeCLP)}</td>
+                    <td className="p-3 text-right text-slate-500">{formatCLP(r.depositCLP)}</td>
+                    <td className="p-3 text-center">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
+                        ✓ {r.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Tab Content 3: Conserjería Log */}
+      {activeTab === 'consergeria_log' && (
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <Car className="w-4 h-4 text-cyan-600" />
+              Bitácora de Conserjería - Ingreso de Visitas & Estacionamientos
+            </h2>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead>
+                <tr className="border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px] bg-slate-50">
+                  <th className="p-3">Hora Ingreso</th>
+                  <th className="p-3">Nombre Visita</th>
+                  <th className="p-3">RUT Visita</th>
+                  <th className="p-3">Patente Vehículo</th>
+                  <th className="p-3">Unidad a Visitar</th>
+                  <th className="p-3">Estacionamiento</th>
+                  <th className="p-3 text-center">Estado</th>
+                  <th className="p-3 text-center">Acción</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 font-medium">
+                {visitors.map((v) => (
+                  <tr key={v.id} className="hover:bg-slate-50/80">
+                    <td className="p-3 text-slate-600 font-semibold">{v.entryTime}</td>
+                    <td className="p-3 font-bold text-slate-900">{v.visitorName}</td>
+                    <td className="p-3 text-slate-500">{v.visitorRut}</td>
+                    <td className="p-3 font-mono font-bold text-slate-900 uppercase">{v.vehiclePlate}</td>
+                    <td className="p-3 font-bold text-slate-800">{v.destinationUnitNumber}</td>
+                    <td className="p-3 text-slate-600 font-semibold">{v.parkingSpot}</td>
+                    <td className="p-3 text-center">
+                      {v.status === 'activo' ? (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] bg-amber-100 text-amber-800 font-bold border border-amber-200">
+                          ● Dentro del Condominio
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-600 font-medium">
+                          Retirado
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-3 text-center">
+                      {v.status === 'activo' && (
+                        <button
+                          onClick={() => handleMarkVisitorDeparture(v.id)}
+                          className="bg-slate-800 hover:bg-slate-900 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-xs"
+                        >
+                          Marcar Salida
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {/* Modal Add Reservation */}
       {showAddReservationModal && (
