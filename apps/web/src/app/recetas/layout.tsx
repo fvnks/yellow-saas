@@ -2,7 +2,6 @@
 
 import { ReactNode, useState, useMemo } from 'react';
 import { Toaster } from 'sonner';
-import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -108,13 +107,18 @@ function RecetasSidebar() {
 export default function RecetasLayout({ children }: { children: ReactNode }) {
   return (
     <RefreshProvider>
-      <main className="bg-slate-50 dark:bg-slate-950 min-h-screen transition-colors">
+      <main className="bg-[#F8FAFC] min-h-screen text-slate-900 transition-colors">
         <Toaster position="top-right" richColors closeButton />
         <RecetasSidebar />
         <div className="ml-64">
-          <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl px-6">
-            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Módulo de Recetas & Fórmulas BOM</span>
-            <div className="ml-auto flex items-center gap-3">
+          <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between border-b border-slate-200/80 bg-white/90 backdrop-blur-xl px-6">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                <FlaskConical className="w-3.5 h-3.5 text-amber-600" /> Recetas / BOM
+              </span>
+              <span className="text-xs text-slate-500">Formulación y Órdenes de Producción</span>
+            </div>
+            <div className="flex items-center gap-3">
               <ThemeToggle />
             </div>
           </header>

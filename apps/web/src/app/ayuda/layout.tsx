@@ -155,13 +155,18 @@ function AyudaSidebar() {
 
 export default function AyudaLayout({ children }: { children: ReactNode }) {
   return (
-    <main className="bg-slate-50 dark:bg-slate-950 min-h-screen transition-colors">
+    <main className="bg-[#F8FAFC] min-h-screen text-slate-900 transition-colors">
       <Toaster position="top-right" richColors closeButton />
       <AyudaSidebar />
       <div className="ml-64">
-        <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl px-6">
-          <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Centro de Ayuda & Soporte Técnico SII</span>
-          <div className="ml-auto flex items-center gap-3">
+        <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between border-b border-slate-200/80 bg-white/90 backdrop-blur-xl px-6">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <LifeBuoy className="w-3.5 h-3.5 text-emerald-600" /> Centro de Ayuda
+            </span>
+            <span className="text-xs text-slate-500">Base de Conocimientos & Soporte SII</span>
+          </div>
+          <div className="flex items-center gap-3">
             <ThemeToggle />
           </div>
         </header>
