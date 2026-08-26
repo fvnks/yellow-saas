@@ -255,7 +255,7 @@ export default function GastosComunesPage() {
 
             {activePeriod.items.length === 0 ? (
               <div className="py-8 text-center text-slate-400 text-xs font-medium">
-                Aún no hay ítems registrados para este período. Haz clic en "Agregar Gasto".
+                Aún no hay ítems registrados para este período. Haz clic en &quot;Agregar Gasto&quot;.
               </div>
             ) : (
               <div className="overflow-x-auto">

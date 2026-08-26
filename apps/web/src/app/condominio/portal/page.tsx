@@ -200,7 +200,7 @@ export default function PortalResidentePage() {
           <p className="text-slate-700">N° Cuenta: <strong>00-129-44021-09</strong> | RUT: <strong>76.990.120-K</strong></p>
           <p className="text-slate-700">Titular: <strong>Condominio Los Alerces SpA</strong> | Email Comprobante: <strong>pagos@condominiolosalerces.cl</strong></p>
           <p className="text-[11px] text-slate-500 mt-2 font-medium">
-            * Indicar en el asunto de transferencia el número de unidad: <strong>"{activeUnit.number}"</strong>.
+            * Indicar en el asunto de transferencia el número de unidad: <strong>&quot;{activeUnit.number}&quot;</strong>.
           </p>
         </div>
       </div>

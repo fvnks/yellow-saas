@@ -149,7 +149,7 @@ export default function ImportarPlanillasPage() {
 
           {!hasProcessed ? (
             <div className="py-16 text-center text-slate-400 text-xs font-medium">
-              Presiona "Validar Planilla" para comprobar el formato de las alícuotas y datos.
+              Presiona &quot;Validar Planilla&quot; para comprobar el formato de las alícuotas y datos.
             </div>
           ) : (
             <div className="space-y-4">
