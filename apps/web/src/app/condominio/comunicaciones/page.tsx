@@ -8,20 +8,24 @@ import {
 import { INITIAL_UNITS, CondoUnit, formatCLP } from '@/lib/condominio-client';
 
 export default function ComunicacionesPage() {
-  const [selectedUnit, setSelectedUnit] = useState<CondoUnit>(INITIAL_UNITS[1]); // Dpto 102 (pend)
+  const [selectedUnit, setSelectedUnit] = useState<CondoUnit>(INITIAL_UNITS[1] || INITIAL_UNITS[0]); // Dpto 102 (pend)
   const [messageType, setMessageType] = useState<'aviso' | 'mora' | 'asamblea'>('aviso');
   const [emailSentSuccess, setEmailSentSuccess] = useState(false);
   const [copiedSuccess, setCopiedSuccess] = useState(false);
 
   // Template generators
   const getWhatsAppMessage = () => {
+    const ownerName = selectedUnit?.ownerName || 'Copropietario';
+    const unitNum = selectedUnit?.number || 'Unidad';
+    const balance = selectedUnit?.unpaidBalanceCLP || 0;
+
     if (messageType === 'mora') {
-      return `Estimado/a ${selectedUnit.ownerName}, le saludamos de la Administración del Condominio. Le recordamos que mantiene un saldo adeudado de ${formatCLP(selectedUnit.unpaidBalanceCLP)} en la unidad ${selectedUnit.number}. Agradecemos regularizar su pago para evitar intereses por mora. Saludos cordiales.`;
+      return `Estimado/a ${ownerName}, le saludamos de la Administración del Condominio. Le recordamos que mantiene un saldo adeudado de ${formatCLP(balance)} en la unidad ${unitNum}. Agradecemos regularizar su pago para evitar intereses por mora. Saludos cordiales.`;
     }
     if (messageType === 'asamblea') {
-      return `Estimado/a copropietario/a ${selectedUnit.ownerName} (${selectedUnit.number}), le convocamos cordialmente a la Asamblea General Ordinaria de Copropietarios a realizarse este sábado a las 11:00 hrs en el Salón de Eventos del Condominio. ¡Su asistencia es indispensable!`;
+      return `Estimado/a copropietario/a ${ownerName} (${unitNum}), le convocamos cordialmente a la Asamblea General Ordinaria de Copropietarios a realizarse este sábado a las 11:00 hrs en el Salón de Eventos del Condominio. ¡Su asistencia es indispensable!`;
     }
-    return `Estimado/a ${selectedUnit.ownerName}, se ha emitido el aviso de cobro de Gastos Comunes correspondiente a este mes para ${selectedUnit.number}. El total a pagar es de ${formatCLP(selectedUnit.unpaidBalanceCLP || 112500)}. Puede descargar su comprobante en el portal de residentes.`;
+    return `Estimado/a ${ownerName}, se ha emitido el aviso de cobro de Gastos Comunes correspondiente a este mes para ${unitNum}. El total a pagar es de ${formatCLP(balance || 112500)}. Puede descargar su comprobante en el portal de residentes.`;
   };
 
   const currentMessage = getWhatsAppMessage();

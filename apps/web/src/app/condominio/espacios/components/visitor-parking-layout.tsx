@@ -136,7 +136,7 @@ export default function VisitorParkingLayout() {
   const [visName, setVisName] = useState('');
   const [visRut, setVisRut] = useState('');
   const [visPlate, setVisPlate] = useState('');
-  const [visUnit, setVisUnit] = useState(INITIAL_UNITS[0].number);
+  const [visUnit, setVisUnit] = useState(INITIAL_UNITS[0]?.number || 'Dpto 101');
   const [visNotes, setVisNotes] = useState('');
 
   // Form states for creating/editing spot

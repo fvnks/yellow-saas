@@ -45,7 +45,7 @@ export default function EspaciosConsergeriaPage() {
 
   // New Reservation Form State
   const [spaceName, setSpaceName] = useState<CommonAreaReservation['spaceName']>('Quincho Principal');
-  const [resUnitId, setResUnitId] = useState(INITIAL_UNITS[0].id);
+  const [resUnitId, setResUnitId] = useState(INITIAL_UNITS[0]?.id || 'u-101');
   const [resDate, setResDate] = useState('2026-04-18');
   const [resTimeSlot, setResTimeSlot] = useState('14:00 - 20:00');
   const [resFee, setResFee] = useState('25000');
@@ -54,12 +54,12 @@ export default function EspaciosConsergeriaPage() {
   const [visName, setVisName] = useState('');
   const [visRut, setVisRut] = useState('');
   const [visPlate, setVisPlate] = useState('');
-  const [visUnitNumber, setVisUnitNumber] = useState(INITIAL_UNITS[0].number);
+  const [visUnitNumber, setVisUnitNumber] = useState(INITIAL_UNITS[0]?.number || 'Dpto 101');
   const [visSpot, setVisSpot] = useState('Visita V-01');
 
   const handleCreateReservation = (e: React.FormEvent) => {
     e.preventDefault();
-    const unitObj = INITIAL_UNITS.find((u) => u.id === resUnitId) || INITIAL_UNITS[0];
+    const unitObj = INITIAL_UNITS.find((u) => u.id === resUnitId) || INITIAL_UNITS[0] || { number: 'Dpto 101', ownerName: 'Copropietario' };
     const newRes: CommonAreaReservation = {
       id: `res-${Date.now()}`,
       spaceName: spaceName,
