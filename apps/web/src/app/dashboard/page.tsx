@@ -104,7 +104,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 pt-4">
       {/* Header with Sun Yellow Accent & Quick DTE Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white p-6 rounded-2xl shadow-sm border border-slate-800">
+      <div className="animate-fade-in-up flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white p-6 rounded-2xl shadow-sm border border-slate-800">
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-bold text-white">Dashboard Operativo ERP</h1>
@@ -126,8 +126,9 @@ export default function DashboardPage() {
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {kpiCards.map((kpi, i) => {
           const colors = kpiColors[i % kpiColors.length];
+          const staggerClass = i === 0 ? 'stagger-1' : i === 1 ? 'stagger-2' : i === 2 ? 'stagger-3' : 'stagger-4';
           return (
-            <div key={i} className="group border border-border rounded-2xl shadow-sm p-5 bg-card hover:border-border/80 transition-all duration-150">
+            <div key={kpi.label} className={`animate-fade-in-up ${staggerClass} group border border-border rounded-2xl shadow-sm p-5 bg-card hover:border-slate-300 hover:shadow-md transition-all duration-200 ease-out hover:-translate-y-0.5`}>
               <div className="flex items-center justify-between mb-3">
                 <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">{kpi.label}</p>
                 <div className={`w-10 h-10 ${colors.bg} rounded-full flex items-center justify-center`}>
