@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
-import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight, X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail, Sparkles, TrendingUp, ShieldCheck, DollarSign } from 'lucide-react';
+import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight, X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail, Sparkles, TrendingUp, ShieldCheck, DollarSign, Building } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import { getChileanIndicators, ChileanIndicators } from '@/lib/indicators';
 import {
@@ -93,6 +93,19 @@ const modules: ModuleOption[] = [
     href: '/recetas',
     requiredModules: [],
     moduleName: 'recetas',
+  },
+  {
+    id: 'condominio',
+    title: 'Mi Condominio',
+    subtitle: 'Gastos Comunes y Copropiedad',
+    description: ['Layout de Unidades', 'Prorrateo y Fondo Reserva', 'Avisos y Cobranza PDF', 'Portal Copropietario'],
+    icon: Building,
+    iconBg: 'bg-cyan-50 border-cyan-200/80',
+    iconColor: 'text-cyan-600',
+    accentBadge: 'bg-cyan-50 text-cyan-700 border-cyan-200',
+    href: '/condominio',
+    requiredModules: ['condominio'],
+    moduleName: 'condominio',
   },
   {
     id: 'mi-cuenta',
