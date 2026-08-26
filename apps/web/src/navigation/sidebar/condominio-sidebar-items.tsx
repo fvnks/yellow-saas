@@ -8,6 +8,7 @@ import {
   Users,
   PieChart,
   Settings,
+  CalendarDays,
 } from 'lucide-react';
 
 export const condominioSidebarItems = [
@@ -29,6 +30,11 @@ export const condominioSidebarItems = [
         title: 'Pagos & Conciliación',
         url: '/condominio/pagos',
         icon: CreditCard,
+      },
+      {
+        title: 'Espacios & Conserjería',
+        url: '/condominio/espacios',
+        icon: CalendarDays,
       },
       {
         title: 'Importar Planillas',
