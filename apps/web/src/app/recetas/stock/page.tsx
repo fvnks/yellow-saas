@@ -70,8 +70,9 @@ export default function StockEntryPage() {
   );
 
   const addLine = () => {
+    const id = `line-${++lineCounter}`;
     setLines(prev => [...prev, {
-      id: `line-${++lineCounter}`,
+      id,
       product_id: '',
       product_name: '',
       product_sku: '',

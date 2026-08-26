@@ -79,7 +79,11 @@ export function SupportWidget() {
   const chatBottomRef = useRef<HTMLDivElement>(null);
 
   const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
-  const companyId = getCompanyIdFromToken();
+
+  const [companyId, setCompanyId] = useState<string | null>(null);
+  useEffect(() => {
+    setCompanyId(getCompanyIdFromToken());
+  }, []);
 
   const hiddenPaths = ['/login', '/register', '/select', '/admin', '/super-admin', '/ayuda', '/terms', '/privacy', '/contact'];
   const isHiddenPath = hiddenPaths.some(p => pathname.startsWith(p));
