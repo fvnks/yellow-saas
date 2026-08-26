@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarSeparator, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
-import { sidebarItems, NavGroup } from "@/navigation/sidebar/sidebar-items";
+import { sidebarItems } from "@/navigation/sidebar/sidebar-items";
 import SidebarFooterMenu from "./sidebar-footer-menu";
 import SidebarBrandHeader from "./sidebar-header";
 import SidebarNavigation from "./sidebar-navigation";
@@ -65,30 +65,30 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   }, [activatedModules]);
 
   return (
-    <Sidebar className="border-r border-border" collapsible="icon" {...props}>
-      <SidebarHeader>
+    <Sidebar className="border-r border-slate-800 bg-[#0F172A] text-slate-300 select-none shadow-xl" collapsible="icon" {...props}>
+      <SidebarHeader className="bg-[#0F172A] pt-3">
         <SidebarBrandHeader />
-        <SidebarSeparator className="mx-3 bg-border" />
+        <SidebarSeparator className="mx-3 bg-slate-800/80 my-2" />
       </SidebarHeader>
-      <SidebarContent>
-        <SidebarMenu className="px-2 mb-1 space-y-0.5">
+      <SidebarContent className="bg-[#0F172A] scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
+        <SidebarMenu className="px-2 mb-2 space-y-1">
           <SidebarMenuItem>
             <Link href="/select">
               <SidebarMenuButton
-                tooltip="Volver al selector"
-                className="rounded-xl transition-all duration-150 text-muted-foreground hover:text-foreground hover:bg-muted"
+                tooltip="Cambiar de Empresa / Selector"
+                className="rounded-xl transition-all duration-150 text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 group-data-[collapsible=icon]:justify-center"
               >
-                <ArrowLeft className="h-4 w-4" />
-                <span>Volver al selector</span>
+                <ArrowLeft className="h-4 w-4 text-amber-400 shrink-0" />
+                <span className="text-xs font-medium">Volver a Empresas</span>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
         </SidebarMenu>
         <SidebarNavigation sidebarItems={filteredSidebarItems} />
       </SidebarContent>
-      <SidebarFooter>
-        <SidebarSeparator className="mx-3 bg-border" />
-        <div className="px-2 py-1">
+      <SidebarFooter className="bg-[#0F172A] pb-3">
+        <SidebarSeparator className="mx-3 bg-slate-800/80 mb-2" />
+        <div className="px-1 py-0.5">
           <SidebarFooterMenu user={user} />
         </div>
       </SidebarFooter>
