@@ -28,11 +28,11 @@ function ChileanIndicatorsPill() {
   }, []);
 
   return (
-    <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full text-xs font-medium text-slate-800 dark:text-amber-300">
+    <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full text-xs font-semibold text-slate-800 dark:text-amber-300">
       <TrendingUp className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
       <span>UF: ${ufValue.toLocaleString('es-CL')}</span>
       <span className="opacity-40">|</span>
-      <span className="flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-semibold">
+      <span className="flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-bold">
         <ShieldCheck className="w-3.5 h-3.5" /> SII En Línea
       </span>
     </div>
@@ -41,24 +41,24 @@ function ChileanIndicatorsPill() {
 
 export default function DashboardLayout({ children }: LayoutProps) {
   return (
-    <main className="bg-slate-50 dark:bg-slate-950 min-h-screen transition-colors">
+    <main className="bg-[#F8FAFC] min-h-screen text-slate-900 transition-colors">
       <Toaster position="top-right" richColors closeButton />
       <SidebarProvider>
         <AppSidebar />
-        <SidebarInset className="m-2 mx-auto max-w-screen-2xl md:rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
-          <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-            <div className="flex items-center gap-2 px-4">
-              <SidebarTrigger className="-ml-1" />
-              <Separator orientation="vertical" className="mr-2 h-4" />
+        <SidebarInset className="bg-[#F8FAFC]">
+          <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between border-b border-slate-200/80 bg-white/90 backdrop-blur-xl px-6">
+            <div className="flex items-center gap-3">
+              <SidebarTrigger className="-ml-1 text-slate-600 hover:text-slate-900" />
+              <Separator orientation="vertical" className="h-4 bg-slate-200" />
               <SidebarBreadcrumbs />
             </div>
-            <div className="ml-auto pr-4 flex items-center gap-3">
+            <div className="flex items-center gap-3">
               <ChileanIndicatorsPill />
               <ThemeToggle />
               <NotificationsDropdown />
             </div>
           </header>
-          <div className="p-5">{children}</div>
+          <div className="p-6">{children}</div>
         </SidebarInset>
       </SidebarProvider>
     </main>
