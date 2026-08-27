@@ -23,15 +23,15 @@ export function PaymentCheckoutModal({
   onClose,
   onPaymentSuccess,
 }: PaymentCheckoutModalProps) {
-  if (!isOpen) return null;
-
   const [paymentMethod, setPaymentMethod] = useState<'transbank_db' | 'transbank_cr' | 'cash' | 'mercadopago_qr' | 'transfer'>('transbank_db');
   const [docType, setDocType] = useState<'boleta' | 'factura'>('boleta');
   const [tipPct, setTipPct] = useState<number>(10);
   const [splitGuests, setSplitGuests] = useState<number>(1);
-  const [cashReceivedCLP, setCashReceivedCLP] = useState<number>(order.totalCLP * 1.1);
+  const [cashReceivedCLP, setCashReceivedCLP] = useState<number>(order ? order.totalCLP * 1.1 : 0);
   const [invoiceRut, setInvoiceRut] = useState('');
   const [invoiceRazon, setInvoiceRazon] = useState('');
+
+  if (!isOpen || !order) return null;
 
   const formatCLP = (val: number) =>
     new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(val);
