@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { INITIAL_TABLES, INITIAL_ORDERS, INITIAL_MENU_ITEMS, TableSession, Order, OrderItem } from '../lib/restaurant-store';
 import { Utensils, Plus, CheckCircle, Receipt, DollarSign, Clock, UserCheck, ShieldCheck, QrCode, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
+import { PaymentCheckoutModal } from './components/payment-checkout-modal';
 
 export default function WaiterPOSPage() {
   const [tables, setTables] = useState<TableSession[]>(INITIAL_TABLES);
@@ -11,6 +12,7 @@ export default function WaiterPOSPage() {
   const [menu] = useState(INITIAL_MENU_ITEMS);
   const [selectedTable, setSelectedTable] = useState<TableSession | null>(INITIAL_TABLES[0]);
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'food' | 'drink'>('all');
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
   const formatCLP = (val: number) =>
     new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(val);
@@ -84,19 +86,21 @@ export default function WaiterPOSPage() {
 
   const handleEmitBoleta = () => {
     if (!activeOrder) return;
-    setOrders(prev =>
-      prev.map(o => (o.id === activeOrder.id ? { ...o, dteStatus: 'boleta_emitida' } : o))
-    );
-    toast.success(`Boleta Electrónica SII emitida con éxito. Total: ${formatCLP(activeOrder.totalCLP)}`);
+    setIsCheckoutOpen(true);
   };
 
   const handleCloseSession = () => {
     if (!selectedTable || !activeOrder) return;
-    setOrders(prev => prev.map(o => (o.id === activeOrder.id ? { ...o, status: 'closed' } : o)));
+    setIsCheckoutOpen(true);
+  };
+
+  const handlePaymentCompleted = (paidData: { folioDTE: number; paymentMethod: string; totalPaidCLP: number; tipCLP: number }) => {
+    if (!selectedTable || !activeOrder) return;
+    setOrders(prev => prev.map(o => (o.id === activeOrder.id ? { ...o, status: 'closed', dteStatus: 'boleta_emitida' } : o)));
     setTables(prev =>
       prev.map(t => (t.tableId === selectedTable.tableId ? { ...t, status: 'free' } : t))
     );
-    toast.success(`Mesa ${selectedTable.tableName} liberada y pagada correctamente.`);
+    setSelectedTable(prev => (prev ? { ...prev, status: 'free' } : null));
   };
 
   const getStatusBadge = (status: TableSession['status']) => {
@@ -333,6 +337,15 @@ export default function WaiterPOSPage() {
           </div>
         </div>
       </div>
+
+      {activeOrder && (
+        <PaymentCheckoutModal
+          order={activeOrder}
+          isOpen={isCheckoutOpen}
+          onClose={() => setIsCheckoutOpen(false)}
+          onPaymentSuccess={handlePaymentCompleted}
+        />
+      )}
     </div>
   );
 }
