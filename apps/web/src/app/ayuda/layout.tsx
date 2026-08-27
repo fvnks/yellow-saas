@@ -3,11 +3,14 @@
 import { ReactNode, useEffect, useRef, useState, useMemo } from 'react';
 import { Toaster, toast } from 'sonner';
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { LifeBuoy, BookOpen, Ticket, ArrowLeft, Headphones, Search, X } from 'lucide-react';
+import { LifeBuoy, BookOpen, Ticket, Search, X } from 'lucide-react';
 import ThemeToggle from '@/components/ui/theme-toggle';
 import { getCompanyIdFromToken } from '@/lib/api-client';
+import ModuleSidebarHeader from '@/components/sidebar/module-sidebar-header';
+import ModuleSidebarBackButton from '@/components/sidebar/module-sidebar-back-button';
+import ModuleSidebarFooter from '@/components/sidebar/module-sidebar-footer';
+import { MODULE_SIDEBAR_THEMES } from '@/lib/sidebar-theme';
 
 function AyudaSidebar() {
   const pathname = usePathname();
@@ -15,6 +18,7 @@ function AyudaSidebar() {
   const [searchQuery, setSearchQuery] = useState('');
   const seenTicketsRef = useRef<Set<string>>(new Set());
   const initializedRef = useRef(false);
+  const theme = MODULE_SIDEBAR_THEMES.ayuda;
 
   const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
 
@@ -71,29 +75,12 @@ function AyudaSidebar() {
     <div className="w-64 bg-[#0F172A] border-r border-slate-800 h-screen fixed left-0 top-0 z-40 flex flex-col text-slate-300 select-none shadow-xl">
       {/* Brand Header */}
       <div className="p-3 border-b border-slate-800/80 bg-slate-900/40">
-        <div className="flex items-center gap-3 px-2 py-1.5 rounded-xl bg-slate-900/60 border border-slate-800/80">
-          <Link href="/ayuda" className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#FACC15] p-1.5 shadow-md shadow-amber-500/10 shrink-0 hover:scale-105 transition-transform">
-            <Image src="/logo/yellow-cube.svg" alt="Yellow Ayuda" width={28} height={28} className="drop-shadow-sm" />
-          </Link>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-1">
-              <span className="text-[10px] font-black tracking-widest text-[#FACC15] uppercase">Yellow ERP</span>
-              <span className="inline-flex items-center gap-0.5 text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.2 rounded-full border border-emerald-500/20">
-                <LifeBuoy className="w-2.5 h-2.5" /> Ayuda
-              </span>
-            </div>
-            <p className="text-xs font-bold text-slate-100 truncate mt-0.5">Soporte & Base Conocimiento</p>
-          </div>
-        </div>
+        <ModuleSidebarHeader moduleKey="ayuda" icon={LifeBuoy} />
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 p-3 space-y-2 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-800">
-        <Link href="/select"
-          className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-400 hover:text-slate-100 rounded-xl hover:bg-slate-800/80 transition-colors">
-          <ArrowLeft className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-          Volver a Empresas
-        </Link>
+        <ModuleSidebarBackButton moduleKey="ayuda" />
 
         {/* Quick Search */}
         <div className="relative flex items-center">
@@ -114,7 +101,7 @@ function AyudaSidebar() {
           )}
         </div>
 
-        <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-3 pt-2">Atención & Consultas</p>
+        <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-3 pt-2">Soporte & Documentación</p>
 
         <div className="space-y-1">
           {filteredItems.map(item => {
@@ -124,15 +111,15 @@ function AyudaSidebar() {
               : pathname.startsWith(item.href);
             return (
               <Link key={item.href} href={item.href}
-                className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
+                className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                   isActive
-                    ? 'bg-slate-800 text-white font-bold border-l-4 border-[#FACC15] shadow-sm shadow-amber-500/10'
+                    ? `bg-slate-800 text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-sm shadow-emerald-500/10`
                     : 'text-slate-300 hover:text-slate-100 hover:bg-slate-800/60'
                 }`}>
-                <Icon className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>{item.label}</span>
+                <Icon className={`w-4 h-4 shrink-0 ${isActive ? theme.iconActiveColorClass : 'text-slate-400'}`} />
+                <span className="flex-1">{item.label}</span>
                 {item.href === '/ayuda/tickets' && unread > 0 && (
-                  <span className="ml-auto inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-[9px] font-black bg-[#FACC15] text-slate-950 shadow-sm">
+                  <span className="ml-auto bg-emerald-500 text-slate-950 font-extrabold text-[10px] px-1.5 py-0.2 rounded-full">
                     {unread}
                   </span>
                 )}
@@ -140,15 +127,12 @@ function AyudaSidebar() {
             );
           })}
         </div>
-
-        <div className="mt-4 p-3 bg-slate-900/60 border border-slate-800/80 rounded-xl">
-          <p className="flex items-center gap-2 text-xs font-medium text-slate-300">
-            <Headphones className="w-4 h-4 text-emerald-400 shrink-0" />
-            Respuestas pendientes
-          </p>
-          <p className="text-lg font-black text-[#FACC15] mt-1">{unread} <span className="text-[10px] text-slate-400 font-normal">ticket(s)</span></p>
-        </div>
       </nav>
+
+      {/* Footer */}
+      <div className="p-3 border-t border-slate-800/80 bg-[#0F172A]">
+        <ModuleSidebarFooter moduleKey="ayuda" user={{ name: 'Usuario Soporte', role: 'Atención al Cliente' }} />
+      </div>
     </div>
   );
 }
@@ -164,7 +148,7 @@ export default function AyudaLayout({ children }: { children: ReactNode }) {
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
               <LifeBuoy className="w-3.5 h-3.5 text-emerald-600" /> Centro de Ayuda
             </span>
-            <span className="text-xs text-slate-500">Base de Conocimientos & Soporte SII</span>
+            <span className="text-xs text-slate-500">Base de Conocimientos y Consultas</span>
           </div>
           <div className="flex items-center gap-3">
             <ThemeToggle />

@@ -1,20 +1,19 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarSeparator, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarSeparator } from "@/components/ui/sidebar";
 import { sidebarItems } from "@/navigation/sidebar/sidebar-items";
-import SidebarFooterMenu from "./sidebar-footer-menu";
 import SidebarBrandHeader from "./sidebar-header";
 import SidebarNavigation from "./sidebar-navigation";
+import ModuleSidebarBackButton from '@/components/sidebar/module-sidebar-back-button';
+import ModuleSidebarFooter from '@/components/sidebar/module-sidebar-footer';
 import { getApiClient } from '@/lib/api-client';
 
 function getUserFromCookie() {
-  if (typeof window === 'undefined') return { name: 'Usuario', email: '', avatar: '', role: 'member' };
+  if (typeof window === 'undefined') return { name: 'Usuario', email: '', avatar: '', role: 'Admin ERP' };
   const cookies = document.cookie.split(';');
   const authCookie = cookies.find(c => c.trim().startsWith('auth-token='));
-  if (!authCookie) return { name: 'Usuario', email: '', avatar: '', role: 'member' };
+  if (!authCookie) return { name: 'Usuario', email: '', avatar: '', role: 'Admin ERP' };
   try {
     const token = authCookie.split('=')[1];
     const payload = JSON.parse(atob(token.split('.')[1]));
@@ -22,15 +21,15 @@ function getUserFromCookie() {
       name: payload.name || 'Usuario',
       email: payload.email || '',
       avatar: '',
-      role: payload.role || 'member',
+      role: 'Admin ERP',
     };
   } catch {
-    return { name: 'Usuario', email: '', avatar: '', role: 'member' };
+    return { name: 'Usuario', email: '', avatar: '', role: 'Admin ERP' };
   }
 }
 
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
-  const [user, setUser] = useState({ name: 'Usuario', email: '', avatar: '', role: 'member' });
+  const [user, setUser] = useState({ name: 'Usuario', email: '', avatar: '', role: 'Admin ERP' });
   const [activatedModules, setActivatedModules] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -70,28 +69,16 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
         <SidebarBrandHeader />
         <SidebarSeparator className="mx-3 bg-slate-800/80 my-2" />
       </SidebarHeader>
-      <SidebarContent className="bg-[#0F172A] scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
-        <SidebarMenu className="px-2 mb-2 space-y-1">
-          <SidebarMenuItem>
-            <Link href="/select">
-              <SidebarMenuButton
-                tooltip="Cambiar de Empresa / Selector"
-                className="rounded-xl transition-all duration-150 text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 group-data-[collapsible=icon]:justify-center"
-              >
-                <ArrowLeft className="h-4 w-4 text-amber-400 shrink-0" />
-                <span className="text-xs font-medium">Volver a Empresas</span>
-              </SidebarMenuButton>
-            </Link>
-          </SidebarMenuItem>
-        </SidebarMenu>
+
+      <SidebarContent className="bg-[#0F172A]">
+        <ModuleSidebarBackButton moduleKey="dashboard" />
         <SidebarNavigation sidebarItems={filteredSidebarItems} />
       </SidebarContent>
-      <SidebarFooter className="bg-[#0F172A] pb-3">
-        <SidebarSeparator className="mx-3 bg-slate-800/80 mb-2" />
-        <div className="px-1 py-0.5">
-          <SidebarFooterMenu user={user} />
-        </div>
+
+      <SidebarFooter className="bg-[#0F172A] p-3 border-t border-slate-800/80">
+        <ModuleSidebarFooter moduleKey="dashboard" user={user} />
       </SidebarFooter>
+
       <SidebarRail />
     </Sidebar>
   );
