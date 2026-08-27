@@ -7,7 +7,6 @@ import { ChevronRight, ChevronDown, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
-  SidebarGroup,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -15,7 +14,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { ProjectNavGroup, ProjectNavMainItem, ProjectNavSubItem, resolveProjectIcon, PROJECT_ICON_MAP } from "@/navigation/sidebar/project-sidebar-items";
+import { ProjectNavGroup, ProjectNavMainItem, resolveProjectIcon, PROJECT_ICON_MAP } from "@/navigation/sidebar/project-sidebar-items";
+import { MODULE_SIDEBAR_THEMES } from "@/lib/sidebar-theme";
 
 interface ProjectSidebarNavigationProps {
   sidebarItems: ProjectNavGroup[];
@@ -26,6 +26,7 @@ export default function ProjectSidebarNavigation({ sidebarItems }: ProjectSideba
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
   const [searchQuery, setSearchQuery] = useState("");
+  const theme = MODULE_SIDEBAR_THEMES.proyectos;
 
   useEffect(() => {
     const updatedGroups: Record<string, boolean> = {};
@@ -62,9 +63,9 @@ export default function ProjectSidebarNavigation({ sidebarItems }: ProjectSideba
     setOpenItems((prev) => ({ ...prev, [title]: !prev[title] }));
   };
 
-  const renderIcon = (iconName: keyof typeof PROJECT_ICON_MAP | undefined): React.ReactNode => {
+  const renderIcon = (iconName: keyof typeof PROJECT_ICON_MAP | undefined, isActive: boolean): React.ReactNode => {
     const Icon = resolveProjectIcon(iconName);
-    return <Icon className="h-4 w-4 text-amber-400 shrink-0" />;
+    return <Icon className={cn("h-4 w-4 shrink-0", isActive ? theme.iconActiveColorClass : "text-slate-400")} />;
   };
 
   const isActive = (itemPath: string, subItems?: ProjectNavMainItem["subItems"]) => {
@@ -147,7 +148,7 @@ export default function ProjectSidebarNavigation({ sidebarItems }: ProjectSideba
                     "text-[10px] font-bold uppercase tracking-widest",
                     "transition-all duration-150 cursor-pointer",
                     groupActive
-                      ? "text-[#FACC15]"
+                      ? theme.groupActiveText
                       : "text-slate-500 hover:text-slate-300",
                     "hover:bg-slate-800/40"
                   )}>
@@ -180,13 +181,13 @@ export default function ProjectSidebarNavigation({ sidebarItems }: ProjectSideba
                                   isActive={itemActive}
                                   tooltip={item.title}
                                   className={cn(
-                                    "whitespace-nowrap rounded-xl transition-all duration-150 text-xs",
+                                    "whitespace-nowrap rounded-xl transition-all duration-150 py-2.5 px-3 text-xs font-semibold",
                                     itemActive
-                                      ? "bg-slate-800 text-white font-bold border-l-4 border-[#FACC15] shadow-sm shadow-amber-500/10"
+                                      ? `bg-slate-800 text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-sm`
                                       : "text-slate-300 hover:text-slate-100 hover:bg-slate-800/60"
                                   )}
                                 >
-                                  {renderIcon(item.icon)}
+                                  {renderIcon(item.icon, itemActive)}
                                   <span>{item.title}</span>
                                   <ChevronRight className={cn(
                                     "ml-auto transition-transform duration-200 text-slate-400",
@@ -199,13 +200,13 @@ export default function ProjectSidebarNavigation({ sidebarItems }: ProjectSideba
                                     isActive={itemActive}
                                     tooltip={item.title}
                                     className={cn(
-                                      "whitespace-nowrap rounded-xl transition-all duration-150 text-xs w-full",
+                                      "whitespace-nowrap rounded-xl transition-all duration-150 py-2.5 px-3 text-xs font-semibold w-full",
                                       itemActive
-                                        ? "bg-slate-800 text-white font-bold border-l-4 border-[#FACC15] shadow-sm shadow-amber-500/10"
+                                        ? `bg-slate-800 text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-sm`
                                         : "text-slate-300 hover:text-slate-100 hover:bg-slate-800/60"
                                     )}
                                   >
-                                    {renderIcon(item.icon)}
+                                    {renderIcon(item.icon, itemActive)}
                                     <span>{item.title}</span>
                                   </SidebarMenuButton>
                                 </Link>
@@ -222,14 +223,14 @@ export default function ProjectSidebarNavigation({ sidebarItems }: ProjectSideba
                                           isActive={subActive}
                                           asChild
                                           className={cn(
-                                            "rounded-lg text-xs transition-all",
+                                            "rounded-lg text-xs transition-all py-1.5 px-2.5 font-medium",
                                             subActive
-                                              ? "bg-slate-800/90 text-[#FACC15] font-bold"
+                                              ? `bg-slate-800/90 ${theme.activeSubItemText} font-bold`
                                               : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
                                           )}
                                         >
                                           <a href={subItem.path}>
-                                            {renderIcon(subItem.icon)}
+                                            {renderIcon(subItem.icon, subActive)}
                                             <span>{subItem.title}</span>
                                           </a>
                                         </SidebarMenuSubButton>
