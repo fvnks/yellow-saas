@@ -575,6 +575,11 @@ export class ApiClient {
     return this.request<any>('/condominio');
   }
 
+  // Restaurante & POS
+  async getRestaurantData() {
+    return this.request<any>('/restaurant');
+  }
+
   // Liquidation
   async calculateLiquidation(data: { employee_id: string; termination_type: string; termination_date: string; notice_given?: boolean }) {
     return this.request<any>('/payroll/liquidation', { method: 'POST', body: JSON.stringify(data) });

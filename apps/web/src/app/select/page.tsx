@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
-import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight, X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail, Sparkles, TrendingUp, ShieldCheck, DollarSign, Building } from 'lucide-react';
+import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight, X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail, Sparkles, TrendingUp, ShieldCheck, DollarSign, Building, UtensilsCrossed } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import { getChileanIndicators, ChileanIndicators } from '@/lib/indicators';
 import {
@@ -106,6 +106,19 @@ const modules: ModuleOption[] = [
     href: '/condominio',
     requiredModules: ['condominio'],
     moduleName: 'condominio',
+  },
+  {
+    id: 'restaurante',
+    title: 'Restaurante & POS',
+    subtitle: 'Comandas, KDS y Mesas',
+    description: ['POS Garzón & Mesas', 'Kiosco Autoservicio QR', 'Pantallas KDS Cocina/Bar', 'Boleta Electrónica SII'],
+    icon: UtensilsCrossed,
+    iconBg: 'bg-amber-50 border-amber-200/80',
+    iconColor: 'text-amber-600',
+    accentBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+    href: '/restaurant',
+    requiredModules: ['restaurant'],
+    moduleName: 'restaurant',
   },
   {
     id: 'mi-cuenta',
