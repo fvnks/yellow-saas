@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { INITIAL_MENU_ITEMS, INITIAL_TABLES, MenuItem } from '../lib/restaurant-store';
-import { QrCode, ShoppingBag, Sparkles, AlertCircle, Check, Users, ArrowRight } from 'lucide-react';
+import { QrCode, ShoppingBag, Sparkles, AlertCircle, Check, Users, ArrowRight, Utensils } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function KioskPage() {
@@ -129,7 +129,14 @@ export default function KioskPage() {
 
           {/* Menu Items List */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {menu.map(item => (
+            {menu.length === 0 ? (
+              <div className="col-span-full text-center py-12 bg-white border border-slate-200/80 rounded-2xl p-6 space-y-2">
+                <Utensils className="w-8 h-8 mx-auto text-slate-300" />
+                <p className="text-sm font-bold text-slate-700">No hay productos en la carta</p>
+                <p className="text-xs text-slate-500">Agrega productos desde la Consola Admin del Restaurante.</p>
+              </div>
+            ) : (
+              menu.map(item => (
               <div
                 key={item.id}
                 className={`bg-white border rounded-2xl p-4 shadow-sm transition-all flex flex-col justify-between ${
@@ -177,7 +184,8 @@ export default function KioskPage() {
                   </button>
                 </div>
               </div>
-            ))}
+            ))
+            )}
           </div>
         </div>
 

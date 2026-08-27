@@ -19,50 +19,7 @@ interface DteBoleta {
   tedCode: string;
 }
 
-const INITIAL_BOLETAS: DteBoleta[] = [
-  {
-    id: 'bol-001',
-    folio: 45201,
-    tableName: 'Mesa 3 (Interior)',
-    waiterName: 'Carlos M.',
-    dateTime: '2026-08-27 13:45',
-    netoCLP: 32353,
-    ivaCLP: 6147,
-    tipCLP: 3850,
-    totalCLP: 42350,
-    paymentMethod: 'Transbank DB',
-    siiStatus: 'Aceptado SII',
-    tedCode: 'TED-SII-45201-99210-9831',
-  },
-  {
-    id: 'bol-002',
-    folio: 45202,
-    tableName: 'Mesa 1 (Terraza)',
-    waiterName: 'Sofia R.',
-    dateTime: '2026-08-27 14:10',
-    netoCLP: 18487,
-    ivaCLP: 3513,
-    tipCLP: 2200,
-    totalCLP: 24200,
-    paymentMethod: 'Efectivo',
-    siiStatus: 'Aceptado SII',
-    tedCode: 'TED-SII-45202-88120-1122',
-  },
-  {
-    id: 'bol-003',
-    folio: 45203,
-    tableName: 'Mesa 5 (VIP)',
-    waiterName: 'Carlos M.',
-    dateTime: '2026-08-27 14:30',
-    netoCLP: 49580,
-    ivaCLP: 9420,
-    tipCLP: 5900,
-    totalCLP: 64900,
-    paymentMethod: 'MercadoPago QR',
-    siiStatus: 'Aceptado SII',
-    tedCode: 'TED-SII-45203-77610-3344',
-  },
-];
+const INITIAL_BOLETAS: DteBoleta[] = [];
 
 export default function RestaurantSalesPage() {
   const [boletas, setBoletas] = useState<DteBoleta[]>(INITIAL_BOLETAS);
@@ -165,7 +122,16 @@ export default function RestaurantSalesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-medium">
-              {filtered.map(b => (
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={10} className="py-8 text-center text-slate-500">
+                    <Receipt className="w-8 h-8 mx-auto text-slate-300 mb-2" />
+                    <p className="font-bold text-xs text-slate-700">No se han registrado boletas electrónicas</p>
+                    <p className="text-[11px] text-slate-400">Las boletas emitidas desde el POS Garzón aparecerán automáticamente aquí.</p>
+                  </td>
+                </tr>
+              ) : (
+                filtered.map(b => (
                 <tr key={b.id} className="hover:bg-slate-50/80 transition-colors">
                   <td className="py-3.5 px-4 font-mono font-bold text-blue-600">
                     N° {b.folio}
@@ -212,7 +178,8 @@ export default function RestaurantSalesPage() {
                     </div>
                   </td>
                 </tr>
-              ))}
+              ))
+              )}
             </tbody>
           </table>
         </div>

@@ -183,7 +183,14 @@ export default function ReservationsPage() {
             </h2>
 
             <div className="space-y-3">
-              {reservations.map(res => (
+              {reservations.length === 0 ? (
+                <div className="text-center py-10 bg-slate-50 border border-dashed border-slate-200 rounded-xl p-4 space-y-1">
+                  <CalendarCheck className="w-6 h-6 mx-auto text-slate-400" />
+                  <p className="text-xs font-bold text-slate-700">No hay reservas registradas</p>
+                  <p className="text-[11px] text-slate-500">Crea la primera reserva usando el formulario de la izquierda.</p>
+                </div>
+              ) : (
+                reservations.map(res => (
                 <div
                   key={res.id}
                   className="p-4 rounded-xl border border-slate-200/80 bg-white hover:border-slate-300 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
@@ -220,7 +227,8 @@ export default function ReservationsPage() {
                     <CheckCircle className="w-3.5 h-3.5" /> Confirmada
                   </span>
                 </div>
-              ))}
+              ))
+              )}
             </div>
           </div>
         </div>

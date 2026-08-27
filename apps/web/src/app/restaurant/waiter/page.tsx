@@ -145,7 +145,13 @@ export default function WaiterPOSPage() {
               <span className="text-xs text-slate-500 font-normal">{tables.filter(t => t.status === 'occupied').length} Ocupadas</span>
             </h2>
             <div className="grid grid-cols-2 gap-3">
-              {tables.map(table => {
+              {tables.length === 0 ? (
+                <div className="col-span-2 text-center py-8 space-y-2">
+                  <p className="text-xs font-bold text-slate-700">No hay mesas registradas</p>
+                  <p className="text-[11px] text-slate-500">Crea mesas desde Consola Admin</p>
+                </div>
+              ) : (
+                tables.map(table => {
                 const isSelected = selectedTable?.tableId === table.tableId;
                 return (
                   <button
@@ -167,7 +173,8 @@ export default function WaiterPOSPage() {
                     </div>
                   </button>
                 );
-              })}
+              })
+              )}
             </div>
           </div>
         </div>
