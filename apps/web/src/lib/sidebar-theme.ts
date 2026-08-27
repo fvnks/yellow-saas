@@ -6,7 +6,8 @@ export type ModuleType =
   | 'hr'
   | 'micuenta'
   | 'ayuda'
-  | 'admin';
+  | 'admin'
+  | 'restaurante';
 
 export interface ModuleSidebarTheme {
   moduleKey: ModuleType;
@@ -162,5 +163,22 @@ export const MODULE_SIDEBAR_THEMES: Record<ModuleType, ModuleSidebarTheme> = {
     activeBadgeClass: 'bg-rose-500 text-white border-rose-400 font-black',
     inactiveBadgeClass: 'bg-rose-500/20 text-rose-300 border-rose-500/30 font-extrabold',
     avatarClass: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
+  },
+  restaurante: {
+    moduleKey: 'restaurante',
+    title: 'Restaurante & POS',
+    badgeLabel: 'POS',
+    subtitle: 'Mesas, KDS, Carta & QR',
+    headerBadgeBg: 'bg-amber-500/10',
+    headerBadgeText: 'text-amber-400',
+    headerBadgeBorder: 'border-amber-500/20',
+    activeBorderClass: 'border-amber-500',
+    iconActiveColorClass: 'text-amber-400',
+    backIconColorClass: 'text-amber-400',
+    activeSubItemText: 'text-amber-400',
+    groupActiveText: 'text-amber-400',
+    activeBadgeClass: 'bg-amber-500 text-slate-950 border-amber-300 font-black',
+    inactiveBadgeClass: 'bg-amber-500/20 text-amber-300 border-amber-500/30 font-extrabold',
+    avatarClass: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
   },
 };

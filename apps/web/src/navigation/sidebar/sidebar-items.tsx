@@ -50,6 +50,7 @@ import {
   FlaskConical,
   Play,
   Building,
+  UtensilsCrossed,
 } from "lucide-react";
 
 export const ICON_MAP = {
@@ -67,6 +68,7 @@ export const ICON_MAP = {
   Monitor,
   CreditCard,
   Settings,
+  UtensilsCrossed,
   ScrollText,
   AlertTriangle,
   FileText,
@@ -415,6 +417,11 @@ export const sidebarItems: NavGroup[] = [
         title: "Mi Condominio",
         path: "/condominio",
         icon: "Building",
+      },
+      {
+        title: "Restaurante & POS",
+        path: "/restaurant",
+        icon: "UtensilsCrossed",
       },
       {
         title: "Alertas",
