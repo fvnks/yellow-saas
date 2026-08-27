@@ -3,14 +3,17 @@
 import { ReactNode, useEffect, useRef, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { toast, Toaster } from 'sonner';
 import {
-  Shield, Building2, Users, KeyRound, Settings, LogOut,
+  Shield, Building2, Users, KeyRound, Settings,
   LayoutDashboard, Menu, X, Headphones, Bell, CreditCard, ScrollText, BookOpen, Search
 } from 'lucide-react';
 import { useAuthToken } from '@/hooks/use-auth-token';
+import ModuleSidebarHeader from '@/components/sidebar/module-sidebar-header';
+import ModuleSidebarBackButton from '@/components/sidebar/module-sidebar-back-button';
+import ModuleSidebarFooter from '@/components/sidebar/module-sidebar-footer';
+import { MODULE_SIDEBAR_THEMES } from '@/lib/sidebar-theme';
 
 const sidebarItems = [
   { label: 'Plataforma', items: [
@@ -43,6 +46,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const seenTicketsRef = useRef<Set<string>>(new Set());
   const initializedRef = useRef(false);
   const session = useAuthToken();
+  const theme = MODULE_SIDEBAR_THEMES.admin;
 
   const fetchSupportSummary = async () => {
     try {
@@ -94,11 +98,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     return pathname.startsWith(path);
   };
 
-  const handleLogout = () => {
-    document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-    window.location.href = '/login';
-  };
-
   const filteredSidebarItems = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     if (!query) return sidebarItems;
@@ -119,26 +118,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       {/* Sidebar */}
       <aside className={`fixed left-0 top-0 h-screen bg-[#0F172A] border-r border-slate-800 z-50 transition-all duration-300 shadow-xl flex flex-col ${sidebarOpen ? 'w-64' : 'w-16'}`}>
         {/* Brand Header */}
-        <div className="h-16 flex items-center gap-3 px-3 border-b border-slate-800/80 bg-slate-900/40">
-          <Link href="/admin" className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#FACC15] p-1.5 shadow-md shadow-amber-500/10 shrink-0 hover:scale-105 transition-transform">
-            <Image src="/logo/yellow-cube.svg" alt="Yellow Admin" width={28} height={28} className="drop-shadow-sm" />
-          </Link>
-          {sidebarOpen && (
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between gap-1">
-                <span className="text-[10px] font-black tracking-widest text-[#FACC15] uppercase">Yellow ERP</span>
-                <span className="inline-flex items-center gap-0.5 text-[9px] font-bold text-rose-400 bg-rose-500/10 px-1.5 py-0.2 rounded-full border border-rose-500/20">
-                  <Shield className="w-2.5 h-2.5" /> Admin
-                </span>
-              </div>
-              <p className="text-xs font-bold text-slate-100 truncate mt-0.5">Control Global SaaS</p>
-            </div>
-          )}
+        <div className="p-3 border-b border-slate-800/80 bg-slate-900/40">
+          <ModuleSidebarHeader moduleKey="admin" icon={Shield} />
         </div>
 
         {/* Quick Search */}
         {sidebarOpen && (
           <div className="p-3 pb-0">
+            <ModuleSidebarBackButton moduleKey="admin" />
             <div className="relative flex items-center">
               <Search className="absolute left-2.5 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
               <input
@@ -176,13 +163,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                     <Link
                       key={item.path}
                       href={item.path}
-                      className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
+                      className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                         active
-                          ? 'bg-slate-800 text-white font-bold border-l-4 border-[#FACC15] shadow-sm shadow-amber-500/10'
+                          ? `bg-slate-800 text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-sm shadow-rose-500/10`
                           : 'text-slate-300 hover:text-slate-100 hover:bg-slate-800/60'
                       }`}
                     >
-                      <Icon className="w-4 h-4 text-amber-400 shrink-0" />
+                      <Icon className={`w-4 h-4 shrink-0 ${active ? theme.iconActiveColorClass : 'text-slate-400'}`} />
                       {sidebarOpen && <span className="truncate">{item.title}</span>}
                       {item.path === '/admin/support' && supportPending > 0 && (
                         <span className={`ml-auto inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-[9px] font-black ${
@@ -203,22 +190,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
         {/* User footer */}
         {sidebarOpen && (
-          <div className="p-3 border-t border-slate-800 bg-slate-900/40">
-            <div className="flex items-center gap-3 px-2 py-1.5 rounded-xl bg-slate-900/60 border border-slate-800/80">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FACC15] via-amber-500 to-yellow-600 flex items-center justify-center shrink-0 shadow-inner text-slate-950 font-black text-xs">
-                {userName?.charAt(0) || 'S'}
-              </div>
-              <div className="flex-1 overflow-hidden min-w-0">
-                <p className="text-xs font-bold text-slate-100 truncate">{userName}</p>
-                <p className="text-[10px] text-slate-400 truncate">{userEmail}</p>
-                <span className="inline-flex items-center mt-0.5 px-1.5 py-0 rounded-full text-[8px] uppercase tracking-wider font-black bg-rose-500/10 text-rose-400 border border-rose-500/30">
-                  Super Admin
-                </span>
-              </div>
-              <button onClick={handleLogout} className="text-slate-400 hover:text-rose-400 transition-colors p-1" title="Cerrar sesión">
-                <LogOut className="w-4 h-4" />
-              </button>
-            </div>
+          <div className="p-3 border-t border-slate-800 bg-[#0F172A]">
+            <ModuleSidebarFooter moduleKey="admin" user={{ name: userName || 'Super Admin', email: userEmail, role: 'Super Admin' }} />
           </div>
         )}
       </aside>
@@ -235,7 +208,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
             <div className="flex items-center gap-2 px-3 py-1 bg-slate-800/80 border border-slate-700/80 rounded-xl">
-              <Shield className="w-3.5 h-3.5 text-[#FACC15]" />
+              <Shield className="w-3.5 h-3.5 text-rose-400" />
               <span className="text-[10px] font-black text-slate-200 uppercase tracking-wider">Super Admin Console</span>
             </div>
           </div>

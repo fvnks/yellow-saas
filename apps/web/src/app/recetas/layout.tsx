@@ -3,15 +3,19 @@
 import { ReactNode, useState, useMemo } from 'react';
 import { Toaster } from 'sonner';
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { FlaskConical, Plus, BarChart3, Settings, Monitor, Package, ArrowDownUp, Receipt, History, ListChecks, ArrowLeft, Search, X } from 'lucide-react';
+import { FlaskConical, Plus, BarChart3, Settings, Monitor, Package, ArrowDownUp, Receipt, History, ListChecks, Search, X } from 'lucide-react';
 import ThemeToggle from '@/components/ui/theme-toggle';
 import { RefreshProvider } from '@/components/recetas/RefreshContext';
+import ModuleSidebarHeader from '@/components/sidebar/module-sidebar-header';
+import ModuleSidebarBackButton from '@/components/sidebar/module-sidebar-back-button';
+import ModuleSidebarFooter from '@/components/sidebar/module-sidebar-footer';
+import { MODULE_SIDEBAR_THEMES } from '@/lib/sidebar-theme';
 
 function RecetasSidebar() {
   const pathname = usePathname();
   const [searchQuery, setSearchQuery] = useState('');
+  const theme = MODULE_SIDEBAR_THEMES.recetas;
 
   const navItems = [
     { href: '/recetas', label: 'Recetas', icon: ListChecks },
@@ -35,29 +39,12 @@ function RecetasSidebar() {
     <div className="w-64 bg-[#0F172A] border-r border-slate-800 h-screen fixed left-0 top-0 z-40 flex flex-col text-slate-300 select-none shadow-xl">
       {/* Brand Header */}
       <div className="p-3 border-b border-slate-800/80 bg-slate-900/40">
-        <div className="flex items-center gap-3 px-2 py-1.5 rounded-xl bg-slate-900/60 border border-slate-800/80">
-          <Link href="/recetas" className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#FACC15] p-1.5 shadow-md shadow-amber-500/10 shrink-0 hover:scale-105 transition-transform">
-            <Image src="/logo/yellow-cube.svg" alt="Yellow Recetas" width={28} height={28} className="drop-shadow-sm" />
-          </Link>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-1">
-              <span className="text-[10px] font-black tracking-widest text-[#FACC15] uppercase">Yellow ERP</span>
-              <span className="inline-flex items-center gap-0.5 text-[9px] font-bold text-amber-400 bg-amber-500/10 px-1.5 py-0.2 rounded-full border border-amber-500/20">
-                <FlaskConical className="w-2.5 h-2.5" /> Recetas
-              </span>
-            </div>
-            <p className="text-xs font-bold text-slate-100 truncate mt-0.5">Producción & BOM</p>
-          </div>
-        </div>
+        <ModuleSidebarHeader moduleKey="recetas" icon={FlaskConical} />
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 p-3 space-y-2 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-800">
-        <Link href="/select"
-          className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-400 hover:text-slate-100 rounded-xl hover:bg-slate-800/80 transition-colors">
-          <ArrowLeft className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-          Volver a Empresas
-        </Link>
+        <ModuleSidebarBackButton moduleKey="recetas" />
 
         {/* Quick Search */}
         <div className="relative flex items-center">
@@ -88,18 +75,23 @@ function RecetasSidebar() {
               : pathname.startsWith(item.href);
             return (
               <Link key={item.href} href={item.href}
-                className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
+                className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                   isActive
-                    ? 'bg-slate-800 text-white font-bold border-l-4 border-[#FACC15] shadow-sm shadow-amber-500/10'
+                    ? `bg-slate-800 text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-sm shadow-amber-500/10`
                     : 'text-slate-300 hover:text-slate-100 hover:bg-slate-800/60'
                 }`}>
-                <Icon className="w-4 h-4 text-amber-400 shrink-0" />
+                <Icon className={`w-4 h-4 shrink-0 ${isActive ? theme.iconActiveColorClass : 'text-slate-400'}`} />
                 <span>{item.label}</span>
               </Link>
             );
           })}
         </div>
       </nav>
+
+      {/* Footer */}
+      <div className="p-3 border-t border-slate-800/80 bg-[#0F172A]">
+        <ModuleSidebarFooter moduleKey="recetas" user={{ name: 'Operador BOM', role: 'Gestor Recetas' }} />
+      </div>
     </div>
   );
 }
