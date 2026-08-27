@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 import { NavGroup, NavMainItem, resolveIcon, ICON_MAP } from "@/navigation/sidebar/sidebar-items";
 import { usePermissions } from "@/lib/permissions";
+import { MODULE_SIDEBAR_THEMES } from "@/lib/sidebar-theme";
 
 function findScrollableAncestor(el: HTMLElement | null): HTMLElement | null {
   let node: HTMLElement | null = el;
@@ -196,9 +197,11 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
     setOpenItems((prev) => ({ ...prev, [title]: nextOpen }));
   };
 
-  const renderIcon = (iconName: keyof typeof ICON_MAP | undefined): React.ReactNode => {
+  const theme = MODULE_SIDEBAR_THEMES.dashboard;
+
+  const renderIcon = (iconName: keyof typeof ICON_MAP | undefined, itemActive?: boolean): React.ReactNode => {
     const Icon = resolveIcon(iconName);
-    return <Icon className="h-4 w-4 shrink-0" />;
+    return <Icon className={cn("h-4 w-4 shrink-0", itemActive ? theme.iconActiveColorClass : "text-slate-400")} />;
   };
 
   const isActive = (itemPath: string, subItems?: NavMainItem["subItems"]) => {
@@ -327,13 +330,13 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                                     tooltip={item.title}
                                     ref={(el) => { itemTriggerRefs.current[item.title] = el; }}
                                     className={cn(
-                                      "whitespace-nowrap rounded-xl transition-all duration-150 py-2",
+                                      "whitespace-nowrap rounded-xl transition-all duration-150 py-2.5 px-3 text-xs font-semibold",
                                       itemActive
-                                        ? "bg-slate-800 text-white font-bold border-l-4 border-[#FACC15] shadow-sm shadow-amber-500/10"
+                                        ? `bg-slate-800 text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-xs`
                                         : "text-slate-300 hover:text-slate-100 hover:bg-slate-800/60"
                                     )}
                                   >
-                                    {renderIcon(item.icon)}
+                                    {renderIcon(item.icon, itemActive)}
                                     <span className="text-xs">{item.title}</span>
                                     {item.comingSoon && <IsComingSoon />}
                                     <ChevronRight className={cn(
@@ -348,13 +351,13 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                                       isActive={itemActive}
                                       tooltip={item.title}
                                       className={cn(
-                                        "rounded-xl transition-all duration-150 py-2",
+                                        "rounded-xl transition-all duration-150 py-2.5 px-3 text-xs font-semibold",
                                         itemActive
-                                          ? "bg-slate-800 text-white font-bold border-l-4 border-[#FACC15] shadow-sm shadow-amber-500/10"
+                                          ? `bg-slate-800 text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-xs`
                                           : "text-slate-300 hover:text-slate-100 hover:bg-slate-800/60"
                                       )}
                                     >
-                                      {renderIcon(item.icon)}
+                                      {renderIcon(item.icon, itemActive)}
                                       <span className="text-xs">{item.title}</span>
                                       {item.path.includes('sales') && (
                                         <span className="ml-auto w-2 h-2 rounded-full bg-emerald-400 animate-pulse group-data-[collapsible=icon]:hidden" />
@@ -367,27 +370,30 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                               {item.subItems && (
                                 <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
                                   <SidebarMenuSub className="border-l border-slate-800 ml-3 pl-2 space-y-0.5 my-1">
-                                    {item.subItems.map((subItem) => (
-                                      <SidebarMenuSubItem key={subItem.title}>
-                                        <SidebarMenuSubButton
-                                          aria-disabled={subItem.comingSoon}
-                                          isActive={isActive(subItem.path)}
-                                          asChild
-                                          className={cn(
-                                            "rounded-xl text-xs py-1.5 transition-colors",
-                                            isActive(subItem.path)
-                                              ? "bg-slate-800 text-[#FACC15] font-bold"
-                                              : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
-                                          )}
-                                        >
-                                          <a href={subItem.path}>
-                                            {renderIcon(subItem.icon)}
-                                            <span>{subItem.title}</span>
-                                            {subItem.comingSoon && <IsComingSoon />}
-                                          </a>
-                                        </SidebarMenuSubButton>
-                                      </SidebarMenuSubItem>
-                                    ))}
+                                      {item.subItems.map((subItem) => {
+                                        const subActive = isActive(subItem.path);
+                                        return (
+                                          <SidebarMenuSubItem key={subItem.title}>
+                                            <SidebarMenuSubButton
+                                              aria-disabled={subItem.comingSoon}
+                                              isActive={subActive}
+                                              asChild
+                                              className={cn(
+                                                "rounded-xl text-xs py-1.5 px-2.5 transition-colors font-medium",
+                                                subActive
+                                                  ? `bg-slate-800/90 ${theme.activeSubItemText} font-bold`
+                                                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
+                                              )}
+                                            >
+                                              <a href={subItem.path}>
+                                                {renderIcon(subItem.icon, subActive)}
+                                                <span>{subItem.title}</span>
+                                                {subItem.comingSoon && <IsComingSoon />}
+                                              </a>
+                                            </SidebarMenuSubButton>
+                                          </SidebarMenuSubItem>
+                                        );
+                                      })}
                                   </SidebarMenuSub>
                                 </CollapsibleContent>
                               )}
