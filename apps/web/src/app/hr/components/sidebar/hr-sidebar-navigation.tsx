@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, Suspense } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { ChevronRight, ChevronDown, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -15,16 +15,20 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { HRNavGroup, HRNavMainItem, resolveHRIcon, HR_ICON_MAP } from "@/navigation/sidebar/hr-sidebar-items";
+import { MODULE_SIDEBAR_THEMES } from "@/lib/sidebar-theme";
 
 interface HRSidebarNavigationProps {
   sidebarItems: HRNavGroup[];
 }
 
-export default function HRSidebarNavigation({ sidebarItems }: HRSidebarNavigationProps) {
+function HRSidebarNavigationContent({ sidebarItems }: HRSidebarNavigationProps) {
   const path = usePathname();
+  const searchParams = useSearchParams();
+  const currentTab = searchParams.get("tab") || "contracts";
   const [searchQuery, setSearchQuery] = useState("");
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
+  const theme = MODULE_SIDEBAR_THEMES.hr;
 
   const filteredItems = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -44,24 +48,34 @@ export default function HRSidebarNavigation({ sidebarItems }: HRSidebarNavigatio
     }).filter(group => group.items.length > 0);
   }, [sidebarItems, searchQuery]);
 
+  const checkIsItemActive = (itemPath: string, subItems?: HRNavMainItem["subItems"]) => {
+    if (subItems && subItems.length > 0) {
+      return subItems.some((sub) => {
+        const subTab = sub.path.includes("tab=") ? sub.path.split("tab=")[1] : "";
+        return subTab ? subTab === currentTab : path.startsWith(sub.path);
+      });
+    }
+    const itemTab = itemPath.includes("tab=") ? itemPath.split("tab=")[1] : "";
+    return itemTab ? itemTab === currentTab : path.startsWith(itemPath);
+  };
+
+  const checkIsGroupActive = (group: HRNavGroup) => {
+    return group.items.some((item) => checkIsItemActive(item.path, item.subItems));
+  };
+
   useEffect(() => {
     const updatedGroups: Record<string, boolean> = {};
     const updatedItems: Record<string, boolean> = {};
 
     for (const group of filteredItems) {
       for (const item of group.items) {
-        const itemHasSubs = !!item.subItems;
-        const isItemActive = path.startsWith(item.path) ||
-          (itemHasSubs && item.subItems!.some((sub) => {
-            const subPath = sub.path.split("?")[0];
-            return path.startsWith(subPath);
-          }));
+        const isItemActive = checkIsItemActive(item.path, item.subItems);
 
         if (isItemActive || searchQuery) {
           updatedGroups[group.id] = true;
         }
 
-        if (itemHasSubs) {
+        if (item.subItems) {
           updatedItems[item.title] = isItemActive || !!searchQuery;
         }
       }
@@ -69,7 +83,7 @@ export default function HRSidebarNavigation({ sidebarItems }: HRSidebarNavigatio
 
     setOpenGroups((prev) => ({ ...prev, ...updatedGroups }));
     setOpenItems((prev) => ({ ...prev, ...updatedItems }));
-  }, [path, filteredItems, searchQuery]);
+  }, [path, currentTab, filteredItems, searchQuery]);
 
   const toggleGroup = (groupId: string | number) => {
     setOpenGroups((prev) => ({ ...prev, [groupId]: !prev[groupId] }));
@@ -79,31 +93,9 @@ export default function HRSidebarNavigation({ sidebarItems }: HRSidebarNavigatio
     setOpenItems((prev) => ({ ...prev, [title]: !prev[title] }));
   };
 
-  const renderIcon = (iconName: keyof typeof HR_ICON_MAP | undefined): React.ReactNode => {
+  const renderIcon = (iconName: keyof typeof HR_ICON_MAP | undefined, itemActive?: boolean): React.ReactNode => {
     const Icon = resolveHRIcon(iconName);
-    return <Icon className="h-4 w-4 shrink-0" />;
-  };
-
-  const isActive = (itemPath: string, subItems?: HRNavMainItem["subItems"]) => {
-    if (subItems) {
-      return subItems.some((subItem) => {
-        const subPath = subItem.path.split("?")[0];
-        return path.startsWith(subPath);
-      });
-    }
-    return path.startsWith(itemPath);
-  };
-
-  const isGroupActive = (group: HRNavGroup) => {
-    return group.items.some((item) => {
-      if (item.subItems) {
-        return item.subItems.some((sub) => {
-          const subPath = sub.path.split("?")[0];
-          return path.startsWith(subPath);
-        });
-      }
-      return path.startsWith(item.path);
-    });
+    return <Icon className={cn("h-4 w-4 shrink-0", itemActive ? theme.iconActiveColorClass : "text-slate-400")} />;
   };
 
   return (
@@ -117,7 +109,7 @@ export default function HRSidebarNavigation({ sidebarItems }: HRSidebarNavigatio
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Buscar en RRHH..."
-            className="w-full bg-slate-900/80 border border-slate-800 text-xs text-slate-200 placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15] transition-all"
+            className="w-full bg-slate-900/80 border border-slate-800 text-xs text-slate-200 placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all"
           />
           {searchQuery ? (
             <button
@@ -140,7 +132,7 @@ export default function HRSidebarNavigation({ sidebarItems }: HRSidebarNavigatio
         </p>
       ) : (
         filteredItems.map((navGroup, groupIndex) => {
-          const groupActive = isGroupActive(navGroup);
+          const groupActive = checkIsGroupActive(navGroup);
           const groupOpen = openGroups[navGroup.id] ?? false;
 
           return (
@@ -161,7 +153,7 @@ export default function HRSidebarNavigation({ sidebarItems }: HRSidebarNavigatio
                       "text-[10px] font-black uppercase tracking-widest",
                       "transition-all duration-150 cursor-pointer",
                       groupActive
-                        ? "text-[#FACC15]"
+                        ? theme.groupActiveText
                         : "text-slate-400 hover:text-slate-200",
                       "hover:bg-slate-800/50"
                     )}>
@@ -171,7 +163,7 @@ export default function HRSidebarNavigation({ sidebarItems }: HRSidebarNavigatio
                       )} />
                       <span className="truncate">{navGroup.label}</span>
                       {groupActive && !groupOpen && (
-                        <div className="ml-auto w-2 h-2 rounded-full bg-[#FACC15] animate-pulse flex-shrink-0 shadow-sm shadow-amber-400/50" />
+                        <div className="ml-auto w-2 h-2 rounded-full bg-rose-500 animate-pulse flex-shrink-0 shadow-sm shadow-rose-500/50" />
                       )}
                     </button>
                   </CollapsibleTrigger>
@@ -181,7 +173,7 @@ export default function HRSidebarNavigation({ sidebarItems }: HRSidebarNavigatio
                   <div className="pb-1 space-y-0.5">
                     <SidebarMenu>
                       {navGroup.items.map((item) => {
-                        const itemActive = isActive(item.path, item.subItems);
+                        const itemActive = checkIsItemActive(item.path, item.subItems);
                         return (
                           <Collapsible
                             open={openItems[item.title] ?? false}
@@ -197,13 +189,13 @@ export default function HRSidebarNavigation({ sidebarItems }: HRSidebarNavigatio
                                     isActive={itemActive}
                                     tooltip={item.title}
                                     className={cn(
-                                      "whitespace-nowrap rounded-xl transition-all duration-150 py-2",
+                                      "whitespace-nowrap rounded-xl transition-all duration-150 py-2.5 px-3 text-xs font-semibold",
                                       itemActive
-                                        ? "bg-slate-800 text-white font-bold border-l-4 border-[#FACC15] shadow-sm shadow-amber-500/10"
+                                        ? `bg-slate-800 text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-xs`
                                         : "text-slate-300 hover:text-slate-100 hover:bg-slate-800/60"
                                     )}
                                   >
-                                    {renderIcon(item.icon)}
+                                    {renderIcon(item.icon, itemActive)}
                                     <span className="text-xs">{item.title}</span>
                                     <ChevronRight className={cn(
                                       "ml-auto h-3.5 w-3.5 transition-transform duration-200 text-slate-400",
@@ -216,13 +208,13 @@ export default function HRSidebarNavigation({ sidebarItems }: HRSidebarNavigatio
                                       isActive={itemActive}
                                       tooltip={item.title}
                                       className={cn(
-                                        "rounded-xl transition-all duration-150 py-2",
+                                        "rounded-xl transition-all duration-150 py-2.5 px-3 text-xs font-semibold",
                                         itemActive
-                                          ? "bg-slate-800 text-white font-bold border-l-4 border-[#FACC15] shadow-sm shadow-amber-500/10"
+                                          ? `bg-slate-800 text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-xs`
                                           : "text-slate-300 hover:text-slate-100 hover:bg-slate-800/60"
                                       )}
                                     >
-                                      {renderIcon(item.icon)}
+                                      {renderIcon(item.icon, itemActive)}
                                       <span className="text-xs">{item.title}</span>
                                     </SidebarMenuButton>
                                   </Link>
@@ -231,25 +223,29 @@ export default function HRSidebarNavigation({ sidebarItems }: HRSidebarNavigatio
                               {item.subItems && (
                                 <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
                                   <SidebarMenuSub className="border-l border-slate-800 ml-3 pl-2 space-y-0.5 my-1">
-                                    {item.subItems.map((subItem) => (
-                                      <SidebarMenuSubItem key={subItem.title}>
-                                        <SidebarMenuSubButton
-                                          isActive={isActive(subItem.path)}
-                                          asChild
-                                          className={cn(
-                                            "rounded-xl text-xs py-1.5 transition-colors",
-                                            isActive(subItem.path)
-                                              ? "bg-slate-800 text-[#FACC15] font-bold"
-                                              : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
-                                          )}
-                                        >
-                                          <a href={subItem.path}>
-                                            {renderIcon(subItem.icon)}
-                                            <span>{subItem.title}</span>
-                                          </a>
-                                        </SidebarMenuSubButton>
-                                      </SidebarMenuSubItem>
-                                    ))}
+                                    {item.subItems.map((subItem) => {
+                                      const subTab = subItem.path.includes("tab=") ? subItem.path.split("tab=")[1] : "";
+                                      const subActive = subTab === currentTab;
+                                      return (
+                                        <SidebarMenuSubItem key={subItem.title}>
+                                          <SidebarMenuSubButton
+                                            isActive={subActive}
+                                            asChild
+                                            className={cn(
+                                              "rounded-xl text-xs py-1.5 px-2.5 transition-colors font-medium",
+                                              subActive
+                                                ? `bg-slate-800/90 ${theme.activeSubItemText} font-bold`
+                                                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
+                                            )}
+                                          >
+                                            <a href={subItem.path}>
+                                              {renderIcon(subItem.icon, subActive)}
+                                              <span>{subItem.title}</span>
+                                            </a>
+                                          </SidebarMenuSubButton>
+                                        </SidebarMenuSubItem>
+                                      );
+                                    })}
                                   </SidebarMenuSub>
                                 </CollapsibleContent>
                               )}
@@ -270,5 +266,13 @@ export default function HRSidebarNavigation({ sidebarItems }: HRSidebarNavigatio
         })
       )}
     </div>
+  );
+}
+
+export default function HRSidebarNavigation(props: HRSidebarNavigationProps) {
+  return (
+    <Suspense fallback={null}>
+      <HRSidebarNavigationContent {...props} />
+    </Suspense>
   );
 }
