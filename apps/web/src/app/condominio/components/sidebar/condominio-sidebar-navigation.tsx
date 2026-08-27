@@ -29,7 +29,7 @@ export default function CondominioSidebarNavigation() {
                       className={`
                         rounded-xl transition-all duration-150 py-2.5 px-3 text-xs font-semibold
                         ${isActive
-                          ? 'bg-slate-800 text-white font-bold border-l-4 border-cyan-400 pl-2 shadow-xs'
+                          ? 'data-[active=true]:bg-slate-800 data-[active=true]:text-white font-bold border-l-4 border-cyan-400 pl-2 shadow-xs'
                           : 'text-slate-300 hover:text-slate-100 hover:bg-slate-800/60'
                         }
                       `}
@@ -37,7 +37,13 @@ export default function CondominioSidebarNavigation() {
                       <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-cyan-400' : 'text-slate-400'}`} />
                       <span className="group-data-[collapsible=icon]:hidden truncate flex-1">{item.title}</span>
                       {item.badge && (
-                        <span className="group-data-[collapsible=icon]:hidden text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                        <span
+                          className={`group-data-[collapsible=icon]:hidden text-[9px] font-black px-1.5 py-0.5 rounded transition-colors ${
+                            isActive
+                              ? 'bg-cyan-400 text-slate-950 border border-cyan-300'
+                              : 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
+                          }`}
+                        >
                           {item.badge}
                         </span>
                       )}
