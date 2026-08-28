@@ -7,7 +7,8 @@ export type ModuleType =
   | 'micuenta'
   | 'ayuda'
   | 'admin'
-  | 'restaurante';
+  | 'restaurante'
+  | 'veterinaria';
 
 export interface ModuleSidebarTheme {
   moduleKey: ModuleType;
@@ -180,5 +181,22 @@ export const MODULE_SIDEBAR_THEMES: Record<ModuleType, ModuleSidebarTheme> = {
     activeBadgeClass: 'bg-amber-500 text-slate-950 border-amber-300 font-black',
     inactiveBadgeClass: 'bg-amber-500/20 text-amber-300 border-amber-500/30 font-extrabold',
     avatarClass: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+  },
+  veterinaria: {
+    moduleKey: 'veterinaria',
+    title: 'Veterinaria & Clínica',
+    badgeLabel: 'VET',
+    subtitle: 'Pacientes, Consultas & Fichas',
+    headerBadgeBg: 'bg-emerald-500/10',
+    headerBadgeText: 'text-emerald-400',
+    headerBadgeBorder: 'border-emerald-500/20',
+    activeBorderClass: 'border-emerald-500',
+    iconActiveColorClass: 'text-emerald-400',
+    backIconColorClass: 'text-emerald-400',
+    activeSubItemText: 'text-emerald-400',
+    groupActiveText: 'text-emerald-400',
+    activeBadgeClass: 'bg-emerald-500 text-slate-950 border-emerald-300 font-black',
+    inactiveBadgeClass: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30 font-extrabold',
+    avatarClass: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
   },
 };

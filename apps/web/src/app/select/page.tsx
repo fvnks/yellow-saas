@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
-import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight, X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail, Sparkles, TrendingUp, ShieldCheck, DollarSign, Building, UtensilsCrossed } from 'lucide-react';
+import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight, X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail, Sparkles, TrendingUp, ShieldCheck, DollarSign, Building, UtensilsCrossed, Stethoscope } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import { getChileanIndicators, ChileanIndicators } from '@/lib/indicators';
 import {
@@ -119,6 +119,19 @@ const modules: ModuleOption[] = [
     href: '/restaurant',
     requiredModules: ['restaurant'],
     moduleName: 'restaurant',
+  },
+  {
+    id: 'veterinaria',
+    title: 'Veterinaria & Clínica',
+    subtitle: 'Fichas, Agenda y Consultas',
+    description: ['Ficha Clínica Multiespecie', 'Agenda & Box de Atención', 'Hospitalización & Quirófano', 'Recetas & Vacunación'],
+    icon: Stethoscope,
+    iconBg: 'bg-emerald-50 border-emerald-200/80',
+    iconColor: 'text-emerald-600',
+    accentBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    href: '/veterinaria',
+    requiredModules: ['veterinaria'],
+    moduleName: 'veterinaria',
   },
   {
     id: 'mi-cuenta',
