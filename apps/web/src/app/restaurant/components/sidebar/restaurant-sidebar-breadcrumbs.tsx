@@ -6,12 +6,17 @@ import { ChevronRight } from 'lucide-react';
 
 const routeLabels: Record<string, string> = {
   '/restaurant': 'POS Garzón',
+  '/restaurant/dashboard': 'Dashboard Restaurante',
   '/restaurant/waiter': 'POS Garzón & Mesas',
   '/restaurant/kiosk': 'Kiosco Autoservicio QR',
   '/restaurant/kitchen': 'KDS Cocina',
   '/restaurant/bar': 'KDS Bar',
+  '/restaurant/sales': 'Boletas Electrónicas SII',
+  '/restaurant/cashier': 'Cierre de Caja',
   '/restaurant/reservations': 'Reservas Web',
   '/restaurant/admin': 'Consola Admin',
+  '/restaurant/reports': 'Reportes & Garzones',
+  '/restaurant/users': 'Usuarios & Roles',
 };
 
 export default function RestaurantSidebarBreadcrumbs() {

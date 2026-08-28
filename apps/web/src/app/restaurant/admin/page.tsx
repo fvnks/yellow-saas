@@ -4,11 +4,14 @@ import { useState } from 'react';
 import { INITIAL_MENU_ITEMS, INITIAL_TABLES, MenuItem, TableSession } from '../lib/restaurant-store';
 import { LayoutDashboard, Utensils, DollarSign, TrendingUp, Users, Plus, Check, X, Shield, Package, Edit, Trash } from 'lucide-react';
 import { toast } from 'sonner';
+import { useRestaurantRole } from '../lib/role-context';
+import RoleProtected from '../components/role-protected';
 
 export default function RestaurantAdminPage() {
   const [menu, setMenu] = useState<MenuItem[]>(INITIAL_MENU_ITEMS);
   const [tables, setTables] = useState<TableSession[]>(INITIAL_TABLES);
   const [activeTab, setActiveTab] = useState<'menu' | 'tables' | 'users' | 'reports'>('menu');
+  const { canAccess } = useRestaurantRole();
 
   const [newItem, setNewItem] = useState({
     name: '',
@@ -55,6 +58,8 @@ export default function RestaurantAdminPage() {
       image: '🍽️',
     });
   };
+
+  if (!canAccess('admin')) return <RoleProtected section="admin"><div /></RoleProtected>;
 
   return (
     <div className="space-y-6">

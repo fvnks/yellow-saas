@@ -4,9 +4,13 @@ import { useState } from 'react';
 import { INITIAL_ORDERS, Order, OrderItem } from '../lib/restaurant-store';
 import { ChefHat, Clock, CheckCircle2, Play, Flame, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { useRestaurantRole } from '../lib/role-context';
+import RoleProtected from '../components/role-protected';
 
 export default function KDSKitchenPage() {
   const [orders, setOrders] = useState<Order[]>(INITIAL_ORDERS);
+  const { canAccess } = useRestaurantRole();
+  if (!canAccess('kitchen')) return <RoleProtected section="kitchen"><div /></RoleProtected>;
 
   // Filter only items destined for kitchen station
   const kitchenOrders = orders

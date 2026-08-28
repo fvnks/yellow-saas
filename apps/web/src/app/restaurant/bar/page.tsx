@@ -4,9 +4,13 @@ import { useState } from 'react';
 import { INITIAL_ORDERS, Order, OrderItem } from '../lib/restaurant-store';
 import { Wine, Clock, CheckCircle2, GlassWater, Flame } from 'lucide-react';
 import { toast } from 'sonner';
+import { useRestaurantRole } from '../lib/role-context';
+import RoleProtected from '../components/role-protected';
 
 export default function KDSBarPage() {
   const [orders, setOrders] = useState<Order[]>(INITIAL_ORDERS);
+  const { canAccess } = useRestaurantRole();
+  if (!canAccess('bar')) return <RoleProtected section="bar"><div /></RoleProtected>;
 
   // Filter only items destined for bar station
   const barOrders = orders

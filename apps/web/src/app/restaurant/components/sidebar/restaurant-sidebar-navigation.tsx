@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 import { RestaurantNavGroup, RestaurantNavMainItem, resolveRestaurantIcon, RESTAURANT_ICON_MAP } from "@/navigation/sidebar/restaurant-sidebar-items";
 import { MODULE_SIDEBAR_THEMES } from "@/lib/sidebar-theme";
+import { useRestaurantRole } from "../../lib/role-context";
 
 interface RestaurantSidebarNavigationProps {
   sidebarItems: RestaurantNavGroup[];
@@ -27,12 +28,26 @@ function RestaurantSidebarNavigationContent({ sidebarItems }: RestaurantSidebarN
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
   const theme = MODULE_SIDEBAR_THEMES.restaurante;
+  const { canAccess } = useRestaurantRole();
+
+  const roleFilteredItems = useMemo(() => {
+    return sidebarItems
+      .map((group) => ({
+        ...group,
+        items: group.items.filter((item) => {
+          if (!item.permission) return true;
+          return canAccess(item.permission as 'dashboard' | 'pos' | 'kiosk' | 'kitchen' | 'bar' | 'sales' | 'reservations' | 'cashier' | 'reports' | 'users' | 'admin');
+        }),
+      }))
+      .filter((group) => group.items.length > 0);
+  }, [sidebarItems, canAccess]);
 
   const filteredItems = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
-    if (!query) return sidebarItems;
+    const base = roleFilteredItems;
+    if (!query) return base;
 
-    return sidebarItems.map(group => {
+    return base.map(group => {
       const matchingItems = group.items.filter(item => {
         const matchesTitle = item.title.toLowerCase().includes(query) || group.label?.toLowerCase().includes(query);
         const hasMatchingSub = item.subItems?.some(s => s.title.toLowerCase().includes(query));
@@ -44,7 +59,7 @@ function RestaurantSidebarNavigationContent({ sidebarItems }: RestaurantSidebarN
         items: matchingItems,
       };
     }).filter(group => group.items.length > 0);
-  }, [sidebarItems, searchQuery]);
+  }, [roleFilteredItems, searchQuery]);
 
   const checkIsItemActive = (itemPath: string, subItems?: RestaurantNavMainItem["subItems"]) => {
     if (subItems && subItems.length > 0) {

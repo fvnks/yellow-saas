@@ -58,6 +58,77 @@ export interface Reservation {
   status: 'confirmed' | 'cancelled' | 'seated';
 }
 
+export type RestaurantRole = 'owner' | 'admin' | 'cashier' | 'waiter' | 'kitchen' | 'bar';
+
+export interface RestaurantUser {
+  id: string;
+  name: string;
+  email: string;
+  role: RestaurantRole;
+  pin: string;
+  active: boolean;
+  lastLogin?: string;
+}
+
+export interface RolePermission {
+  role: RestaurantRole;
+  label: string;
+  sections: {
+    dashboard: boolean;
+    pos: boolean;
+    kiosk: boolean;
+    kitchen: boolean;
+    bar: boolean;
+    sales: boolean;
+    reservations: boolean;
+    cashier: boolean;
+    reports: boolean;
+    users: boolean;
+    admin: boolean;
+  };
+}
+
+export interface PaymentLine {
+  method: 'Efectivo' | 'Transbank DB' | 'Transbank CR' | 'MercadoPago QR';
+  amountCLP: number;
+}
+
+export interface CashClosure {
+  id: string;
+  turno: 'mañana' | 'tarde' | 'noche';
+  openedBy: string;
+  closedBy: string;
+  openedAt: string;
+  closedAt: string;
+  expectedTotalCLP: number;
+  declaredCashCLP: number;
+  discrepancyCLP: number;
+  payments: PaymentLine[];
+  totalSalesCLP: number;
+  tipsCLP: number;
+  dteCount: number;
+  status: 'abierta' | 'cerrada';
+}
+
+export interface DteBoleta {
+  id: string;
+  folio: number;
+  orderId: string;
+  tableName: string;
+  waiterName: string;
+  dateTime: string;
+  netoCLP: number;
+  ivaCLP: number;
+  tipCLP: number;
+  totalCLP: number;
+  paymentMethod: 'Efectivo' | 'Transbank DB' | 'Transbank CR' | 'MercadoPago QR';
+  tipo: 'Afecta' | 'Exenta';
+  retencion: 'retiro' | 'no_retiro';
+  siiStatus: 'Aceptado SII' | 'Pendiente' | 'Rechazado';
+  tedCode: string;
+}
+
+
 export const INITIAL_MENU_ITEMS: MenuItem[] = [
   {
     id: 'menu-1',
@@ -218,3 +289,124 @@ export const INITIAL_RESERVATIONS: Reservation[] = [
     status: 'seated',
   },
 ];
+
+export const INITIAL_RESTAURANT_USERS: RestaurantUser[] = [
+  { id: 'usr-01', name: 'Ricardo Fuentes', email: 'dueno@erp.cl', role: 'owner', pin: '0001', active: true, lastLogin: '2026-08-27 21:10' },
+  { id: 'usr-02', name: 'Valentina Salas', email: 'admin@erp.cl', role: 'admin', pin: '0002', active: true, lastLogin: '2026-08-28 09:00' },
+  { id: 'usr-03', name: 'Cristian Pavez', email: 'cajero@erp.cl', role: 'cashier', pin: '0003', active: true, lastLogin: '2026-08-28 09:05' },
+  { id: 'usr-04', name: 'Matías Silva', email: 'garzon@erp.cl', role: 'waiter', pin: '0004', active: true, lastLogin: '2026-08-28 08:58' },
+  { id: 'usr-05', name: 'Camila Rojas', email: 'garzon2@erp.cl', role: 'waiter', pin: '0005', active: true },
+  { id: 'usr-06', name: 'Jorge Tapia', email: 'cocina@erp.cl', role: 'kitchen', pin: '0006', active: true, lastLogin: '2026-08-28 08:45' },
+  { id: 'usr-07', name: 'Francisca Vera', email: 'bar@erp.cl', role: 'bar', pin: '0007', active: true, lastLogin: '2026-08-28 08:50' },
+];
+
+export const ROLE_PERMISSIONS: RolePermission[] = [
+  {
+    role: 'owner',
+    label: 'Dueño / Propietario',
+    sections: { dashboard: true, pos: true, kiosk: true, kitchen: true, bar: true, sales: true, reservations: true, cashier: true, reports: true, users: true, admin: true },
+  },
+  {
+    role: 'admin',
+    label: 'Administrador',
+    sections: { dashboard: true, pos: true, kiosk: true, kitchen: true, bar: true, sales: true, reservations: true, cashier: true, reports: true, users: true, admin: true },
+  },
+  {
+    role: 'cashier',
+    label: 'Cajero',
+    sections: { dashboard: true, pos: true, kiosk: true, kitchen: false, bar: false, sales: true, reservations: true, cashier: true, reports: false, users: false, admin: false },
+  },
+  {
+    role: 'waiter',
+    label: 'Garzón / Mesero',
+    sections: { dashboard: false, pos: true, kiosk: true, kitchen: false, bar: false, sales: false, reservations: true, cashier: false, reports: false, users: false, admin: false },
+  },
+  {
+    role: 'kitchen',
+    label: 'Cocina (KDS)',
+    sections: { dashboard: false, pos: false, kiosk: false, kitchen: true, bar: false, sales: false, reservations: false, cashier: false, reports: false, users: false, admin: false },
+  },
+  {
+    role: 'bar',
+    label: 'Bar (KDS)',
+    sections: { dashboard: false, pos: false, kiosk: false, kitchen: false, bar: true, sales: false, reservations: false, cashier: false, reports: false, users: false, admin: false },
+  },
+];
+
+export const ROLE_LABELS: Record<RestaurantRole, string> = {
+  owner: 'Dueño',
+  admin: 'Administrador',
+  cashier: 'Cajero',
+  waiter: 'Garzón',
+  kitchen: 'Cocina',
+  bar: 'Bar',
+};
+
+export const ROLE_BADGES: Record<RestaurantRole, string> = {
+  owner: 'bg-amber-100 text-amber-800 border-amber-200',
+  admin: 'bg-slate-900 text-white border-slate-800',
+  cashier: 'bg-blue-100 text-blue-800 border-blue-200',
+  waiter: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+  kitchen: 'bg-rose-100 text-rose-800 border-rose-200',
+  bar: 'bg-purple-100 text-purple-800 border-purple-200',
+};
+
+export const INITIAL_CASH_CLOSURE: CashClosure = {
+  id: 'cc-01',
+  turno: 'mañana',
+  openedBy: 'Cristian Pavez',
+  closedBy: 'Cristian Pavez',
+  openedAt: '2026-08-28 09:00',
+  closedAt: '2026-08-28 15:30',
+  expectedTotalCLP: 428600,
+  declaredCashCLP: 428600,
+  discrepancyCLP: 0,
+  payments: [
+    { method: 'Efectivo', amountCLP: 172400 },
+    { method: 'Transbank DB', amountCLP: 121600 },
+    { method: 'Transbank CR', amountCLP: 98500 },
+    { method: 'MercadoPago QR', amountCLP: 36100 },
+  ],
+  totalSalesCLP: 428600,
+  tipsCLP: 38960,
+  dteCount: 27,
+  status: 'cerrada',
+};
+
+export const INITIAL_BOLETAS_DTE: DteBoleta[] = [
+  {
+    id: 'bol-01',
+    folio: 1287,
+    orderId: 'ORD-101',
+    tableName: 'Mesa 01 - Salón',
+    waiterName: 'Matías Silva',
+    dateTime: '2026-08-28 13:45',
+    netoCLP: 20800,
+    ivaCLP: 3952,
+    tipCLP: 2080,
+    totalCLP: 26832,
+    paymentMethod: 'Transbank DB',
+    tipo: 'Afecta',
+    retencion: 'no_retiro',
+    siiStatus: 'Aceptado SII',
+    tedCode: 'TED-88419-88',
+  },
+  {
+    id: 'bol-02',
+    folio: 1288,
+    orderId: 'ORD-102',
+    tableName: 'Mesa 02 - Salón',
+    waiterName: 'Camila Rojas',
+    dateTime: '2026-08-28 13:10',
+    netoCLP: 34300,
+    ivaCLP: 6517,
+    tipCLP: 3430,
+    totalCLP: 44247,
+    paymentMethod: 'Efectivo',
+    tipo: 'Afecta',
+    retencion: 'no_retiro',
+    siiStatus: 'Aceptado SII',
+    tedCode: 'TED-88420-12',
+  },
+];
+

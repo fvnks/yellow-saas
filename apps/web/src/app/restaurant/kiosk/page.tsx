@@ -4,10 +4,13 @@ import { useState } from 'react';
 import { INITIAL_MENU_ITEMS, INITIAL_TABLES, MenuItem } from '../lib/restaurant-store';
 import { QrCode, ShoppingBag, Sparkles, AlertCircle, Check, Users, ArrowRight, Utensils } from 'lucide-react';
 import { toast } from 'sonner';
+import { useRestaurantRole } from '../lib/role-context';
+import RoleProtected from '../components/role-protected';
 
 export default function KioskPage() {
   const [menu] = useState<MenuItem[]>(INITIAL_MENU_ITEMS);
   const [tables] = useState(INITIAL_TABLES);
+  const { canAccess } = useRestaurantRole();
   const [selectedTableId, setSelectedTableId] = useState<number>(1);
   const [pinInput, setPinInput] = useState('');
   const [sessionJoined, setSessionJoined] = useState(false);
@@ -53,6 +56,8 @@ export default function KioskPage() {
   };
 
   const cartTotal = cart.reduce((acc, curr) => acc + curr.item.priceCLP * curr.qty, 0);
+
+  if (!canAccess('kiosk')) return <RoleProtected section="kiosk"><div /></RoleProtected>;
 
   return (
     <div className="space-y-6">

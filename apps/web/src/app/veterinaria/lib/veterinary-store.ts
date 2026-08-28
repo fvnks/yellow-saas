@@ -279,6 +279,69 @@ export interface LabResult {
   note?: string;
 }
 
+export type ImagingStudyType =
+  | 'radiografia'
+  | 'ecografia'
+  | 'tomografia'
+  | 'resonancia'
+  | 'endoscopia'
+  | 'electrocardiograma'
+  | 'otro';
+
+export interface ImagingStudy {
+  id: string;
+  studyNumber: string;
+  studyType: ImagingStudyType;
+  patientId: string;
+  patientName: string;
+  species: Species;
+  clientId: string;
+  clientName: string;
+  clientRut: string;
+  professionalId: string;
+  professionalName: string;
+  studyDate: string;
+  region: string;
+  findings: string;
+  conclusion: string;
+  images: number;
+  status: 'en_proceso' | 'informado' | 'disponible';
+  modality?: string;
+}
+
+export interface PharmacyStockItem {
+  id: string;
+  name: string;
+  sku: string;
+  category: 'antibiotico' | 'antiinflamatorio' | 'analgesico' | 'antiparasitario' | 'vacuna' | 'suero' | 'anestesia' | 'cardiovascular' | 'dermatologico' | 'insumo';
+  currentStock: number;
+  unit: string;
+  batchNumber: string;
+  expirationDate: string;
+  priceCLP: number;
+  requiresPrescription: boolean;
+  minStock: number;
+  supplier?: string;
+  location: string;
+}
+
+export interface PharmacyDispense {
+  id: string;
+  dispenseNumber: string;
+  prescriptionId?: string;
+  patientId: string;
+  patientName: string;
+  clientId: string;
+  clientName: string;
+  clientRut: string;
+  professionalId: string;
+  professionalName: string;
+  dispenseDate: string;
+  items: { itemId: string; name: string; quantity: number; priceCLP: number }[];
+  totalCLP: number;
+  status: 'pendiente' | 'despachado' | 'entregado' | 'anulado';
+}
+
 export interface VaccinationRecord {
   id: string;
   patientId: string;
@@ -1209,5 +1272,80 @@ export const INITIAL_LAB_ORDERS: LabOrder[] = [
       { id: 'lr-004', testId: 'lt-004', testName: 'Glóbulos Blancos (WBC)', value: '12.4', unit: 'K/µL', referenceRange: '6.0 - 17.0', flag: 'normal' },
       { id: 'lr-005', testId: 'lt-005', testName: 'Plaquetas (PLT)', value: '310', unit: 'K/µL', referenceRange: '200 - 500', flag: 'normal' },
     ],
+  },
+];
+
+export const INITIAL_IMAGING_STUDIES: ImagingStudy[] = [
+  {
+    id: 'img-001',
+    studyNumber: 'IMG-2025-001',
+    studyType: 'radiografia',
+    patientId: 'pat-001',
+    patientName: 'Apollo',
+    species: 'perro',
+    clientId: 'cli-001',
+    clientName: 'María José Valenzuela',
+    clientRut: '15.482.910-K',
+    professionalId: 'pro-001',
+    professionalName: 'Dr. Sebastián Contreras P.',
+    studyDate: '2025-02-15',
+    region: 'Abdomen (Lateral y VD)',
+    findings: 'Se observa radiopacidad de tejidos blandos a nivel de vesícula biliar. Leve hepatomegalia difusa. Sin evidencia de urolitiasis ni gas libre intraabdominal.',
+    conclusion: 'Hepatomegalia leve difusa, compatible con hepatopatía reactiva/inflamatoria. Se recomienda perfil bioquímico hepático.',
+    images: 2,
+    status: 'informado',
+    modality: 'Radiografía digital directa',
+  },
+  {
+    id: 'img-002',
+    studyNumber: 'IMG-2025-002',
+    studyType: 'ecografia',
+    patientId: 'pat-002',
+    patientName: 'Luna',
+    species: 'gato',
+    clientId: 'cli-001',
+    clientName: 'María José Valenzuela',
+    clientRut: '15.482.910-K',
+    professionalId: 'pro-002',
+    professionalName: 'Dra. Andrea Morales Soto',
+    studyDate: '2025-02-22',
+    region: 'Abdomen completo',
+    findings: 'Riñones de tamaño normal, parénquima homogéneo. Vejiga con pequeña cantidad de sedimento ecogénico. Hígado con ecotextura homogénea. No se evidencian masas.',
+    conclusion: 'Estudio ecográfico abdominal sin alteraciones significativas. Sedimento vesical leve, probable cistitis incipiente.',
+    images: 6,
+    status: 'disponible',
+    modality: 'Ecógrafo convex 5MHz',
+  },
+];
+
+export const INITIAL_PHARMACY_STOCK: PharmacyStockItem[] = [
+  { id: 'ph-01', name: 'Amoxicilina + Ac. Clavulánico 250mg', sku: 'VET-AMOX-250', category: 'antibiotico', currentStock: 45, unit: 'comprimidos', batchNumber: 'LOTE-88491', expirationDate: '2026-08-15', priceCLP: 1200, requiresPrescription: true, minStock: 20, location: 'Bodega A - Pasillo 1' },
+  { id: 'ph-02', name: 'Meloxicam 0.5mg/ml Inyectable', sku: 'VET-MELOX-05', category: 'antiinflamatorio', currentStock: 12, unit: 'frascos 10ml', batchNumber: 'LOTE-99201', expirationDate: '2026-03-30', priceCLP: 14500, requiresPrescription: true, minStock: 5, supplier: 'VetPharma Chile', location: 'Bodega A - Nevera' },
+  { id: 'ph-03', name: 'Ondansetrón 2mg/ml Inyectable', sku: 'VET-OND-02', category: 'analgesico', currentStock: 8, unit: 'ampollas', batchNumber: 'LOTE-77123', expirationDate: '2025-11-20', priceCLP: 3800, requiresPrescription: true, minStock: 10, location: 'Bodega A - Pasillo 2' },
+  { id: 'ph-04', name: 'Endogard 30kg Desparasitante', sku: 'VET-ENDG-30', category: 'antiparasitario', currentStock: 60, unit: 'comprimidos', batchNumber: 'LOTE-11029', expirationDate: '2027-01-10', priceCLP: 4500, requiresPrescription: false, minStock: 30, supplier: 'MSD Salud Animal', location: 'Bodega B - Estante 3' },
+  { id: 'ph-05', name: 'Bravecto 20-40kg Masticable', sku: 'VET-BRAV-40', category: 'antiparasitario', currentStock: 15, unit: 'cajas', batchNumber: 'LOTE-33412', expirationDate: '2026-10-05', priceCLP: 34900, requiresPrescription: false, minStock: 8, supplier: 'MSD Salud Animal', location: 'Bodega B - Estante 3' },
+  { id: 'ph-06', name: 'Doxiciclina 100mg', sku: 'VET-DOXI-100', category: 'antibiotico', currentStock: 4, unit: 'comprimidos', batchNumber: 'LOTE-22091', expirationDate: '2026-02-28', priceCLP: 950, requiresPrescription: true, minStock: 25, location: 'Bodega A - Pasillo 1' },
+  { id: 'ph-07', name: 'Suero Ringer Lactato 500ml', sku: 'VET-RL-500', category: 'suero', currentStock: 30, unit: 'bolsas', batchNumber: 'LOTE-9912', expirationDate: '2027-06-01', priceCLP: 3200, requiresPrescription: true, minStock: 15, supplier: 'Baxter Chile', location: 'Bodega A - Pasillo 3' },
+  { id: 'ph-08', name: 'Ketamina 100mg/ml', sku: 'VET-KETA-100', category: 'anestesia', currentStock: 3, unit: 'frascos', batchNumber: 'LOTE-55123', expirationDate: '2025-12-15', priceCLP: 24800, requiresPrescription: true, minStock: 4, supplier: 'Farma Vet', location: 'Bodega A - Farmacia Restringida' },
+];
+
+export const INITIAL_PHARMACY_DISPENSES: PharmacyDispense[] = [
+  {
+    id: 'disp-001',
+    dispenseNumber: 'DESP-2025-001',
+    patientId: 'pat-001',
+    patientName: 'Apollo',
+    clientId: 'cli-001',
+    clientName: 'María José Valenzuela',
+    clientRut: '15.482.910-K',
+    professionalId: 'pro-001',
+    professionalName: 'Dr. Sebastián Contreras P.',
+    dispenseDate: '2025-02-15',
+    items: [
+      { itemId: 'ph-01', name: 'Amoxicilina + Ac. Clavulánico 250mg', quantity: 20, priceCLP: 1200 },
+      { itemId: 'ph-02', name: 'Meloxicam 0.5mg/ml Inyectable', quantity: 1, priceCLP: 14500 },
+    ],
+    totalCLP: 38500,
+    status: 'entregado',
   },
 ];
