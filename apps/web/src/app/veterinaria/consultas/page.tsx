@@ -73,9 +73,9 @@ export default function VeterinaryConsultationsPage() {
 
   const [dispensedMeds, setDispensedMeds] = useState<{ med: InventoryMedication; quantity: number }[]>([]);
 
-  const selectedPatient = INITIAL_PATIENTS.find((p) => p.id === selectedPatientId) || INITIAL_PATIENTS[0];
-  const selectedClient = INITIAL_CLIENTS.find((c) => c.id === selectedPatient.clientId);
-  const selectedProfessional = INITIAL_PROFESSIONALS.find((pr) => pr.id === selectedProfessionalId) || INITIAL_PROFESSIONALS[0];
+  const selectedPatient = INITIAL_PATIENTS.find((p) => p.id === selectedPatientId) || INITIAL_PATIENTS[0] || null;
+  const selectedClient = INITIAL_CLIENTS.find((c) => c.id === selectedPatient?.clientId);
+  const selectedProfessional = INITIAL_PROFESSIONALS.find((pr) => pr.id === selectedProfessionalId) || INITIAL_PROFESSIONALS[0] || null;
 
   const handleAddMedication = () => {
     const newItem: PrescriptionItem = {
@@ -467,9 +467,9 @@ export default function VeterinaryConsultationsPage() {
         />
 
         <BillingOrderGenerator
-          patientName={selectedPatient.name}
-          clientName={selectedClient?.fullName || selectedPatient.clientName}
-          clientRut={selectedClient?.rut || '15.482.910-K'}
+          patientName={selectedPatient?.name || ''}
+          clientName={selectedClient?.fullName || selectedPatient?.clientName || ''}
+          clientRut={selectedClient?.rut || ''}
           consultationFeeCLP={32000}
           dispensedMeds={dispensedMeds}
         />
