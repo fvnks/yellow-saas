@@ -27,21 +27,23 @@ export function PaymentCheckoutModal({
   const [docType, setDocType] = useState<'boleta' | 'factura'>('boleta');
   const [tipPct, setTipPct] = useState<number>(10);
   const [splitGuests, setSplitGuests] = useState<number>(1);
-  const [cashReceivedCLP, setCashReceivedCLP] = useState<number>(order ? order.totalCLP * 1.1 : 0);
   const [invoiceRut, setInvoiceRut] = useState('');
   const [invoiceRazon, setInvoiceRazon] = useState('');
+
+  const tipCLP = order ? Math.round((order.totalCLP * tipPct) / 100) : 0;
+  const grandTotalCLP = order ? Math.round(order.totalCLP + tipCLP) : 0;
+
+  const [cashReceivedCLP, setCashReceivedCLP] = useState<number>(grandTotalCLP);
 
   if (!isOpen || !order) return null;
 
   const formatCLP = (val: number) =>
-    new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(val);
+    new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(Math.round(val));
 
   const subtotalNeto = Math.round(order.totalCLP / 1.19);
-  const ivaCLP = order.totalCLP - subtotalNeto;
-  const tipCLP = Math.round((order.totalCLP * tipPct) / 100);
-  const grandTotalCLP = order.totalCLP + tipCLP;
-  const perGuestCLP = Math.round(grandTotalCLP / splitGuests);
-  const cashChangeCLP = Math.max(0, cashReceivedCLP - grandTotalCLP);
+  const ivaCLP = Math.round(order.totalCLP - subtotalNeto);
+  const perGuestCLP = Math.round(grandTotalCLP / Math.max(1, splitGuests));
+  const cashChangeCLP = Math.max(0, Math.round(cashReceivedCLP - grandTotalCLP));
 
   const handleProcessPayment = () => {
     if (docType === 'factura' && !invoiceRut) {
@@ -275,20 +277,42 @@ export function PaymentCheckoutModal({
 
             {/* Cash change calculator */}
             {paymentMethod === 'cash' && (
-              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2 mt-2">
+              <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl space-y-3 mt-2 text-xs">
                 <div className="flex items-center justify-between">
-                  <label className="font-bold text-emerald-900 text-xs">Monto Recibido en Billetes (CLP):</label>
+                  <label className="font-bold text-emerald-900">Monto Recibido en Efectivo (CLP):</label>
                   <input
                     type="number"
                     step={1000}
-                    value={cashReceivedCLP}
-                    onChange={e => setCashReceivedCLP(Number(e.target.value))}
-                    className="w-32 bg-white border border-emerald-300 rounded-lg px-2 py-1 text-right font-mono font-bold text-slate-900 focus:outline-none"
+                    value={Math.round(cashReceivedCLP)}
+                    onChange={e => setCashReceivedCLP(Math.round(Number(e.target.value) || 0))}
+                    className="w-36 bg-white border border-emerald-300 rounded-lg px-2.5 py-1 text-right font-mono font-bold text-slate-900 focus:outline-hidden text-sm"
                   />
                 </div>
-                <div className="flex justify-between items-center text-xs font-bold pt-1 border-t border-emerald-200">
+
+                {/* Quick denomination shortcut buttons */}
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setCashReceivedCLP(grandTotalCLP)}
+                    className="px-2 py-1 bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold rounded-lg text-[11px]"
+                  >
+                    Exacto ({formatCLP(grandTotalCLP)})
+                  </button>
+                  {[5000, 10000, 20000, 30000, 50000].map(val => (
+                    <button
+                      key={val}
+                      type="button"
+                      onClick={() => setCashReceivedCLP(val)}
+                      className="px-2 py-1 bg-white hover:bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold rounded-lg text-[11px]"
+                    >
+                      {formatCLP(val)}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex justify-between items-center font-bold pt-2 border-t border-emerald-200">
                   <span className="text-emerald-900">Vuelto a Entregar:</span>
-                  <span className="text-base text-emerald-700 font-mono">{formatCLP(cashChangeCLP)}</span>
+                  <span className="text-lg text-emerald-700 font-mono font-extrabold">{formatCLP(cashChangeCLP)}</span>
                 </div>
               </div>
             )}
