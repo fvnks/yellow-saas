@@ -170,6 +170,115 @@ export interface VeterinaryEvolution {
   createdAt: string;
 }
 
+export interface EstimateItem {
+  id: string;
+  description: string;
+  quantity: number;
+  unitPriceCLP: number;
+}
+
+export interface VeterinaryEstimate {
+  id: string;
+  estimateNumber: string;
+  patientId: string;
+  patientName: string;
+  species: Species;
+  clientId: string;
+  clientName: string;
+  clientRut: string;
+  professionalId: string;
+  professionalName: string;
+  issueDate: string;
+  validUntil: string;
+  items: EstimateItem[];
+  currency: 'CLP' | 'UF';
+  note?: string;
+  status: 'borrador' | 'pendiente_aprobacion' | 'aprobado' | 'rechazado' | 'expirado' | 'convertido';
+}
+
+export type PaymentMethod = 'efectivo' | 'debito' | 'credito_webpay' | 'transbank_credito' | 'transferencia' | 'cheque' | 'mercadopago';
+
+export interface PaymentRecord {
+  id: string;
+  estimateId?: string;
+  invoiceId?: string;
+  patientId: string;
+  patientName: string;
+  clientId: string;
+  clientName: string;
+  clientRut: string;
+  paidAt: string;
+  amountCLP: number;
+  method: PaymentMethod;
+  concept: string;
+  referenceNumber?: string;
+  partialOf?: string;
+  status: 'completado' | 'pendiente' | 'reverso';
+}
+
+export interface VeterinaryInvoiceEstimate {
+  id: string;
+  invoiceNumber: string;
+  estimateId: string;
+  clientName: string;
+  clientRut: string;
+  patientName: string;
+  issueDate: string;
+  totalCLP: number;
+  status: 'boleta_pagada' | 'factura_pagada' | 'pendiente';
+  payments: PaymentRecord[];
+}
+
+export interface LabPanel {
+  id: string;
+  name: string;
+  code: string;
+  category: 'hematologia' | 'bioquimica' | 'endocrinologia' | 'urianalisis' | 'parasitologia' | 'citologia' | 'serologia' | 'otros';
+  tests: LabTest[];
+}
+
+export interface LabTest {
+  id: string;
+  name: string;
+  code: string;
+  unit: string;
+  referenceRange: string;
+}
+
+export interface LabOrder {
+  id: string;
+  orderNumber: string;
+  patientId: string;
+  patientName: string;
+  species: Species;
+  clientId: string;
+  clientName: string;
+  clientRut: string;
+  professionalId: string;
+  professionalName: string;
+  panelId: string;
+  panelName: string;
+  orderedDate: string;
+  samplingDate?: string;
+  sampleType: 'sangre' | 'orina' | 'heces' | 'raspado_piel' | 'frotis_sanguineo' | 'aspiracion' | 'otro';
+  externalLab?: string;
+  status: 'ordenada' | 'muestra_tomada' | 'en_proceso' | 'resultados_listos' | 'entregado' | 'cancelada';
+  results?: LabResult[];
+  notes?: string;
+  priority: 'rutina' | 'urgencia' | 'estatica';
+}
+
+export interface LabResult {
+  id: string;
+  testId: string;
+  testName: string;
+  value: string;
+  unit: string;
+  referenceRange: string;
+  flag: 'bajo' | 'normal' | 'alto' | 'critico';
+  note?: string;
+}
+
 export interface VaccinationRecord {
   id: string;
   patientId: string;
@@ -951,5 +1060,154 @@ export const INITIAL_EVOLUTIONS: VeterinaryEvolution[] = [
     diagnosis: 'Gastroenteritis aguda - Hospitalización',
     status: 'final',
     createdAt: '2025-02-26',
+  },
+];
+
+export const INITIAL_LAB_PANELS: LabPanel[] = [
+  {
+    id: 'lpan-001',
+    name: 'Hemograma Completo (CBC)',
+    code: 'HEMO',
+    category: 'hematologia',
+    tests: [
+      { id: 'lt-001', name: 'Hematocrito (HCT)', code: 'HCT', unit: '%', referenceRange: '37 - 55' },
+      { id: 'lt-002', name: 'Hemoglobina (HGB)', code: 'HGB', unit: 'g/dL', referenceRange: '12.0 - 18.0' },
+      { id: 'lt-003', name: 'Glóbulos Rojos (RBC)', code: 'RBC', unit: 'M/µL', referenceRange: '5.5 - 8.5' },
+      { id: 'lt-004', name: 'Glóbulos Blancos (WBC)', code: 'WBC', unit: 'K/µL', referenceRange: '6.0 - 17.0' },
+      { id: 'lt-005', name: 'Plaquetas (PLT)', code: 'PLT', unit: 'K/µL', referenceRange: '200 - 500' },
+      { id: 'lt-006', name: 'Neutrófilos Segmentados', code: 'NEU', unit: '%', referenceRange: '60 - 77' },
+      { id: 'lt-007', name: 'Linfocitos', code: 'LYM', unit: '%', referenceRange: '12 - 30' },
+    ],
+  },
+  {
+    id: 'lpan-002',
+    name: 'Perfil Bioquímico (Rutina)',
+    code: 'BIOQ',
+    category: 'bioquimica',
+    tests: [
+      { id: 'lt-101', name: 'Glucosa', code: 'GLU', unit: 'mg/dL', referenceRange: '70 - 130' },
+      { id: 'lt-102', name: 'Urea BUN', code: 'BUN', unit: 'mg/dL', referenceRange: '7 - 32' },
+      { id: 'lt-103', name: 'Creatinina', code: 'CREA', unit: 'mg/dL', referenceRange: '0.5 - 1.5' },
+      { id: 'lt-104', name: 'ALT/GPT', code: 'ALT', unit: 'U/L', referenceRange: '10 - 100' },
+      { id: 'lt-105', name: 'AST/GOT', code: 'AST', unit: 'U/L', referenceRange: '10 - 60' },
+      { id: 'lt-106', name: 'Proteínas Totales', code: 'TPRO', unit: 'g/dL', referenceRange: '5.4 - 7.8' },
+    ],
+  },
+  {
+    id: 'lpan-003',
+    name: 'Urianálisis Completo',
+    code: 'URIN',
+    category: 'urianalisis',
+    tests: [
+      { id: 'lt-201', name: 'Densidad', code: 'DENS', unit: '', referenceRange: '1.015 - 1.045' },
+      { id: 'lt-202', name: 'pH', code: 'PH', unit: '', referenceRange: '5.5 - 7.5' },
+      { id: 'lt-203', name: 'Proteínas', code: 'PRO', unit: 'mg/dL', referenceRange: 'Negativo' },
+      { id: 'lt-204', name: 'Glucosa', code: 'GLU2', unit: 'mg/dL', referenceRange: 'Negativo' },
+      { id: 'lt-205', name: 'Hemoglobina', code: 'HGB2', unit: '', referenceRange: 'Negativo' },
+    ],
+  },
+  {
+    id: 'lpan-004',
+    name: 'Perfil Tiroideo',
+    code: 'TIRO',
+    category: 'endocrinologia',
+    tests: [
+      { id: 'lt-301', name: 'T4 Total', code: 'T4', unit: 'µg/dL', referenceRange: '1.0 - 4.0' },
+      { id: 'lt-302', name: 'TSH', code: 'TSH', unit: 'ng/mL', referenceRange: '0.03 - 0.6' },
+    ],
+  },
+];
+
+export const INITIAL_ESTIMATES: VeterinaryEstimate[] = [
+  {
+    id: 'est-001',
+    estimateNumber: 'COT-2025-001',
+    patientId: 'pat-001',
+    patientName: 'Apollo',
+    species: 'perro',
+    clientId: 'cli-001',
+    clientName: 'María José Valenzuela',
+    clientRut: '15.482.910-K',
+    professionalId: 'pro-001',
+    professionalName: 'Dr. Sebastián Contreras P.',
+    issueDate: '2025-02-20',
+    validUntil: '2025-03-20',
+    items: [
+      { id: 'ei-001', description: 'Limpieza dental con anestesia inhalatoria', quantity: 1, unitPriceCLP: 85000 },
+      { id: 'ei-002', description: 'Radiografía dental (periapical)', quantity: 3, unitPriceCLP: 15000 },
+      { id: 'ei-003', description: 'Exámenes pre-anestésicos (Hemograma + Bioquímica)', quantity: 1, unitPriceCLP: 42000 },
+    ],
+    currency: 'CLP',
+    note: 'Paciente con cálculo dental leve. Se recomienda intervalorar dosis de sedación según peso.',
+    status: 'aprobado',
+  },
+  {
+    id: 'est-002',
+    estimateNumber: 'COT-2025-002',
+    patientId: 'pat-002',
+    patientName: 'Luna',
+    species: 'gato',
+    clientId: 'cli-001',
+    clientName: 'María José Valenzuela',
+    clientRut: '15.482.910-K',
+    professionalId: 'pro-002',
+    professionalName: 'Dra. Andrea Morales Soto',
+    issueDate: '2025-02-24',
+    validUntil: '2025-03-24',
+    items: [
+      { id: 'ei-004', description: 'Castración (Ovariohisterectomía) felino', quantity: 1, unitPriceCLP: 69000 },
+      { id: 'ei-005', description: 'Chip de identificación electrónica Ley 21.020', quantity: 1, unitPriceCLP: 15000 },
+      { id: 'ei-006', description: 'Analgesia post operatoria (5 días)', quantity: 1, unitPriceCLP: 12500 },
+    ],
+    currency: 'CLP',
+    note: 'Incluye control post operatorio de 7 días y alta médica.',
+    status: 'pendiente_aprobacion',
+  },
+];
+
+export const INITIAL_PAYMENTS: PaymentRecord[] = [
+  {
+    id: 'pay-001',
+    estimateId: 'est-001',
+    patientId: 'pat-001',
+    patientName: 'Apollo',
+    clientId: 'cli-001',
+    clientName: 'María José Valenzuela',
+    clientRut: '15.482.910-K',
+    paidAt: '2025-02-20 11:45',
+    amountCLP: 80000,
+    method: 'transferencia',
+    concept: 'Anticipo (50%) - Limpieza dental Apollo',
+    referenceNumber: 'TRX-88213',
+    status: 'completado',
+  },
+];
+
+export const INITIAL_LAB_ORDERS: LabOrder[] = [
+  {
+    id: 'lab-001',
+    orderNumber: 'LAB-2025-001',
+    patientId: 'pat-001',
+    patientName: 'Apollo',
+    species: 'perro',
+    clientId: 'cli-001',
+    clientName: 'María José Valenzuela',
+    clientRut: '15.482.910-K',
+    professionalId: 'pro-001',
+    professionalName: 'Dr. Sebastián Contreras P.',
+    panelId: 'lpan-001',
+    panelName: 'Hemograma Completo (CBC)',
+    orderedDate: '2025-02-18',
+    samplingDate: '2025-02-18',
+    sampleType: 'sangre',
+    status: 'resultados_listos',
+    priority: 'rutina',
+    results: [
+      { id: 'lr-001', testId: 'lt-001', testName: 'Hematocrito (HCT)', value: '48', unit: '%', referenceRange: '37 - 55', flag: 'normal' },
+      { id: 'lr-002', testId: 'lt-002', testName: 'Hemoglobina (HGB)', value: '16.5', unit: 'g/dL', referenceRange: '12.0 - 18.0', flag: 'normal' },
+      { id: 'lr-003', testId: 'lt-003', testName: 'Glóbulos Rojos (RBC)', value: '7.1', unit: 'M/µL', referenceRange: '5.5 - 8.5', flag: 'normal' },
+      { id: 'lr-004', testId: 'lt-004', testName: 'Glóbulos Blancos (WBC)', value: '12.4', unit: 'K/µL', referenceRange: '6.0 - 17.0', flag: 'normal' },
+      { id: 'lr-005', testId: 'lt-005', testName: 'Plaquetas (PLT)', value: '310', unit: 'K/µL', referenceRange: '200 - 500', flag: 'normal' },
+    ],
   },
 ];

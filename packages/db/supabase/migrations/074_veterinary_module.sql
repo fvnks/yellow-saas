@@ -381,3 +381,187 @@ ALTER TABLE veterinary_evolutions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY vet_evolutions_company_policy ON veterinary_evolutions
     FOR ALL USING (company_id IN (SELECT company_id FROM user_companies WHERE user_id = auth.uid()));
 
+-- ======================================================================
+-- Veterinary Estimates (Presupuestos & Cotizaciones)
+-- ======================================================================
+CREATE TABLE IF NOT EXISTS veterinary_estimates (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+    estimate_number VARCHAR(30) NOT NULL,
+    patient_id UUID NOT NULL REFERENCES veterinary_patients(id) ON DELETE CASCADE,
+    client_id UUID NOT NULL REFERENCES veterinary_clients(id) ON DELETE CASCADE,
+    professional_id UUID REFERENCES veterinary_professionals(id) ON DELETE SET NULL,
+    issue_date DATE DEFAULT CURRENT_DATE,
+    valid_until DATE,
+    currency VARCHAR(5) DEFAULT 'CLP' CHECK (currency IN ('CLP', 'UF')),
+    subtotal NUMERIC(12,0) NOT NULL DEFAULT 0,
+    iva_pct NUMERIC(4,2) DEFAULT 19.00,
+    total NUMERIC(12,0) NOT NULL DEFAULT 0,
+    status VARCHAR(30) DEFAULT 'borrador' CHECK (status IN ('borrador', 'pendiente_aprobacion', 'aprobado', 'rechazado', 'expirado', 'convertido')),
+    note TEXT,
+    approved_at TIMESTAMPTZ,
+    approved_by_ip INET,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(company_id, estimate_number)
+);
+
+CREATE INDEX IF NOT EXISTS idx_vet_estimates_company ON veterinary_estimates(company_id);
+CREATE INDEX IF NOT EXISTS idx_vet_estimates_client ON veterinary_estimates(company_id, client_id);
+CREATE INDEX IF NOT EXISTS idx_vet_estimates_status ON veterinary_estimates(company_id, status);
+
+ALTER TABLE veterinary_estimates ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY vet_estimates_company_policy ON veterinary_estimates
+    FOR ALL USING (company_id IN (SELECT company_id FROM user_companies WHERE user_id = auth.uid()));
+
+-- Estimate Line Items
+CREATE TABLE IF NOT EXISTS veterinary_estimate_items (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+    estimate_id UUID NOT NULL REFERENCES veterinary_estimates(id) ON DELETE CASCADE,
+    description TEXT NOT NULL,
+    quantity NUMERIC(8,0) NOT NULL DEFAULT 1,
+    unit_price NUMERIC(12,0) NOT NULL DEFAULT 0,
+    subtotal NUMERIC(12,0) NOT NULL DEFAULT 0,
+    sort_order INT DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_vet_est_items_company ON veterinary_estimate_items(company_id);
+CREATE INDEX IF NOT EXISTS idx_vet_est_items_estimate ON veterinary_estimate_items(company_id, estimate_id);
+
+ALTER TABLE veterinary_estimate_items ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY vet_est_items_company_policy ON veterinary_estimate_items
+    FOR ALL USING (company_id IN (SELECT company_id FROM user_companies WHERE user_id = auth.uid()));
+
+-- ======================================================================
+-- Veterinary Payments (Pagos & Anticipos)
+-- ======================================================================
+CREATE TABLE IF NOT EXISTS veterinary_payments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+    estimate_id UUID REFERENCES veterinary_estimates(id) ON DELETE SET NULL,
+    patient_id UUID NOT NULL REFERENCES veterinary_patients(id) ON DELETE CASCADE,
+    client_id UUID NOT NULL REFERENCES veterinary_clients(id) ON DELETE CASCADE,
+    paid_at TIMESTAMPTZ DEFAULT NOW(),
+    amount NUMERIC(12,0) NOT NULL CHECK (amount > 0),
+    method VARCHAR(30) DEFAULT 'efectivo' CHECK (method IN ('efectivo', 'debito', 'credito_webpay', 'transbank_credito', 'transferencia', 'cheque', 'mercadopago')),
+    concept TEXT NOT NULL,
+    reference_number VARCHAR(50),
+    status VARCHAR(20) DEFAULT 'completado' CHECK (status IN ('completado', 'pendiente', 'reverso')),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_vet_payments_company ON veterinary_payments(company_id);
+CREATE INDEX IF NOT EXISTS idx_vet_payments_estimate ON veterinary_payments(company_id, estimate_id);
+CREATE INDEX IF NOT EXISTS idx_vet_payments_client ON veterinary_payments(company_id, client_id);
+CREATE INDEX IF NOT EXISTS idx_vet_payments_status ON veterinary_payments(company_id, status);
+
+ALTER TABLE veterinary_payments ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY vet_payments_company_policy ON veterinary_payments
+    FOR ALL USING (company_id IN (SELECT company_id FROM user_companies WHERE user_id = auth.uid()));
+
+-- ======================================================================
+-- Veterinary Laboratory - Lab Panels (Paneles de Examenes)
+-- ======================================================================
+CREATE TABLE IF NOT EXISTS veterinary_lab_panels (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+    name VARCHAR(200) NOT NULL,
+    code VARCHAR(20) NOT NULL,
+    category VARCHAR(30) CHECK (category IN ('hematologia', 'bioquimica', 'endocrinologia', 'urianalisis', 'parasitologia', 'citologia', 'serologia', 'otros')),
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(company_id, code)
+);
+
+CREATE INDEX IF NOT EXISTS idx_vet_lab_panels_company ON veterinary_lab_panels(company_id);
+
+ALTER TABLE veterinary_lab_panels ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY vet_lab_panels_company_policy ON veterinary_lab_panels
+    FOR ALL USING (company_id IN (SELECT company_id FROM user_companies WHERE user_id = auth.uid()));
+
+-- Individual Tests within a Panel
+CREATE TABLE IF NOT EXISTS veterinary_lab_tests (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+    panel_id UUID NOT NULL REFERENCES veterinary_lab_panels(id) ON DELETE CASCADE,
+    name VARCHAR(200) NOT NULL,
+    code VARCHAR(20) NOT NULL,
+    unit VARCHAR(30),
+    reference_range VARCHAR(100),
+    reference_range_feline VARCHAR(100),
+    reference_range_avian VARCHAR(100),
+    sort_order INT DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(company_id, panel_id, code)
+);
+
+CREATE INDEX IF NOT EXISTS idx_vet_lab_tests_company ON veterinary_lab_tests(company_id);
+CREATE INDEX IF NOT EXISTS idx_vet_lab_tests_panel ON veterinary_lab_tests(company_id, panel_id);
+
+ALTER TABLE veterinary_lab_tests ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY vet_lab_tests_company_policy ON veterinary_lab_tests
+    FOR ALL USING (company_id IN (SELECT company_id FROM user_companies WHERE user_id = auth.uid()));
+
+-- ======================================================================
+-- Veterinary Laboratory - Orders & Results
+-- ======================================================================
+CREATE TABLE IF NOT EXISTS veterinary_lab_orders (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+    order_number VARCHAR(30) NOT NULL,
+    patient_id UUID NOT NULL REFERENCES veterinary_patients(id) ON DELETE CASCADE,
+    client_id UUID NOT NULL REFERENCES veterinary_clients(id) ON DELETE CASCADE,
+    professional_id UUID REFERENCES veterinary_professionals(id) ON DELETE SET NULL,
+    panel_id UUID NOT NULL REFERENCES veterinary_lab_panels(id) ON DELETE CASCADE,
+    ordered_date DATE DEFAULT CURRENT_DATE,
+    sampling_date DATE,
+    sample_type VARCHAR(30) DEFAULT 'sangre' CHECK (sample_type IN ('sangre', 'orina', 'heces', 'raspado_piel', 'frotis_sanguineo', 'aspiracion', 'otro')),
+    external_lab VARCHAR(200),
+    priority VARCHAR(20) DEFAULT 'rutina' CHECK (priority IN ('rutina', 'urgencia', 'estatica')),
+    status VARCHAR(30) DEFAULT 'ordenada' CHECK (status IN ('ordenada', 'muestra_tomada', 'en_proceso', 'resultados_listos', 'entregado', 'cancelada')),
+    notes TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(company_id, order_number)
+);
+
+CREATE INDEX IF NOT EXISTS idx_vet_lab_orders_company ON veterinary_lab_orders(company_id);
+CREATE INDEX IF NOT EXISTS idx_vet_lab_orders_patient ON veterinary_lab_orders(company_id, patient_id);
+CREATE INDEX IF NOT EXISTS idx_vet_lab_orders_status ON veterinary_lab_orders(company_id, status);
+
+ALTER TABLE veterinary_lab_orders ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY vet_lab_orders_company_policy ON veterinary_lab_orders
+    FOR ALL USING (company_id IN (SELECT company_id FROM user_companies WHERE user_id = auth.uid()));
+
+-- Lab Results per Test
+CREATE TABLE IF NOT EXISTS veterinary_lab_results (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+    order_id UUID NOT NULL REFERENCES veterinary_lab_orders(id) ON DELETE CASCADE,
+    test_id UUID NOT NULL REFERENCES veterinary_lab_tests(id) ON DELETE CASCADE,
+    test_name VARCHAR(200) NOT NULL,
+    value VARCHAR(100),
+    unit VARCHAR(30),
+    reference_range VARCHAR(100),
+    flag VARCHAR(20) CHECK (flag IN ('bajo', 'normal', 'alto', 'critico')),
+    note TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_vet_lab_results_company ON veterinary_lab_results(company_id);
+CREATE INDEX IF NOT EXISTS idx_vet_lab_results_order ON veterinary_lab_results(company_id, order_id);
+
+ALTER TABLE veterinary_lab_results ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY vet_lab_results_company_policy ON veterinary_lab_results
+    FOR ALL USING (company_id IN (SELECT company_id FROM user_companies WHERE user_id = auth.uid()));

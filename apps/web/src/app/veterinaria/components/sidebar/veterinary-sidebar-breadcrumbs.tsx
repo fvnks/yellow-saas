@@ -15,6 +15,8 @@ const routeLabels: Record<string, string> = {
   '/veterinaria/hospitalizacion': 'Hospitalización & UCI',
   '/veterinaria/cirugias': 'Cirugías & Quirófano',
   '/veterinaria/recetas': 'Recetas Médicas',
+  '/veterinaria/laboratorio': 'Laboratorio Clínico',
+  '/veterinaria/presupuestos': 'Presupuestos & Estimaciones',
   '/veterinaria/configuracion/especies': 'Catálogo de Especies',
   '/veterinaria/configuracion/servicios': 'Servicios & Aranceles',
   '/veterinaria/profesionales': 'Profesionales Vet',

@@ -24,6 +24,8 @@ import {
   AlertTriangle,
   CheckCircle2,
   Clock,
+  FlaskConical,
+  TestTube,
 } from 'lucide-react';
 import PatientRecordPDF from './components/patient-record-pdf';
 import {
@@ -34,6 +36,7 @@ import {
   INITIAL_DEWORMINGS,
   INITIAL_REMINDERS,
   INITIAL_EVOLUTIONS,
+  INITIAL_LAB_ORDERS,
   VeterinaryPatient,
 } from '../../lib/veterinary-store';
 
@@ -44,12 +47,13 @@ export default function VeterinaryPatientDetailPage() {
   const patient = INITIAL_PATIENTS.find((p) => p.id === patientId) || INITIAL_PATIENTS[0];
   const client = INITIAL_CLIENTS.find((c) => c.id === patient.clientId);
 
-  const [activeTab, setActiveTab] = useState<'resumen' | 'consultas' | 'evoluciones' | 'vacunas' | 'desparasitaciones' | 'recetas' | 'peso'>('resumen');
+  const [activeTab, setActiveTab] = useState<'resumen' | 'consultas' | 'evoluciones' | 'vacunas' | 'desparasitaciones' | 'laboratorio' | 'recetas' | 'peso'>('resumen');
 
   const patientConsultations = INITIAL_CONSULTATIONS.filter((c) => c.patientId === patient.id);
   const patientVaccinations = INITIAL_VACCINATIONS.filter((v) => v.patientId === patient.id);
   const patientDewormings = INITIAL_DEWORMINGS.filter((d) => d.patientId === patient.id);
   const patientEvolutions = INITIAL_EVOLUTIONS.filter((e) => e.patientId === patient.id);
+  const patientLabOrders = INITIAL_LAB_ORDERS.filter((lo) => lo.patientId === patient.id);
 
   return (
     <div className="space-y-6">
@@ -122,6 +126,7 @@ export default function VeterinaryPatientDetailPage() {
           { id: 'evoluciones', label: `Evoluciones SOAP (${patientEvolutions.length})`, icon: FileText },
           { id: 'vacunas', label: `Vacunación (${patientVaccinations.length})`, icon: Syringe },
           { id: 'desparasitacion', label: `Desparasitaciones (${patientDewormings.length})`, icon: Shield },
+          { id: 'laboratorio', label: `Laboratorio (${patientLabOrders.length})`, icon: FlaskConical },
           { id: 'recetas', label: 'Recetas Médicas', icon: Pill },
           { id: 'peso', label: 'Curva de Peso', icon: Weight },
         ].map((tab) => {
@@ -362,6 +367,68 @@ export default function VeterinaryPatientDetailPage() {
             </div>
           ) : (
             <p className="text-xs text-slate-500">Sin evoluciones clínicas registradas para este paciente.</p>
+          )}
+        </div>
+      )}
+
+      {/* Lab Tab */}
+      {activeTab === 'laboratorio' && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+              <FlaskConical className="w-4 h-4 text-emerald-600" />
+              Órdenes de Laboratorio ({patientLabOrders.length})
+            </h3>
+            <Link
+              href="/veterinaria/laboratorio"
+              className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-bold px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1 shadow-sm"
+            >
+              <Plus className="w-3 h-3" /> Nueva Orden
+            </Link>
+          </div>
+          {patientLabOrders.length > 0 ? (
+            <div className="space-y-3">
+              {patientLabOrders.map((lo) => (
+                <div key={lo.id} className="bg-white border border-slate-200/80 rounded-2xl px-5 py-4 shadow-sm">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-bold text-xs text-slate-900">{lo.orderNumber}</span>
+                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-lg border ${
+                          lo.status === 'resultados_listos' ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : lo.status === 'ordenada' ? 'bg-blue-50 text-blue-700 border-blue-200'
+                          : lo.status === 'en_proceso' ? 'bg-amber-50 text-amber-700 border-amber-200'
+                          : 'bg-slate-100 text-slate-600 border-slate-200'
+                        }`}>
+                          {lo.status === 'resultados_listos' ? 'Resultados Listos' : lo.status === 'ordenada' ? 'Ordenada' : lo.status === 'en_proceso' ? 'En Proceso' : lo.status}
+                        </span>
+                      </div>
+                      <div className="text-xs font-bold text-slate-700">{lo.panelName}</div>
+                      <div className="text-[11px] text-slate-500">Muestra: {lo.sampleType} · Profesional: {lo.professionalName}</div>
+                      <div className="text-[10px] text-slate-400">Fecha orden: {lo.orderedDate}</div>
+                    </div>
+                    {lo.results && lo.results.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {lo.results.filter((r) => r.flag !== 'normal').map((r) => (
+                          <span key={r.id} className={`text-[10px] font-black px-2 py-0.5 rounded-lg border ${
+                            r.flag === 'alto' ? 'bg-amber-50 text-amber-700 border-amber-200'
+                            : r.flag === 'bajo' ? 'bg-blue-50 text-blue-700 border-blue-200'
+                            : 'bg-rose-50 text-rose-700 border-rose-200'
+                          }`}>
+                            {r.testName}: {r.value} {r.flag === 'alto' ? '↑' : r.flag === 'bajo' ? '↓' : '!!'}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-10 bg-white border border-slate-200/80 rounded-2xl shadow-sm">
+              <FlaskConical className="w-10 h-10 text-slate-300 mx-auto mb-2" />
+              <p className="text-xs text-slate-500">Sin órdenes de laboratorio registradas para este paciente.</p>
+            </div>
           )}
         </div>
       )}
