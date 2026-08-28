@@ -4,10 +4,13 @@ import { useState } from 'react';
 import { INITIAL_RESERVATIONS, INITIAL_TABLES, Reservation } from '../lib/restaurant-store';
 import { CalendarCheck, Mail, Phone, Users, Clock, Plus, CheckCircle, Ticket } from 'lucide-react';
 import { toast } from 'sonner';
+import { useRestaurantRole } from '../lib/role-context';
+import RoleProtected from '../components/role-protected';
 
 export default function ReservationsPage() {
   const [reservations, setReservations] = useState<Reservation[]>(INITIAL_RESERVATIONS);
   const [tables] = useState(INITIAL_TABLES);
+  const { canAccess } = useRestaurantRole();
 
   const [form, setForm] = useState({
     customerName: '',
@@ -55,6 +58,8 @@ export default function ReservationsPage() {
       peopleCount: 2,
     });
   };
+
+  if (!canAccess('reservations')) return <RoleProtected section="reservations"><div /></RoleProtected>;
 
   return (
     <div className="space-y-6">

@@ -5,6 +5,8 @@ import { INITIAL_TABLES, INITIAL_ORDERS, INITIAL_MENU_ITEMS, TableSession, Order
 import { Utensils, Plus, CheckCircle, Receipt, RefreshCw, X, ShieldCheck, CreditCard } from 'lucide-react';
 import { toast } from 'sonner';
 import { PaymentCheckoutModal } from './components/payment-checkout-modal';
+import { useRestaurantRole } from '../lib/role-context';
+import RoleProtected from '../components/role-protected';
 
 export default function WaiterPOSPage() {
   const [tables, setTables] = useState<TableSession[]>(INITIAL_TABLES);
@@ -13,6 +15,7 @@ export default function WaiterPOSPage() {
   const [selectedTable, setSelectedTable] = useState<TableSession | null>(INITIAL_TABLES[0] || null);
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'food' | 'drink'>('all');
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const { canAccess } = useRestaurantRole();
 
   // Modal para crear nueva mesa
   const [isNewTableModalOpen, setIsNewTableModalOpen] = useState(false);
@@ -204,6 +207,8 @@ export default function WaiterPOSPage() {
         return <span className="bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">Cuenta Pedida</span>;
     }
   };
+
+  if (!canAccess('pos')) return <RoleProtected section="pos"><div /></RoleProtected>;
 
   return (
     <div className="space-y-6">

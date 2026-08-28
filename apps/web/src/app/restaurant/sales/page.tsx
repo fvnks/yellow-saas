@@ -1,8 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Receipt, FileText, CheckCircle2, Download, Printer, RefreshCw, Search, ShieldCheck, DollarSign } from 'lucide-react';
+import { Receipt, FileText, CheckCircle2, Download, Printer, RefreshCw, Search, ShieldCheck, DollarSign, Plus } from 'lucide-react';
 import { toast } from 'sonner';
+import { INITIAL_BOLETAS_DTE, INITIAL_ORDERS } from '../lib/restaurant-store';
+import { useRestaurantRole } from '../lib/role-context';
+import RoleProtected from '../components/role-protected';
 
 interface DteBoleta {
   id: string;
@@ -19,12 +22,12 @@ interface DteBoleta {
   tedCode: string;
 }
 
-const INITIAL_BOLETAS: DteBoleta[] = [];
-
 export default function RestaurantSalesPage() {
-  const [boletas, setBoletas] = useState<DteBoleta[]>(INITIAL_BOLETAS);
+  const [boletas, setBoletas] = useState<DteBoleta[]>(INITIAL_BOLETAS_DTE);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBoleta, setSelectedBoleta] = useState<DteBoleta | null>(null);
+  const { canAccess } = useRestaurantRole();
+  if (!canAccess('sales')) return <RoleProtected section="sales"><div /></RoleProtected>;
 
   const formatCLP = (val: number) =>
     new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(val);
@@ -44,6 +47,31 @@ export default function RestaurantSalesPage() {
     toast.success(`Descargando XML firmado SII DTE Folio ${b.folio}...`);
   };
 
+  const emitirBoleta = () => {
+    const pendingOrders = INITIAL_ORDERS;
+    const created: DteBoleta[] = pendingOrders.map((order, idx) => {
+      const neto = order.totalCLP;
+      const iva = Math.round(neto * 0.19);
+      const tip = Math.round(neto * 0.1);
+      return {
+        id: `bol-${Date.now()}-${idx}`,
+        folio: 1300 + boletas.length + idx,
+        tableName: order.tableName,
+        waiterName: order.waiterName || 'Garzón',
+        dateTime: new Date().toLocaleString('es-CL', { hour12: false }),
+        netoCLP: neto,
+        ivaCLP: iva,
+        tipCLP: tip,
+        totalCLP: neto + iva + tip,
+        paymentMethod: 'Efectivo',
+        siiStatus: 'Pendiente',
+        tedCode: `TED-${Math.floor(10000 + Math.random() * 89999)}-${Math.floor(10 + Math.random() * 89)}`,
+      };
+    });
+    setBoletas((prev) => [...created, ...prev]);
+    toast.success(`Se emitieron ${created.length} boleta(s) DTE desde las órdenes activas del POS.`);
+  };
+
   return (
     <div className="space-y-6">
       {/* Title Header */}
@@ -59,6 +87,12 @@ export default function RestaurantSalesPage() {
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={emitirBoleta}
+            className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-semibold px-3 py-2 rounded-xl text-xs transition-all duration-150 shadow-sm flex items-center gap-2"
+          >
+            <Plus className="w-3.5 h-3.5" /> Emitir Boletas desde Órdenes POS
+          </button>
           <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5">
             <ShieldCheck className="w-4 h-4 text-emerald-600" /> Conexión Directa SII Activa
           </span>
