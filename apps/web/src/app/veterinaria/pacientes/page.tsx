@@ -16,7 +16,7 @@ import {
   Shield,
   Stethoscope,
 } from 'lucide-react';
-import { INITIAL_PATIENTS, INITIAL_CLIENTS, VeterinaryPatient, Species } from '../lib/veterinary-store';
+import { INITIAL_PATIENTS, INITIAL_CLIENTS, INITIAL_SPECIES, VeterinaryPatient, Species } from '../lib/veterinary-store';
 
 export default function VeterinaryPatientsPage() {
   const [patients, setPatients] = useState<VeterinaryPatient[]>(INITIAL_PATIENTS);
@@ -83,16 +83,23 @@ export default function VeterinaryPatientsPage() {
   };
 
   const getSpeciesBadge = (species: Species) => {
-    switch (species) {
-      case 'perro':
-        return <span className="bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1"><Dog className="w-3.5 h-3.5" /> Canino</span>;
-      case 'gato':
-        return <span className="bg-purple-100 text-purple-900 border border-purple-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1"><Cat className="w-3.5 h-3.5" /> Felino</span>;
-      case 'ave':
-        return <span className="bg-blue-100 text-blue-900 border border-blue-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1"><Bird className="w-3.5 h-3.5" /> Ave</span>;
-      default:
-        return <span className="bg-slate-100 text-slate-800 border border-slate-300 text-xs font-bold px-2 py-0.5 rounded-lg uppercase">{species}</span>;
+    const spKey = species.toLowerCase();
+    if (spKey.includes('perro') || spKey.includes('canino')) {
+      return <span className="bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1"><Dog className="w-3.5 h-3.5" /> Canino</span>;
     }
+    if (spKey.includes('gato') || spKey.includes('felino')) {
+      return <span className="bg-purple-100 text-purple-900 border border-purple-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1"><Cat className="w-3.5 h-3.5" /> Felino</span>;
+    }
+    if (spKey.includes('ave')) {
+      return <span className="bg-blue-100 text-blue-900 border border-blue-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1"><Bird className="w-3.5 h-3.5" /> Ave</span>;
+    }
+    if (spKey.includes('equino') || spKey.includes('caballo')) {
+      return <span className="bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1">Equino</span>;
+    }
+    if (spKey.includes('bovino') || spKey.includes('vacuno')) {
+      return <span className="bg-sky-100 text-sky-900 border border-sky-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1">Bovino</span>;
+    }
+    return <span className="bg-slate-100 text-slate-800 border border-slate-300 text-xs font-bold px-2 py-0.5 rounded-lg uppercase">{species}</span>;
   };
 
   return (
@@ -132,7 +139,7 @@ export default function VeterinaryPatientsPage() {
           </div>
 
           <div className="flex items-center gap-1 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
-            {['todos', 'perro', 'gato', 'conejo', 'ave', 'exotico'].map((sp) => (
+            {['todos', 'perro', 'gato', 'ave', 'conejo', 'roedor', 'equino', 'bovino', 'porcino'].map((sp) => (
               <button
                 key={sp}
                 onClick={() => setSelectedSpecies(sp)}
@@ -278,14 +285,14 @@ export default function VeterinaryPatientsPage() {
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Especie *</label>
                   <select
                     value={formData.species}
-                    onChange={(e) => setFormData({ ...formData, species: e.target.value as Species })}
-                    className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    onChange={(e) => setFormData({ ...formData, species: e.target.value })}
+                    className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
                   >
-                    <option value="perro">Canino (Perro)</option>
-                    <option value="gato">Felino (Gato)</option>
-                    <option value="ave">Ave</option>
-                    <option value="conejo">Conejo</option>
-                    <option value="exotico">Exótico</option>
+                    {INITIAL_SPECIES.map((sp) => (
+                      <option key={sp.id} value={sp.key}>
+                        {sp.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
 

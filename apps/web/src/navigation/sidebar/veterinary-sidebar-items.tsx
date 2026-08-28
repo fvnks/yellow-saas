@@ -13,6 +13,8 @@ import {
   LucideIcon,
   PlusCircle,
   FileCheck,
+  Dna,
+  ClipboardList,
 } from "lucide-react";
 
 export interface VeterinaryNavItem {
@@ -46,6 +48,11 @@ export const veterinarySidebarItems: VeterinaryNavGroup[] = [
         title: "Consultas Clínicas",
         path: "/veterinaria/consultas",
         icon: Stethoscope,
+      },
+      {
+        title: "Evolución & Notas SOAP",
+        path: "/veterinaria/evoluciones",
+        icon: ClipboardList,
       },
     ],
   },
@@ -92,6 +99,11 @@ export const veterinarySidebarItems: VeterinaryNavGroup[] = [
   {
     groupLabel: "Administración & Catálogos",
     items: [
+      {
+        title: "Catálogo de Especies",
+        path: "/veterinaria/configuracion/especies",
+        icon: Dna,
+      },
       {
         title: "Servicios & Aranceles",
         path: "/veterinaria/configuracion/servicios",

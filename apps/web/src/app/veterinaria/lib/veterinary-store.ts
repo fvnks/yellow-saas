@@ -1,7 +1,18 @@
 'use client';
 
-export type Species = 'perro' | 'gato' | 'ave' | 'conejo' | 'roedor' | 'reptil' | 'exotico' | 'otro';
+export type Species = string;
 export type Gender = 'macho' | 'hembra' | 'desconocido';
+
+export interface VeterinarySpecies {
+  id: string;
+  key: string;
+  name: string;
+  category: 'pequeños_animales' | 'exoticos' | 'mayores_ganado' | 'silvestres';
+  commonBreeds: string[];
+  description?: string;
+  status: 'active' | 'inactive';
+  createdAt: string;
+}
 export type PatientStatus = 'active' | 'deceased' | 'adopted' | 'inactive';
 export type AppointmentStatus = 'agendada' | 'confirmada' | 'en_espera' | 'en_atencion' | 'finalizada' | 'cancelada' | 'no_asistio';
 export type ServiceCategory = 'consulta' | 'vacunacion' | 'desparasitacion' | 'cirugia' | 'hospitalizacion' | 'examen' | 'imagenologia' | 'peluqueria' | 'otro';
@@ -128,6 +139,35 @@ export interface VeterinaryConsultation {
   treatmentPlan: string;
   generalNotes?: string;
   status: 'draft' | 'completed' | 'cancelled';
+}
+
+export interface SoapNote {
+  subjective: string;
+  objective: string;
+  assessment: string;
+  plan: string;
+}
+
+export type EvolutionType = 'consulta' | 'control' | 'procedimiento' | 'post_operatorio' | 'hospitalizacion' | 'examen';
+
+export interface VeterinaryEvolution {
+  id: string;
+  patientId: string;
+  patientName: string;
+  consultationId?: string;
+  type: EvolutionType;
+  soap: SoapNote;
+  weightKg?: number;
+  temperatureC?: number;
+  heartRateBpm?: number;
+  respiratoryRateBpm?: number;
+  professionalId: string;
+  professionalName: string;
+  evolutionDate: string;
+  evolutionTime: string;
+  diagnosis?: string;
+  status: 'draft' | 'final';
+  createdAt: string;
 }
 
 export interface VaccinationRecord {
@@ -295,6 +335,129 @@ export const INITIAL_CLIENTS: VeterinaryClient[] = [
     city: 'Santiago',
     status: 'active',
     createdAt: '2025-02-10',
+  },
+];
+
+export const INITIAL_SPECIES: VeterinarySpecies[] = [
+  {
+    id: 'sp-001',
+    key: 'perro',
+    name: 'Canino (Perro)',
+    category: 'pequeños_animales',
+    commonBreeds: ['Golden Retriever', 'Pastor Alemán', 'Poodle', 'Bulldog Francés', 'Kuchel / Mestizo', 'Pug', 'Labrador'],
+    description: 'Especie canina doméstica con regulación under Ley 21.020.',
+    status: 'active',
+    createdAt: '2025-01-01',
+  },
+  {
+    id: 'sp-002',
+    key: 'gato',
+    name: 'Felino (Gato)',
+    category: 'pequeños_animales',
+    commonBreeds: ['Mestizo Felino / DSH', 'Persa', 'Siames', 'Maine Coon', 'Bengalí', 'Sphynx'],
+    description: 'Especie felina doméstica bajo programa microchip Ley 21.020.',
+    status: 'active',
+    createdAt: '2025-01-01',
+  },
+  {
+    id: 'sp-003',
+    key: 'ave',
+    name: 'Ave / Ornitología',
+    category: 'exoticos',
+    commonBreeds: ['Ninfa / Calopsita', 'Cacatúa', 'Perico Australiano', 'Agapornis', 'Canario', 'Loro'],
+    description: 'Aves de compañía, exóticas u ornitología clínica.',
+    status: 'active',
+    createdAt: '2025-01-01',
+  },
+  {
+    id: 'sp-004',
+    key: 'conejo',
+    name: 'Lagomorfo (Conejo)',
+    category: 'exoticos',
+    commonBreeds: ['Cabeza de León', 'Holland Lop', 'Enano Holandés', 'Rex', 'Mestizo'],
+    description: 'Cones de compañía con atención médica especializada en fermentación posterior.',
+    status: 'active',
+    createdAt: '2025-01-01',
+  },
+  {
+    id: 'sp-005',
+    key: 'roedor',
+    name: 'Roedor (Cobaya / Hámster / Chinchilla)',
+    category: 'exoticos',
+    commonBreeds: ['Cobaya / Cuy', 'Hámster Sirio', 'Hámster Ruso', 'Chinchilla', 'Rata Doméstica'],
+    description: 'Pequeños mamíferos roedores domésticos.',
+    status: 'active',
+    createdAt: '2025-01-01',
+  },
+  {
+    id: 'sp-006',
+    key: 'huron',
+    name: 'Mustélido (Hurón / Ferret)',
+    category: 'exoticos',
+    commonBreeds: ['Hurón Sable', 'Hurón Albino', 'Hurón Panda', 'Hurón Canela'],
+    description: 'Hurones domésticos de compañía y carnívoros estrictos.',
+    status: 'active',
+    createdAt: '2025-01-01',
+  },
+  {
+    id: 'sp-007',
+    key: 'reptil',
+    name: 'Reptil / Anfibio',
+    category: 'exoticos',
+    commonBreeds: ['Iguana Verde', 'Dragón Barbudo', 'Gecko Leopardo', 'Tortuga de Agua', 'Tortuga Terrestre'],
+    description: 'Reptiles y anfibios exóticos mantenidos en terrarios.',
+    status: 'active',
+    createdAt: '2025-01-01',
+  },
+  {
+    id: 'sp-008',
+    key: 'equino',
+    name: 'Equino (Caballo / Mula)',
+    category: 'mayores_ganado',
+    commonBreeds: ['Caballo Chileno', 'Fina Sangre de Carrera (FSC)', 'Criollo', 'Percherón', 'Cuarto de Milla'],
+    description: 'Medicina equina de deporte, trabajo y reproductor.',
+    status: 'active',
+    createdAt: '2025-01-01',
+  },
+  {
+    id: 'sp-009',
+    key: 'bovino',
+    name: 'Bovino (Vacuno / Lechero)',
+    category: 'mayores_ganado',
+    commonBreeds: ['Holstein / Overo Negro', 'Overo Colorado', 'Angus', 'Hereford', 'Wagyu'],
+    description: 'Bovinos de carne y leche con control sanitario SAG y trazabilidad RUP.',
+    status: 'active',
+    createdAt: '2025-01-01',
+  },
+  {
+    id: 'sp-010',
+    key: 'porcino',
+    name: 'Porcino (Cerdo / Minipig)',
+    category: 'mayores_ganado',
+    commonBreeds: ['Minipig', 'Landrace', 'Yorkshire', 'Duroc'],
+    description: 'Porcinos domésticos de compañía (Minipig) o producción.',
+    status: 'active',
+    createdAt: '2025-01-01',
+  },
+  {
+    id: 'sp-011',
+    key: 'ovino_caprino',
+    name: 'Ovino & Caprino (Oveja / Cabra)',
+    category: 'mayores_ganado',
+    commonBreeds: ['Suffolk Down', 'Merino Precoz', 'Cabra Saanen', 'Cabra Anglo-Nubian'],
+    description: 'Pequeños rumiantes productores de leche, lana y carne.',
+    status: 'active',
+    createdAt: '2025-01-01',
+  },
+  {
+    id: 'sp-012',
+    key: 'silvestre',
+    name: 'Fauna Silvestre / Rehabilita',
+    category: 'silvestres',
+    commonBreeds: ['Puma Concolor', 'Zorro Chilla', 'Búho Magallánico', 'Condor Andino'],
+    description: 'Ejemplares de fauna nativa o de centros de rehabilitación rescatados.',
+    status: 'active',
+    createdAt: '2025-01-01',
   },
 ];
 
@@ -714,5 +877,79 @@ export const INITIAL_HOSPITALIZATIONS: Hospitalization[] = [
         notes: 'Paciente más alerta. No presenta nuevos episodios de emesis.',
       },
     ],
+  },
+];
+
+export const INITIAL_EVOLUTIONS: VeterinaryEvolution[] = [
+  {
+    id: 'ev-001',
+    patientId: 'pat-001',
+    patientName: 'Apollo',
+    consultationId: 'cons-001',
+    type: 'consulta',
+    soap: {
+      subjective: 'Tutor refiere que Apollo ha presentado vómito en 3 ocasiones desde ayer y una leve disminución de apetito. Deposiciones presentes y de consistencia habitual. Sin fiebre registrada por el tutor.',
+      objective: 'Paciente alerta, BCS 3/5, T° 38.7°C, FC 96 lpm, FR 24 rpm. Deshidratación <5%. Abdomen blando no doloroso a la palpación. Mucosas rosadas y húmedas. Signo de la carretilla normal. No se palpan masas ni organomegalias.',
+      assessment: 'Gastroenteritis aguda inespecífica. Se descarta cuerpo extraño por clínica y anamnesis; riesgo de pancreatitis baja. Sospecha de indiscreción dietética.',
+      plan: 'Ayuno de 12 horas, luego dieta blanda (pollo + arroz). Maropitant 1mg/kg VO cada 24h por 3 días. Rehidratación oral. Reevaluar en 72h. Suspender si persiste emesis o aumenta letargo.',
+    },
+    weightKg: 32.5,
+    temperatureC: 38.7,
+    heartRateBpm: 96,
+    respiratoryRateBpm: 24,
+    professionalId: 'pro-001',
+    professionalName: 'Dr. Sebastián Contreras P.',
+    evolutionDate: '2025-02-26',
+    evolutionTime: '11:20',
+    diagnosis: 'Gastroenteritis aguda inespecífica (K39.9)',
+    status: 'final',
+    createdAt: '2025-02-26',
+  },
+  {
+    id: 'ev-002',
+    patientId: 'pat-001',
+    patientName: 'Apollo',
+    consultationId: 'cons-001',
+    type: 'control',
+    soap: {
+      subjective: 'Tutor reporta que Apollo no ha presentado nuevos episodios de vómito y el apetito mejoró progresivamente al reintroducir la dieta.',
+      objective: 'T° 38.5°C, FC 88 lpm, FR 20 rpm. Bien hidratado. Abdomen normal. Sin hallazgos relevantes.',
+      assessment: 'Buena evolución clínica. Gastroenteritis resuelta.',
+      plan: 'Transición gradual a dieta habitual. Continuar hidratación. Alta médica. Próximo control en 6 meses o antes ante cualquier signo.',
+    },
+    weightKg: 32.8,
+    temperatureC: 38.5,
+    heartRateBpm: 88,
+    respiratoryRateBpm: 20,
+    professionalId: 'pro-002',
+    professionalName: 'Dra. Andrea Morales Soto',
+    evolutionDate: '2025-03-01',
+    evolutionTime: '10:05',
+    diagnosis: 'Evolución favorable - Alta',
+    status: 'final',
+    createdAt: '2025-03-01',
+  },
+  {
+    id: 'ev-003',
+    patientId: 'pat-003',
+    patientName: 'Max',
+    type: 'hospitalizacion',
+    soap: {
+      subjective: 'Paciente hospitalizado por gastroenteritis aguda con deshidratación. Sin nuevos episodios de emesis durante el turno.',
+      objective: 'EV 15:00: T° 39.1°C, FC 110 lpm, FR 28 rpm. EV 19:00: T° 38.6°C, FC 95 lpm, FR 24 rpm. Bien hidratado con fluidoterapia. Abdomen blando.',
+      assessment: 'Gastroenteritis aguda en vías de resolución. Deshidratación compensada.',
+      plan: 'Continuar fluidoterapia Ringer Lactato. Ayuno programado. Monitoreo c/4h. Reintroducción gradual de dieta en 12-24h.',
+    },
+    weightKg: 28.4,
+    temperatureC: 38.6,
+    heartRateBpm: 95,
+    respiratoryRateBpm: 24,
+    professionalId: 'pro-001',
+    professionalName: 'Dr. Sebastián Contreras P.',
+    evolutionDate: '2025-02-26',
+    evolutionTime: '19:30',
+    diagnosis: 'Gastroenteritis aguda - Hospitalización',
+    status: 'final',
+    createdAt: '2025-02-26',
   },
 ];
