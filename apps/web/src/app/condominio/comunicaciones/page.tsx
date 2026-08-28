@@ -41,7 +41,7 @@ export default function ComunicacionesPage() {
     setTimeout(() => setEmailSentSuccess(false), 3000);
   };
 
-  const cleanPhone = selectedUnit.ownerPhone.replace(/[^0-9]/g, '');
+  const cleanPhone = selectedUnit?.ownerPhone ? selectedUnit.ownerPhone.replace(/[^0-9]/g, '') : '';
   const whatsAppUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(currentMessage)}`;
 
   return (
@@ -72,7 +72,7 @@ export default function ComunicacionesPage() {
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1">Unidad Destino</label>
             <select
-              value={selectedUnit.id}
+              value={selectedUnit?.id || ''}
               onChange={(e) => {
                 const u = INITIAL_UNITS.find((x) => x.id === e.target.value);
                 if (u) setSelectedUnit(u);
@@ -89,10 +89,10 @@ export default function ComunicacionesPage() {
 
           <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 text-xs space-y-1">
             <p className="text-slate-500 font-medium">Datos de Contacto:</p>
-            <p className="font-bold text-slate-900">{selectedUnit.ownerName}</p>
-            <p className="text-slate-600">Email: {selectedUnit.ownerEmail}</p>
-            <p className="text-slate-600">WhatsApp: {selectedUnit.ownerPhone}</p>
-            <p className="text-slate-600">Deuda Actual: <strong className="text-rose-600">{formatCLP(selectedUnit.unpaidBalanceCLP)}</strong></p>
+            <p className="font-bold text-slate-900">{selectedUnit?.ownerName || 'Sin unidad seleccionada'}</p>
+            <p className="text-slate-600">Email: {selectedUnit?.ownerEmail || '-'}</p>
+            <p className="text-slate-600">WhatsApp: {selectedUnit?.ownerPhone || '-'}</p>
+            <p className="text-slate-600">Deuda Actual: <strong className="text-rose-600">{formatCLP(selectedUnit?.unpaidBalanceCLP || 0)}</strong></p>
           </div>
 
           <div>

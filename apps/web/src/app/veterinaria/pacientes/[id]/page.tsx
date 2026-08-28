@@ -44,16 +44,38 @@ export default function VeterinaryPatientDetailPage() {
   const params = useParams();
   const patientId = params.id as string;
 
-  const patient = INITIAL_PATIENTS.find((p) => p.id === patientId) || INITIAL_PATIENTS[0];
-  const client = INITIAL_CLIENTS.find((c) => c.id === patient.clientId);
+  const patient = INITIAL_PATIENTS.find((p) => p.id === patientId) || INITIAL_PATIENTS[0] || null;
+  const client = INITIAL_CLIENTS.find((c) => c.id === patient?.clientId) || null;
 
   const [activeTab, setActiveTab] = useState<'resumen' | 'consultas' | 'evoluciones' | 'vacunas' | 'desparasitaciones' | 'laboratorio' | 'recetas' | 'peso'>('resumen');
 
-  const patientConsultations = INITIAL_CONSULTATIONS.filter((c) => c.patientId === patient.id);
-  const patientVaccinations = INITIAL_VACCINATIONS.filter((v) => v.patientId === patient.id);
-  const patientDewormings = INITIAL_DEWORMINGS.filter((d) => d.patientId === patient.id);
-  const patientEvolutions = INITIAL_EVOLUTIONS.filter((e) => e.patientId === patient.id);
-  const patientLabOrders = INITIAL_LAB_ORDERS.filter((lo) => lo.patientId === patient.id);
+  const patientConsultations = INITIAL_CONSULTATIONS.filter((c) => c.patientId === patient?.id);
+  const patientVaccinations = INITIAL_VACCINATIONS.filter((v) => v.patientId === patient?.id);
+  const patientDewormings = INITIAL_DEWORMINGS.filter((d) => d.patientId === patient?.id);
+  const patientEvolutions = INITIAL_EVOLUTIONS.filter((e) => e.patientId === patient?.id);
+  const patientLabOrders = INITIAL_LAB_ORDERS.filter((lo) => lo.patientId === patient?.id);
+
+  if (!patient) {
+    return (
+      <div className="space-y-6">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-10 shadow-sm flex flex-col items-center justify-center text-center">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center text-2xl font-bold shadow-sm mb-4">
+            <AlertTriangle className="w-9 h-9" />
+          </div>
+          <h1 className="text-xl font-black text-slate-900">Paciente no encontrado</h1>
+          <p className="text-sm text-slate-500 mt-1 max-w-md">
+            No existe un paciente registrado con este identificador. Registre un nuevo paciente para ver su ficha clínica completa.
+          </p>
+          <Link
+            href="/veterinaria/pacientes"
+            className="mt-5 bg-[#0F172A] hover:bg-[#1E293B] text-white font-medium px-5 py-2.5 rounded-xl text-sm transition-all shadow-sm"
+          >
+            Volver a Pacientes
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

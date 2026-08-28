@@ -23,11 +23,15 @@ export default function VeterinaryVaccinationsPage() {
       v.batchNumber.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const selectedPatient = INITIAL_PATIENTS.find((p) => p.id === selectedPatientId) || INITIAL_PATIENTS[0];
-  const patientVaccines = vaccinations.filter((v) => v.patientId === selectedPatient.id);
+  const selectedPatient = INITIAL_PATIENTS.find((p) => p.id === selectedPatientId) || INITIAL_PATIENTS[0] || null;
+  const patientVaccines = vaccinations.filter((v) => v.patientId === selectedPatient?.id);
 
   const handleRegisterVaccine = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!selectedPatient) {
+      alert('Debe registrar o seleccionar un paciente antes de emitir la vacuna.');
+      return;
+    }
     const newRecord: VaccinationRecord = {
       id: `vac-${Date.now()}`,
       patientId: selectedPatient.id,
@@ -182,19 +186,19 @@ export default function VeterinaryVaccinationsPage() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
               <div>
                 <span className="text-slate-400 font-medium block">Paciente</span>
-                <strong className="text-slate-900 text-sm font-bold">{selectedPatient.name}</strong>
+                <strong className="text-slate-900 text-sm font-bold">{selectedPatient?.name || 'Sin paciente seleccionado'}</strong>
               </div>
               <div>
                 <span className="text-slate-400 font-medium block">Especie / Raza</span>
-                <strong className="text-slate-800 capitalize">{selectedPatient.species} • {selectedPatient.breed}</strong>
+                <strong className="text-slate-800 capitalize">{selectedPatient ? `${selectedPatient.species} • ${selectedPatient.breed}` : '-'}</strong>
               </div>
               <div>
                 <span className="text-slate-400 font-medium block">Microchip Nº</span>
-                <strong className="text-emerald-700 font-mono">{selectedPatient.microchip || 'Sin registro'}</strong>
+                <strong className="text-emerald-700 font-mono">{selectedPatient?.microchip || 'Sin registro'}</strong>
               </div>
               <div>
                 <span className="text-slate-400 font-medium block">Tutor Responsable</span>
-                <strong className="text-slate-800">{selectedPatient.clientName}</strong>
+                <strong className="text-slate-800">{selectedPatient?.clientName || '-'}</strong>
               </div>
             </div>
 

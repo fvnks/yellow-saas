@@ -24,38 +24,7 @@ interface BankMovement {
   status: 'pendiente' | 'conciliado';
 }
 
-const INITIAL_BANK_MOVEMENTS: BankMovement[] = [
-  {
-    id: 'bank-1',
-    date: '2026-03-29',
-    description: 'TRF BANCO CHILE CARLOS SILVA D101',
-    amountCLP: 163103,
-    reference: 'TRF-9941203',
-    suggestedUnitId: 'u-101',
-    suggestedUnitNumber: 'Dpto 101',
-    status: 'conciliado',
-  },
-  {
-    id: 'bank-2',
-    date: '2026-03-30',
-    description: 'TRF SANTAND MARÍA JOSÉ MORALES D102',
-    amountCLP: 112500,
-    reference: 'TRF-5581902',
-    suggestedUnitId: 'u-102',
-    suggestedUnitNumber: 'Dpto 102',
-    status: 'pendiente',
-  },
-  {
-    id: 'bank-3',
-    date: '2026-03-31',
-    description: 'DEP EFECTIVO SERVIPAG PARCELA 02',
-    amountCLP: 345000,
-    reference: 'DEP-102934',
-    suggestedUnitId: 'u-p02',
-    suggestedUnitNumber: 'Parcela 02',
-    status: 'pendiente',
-  },
-];
+const INITIAL_BANK_MOVEMENTS: BankMovement[] = [];
 
 export default function PagosConciliacionPage() {
   const [payments, setPayments] = useState<PaymentReceipt[]>(INITIAL_PAYMENTS);
