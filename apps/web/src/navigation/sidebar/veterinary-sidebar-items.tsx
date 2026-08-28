@@ -15,6 +15,8 @@ import {
   FileCheck,
   Dna,
   ClipboardList,
+  FlaskConical,
+  FileSpreadsheet,
 } from "lucide-react";
 
 export interface VeterinaryNavItem {
@@ -93,6 +95,21 @@ export const veterinarySidebarItems: VeterinaryNavGroup[] = [
         title: "Recetas Médicas",
         path: "/veterinaria/recetas",
         icon: FileText,
+      },
+    ],
+  },
+  {
+    groupLabel: "Diagnóstico & Facturación",
+    items: [
+      {
+        title: "Laboratorio Clínico",
+        path: "/veterinaria/laboratorio",
+        icon: FlaskConical,
+      },
+      {
+        title: "Presupuestos & Estimaciones",
+        path: "/veterinaria/presupuestos",
+        icon: FileSpreadsheet,
       },
     ],
   },
