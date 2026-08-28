@@ -33,6 +33,7 @@ import {
   INITIAL_VACCINATIONS,
   INITIAL_DEWORMINGS,
   INITIAL_REMINDERS,
+  INITIAL_EVOLUTIONS,
   VeterinaryPatient,
 } from '../../lib/veterinary-store';
 
@@ -43,11 +44,12 @@ export default function VeterinaryPatientDetailPage() {
   const patient = INITIAL_PATIENTS.find((p) => p.id === patientId) || INITIAL_PATIENTS[0];
   const client = INITIAL_CLIENTS.find((c) => c.id === patient.clientId);
 
-  const [activeTab, setActiveTab] = useState<'resumen' | 'consultas' | 'vacunas' | 'desparasitaciones' | 'recetas' | 'peso'>('resumen');
+  const [activeTab, setActiveTab] = useState<'resumen' | 'consultas' | 'evoluciones' | 'vacunas' | 'desparasitaciones' | 'recetas' | 'peso'>('resumen');
 
   const patientConsultations = INITIAL_CONSULTATIONS.filter((c) => c.patientId === patient.id);
   const patientVaccinations = INITIAL_VACCINATIONS.filter((v) => v.patientId === patient.id);
   const patientDewormings = INITIAL_DEWORMINGS.filter((d) => d.patientId === patient.id);
+  const patientEvolutions = INITIAL_EVOLUTIONS.filter((e) => e.patientId === patient.id);
 
   return (
     <div className="space-y-6">
@@ -117,6 +119,7 @@ export default function VeterinaryPatientDetailPage() {
         {[
           { id: 'resumen', label: 'Resumen 360°', icon: Activity },
           { id: 'consultas', label: `Consultas (${patientConsultations.length})`, icon: Stethoscope },
+          { id: 'evoluciones', label: `Evoluciones SOAP (${patientEvolutions.length})`, icon: FileText },
           { id: 'vacunas', label: `Vacunación (${patientVaccinations.length})`, icon: Syringe },
           { id: 'desparasitacion', label: `Desparasitaciones (${patientDewormings.length})`, icon: Shield },
           { id: 'recetas', label: 'Recetas Médicas', icon: Pill },
@@ -312,6 +315,70 @@ export default function VeterinaryPatientDetailPage() {
           </div>
         </div>
       )}
+
+      {activeTab === 'evoluciones' && (
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h3 className="text-base font-bold text-slate-900">Evolución Clínica & Notas SOAP</h3>
+            <Link
+              href="/veterinaria/evoluciones"
+              className="bg-[#0F172A] text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-slate-800 transition-all"
+            >
+              + Nueva Nota SOAP
+            </Link>
+          </div>
+
+          {patientEvolutions.length > 0 ? (
+            <div className="space-y-4">
+              {patientEvolutions
+                .slice()
+                .sort((a, b) => (a.evolutionDate + a.evolutionTime > b.evolutionDate + b.evolutionTime ? -1 : 1))
+                .map((evo) => (
+                  <div key={evo.id} className="border border-slate-200 rounded-2xl p-5 space-y-3 bg-slate-50/50">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/60 pb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-slate-900">{evo.evolutionDate} · {evo.evolutionTime}</span>
+                        <span className="bg-[#0F172A] text-white text-[10px] font-black px-2 py-0.5 rounded capitalize">
+                          {evo.type.replace('_', ' ')}
+                        </span>
+                      </div>
+                      <span className="text-xs text-slate-500">Atendido por {evo.professionalName}</span>
+                    </div>
+
+                    {evo.diagnosis && (
+                      <div className="bg-emerald-50 border border-emerald-200 p-2 rounded-lg text-xs font-bold text-emerald-700">
+                        Diagnóstico: {evo.diagnosis}
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      <SoapMini label="Subjetivo" color="border-blue-200 bg-blue-50" letter="S" text={evo.soap.subjective} />
+                      <SoapMini label="Objetivo" color="border-emerald-200 bg-emerald-50" letter="O" text={evo.soap.objective} />
+                      <SoapMini label="Evaluación" color="border-amber-200 bg-amber-50" letter="A" text={evo.soap.assessment} />
+                      <SoapMini label="Plan" color="border-rose-200 bg-rose-50" letter="P" text={evo.soap.plan} />
+                    </div>
+                  </div>
+                ))}
+            </div>
+          ) : (
+            <p className="text-xs text-slate-500">Sin evoluciones clínicas registradas para este paciente.</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SoapMini({ label, color, letter, text }: { label: string; color: string; letter: string; text: string }) {
+  return (
+    <div className={`border rounded-lg p-2.5 ${color} space-y-1`}>
+      <div className="flex items-center gap-1.5">
+        <span className="text-white text-[9px] font-black px-1.5 py-0.5 rounded bg-slate-700">{letter}</span>
+        <span className="text-[10px] font-extrabold text-slate-700 uppercase">{label}</span>
+      </div>
+      <p className="text-xs text-slate-700 leading-relaxed whitespace-pre-wrap">
+        {text || <span className="text-slate-400 italic">Sin registro</span>}
+      </p>
     </div>
   );
 }

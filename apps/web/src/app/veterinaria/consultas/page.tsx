@@ -25,6 +25,7 @@ import {
   INITIAL_CONSULTATIONS,
   VeterinaryConsultation,
   PrescriptionItem,
+  SoapNote,
 } from '../lib/veterinary-store';
 
 export default function VeterinaryConsultationsPage() {
@@ -47,6 +48,15 @@ export default function VeterinaryConsultationsPage() {
   const [physicalExamFindings, setPhysicalExamFindings] = useState<string>('');
   const [primaryDiagnosis, setPrimaryDiagnosis] = useState<string>('');
   const [treatmentPlan, setTreatmentPlan] = useState<string>('');
+
+  // SOAP Clinical Evolution
+  const [soap, setSoap] = useState<SoapNote>({
+    subjective: '',
+    objective: '',
+    assessment: '',
+    plan: '',
+  });
+  const updateSoap = (key: keyof SoapNote, value: string) => setSoap((s) => ({ ...s, [key]: value }));
 
   // Prescription Items
   const [prescriptionItems, setPrescriptionItems] = useState<PrescriptionItem[]>([
@@ -312,6 +322,58 @@ export default function VeterinaryConsultationsPage() {
           </div>
         </div>
 
+        {/* SOAP Clinical Note Section */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
+          <div className="border-b border-slate-100 pb-3">
+            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+              <FileText className="w-4 h-4 text-emerald-600" />
+              Nota Clínica SOAP & Evolución
+            </h3>
+            <p className="text-xs text-slate-500 mt-1">
+              Documentación médica estructurada que quedará registrada en la evolución del paciente (Subjetivo, Objetivo, Evaluación, Plan).
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+            <SoapField
+              letter="S"
+              label="Subjetivo"
+              hint="Historia referida por el tutor, evolución de síntomas desde la última visita."
+              color="border-blue-200 bg-blue-50/40"
+              badge="bg-blue-600"
+              value={soap.subjective}
+              onChange={(v) => updateSoap('subjective', v)}
+            />
+            <SoapField
+              letter="O"
+              label="Objetivo"
+              hint="Hallazgos del examen físico, constantes vitales y pruebas objetivas."
+              color="border-emerald-200 bg-emerald-50/40"
+              badge="bg-emerald-600"
+              value={soap.objective}
+              onChange={(v) => updateSoap('objective', v)}
+            />
+            <SoapField
+              letter="A"
+              label="Evaluación (Assessment)"
+              hint="Diagnóstico(s), problemas activos, evaluación del estado actual."
+              color="border-amber-200 bg-amber-50/40"
+              badge="bg-amber-500"
+              value={soap.assessment}
+              onChange={(v) => updateSoap('assessment', v)}
+            />
+            <SoapField
+              letter="P"
+              label="Plan"
+              hint="Plan terapéutico, controles, exámenes, derivaciones y seguimiento."
+              color="border-rose-200 bg-rose-50/40"
+              badge="bg-rose-600"
+              value={soap.plan}
+              onChange={(v) => updateSoap('plan', v)}
+            />
+          </div>
+        </div>
+
         {/* Prescriptions Section */}
         <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -422,6 +484,40 @@ export default function VeterinaryConsultationsPage() {
           </button>
         </div>
       </form>
+    </div>
+  );
+}
+
+function SoapField({
+  letter,
+  label,
+  hint,
+  color,
+  badge,
+  value,
+  onChange,
+}: {
+  letter: string;
+  label: string;
+  hint: string;
+  color: string;
+  badge: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div className={`border rounded-xl p-3 ${color} space-y-1.5`}>
+      <div className="flex items-center gap-2">
+        <span className={`text-white text-[10px] font-black px-2 py-0.5 rounded ${badge}`}>{letter}</span>
+        <span className="text-xs font-extrabold text-slate-800 uppercase">{label}</span>
+      </div>
+      <p className="text-[11px] text-slate-500 italic">{hint}</p>
+      <textarea
+        rows={3}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-900"
+      />
     </div>
   );
 }

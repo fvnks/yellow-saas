@@ -4,6 +4,20 @@
 -- Enable UUID extension if needed
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- 0. Veterinary Species Catalog (Dynamic species per clinic)
+CREATE TABLE IF NOT EXISTS veterinary_species (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+    key VARCHAR(100) NOT NULL,
+    name VARCHAR(150) NOT NULL,
+    category VARCHAR(100) DEFAULT 'pequeños_animales',
+    common_breeds TEXT,
+    status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'inactive')),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(company_id, key)
+);
+
 -- 1. Veterinary Clients / Tutores (extending/linking ERP customers)
 CREATE TABLE IF NOT EXISTS veterinary_clients (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -30,7 +44,7 @@ CREATE TABLE IF NOT EXISTS veterinary_patients (
     company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
     client_id UUID NOT NULL REFERENCES veterinary_clients(id) ON DELETE CASCADE,
     name VARCHAR(150) NOT NULL,
-    species VARCHAR(50) NOT NULL CHECK (species IN ('perro', 'gato', 'ave', 'conejo', 'roedor', 'reptil', 'exotico', 'otro')),
+    species VARCHAR(100) NOT NULL,
     breed VARCHAR(100),
     gender VARCHAR(20) CHECK (gender IN ('macho', 'hembra', 'desconocido')),
     birth_date DATE,
@@ -332,3 +346,38 @@ CREATE POLICY vet_hospitalizations_company_policy ON veterinary_hospitalizations
 
 CREATE POLICY vet_reminders_company_policy ON veterinary_reminders
     FOR ALL USING (company_id IN (SELECT company_id FROM user_companies WHERE user_id = auth.uid()));
+
+-- ==========================================================
+-- Veterinary Clinical Evolutions (SOAP Notes) — Ley 21.020
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS veterinary_evolutions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+    patient_id UUID NOT NULL REFERENCES veterinary_patients(id) ON DELETE CASCADE,
+    consultation_id UUID REFERENCES veterinary_consultations(id) ON DELETE SET NULL,
+    evolution_type VARCHAR(30) DEFAULT 'consulta' CHECK (evolution_type IN ('consulta', 'control', 'procedimiento', 'post_operatorio', 'hospitalizacion', 'examen')),
+    subjective TEXT,
+    objective TEXT,
+    assessment TEXT,
+    plan TEXT,
+    weight_kg NUMERIC(6,2),
+    temperature_c NUMERIC(4,1),
+    heart_rate_bpm INT,
+    respiratory_rate_bpm INT,
+    professional_id UUID REFERENCES veterinary_professionals(id) ON DELETE SET NULL,
+    diagnosis VARCHAR(500),
+    evolution_date DATE DEFAULT CURRENT_DATE,
+    evolution_time TIME DEFAULT CURRENT_TIME,
+    status VARCHAR(20) DEFAULT 'final' CHECK (status IN ('draft', 'final')),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_vet_evolutions_company ON veterinary_evolutions(company_id);
+CREATE INDEX IF NOT EXISTS idx_vet_evolutions_patient ON veterinary_evolutions(company_id, patient_id, evolution_date);
+
+ALTER TABLE veterinary_evolutions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY vet_evolutions_company_policy ON veterinary_evolutions
+    FOR ALL USING (company_id IN (SELECT company_id FROM user_companies WHERE user_id = auth.uid()));
+
