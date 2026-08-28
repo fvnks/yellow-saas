@@ -20,7 +20,7 @@ export default function WaiterPOSPage() {
   const [newTableCapacity, setNewTableCapacity] = useState(4);
 
   const formatCLP = (val: number) =>
-    new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(val);
+    new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(Math.round(val || 0));
 
   const activeOrder = orders.find(o => o.tableId === selectedTable?.tableId && o.status === 'active');
 
