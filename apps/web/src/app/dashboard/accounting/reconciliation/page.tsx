@@ -3,7 +3,8 @@ import { getApiClient } from "@/lib/api-client";
 import type { BankAccount, BankStatementLine, ReconciliationMatch, ReconciliationSession } from "./types";
 import { ArrowUpDown, CheckCircle, XCircle, AlertCircle, Plus, RefreshCw, Loader2, TrendingUp } from "lucide-react";
 
-const CLP = (val: number) => new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 }).format(val);
+const clpFormatter = new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 });
+const CLP = (val: number) => clpFormatter.format(val);
 
 export default function ReconciliationPage() {
   const [accounts, setAccounts] = useState<BankAccount[]>([]);
