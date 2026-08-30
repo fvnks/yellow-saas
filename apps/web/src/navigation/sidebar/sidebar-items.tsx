@@ -387,6 +387,7 @@ export const sidebarItems: NavGroup[] = [
           { title: "Plan de Cuentas", path: "/dashboard/accounting", icon: "Calculator", requiredPermission: { module: "finanzas", action: "read" } },
           { title: "Asientos Contables", path: "/dashboard/accounting/journal-entries", icon: "FileText", requiredPermission: { module: "finanzas", action: "read" } },
           { title: "Nuevo Asiento", path: "/dashboard/accounting/journal-entries/new", icon: "FileText", requiredPermission: { module: "finanzas", action: "create" } },
+          { title: "Conciliación Bancaria", path: "/dashboard/accounting/reconciliation", icon: "ArrowLeftRight", requiredPermission: { module: "finanzas", action: "read" } },
         ],
       },
       {
