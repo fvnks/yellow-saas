@@ -1866,6 +1866,42 @@ async deleteAdjustmentReason(id: string) {
     if (!response.ok) throw new Error(data.error || 'Error switching company');
     return data.data || data;
   }
+
+  async getReconciliationSessions() {
+    return this.request<any[]>('/reconciliation/sessions', { method: 'GET' });
+  }
+
+  async createReconciliationSession(accountId: string, period: string) {
+    return this.request<{ id: string; account_id: string; period: string; status: string; matched_count: number; variance: number; created_at: string; completed_at: string | null }>('/reconciliation/sessions', {
+      method: 'POST',
+      body: JSON.stringify({ account_id: accountId, period }),
+    });
+  }
+
+  async getBankStatementLines(accountId: string, params: { period: string }) {
+    const query = new URLSearchParams({ period: params.period }).toString();
+    return this.request<any[]>(`/reconciliation/accounts/${accountId}/statement-lines?${query}`, { method: 'GET' });
+  }
+
+  async autoMatch(sessionId: string) {
+    return this.request<{ matches: any[]; variance: number; matched_count: number }>('/reconciliation/sessions/' + sessionId + '/auto-match', { method: 'POST' });
+  }
+
+  async manualMatch(sessionId: string, statementLineId: string, journalEntryId: string) {
+    return this.request<{ id: string; statement_line_id: string; journal_entry_id: string | null; amount: number; difference: number; status: string; notes: string }>('/reconciliation/sessions/' + sessionId + '/matches', {
+      method: 'POST',
+      body: JSON.stringify({ statement_line_id: statementLineId, journal_entry_id: journalEntryId }),
+    });
+  }
+
+  async completeSession(sessionId: string) {
+    return this.request<{ id: string; status: string; completed_at: string }>('/reconciliation/sessions/' + sessionId + '/complete', { method: 'POST' });
+  }
+
+  async cancelSession(sessionId: string) {
+    return this.request<{ id: string; status: string }>('/reconciliation/sessions/' + sessionId + '/cancel', { method: 'POST' });
+  }
+
 }
 
 // Singleton with dynamic company_id from JWT
