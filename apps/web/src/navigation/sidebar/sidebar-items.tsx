@@ -51,6 +51,7 @@ import {
   Play,
   Building,
   UtensilsCrossed,
+  RefreshCw,
 } from "lucide-react";
 
 export const ICON_MAP = {
@@ -69,6 +70,7 @@ export const ICON_MAP = {
   CreditCard,
   Settings,
   UtensilsCrossed,
+  RefreshCw,
   ScrollText,
   AlertTriangle,
   FileText,
@@ -217,6 +219,7 @@ export const sidebarItems: NavGroup[] = [
         requiredPermission: { module: "inventario", action: "read" },
         subItems: [
           { title: "Dashboard", path: "/dashboard/bodega", icon: "Warehouse", requiredPermission: { module: "inventario", action: "read" } },
+          { title: "Órdenes de Producción", path: "/dashboard/production/orders", icon: "FlaskConical", requiredPermission: { module: "inventario", action: "read" } },
           { title: "Costos Aterrizados", path: "/dashboard/bodega/landed-cost", icon: "Truck", requiredPermission: { module: "inventario", action: "read" } },
           { title: "Consignacion", path: "/dashboard/bodega/consignment", icon: "Handshake", requiredPermission: { module: "inventario", action: "read" } },
           { title: "Libro SII", path: "/dashboard/bodega/sii-book", icon: "FileText", requiredPermission: { module: "inventario", action: "read" } },
@@ -298,6 +301,8 @@ export const sidebarItems: NavGroup[] = [
         subItems: [
           { title: "Listado de Documentos", path: "/dashboard/sales/invoices", icon: "FileText", requiredPermission: { module: "ventas", action: "read" } },
           { title: "Nuevo Documento", path: "/dashboard/sales/invoices/new", icon: "Plus", requiredPermission: { module: "ventas", action: "create" } },
+          { title: "Facturación Recurrente", path: "/dashboard/sales/recurring", icon: "RefreshCw", requiredPermission: { module: "ventas", action: "read" } },
+          { title: "Ecommerce & DTE", path: "/dashboard/sales/ecommerce", icon: "Globe", requiredPermission: { module: "ventas", action: "read" } },
           { title: "Informes de Ventas", path: "/dashboard/sales/sales-reports", icon: "BarChart3", requiredPermission: { module: "ventas", action: "read" } },
         ],
       },
@@ -309,7 +314,20 @@ export const sidebarItems: NavGroup[] = [
         subItems: [
           { title: "Listado de Documentos", path: "/dashboard/sales/delivery-guides", icon: "FileText", requiredPermission: { module: "ventas", action: "read" } },
           { title: "Nueva Guía", path: "/dashboard/sales/delivery-guides/new", icon: "Plus", requiredPermission: { module: "ventas", action: "create" } },
+          { title: "Guía DTE 52 SII", path: "/dashboard/sales/guia-52", icon: "Truck", requiredPermission: { module: "ventas", action: "read" } },
         ],
+      },
+      {
+        title: "Factoring AEC",
+        path: "/dashboard/sales/factoring",
+        icon: "Handshake",
+        requiredPermission: { module: "ventas", action: "read" },
+      },
+      {
+        title: "Webpay / Transbank",
+        path: "/dashboard/sales/transbank",
+        icon: "CreditCard",
+        requiredPermission: { module: "ventas", action: "read" },
       },
       {
         title: "Lista de Precios",
@@ -327,7 +345,7 @@ export const sidebarItems: NavGroup[] = [
         requiredPermission: { module: "ventas", action: "read" },
         subItems: [
           { title: "Cuenta Corriente", path: "/dashboard/sales/cobranza", icon: "Clock", requiredPermission: { module: "ventas", action: "read" } },
-          { title: "Notas de Crédito", path: "/dashboard/sales/cobranza/credit-notes", icon: "FileText", requiredPermission: { module: "ventas", action: "read" } },
+          { title: "Notas Crédito/Débito DTE", path: "/dashboard/sales/credit-debit", icon: "FileText", requiredPermission: { module: "ventas", action: "read" } },
         ],
       },
       {
@@ -351,6 +369,8 @@ export const sidebarItems: NavGroup[] = [
         subItems: [
           { title: "Órdenes de Compra", path: "/dashboard/purchases", icon: "ShoppingBag", requiredPermission: { module: "compras", action: "read" } },
           { title: "Proveedores", path: "/dashboard/suppliers", icon: "Truck", requiredPermission: { module: "compras", action: "read" } },
+          { title: "Portal Proveedores", path: "/dashboard/suppliers/portal", icon: "Truck", requiredPermission: { module: "compras", action: "read" } },
+          { title: "Importaciones DIN", path: "/dashboard/purchases/imports", icon: "Globe", requiredPermission: { module: "compras", action: "read" } },
           { title: "Artículos", path: "/dashboard/inventory", icon: "Package", requiredPermission: { module: "compras", action: "read" } },
           { title: "Recepción de Artículos", path: "/dashboard/purchases/receipts", icon: "Boxes", requiredPermission: { module: "compras", action: "read" } },
           { title: "Categorías", path: "/dashboard/purchases/categories", icon: "Tag", requiredPermission: { module: "compras", action: "read" } },
@@ -387,7 +407,14 @@ export const sidebarItems: NavGroup[] = [
           { title: "Plan de Cuentas", path: "/dashboard/accounting", icon: "Calculator", requiredPermission: { module: "finanzas", action: "read" } },
           { title: "Asientos Contables", path: "/dashboard/accounting/journal-entries", icon: "FileText", requiredPermission: { module: "finanzas", action: "read" } },
           { title: "Nuevo Asiento", path: "/dashboard/accounting/journal-entries/new", icon: "FileText", requiredPermission: { module: "finanzas", action: "create" } },
+          { title: "Libro Mayor", path: "/dashboard/accounting/general-ledger", icon: "BookOpen", requiredPermission: { module: "finanzas", action: "read" } },
+          { title: "Libro de Ventas SII", path: "/dashboard/accounting/sales-book", icon: "BookOpen", requiredPermission: { module: "finanzas", action: "read" } },
+          { title: "Balance 8 Col / EERR", path: "/dashboard/accounting/financial-statements", icon: "FileBarChart", requiredPermission: { module: "finanzas", action: "read" } },
+          { title: "Activo Fijo & Depreciación", path: "/dashboard/accounting/fixed-assets", icon: "Building2", requiredPermission: { module: "finanzas", action: "read" } },
           { title: "Conciliación Bancaria", path: "/dashboard/accounting/reconciliation", icon: "ArrowLeftRight", requiredPermission: { module: "finanzas", action: "read" } },
+          { title: "Flujo de Caja Proyectado", path: "/dashboard/accounting/cashflow", icon: "TrendingUp", requiredPermission: { module: "finanzas", action: "read" } },
+          { title: "Asistente F29 SII", path: "/dashboard/accounting/f29", icon: "Calculator", requiredPermission: { module: "finanzas", action: "read" } },
+          { title: "Honorarios BHE", path: "/dashboard/accounting/honorarios", icon: "FileText", requiredPermission: { module: "finanzas", action: "read" } },
         ],
       },
       {
@@ -463,6 +490,19 @@ export const sidebarItems: NavGroup[] = [
     ],
   },
   {
+    id: 12,
+    label: "Servicios",
+    requiredModule: "erp",
+    items: [
+      {
+        title: "Órdenes de Trabajo",
+        path: "/dashboard/services/work-orders",
+        icon: "Wrench",
+        requiredPermission: { module: "servicios", action: "read" },
+      },
+    ],
+  },
+  {
     id: 11,
     label: "Sistema",
     items: [
@@ -485,6 +525,7 @@ export const sidebarItems: NavGroup[] = [
             ],
           },
           { title: "Webhooks", path: "/dashboard/settings/webhooks", icon: "Webhook", requiredPermission: { module: "sistema", action: "read" } },
+          { title: "Firma Electrónica FEA", path: "/dashboard/settings/fea", icon: "Shield", requiredPermission: { module: "sistema", action: "read" } },
         ],
       },
     ],

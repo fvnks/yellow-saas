@@ -495,6 +495,339 @@ export async function POST(request: Request) {
     try { await query('CREATE INDEX IF NOT EXISTS idx_customers_rubro ON customers(rubro_id)'); } catch {}
     results.push('Company rubros table ensured');
 
+    // 072: condominiums module
+    const condoTablesSql = `
+      CREATE TABLE IF NOT EXISTS condos_properties (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        name TEXT NOT NULL,
+        rut TEXT,
+        address TEXT,
+        commune TEXT,
+        city TEXT,
+        total_units INTEGER DEFAULT 0,
+        reserve_fund_pct NUMERIC(5,2) DEFAULT 5.00,
+        late_interest_pct NUMERIC(5,2) DEFAULT 1.50,
+        due_day INTEGER DEFAULT 10,
+        is_active BOOLEAN DEFAULT true,
+        created_at TIMESTAMPTZ DEFAULT now(),
+        updated_at TIMESTAMPTZ DEFAULT now()
+      );
+
+      CREATE TABLE IF NOT EXISTS condos_units (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        property_id UUID NOT NULL REFERENCES condos_properties(id) ON DELETE CASCADE,
+        unit_number TEXT NOT NULL,
+        type TEXT DEFAULT 'apartment',
+        owner_id UUID REFERENCES customers(id) ON DELETE SET NULL,
+        resident_name TEXT,
+        resident_email TEXT,
+        resident_phone TEXT,
+        notes TEXT,
+        created_at TIMESTAMPTZ DEFAULT now(),
+        updated_at TIMESTAMPTZ DEFAULT now()
+      );
+
+      CREATE TABLE IF NOT EXISTS condos_coefficients (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        property_id UUID NOT NULL REFERENCES condos_properties(id) ON DELETE CASCADE,
+        unit_id UUID NOT NULL REFERENCES condos_units(id) ON DELETE CASCADE,
+        category TEXT DEFAULT 'general',
+        percentage NUMERIC(8,5) DEFAULT 0.00000,
+        coefficient_pct NUMERIC(8,5) DEFAULT 0.00000,
+        created_at TIMESTAMPTZ DEFAULT now(),
+        updated_at TIMESTAMPTZ DEFAULT now(),
+        UNIQUE(unit_id, category)
+      );
+
+      CREATE TABLE IF NOT EXISTS condos_periods (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        property_id UUID NOT NULL REFERENCES condos_properties(id) ON DELETE CASCADE,
+        period_code TEXT,
+        period_date DATE DEFAULT CURRENT_DATE,
+        year INTEGER,
+        month INTEGER,
+        status TEXT DEFAULT 'draft',
+        due_date DATE,
+        total_expenses_clp BIGINT DEFAULT 0,
+        total_amount NUMERIC(12,2) DEFAULT 0,
+        calculated_at TIMESTAMPTZ,
+        notes TEXT,
+        created_at TIMESTAMPTZ DEFAULT now(),
+        updated_at TIMESTAMPTZ DEFAULT now()
+      );
+
+      CREATE TABLE IF NOT EXISTS condos_expense_items (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        property_id UUID NOT NULL REFERENCES condos_properties(id) ON DELETE CASCADE,
+        period_id UUID NOT NULL REFERENCES condos_periods(id) ON DELETE CASCADE,
+        name TEXT,
+        category TEXT NOT NULL,
+        description TEXT,
+        amount NUMERIC(12,2) NOT NULL DEFAULT 0,
+        amount_clp BIGINT DEFAULT 0,
+        amount_uf NUMERIC(12,4) DEFAULT 0,
+        supplier_id UUID REFERENCES suppliers(id) ON DELETE SET NULL,
+        purchase_invoice_id UUID REFERENCES purchase_invoices(id) ON DELETE SET NULL,
+        coefficient_category TEXT DEFAULT 'general',
+        created_at TIMESTAMPTZ DEFAULT now(),
+        updated_at TIMESTAMPTZ DEFAULT now()
+      );
+
+      CREATE TABLE IF NOT EXISTS condos_unit_statements (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        property_id UUID REFERENCES condos_properties(id) ON DELETE CASCADE,
+        period_id UUID NOT NULL REFERENCES condos_periods(id) ON DELETE CASCADE,
+        unit_id UUID NOT NULL REFERENCES condos_units(id) ON DELETE CASCADE,
+        coefficient_pct NUMERIC(8,5) DEFAULT 0,
+        common_expense NUMERIC(12,2) DEFAULT 0,
+        reserve_fund NUMERIC(12,2) DEFAULT 0,
+        previous_debt_clp BIGINT DEFAULT 0,
+        late_interest_clp BIGINT DEFAULT 0,
+        base_expense_clp BIGINT DEFAULT 0,
+        variable_expense_clp BIGINT DEFAULT 0,
+        reserve_fund_clp BIGINT DEFAULT 0,
+        total_amount NUMERIC(12,2) NOT NULL DEFAULT 0,
+        total_clp BIGINT DEFAULT 0,
+        amount_paid NUMERIC(12,2) DEFAULT 0,
+        paid_clp BIGINT DEFAULT 0,
+        status TEXT DEFAULT 'pending',
+        created_at TIMESTAMPTZ DEFAULT now(),
+        updated_at TIMESTAMPTZ DEFAULT now(),
+        UNIQUE(period_id, unit_id)
+      );
+
+      CREATE TABLE IF NOT EXISTS condos_payments (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        statement_id UUID NOT NULL REFERENCES condos_unit_statements(id) ON DELETE CASCADE,
+        unit_id UUID REFERENCES condos_units(id) ON DELETE CASCADE,
+        amount NUMERIC(12,2) NOT NULL DEFAULT 0,
+        amount_clp BIGINT DEFAULT 0,
+        payment_method TEXT DEFAULT 'transfer',
+        reference TEXT,
+        reference_number TEXT,
+        payment_date TIMESTAMPTZ DEFAULT now(),
+        notes TEXT,
+        created_at TIMESTAMPTZ DEFAULT now()
+      );
+
+      -- Assemblies (Ley 21.442)
+      CREATE TABLE IF NOT EXISTS condos_assemblies (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        property_id UUID NOT NULL REFERENCES condos_properties(id) ON DELETE CASCADE,
+        title TEXT NOT NULL,
+        assembly_date TIMESTAMPTZ NOT NULL,
+        assembly_type TEXT DEFAULT 'ordinary',
+        quorum_required_pct NUMERIC(5,2) DEFAULT 50.00,
+        status TEXT DEFAULT 'scheduled',
+        minutes_text TEXT,
+        created_at TIMESTAMPTZ DEFAULT now(),
+        updated_at TIMESTAMPTZ DEFAULT now()
+      );
+
+      CREATE TABLE IF NOT EXISTS condos_assembly_proxies (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        assembly_id UUID NOT NULL REFERENCES condos_assemblies(id) ON DELETE CASCADE,
+        unit_id UUID NOT NULL REFERENCES condos_units(id) ON DELETE CASCADE,
+        proxy_name TEXT NOT NULL,
+        proxy_rut TEXT NOT NULL,
+        document_url TEXT,
+        created_at TIMESTAMPTZ DEFAULT now()
+      );
+
+      CREATE TABLE IF NOT EXISTS condos_assembly_topics (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        assembly_id UUID NOT NULL REFERENCES condos_assemblies(id) ON DELETE CASCADE,
+        title TEXT NOT NULL,
+        description TEXT,
+        is_voting BOOLEAN DEFAULT true,
+        status TEXT DEFAULT 'pending',
+        created_at TIMESTAMPTZ DEFAULT now()
+      );
+
+      CREATE TABLE IF NOT EXISTS condos_assembly_votes (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        topic_id UUID NOT NULL REFERENCES condos_assembly_topics(id) ON DELETE CASCADE,
+        unit_id UUID NOT NULL REFERENCES condos_units(id) ON DELETE CASCADE,
+        vote_option TEXT NOT NULL,
+        alicuota_pct NUMERIC(8,5) NOT NULL DEFAULT 0,
+        created_at TIMESTAMPTZ DEFAULT now(),
+        UNIQUE(topic_id, unit_id)
+      );
+
+      -- Utility Meters
+      CREATE TABLE IF NOT EXISTS condos_utility_meters (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        property_id UUID NOT NULL REFERENCES condos_properties(id) ON DELETE CASCADE,
+        unit_id UUID NOT NULL REFERENCES condos_units(id) ON DELETE CASCADE,
+        meter_type TEXT NOT NULL,
+        meter_number TEXT,
+        created_at TIMESTAMPTZ DEFAULT now()
+      );
+
+      CREATE TABLE IF NOT EXISTS condos_meter_readings (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        meter_id UUID NOT NULL REFERENCES condos_utility_meters(id) ON DELETE CASCADE,
+        period_id UUID NOT NULL REFERENCES condos_periods(id) ON DELETE CASCADE,
+        unit_id UUID NOT NULL REFERENCES condos_units(id) ON DELETE CASCADE,
+        previous_reading NUMERIC(12,2) DEFAULT 0,
+        current_reading NUMERIC(12,2) DEFAULT 0,
+        consumption NUMERIC(12,2) DEFAULT 0,
+        unit_rate_clp NUMERIC(12,2) DEFAULT 0,
+        total_clp BIGINT DEFAULT 0,
+        created_at TIMESTAMPTZ DEFAULT now()
+      );
+
+      -- Violations & Fines
+      CREATE TABLE IF NOT EXISTS condos_violations (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        property_id UUID NOT NULL REFERENCES condos_properties(id) ON DELETE CASCADE,
+        unit_id UUID NOT NULL REFERENCES condos_units(id) ON DELETE CASCADE,
+        infraction_description TEXT NOT NULL,
+        fine_amount_clp BIGINT DEFAULT 0,
+        fine_amount_uf NUMERIC(12,4) DEFAULT 0,
+        status TEXT DEFAULT 'pending',
+        period_id UUID REFERENCES condos_periods(id) ON DELETE SET NULL,
+        created_at TIMESTAMPTZ DEFAULT now()
+      );
+
+      -- Insurance Policies
+      CREATE TABLE IF NOT EXISTS condos_insurance_policies (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        property_id UUID NOT NULL REFERENCES condos_properties(id) ON DELETE CASCADE,
+        insurer_name TEXT NOT NULL,
+        policy_number TEXT NOT NULL,
+        start_date DATE,
+        end_date DATE,
+        fire_coverage_clp BIGINT DEFAULT 0,
+        premium_amount_clp BIGINT DEFAULT 0,
+        created_at TIMESTAMPTZ DEFAULT now()
+      );
+    `;
+
+    try {
+      await query(condoTablesSql);
+      results.push('Condominium tables created/ensured successfully');
+    } catch (e: any) {
+      results.push(`condos tables warn: ${e.message?.substring(0, 80)}`);
+    }
+
+    // 073: Banking & Fintoc Open Banking Chile
+    const bankingTablesSql = `
+      CREATE TABLE IF NOT EXISTS bank_accounts (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        name TEXT NOT NULL,
+        bank_name TEXT NOT NULL,
+        account_number TEXT NOT NULL,
+        currency TEXT DEFAULT 'CLP',
+        opening_balance_clp BIGINT DEFAULT 0,
+        status TEXT DEFAULT 'active',
+        fintoc_link_token TEXT,
+        fintoc_account_id TEXT,
+        last_synced_at TIMESTAMPTZ,
+        created_at TIMESTAMPTZ DEFAULT now(),
+        updated_at TIMESTAMPTZ DEFAULT now()
+      );
+
+      CREATE TABLE IF NOT EXISTS bank_statement_lines (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        account_id UUID NOT NULL REFERENCES bank_accounts(id) ON DELETE CASCADE,
+        statement_date DATE DEFAULT CURRENT_DATE,
+        transaction_date TIMESTAMPTZ DEFAULT now(),
+        description TEXT NOT NULL,
+        amount_clp BIGINT NOT NULL,
+        type TEXT NOT NULL CHECK (type IN ('credit', 'debit')),
+        reference_number TEXT,
+        category TEXT,
+        source TEXT DEFAULT 'manual',
+        match_status TEXT DEFAULT 'unmatched',
+        matched_entry_id UUID,
+        matched_amount_clp BIGINT DEFAULT 0,
+        difference_clp BIGINT DEFAULT 0,
+        fintoc_transaction_id TEXT,
+        created_at TIMESTAMPTZ DEFAULT now()
+      );
+
+      CREATE TABLE IF NOT EXISTS reconciliation_sessions (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        account_id UUID NOT NULL REFERENCES bank_accounts(id) ON DELETE CASCADE,
+        statement_period TEXT NOT NULL,
+        status TEXT DEFAULT 'pending',
+        opening_balance_clp BIGINT DEFAULT 0,
+        statement_balance_clp BIGINT DEFAULT 0,
+        reconciled_amount_clp BIGINT DEFAULT 0,
+        unmatched_amount_clp BIGINT DEFAULT 0,
+        differences_clp BIGINT DEFAULT 0,
+        created_at TIMESTAMPTZ DEFAULT now(),
+        completed_at TIMESTAMPTZ
+      );
+    `;
+
+    try {
+      await query(bankingTablesSql);
+      results.push('Banking and Fintoc Open Banking tables ensured successfully');
+    } catch (e: any) {
+      results.push(`banking tables warn: ${e.message?.substring(0, 80)}`);
+    }
+
+    // 074: Ecommerce Integrations & Supplier Portal
+    const ecommerceTablesSql = `
+      CREATE TABLE IF NOT EXISTS ecommerce_connections (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        platform TEXT NOT NULL CHECK (platform IN ('shopify', 'woocommerce', 'mercadolibre', 'jumpseller')),
+        store_name TEXT NOT NULL,
+        store_url TEXT,
+        api_key TEXT,
+        api_secret TEXT,
+        auto_issue_dte BOOLEAN DEFAULT true,
+        default_warehouse_id UUID,
+        is_active BOOLEAN DEFAULT true,
+        last_synced_at TIMESTAMPTZ,
+        created_at TIMESTAMPTZ DEFAULT now()
+      );
+
+      CREATE TABLE IF NOT EXISTS ecommerce_orders (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        connection_id UUID REFERENCES ecommerce_connections(id) ON DELETE SET NULL,
+        external_order_id TEXT NOT NULL,
+        customer_name TEXT NOT NULL,
+        customer_rut TEXT,
+        customer_email TEXT,
+        total_amount_clp BIGINT NOT NULL,
+        status TEXT DEFAULT 'pending',
+        dte_type TEXT DEFAULT 'boleta_electronica',
+        dte_number TEXT,
+        dte_sii_status TEXT DEFAULT 'aceptado',
+        synced_at TIMESTAMPTZ DEFAULT now()
+      );
+    `;
+
+    try {
+      await query(ecommerceTablesSql);
+      results.push('Ecommerce tables ensured successfully');
+    } catch (e: any) {
+      results.push(`ecommerce tables warn: ${e.message?.substring(0, 80)}`);
+    }
+
     return NextResponse.json({ success: true, results });
   } catch (err) {
     return NextResponse.json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 });
