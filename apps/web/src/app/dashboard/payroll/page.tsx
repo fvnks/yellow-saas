@@ -179,6 +179,10 @@ function PayrollPage() {
     setDeletingRun(null);
   };
 
+  const handleExportPrevired = () => {
+    window.open('/api/payroll/previred', '_blank');
+  };
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -214,6 +218,10 @@ function PayrollPage() {
           <p className="text-sm text-muted-foreground mt-1">Gestion de nomina chilena</p>
         </div>
         <div className="flex items-center gap-3">
+          <Button onClick={handleExportPrevired} variant="outline" className="border-emerald-500 text-emerald-700 hover:bg-emerald-50 font-semibold">
+            <Download className="w-4 h-4 mr-2 text-emerald-600" />
+            Exportar Previred (105 col)
+          </Button>
           <button
             onClick={() => { setUFInput(ufValue.toLocaleString('es-CL')); setShowUFModal(true); }}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-foreground bg-muted border border-border rounded-lg hover:bg-muted transition-colors"

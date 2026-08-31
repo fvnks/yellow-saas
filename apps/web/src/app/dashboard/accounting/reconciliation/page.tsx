@@ -25,9 +25,10 @@ export default function ReconciliationPage() {
   const loadAccounts = async () => {
     try {
       const client = getApiClient();
-      const data = await client.getAccounts({ type: "bank", status: "active" });
-      setAccounts(data);
-      if (data.length > 0 && !selectedAccount) setSelectedAccount(data[0].id);
+      const res: any = await client.getAccounts({ type: "bank", status: "active" });
+      const accountList = Array.isArray(res) ? res : (res?.data || []);
+      setAccounts(accountList);
+      if (accountList.length > 0 && !selectedAccount) setSelectedAccount(accountList[0].id);
     } catch (e) {
       console.error("Failed to load accounts", e);
     }
@@ -36,8 +37,8 @@ export default function ReconciliationPage() {
   const loadSessions = async () => {
     try {
       const client = getApiClient();
-      const data = await client.getReconciliationSessions();
-      setSessions(data);
+      const data: any = await client.getReconciliationSessions();
+      setSessions(Array.isArray(data) ? data : (data?.data || []));
     } catch (e) {
       console.error("Failed to load sessions", e);
     }
@@ -53,12 +54,13 @@ export default function ReconciliationPage() {
       const open = data.filter((l: BankStatementLine) => l.matchStatus !== "matched" && l.matchStatus !== "auto_matched");
       setMatches(open.map((l: BankStatementLine) => ({
         id: `match_${l.id}`,
-        statement_line_id: l.id,
-        journal_entry_id: null,
-        amount: l.amountCLP,
-        difference: 0,
-        status: "unmatched" as const,
-        notes: ""
+        statementLineId: l.id,
+        entryId: '',
+        matchAmountCLP: l.amountCLP,
+        differenceCLP: 0,
+        matchedAt: new Date().toISOString(),
+        matchedBy: 'System',
+        matchType: 'full' as const
       })));
     } catch (e) {
       console.error("Failed to load statement", e);
@@ -72,7 +74,7 @@ export default function ReconciliationPage() {
     setRefreshing(true);
     try {
       const client = getApiClient();
-      const session = await client.createReconciliationSession(selectedAccount, period);
+      const session: any = await client.createReconciliationSession(selectedAccount, period);
       setActiveSession(session);
       await loadSessions();
     } catch (e) {
@@ -87,7 +89,7 @@ export default function ReconciliationPage() {
     setRefreshing(true);
     try {
       const client = getApiClient();
-      const result = await client.autoMatch(activeSession.id);
+      const result: any = await client.autoMatch(activeSession.id);
       const updatedLines = statementLines.map(line => {
         const match = result.matches?.find((m: { statement_line_id: string }) => m.statement_line_id === line.id);
         if (match) return { ...line, matchStatus: "matched" as const };
@@ -106,7 +108,7 @@ export default function ReconciliationPage() {
     if (!activeSession?.id) return;
     try {
       const client = getApiClient();
-      const match = await client.manualMatch(activeSession.id, statementLineId, journalEntryId);
+      const match: any = await client.manualMatch(activeSession.id, statementLineId, journalEntryId);
       setMatches(prev => [...prev, match]);
       setStatementLines(prev => prev.map(l => l.id === statementLineId ? { ...l, matchStatus: "matched" as const } : l));
     } catch (e) {
@@ -136,6 +138,28 @@ export default function ReconciliationPage() {
       await loadSessions();
     } catch (e) {
       console.error("Cancel session failed", e);
+    }
+  };
+
+  const [syncingFintoc, setSyncingFintoc] = useState(false);
+
+  const syncFintoc = async () => {
+    if (!selectedAccount) return;
+    setSyncingFintoc(true);
+    try {
+      const res = await fetch('/api/banking/fintoc', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'sync_transactions', account_id: selectedAccount })
+      });
+      const json = await res.json();
+      if (json.success) {
+        await loadStatement();
+      }
+    } catch (e) {
+      console.error("Fintoc sync error", e);
+    } finally {
+      setSyncingFintoc(false);
     }
   };
 
@@ -202,6 +226,14 @@ export default function ReconciliationPage() {
         <div className="px-6 py-4 border-b border-slate-200/80 flex items-center justify-between">
           <h3 className="text-sm font-bold text-slate-900">Configurar Conciliación</h3>
           <div className="flex gap-2">
+            <button
+              onClick={syncFintoc}
+              disabled={syncingFintoc || !selectedAccount}
+              className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {syncingFintoc ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+              Sincronizar Fintoc Bank
+            </button>
             <button
               onClick={loadStatement}
               disabled={loading || !selectedAccount}
