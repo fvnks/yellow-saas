@@ -9,6 +9,9 @@ import {
   PieChart,
   Settings,
   CalendarDays,
+  Vote,
+  Gauge,
+  ShieldAlert,
 } from 'lucide-react';
 
 export const condominioSidebarItems = [
@@ -30,6 +33,22 @@ export const condominioSidebarItems = [
         title: 'Pagos & Conciliación',
         url: '/condominio/pagos',
         icon: CreditCard,
+      },
+      {
+        title: 'Asambleas & Votos',
+        url: '/condominio/asambleas',
+        icon: Vote,
+        badge: 'Ley 21.442',
+      },
+      {
+        title: 'Submedidores',
+        url: '/condominio/medidores',
+        icon: Gauge,
+      },
+      {
+        title: 'Multas & Seguros',
+        url: '/condominio/multas-seguros',
+        icon: ShieldAlert,
       },
       {
         title: 'Espacios & Conserjería',

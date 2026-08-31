@@ -207,7 +207,7 @@ export default function EcommerceSyncPage() {
               ) : (
                 <tr>
                   <td colSpan={6} className="px-6 py-8 text-center text-xs text-slate-400 font-medium">
-                    Haz clic en "Sincronizar Ventas Ahora" para importar pedidos ecommerce.
+                    Haz clic en &quot;Sincronizar Ventas Ahora&quot; para importar pedidos ecommerce.
                   </td>
                 </tr>
               )}

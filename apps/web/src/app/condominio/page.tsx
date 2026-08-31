@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Building, Plus, LayoutGrid, DollarSign, AlertCircle, CheckCircle2,
   Users, Layers, Search, Filter, Edit, Trash2, ArrowUpRight, ShieldCheck,
@@ -17,6 +17,7 @@ import {
 export default function CondominioDashboardPage() {
   const [sectors, setSectors] = useState<CondoSector[]>(INITIAL_SECTORS);
   const [units, setUnits] = useState<CondoUnit[]>(INITIAL_UNITS);
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedSector, setSelectedSector] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -29,12 +30,12 @@ export default function CondominioDashboardPage() {
   // New Unit Form State
   const [newUnitNumber, setNewUnitNumber] = useState('');
   const [newUnitType, setNewUnitType] = useState<'departamento' | 'casa' | 'parcela' | 'bodega' | 'estacionamiento'>('departamento');
-  const [newUnitSectorId, setNewUnitSectorId] = useState(sectors[0]?.id || 'sec-1');
+  const [newUnitSectorId, setNewUnitSectorId] = useState('s1');
   const [newUnitOwnerName, setNewUnitOwnerName] = useState('');
   const [newUnitOwnerRut, setNewUnitOwnerRut] = useState('');
   const [newUnitOwnerEmail, setNewUnitOwnerEmail] = useState('');
   const [newUnitOwnerPhone, setNewUnitOwnerPhone] = useState('');
-  const [newUnitAlicuota, setNewUnitAlicuota] = useState('5.0');
+  const [newUnitAlicuota, setNewUnitAlicuota] = useState('8.5');
   const [newUnitArea, setNewUnitArea] = useState('85');
 
   // New Sector Form State
@@ -42,6 +43,30 @@ export default function CondominioDashboardPage() {
   const [newSectorType, setNewSectorType] = useState<'torre' | 'sector_casas' | 'sector_parcelas' | 'etapa'>('torre');
   const [newSectorDescription, setNewSectorDescription] = useState('');
   const [newSectorColor, setNewSectorColor] = useState('#0EA5E9');
+
+  const fetchCondoData = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch('/api/condominio');
+      const json = await res.json();
+      if (json.success && json.data) {
+        if (json.data.units && json.data.units.length > 0) {
+          setUnits(json.data.units);
+        }
+        if (json.data.sectors && json.data.sectors.length > 0) {
+          setSectors(json.data.sectors);
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching condo data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCondoData();
+  }, []);
 
   // Calculations
   const filteredUnits = units.filter((u) => {
@@ -60,32 +85,37 @@ export default function CondominioDashboardPage() {
   const morososCount = units.filter((u) => u.status === 'moroso').length;
   const alDiaCount = units.filter((u) => u.status === 'al_dia').length;
 
-  const handleCreateUnit = (e: React.FormEvent) => {
+  const handleCreateUnit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newUnitNumber || !newUnitOwnerName) return;
 
-    const sectorObj = sectors.find((s) => s.id === newUnitSectorId);
-    const newUnit: CondoUnit = {
-      id: `u-${Date.now()}`,
-      number: newUnitNumber,
-      type: newUnitType,
-      sectorId: newUnitSectorId,
-      sectorName: sectorObj?.name || 'Sector',
-      ownerName: newUnitOwnerName,
-      ownerRut: newUnitOwnerRut || '12.345.678-9',
-      ownerEmail: newUnitOwnerEmail || 'correo@ejemplo.cl',
-      ownerPhone: newUnitOwnerPhone || '+56912345678',
-      alicuotaPercentage: parseFloat(newUnitAlicuota) || 1.0,
-      areaM2: parseFloat(newUnitArea) || 50,
-      unpaidBalanceCLP: 0,
-      status: 'al_dia',
-    };
-
-    setUnits([...units, newUnit]);
-    setShowAddUnitModal(false);
-    // Reset
-    setNewUnitNumber('');
-    setNewUnitOwnerName('');
+    try {
+      const res = await fetch('/api/condominio/units', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          unit_number: newUnitNumber,
+          type: newUnitType,
+          resident_name: newUnitOwnerName,
+          resident_email: newUnitOwnerEmail,
+          resident_phone: newUnitOwnerPhone,
+          alicuota_percentage: parseFloat(newUnitAlicuota) || 1.0
+        })
+      });
+      const json = await res.json();
+      if (json.success) {
+        await fetchCondoData();
+        setShowAddUnitModal(false);
+        setNewUnitNumber('');
+        setNewUnitOwnerName('');
+        setNewUnitOwnerEmail('');
+        setNewUnitOwnerPhone('');
+      } else {
+        alert(json.error || 'Error al guardar la unidad');
+      }
+    } catch (err) {
+      console.error('Error creating unit:', err);
+    }
   };
 
   const handleCreateSector = (e: React.FormEvent) => {
