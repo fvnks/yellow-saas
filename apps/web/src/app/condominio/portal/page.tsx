@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Users, Building, Download, Printer, ShieldCheck, CheckCircle2,
   Receipt, CreditCard, DollarSign, Calendar, AlertCircle
@@ -14,8 +14,36 @@ import {
 } from '@/lib/condominio-client';
 
 export default function PortalResidentePage() {
-  const [selectedUnitId, setSelectedUnitId] = useState<string>(INITIAL_UNITS[1]?.id || INITIAL_UNITS[0]?.id || 'u-102'); // Dpto 102
-  const activeUnit = INITIAL_UNITS.find((u) => u.id === selectedUnitId) || INITIAL_UNITS[0] || {
+  const [units, setUnits] = useState<CondoUnit[]>(INITIAL_UNITS);
+  const [periods, setPeriods] = useState<any[]>(INITIAL_PERIODS);
+  const [selectedUnitId, setSelectedUnitId] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setLoading(true);
+        const res = await fetch('/api/condominio');
+        const json = await res.json();
+        if (json.success && json.data) {
+          if (json.data.units && json.data.units.length > 0) {
+            setUnits(json.data.units);
+            if (!selectedUnitId) setSelectedUnitId(json.data.units[0].id);
+          }
+          if (json.data.periods && json.data.periods.length > 0) {
+            setPeriods(json.data.periods);
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching portal data:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  const activeUnit = units.find((u) => u.id === selectedUnitId) || units[0] || {
     id: 'u-102',
     number: 'Dpto 102',
     type: 'departamento',
@@ -25,25 +53,24 @@ export default function PortalResidentePage() {
     ownerRut: '12.876.543-2',
     ownerEmail: 'mj.fernandez@email.cl',
     ownerPhone: '+56 9 7654 3210',
-    alicuotaPercentage: 2.50,
+    alicuotaPercentage: 8.50,
     areaM2: 85,
-    unpaidBalanceCLP: 112500,
-    status: 'pendiente',
+    unpaidBalanceCLP: 0,
+    status: 'al_dia',
   };
-  const activePeriod = INITIAL_PERIODS[0] || {
-    id: 'per-2026-03',
-    periodName: 'Marzo 2026',
+  const activePeriod = periods[0] || INITIAL_PERIODS[0] || {
+    id: 'per-default',
+    periodName: 'Mes Actual',
     periodDate: '2026-03',
-    dueDate: '2026-04-10',
+    dueDate: '10/04/2026',
     status: 'emitido',
-    reserveFundPercentage: 10,
+    reserveFundPercentage: 5,
     lateInterestRate: 1.5,
     items: [],
-    totalExpensesCLP: 4500000,
-    totalReserveFundCLP: 450000,
-    totalBilledCLP: 4950000,
+    totalExpensesCLP: 0,
+    totalReserveFundCLP: 0,
+    totalBilledCLP: 0,
   };
-
   const calc = calculateUnitExpense(activeUnit, activePeriod);
 
   const handlePrintSlip = () => {
@@ -75,9 +102,9 @@ export default function PortalResidentePage() {
             onChange={(e) => setSelectedUnitId(e.target.value)}
             className="p-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none"
           >
-            {INITIAL_UNITS.map((u) => (
+            {units.map((u) => (
               <option key={u.id} value={u.id}>
-                {u.number} - {u.ownerName}
+                Unidad {u.number} - {u.ownerName}
               </option>
             ))}
           </select>

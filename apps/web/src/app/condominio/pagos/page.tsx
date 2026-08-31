@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   CreditCard, Plus, CheckCircle2, ShieldCheck, Search, Filter,
   ArrowDownLeft, FileCheck, Check, DollarSign, Calendar, AlertCircle
@@ -9,6 +9,7 @@ import {
   INITIAL_PAYMENTS,
   INITIAL_UNITS,
   PaymentReceipt,
+  CondoUnit,
   formatCLP
 } from '@/lib/condominio-client';
 
@@ -28,40 +29,74 @@ const INITIAL_BANK_MOVEMENTS: BankMovement[] = [];
 
 export default function PagosConciliacionPage() {
   const [payments, setPayments] = useState<PaymentReceipt[]>(INITIAL_PAYMENTS);
+  const [units, setUnits] = useState<CondoUnit[]>(INITIAL_UNITS);
   const [bankMovements, setBankMovements] = useState<BankMovement[]>(INITIAL_BANK_MOVEMENTS);
   const [showAddPaymentModal, setShowAddPaymentModal] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // New payment state
-  const [selectedUnitId, setSelectedUnitId] = useState(INITIAL_UNITS[0]?.id || 'u-101');
+  const [selectedUnitId, setSelectedUnitId] = useState('');
   const [paymentAmount, setPaymentAmount] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentReceipt['paymentMethod']>('transferencia');
   const [paymentReference, setPaymentReference] = useState('');
-  const [paymentDate, setPaymentDate] = useState('2026-03-30');
+  const [paymentDate, setPaymentDate] = useState(new Date().toISOString().substring(0, 10));
+
+  const fetchCondoData = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch('/api/condominio');
+      const json = await res.json();
+      if (json.success && json.data) {
+        if (json.data.payments && json.data.payments.length > 0) {
+          setPayments(json.data.payments);
+        }
+        if (json.data.units && json.data.units.length > 0) {
+          setUnits(json.data.units);
+          if (!selectedUnitId) setSelectedUnitId(json.data.units[0].id);
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching condo payments:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCondoData();
+  }, []);
 
   const totalCollectedCLP = payments.reduce((acc, p) => acc + p.amountCLP, 0);
 
-  const handleRegisterPayment = (e: React.FormEvent) => {
+  const handleRegisterPayment = async (e: React.FormEvent) => {
     e.preventDefault();
-    const unitObj = INITIAL_UNITS.find((u) => u.id === selectedUnitId);
+    const unitObj = units.find((u) => u.id === selectedUnitId);
     if (!unitObj || !paymentAmount) return;
 
-    const newPayment: PaymentReceipt = {
-      id: `pay-${Date.now()}`,
-      unitId: unitObj.id,
-      unitNumber: unitObj.number,
-      ownerName: unitObj.ownerName,
-      periodId: 'per-2026-03',
-      amountCLP: parseInt(paymentAmount, 10) || 0,
-      paymentDate: paymentDate,
-      paymentMethod: paymentMethod,
-      referenceNumber: paymentReference || 'TRF-LOCAL',
-      bankReconciled: true,
-    };
-
-    setPayments([newPayment, ...payments]);
-    setShowAddPaymentModal(false);
-    setPaymentAmount('');
-    setPaymentReference('');
+    try {
+      const res = await fetch('/api/condominio/payments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          unit_id: unitObj.id,
+          amount_clp: parseInt(paymentAmount, 10) || 0,
+          payment_method: paymentMethod,
+          reference_number: paymentReference || 'TRF-LOCAL',
+          payment_date: paymentDate
+        })
+      });
+      const json = await res.json();
+      if (json.success) {
+        await fetchCondoData();
+        setShowAddPaymentModal(false);
+        setPaymentAmount('');
+        setPaymentReference('');
+      } else {
+        alert(json.error || 'Error al registrar pago');
+      }
+    } catch (err) {
+      console.error('Error registering payment:', err);
+    }
   };
 
   const handleReconcile = (bankId: string) => {

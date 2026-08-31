@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from "react";
 import { getApiClient } from "@/lib/api-client";
 import type { BankAccount, BankStatementLine, ReconciliationMatch, ReconciliationSession } from "./types";

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Receipt, Plus, Calculator, DollarSign, Calendar, Percent, Shield,
   FileText, ArrowRight, Trash2, CheckCircle, Clock, AlertTriangle, Download
@@ -16,7 +16,36 @@ import {
 
 export default function GastosComunesPage() {
   const [periods, setPeriods] = useState<CommonExpensePeriod[]>(INITIAL_PERIODS);
-  const [activePeriodId, setActivePeriodId] = useState<string>(periods[0]?.id || 'per-2026-03');
+  const [units, setUnits] = useState(INITIAL_UNITS);
+  const [activePeriodId, setActivePeriodId] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const fetchCondoData = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch('/api/condominio');
+      const json = await res.json();
+      if (json.success && json.data) {
+        if (json.data.periods && json.data.periods.length > 0) {
+          setPeriods(json.data.periods);
+          if (!activePeriodId || !json.data.periods.find((p: any) => p.id === activePeriodId)) {
+            setActivePeriodId(json.data.periods[0].id);
+          }
+        }
+        if (json.data.units && json.data.units.length > 0) {
+          setUnits(json.data.units);
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching periods:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCondoData();
+  }, []);
 
   // Active period selected
   const activePeriod = periods.find((p) => p.id === activePeriodId) || periods[0];
@@ -33,7 +62,7 @@ export default function GastosComunesPage() {
   const [newPeriodName, setNewPeriodName] = useState('Abril 2026');
   const [newPeriodDate, setNewPeriodDate] = useState('2026-04');
   const [newDueDate, setNewDueDate] = useState('2026-05-10');
-  const [newReservePercentage, setNewReservePercentage] = useState('10');
+  const [newReservePercentage, setNewReservePercentage] = useState('5.0');
   const [newLateInterest, setNewLateInterest] = useState('1.5');
 
   // Simulator modal
@@ -44,7 +73,7 @@ export default function GastosComunesPage() {
   const handleExportCSV = () => {
     if (!activePeriod) return;
     let csv = `Unidad,Copropietario,Alicuota,CobroBaseCLP,FondoReservaCLP,InteresMoraCLP,SaldoAnteriorCLP,TotalCLP\n`;
-    INITIAL_UNITS.forEach((unit) => {
+    units.forEach((unit) => {
       const calc = calculateUnitExpense(unit, activePeriod);
       csv += `"${unit.number}","${unit.ownerName}",${unit.alicuotaPercentage},${calc.baseAmountCLP},${calc.reserveFundCLP},${calc.lateInterestCLP},${calc.previousBalanceCLP},${calc.totalToPayCLP}\n`;
     });
@@ -58,77 +87,77 @@ export default function GastosComunesPage() {
     link.click();
     document.body.removeChild(link);
   };
-  const handleAddItem = (e: React.FormEvent) => {
+
+  const handleAddItem = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newDescription || !newAmount || !activePeriod) return;
 
-    const parsedAmount = parseInt(newAmount, 10) || 0;
-    const newItem: ExpenseItem = {
-      id: `exp-${Date.now()}`,
-      category: newCategory,
-      description: newDescription,
-      amountCLP: parsedAmount,
-      supplierName: newSupplier || 'Proveedor',
-    };
-
-    const updatedItems = [...activePeriod.items, newItem];
-    const newTotalExpenses = updatedItems.reduce((acc, it) => acc + it.amountCLP, 0);
-    const newReserveFund = Math.round(newTotalExpenses * (activePeriod.reserveFundPercentage / 100));
-    const newTotalBilled = newTotalExpenses + newReserveFund;
-
-    const updatedPeriod: CommonExpensePeriod = {
-      ...activePeriod,
-      items: updatedItems,
-      totalExpensesCLP: newTotalExpenses,
-      totalReserveFundCLP: newReserveFund,
-      totalBilledCLP: newTotalBilled,
-    };
-
-    setPeriods(periods.map((p) => (p.id === activePeriod.id ? updatedPeriod : p)));
-    setShowAddItemModal(false);
-    setNewDescription('');
-    setNewAmount('');
-    setNewSupplier('');
+    try {
+      const parsedAmount = parseInt(newAmount, 10) || 0;
+      const res = await fetch('/api/condominio/expenses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          period_id: activePeriod.id,
+          category: newCategory,
+          description: newDescription,
+          amount_clp: parsedAmount,
+        })
+      });
+      const json = await res.json();
+      if (json.success) {
+        await fetchCondoData();
+        setShowAddItemModal(false);
+        setNewDescription('');
+        setNewAmount('');
+        setNewSupplier('');
+      } else {
+        alert(json.error || 'Error al guardar gasto');
+      }
+    } catch (err) {
+      console.error('Error adding expense item:', err);
+    }
   };
 
   // Remove Item
-  const handleRemoveItem = (itemId: string) => {
+  const handleRemoveItem = async (itemId: string) => {
     if (!activePeriod) return;
-    const updatedItems = activePeriod.items.filter((it) => it.id !== itemId);
-    const newTotalExpenses = updatedItems.reduce((acc, it) => acc + it.amountCLP, 0);
-    const newReserveFund = Math.round(newTotalExpenses * (activePeriod.reserveFundPercentage / 100));
-
-    const updatedPeriod: CommonExpensePeriod = {
-      ...activePeriod,
-      items: updatedItems,
-      totalExpensesCLP: newTotalExpenses,
-      totalReserveFundCLP: newReserveFund,
-      totalBilledCLP: newTotalExpenses + newReserveFund,
-    };
-
-    setPeriods(periods.map((p) => (p.id === activePeriod.id ? updatedPeriod : p)));
+    try {
+      const res = await fetch(`/api/condominio/expenses?id=${itemId}`, { method: 'DELETE' });
+      const json = await res.json();
+      if (json.success) {
+        await fetchCondoData();
+      }
+    } catch (err) {
+      console.error('Error removing item:', err);
+    }
   };
 
   // Create New Period
-  const handleCreatePeriod = (e: React.FormEvent) => {
+  const handleCreatePeriod = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newPeriod: CommonExpensePeriod = {
-      id: `per-${Date.now()}`,
-      periodName: newPeriodName,
-      periodDate: newPeriodDate,
-      dueDate: newDueDate,
-      status: 'borrador',
-      reserveFundPercentage: parseFloat(newReservePercentage) || 10,
-      lateInterestRate: parseFloat(newLateInterest) || 1.5,
-      items: [],
-      totalExpensesCLP: 0,
-      totalReserveFundCLP: 0,
-      totalBilledCLP: 0,
-    };
-
-    setPeriods([newPeriod, ...periods]);
-    setActivePeriodId(newPeriod.id);
-    setShowAddPeriodModal(false);
+    try {
+      const res = await fetch('/api/condominio/periods', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          period_name: newPeriodName,
+          period_date: newPeriodDate,
+          due_date: newDueDate,
+          reserve_fund_pct: parseFloat(newReservePercentage) || 5.0,
+          late_interest_pct: parseFloat(newLateInterest) || 1.5,
+        })
+      });
+      const json = await res.json();
+      if (json.success) {
+        await fetchCondoData();
+        setShowAddPeriodModal(false);
+      } else {
+        alert(json.error || 'Error al crear período');
+      }
+    } catch (err) {
+      console.error('Error creating period:', err);
+    }
   };
 
   return (
