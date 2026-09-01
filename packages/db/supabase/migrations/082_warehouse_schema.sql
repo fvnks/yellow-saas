@@ -1,4 +1,4 @@
--- 003_warehouse_layout.sql
+-- 082_warehouse_schema.sql
 -- Yellow ERP - Warehouse Layout module
 
 -- Warehouse zones (Recepción, Almacenamiento, Despacho, etc.)

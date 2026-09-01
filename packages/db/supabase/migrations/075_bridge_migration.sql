@@ -1,0 +1,6 @@
+-- =====================================================
+-- YELLOW ERP: Bridge Migration 075
+-- Placeholder to maintain sequential migration numbering
+-- between 074 (veterinaria) and 076 (restaurant POS advanced)
+-- No schema changes required.
+-- =====================================================
