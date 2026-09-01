@@ -27,8 +27,8 @@ html {
 
 @layer base {
   :root {
-    /* Background - Light Gray (#F5F7FA) */
-    --background: 220 14% 96%;
+    /* Background - Soft Warm Neutral (#F8FAFC) */
+    --background: 210 20% 98%;
     --foreground: 222 47% 11%;
 
     /* Cards - White (#FFFFFF) */
@@ -39,55 +39,41 @@ html {
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    /* Primary - BankDash Blue (#1814F3) */
-    --primary: 242 95% 47%;
-    --primary-foreground: 0 0% 100%;
+    /* Primary - Sun Yellow (#FACC15) */
+    --primary: 47 96% 53%;
+    --primary-foreground: 222 47% 11%;
 
-    /* Secondary - Light Blue (#E8F0FE) */
-    --secondary: 220 60% 95%;
+    /* Secondary - Warm Slate (#E2E8F0) */
+    --secondary: 215 27% 91%;
     --secondary-foreground: 222 47% 11%;
 
-    /* Muted - Soft Gray (#F8F9FA) */
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 17% 62%;
+    /* Muted - Soft Gray (#F1F5F9) */
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    /* Accent */
-    --accent: 220 60% 95%;
-    --accent-foreground: 222 47% 11%;
+    /* Accent - Deep Slate Navy (#0F172A) */
+    --accent: 222 47% 11%;
+    --accent-foreground: 210 40% 98%;
 
-    /* Destructive - Red (#FE5C73) */
-    --destructive: 350 87% 67%;
+    /* Destructive - Soft Rose */
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Success - Teal (#16DBCC) */
-    --success: 173 84% 48%;
-    --success-foreground: 0 0% 100%;
-
-    /* Warning - Amber (#FFBB38) */
-    --warning: 40 100% 61%;
-    --warning-foreground: 0 0% 100%;
-
-    /* Info - Bright Blue (#2D60FF) */
-    --info: 223 100% 56%;
-    --info-foreground: 0 0% 100%;
-
-    /* Borders & Inputs - Soft Gray (#E6EFF5, #DFEAF2) */
-    --border: 213 42% 89%;
-    --input: 213 42% 89%;
-    --ring: 242 95% 47%;
-
-    /* Radius - BankDash uses larger radius */
+    /* Border - Subtle Slate (#E2E8F0) */
+    --border: 215 27% 91%;
+    --input: 215 27% 91%;
+    --ring: 47 96% 53%;
     --radius: 0.75rem;
 
-    /* Sidebar - White bg with blue accent */
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222 47% 11%;
-    --sidebar-primary: 242 95% 47%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 96%;
-    --sidebar-accent-foreground: 222 47% 11%;
-    --sidebar-border: 213 42% 95%;
-    --sidebar-ring: 242 95% 47%;
+    /* Sidebar - Deep Navy (#0F172A) */
+    --sidebar-background: 222 47% 11%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 47 96% 53%;
+    --sidebar-primary-foreground: 222 47% 11%;
+    --sidebar-accent: 217 33% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 33% 17%;
+    --sidebar-ring: 47 96% 53%;
 
     /* Brand - BankDash Colors */
     --brand-blue: 242 95% 47%;
@@ -111,8 +97,8 @@ html {
     --popover: 222 47% 11%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 242 95% 47%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 47 96% 53%;
+    --primary-foreground: 222 47% 11%;
 
     --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 98%;
@@ -123,30 +109,21 @@ html {
     --accent: 217 33% 17%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 350 87% 67%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-
-    --success: 173 84% 48%;
-    --success-foreground: 0 0% 100%;
-
-    --warning: 40 100% 61%;
-    --warning-foreground: 0 0% 100%;
-
-    --info: 223 100% 56%;
-    --info-foreground: 0 0% 100%;
 
     --border: 217 33% 17%;
     --input: 217 33% 17%;
-    --ring: 242 95% 47%;
+    --ring: 47 96% 53%;
 
     --sidebar-background: 222 47% 11%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 242 95% 47%;
-    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-primary: 47 96% 53%;
+    --sidebar-primary-foreground: 222 47% 11%;
     --sidebar-accent: 217 33% 17%;
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 217 33% 17%;
-    --sidebar-ring: 242 95% 47%;
+    --sidebar-ring: 47 96% 53%;
   }
 }
 
@@ -179,14 +156,15 @@ html {
   border-color: rgb(30 41 59 / 0.12);
 }
 
-/* --- Primary Buttons - BankDash Blue (#1814F3) --- */
+/* --- Primary Buttons - Sun Yellow (#FACC15) --- */
 .bg-primary.hover\:bg-black.text-white {
-  background-color: hsl(242 95% 47%);
+  background-color: hsl(47 96% 53%);
+  color: hsl(222 47% 11%);
   transition: all 0.15s ease;
 }
 .bg-primary.hover\:bg-black.text-white:hover {
-  background-color: hsl(242 95% 42%);
-  box-shadow: 0 2px 8px -2px rgb(24 20 243 / 0.3);
+  background-color: hsl(47 96% 45%);
+  box-shadow: 0 2px 8px -2px rgb(250 204 21 / 0.3);
 }
 .bg-primary.hover\:bg-black.text-white:active {
   transform: scale(0.98);
