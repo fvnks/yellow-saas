@@ -151,7 +151,7 @@ export default function MultasSegurosPage() {
           </button>
           <button
             onClick={() => setShowAddViolationModal(true)}
-            className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-semibold px-3.5 py-2 rounded-xl text-xs flex items-center gap-2 shadow-xs"
+            className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-semibold px-3.5 py-2 rounded-xl text-xs flex items-center gap-2 shadow-xs"
           >
             <Plus className="w-4 h-4" />
             Registrar Multa
@@ -286,7 +286,7 @@ export default function MultasSegurosPage() {
                 </button>
                 <button
                   type="submit"
-                  className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-xs"
+                  className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-xs"
                 >
                   Guardar Multa
                 </button>

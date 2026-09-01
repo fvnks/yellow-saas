@@ -48,7 +48,7 @@ export default function FixedAssetsPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <button className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2">
+          <button className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2">
             <Plus className="w-4 h-4" />
             Registrar Activo
           </button>

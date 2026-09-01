@@ -89,7 +89,7 @@ export default function RestaurantSalesPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={emitirBoleta}
-            className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-semibold px-3 py-2 rounded-xl text-xs transition-all duration-150 shadow-sm flex items-center gap-2"
+            className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-semibold px-3 py-2 rounded-xl text-xs transition-all duration-150 shadow-sm flex items-center gap-2"
           >
             <Plus className="w-3.5 h-3.5" /> Emitir Boletas desde Órdenes POS
           </button>

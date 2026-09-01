@@ -353,7 +353,7 @@ export default function SelectPage() {
     return (
       <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-3 border-[#FACC15] border-t-slate-900 rounded-full animate-spin" />
+          <div className="w-10 h-10 border-3 border-amber-500 border-t-slate-900 rounded-full animate-spin" />
           <p className="text-xs text-slate-500 font-semibold">Cargando módulos de Yellow ERP...</p>
         </div>
       </div>
@@ -366,7 +366,7 @@ export default function SelectPage() {
       <header className="bg-white/90 border-b border-slate-200/80 px-6 h-16 sticky top-0 z-30 backdrop-blur-xl flex items-center justify-between">
         <div className="max-w-6xl mx-auto w-full flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-[#FACC15] p-1.5 shadow-md shadow-amber-500/10 flex items-center justify-center shrink-0">
+            <div className="h-9 w-9 rounded-xl bg-amber-500 p-1.5 shadow-md shadow-amber-500/10 flex items-center justify-center shrink-0">
               <Image src="/logo/yellow-cube.svg" alt="Yellow ERP" width={28} height={28} className="drop-shadow-sm" />
             </div>
             <div>
@@ -392,7 +392,7 @@ export default function SelectPage() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-slate-200/80 bg-white hover:bg-slate-50 transition-all duration-150 shadow-xs">
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#FACC15] to-amber-500 flex items-center justify-center shrink-0 font-black text-xs text-slate-950 shadow-inner">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-amber-500 to-amber-500 flex items-center justify-center shrink-0 font-black text-xs text-slate-950 shadow-inner">
                     {user?.name?.slice(0, 2).toUpperCase() || 'US'}
                   </div>
                   <div className="text-left hidden sm:block">
@@ -405,7 +405,7 @@ export default function SelectPage() {
               <DropdownMenuContent side="bottom" align="end" className="w-60 bg-white border border-slate-200/80 rounded-2xl shadow-xl p-1.5">
                 <div className="px-3 py-2 border-b border-slate-100">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-[#FACC15] flex items-center justify-center shrink-0 font-black text-xs text-slate-950">
+                    <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center shrink-0 font-black text-xs text-slate-950">
                       {user?.name?.slice(0, 2).toUpperCase() || 'US'}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -430,7 +430,7 @@ export default function SelectPage() {
                         disabled={c.id === company?.id}
                       >
                         <div className="w-7 h-7 bg-slate-900 rounded-lg flex items-center justify-center shrink-0">
-                          <Building2 className="w-3.5 h-3.5 text-[#FACC15]" />
+                          <Building2 className="w-3.5 h-3.5 text-amber-400" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-semibold text-slate-900 truncate">{c.name}</p>
@@ -450,7 +450,7 @@ export default function SelectPage() {
                     <DropdownMenuSeparator className="bg-slate-100" />
                     <DropdownMenuItem
                       onClick={() => router.push('/admin')}
-                      className="flex items-center gap-2.5 px-3 py-2 text-[#FACC15] hover:bg-amber-50 rounded-xl cursor-pointer transition-colors font-semibold"
+                      className="flex items-center gap-2.5 px-3 py-2 text-amber-400 hover:bg-amber-50 rounded-xl cursor-pointer transition-colors font-semibold"
                     >
                       <Shield className="w-4 h-4" />
                       <span className="text-xs">Consola SaaS Admin</span>
@@ -511,8 +511,8 @@ export default function SelectPage() {
                         <Icon className={`w-6 h-6 ${mod.iconColor}`} />
                       </div>
                       {activated ? (
-                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-[#0F172A] group-hover:text-[#FACC15] transition-colors duration-200">
-                          <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-[#FACC15] transition-colors" />
+                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-[#0F172A] group-hover:text-amber-400 transition-colors duration-200">
+                          <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-amber-400 transition-colors" />
                         </div>
                       ) : (
                         <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
@@ -601,7 +601,7 @@ export default function SelectPage() {
                 <button
                   onClick={handleActivate}
                   disabled={activating}
-                  className="flex-1 bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all duration-150 active:scale-[0.98] disabled:opacity-50"
+                  className="flex-1 bg-amber-500 hover:bg-[#EAB308] text-slate-950 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all duration-150 active:scale-[0.98] disabled:opacity-50"
                 >
                   {activating ? (
                     <div className="w-4 h-4 border-2 border-slate-950/30 border-t-slate-950 rounded-full animate-spin" />

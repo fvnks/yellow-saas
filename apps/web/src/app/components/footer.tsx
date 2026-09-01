@@ -34,10 +34,10 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2.5 mb-4 group">
               <div className="w-9 h-9 rounded-xl bg-[#0F172A] flex items-center justify-center shadow-md shadow-[#0F172A]/20">
-                <span className="text-[#FACC15] font-bold text-base">Y</span>
+                <span className="text-amber-400 font-bold text-base">Y</span>
               </div>
               <span className="text-lg font-bold text-[#0F172A]">
-                Yellow <span className="text-[#FACC15]">ERP</span>
+                Yellow <span className="text-amber-400">ERP</span>
               </span>
             </Link>
             <p className="text-xs text-[#64748B] leading-relaxed">

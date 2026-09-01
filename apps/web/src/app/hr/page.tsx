@@ -42,7 +42,7 @@ function HRPageInner() {
           </div>
           <p className="text-sm text-[#64748B] mt-1">Gestión integral de colaboradores, asistencia, evaluaciones y clima laboral</p>
         </div>
-        <button className="bg-[#FACC15] hover:bg-[#EAB308] text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm">
+        <button className="bg-amber-500 hover:bg-[#EAB308] text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm">
           <Plus className="w-4 h-4" />
           Nuevo Colaborador
         </button>

@@ -226,7 +226,7 @@ export default function WaiterPOSPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsNewTableModalOpen(true)}
-            className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-bold text-xs px-3.5 py-2 rounded-xl transition-all shadow-xs flex items-center gap-1.5 active:scale-95"
+            className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-bold text-xs px-3.5 py-2 rounded-xl transition-all shadow-xs flex items-center gap-1.5 active:scale-95"
           >
             <Plus className="w-4 h-4" /> Nueva Mesa
           </button>
@@ -259,7 +259,7 @@ export default function WaiterPOSPage() {
                   <p className="text-xs font-bold text-slate-700">No hay mesas registradas</p>
                   <button
                     onClick={() => setIsNewTableModalOpen(true)}
-                    className="bg-[#FACC15] text-slate-950 font-bold text-xs px-3 py-1.5 rounded-xl"
+                    className="bg-amber-500 text-slate-950 font-bold text-xs px-3 py-1.5 rounded-xl"
                   >
                     + Abrir primera mesa
                   </button>
@@ -273,7 +273,7 @@ export default function WaiterPOSPage() {
                       onClick={() => setSelectedTable(table)}
                       className={`p-3.5 rounded-2xl text-left border transition-all text-xs flex flex-col justify-between h-24 ${
                         isSelected
-                          ? 'border-[#FACC15] bg-amber-500/10 ring-2 ring-[#FACC15]'
+                          ? 'border-amber-500 bg-amber-500/10 ring-2 ring-amber-500'
                           : 'border-slate-200/80 bg-white hover:border-slate-300 hover:bg-slate-50/80'
                       }`}
                     >
@@ -406,7 +406,7 @@ export default function WaiterPOSPage() {
                   <button
                     onClick={handleCloseSession}
                     disabled={!activeOrder || activeOrder.items.length === 0}
-                    className="bg-[#FACC15] hover:bg-[#EAB308] disabled:opacity-50 text-slate-950 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs"
+                    className="bg-amber-500 hover:bg-[#EAB308] disabled:opacity-50 text-slate-950 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs"
                   >
                     <CreditCard className="w-3.5 h-3.5" /> Cobrar POS
                   </button>
@@ -460,7 +460,7 @@ export default function WaiterPOSPage() {
                     {item.inStock ? (
                       <button
                         onClick={() => handleAddItemToOrder(item.id)}
-                        className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-bold p-2 rounded-xl transition-all active:scale-95 shadow-xs"
+                        className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-bold p-2 rounded-xl transition-all active:scale-95 shadow-xs"
                         title="Agregar a comanda"
                       >
                         <Plus className="w-4 h-4" />
@@ -536,7 +536,7 @@ export default function WaiterPOSPage() {
                 <button
                   type="button"
                   onClick={handleCreateNewTable}
-                  className="px-4 py-2 bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-bold rounded-xl shadow-xs"
+                  className="px-4 py-2 bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-bold rounded-xl shadow-xs"
                 >
                   Crear Mesa
                 </button>

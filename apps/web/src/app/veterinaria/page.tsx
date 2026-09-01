@@ -72,7 +72,7 @@ export default function VeterinaryDashboardPage() {
           <div className="flex flex-wrap items-center gap-3">
             <Link
               href="/veterinaria/consultas"
-              className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+              className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
             >
               <Stethoscope className="w-4 h-4" />
               Nueva Consulta

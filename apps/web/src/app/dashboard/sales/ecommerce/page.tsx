@@ -115,7 +115,7 @@ export default function EcommerceSyncPage() {
           </button>
           <button
             onClick={() => setShowConnectModal(true)}
-            className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
+            className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
             Conectar Tienda
@@ -270,7 +270,7 @@ export default function EcommerceSyncPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-semibold rounded-xl text-xs shadow-xs"
+                  className="px-4 py-2 bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-semibold rounded-xl text-xs shadow-xs"
                 >
                   Guardar y Conectar
                 </button>

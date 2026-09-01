@@ -49,7 +49,7 @@ export default function RestaurantDashboardPage() {
             <button
               key={r}
               onClick={() => setRange(r)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${range === r ? 'bg-[#FACC15] text-slate-950 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${range === r ? 'bg-amber-500 text-slate-950 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
             >
               {r === 'hoy' ? 'Hoy' : r === 'semana' ? 'Semana' : 'Mes'}
             </button>
@@ -106,7 +106,7 @@ export default function RestaurantDashboardPage() {
               <span className="text-sm text-slate-400 mb-1">de {tables.length} mesas</span>
             </div>
             <div className="mt-3 h-3 bg-slate-100 rounded-full overflow-hidden">
-              <div className="h-full bg-[#FACC15] rounded-full" style={{ width: `${busyPct}%` }} />
+              <div className="h-full bg-amber-500 rounded-full" style={{ width: `${busyPct}%` }} />
             </div>
             <div className="mt-3 grid grid-cols-3 gap-2 text-center">
               <div className="rounded-xl bg-amber-50 border border-amber-100 py-2">
@@ -143,7 +143,7 @@ export default function RestaurantDashboardPage() {
               { h: '22:00', v: 60 },
             ].map((b) => (
               <div key={b.h} className="flex-1 flex flex-col items-center gap-1">
-                <div className="w-full rounded-t-lg bg-[#FACC15]/80 hover:bg-[#EAB308] transition-colors" style={{ height: `${b.v}%` }} />
+                <div className="w-full rounded-t-lg bg-amber-500/80 hover:bg-[#EAB308] transition-colors" style={{ height: `${b.v}%` }} />
                 <span className="text-[9px] font-semibold text-slate-400">{b.h}</span>
               </div>
             ))}

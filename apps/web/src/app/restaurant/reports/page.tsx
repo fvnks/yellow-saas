@@ -63,7 +63,7 @@ export default function RestaurantReportsPage() {
               <button
                 key={r}
                 onClick={() => setRange(r)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${range === r ? 'bg-[#FACC15] text-slate-950 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${range === r ? 'bg-amber-500 text-slate-950 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
               >
                 {r === 'hoy' ? 'Hoy' : r === 'semana' ? 'Semana' : 'Mes'}
               </button>
@@ -127,7 +127,7 @@ export default function RestaurantReportsPage() {
                     </div>
                   </div>
                   <div className="mt-2 h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-[#FACC15] rounded-full" style={{ width: `${pct}%` }} />
+                    <div className="h-full bg-amber-500 rounded-full" style={{ width: `${pct}%` }} />
                   </div>
                 </div>
               );

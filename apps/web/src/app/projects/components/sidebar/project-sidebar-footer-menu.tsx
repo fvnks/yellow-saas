@@ -16,7 +16,7 @@ import {
 
 const ROLE_CONFIG: Record<string, { label: string; classes: string }> = {
   owner: { label: 'Propietario', classes: 'bg-amber-500/10 text-amber-400 border border-amber-500/30 font-black' },
-  admin: { label: 'Administrador', classes: 'bg-[#FACC15]/10 text-[#FACC15] border border-[#FACC15]/30 font-black' },
+  admin: { label: 'Administrador', classes: 'bg-amber-500/10 text-amber-400 border border-amber-500/30 font-black' },
   manager: { label: 'Gerente', classes: 'bg-blue-500/10 text-blue-400 border border-blue-500/30 font-bold' },
   member: { label: 'Miembro', classes: 'bg-slate-800 text-slate-300 border border-slate-700 font-medium' },
   viewer: { label: 'Observador', classes: 'bg-slate-800/60 text-slate-400 border border-slate-700/60 font-normal' },
@@ -40,8 +40,8 @@ export default function ProjectSidebarFooterMenu({ user }: ProjectSidebarFooterM
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="flex w-full items-center gap-3 rounded-xl p-2 text-left text-sm hover:bg-slate-800/80 border border-transparent hover:border-slate-800 transition-all duration-200 group/user">
-              <Avatar className="h-9 w-9 ring-2 ring-[#FACC15]/40 group-hover/user:ring-[#FACC15] transition-all shrink-0">
-                <AvatarFallback className="bg-gradient-to-br from-[#FACC15] via-amber-500 to-yellow-600 text-slate-950 text-xs font-black shadow-inner">
+              <Avatar className="h-9 w-9 ring-2 ring-amber-500/40 group-hover/user:ring-amber-500 transition-all shrink-0">
+                <AvatarFallback className="bg-gradient-to-br from-amber-500 via-amber-500 to-yellow-600 text-slate-950 text-xs font-black shadow-inner">
                   {user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)}
                 </AvatarFallback>
               </Avatar>

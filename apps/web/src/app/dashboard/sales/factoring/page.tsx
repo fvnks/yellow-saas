@@ -87,7 +87,7 @@ export default function FactoringPage() {
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
+          className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
           Ceder Factura AEC
@@ -206,7 +206,7 @@ export default function FactoringPage() {
               </div>
               <div className="pt-2 flex justify-end gap-2">
                 <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl text-xs">Cancelar</button>
-                <button type="submit" className="px-4 py-2 bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-semibold rounded-xl text-xs shadow-xs">Enviar AEC al SII</button>
+                <button type="submit" className="px-4 py-2 bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-semibold rounded-xl text-xs shadow-xs">Enviar AEC al SII</button>
               </div>
             </form>
           </div>

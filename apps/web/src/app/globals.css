@@ -39,7 +39,7 @@ html {
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    /* Primary - Sun Yellow (#FACC15) */
+    /* Primary - Sun Yellow */
     --primary: 47 96% 53%;
     --primary-foreground: 222 47% 11%;
 
@@ -148,7 +148,7 @@ html {
   border-color: rgb(30 41 59 / 0.12);
 }
 
-/* --- Primary Buttons - Sun Yellow (#FACC15) --- */
+/* --- Primary Buttons - Sun Yellow --- */
 .bg-primary.hover\:bg-black.text-white {
   background-color: hsl(47 96% 53%);
   color: hsl(222 47% 11%);
@@ -383,7 +383,7 @@ h1.text-xl.font-bold.text-foreground {
    ============================================ */
 
 .landing-page :focus-visible {
-  outline: 2px solid #FACC15;
+  outline: 2px solid hsl(47 96% 53%);
   outline-offset: 2px;
   border-radius: 4px;
 }

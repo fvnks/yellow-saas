@@ -231,7 +231,7 @@ export default function ReconciliationPage() {
             <button
               onClick={syncFintoc}
               disabled={syncingFintoc || !selectedAccount}
-              className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {syncingFintoc ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
               Sincronizar Fintoc Bank
@@ -248,7 +248,7 @@ export default function ReconciliationPage() {
               <button
                 onClick={createSession}
                 disabled={!selectedAccount || refreshing}
-                className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Plus className="w-4 h-4" />
                 Nueva Sesión
@@ -272,7 +272,7 @@ export default function ReconciliationPage() {
               <select
                 value={selectedAccount}
                 onChange={e => setSelectedAccount(e.target.value)}
-                className="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FACC15] focus:border-transparent"
+                className="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
               >
                 <option value="">Seleccionar cuenta...</option>
                 {accounts.map(acc => (
@@ -286,7 +286,7 @@ export default function ReconciliationPage() {
                 type="month"
                 value={period}
                 onChange={e => setPeriod(e.target.value)}
-                className="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FACC15] focus:border-transparent"
+                className="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
               />
             </div>
             <div className="flex items-end">

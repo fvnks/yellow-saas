@@ -92,7 +92,7 @@ export default function RestaurantUsersPage() {
         </div>
         <button
           onClick={() => setShowAdd((v) => !v)}
-          className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 self-start"
+          className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 self-start"
         >
           <UserPlus className="w-4 h-4" /> Nuevo Usuario
         </button>

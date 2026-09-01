@@ -125,7 +125,7 @@ export default function VeterinaryPatientDetailPage() {
           />
           <Link
             href="/veterinaria/consultas"
-            className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+            className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
           >
             <Stethoscope className="w-4 h-4" />
             Iniciar Consulta
@@ -403,7 +403,7 @@ export default function VeterinaryPatientDetailPage() {
             </h3>
             <Link
               href="/veterinaria/laboratorio"
-              className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-bold px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1 shadow-sm"
+              className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-bold px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1 shadow-sm"
             >
               <Plus className="w-3 h-3" /> Nueva Orden
             </Link>

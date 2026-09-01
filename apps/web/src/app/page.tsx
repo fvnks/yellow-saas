@@ -18,10 +18,10 @@ import { Footer } from './components/footer';
 
 const modules = [
   { icon: Package, title: 'Inventario', description: 'Control completo de stock, trazabilidad por lote y serie, alertas de reorden automáticas.', iconBg: 'bg-blue-50 text-[#0F172A]' },
-  { icon: ShoppingCart, title: 'Ventas', description: 'Cotizaciones, órdenes de venta, facturación electrónica SII, despacho y seguimiento.', iconBg: 'bg-[#FACC15]/15 text-[#00A896]' },
-  { icon: Truck, title: 'Compras', description: 'Órdenes de compra, recepción, proveedores, facturas y notas de crédito.', iconBg: 'bg-amber-50 text-[#FACC15]' },
+  { icon: ShoppingCart, title: 'Ventas', description: 'Cotizaciones, órdenes de venta, facturación electrónica SII, despacho y seguimiento.', iconBg: 'bg-amber-500/15 text-[#00A896]' },
+  { icon: Truck, title: 'Compras', description: 'Órdenes de compra, recepción, proveedores, facturas y notas de crédito.', iconBg: 'bg-amber-50 text-amber-400' },
   { icon: Users, title: 'CRM & Clientes', description: '360° del cliente, actividades, pipeline de ventas y segmentación avanzada.', iconBg: 'bg-indigo-50 text-[#2D60FF]' },
-  { icon: BarChart3, title: 'Contabilidad', description: 'Plan de cuentas, asientos automáticos, balance general y estados financieros.', iconBg: 'bg-[#FACC15]/15 text-[#FACC15]' },
+  { icon: BarChart3, title: 'Contabilidad', description: 'Plan de cuentas, asientos automáticos, balance general y estados financieros.', iconBg: 'bg-amber-500/15 text-amber-400' },
   { icon: Briefcase, title: 'Proyectos', description: 'Gantt, Kanban, gestión de horas, presupuestos y plantillas reutilizables.', iconBg: 'bg-emerald-50 text-emerald-600' },
   { icon: Wallet, title: 'Nómina', description: 'Cálculo automático AFP, ISAPRE, licencias, finiquitos y boletas electrónicas.', iconBg: 'bg-purple-50 text-purple-600' },
   { icon: Calculator, title: 'Costos', description: 'Costeo FIFO, Kardex, márgenes por producto y análisis de rentabilidad.', iconBg: 'bg-cyan-50 text-cyan-600' },
@@ -29,10 +29,10 @@ const modules = [
 
 const features = [
   { icon: Building2, title: 'Multi-tenant Nativo', description: 'Cada empresa tiene su espacio aislado con datos seguros y configuración independiente.', iconBg: 'bg-blue-50 text-[#0F172A]' },
-  { icon: Lock, title: 'RLS por Empresa', description: 'Row Level Security en Supabase garantiza que cada usuario solo vea los datos de su empresa.', iconBg: 'bg-[#FACC15]/15 text-[#00A896]' },
-  { icon: Zap, title: 'API RESTful Robusta', description: 'Endpoints REST con autenticación JWT, rate limiting y respuestas estructuradas en milisegundos.', iconBg: 'bg-amber-50 text-[#FACC15]' },
+  { icon: Lock, title: 'RLS por Empresa', description: 'Row Level Security en Supabase garantiza que cada usuario solo vea los datos de su empresa.', iconBg: 'bg-amber-500/15 text-[#00A896]' },
+  { icon: Zap, title: 'API RESTful Robusta', description: 'Endpoints REST con autenticación JWT, rate limiting y respuestas estructuradas en milisegundos.', iconBg: 'bg-amber-50 text-amber-400' },
   { icon: Globe, title: 'Normativa Chilena Nativa', description: 'RUT, facturación electrónica SII, AFP/ISAPRE, UF y leyes vigentes en Chile.', iconBg: 'bg-indigo-50 text-[#2D60FF]' },
-  { icon: Shield, title: 'Auditoría Completa', description: 'Log inmutable de cambios con usuario, timestamp y diff de valores anteriores.', iconBg: 'bg-[#FACC15]/15 text-[#FACC15]' },
+  { icon: Shield, title: 'Auditoría Completa', description: 'Log inmutable de cambios con usuario, timestamp y diff de valores anteriores.', iconBg: 'bg-amber-500/15 text-amber-400' },
   { icon: Bell, title: 'Notificaciones Inteligentes', description: 'Alertas inmediatas para vencimientos, stock bajo, facturas pendientes y aprobaciones.', iconBg: 'bg-purple-50 text-purple-600' },
 ];
 
@@ -120,7 +120,7 @@ export default function HomePage() {
       <section className="relative pt-32 pb-20 overflow-hidden bg-gradient-to-b from-white via-white to-[#F1F5F9]">
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#E2E8F0] bg-[#F1F5F9] px-4 py-1.5 text-xs font-semibold text-[#0F172A] mb-8 shadow-sm">
-            <span className="inline-block w-2 h-2 rounded-full bg-[#FACC15] animate-pulse" />
+            <span className="inline-block w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
             Modern Yellow ERP SaaS · Hecho para PyMEs en Chile
           </div>
 
@@ -158,11 +158,11 @@ export default function HomePage() {
               <span>Multi-tenant Aislado</span>
             </div>
             <div className="flex items-center gap-2">
-              <Lock className="w-4 h-4 text-[#FACC15]" />
+              <Lock className="w-4 h-4 text-amber-400" />
               <span>Encriptación Supabase RLS</span>
             </div>
             <div className="flex items-center gap-2">
-              <Globe className="w-4 h-4 text-[#FACC15]" />
+              <Globe className="w-4 h-4 text-amber-400" />
               <span>Facturación SII 100% Nativa</span>
             </div>
           </div>
@@ -174,9 +174,9 @@ export default function HomePage() {
             {/* Header bar */}
             <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#E2E8F0] bg-white">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-[#FACC15]" />
-                <div className="w-3 h-3 rounded-full bg-[#FACC15]" />
-                <div className="w-3 h-3 rounded-full bg-[#FACC15]" />
+                <div className="w-3 h-3 rounded-full bg-amber-500" />
+                <div className="w-3 h-3 rounded-full bg-amber-500" />
+                <div className="w-3 h-3 rounded-full bg-amber-500" />
                 <span className="ml-3 text-xs font-semibold text-[#64748B]">app.yellow-erp.cl/dashboard</span>
               </div>
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
@@ -203,7 +203,7 @@ export default function HomePage() {
                 {[
                   { label: 'Ventas del Mes', value: '$24.850.000', change: '+18.4%', icon: ShoppingCart, bg: 'bg-blue-50 text-[#0F172A]' },
                   { label: 'Facturas Emitidas', value: '1.420 DTEs', change: '+8.2%', icon: FileText, bg: 'bg-emerald-50 text-emerald-600' },
-                  { label: 'Valor de Inventario', value: '$82.400.000', change: '+3.1%', icon: Package, bg: 'bg-amber-50 text-[#FACC15]' },
+                  { label: 'Valor de Inventario', value: '$82.400.000', change: '+3.1%', icon: Package, bg: 'bg-amber-50 text-amber-400' },
                   { label: 'Clientes Activos', value: '348', change: '+12%', icon: Users, bg: 'bg-indigo-50 text-[#2D60FF]' },
                 ].map((kpi) => (
                   <div key={kpi.label} className="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm p-4 hover:border-[#0F172A]/30 transition-all duration-150">
@@ -428,7 +428,7 @@ export default function HomePage() {
                   <ul className="space-y-2.5 mb-8">
                     {plan.features.map((f) => (
                       <li key={f} className="flex items-start gap-2.5 text-xs text-[#0F172A]">
-                        <Check className="w-4 h-4 text-[#FACC15] mt-0.5 flex-shrink-0" />
+                        <Check className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
                         <span>{f}</span>
                       </li>
                     ))}

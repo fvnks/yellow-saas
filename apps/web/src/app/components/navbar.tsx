@@ -21,11 +21,11 @@ export function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
           <div className="w-9 h-9 rounded-xl bg-[#0F172A] flex items-center justify-center shadow-md shadow-[#0F172A]/20 group-hover:scale-105 transition-transform duration-150">
-            <span className="text-[#FACC15] font-bold text-base tracking-wider">Y</span>
+            <span className="text-amber-400 font-bold text-base tracking-wider">Y</span>
           </div>
           <div className="flex flex-col">
             <span className="text-lg font-bold text-[#0F172A] leading-none">
-              Yellow <span className="text-[#FACC15]">ERP</span>
+              Yellow <span className="text-amber-400">ERP</span>
             </span>
             <span className="text-[10px] text-[#64748B] font-medium tracking-wide">SaaS para Chile</span>
           </div>
