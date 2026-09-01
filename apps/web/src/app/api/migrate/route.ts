@@ -828,6 +828,34 @@ export async function POST(request: Request) {
       results.push(`ecommerce tables warn: ${e.message?.substring(0, 80)}`);
     }
 
+    // Seed module catalog
+    const moduleCatalog = [
+      { name: 'erp', label: 'ERP & Gestión', description: 'Inventario, Ventas, Compras, CRM, Contabilidad' },
+      { name: 'recetas', label: 'Recetas & Producción', description: 'Fórmulas BOM, Lotes de Producción, Costos' },
+      { name: 'proyectos', label: 'Proyectos & Obras', description: 'Presupuestos, Hitos, Tableros Kanban' },
+      { name: 'hr', label: 'RRHH & Sueldos', description: 'Contratos, Remuneraciones, Asistencia' },
+      { name: 'condominio', label: 'Condominios', description: 'Gastos comunes, Copropiedad, Portal' },
+      { name: 'restaurant', label: 'Restaurante & POS', description: 'Mesas, KDS, Comandas, QR' },
+      { name: 'veterinaria', label: 'Veterinaria & Clínica', description: 'Pacientes, Consultas, Agenda' },
+      { name: 'inventario', label: 'Inventario Avanzado', description: 'ABC, Kardex, Traslados, Conteo' },
+      { name: 'ventas', label: 'Ventas & DTE', description: 'Facturación Electrónica, Cobranza' },
+      { name: 'compras', label: 'Compras & Proveedores', description: 'Órdenes de Compra, Recepción' },
+      { name: 'finanzas', label: 'Contabilidad', description: 'Libros SII, F29, Balance' },
+      { name: 'herramientas', label: 'Herramientas', description: 'Reportes, Importaciones, Integraciones' },
+      { name: 'costos', label: 'Costos & Centros', description: 'Centros de Costo, Landed Cost' },
+      { name: 'sistema', label: 'Sistema', description: 'Usuarios, Roles, Permisos, Logs' },
+      { name: 'mi-cuenta', label: 'Mi Cuenta SaaS', description: 'Suscripción, Facturación, Módulos' },
+      { name: 'ayuda', label: 'Soporte & Ayuda', description: 'Tickets, Base de Conocimiento' },
+    ];
+    for (const mod of moduleCatalog) {
+      await query(
+        `INSERT INTO module_catalog (name, label, description) VALUES ($1, $2, $3)
+         ON CONFLICT (name) DO UPDATE SET label = $2, description = $3`,
+        [mod.name, mod.label, mod.description]
+      );
+    }
+    results.push(`Seeded ${moduleCatalog.length} module catalog entries`);
+
     return NextResponse.json({ success: true, results });
   } catch (err) {
     return NextResponse.json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 });
