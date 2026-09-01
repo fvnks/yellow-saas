@@ -133,7 +133,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Buscar en Admin..."
-                className="w-full bg-slate-900/80 border border-slate-800 text-xs text-slate-200 placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15] transition-all"
+                className="w-full bg-slate-900/80 border border-slate-800 text-xs text-slate-200 placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-amber-600/60 focus:ring-1 focus:ring-amber-600/40 transition-all"
               />
               {searchQuery ? (
                 <button onClick={() => setSearchQuery("")} className="absolute right-2 text-slate-400 hover:text-slate-200">
@@ -165,17 +165,17 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                       href={item.path}
                       className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                         active
-                          ? 'bg-slate-800 text-white font-bold border-l-4 border-[#FACC15] shadow-sm shadow-amber-500/10'
+                          ? 'bg-slate-800 text-white font-bold border-l-4 border-amber-500/70 shadow-sm shadow-amber-500/5'
                           : 'text-slate-300 hover:text-slate-100 hover:bg-slate-800/60'
                       }`}
                     >
-                      <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-[#FACC15]' : 'text-slate-400'}`} />
+                      <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-amber-400' : 'text-slate-400'}`} />
                       {sidebarOpen && <span className="truncate">{item.title}</span>}
                       {item.path === '/admin/support' && supportPending > 0 && (
                         <span className={`ml-auto inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-[9px] font-black ${
                           supportUnassigned > 0
-                            ? 'bg-[#FACC15] text-slate-950'
-                            : 'bg-[#FACC15] text-slate-950'
+                            ? 'bg-amber-600/80 text-slate-950'
+                            : 'bg-amber-600/80 text-slate-950'
                         }`}>
                           {supportPending}
                         </span>
@@ -208,7 +208,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
             <div className="flex items-center gap-2 px-3 py-1 bg-slate-800/80 border border-slate-700/80 rounded-xl">
-               <Shield className="w-3.5 h-3.5 text-[#FACC15]" />
+               <Shield className="w-3.5 h-3.5 text-amber-400" />
               <span className="text-[10px] font-black text-slate-200 uppercase tracking-wider">Super Admin Console</span>
             </div>
           </div>
