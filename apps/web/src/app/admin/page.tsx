@@ -43,12 +43,12 @@ export default function AdminDashboard() {
   };
 
   const cards = [
-    { label: 'Total Empresas', value: metrics.totalCompanies, icon: Building2, color: 'bg-primary/10 text-primary/70 border-primary/20' },
+    { label: 'Total Empresas', value: metrics.totalCompanies, icon: Building2, color: 'bg-violet-500/10 text-violet-400 border-violet-500/20' },
     { label: 'Empresas Activas', value: metrics.activeCompanies, icon: Activity, color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
     { label: 'En Prueba', value: metrics.trialCompanies, icon: TrendingUp, color: 'bg-amber-500/10 text-amber-400 border-amber-500/20' },
     { label: 'Total Usuarios', value: metrics.totalUsers, icon: Users, color: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
-    { label: 'Usuarios Activos', value: metrics.activeUsers, icon: Shield, color: 'bg-blue-600/10 text-blue-500 border-blue-500/20' },
-    { label: 'Registros Recientes', value: metrics.recentSignups, icon: DollarSign, color: 'bg-rose-500/10 text-rose-400 border-rose-500/20' },
+    { label: 'Usuarios Activos', value: metrics.activeUsers, icon: Shield, color: 'bg-blue-600/10 text-blue-500 border-blue-600/20' },
+    { label: 'Registros Recientes', value: metrics.recentSignups, icon: DollarSign, color: 'bg-violet-500/10 text-violet-400 border-violet-500/20' },
   ];
 
   return (
@@ -64,7 +64,7 @@ export default function AdminDashboard() {
         {cards.map((card) => {
           const Icon = card.icon;
           return (
-            <div key={card.label} className="bg-primary border border-border rounded-xl p-6 hover:border-border transition-colors">
+            <div key={card.label} className="bg-slate-900/80 border border-slate-800 rounded-xl p-6 hover:border-violet-500/30 transition-colors">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{card.label}</p>
@@ -87,25 +87,25 @@ export default function AdminDashboard() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-primary border border-border rounded-xl p-6">
+        <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-6">
           <h3 className="text-sm font-semibold text-white mb-4">Acciones Rápidas</h3>
           <div className="space-y-3">
-            <a href="/admin/companies" className="flex items-center gap-3 p-3 bg-card/50 rounded-lg hover:bg-primary/90 transition-colors">
-              <Building2 className="w-4 h-4 text-primary/70" />
-              <span className="text-sm text-foreground">Gestionar Empresas</span>
+            <a href="/admin/companies" className="flex items-center gap-3 p-3 bg-slate-800/60 rounded-lg hover:bg-violet-500/10 border border-slate-800 hover:border-violet-500/30 transition-colors">
+              <Building2 className="w-4 h-4 text-violet-400" />
+              <span className="text-sm text-slate-200">Gestionar Empresas</span>
             </a>
-            <a href="/admin/users" className="flex items-center gap-3 p-3 bg-card/50 rounded-lg hover:bg-primary/90 transition-colors">
+            <a href="/admin/users" className="flex items-center gap-3 p-3 bg-slate-800/60 rounded-lg hover:bg-violet-500/10 border border-slate-800 hover:border-violet-500/30 transition-colors">
               <Users className="w-4 h-4 text-emerald-400" />
-              <span className="text-sm text-foreground">Gestionar Usuarios</span>
+              <span className="text-sm text-slate-200">Gestionar Usuarios</span>
             </a>
-            <a href="/admin/grants" className="flex items-center gap-3 p-3 bg-card/50 rounded-lg hover:bg-primary/90 transition-colors">
+            <a href="/admin/grants" className="flex items-center gap-3 p-3 bg-slate-800/60 rounded-lg hover:bg-violet-500/10 border border-slate-800 hover:border-violet-500/30 transition-colors">
               <Shield className="w-4 h-4 text-amber-400" />
-              <span className="text-sm text-foreground">Solicitudes de Acceso</span>
+              <span className="text-sm text-slate-200">Solicitudes de Acceso</span>
             </a>
           </div>
         </div>
 
-        <div className="bg-primary border border-border rounded-xl p-6">
+        <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-6">
           <h3 className="text-sm font-semibold text-white mb-4">Estado del Sistema</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
