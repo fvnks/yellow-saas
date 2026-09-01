@@ -1814,6 +1814,57 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/recipe-expenses/${expenseId}`, { method: 'DELETE' });
   }
 
+  // Expense Categories
+  async getExpenseCategories() {
+    return this.request<any[]>('/expense-categories');
+  }
+
+  async createExpenseCategory(data: { name: string; color?: string; tax_deductible?: boolean; parent_id?: string }) {
+    return this.request<any>('/expense-categories', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateExpenseCategory(id: string, data: { name?: string; color?: string; tax_deductible?: boolean; is_active?: boolean }) {
+    return this.request<any>(`/expense-categories/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteExpenseCategory(id: string) {
+    return this.request<any>(`/expense-categories/${id}`, { method: 'DELETE' });
+  }
+
+  // Expenses
+  async getExpenses(params?: Record<string, string>) {
+    return this.requestWithPagination<{
+      id: string; expense_number: string; expense_date: string;
+      amount: number; tax_amount: number; total_amount: number;
+      category_id?: string; category_name?: string; category_color?: string;
+      supplier_name?: string; supplier_rut?: string;
+      document_type: string; document_number?: string;
+      description?: string; notes?: string;
+      cost_center_id?: string; cost_center_name?: string;
+      status: string;
+    }>('/expenses', params || {});
+  }
+
+  async getExpense(id: string) {
+    return this.request<any>(`/expenses/${id}`);
+  }
+
+  async createExpense(data: { expense_date: string; amount: number; tax_amount?: number; category_id?: string; supplier_name?: string; supplier_rut?: string; document_type?: string; document_number?: string; description?: string; notes?: string; cost_center_id?: string; status?: string }) {
+    return this.request<{ id: string; expense_number: string }>('/expenses', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async updateExpense(id: string, data: Partial<{ expense_date: string; amount: number; tax_amount: number; category_id: string; supplier_name: string; supplier_rut: string; document_type: string; document_number: string; description: string; notes: string; cost_center_id: string; status: string }>) {
+    return this.request<{ id: string }>(`/expenses/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+
+  async deleteExpense(id: string) {
+    return this.request<{ message: string }>(`/expenses/${id}`, { method: 'DELETE' });
+  }
+
+  async getExpenseSummary(params?: Record<string, string>) {
+    return this.request<{ total: number; total_tax: number; total_with_tax: number; count: number; by_category: any[]; by_month: any[] }>('expenses/summary', params || {});
+  }
+
   // Company Access Grants
   async getCompanyGrants(companyId: string) {
     return this.request<any[]>(`/companies/${companyId}/grants`);

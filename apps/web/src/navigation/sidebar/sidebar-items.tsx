@@ -434,6 +434,16 @@ export const sidebarItems: NavGroup[] = [
           { title: "Vacaciones", path: "/dashboard/payroll?tab=vacation", requiredPermission: { module: "finanzas", action: "read" } },
         ],
       },
+      {
+        title: "Gastos",
+        path: "/dashboard/expenses",
+        icon: "Wallet",
+        requiredPermission: { module: "gastos", action: "read" },
+        subItems: [
+          { title: "Listado de Gastos", path: "/dashboard/expenses", icon: "Wallet", requiredPermission: { module: "gastos", action: "read" } },
+          { title: "Categorías", path: "/dashboard/expenses/categories", icon: "Tag", requiredPermission: { module: "gastos", action: "read" } },
+        ],
+      },
     ],
   },
   {
