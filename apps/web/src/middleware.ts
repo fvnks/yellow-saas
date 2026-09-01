@@ -1,8 +1,11 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
+import createIntlMiddleware from 'next-intl/middleware';
+import { routing } from '@/i18n/routing';
 import { getJwtSecret } from '@/lib/env';
 import { checkRateLimit } from '@/lib/rate-limiter';
 
+const intlMiddleware = createIntlMiddleware(routing);
 const JWT_SECRET = getJwtSecret();
 
 // Detect demo mode only when DATABASE_URL is explicitly absent (local dev signal)
@@ -40,6 +43,10 @@ function setSecurityHeaders(response: NextResponse) {
 }
 
 export async function middleware(request: NextRequest) {
+  // First, run next-intl locale detection middleware
+  const intlResponse = intlMiddleware(request);
+  if (intlResponse) return intlResponse;
+
   const response = NextResponse.next({
     request: { headers: request.headers },
   });
@@ -183,6 +190,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|public/).*)',
+    // Skip Next.js internals and all static files
+    '/((?!_next/static|_next/image|favicon.ico|public/|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };

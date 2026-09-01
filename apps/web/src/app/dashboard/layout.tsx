@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { ReactNode, useEffect, useState } from "react";
 import { Toaster } from "sonner";
@@ -8,14 +8,17 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import SidebarBreadcrumbs from "./components/sidebar/sidebar-breadcrumbs";
 import NotificationsDropdown from "./components/NotificationsDropdown";
 import ThemeToggle from "@/components/ui/theme-toggle";
+import LocaleSwitcher from "@/components/i18n/LocaleSwitcher";
 import { getChileanIndicators, ChileanIndicators } from "@/lib/indicators";
 import { TrendingUp, ShieldCheck, DollarSign } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 interface LayoutProps {
   readonly children: ReactNode;
 }
 
 function ChileanIndicatorsPill() {
+  const t = useTranslations('header');
   const [indicators, setIndicators] = useState<ChileanIndicators | null>(null);
 
   useEffect(() => {
@@ -31,7 +34,7 @@ function ChileanIndicatorsPill() {
       <span>USD: ${indicators ? indicators.dolar.toLocaleString('es-CL') : '950'}</span>
       <span className="opacity-40">|</span>
       <span className="flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-bold">
-        <ShieldCheck className="w-3.5 h-3.5" /> SII En Línea
+        <ShieldCheck className="w-3.5 h-3.5" /> {t('siiOnline')}
       </span>
     </div>
   );
@@ -52,6 +55,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
             </div>
             <div className="flex items-center gap-3">
               <ChileanIndicatorsPill />
+              <LocaleSwitcher />
               <ThemeToggle />
               <NotificationsDropdown />
             </div>

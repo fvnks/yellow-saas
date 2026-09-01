@@ -5,9 +5,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion, type Variants } from 'motion/react';
 import { Eye, EyeOff, Building2, Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import AuthPanel from '@/components/auth/AuthPanel';
 
 function LoginForm() {
+  const t = useTranslations('auth');
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect') || '/select';
@@ -50,7 +52,7 @@ function LoginForm() {
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        setError(data.error?.message || 'Credenciales inválidas');
+        setError(data.error?.message || t('invalidCredentials'));
         setLoading(false);
         return;
       }
@@ -66,7 +68,7 @@ function LoginForm() {
         window.location.href = redirect;
       }
     } catch {
-      setError('Error de conexión. Intenta nuevamente.');
+      setError(t('connectionError'));
       setLoading(false);
     }
   };
@@ -95,12 +97,10 @@ function LoginForm() {
           {/* Title */}
           <motion.div variants={itemVariants} className="mb-10">
             <h1 className="mb-4 text-[40px] font-bold leading-[1.05] tracking-tight text-foreground sm:text-[48px]">
-              Bienvenido
-              <br />
-              de vuelta
+              {t('welcomeBack')}
             </h1>
             <p className="text-[15px] text-muted-foreground text-balance">
-              Inicia sesión para acceder al panel de gestión de tu empresa.
+              {t('loginSubtitle')}
             </p>
           </motion.div>
 
@@ -120,7 +120,7 @@ function LoginForm() {
             {/* Email */}
             <motion.div variants={itemVariants} className="flex flex-col gap-2">
               <label htmlFor="email" className="text-[14px] font-medium text-foreground">
-                Correo electrónico
+                {t('email')}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -140,7 +140,7 @@ function LoginForm() {
             {/* Password */}
             <motion.div variants={itemVariants} className="flex flex-col gap-2">
               <label htmlFor="password" className="text-[14px] font-medium text-foreground">
-                Contraseña
+                {t('password')}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -157,7 +157,7 @@ function LoginForm() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  aria-label={showPassword ? t('hidePassword') : t('showPassword')}
                   className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -176,14 +176,14 @@ function LoginForm() {
                   className="size-[18px] rounded border-border text-foreground focus:ring-slate-900 focus:ring-2 transition-colors"
                 />
                 <label htmlFor="remember" className="text-[14px] text-foreground cursor-pointer">
-                  Mantener sesión
+                  {t('rememberMe')}
                 </label>
               </div>
               <Link
                 href="/forgot-password"
                 className="text-[14px] font-medium text-foreground hover:text-foreground transition-colors"
               >
-                ¿Olvidaste tu contraseña?
+                {t('forgotPassword')}
               </Link>
             </motion.div>
 
@@ -195,7 +195,7 @@ function LoginForm() {
                 className="w-full rounded-lg bg-primary py-3 text-[14px] font-medium text-white transition-all hover:bg-primary/90 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-                {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+                {loading ? t('signingIn') : t('signIn')}
               </button>
             </motion.div>
           </form>
@@ -209,9 +209,9 @@ function LoginForm() {
 
           {/* Footer */}
           <motion.div variants={itemVariants} className="mt-8 text-center text-[14px] text-muted-foreground">
-            ¿No tienes cuenta?{' '}
+            {t('noAccount')}{' '}
             <Link href="/register" className="font-semibold text-foreground hover:text-foreground transition-colors">
-              Regístrate
+              {t('signUp')}
             </Link>
           </motion.div>
         </motion.div>
@@ -221,8 +221,9 @@ function LoginForm() {
 }
 
 export default function LoginPage() {
+  const t = useTranslations('common');
   return (
-    <Suspense fallback={<div className="min-h-screen bg-muted flex items-center justify-center"><p className="text-muted-foreground">Cargando...</p></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-muted flex items-center justify-center"><p className="text-muted-foreground">{t('loading')}</p></div>}>
       <LoginForm />
     </Suspense>
   );
