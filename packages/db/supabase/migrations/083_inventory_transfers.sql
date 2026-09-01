@@ -1,4 +1,4 @@
--- 006_stock_transfers.sql
+-- 083_inventory_transfers.sql
 -- Transferencias entre bodegas
 
 CREATE TABLE stock_transfers (

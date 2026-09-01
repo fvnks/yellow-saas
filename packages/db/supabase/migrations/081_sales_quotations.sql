@@ -1,4 +1,4 @@
--- 002_quotations.sql
+-- 081_sales_quotations.sql
 -- Yellow ERP - Quotations module
 
 -- Quotations

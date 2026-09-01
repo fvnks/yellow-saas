@@ -1,4 +1,4 @@
--- 007_project_activity_log.sql
+-- 084_project_audit_log.sql
 -- Activity log for tracking all project changes
 
 CREATE TABLE IF NOT EXISTS project_activity_log (
