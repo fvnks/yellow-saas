@@ -16,7 +16,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className="space-y-1">
         {label && (
-          <label htmlFor={selectId} className="block text-xs font-medium text-[#232323] dark:text-slate-300">
+          <label htmlFor={selectId} className="block text-xs font-medium text-[#0F172A] dark:text-slate-300">
             {label}
           </label>
         )}
@@ -24,8 +24,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           ref={ref}
           id={selectId}
           className={cn(
-            'w-full bg-white border border-[#E6EFF5] rounded-xl px-3 py-2 text-sm text-[#232323]',
-            'focus:outline-none focus:ring-2 focus:ring-[#1814F3]/20 focus:border-[#1814F3] transition-colors',
+            'w-full bg-white border border-[#E2E8F0] rounded-xl px-3 py-2 text-sm text-[#0F172A]',
+            'focus:outline-none focus:ring-2 focus:ring-[#0F172A]/20 focus:border-[#0F172A] transition-colors',
             'dark:bg-slate-800 dark:border-slate-700 dark:text-white',
             error && 'border-rose-300 focus:ring-rose-500 focus:border-rose-500',
             className
@@ -51,7 +51,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           </p>
         )}
         {helperText && !error && (
-          <p id={`${selectId}-helper`} className="text-xs text-[#718EBF]">
+          <p id={`${selectId}-helper`} className="text-xs text-[#64748B]">
             {helperText}
           </p>
         )}

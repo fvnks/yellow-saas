@@ -27,20 +27,20 @@ const footerLinks = {
 
 export function Footer() {
   return (
-    <footer className="border-t border-[#E6EFF5] bg-white text-[#232323]">
+    <footer className="border-t border-[#E2E8F0] bg-white text-[#0F172A]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2.5 mb-4 group">
-              <div className="w-9 h-9 rounded-xl bg-[#1814F3] flex items-center justify-center shadow-md shadow-[#1814F3]/20">
-                <span className="text-white font-bold text-base">Y</span>
+              <div className="w-9 h-9 rounded-xl bg-[#0F172A] flex items-center justify-center shadow-md shadow-[#0F172A]/20">
+                <span className="text-[#FACC15] font-bold text-base">Y</span>
               </div>
-              <span className="text-lg font-bold text-[#232323]">
-                Yellow <span className="text-[#1814F3]">ERP</span>
+              <span className="text-lg font-bold text-[#0F172A]">
+                Yellow <span className="text-[#FACC15]">ERP</span>
               </span>
             </Link>
-            <p className="text-xs text-[#718EBF] leading-relaxed">
+            <p className="text-xs text-[#64748B] leading-relaxed">
               ERP multi-tenant para PyMEs chilenas. Facturación electrónica SII, nómina y gestión integral.
             </p>
           </div>
@@ -48,7 +48,7 @@ export function Footer() {
           {/* Links */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h3 className="text-[10px] font-semibold text-[#718EBF] uppercase tracking-wider mb-4">
+              <h3 className="text-[10px] font-semibold text-[#64748B] uppercase tracking-wider mb-4">
                 {category}
               </h3>
               <ul className="space-y-2.5">
@@ -56,7 +56,7 @@ export function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-xs text-[#718EBF] hover:text-[#1814F3] transition-colors duration-150"
+                      className="text-xs text-[#64748B] hover:text-[#0F172A] transition-colors duration-150"
                     >
                       {link.label}
                     </Link>
@@ -68,11 +68,11 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="mt-12 pt-8 border-t border-[#E6EFF5] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-[#718EBF]">
+        <div className="mt-12 pt-8 border-t border-[#E2E8F0] flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-[#64748B]">
             &copy; {new Date().getFullYear()} Yellow ERP Chile. Todos los derechos reservados.
           </p>
-          <p className="text-xs text-[#718EBF] font-medium">
+          <p className="text-xs text-[#64748B] font-medium">
             Diseñado para la realidad empresarial chilena 🇨🇱
           </p>
         </div>

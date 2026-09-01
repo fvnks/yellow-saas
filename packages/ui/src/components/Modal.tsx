@@ -34,8 +34,8 @@ export function Modal({ isOpen, onClose, title, children, footer, size = 'md', c
         aria-modal="true"
         aria-labelledby="modal-title"
       >
-        <div className="px-6 py-4 border-b border-[#E6EFF5] flex items-center justify-between">
-          <h2 id="modal-title" className="text-lg font-semibold text-[#232323] dark:text-white">
+        <div className="px-6 py-4 border-b border-[#E2E8F0] flex items-center justify-between">
+          <h2 id="modal-title" className="text-lg font-semibold text-[#0F172A] dark:text-white">
             {title}
           </h2>
           <button
@@ -48,7 +48,7 @@ export function Modal({ isOpen, onClose, title, children, footer, size = 'md', c
         </div>
         <div className="p-6">{children}</div>
         {footer && (
-          <div className="px-6 py-4 border-t border-[#E6EFF5] flex justify-end gap-3">
+          <div className="px-6 py-4 border-t border-[#E2E8F0] flex justify-end gap-3">
             {footer}
           </div>
         )}

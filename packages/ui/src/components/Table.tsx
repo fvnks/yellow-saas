@@ -12,7 +12,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(({ className, chil
 ));
 
 export const TableHeader = ({ className, children, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) => (
-  <thead className={cn('[&_tr]:border-b [&_tr]:border-[#E6EFF5]', className)} {...props}>
+  <thead className={cn('[&_tr]:border-b [&_tr]:border-[#E2E8F0]', className)} {...props}>
     {children}
   </thead>
 );
@@ -24,13 +24,13 @@ export const TableBody = ({ className, children, ...props }: React.HTMLAttribute
 );
 
 export const TableRow = ({ className, ...props }: React.HTMLAttributes<HTMLTableRowElement>) => (
-  <tr className={cn('border-b border-[#E6EFF5] hover:bg-[#F5F7FA] transition-colors', className)} {...props} />
+  <tr className={cn('border-b border-[#E2E8F0] hover:bg-[#F1F5F9] transition-colors', className)} {...props} />
 );
 
 export const TableHead = ({ className, ...props }: React.ThHTMLAttributes<HTMLTableCellElement>) => (
   <th
     className={cn(
-      'text-left px-4 py-3 text-[10px] font-medium text-[#718EBF] uppercase tracking-wider',
+      'text-left px-4 py-3 text-[10px] font-medium text-[#64748B] uppercase tracking-wider',
       className
     )}
     {...props}
@@ -38,9 +38,9 @@ export const TableHead = ({ className, ...props }: React.ThHTMLAttributes<HTMLTa
 );
 
 export const TableCell = ({ className, ...props }: React.TdHTMLAttributes<HTMLTableCellElement>) => (
-  <td className={cn('px-4 py-3 text-xs text-[#232323]', className)} {...props} />
+  <td className={cn('px-4 py-3 text-xs text-[#0F172A]', className)} {...props} />
 );
 
 export const TableCaption = ({ className, ...props }: React.HTMLAttributes<HTMLTableCaptionElement>) => (
-  <caption className={cn('text-sm text-[#718EBF] py-4', className)} {...props} />
+  <caption className={cn('text-sm text-[#64748B] py-4', className)} {...props} />
 );
