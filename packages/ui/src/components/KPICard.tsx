@@ -33,7 +33,7 @@ export function KPICard({ label, value, change, changeType, trend, trendUp, icon
   };
 
   return (
-    <div className={cn('bg-white border border-[#E6EFF5] rounded-2xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800', className)}>
+    <div className={cn('bg-white border border-[#E2E8F0] rounded-2xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800', className)}>
       <div className="flex items-center justify-between">
         <div>
           <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">

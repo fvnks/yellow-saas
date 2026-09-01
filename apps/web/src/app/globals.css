@@ -22,7 +22,7 @@ html {
 }
 
 /* ============================================
-   DESIGN TOKENS - BankDash Modern Banking Dashboard
+   DESIGN TOKENS - Yellow ERP Sun-Slate
    ============================================ */
 
 @layer base {
@@ -75,16 +75,8 @@ html {
     --sidebar-border: 217 33% 17%;
     --sidebar-ring: 47 96% 53%;
 
-    /* Brand - BankDash Colors */
-    --brand-blue: 242 95% 47%;
-    --brand-blue-bright: 223 100% 56%;
-    --brand-teal: 173 84% 48%;
-    --brand-red: 350 87% 67%;
-    --brand-amber: 40 100% 61%;
-
-    /* Legacy brand (keep for compatibility) */
+    /* Brand - Yellow ERP Colors */
     --brand-yellow: 45 93% 47%;
-    --brand-amber: 38 92% 50%;
   }
 
   .dark {
@@ -143,7 +135,7 @@ html {
 }
 
 /* ============================================
-   GLOBAL UI OVERRIDES - BankDash Banking Dashboard
+   GLOBAL UI OVERRIDES - Yellow ERP Sun-Slate
    ============================================ */
 
 /* --- Cards --- */
@@ -181,27 +173,23 @@ html {
   transform: scale(0.98);
 }
 
-/* --- Success Buttons - Teal (#16DBCC) --- */
+/* --- Success Buttons - Emerald (default) --- */
 .bg-emerald-600.hover\:bg-emerald-700.text-white {
-  background-color: hsl(173 84% 48%);
   transition: all 0.15s ease;
 }
 .bg-emerald-600.hover\:bg-emerald-700.text-white:hover {
-  background-color: hsl(173 84% 42%);
-  box-shadow: 0 2px 8px -2px rgb(22 219 204 / 0.3);
+  box-shadow: 0 2px 8px -2px rgb(16 185 129 / 0.3);
 }
 .bg-emerald-600.hover\:bg-emerald-700.text-white:active {
   transform: scale(0.98);
 }
 
-/* --- Danger Buttons - Red (#FE5C73) --- */
+/* --- Danger Buttons - Rose (default) --- */
 .bg-rose-600.hover\:bg-rose-700.text-white {
-  background-color: hsl(350 87% 67%);
   transition: all 0.15s ease;
 }
 .bg-rose-600.hover\:bg-rose-700.text-white:hover {
-  background-color: hsl(350 87% 60%);
-  box-shadow: 0 2px 8px -2px rgb(254 92 115 / 0.3);
+  box-shadow: 0 2px 8px -2px rgb(244 63 94 / 0.3);
 }
 .bg-rose-600.hover\:bg-rose-700.text-white:active {
   transform: scale(0.98);
@@ -224,8 +212,8 @@ textarea.w-full.bg-muted.border.border-border {
 input.w-full.bg-muted.border.border-border:focus,
 select.w-full.bg-muted.border.border-border:focus,
 textarea.w-full.bg-muted.border.border-border:focus {
-  border-color: hsl(242 95% 47%);
-  box-shadow: 0 0 0 3px rgb(24 20 243 / 0.1);
+  border-color: hsl(222 47% 11%);
+  box-shadow: 0 0 0 3px rgb(15 23 42 / 0.1);
 }
 
 /* --- Badges --- */
@@ -252,11 +240,11 @@ h1.text-xl.font-bold.text-foreground {
   transform: translateY(-1px);
 }
 
-/* --- BankDash Sidebar Navigation --- */
+/* --- Yellow ERP Sidebar Navigation --- */
 .nav-item-active {
   background-color: hsl(220 60% 95%);
-  color: hsl(242 95% 47%);
-  border-left: 3px solid hsl(242 95% 47%);
+  color: hsl(47 96% 53%);
+  border-left: 3px solid hsl(47 96% 53%);
   padding-left: calc(0.75rem - 3px);
 }
 
@@ -276,10 +264,10 @@ h1.text-xl.font-bold.text-foreground {
     text-wrap: balance;
   }
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-slate-700 via-slate-900 to-slate-700;
+    @apply text-[#0F172A];
   }
   .text-gradient-dark {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-slate-300 via-white to-slate-300;
+    @apply text-[#F8FAFC];
   }
   .bg-glass {
     @apply bg-white/80 backdrop-blur-xl;
@@ -395,7 +383,7 @@ h1.text-xl.font-bold.text-foreground {
    ============================================ */
 
 .landing-page :focus-visible {
-  outline: 2px solid #0f172a;
+  outline: 2px solid #FACC15;
   outline-offset: 2px;
   border-radius: 4px;
 }

@@ -83,15 +83,15 @@ function ProjectDashboardInner() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold text-[#232323]">Gestión de Proyectos</h1>
+            <h1 className="text-xl font-bold text-[#0F172A]">Gestión de Proyectos</h1>
             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-purple-50 text-purple-700 border border-purple-200">
               Kanban & Gantt
             </span>
           </div>
-          <p className="text-sm text-[#718EBF] mt-1">Control de proyectos, ejecución presupuestaria, hitos y horas del equipo</p>
+          <p className="text-sm text-[#64748B] mt-1">Control de proyectos, ejecución presupuestaria, hitos y horas del equipo</p>
         </div>
         <Link href="/projects/new"
-          className="bg-[#1814F3] hover:bg-[#1612D3] text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm">
+          className="bg-[#0F172A] hover:bg-[#1E293B] text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm">
           <Plus className="w-4 h-4" /> Nuevo Proyecto
         </Link>
       </div>
@@ -132,52 +132,52 @@ function ProjectDashboardInner() {
       )}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <div className="bg-white border border-[#E6EFF5] rounded-2xl shadow-sm p-5 hover:border-purple-200 transition-all duration-150">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm p-5 hover:border-purple-200 transition-all duration-150">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-[9px] font-semibold text-[#718EBF] uppercase tracking-wider">Total Proyectos</p>
+            <p className="text-[9px] font-semibold text-[#64748B] uppercase tracking-wider">Total Proyectos</p>
             <div className="w-10 h-10 bg-purple-50 rounded-full flex items-center justify-center">
               <FolderKanban className="w-5 h-5 text-purple-600" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-[#232323]">{projects.length}</p>
+          <p className="text-2xl font-bold text-[#0F172A]">{projects.length}</p>
           <p className="text-[11px] text-emerald-600 mt-1 font-medium">{activeProjects} proyectos activos</p>
         </div>
 
-        <div className="bg-white border border-[#E6EFF5] rounded-2xl shadow-sm p-5 hover:border-purple-200 transition-all duration-150">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm p-5 hover:border-purple-200 transition-all duration-150">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-[9px] font-semibold text-[#718EBF] uppercase tracking-wider">En Ejecución</p>
+            <p className="text-[9px] font-semibold text-[#64748B] uppercase tracking-wider">En Ejecución</p>
             <div className="w-10 h-10 bg-amber-50 rounded-full flex items-center justify-center">
               <Clock className="w-5 h-5 text-amber-600" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-[#232323]">{activeProjects}</p>
-          <p className="text-[11px] text-[#718EBF] mt-1">{completedProjects} entregados</p>
+          <p className="text-2xl font-bold text-[#0F172A]">{activeProjects}</p>
+          <p className="text-[11px] text-[#64748B] mt-1">{completedProjects} entregados</p>
         </div>
 
-        <div className="bg-white border border-[#E6EFF5] rounded-2xl shadow-sm p-5 hover:border-purple-200 transition-all duration-150">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm p-5 hover:border-purple-200 transition-all duration-150">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-[9px] font-semibold text-[#718EBF] uppercase tracking-wider">Presupuesto Asignado</p>
+            <p className="text-[9px] font-semibold text-[#64748B] uppercase tracking-wider">Presupuesto Asignado</p>
             <div className="w-10 h-10 bg-emerald-50 rounded-full flex items-center justify-center">
               <DollarSign className="w-5 h-5 text-emerald-600" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-[#232323]">${(totalBudget / 1000000).toFixed(1)}M</p>
-          <p className="text-[11px] text-[#718EBF] mt-1">Pesos Chilenos (CLP)</p>
+          <p className="text-2xl font-bold text-[#0F172A]">${(totalBudget / 1000000).toFixed(1)}M</p>
+          <p className="text-[11px] text-[#64748B] mt-1">Pesos Chilenos (CLP)</p>
         </div>
 
-        <div className="bg-white border border-[#E6EFF5] rounded-2xl shadow-sm p-5 hover:border-purple-200 transition-all duration-150">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm p-5 hover:border-purple-200 transition-all duration-150">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-[9px] font-semibold text-[#718EBF] uppercase tracking-wider">Completados</p>
+            <p className="text-[9px] font-semibold text-[#64748B] uppercase tracking-wider">Completados</p>
             <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
               <CheckCircle2 className="w-5 h-5 text-blue-600" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-[#232323]">{completedProjects}</p>
+          <p className="text-2xl font-bold text-[#0F172A]">{completedProjects}</p>
           <p className="text-[11px] text-blue-600 mt-1 font-medium">{projects.length > 0 ? Math.round(completedProjects / projects.length * 100) : 0}% tasa de éxito</p>
         </div>
       </div>
 
-      <div className="bg-white border border-[#E6EFF5] rounded-2xl shadow-sm overflow-hidden p-2">
+      <div className="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden p-2">
         <ContinuousTabs
           tabs={tabs}
           defaultActiveId={statusFilter}

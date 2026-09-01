@@ -23,7 +23,7 @@ export function Header({ title, onMenuClick, user, onNavigate }: HeaderProps) {
   }, []);
 
   return (
-    <header className="h-16 bg-white border-b border-[#E6EFF5] fixed top-0 right-0 left-64 z-10 flex items-center justify-between px-6 dark:bg-slate-900 dark:border-slate-800">
+    <header className="h-16 bg-white border-b border-[#E2E8F0] fixed top-0 right-0 left-64 z-10 flex items-center justify-between px-6 dark:bg-slate-900 dark:border-slate-800">
       <div className="flex items-center gap-4">
         {onMenuClick && (
           <button
@@ -45,14 +45,14 @@ export function Header({ title, onMenuClick, user, onNavigate }: HeaderProps) {
           <input
             type="search"
             placeholder="Buscar..."
-            className="w-64 pl-10 pr-4 py-2 bg-[#F5F7FA] border border-[#E6EFF5] rounded-xl text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#1814F3]/20 focus:border-[#1814F3] transition-colors dark:bg-slate-800 dark:border-slate-700 dark:text-white dark:placeholder-slate-400"
+            className="w-64 pl-10 pr-4 py-2 bg-[#F1F5F9] border border-[#E2E8F0] rounded-xl text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#0F172A]/20 focus:border-[#0F172A] transition-colors dark:bg-slate-800 dark:border-slate-700 dark:text-white dark:placeholder-slate-400"
             aria-label="Buscar"
           />
         </div>
 
         <button className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-xl transition-colors relative" aria-label="Notificaciones">
           <Bell className="w-5 h-5" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-[#FE5C73] rounded-full" />
+          <span className="absolute top-1 right-1 w-2 h-2 bg-[#FACC15] rounded-full" />
         </button>
 
         <div className="relative" ref={userMenuRef}>
@@ -79,8 +79,8 @@ export function Header({ title, onMenuClick, user, onNavigate }: HeaderProps) {
           </button>
 
           {showUserMenu && (
-            <div className="absolute right-0 mt-2 w-48 bg-white border border-[#E6EFF5] rounded-2xl shadow-lg py-1 z-50 animate-in fade-in-0 zoom-in-95 dark:bg-slate-900 dark:border-slate-800">
-              <div className="px-4 py-3 border-b border-[#E6EFF5]">
+            <div className="absolute right-0 mt-2 w-48 bg-white border border-[#E2E8F0] rounded-2xl shadow-lg py-1 z-50 animate-in fade-in-0 zoom-in-95 dark:bg-slate-900 dark:border-slate-800">
+              <div className="px-4 py-3 border-b border-[#E2E8F0]">
                 <p className="text-sm font-medium text-foreground dark:text-white">{user?.name}</p>
                 <p className="text-xs text-muted-foreground">{user?.email}</p>
               </div>
@@ -98,10 +98,10 @@ export function Header({ title, onMenuClick, user, onNavigate }: HeaderProps) {
                 <Settings className="w-4 h-4" />
                 Configuración
               </button>
-              <hr className="my-1 border-[#E6EFF5]" />
+              <hr className="my-1 border-[#E2E8F0]" />
               <button
                 onClick={() => onNavigate?.('/logout')}
-                className="w-full px-4 py-2 text-left text-sm text-[#FE5C73] hover:bg-rose-50 transition-colors flex items-center gap-2"
+                className="w-full px-4 py-2 text-left text-sm text-[#FACC15] hover:bg-rose-50 transition-colors flex items-center gap-2"
               >
                 <LogOut className="w-4 h-4" />
                 Cerrar sesión
