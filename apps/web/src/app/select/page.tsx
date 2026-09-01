@@ -299,8 +299,9 @@ export default function SelectPage() {
 
   const isModuleActivated = useCallback((mod: ModuleOption) => {
     if (mod.id === 'mi-cuenta' || mod.id === 'ayuda') return true;
+    if (user?.role_type === 'super_admin') return true;
     return activatedModules.has(mod.moduleName);
-  }, [activatedModules]);
+  }, [activatedModules, user?.role_type]);
 
   const handleModuleClick = (mod: ModuleOption) => {
     if (isModuleActivated(mod)) {
@@ -449,7 +450,7 @@ export default function SelectPage() {
                     <DropdownMenuSeparator className="bg-slate-100" />
                     <DropdownMenuItem
                       onClick={() => router.push('/admin')}
-                      className="flex items-center gap-2.5 px-3 py-2 text-violet-600 hover:bg-violet-50 rounded-xl cursor-pointer transition-colors font-semibold"
+                      className="flex items-center gap-2.5 px-3 py-2 text-[#FACC15] hover:bg-amber-50 rounded-xl cursor-pointer transition-colors font-semibold"
                     >
                       <Shield className="w-4 h-4" />
                       <span className="text-xs">Consola SaaS Admin</span>
