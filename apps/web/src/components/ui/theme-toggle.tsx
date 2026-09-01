@@ -2,6 +2,7 @@
 
 import { useState, useEffect, createContext, useContext } from 'react';
 import { Sun, Moon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 type Theme = 'light' | 'dark';
 
@@ -39,6 +40,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 export default function ThemeToggle() {
   const { theme, toggle } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const t = useTranslations('common');
 
   useEffect(() => setMounted(true), []);
 
@@ -50,7 +52,7 @@ export default function ThemeToggle() {
     <button
       onClick={toggle}
       className="p-2 hover:bg-muted dark:hover:bg-primary/90 rounded-lg transition-colors"
-      title={theme === 'light' ? 'Modo oscuro' : 'Modo claro'}
+      title={theme === 'light' ? t('darkMode') : t('lightMode')}
       suppressHydrationWarning
     >
       {theme === 'light' ? (

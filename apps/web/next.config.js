@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const createNextIntlPlugin = require('next-intl/plugin')('./src/i18n/request.ts');
+
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
@@ -42,4 +44,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = createNextIntlPlugin(nextConfig);

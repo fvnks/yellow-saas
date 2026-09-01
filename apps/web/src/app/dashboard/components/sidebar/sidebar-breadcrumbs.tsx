@@ -1,7 +1,8 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { useTranslations } from 'next-intl';
 import { ChevronRight, Home } from "lucide-react";
 import { getApiClient } from "@/lib/api-client";
 
@@ -211,6 +212,7 @@ function resolveParentSegment(segments: string[], uuidIndex: number): string | n
 }
 
 export default function SidebarBreadcrumbs() {
+  const t = useTranslations('breadcrumb');
   const pathname = usePathname();
   const segments = pathname.split("/").filter(Boolean);
   const [resolvedNames, setResolvedNames] = useState<Record<string, string>>({});

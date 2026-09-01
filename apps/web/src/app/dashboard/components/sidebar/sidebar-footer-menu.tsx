@@ -1,4 +1,4 @@
-﻿"use client";
+'use client';
 
 import { LogOut, Settings, User, ChevronsUpDown, Building2 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -13,6 +13,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useTranslations } from 'next-intl';
 
 const ROLE_CONFIG: Record<string, { label: string; classes: string }> = {
   owner: { label: 'Propietario', classes: 'bg-amber-500/10 text-amber-400 border border-amber-500/30 font-black' },
@@ -32,6 +33,7 @@ interface SidebarFooterMenuProps {
 }
 
 export default function SidebarFooterMenu({ user }: SidebarFooterMenuProps) {
+  const t = useTranslations('common');
   const roleConfig = ROLE_CONFIG[user.role || 'member'] || ROLE_CONFIG.member;
 
   return (
@@ -58,15 +60,15 @@ export default function SidebarFooterMenu({ user }: SidebarFooterMenuProps) {
           <DropdownMenuContent side="top" align="start" className="w-56 bg-[#0F172A] border border-slate-800 text-slate-200 shadow-xl rounded-xl p-1">
             <DropdownMenuItem className="cursor-pointer text-xs focus:bg-slate-800 focus:text-white rounded-lg">
               <Building2 className="mr-2 h-4 w-4 text-amber-400" />
-              <span>Mi Empresa</span>
+              <span>{t('miEmpresa')}</span>
             </DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer text-xs focus:bg-slate-800 focus:text-white rounded-lg">
               <User className="mr-2 h-4 w-4 text-amber-400" />
-              <span>Mi Cuenta</span>
+              <span>{t('miCuenta')}</span>
             </DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer text-xs focus:bg-slate-800 focus:text-white rounded-lg">
               <Settings className="mr-2 h-4 w-4 text-amber-400" />
-              <span>Configuración</span>
+              <span>{t('configuracion')}</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-slate-800" />
             <DropdownMenuItem
@@ -74,7 +76,7 @@ export default function SidebarFooterMenu({ user }: SidebarFooterMenuProps) {
               className="text-rose-400 cursor-pointer focus:text-rose-300 focus:bg-rose-500/10 text-xs rounded-lg font-semibold"
             >
               <LogOut className="mr-2 h-4 w-4" />
-              <span>Cerrar Sesión</span>
+              <span>{t('cerrarSesion')}</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
