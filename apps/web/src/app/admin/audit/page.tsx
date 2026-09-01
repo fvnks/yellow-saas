@@ -106,7 +106,7 @@ export default function AdminAuditPage() {
   const actionColors: Record<string, string> = {
     login: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     access: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    modify: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    modify: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
     logout: 'bg-muted0/10 text-muted-foreground border-border/20',
   };
 
@@ -139,7 +139,7 @@ export default function AdminAuditPage() {
               <select
                 value={filters.action}
                 onChange={(e) => { setFilters({ ...filters, action: e.target.value }); setPage(0); }}
-                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
               >
                 <option value="">Todas</option>
                 <option value="login">Login</option>
@@ -153,7 +153,7 @@ export default function AdminAuditPage() {
               <select
                 value={filters.super_admin_id}
                 onChange={(e) => { setFilters({ ...filters, super_admin_id: e.target.value }); setPage(0); }}
-                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
               >
                 <option value="">Todos</option>
                 {superAdmins.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
@@ -164,7 +164,7 @@ export default function AdminAuditPage() {
               <select
                 value={filters.company_id}
                 onChange={(e) => { setFilters({ ...filters, company_id: e.target.value }); setPage(0); }}
-                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
               >
                 <option value="">Todas</option>
                 {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -176,7 +176,7 @@ export default function AdminAuditPage() {
                 type="date"
                 value={filters.date_from}
                 onChange={(e) => { setFilters({ ...filters, date_from: e.target.value }); setPage(0); }}
-                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
               />
             </div>
             <div className="space-y-1">
@@ -185,7 +185,7 @@ export default function AdminAuditPage() {
                 type="date"
                 value={filters.date_to}
                 onChange={(e) => { setFilters({ ...filters, date_to: e.target.value }); setPage(0); }}
-                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
               />
             </div>
           </div>
@@ -235,7 +235,7 @@ export default function AdminAuditPage() {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       <div className="w-7 h-7 bg-slate-800 rounded-lg flex items-center justify-center">
-                        <Shield className="w-3.5 h-3.5 text-amber-400" />
+                        <Shield className="w-3.5 h-3.5 text-violet-400" />
                       </div>
                       <div>
                         <p className="text-xs font-medium text-white">{entry.super_admin_name}</p>

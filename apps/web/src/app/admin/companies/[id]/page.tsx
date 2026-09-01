@@ -151,9 +151,9 @@ export default function AdminCompanyDetailPage() {
   if (error || !company) {
     return (
       <div className="text-center py-12">
-        <AlertTriangle className="w-12 h-12 text-amber-400 mx-auto mb-4" />
+        <AlertTriangle className="w-12 h-12 text-violet-400 mx-auto mb-4" />
         <p className="text-muted-foreground">{error || 'Empresa no encontrada'}</p>
-        <Link href="/admin/companies" className="text-amber-400 hover:text-amber-500/80 text-sm mt-4 inline-block">
+        <Link href="/admin/companies" className="text-violet-400 hover:text-violet-400 text-sm mt-4 inline-block">
           Volver a empresas
         </Link>
       </div>
@@ -162,7 +162,7 @@ export default function AdminCompanyDetailPage() {
 
   const statusColors: Record<string, string> = {
     active: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    trial: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    trial: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
     suspended: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
     cancelled: 'bg-muted0/10 text-muted-foreground border-border/20',
   };
@@ -206,8 +206,8 @@ export default function AdminCompanyDetailPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-slate-900/80 border border-border rounded-xl p-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-slate-800 border border-amber-500/20 rounded-xl flex items-center justify-center">
-              <Building2 className="w-5 h-5 text-amber-400" />
+            <div className="w-10 h-10 bg-slate-800 border border-violet-500/20 rounded-xl flex items-center justify-center">
+              <Building2 className="w-5 h-5 text-violet-400" />
             </div>
             <div>
               <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Plan</p>
@@ -228,8 +228,8 @@ export default function AdminCompanyDetailPage() {
         </div>
         <div className="bg-slate-900/80 border border-border rounded-xl p-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-amber-400" />
+            <div className="w-10 h-10 bg-violet-500/10 border border-violet-500/20 rounded-xl flex items-center justify-center">
+              <Calendar className="w-5 h-5 text-violet-400" />
             </div>
             <div>
               <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Creada</p>
@@ -335,7 +335,7 @@ export default function AdminCompanyDetailPage() {
                 <td className="px-6 py-4">
                   <button
                     onClick={() => handleLoginAs(user.id)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700/20 border border-amber-500/20 rounded-lg text-xs font-medium text-amber-400 transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700/20 border border-violet-500/20 rounded-lg text-xs font-medium text-violet-400 transition-colors"
                   >
                     <LogIn className="w-3.5 h-3.5" />
                     Ingresar
@@ -377,7 +377,7 @@ export default function AdminCompanyDetailPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-slate-800 text-amber-400 border border-amber-500/20">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-slate-800 text-violet-400 border border-violet-500/20">
                       {grant.access_level}
                     </span>
                   </td>

@@ -16,8 +16,8 @@ interface Company {
 }
 
 const MODULE_OPTIONS = [
-  { id: 'recetas', label: 'Recetas', icon: FlaskConical, color: 'text-amber-600 bg-amber-50 border-amber-200' },
-  { id: 'erp', label: 'ERP', icon: Package, color: 'text-amber-400 bg-blue-50 border-amber-500/20' },
+  { id: 'recetas', label: 'Recetas', icon: FlaskConical, color: 'text-orange-600 bg-orange-50 border-orange-200' },
+  { id: 'erp', label: 'ERP', icon: Package, color: 'text-violet-400 bg-blue-50 border-violet-500/20' },
   { id: 'hr', label: 'RRHH', icon: UsersRound, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
   { id: 'projects', label: 'Proyectos', icon: FolderKanban, color: 'text-orange-600 bg-orange-50 border-orange-200' },
   { id: 'mi-cuenta', label: 'Mi Cuenta', icon: CreditCard, color: 'text-blue-700 bg-blue-50 border-blue-200' },
@@ -78,7 +78,7 @@ export default function AdminCompaniesPage() {
 
   const statusColors: Record<string, string> = {
     active: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    trial: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    trial: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
     suspended: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
     cancelled: 'bg-muted0/10 text-muted-foreground border-border/20',
   };
@@ -87,7 +87,7 @@ export default function AdminCompaniesPage() {
     free: 'bg-muted0/10 text-muted-foreground border-border/20',
     starter: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
     professional: 'bg-blue-600/10 text-blue-500 border-blue-500/20',
-    enterprise: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    enterprise: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
   };
 
   return (
@@ -107,10 +107,10 @@ export default function AdminCompaniesPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input type="text" placeholder="Buscar empresa..." value={search} onChange={e => setSearch(e.target.value)}
-                    className="w-full bg-slate-800/80 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500/30 focus:border-amber-500/50" />
+                    className="w-full bg-slate-800/80 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-500/50" />
         </div>
         <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
-          className="bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30 focus:border-amber-500/50">
+          className="bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-500/50">
           <option value="all">Todos los estados</option>
           <option value="active">Activas</option>
           <option value="trial">En prueba</option>
@@ -191,13 +191,13 @@ export default function AdminCompaniesPage() {
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-muted-foreground">Nombre *</label>
                   <input type="text" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
-                    className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+                    className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-violet-500/30"
                     placeholder="Mi Empresa" autoFocus />
                 </div>
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-muted-foreground">Slug *</label>
                   <input type="text" value={form.slug} onChange={e => setForm(p => ({ ...p, slug: e.target.value }))}
-                    className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500/30 font-mono"
+                    className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-violet-500/30 font-mono"
                     placeholder="mi-empresa" />
                 </div>
               </div>
@@ -205,20 +205,20 @@ export default function AdminCompaniesPage() {
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-muted-foreground">Email admin *</label>
                   <input type="email" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
-                    className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+                    className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-violet-500/30"
                     placeholder="admin@empresa.cl" />
                 </div>
                 <div className="space-y-1">
                   <label className="block text-xs font-medium text-muted-foreground">Password *</label>
                   <input type="password" value={form.password} onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
-                    className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+                    className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-violet-500/30"
                     placeholder="Minimo 8 caracteres" />
                 </div>
               </div>
               <div className="space-y-1">
                 <label className="block text-xs font-medium text-muted-foreground">Plan</label>
                 <select value={form.plan} onChange={e => setForm(p => ({ ...p, plan: e.target.value }))}
-                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30 focus:border-amber-500/50">
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-500/50">
                   <option value="free">Free</option>
                   <option value="starter">Starter</option>
                   <option value="professional">Professional</option>

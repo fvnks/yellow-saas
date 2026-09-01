@@ -129,7 +129,7 @@ export default function AdminNotificationsPage() {
 
   const typeColors: Record<string, string> = {
     info: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    warning: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    warning: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
     success: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     error: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
   };
@@ -149,7 +149,7 @@ export default function AdminNotificationsPage() {
           <h1 className="text-2xl font-bold text-white">Notificaciones</h1>
           <p className="text-sm text-muted-foreground mt-1">
             Envía notificaciones a empresas de la plataforma
-            {unreadCount > 0 && <span className="ml-2 text-amber-400">({unreadCount} sin leer)</span>}
+            {unreadCount > 0 && <span className="ml-2 text-violet-400">({unreadCount} sin leer)</span>}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -190,7 +190,7 @@ export default function AdminNotificationsPage() {
                 <select
                   value={form.company_id}
                   onChange={(e) => setForm({ ...form, company_id: e.target.value })}
-                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
                 >
                   <option value="">Todas las empresas</option>
                   {companies.map((c) => (
@@ -203,7 +203,7 @@ export default function AdminNotificationsPage() {
                 <select
                   value={form.type}
                   onChange={(e) => setForm({ ...form, type: e.target.value })}
-                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
                 >
                   <option value="info">Info</option>
                   <option value="warning">Advertencia</option>
@@ -220,7 +220,7 @@ export default function AdminNotificationsPage() {
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
                 placeholder="Título de la notificación"
                 required
-                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
               />
             </div>
             <div className="space-y-1">
@@ -231,7 +231,7 @@ export default function AdminNotificationsPage() {
                 placeholder="Contenido de la notificación..."
                 required
                 rows={3}
-                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-amber-500/30 resize-none"
+                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30 resize-none"
               />
             </div>
             <div className="flex justify-end">
@@ -304,12 +304,12 @@ export default function AdminNotificationsPage() {
               filtered.map((n) => {
                 const Icon = typeIcons[n.type] || Info;
                 return (
-                  <tr key={n.id} className={`border-b border-slate-700/50 hover:bg-slate-800/60 transition-colors ${!n.is_read ? 'bg-amber-500/5' : ''}`}>
+                  <tr key={n.id} className={`border-b border-slate-700/50 hover:bg-slate-800/60 transition-colors ${!n.is_read ? 'bg-violet-500/5' : ''}`}>
                     <td className="px-6 py-4">
                       <button
                         onClick={() => handleMarkAsRead(n.id, !n.is_read)}
                         className={`p-1.5 rounded-lg transition-colors ${
-                          n.is_read ? 'text-muted-foreground hover:text-foreground' : 'text-amber-400 hover:text-amber-500/80'
+                          n.is_read ? 'text-muted-foreground hover:text-foreground' : 'text-violet-400 hover:text-violet-400'
                         }`}
                         title={n.is_read ? 'Marcar como no leído' : 'Marcar como leído'}
                       >
