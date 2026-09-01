@@ -87,8 +87,9 @@ export async function POST(request: NextRequest) {
         [user.id]
       );
       companies = companiesResult.rows;
-    } catch {
+    } catch (err) {
       // user_companies table doesn't exist yet, fallback to profiles
+      console.warn('[LOGIN] user_companies unavailable, falling back to profiles:', err);
       const fallbackResult = await query(
         `SELECT p.company_id, p.role AS company_role, true AS is_default,
                 c.name, c.slug, c.logo_url, c.plan, c.status
@@ -139,6 +140,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (err) {
     console.error('Login error:', err);
-    return errorResponse(err instanceof Error ? err.message : 'Internal server error', 500);
+    return errorResponse('Internal server error', 500);
   }
 }

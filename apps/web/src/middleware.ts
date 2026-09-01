@@ -3,7 +3,7 @@ import { jwtVerify } from 'jose';
 import createIntlMiddleware from 'next-intl/middleware';
 import { routing } from '@/i18n/routing';
 import { getJwtSecret } from '@/lib/env';
-import { checkRateLimit } from '@/lib/rate-limiter';
+import { checkRateLimit, AUTH_CONFIG } from '@/lib/rate-limiter';
 
 const intlMiddleware = createIntlMiddleware(routing);
 const JWT_SECRET = getJwtSecret();
@@ -84,7 +84,7 @@ export async function middleware(request: NextRequest) {
     // Rate limit auth-related mutation routes
     if (pathname.startsWith('/api/auth/')) {
       const ip = getClientIp(request);
-      const { allowed, remaining, resetAt } = checkRateLimit(ip, pathname, { max: 10, windowSeconds: 60 });
+      const { allowed, remaining, resetAt } = checkRateLimit(ip, pathname, AUTH_CONFIG);
       response.headers.set('X-RateLimit-Remaining', String(remaining));
       response.headers.set('X-RateLimit-Reset', String(resetAt));
       if (!allowed) {

@@ -75,7 +75,8 @@ export async function POST(request: NextRequest) {
         slug: company.slug,
       },
     }, 201);
-  } catch {
+  } catch (err) {
+    console.error('[REGISTER] Error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
