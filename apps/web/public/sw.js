@@ -126,7 +126,7 @@ async function networkFirstWithOfflineQueue(request) {
     }
     return response;
   } catch (error) {
-    if (isMutationRequest(new URL(request.url))) {
+    if (isMutationRequest(new URL(request.url)) && request.method === 'POST') {
       return queueForOfflineSync(request);
     }
     const cached = await cache.match(request);
@@ -241,8 +241,10 @@ function isHTMLRequest(request) {
 }
 
 function isMutationRequest(url) {
-  return url.pathname.startsWith('/api/') && 
-         ['POST', 'PUT', 'DELETE', 'PATCH'].includes('GET'); // Will be checked via request.method
+  // Note: actual method check is done via request.method in the fetch handler.
+  // This function is only used for URL-path heuristics (POST/PUT/DELETE/PATCH to /api/).
+  // Since we already guard by request.method !== 'GET' above, callers should pass request.method.
+  return url.pathname.startsWith('/api/');
 }
 
 self.addEventListener('periodicsync', (event) => {
