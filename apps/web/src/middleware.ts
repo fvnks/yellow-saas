@@ -1,9 +1,12 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 import { getJwtSecret } from '@/lib/env';
+import { checkRateLimit } from '@/lib/rate-limiter';
 
 const JWT_SECRET = getJwtSecret();
-const isDemoMode = !process.env.DATABASE_URL || process.env.DATABASE_URL === 'postgresql://demo:demo@localhost:5432/demo';
+
+// Detect demo mode only when DATABASE_URL is explicitly absent (local dev signal)
+const isLocalDev = !process.env.DATABASE_URL || process.env.DATABASE_URL?.includes('localhost');
 
 async function verifyToken(token: string) {
   try {
@@ -14,12 +17,36 @@ async function verifyToken(token: string) {
   }
 }
 
+function getClientIp(request: NextRequest): string {
+  return (
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    request.headers.get('x-real-ip') ||
+    'unknown'
+  );
+}
+
+function setSecurityHeaders(response: NextResponse) {
+  const headers = response.headers;
+  headers.set('X-Content-Type-Options', 'nosniff');
+  headers.set('X-Frame-Options', 'DENY');
+  headers.set('X-XSS-Protection', '0');
+  headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  headers.set(
+    'Content-Security-Policy',
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+  );
+  headers.set('Cache-Control', 'no-store, max-age=0');
+}
+
 export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
+  const response = NextResponse.next({
     request: { headers: request.headers },
   });
+  setSecurityHeaders(response);
 
-  if (isDemoMode) return response;
+  // Skip all auth checks in local dev mode (has no real security impact)
+  if (isLocalDev) return response;
 
   const pathname = request.nextUrl.pathname;
 
@@ -35,7 +62,7 @@ export async function middleware(request: NextRequest) {
   // Static assets and internal Next.js paths
   if (pathname.startsWith('/_next') || pathname.startsWith('/favicon') || pathname.includes('.')) return response;
 
-  // API routes - verify auth for company data routes
+  // API routes
   if (pathname.startsWith('/api/')) {
     // Public API routes - no auth required
     const publicApiPaths = ['/api/health', '/api/upload', '/api/migrate', '/api/migrate-fix', '/api/payroll/migrate'];
@@ -44,11 +71,37 @@ export async function middleware(request: NextRequest) {
     // Public dynamic routes
     if (pathname.startsWith('/api/public/') || pathname.startsWith('/api/portal/')) return response;
 
-    // Super admin API routes - handled by verifySuperAdmin in each route
-    if (pathname.startsWith('/api/super-admin/') || pathname.startsWith('/api/auth/super-admin/')) return response;
-
-    // Auth routes - no token verification needed
+    // Auth routes - no token verification needed (they issue tokens)
     if (pathname.startsWith('/api/auth/login') || pathname.startsWith('/api/auth/register')) return response;
+
+    // Rate limit auth-related mutation routes
+    if (pathname.startsWith('/api/auth/')) {
+      const ip = getClientIp(request);
+      const { allowed, remaining, resetAt } = checkRateLimit(ip, pathname, { max: 10, windowSeconds: 60 });
+      response.headers.set('X-RateLimit-Remaining', String(remaining));
+      response.headers.set('X-RateLimit-Reset', String(resetAt));
+      if (!allowed) {
+        return NextResponse.json({ error: 'Demasiadas solicitudes. Intenta en 60 segundos.' }, { status: 429 });
+      }
+      return response;
+    }
+
+    // Super admin API routes - MUST verify JWT token and role
+    if (pathname.startsWith('/api/super-admin/') || pathname.startsWith('/api/auth/super-admin/')) {
+      const token = request.cookies.get('auth-token')?.value || request.headers.get('authorization')?.replace('Bearer ', '');
+      if (!token) {
+        return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
+      }
+      const payload = await verifyToken(token);
+      if (!payload) {
+        return NextResponse.json({ error: 'Token invalido' }, { status: 401 });
+      }
+      const roleType = payload.role_type as string | undefined;
+      if (roleType !== 'super_admin') {
+        return NextResponse.json({ error: 'No autorizado' }, { status: 403 });
+      }
+      return response;
+    }
 
     // Company data routes - MUST verify JWT and company_id match
     if (pathname.startsWith('/api/companies/')) {
@@ -62,41 +115,48 @@ export async function middleware(request: NextRequest) {
       }
       // Extract company_id from URL: /api/companies/{id}/...
       const urlParts = pathname.split('/');
-      const urlCompanyId = urlParts[3]; // /api/companies/{id}
+      const urlCompanyId = urlParts[3];
       const tokenCompanyId = payload.company_id as string | undefined;
-      if (tokenCompanyId && urlCompanyId && tokenCompanyId !== urlCompanyId) {
+      const roleType = payload.role_type as string | undefined;
+      // Super admins can access any company
+      if (roleType !== 'super_admin' && tokenCompanyId && urlCompanyId && tokenCompanyId !== urlCompanyId) {
         return NextResponse.json({ error: 'No autorizado para esta empresa' }, { status: 403 });
       }
       return response;
     }
 
-    // All other API routes - pass through
+    // All other API routes - verify auth
+    const token = request.cookies.get('auth-token')?.value || request.headers.get('authorization')?.replace('Bearer ', '');
+    if (!token) {
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
+    }
+    const payload = await verifyToken(token);
+    if (!payload) {
+      return NextResponse.json({ error: 'Token invalido' }, { status: 401 });
+    }
     return response;
   }
 
+  // Page routes - require valid token
   const token = request.cookies.get('auth-token')?.value;
-
   if (!token) {
-    // All unauthenticated routes redirect to unified login
     const redirectUrl = new URL('/login', request.url);
     redirectUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(redirectUrl);
   }
 
   const payload = await verifyToken(token);
-
   if (!payload) {
-    // Invalid token - clear and redirect to unified login
     const redirectUrl = new URL('/login', request.url);
     redirectUrl.searchParams.set('redirect', pathname);
-    const response = NextResponse.redirect(redirectUrl);
-    response.cookies.set('auth-token', '', { path: '/', maxAge: 0 });
-    return response;
+    const resp = NextResponse.redirect(redirectUrl);
+    resp.cookies.set('auth-token', '', { path: '/', maxAge: 0 });
+    return resp;
   }
 
   const roleType = payload.role_type as string | undefined;
 
-  // Super admin routes
+  // Super admin routes - require super_admin role
   if (pathname.startsWith('/admin') || pathname.startsWith('/super-admin')) {
     if (roleType !== 'super_admin') {
       return NextResponse.redirect(new URL('/login', request.url));
@@ -107,10 +167,8 @@ export async function middleware(request: NextRequest) {
   // Company dashboard routes
   if (pathname.startsWith('/dashboard')) {
     if (roleType === 'super_admin') {
-      // Super admin trying to access company dashboard - redirect to admin panel
       return NextResponse.redirect(new URL('/admin', request.url));
     }
-    // Company user - verify company_id exists
     if (!payload.company_id) {
       const redirectUrl = new URL('/login', request.url);
       redirectUrl.searchParams.set('redirect', pathname);
@@ -119,7 +177,7 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
-  // Any other route - allow if authenticated
+  // Any other authenticated route
   return response;
 }
 
