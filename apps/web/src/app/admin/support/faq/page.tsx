@@ -137,7 +137,7 @@ export default function AdminFaqPage() {
             setForm(emptyForm);
             setShowForm(!showForm);
           }}
-          className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+          className="bg-slate-900/80 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
         >
           <Plus className="w-4 h-4" />
           {showForm ? 'Cancelar' : 'Nueva FAQ'}
@@ -145,7 +145,7 @@ export default function AdminFaqPage() {
       </div>
 
       {showForm && (
-        <div className="bg-card border border-border rounded-xl shadow-sm p-6">
+        <div className="bg-slate-800 border border-slate-700 rounded-xl shadow-sm p-6">
           <h3 className="text-sm font-semibold text-foreground mb-4">{editing ? 'Editar FAQ' : 'Nueva FAQ'}</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -156,7 +156,7 @@ export default function AdminFaqPage() {
                   value={form.category}
                   onChange={e => setForm({ ...form, category: e.target.value })}
                   placeholder="Ej: Cuenta, Ventas, Inventario"
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-transparent"
                 />
               </div>
               <div className="space-y-1">
@@ -165,7 +165,7 @@ export default function AdminFaqPage() {
                   type="number"
                   value={form.sort_order}
                   onChange={e => setForm({ ...form, sort_order: Number(e.target.value) })}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-transparent"
                 />
               </div>
               <div className="space-y-1">
@@ -173,7 +173,7 @@ export default function AdminFaqPage() {
                 <select
                   value={form.active ? 'true' : 'false'}
                   onChange={e => setForm({ ...form, active: e.target.value === 'true' })}
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-transparent"
                 >
                   <option value="true">Activa</option>
                   <option value="false">Inactiva</option>
@@ -187,7 +187,7 @@ export default function AdminFaqPage() {
                 value={form.question}
                 onChange={e => setForm({ ...form, question: e.target.value })}
                 placeholder="¿Cómo hago...?"
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-transparent"
               />
             </div>
             <div className="space-y-1">
@@ -197,21 +197,21 @@ export default function AdminFaqPage() {
                 onChange={e => setForm({ ...form, answer: e.target.value })}
                 rows={4}
                 placeholder="Explica la respuesta paso a paso..."
-                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent resize-none"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-transparent resize-none"
               />
             </div>
             <div className="flex justify-end gap-3">
               <button
                 type="button"
                 onClick={() => { setShowForm(false); setEditing(null); setForm(emptyForm); }}
-                className="bg-card border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-slate-800 border border-slate-700 hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={saving}
-                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"
+                className="bg-slate-900/80 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 {saving ? 'Guardando...' : editing ? 'Actualizar' : 'Crear FAQ'}
@@ -221,7 +221,7 @@ export default function AdminFaqPage() {
         </div>
       )}
 
-      <div className="bg-card border border-border rounded-xl shadow-sm p-4">
+      <div className="bg-slate-800 border border-slate-700 rounded-xl shadow-sm p-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
@@ -229,12 +229,12 @@ export default function AdminFaqPage() {
             placeholder="Buscar FAQ..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full bg-muted border border-border rounded-lg pl-10 pr-4 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+            className="w-full bg-muted border border-border rounded-lg pl-10 pr-4 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-transparent"
           />
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-slate-800 border border-slate-700 rounded-xl shadow-sm overflow-hidden">
         <table className="w-full">
           <thead>
             <tr className="border-b border-border">
@@ -268,7 +268,7 @@ export default function AdminFaqPage() {
                     <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1 max-w-md">{item.answer}</p>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-blue-50 text-primary border border-primary/20">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-blue-50 text-amber-400 border border-amber-500/20">
                       {item.category}
                     </span>
                   </td>
@@ -300,7 +300,7 @@ export default function AdminFaqPage() {
                           });
                           setShowForm(true);
                         }}
-                        className="p-2 text-muted-foreground hover:text-primary hover:bg-blue-50 rounded-lg transition-colors"
+                        className="p-2 text-muted-foreground hover:text-amber-400 hover:bg-blue-50 rounded-lg transition-colors"
                         title="Editar"
                       >
                         <Pencil className="w-4 h-4" />

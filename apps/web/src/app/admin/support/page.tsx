@@ -257,7 +257,7 @@ export default function AdminSupportPage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <button onClick={() => setSelectedTicket(null)} className="p-2 hover:bg-primary/90 rounded-lg transition-colors">
+          <button onClick={() => setSelectedTicket(null)} className="p-2 hover:bg-slate-700 rounded-lg transition-colors">
             <X className="w-5 h-5 text-muted-foreground" />
           </button>
           <div className="flex-1">
@@ -278,7 +278,7 @@ export default function AdminSupportPage() {
                 key={s}
                 onClick={() => handleStatusChange(selectedTicket.id, s)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                  selectedTicket.status === s ? 'bg-primary text-white' : 'bg-card text-muted-foreground hover:text-white'
+                  selectedTicket.status === s ? 'bg-slate-900/80 text-white' : 'bg-card text-muted-foreground hover:text-white'
                 }`}
               >
                 {s === 'in_progress' ? 'En progreso' : s === 'open' ? 'Abierto' : s === 'resolved' ? 'Resuelto' : 'Cerrado'}
@@ -290,7 +290,7 @@ export default function AdminSupportPage() {
             <select
               value={selectedTicket.assigned_to || ''}
               onChange={(e) => handleAssign(selectedTicket.id, e.target.value)}
-              className="bg-card/50 border border-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+              className="bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
             >
               <option value="">Sin asignar</option>
               {superAdmins.map((admin) => (
@@ -300,7 +300,7 @@ export default function AdminSupportPage() {
           </div>
         </div>
 
-        <div className="bg-primary border border-border rounded-xl p-6 space-y-4 max-h-[500px] overflow-y-auto">
+        <div className="bg-slate-900/80 border border-border rounded-xl p-6 space-y-4 max-h-[500px] overflow-y-auto">
           {loadingDetail ? (
             <div className="space-y-3">
               {Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-16 bg-card rounded-lg animate-pulse" />)}
@@ -311,7 +311,7 @@ export default function AdminSupportPage() {
             selectedTicket.messages.map((msg) => (
               <div key={msg.id} className={`flex ${msg.sender_type === 'super_admin' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[70%] rounded-xl px-4 py-3 ${
-                  msg.sender_type === 'super_admin' ? 'bg-primary/20 border border-primary/20' : 'bg-card border border-border'
+                  msg.sender_type === 'super_admin' ? 'bg-amber-500/10 border border-amber-500/20' : 'bg-slate-800 border border-slate-700'
                 }`}>
                   <p className="text-[10px] font-bold text-muted-foreground mb-1">{msg.sender_name} — {new Date(msg.created_at).toLocaleString('es-CL')}</p>
                   <p className="text-sm text-white">{msg.message}</p>
@@ -323,7 +323,7 @@ export default function AdminSupportPage() {
                           href={`/api/super-admin/support/${selectedTicket.id}/attachments/${att.id}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-2 py-1.5 rounded-lg border border-border bg-card/50 text-xs font-medium text-foreground hover:bg-primary/90 hover:text-white transition-colors"
+                          className="flex items-center gap-2 px-2 py-1.5 rounded-lg border border-border bg-card/50 text-xs font-medium text-foreground hover:bg-slate-700 hover:text-white transition-colors"
                         >
                           {(att.mime_type || '').startsWith('image/')
                             ? <ImageIcon className="w-3.5 h-3.5 flex-shrink-0" />
@@ -340,7 +340,7 @@ export default function AdminSupportPage() {
         </div>
 
         {selectedTicket.feedback && (
-          <div className="bg-primary border border-border rounded-xl p-4 flex items-center gap-4">
+          <div className="bg-slate-900/80 border border-border rounded-xl p-4 flex items-center gap-4">
             <div className="flex items-center gap-1">
               {[1, 2, 3, 4, 5].map((i) => (
                 <Star key={i} className={`w-5 h-5 ${i <= selectedTicket.feedback!.rating ? 'text-amber-400 fill-amber-400' : 'text-foreground'}`} />
@@ -357,7 +357,7 @@ export default function AdminSupportPage() {
         )}
 
         {selectedTicket.status_history && selectedTicket.status_history.length > 0 && (
-          <div className="bg-primary border border-border rounded-xl p-4">
+          <div className="bg-slate-900/80 border border-border rounded-xl p-4">
             <div className="flex items-center gap-2 mb-3">
               <History className="w-4 h-4 text-muted-foreground" />
               <h3 className="text-sm font-semibold text-white">Historial de estados</h3>
@@ -365,7 +365,7 @@ export default function AdminSupportPage() {
             <div className="space-y-2">
               {selectedTicket.status_history.map((h) => (
                 <div key={h.id} className="flex items-center gap-3 text-xs">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-primary/70 flex-shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
                   <span className="text-foreground">
                     {statusLabels[h.from_status]} <span className="text-muted-foreground">→</span> {statusLabels[h.to_status]}
                   </span>
@@ -377,11 +377,11 @@ export default function AdminSupportPage() {
           </div>
         )}
 
-        <div className="bg-primary border border-border rounded-xl p-4">
+        <div className="bg-slate-900/80 border border-border rounded-xl p-4">
           {pendingFiles.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-3">
               {pendingFiles.map((f, i) => (
-                <div key={i} className="flex items-center gap-1.5 bg-card border border-border rounded-lg px-2 py-1">
+                <div key={i} className="flex items-center gap-1.5 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1">
                   {f.type.startsWith('image/')
                     ? <ImageIcon className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
                     : <FileText className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />}
@@ -404,7 +404,7 @@ export default function AdminSupportPage() {
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={sending || pendingFiles.length >= 5}
-              className="w-10 h-10 bg-card hover:bg-primary/90 border border-border rounded-lg text-muted-foreground hover:text-white flex items-center justify-center transition-colors disabled:opacity-50 flex-shrink-0"
+              className="w-10 h-10 bg-card hover:bg-slate-700 border border-border rounded-lg text-muted-foreground hover:text-white flex items-center justify-center transition-colors disabled:opacity-50 flex-shrink-0"
               title="Adjuntar archivo"
             >
               <Paperclip className="w-4 h-4" />
@@ -415,12 +415,12 @@ export default function AdminSupportPage() {
               onChange={(e) => setReplyText(e.target.value)}
               placeholder="Escribe tu respuesta..."
               onKeyDown={(e) => e.key === 'Enter' && handleSendReply()}
-              className="flex-1 bg-card/50 border border-border rounded-lg px-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
+              className="flex-1 bg-slate-800/80 border border-slate-700 rounded-lg px-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-amber-500/30"
             />
             <button
               onClick={handleSendReply}
               disabled={sending || (!replyText.trim() && pendingFiles.length === 0)}
-              className="px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="px-4 py-2 bg-slate-900/80 hover:bg-slate-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50 flex items-center gap-2"
             >
               <Send className="w-4 h-4" />
             </button>
@@ -439,7 +439,7 @@ export default function AdminSupportPage() {
         </div>
         <button
           onClick={() => { setShowCreate(!showCreate); setMessage({ type: '', text: '' }); }}
-          className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-slate-900/80 hover:bg-slate-700 rounded-lg text-sm font-medium text-white transition-colors"
         >
           <Plus className="w-4 h-4" />
           {showCreate ? 'Cancelar' : 'Nuevo Ticket'}
@@ -447,7 +447,7 @@ export default function AdminSupportPage() {
       </div>
 
       {showCreate && (
-        <div className="bg-primary border border-border rounded-xl p-6">
+        <div className="bg-slate-900/80 border border-border rounded-xl p-6">
           <h3 className="text-sm font-semibold text-white mb-4">Crear Ticket de Soporte</h3>
           {message.text && (
             <div className={`mb-4 flex items-center gap-2 p-3 rounded-lg text-sm ${
@@ -465,7 +465,7 @@ export default function AdminSupportPage() {
                   value={form.company_id}
                   onChange={(e) => setForm({ ...form, company_id: e.target.value })}
                   required
-                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
                 >
                   <option value="">Seleccionar...</option>
                   {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -479,7 +479,7 @@ export default function AdminSupportPage() {
                   onChange={(e) => setForm({ ...form, subject: e.target.value })}
                   placeholder="Asunto del ticket"
                   required
-                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-amber-500/30"
                 />
               </div>
               <div className="space-y-1">
@@ -487,7 +487,7 @@ export default function AdminSupportPage() {
                 <select
                   value={form.priority}
                   onChange={(e) => setForm({ ...form, priority: e.target.value })}
-                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
                 >
                   <option value="low">Baja</option>
                   <option value="medium">Media</option>
@@ -503,11 +503,11 @@ export default function AdminSupportPage() {
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 placeholder="Descripción del problema..."
                 rows={3}
-                className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20 resize-none"
+                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-amber-500/30 resize-none"
               />
             </div>
             <div className="flex justify-end">
-              <button type="submit" disabled={saving} className="px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50">
+              <button type="submit" disabled={saving} className="px-4 py-2 bg-slate-900/80 hover:bg-slate-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50">
                 {saving ? 'Creando...' : 'Crear Ticket'}
               </button>
             </div>
@@ -515,7 +515,7 @@ export default function AdminSupportPage() {
         </div>
       )}
 
-      <div className="bg-primary border border-border rounded-xl p-4 flex items-center gap-4">
+      <div className="bg-slate-900/80 border border-border rounded-xl p-4 flex items-center gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
@@ -523,7 +523,7 @@ export default function AdminSupportPage() {
             placeholder="Buscar tickets..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-card/50 border border-border rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
+            className="w-full bg-slate-800/80 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-amber-500/30"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -532,7 +532,7 @@ export default function AdminSupportPage() {
               key={f}
               onClick={() => setFilter(f)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                filter === f ? 'bg-primary text-white' : 'bg-card text-muted-foreground hover:text-white hover:bg-primary/90'
+                filter === f ? 'bg-slate-900/80 text-white' : 'bg-card text-muted-foreground hover:text-white hover:bg-slate-700'
               }`}
             >
               {f === 'all' ? 'Todos' : f === 'in_progress' ? 'En progreso' : f === 'open' ? 'Abiertos' : f === 'resolved' ? 'Resueltos' : 'Cerrados'}
@@ -541,7 +541,7 @@ export default function AdminSupportPage() {
         </div>
       </div>
 
-      <div className="bg-primary border border-border rounded-xl overflow-hidden">
+      <div className="bg-slate-900/80 border border-border rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
             <tr className="border-b border-border">
@@ -570,7 +570,7 @@ export default function AdminSupportPage() {
               </tr>
             ) : (
               filtered.map((ticket) => (
-                <tr key={ticket.id} className="border-b border-border/50 hover:bg-primary/90/30 transition-colors">
+                <tr key={ticket.id} className="border-b border-border/50 hover:bg-slate-700/30 transition-colors">
                   <td className="px-6 py-4">
                     <p className="text-sm font-medium text-white">{ticket.subject}</p>
                     <p className="text-[10px] text-muted-foreground">{ticket.id.slice(0, 8)}</p>
@@ -600,7 +600,7 @@ export default function AdminSupportPage() {
                   <td className="px-6 py-4">
                     <button
                       onClick={() => fetchTicketDetail(ticket.id)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-card hover:bg-primary/90 rounded-lg text-xs font-medium text-foreground hover:text-white transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-card hover:bg-slate-700 rounded-lg text-xs font-medium text-foreground hover:text-white transition-colors"
                     >
                       <MessageSquare className="w-3.5 h-3.5" />
                       Ver
