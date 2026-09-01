@@ -10,7 +10,7 @@ export interface RateLimitConfig {
 }
 
 const DEFAULT_CONFIG: RateLimitConfig = { max: 100, windowSeconds: 60 };
-const AUTH_CONFIG: RateLimitConfig = { max: 5, windowSeconds: 60 }; // 5 login attempts per minute
+export const AUTH_CONFIG: RateLimitConfig = { max: 5, windowSeconds: 60 }; // 5 login attempts per minute
 
 function getKey(ip: string, path: string): string {
   return `${ip}:${path}`;
