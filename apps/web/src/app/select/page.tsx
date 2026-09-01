@@ -264,11 +264,15 @@ export default function SelectPage() {
       setCompaniesLoading(false);
     });
 
-    const api = getApiClient();
-    api.getCompany().then(companyRes => {
-      if (companyRes) setCompany(companyRes);
+    try {
+      const api = getApiClient();
+      api.getCompany().then(companyRes => {
+        if (companyRes) setCompany(companyRes);
+        setLoading(false);
+      }).catch(() => setLoading(false));
+    } catch {
       setLoading(false);
-    }).catch(() => setLoading(false));
+    }
   }, [router]);
 
   const loadActivatedModules = async () => {
