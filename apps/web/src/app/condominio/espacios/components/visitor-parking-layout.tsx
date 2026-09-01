@@ -790,7 +790,7 @@ export default function VisitorParkingLayout() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-xl text-xs font-bold bg-[#FACC15] text-slate-950 hover:bg-[#EAB308] transition-all shadow-xs"
+                  className="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 hover:bg-[#EAB308] transition-all shadow-xs"
                 >
                   Confirmar e Iniciar Estacionamiento
                 </button>

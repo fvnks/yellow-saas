@@ -118,7 +118,7 @@ export default function ProjectSidebarNavigation({ sidebarItems }: ProjectSideba
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Buscar en Proyectos..."
-          className="w-full bg-slate-900/80 border border-slate-800 text-xs text-slate-200 placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15] transition-all"
+          className="w-full bg-slate-900/80 border border-slate-800 text-xs text-slate-200 placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
         />
         {searchQuery ? (
           <button onClick={() => setSearchQuery("")} className="absolute right-3 text-slate-400 hover:text-slate-200">

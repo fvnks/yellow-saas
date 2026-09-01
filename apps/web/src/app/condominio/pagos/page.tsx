@@ -125,7 +125,7 @@ export default function PagosConciliacionPage() {
 
         <button
           onClick={() => setShowAddPaymentModal(true)}
-          className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-150 shadow-xs flex items-center gap-2 active:scale-[0.98]"
+          className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-150 shadow-xs flex items-center gap-2 active:scale-[0.98]"
         >
           <Plus className="w-4 h-4" />
           Registrar Pago Recibido
@@ -359,7 +359,7 @@ export default function PagosConciliacionPage() {
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-[#FACC15] text-slate-950 font-bold rounded-xl text-xs hover:bg-[#EAB308]"
+                className="px-4 py-2 bg-amber-500 text-slate-950 font-bold rounded-xl text-xs hover:bg-[#EAB308]"
               >
                 Guardar Pago
               </button>

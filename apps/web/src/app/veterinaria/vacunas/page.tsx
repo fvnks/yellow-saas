@@ -158,7 +158,7 @@ export default function VeterinaryVaccinationsPage() {
 
             <button
               type="submit"
-              className="w-full bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-extrabold py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 active:scale-[0.98] mt-2"
+              className="w-full bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-extrabold py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 active:scale-[0.98] mt-2"
             >
               <Plus className="w-4 h-4" />
               Guardar en Carnet
@@ -172,7 +172,7 @@ export default function VeterinaryVaccinationsPage() {
           <div className="bg-white border-2 border-slate-900 rounded-2xl p-6 shadow-sm space-y-6 relative overflow-hidden">
             <div className="bg-slate-900 text-white p-4 -m-6 mb-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <ShieldCheck className="w-6 h-6 text-[#FACC15]" />
+                <ShieldCheck className="w-6 h-6 text-amber-400" />
                 <div>
                   <h2 className="text-base font-black uppercase tracking-wider">Carnet Sanitario Veterinario</h2>
                   <p className="text-[10px] text-slate-300">Cumplimiento Oficial Ley 21.020 • Tenencia Responsable</p>

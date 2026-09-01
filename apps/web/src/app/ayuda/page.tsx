@@ -130,7 +130,7 @@ export default function AyudaPage() {
                 >
                   <div className="flex items-center gap-3">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border transition-colors ${
-                      isOpen ? 'bg-[#0F172A] text-[#FACC15] border-[#1E293B]' : 'bg-[#E2E8F0] text-[#475569] border-[#CBD5E1]'
+                      isOpen ? 'bg-[#0F172A] text-amber-400 border-[#1E293B]' : 'bg-[#E2E8F0] text-[#475569] border-[#CBD5E1]'
                     }`}>
                       {item.category}
                     </span>

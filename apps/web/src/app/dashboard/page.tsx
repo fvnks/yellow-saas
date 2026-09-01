@@ -15,7 +15,7 @@ import {
   PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip
 } from 'recharts';
 
-const PIE_COLORS = ['#FACC15', '#0F172A', '#10B981', '#F43F5E', '#3B82F6'];
+const PIE_COLORS = ['hsl(47 96% 53%)', '#0F172A', '#10B981', '#F43F5E', '#3B82F6'];
 
 const statusLabels: Record<string, string> = {
   draft: 'Borrador', confirmed: 'Confirmado SII', processing: 'En Proceso',
@@ -43,7 +43,7 @@ function ChangeIndicator({ value }: { value: number }) {
 
 const salesMarkers = [
   { date: new Date(2026, 0, 1), icon: '🎯', title: 'Inicio de año', color: '#0F172A' },
-  { date: new Date(2026, 5, 1), icon: '📊', title: 'Medio año', color: '#FACC15' },
+  { date: new Date(2026, 5, 1), icon: '📊', title: 'Medio año', color: 'hsl(47 96% 53%)' },
 ];
 
 const kpiStyles = [
@@ -112,11 +112,11 @@ export default function DashboardPage() {
     <div className="space-y-6 pt-2 animate-fade-in-up">
       {/* Signature Banner: Sun-Slate Modern ERP */}
       <div className="relative overflow-hidden bg-[#0F172A] text-white p-6 sm:p-8 rounded-2xl shadow-md border border-slate-800">
-        <div className="absolute right-0 top-0 translate-x-8 -translate-y-8 w-64 h-64 bg-[#FACC15]/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute right-0 top-0 translate-x-8 -translate-y-8 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2.5 flex-wrap">
-              <span className="px-3 py-1 rounded-full text-xs font-black bg-[#FACC15] text-slate-950 uppercase tracking-wider shadow-sm flex items-center gap-1.5">
+              <span className="px-3 py-1 rounded-full text-xs font-black bg-amber-500 text-slate-950 uppercase tracking-wider shadow-sm flex items-center gap-1.5">
                 <Zap className="w-3.5 h-3.5 fill-slate-950" /> Yellow ERP Sun-Slate
               </span>
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
@@ -132,7 +132,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3 shrink-0">
-            <Link href="/dashboard/sales/new" className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2">
+            <Link href="/dashboard/sales/new" className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2">
               <ShoppingCart className="w-4 h-4" />
               Emitir Factura DTE
             </Link>
@@ -181,7 +181,7 @@ export default function DashboardPage() {
           </div>
           <ThemedLineChart
             data={salesByDay}
-            lines={[{ dataKey: 'Monto', color: '#FACC15' }]}
+            lines={[{ dataKey: 'Monto', color: 'hsl(47 96% 53%)' }]}
             markers={salesMarkers}
             formatter={(v) => [formatCurrency(v), 'Monto']}
           />

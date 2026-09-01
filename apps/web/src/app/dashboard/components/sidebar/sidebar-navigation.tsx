@@ -247,7 +247,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Buscar menú..."
-            className="w-full bg-slate-900/80 border border-slate-800 text-xs text-slate-200 placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-[#FACC15] focus:ring-1 focus:ring-[#FACC15] transition-all"
+            className="w-full bg-slate-900/80 border border-slate-800 text-xs text-slate-200 placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
           />
           {searchQuery ? (
             <button
@@ -293,7 +293,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                         "text-[10px] font-black uppercase tracking-widest",
                         "transition-all duration-150 cursor-pointer",
                         groupActive
-                          ? "text-[#FACC15]"
+                          ? "text-amber-400"
                           : "text-slate-400 hover:text-slate-200",
                         "hover:bg-slate-800/50"
                       )}>
@@ -303,7 +303,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                       )} />
                       <span className="truncate">{navGroup.label}</span>
                       {groupActive && !groupOpen && (
-                        <div className="ml-auto w-2 h-2 rounded-full bg-[#FACC15] animate-pulse flex-shrink-0 shadow-sm shadow-amber-400/50" />
+                        <div className="ml-auto w-2 h-2 rounded-full bg-amber-500 animate-pulse flex-shrink-0 shadow-sm shadow-amber-400/50" />
                       )}
                     </button>
                   </CollapsibleTrigger>

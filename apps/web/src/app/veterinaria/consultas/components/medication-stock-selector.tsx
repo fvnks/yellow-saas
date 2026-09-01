@@ -18,7 +18,7 @@ const MOCK_INVENTORY_MEDS: InventoryMedication[] = [
   { id: 'med-01', name: 'Amoxicilina + Ac. Clavulánico 250mg', sku: 'VET-AMOX-250', currentStock: 45, unit: 'comprimidos', batchNumber: 'LOTE-88491', expirationDate: '2026-08-15', priceCLP: 1200 },
   { id: 'med-02', name: 'Meloxicam 0.5mg/ml Inyectable', sku: 'VET-MELOX-05', currentStock: 12, unit: 'frascos 10ml', batchNumber: 'LOTE-99201', expirationDate: '2026-03-30', priceCLP: 14500 },
   { id: 'med-03', name: 'Ondansetrón 2mg/ml Inyectable', sku: 'VET-OND-02', currentStock: 8, unit: 'ampollas', batchNumber: 'LOTE-77123', expirationDate: '2025-11-20', priceCLP: 3800 },
-  { id: 'med-04', name: 'Endogard 30kg Desparasitante', sku: 'VET-[#FACC15]', currentStock: 60, unit: 'comprimidos', batchNumber: 'LOTE-11029', expirationDate: '2027-01-10', priceCLP: 4500 },
+  { id: 'med-04', name: 'Endogard 30kg Desparasitante', sku: 'VET-END30KG', currentStock: 60, unit: 'comprimidos', batchNumber: 'LOTE-11029', expirationDate: '2027-01-10', priceCLP: 4500 },
   { id: 'med-05', name: 'Bravecto 20-40kg Masticable', sku: 'VET-BRAV-40', currentStock: 15, unit: 'cajas', batchNumber: 'LOTE-33412', expirationDate: '2026-10-05', priceCLP: 34900 },
 ];
 

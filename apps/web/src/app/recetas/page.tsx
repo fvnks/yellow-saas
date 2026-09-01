@@ -76,7 +76,7 @@ export default function RecetasPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748B]" />
             <input type="search" value={search} onChange={e => setSearch(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSearch()}
-              className="w-full pl-9 pr-4 py-2 bg-white border border-[#E2E8F0] rounded-xl text-sm text-[#0F172A] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#FACC15]/30 focus:border-[#FACC15] transition-colors"
+              className="w-full pl-9 pr-4 py-2 bg-white border border-[#E2E8F0] rounded-xl text-sm text-[#0F172A] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition-colors"
               placeholder="Buscar por nombre de receta o ingrediente..." />
           </div>
           <div className="flex gap-1.5 w-full sm:w-auto">
@@ -87,7 +87,7 @@ export default function RecetasPage() {
             ].map(f => (
               <button key={f.id} onClick={() => setActiveFilter(f.id)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 ${
-                  activeFilter === f.id ? 'bg-[#FACC15] text-[#0F172A] shadow-sm' : 'text-[#64748B] hover:bg-[#F1F5F9] hover:text-[#0F172A]'
+                  activeFilter === f.id ? 'bg-amber-500 text-[#0F172A] shadow-sm' : 'text-[#64748B] hover:bg-[#F1F5F9] hover:text-[#0F172A]'
                 }`}>
                 {f.label}
               </button>
