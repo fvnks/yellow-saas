@@ -128,7 +128,7 @@ export default function AdminGrantsPage() {
         </div>
         <button
           onClick={() => { setShowCreate(!showCreate); setMessage({ type: '', text: '' }); }}
-          className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-slate-900/80 hover:bg-slate-700 rounded-lg text-sm font-medium text-white transition-colors"
         >
           <Plus className="w-4 h-4" />
           {showCreate ? 'Cancelar' : 'Nuevo Acceso'}
@@ -137,7 +137,7 @@ export default function AdminGrantsPage() {
 
       {/* Create Form */}
       {showCreate && (
-        <div className="bg-primary border border-border rounded-xl p-6">
+        <div className="bg-slate-900/80 border border-border rounded-xl p-6">
           <h3 className="text-sm font-semibold text-white mb-4">Crear Acceso</h3>
           {message.text && (
             <div className={`mb-4 flex items-center gap-2 p-3 rounded-lg text-sm ${
@@ -154,7 +154,7 @@ export default function AdminGrantsPage() {
                 value={form.company_id}
                 onChange={(e) => setForm({ ...form, company_id: e.target.value })}
                 required
-                className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
               >
                 <option value="">Seleccionar empresa...</option>
                 {companies.map((c) => (
@@ -167,7 +167,7 @@ export default function AdminGrantsPage() {
               <select
                 value={form.access_level}
                 onChange={(e) => setForm({ ...form, access_level: e.target.value })}
-                className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
               >
                 <option value="read">Lectura</option>
                 <option value="full">Completo</option>
@@ -180,7 +180,7 @@ export default function AdminGrantsPage() {
                 value={form.reason}
                 onChange={(e) => setForm({ ...form, reason: e.target.value })}
                 placeholder="Ej: Soporte técnico"
-                className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
+                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-amber-500/30"
               />
             </div>
             <div className="space-y-1">
@@ -189,14 +189,14 @@ export default function AdminGrantsPage() {
                 type="date"
                 value={form.expires_at}
                 onChange={(e) => setForm({ ...form, expires_at: e.target.value })}
-                className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
               />
             </div>
             <div className="flex items-end">
               <button
                 type="submit"
                 disabled={saving}
-                className="w-full px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
+                className="w-full px-4 py-2 bg-slate-900/80 hover:bg-slate-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
               >
                 {saving ? 'Creando...' : 'Crear Acceso'}
               </button>
@@ -206,7 +206,7 @@ export default function AdminGrantsPage() {
       )}
 
       {/* Filters */}
-      <div className="bg-primary border border-border rounded-xl p-4 flex items-center gap-4">
+      <div className="bg-slate-900/80 border border-border rounded-xl p-4 flex items-center gap-4">
         <div className="flex items-center gap-2">
           {[
             { value: 'all', label: 'Todos' },
@@ -218,8 +218,8 @@ export default function AdminGrantsPage() {
               onClick={() => setFilter(opt.value)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                 filter === opt.value
-                  ? 'bg-primary text-white'
-                  : 'bg-card text-muted-foreground hover:text-white hover:bg-primary/90'
+                  ? 'bg-slate-900/80 text-white'
+                  : 'bg-card text-muted-foreground hover:text-white hover:bg-slate-700'
               }`}
             >
               {opt.label}
@@ -229,7 +229,7 @@ export default function AdminGrantsPage() {
       </div>
 
       {/* Grants Table */}
-      <div className="bg-primary border border-border rounded-xl overflow-hidden">
+      <div className="bg-slate-900/80 border border-border rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
             <tr className="border-b border-border">
@@ -260,11 +260,11 @@ export default function AdminGrantsPage() {
               </tr>
             ) : (
               filtered.map((grant) => (
-                <tr key={grant.id} className="border-b border-border/50 hover:bg-primary/90/30 transition-colors">
+                <tr key={grant.id} className="border-b border-border/50 hover:bg-slate-700/30 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-                        <Shield className="w-4 h-4 text-primary/70" />
+                      <div className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center">
+                        <Shield className="w-4 h-4 text-amber-400" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-white">{grant.super_admin_name}</p>

@@ -79,7 +79,7 @@ export default function AdminUsersPage() {
 
   const roleColors: Record<string, string> = {
     owner: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-    admin: 'bg-primary/10 text-primary/70 border-primary/20',
+    admin: 'bg-slate-800 text-amber-400 border-amber-500/20',
     manager: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
     member: 'bg-muted0/10 text-muted-foreground border-border/20',
     viewer: 'bg-muted0/10 text-muted-foreground border-border/20',
@@ -111,7 +111,7 @@ export default function AdminUsersPage() {
       )}
 
       {/* Search */}
-      <div className="bg-primary border border-border rounded-xl p-4">
+      <div className="bg-slate-900/80 border border-border rounded-xl p-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
@@ -119,13 +119,13 @@ export default function AdminUsersPage() {
             placeholder="Buscar por nombre, email o empresa..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-card/50 border border-border rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary"
+            className="w-full bg-slate-800/80 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-amber-500/30 focus:border-amber-500/50"
           />
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-primary border border-border rounded-xl overflow-hidden">
+      <div className="bg-slate-900/80 border border-border rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
             <tr className="border-b border-border">
@@ -154,7 +154,7 @@ export default function AdminUsersPage() {
               </tr>
             ) : (
               filtered.map((user) => (
-                <tr key={user.id} className="border-b border-border/50 hover:bg-primary/90/30 transition-colors">
+                <tr key={user.id} className="border-b border-border/50 hover:bg-slate-700/30 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 bg-card rounded-lg flex items-center justify-center">
@@ -194,7 +194,7 @@ export default function AdminUsersPage() {
                         setEditForm({ role: user.role, status: user.status });
                         setMessage({ type: '', text: '' });
                       }}
-                      className="p-1.5 text-muted-foreground hover:text-primary/70 hover:bg-primary/90/10 rounded-lg transition-colors"
+                      className="p-1.5 text-muted-foreground hover:text-amber-400 hover:bg-slate-700/10 rounded-lg transition-colors"
                       title="Editar"
                     >
                       <Pencil className="w-4 h-4" />
@@ -210,7 +210,7 @@ export default function AdminUsersPage() {
       {/* Edit Modal */}
       {editUser && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-primary border border-border rounded-xl shadow-xl w-full max-w-md mx-4">
+          <div className="bg-slate-900/80 border border-border rounded-xl shadow-xl w-full max-w-md mx-4">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-semibold text-white">Editar Usuario</h2>
@@ -226,7 +226,7 @@ export default function AdminUsersPage() {
                 <select
                   value={editForm.role}
                   onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
-                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
                 >
                   <option value="owner">Owner</option>
                   <option value="admin">Admin</option>
@@ -240,7 +240,7 @@ export default function AdminUsersPage() {
                 <select
                   value={editForm.status}
                   onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
                 >
                   <option value="active">Activo</option>
                   <option value="invited">Invitado</option>
@@ -251,14 +251,14 @@ export default function AdminUsersPage() {
                 <button
                   type="button"
                   onClick={() => setEditUser(null)}
-                  className="px-4 py-2 bg-card hover:bg-primary/90 rounded-lg text-sm font-medium text-foreground transition-colors"
+                  className="px-4 py-2 bg-card hover:bg-slate-700 rounded-lg text-sm font-medium text-foreground transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={editSaving}
-                  className="px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
+                  className="px-4 py-2 bg-slate-900/80 hover:bg-slate-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
                 >
                   {editSaving ? 'Guardando...' : 'Guardar'}
                 </button>

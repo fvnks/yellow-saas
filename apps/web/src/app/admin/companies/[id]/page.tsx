@@ -153,7 +153,7 @@ export default function AdminCompanyDetailPage() {
       <div className="text-center py-12">
         <AlertTriangle className="w-12 h-12 text-amber-400 mx-auto mb-4" />
         <p className="text-muted-foreground">{error || 'Empresa no encontrada'}</p>
-        <Link href="/admin/companies" className="text-primary/70 hover:text-primary/60 text-sm mt-4 inline-block">
+        <Link href="/admin/companies" className="text-amber-400 hover:text-amber-500/80 text-sm mt-4 inline-block">
           Volver a empresas
         </Link>
       </div>
@@ -171,7 +171,7 @@ export default function AdminCompanyDetailPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Link href="/admin/companies" className="p-2 hover:bg-primary/90 rounded-lg transition-colors">
+        <Link href="/admin/companies" className="p-2 hover:bg-slate-700 rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5 text-muted-foreground" />
         </Link>
         <div className="flex-1">
@@ -204,10 +204,10 @@ export default function AdminCompanyDetailPage() {
 
       {/* Info Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-primary border border-border rounded-xl p-6">
+        <div className="bg-slate-900/80 border border-border rounded-xl p-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-center">
-              <Building2 className="w-5 h-5 text-primary/70" />
+            <div className="w-10 h-10 bg-slate-800 border border-amber-500/20 rounded-xl flex items-center justify-center">
+              <Building2 className="w-5 h-5 text-amber-400" />
             </div>
             <div>
               <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Plan</p>
@@ -215,7 +215,7 @@ export default function AdminCompanyDetailPage() {
             </div>
           </div>
         </div>
-        <div className="bg-primary border border-border rounded-xl p-6">
+        <div className="bg-slate-900/80 border border-border rounded-xl p-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center">
               <Users className="w-5 h-5 text-emerald-400" />
@@ -226,7 +226,7 @@ export default function AdminCompanyDetailPage() {
             </div>
           </div>
         </div>
-        <div className="bg-primary border border-border rounded-xl p-6">
+        <div className="bg-slate-900/80 border border-border rounded-xl p-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-center">
               <Calendar className="w-5 h-5 text-amber-400" />
@@ -240,7 +240,7 @@ export default function AdminCompanyDetailPage() {
       </div>
 
       {/* Modules */}
-      <div className="bg-primary border border-border rounded-xl overflow-hidden">
+      <div className="bg-slate-900/80 border border-border rounded-xl overflow-hidden">
         <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <h3 className="text-sm font-semibold text-white">Módulos Activados ({company.modules.length})</h3>
           <Package className="w-4 h-4 text-muted-foreground" />
@@ -293,7 +293,7 @@ export default function AdminCompanyDetailPage() {
       </div>
 
       {/* Users */}
-      <div className="bg-primary border border-border rounded-xl overflow-hidden">
+      <div className="bg-slate-900/80 border border-border rounded-xl overflow-hidden">
         <div className="px-6 py-4 border-b border-border">
           <h3 className="text-sm font-semibold text-white">Usuarios ({company.users.length})</h3>
         </div>
@@ -309,7 +309,7 @@ export default function AdminCompanyDetailPage() {
           </thead>
           <tbody>
             {company.users.map((user) => (
-              <tr key={user.id} className="border-b border-border/50 hover:bg-primary/90/30 transition-colors">
+              <tr key={user.id} className="border-b border-border/50 hover:bg-slate-700/30 transition-colors">
                 <td className="px-6 py-4">
                   <div>
                     <p className="text-sm font-medium text-white">{user.full_name}</p>
@@ -335,7 +335,7 @@ export default function AdminCompanyDetailPage() {
                 <td className="px-6 py-4">
                   <button
                     onClick={() => handleLoginAs(user.id)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/90/20 border border-primary/20 rounded-lg text-xs font-medium text-primary/70 transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700/20 border border-amber-500/20 rounded-lg text-xs font-medium text-amber-400 transition-colors"
                   >
                     <LogIn className="w-3.5 h-3.5" />
                     Ingresar
@@ -348,7 +348,7 @@ export default function AdminCompanyDetailPage() {
       </div>
 
       {/* Access Grants */}
-      <div className="bg-primary border border-border rounded-xl overflow-hidden">
+      <div className="bg-slate-900/80 border border-border rounded-xl overflow-hidden">
         <div className="px-6 py-4 border-b border-border">
           <h3 className="text-sm font-semibold text-white">Accesos de Super Admin ({company.grants.length})</h3>
         </div>
@@ -369,7 +369,7 @@ export default function AdminCompanyDetailPage() {
             </thead>
             <tbody>
               {company.grants.map((grant) => (
-                <tr key={grant.id} className="border-b border-border/50 hover:bg-primary/90/30 transition-colors">
+                <tr key={grant.id} className="border-b border-border/50 hover:bg-slate-700/30 transition-colors">
                   <td className="px-6 py-4">
                     <div>
                       <p className="text-sm font-medium text-white">{grant.super_admin_name}</p>
@@ -377,7 +377,7 @@ export default function AdminCompanyDetailPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-primary/10 text-primary/70 border border-primary/20">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-slate-800 text-amber-400 border border-amber-500/20">
                       {grant.access_level}
                     </span>
                   </td>

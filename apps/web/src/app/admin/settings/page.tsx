@@ -137,10 +137,10 @@ export default function AdminSettingsPage() {
 
       {/* System Info */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-primary border border-border rounded-xl p-6">
+        <div className="bg-slate-900/80 border border-border rounded-xl p-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-center">
-              <Database className="w-5 h-5 text-primary/70" />
+            <div className="w-10 h-10 bg-slate-800 border border-amber-500/20 rounded-xl flex items-center justify-center">
+              <Database className="w-5 h-5 text-amber-400" />
             </div>
             <div>
               <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Base de datos</p>
@@ -148,7 +148,7 @@ export default function AdminSettingsPage() {
             </div>
           </div>
         </div>
-        <div className="bg-primary border border-border rounded-xl p-6">
+        <div className="bg-slate-900/80 border border-border rounded-xl p-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center">
               <Globe className="w-5 h-5 text-emerald-400" />
@@ -159,7 +159,7 @@ export default function AdminSettingsPage() {
             </div>
           </div>
         </div>
-        <div className="bg-primary border border-border rounded-xl p-6">
+        <div className="bg-slate-900/80 border border-border rounded-xl p-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-center">
               <Key className="w-5 h-5 text-amber-400" />
@@ -184,12 +184,12 @@ export default function AdminSettingsPage() {
       )}
 
       {/* Super Admins Section */}
-      <div className="bg-primary border border-border rounded-xl overflow-hidden">
+      <div className="bg-slate-900/80 border border-border rounded-xl overflow-hidden">
         <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <h3 className="text-sm font-semibold text-white">Super Administradores</h3>
           <button
             onClick={() => { setShowCreate(!showCreate); setMessage({ type: '', text: '' }); }}
-            className="px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors"
+            className="px-4 py-2 bg-slate-900/80 hover:bg-slate-700 rounded-lg text-sm font-medium text-white transition-colors"
           >
             {showCreate ? 'Cancelar' : 'Crear Super Admin'}
           </button>
@@ -207,7 +207,7 @@ export default function AdminSettingsPage() {
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   placeholder="Juan Pérez"
                   required
-                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-amber-500/30"
                 />
               </div>
               <div className="space-y-1">
@@ -218,7 +218,7 @@ export default function AdminSettingsPage() {
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   placeholder="admin@yellow.cl"
                   required
-                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-amber-500/30"
                 />
               </div>
               <div className="space-y-1">
@@ -230,14 +230,14 @@ export default function AdminSettingsPage() {
                   placeholder="Mínimo 8 caracteres"
                   required
                   minLength={8}
-                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-amber-500/30"
                 />
               </div>
               <div className="flex items-end">
                 <button
                   type="submit"
                   disabled={saving}
-                  className="w-full px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
+                  className="w-full px-4 py-2 bg-slate-900/80 hover:bg-slate-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
                 >
                   {saving ? 'Creando...' : 'Crear'}
                 </button>
@@ -274,11 +274,11 @@ export default function AdminSettingsPage() {
               </tr>
             ) : (
               admins.map((adm) => (
-                <tr key={adm.id} className="border-b border-border/50 hover:bg-primary/90/30 transition-colors">
+                <tr key={adm.id} className="border-b border-border/50 hover:bg-slate-700/30 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center">
-                        <Shield className="w-4 h-4 text-primary/70" />
+                      <div className="w-9 h-9 bg-slate-800 rounded-lg flex items-center justify-center">
+                        <Shield className="w-4 h-4 text-amber-400" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-white">{adm.name}</p>
@@ -307,7 +307,7 @@ export default function AdminSettingsPage() {
                           setEditForm({ name: adm.name, email: adm.email, password: '', is_active: adm.is_active });
                           setMessage({ type: '', text: '' });
                         }}
-                        className="p-1.5 text-muted-foreground hover:text-primary/70 hover:bg-primary/90/10 rounded-lg transition-colors"
+                        className="p-1.5 text-muted-foreground hover:text-amber-400 hover:bg-slate-700/10 rounded-lg transition-colors"
                         title="Editar"
                       >
                         <Pencil className="w-4 h-4" />
@@ -332,7 +332,7 @@ export default function AdminSettingsPage() {
       {/* Edit Modal */}
       {editAdmin && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-primary border border-border rounded-xl shadow-xl w-full max-w-md mx-4">
+          <div className="bg-slate-900/80 border border-border rounded-xl shadow-xl w-full max-w-md mx-4">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-white">Editar Super Admin</h2>
               <button onClick={() => setEditAdmin(null)} className="text-muted-foreground hover:text-white">
@@ -347,7 +347,7 @@ export default function AdminSettingsPage() {
                   value={editForm.name}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                   required
-                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
                 />
               </div>
               <div className="space-y-1">
@@ -357,7 +357,7 @@ export default function AdminSettingsPage() {
                   value={editForm.email}
                   onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
                   required
-                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
                 />
               </div>
               <div className="space-y-1">
@@ -368,7 +368,7 @@ export default function AdminSettingsPage() {
                   onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
                   placeholder="Dejar vacío para no cambiar"
                   minLength={8}
-                  className="w-full bg-card/50 border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-amber-500/30"
                 />
               </div>
               <div className="flex items-center gap-3">
@@ -377,7 +377,7 @@ export default function AdminSettingsPage() {
                   type="button"
                   onClick={() => setEditForm({ ...editForm, is_active: !editForm.is_active })}
                   className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                    editForm.is_active ? 'bg-primary' : 'bg-muted'
+                    editForm.is_active ? 'bg-slate-900/80' : 'bg-muted'
                   }`}
                 >
                   <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-card transition-transform ${
@@ -390,14 +390,14 @@ export default function AdminSettingsPage() {
                 <button
                   type="button"
                   onClick={() => setEditAdmin(null)}
-                  className="px-4 py-2 bg-card hover:bg-primary/90 rounded-lg text-sm font-medium text-foreground transition-colors"
+                  className="px-4 py-2 bg-card hover:bg-slate-700 rounded-lg text-sm font-medium text-foreground transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={editSaving}
-                  className="px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
+                  className="px-4 py-2 bg-slate-900/80 hover:bg-slate-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
                 >
                   {editSaving ? 'Guardando...' : 'Guardar'}
                 </button>
@@ -410,7 +410,7 @@ export default function AdminSettingsPage() {
       {/* Delete Confirmation Modal */}
       {deleteAdmin && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-primary border border-border rounded-xl shadow-xl w-full max-w-sm mx-4">
+          <div className="bg-slate-900/80 border border-border rounded-xl shadow-xl w-full max-w-sm mx-4">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-lg font-semibold text-white">Eliminar Super Admin</h2>
               <button onClick={() => setDeleteAdmin(null)} className="text-muted-foreground hover:text-white">
@@ -425,7 +425,7 @@ export default function AdminSettingsPage() {
             <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
               <button
                 onClick={() => setDeleteAdmin(null)}
-                className="px-4 py-2 bg-card hover:bg-primary/90 rounded-lg text-sm font-medium text-foreground transition-colors"
+                className="px-4 py-2 bg-card hover:bg-slate-700 rounded-lg text-sm font-medium text-foreground transition-colors"
               >
                 Cancelar
               </button>
