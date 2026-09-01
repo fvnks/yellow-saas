@@ -36,9 +36,12 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
-        cacheNames
-          .filter((name) => name !== STATIC_CACHE && name !== DYNAMIC_CACHE && name !== OFFLINE_CACHE && name !== OFFLINE_QUEUE_CACHE)
-          .map((name) => caches.delete(name))
+        cacheNames.reduce((promises, name) => {
+          if (name !== STATIC_CACHE && name !== DYNAMIC_CACHE && name !== OFFLINE_CACHE && name !== OFFLINE_QUEUE_CACHE) {
+            promises.push(caches.delete(name));
+          }
+          return promises;
+        }, [])
       );
     }).then(() => self.clients.claim())
   );
@@ -180,22 +183,22 @@ async function processOfflineQueue() {
   const queue = await response.json();
   if (queue.length === 0) return;
 
-  const failed = [];
-  for (const item of queue) {
-    try {
-      const req = new Request(item.url, {
-        method: item.method,
-        headers: item.headers,
-        body: item.body,
-      });
-      const response = await fetch(req);
-      if (!response.ok) {
-        failed.push(item);
+  const failed = (await Promise.all(
+    queue.map(async (item) => {
+      try {
+        const req = new Request(item.url, {
+          method: item.method,
+          headers: item.headers,
+          body: item.body,
+        });
+        const response = await fetch(req);
+        if (!response.ok) return item;
+        return null;
+      } catch {
+        return item;
       }
-    } catch (error) {
-      failed.push(item);
-    }
-  }
+    })
+  )).filter(Boolean);
 
   await cache.put(OFFLINE_QUEUE_NAME, new Response(JSON.stringify(failed)));
   
