@@ -8,7 +8,8 @@ export type ModuleType =
   | 'ayuda'
   | 'admin'
   | 'restaurante'
-  | 'veterinaria';
+  | 'veterinaria'
+  | 'gastos';
 
 export interface ModuleSidebarTheme {
   moduleKey: ModuleType;
@@ -198,5 +199,22 @@ export const MODULE_SIDEBAR_THEMES: Record<ModuleType, ModuleSidebarTheme> = {
     activeBadgeClass: 'bg-emerald-500 text-slate-950 border-emerald-300 font-black',
     inactiveBadgeClass: 'bg-emerald-500/20 text-slate-900 border-emerald-500/30 font-extrabold',
     avatarClass: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+  },
+  gastos: {
+    moduleKey: 'gastos',
+    title: 'Gestión de Gastos',
+    badgeLabel: 'Gastos',
+    subtitle: 'Control Operativo & Tributario',
+    headerBadgeBg: 'bg-rose-500/10',
+    headerBadgeText: 'text-rose-400',
+    headerBadgeBorder: 'border-rose-500/20',
+    activeBorderClass: 'border-rose-500',
+    iconActiveColorClass: 'text-rose-400',
+    backIconColorClass: 'text-rose-400',
+    activeSubItemText: 'text-rose-400',
+    groupActiveText: 'text-rose-400',
+    activeBadgeClass: 'bg-rose-500 text-white border-rose-400 font-black',
+    inactiveBadgeClass: 'bg-rose-500/20 text-slate-900 border-rose-500/30 font-extrabold',
+    avatarClass: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
   },
 };

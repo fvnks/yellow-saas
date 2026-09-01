@@ -146,6 +146,13 @@
     "audit2": "Audit",
     "industryLines": "Industry Lines",
     "costCenter": "Cost Centers",
+    "gastos": "Expenses",
+    "expense_list": "Expense List",
+    "expense_categories": "Categories",
+    "expense_total": "Total Expenses",
+    "expense_count": "Count",
+    "expense_average": "Average",
+    "top_category": "Top Category"
     "documentTypes": "Document Types",
     "principal": "Main",
     "listadoProductos": "Product List",

@@ -147,6 +147,13 @@
     "company2": "Empresa",
     "industryLines": "Rubros",
     "costCenter": "Centros de Costo",
+    "gastos": "Gastos",
+    "expense_list": "Listado de Gastos",
+    "expense_categories": "Categorías",
+    "expense_total": "Total Gastos",
+    "expense_count": "Cantidad",
+    "expense_average": "Promedio",
+    "top_category": "Top Categoría"
     "documentTypes": "Documentos",
     "principal": "Principal",
     "listadoProductos": "Listado de Productos",
