@@ -235,13 +235,13 @@ export default function AdminSupportPage() {
   const priorityColors: Record<string, string> = {
     low: 'bg-muted0/10 text-muted-foreground border-border/20',
     medium: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    high: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    high: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
     urgent: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
   };
 
   const statusColors: Record<string, string> = {
     open: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    in_progress: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    in_progress: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
     resolved: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     closed: 'bg-muted0/10 text-muted-foreground border-border/20',
   };
@@ -290,7 +290,7 @@ export default function AdminSupportPage() {
             <select
               value={selectedTicket.assigned_to || ''}
               onChange={(e) => handleAssign(selectedTicket.id, e.target.value)}
-              className="bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+              className="bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
             >
               <option value="">Sin asignar</option>
               {superAdmins.map((admin) => (
@@ -311,7 +311,7 @@ export default function AdminSupportPage() {
             selectedTicket.messages.map((msg) => (
               <div key={msg.id} className={`flex ${msg.sender_type === 'super_admin' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[70%] rounded-xl px-4 py-3 ${
-                  msg.sender_type === 'super_admin' ? 'bg-amber-500/10 border border-amber-500/20' : 'bg-slate-800 border border-slate-700'
+                  msg.sender_type === 'super_admin' ? 'bg-violet-500/10 border border-violet-500/20' : 'bg-slate-800 border border-slate-700'
                 }`}>
                   <p className="text-[10px] font-bold text-muted-foreground mb-1">{msg.sender_name} — {new Date(msg.created_at).toLocaleString('es-CL')}</p>
                   <p className="text-sm text-white">{msg.message}</p>
@@ -343,7 +343,7 @@ export default function AdminSupportPage() {
           <div className="bg-slate-900/80 border border-border rounded-xl p-4 flex items-center gap-4">
             <div className="flex items-center gap-1">
               {[1, 2, 3, 4, 5].map((i) => (
-                <Star key={i} className={`w-5 h-5 ${i <= selectedTicket.feedback!.rating ? 'text-amber-400 fill-amber-400' : 'text-foreground'}`} />
+                <Star key={i} className={`w-5 h-5 ${i <= selectedTicket.feedback!.rating ? 'text-violet-400 fill-violet-400' : 'text-foreground'}`} />
               ))}
             </div>
             <div className="flex-1">
@@ -365,7 +365,7 @@ export default function AdminSupportPage() {
             <div className="space-y-2">
               {selectedTicket.status_history.map((h) => (
                 <div key={h.id} className="flex items-center gap-3 text-xs">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-violet-400 flex-shrink-0" />
                   <span className="text-foreground">
                     {statusLabels[h.from_status]} <span className="text-muted-foreground">→</span> {statusLabels[h.to_status]}
                   </span>
@@ -415,7 +415,7 @@ export default function AdminSupportPage() {
               onChange={(e) => setReplyText(e.target.value)}
               placeholder="Escribe tu respuesta..."
               onKeyDown={(e) => e.key === 'Enter' && handleSendReply()}
-              className="flex-1 bg-slate-800/80 border border-slate-700 rounded-lg px-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+              className="flex-1 bg-slate-800/80 border border-slate-700 rounded-lg px-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
             />
             <button
               onClick={handleSendReply}
@@ -465,7 +465,7 @@ export default function AdminSupportPage() {
                   value={form.company_id}
                   onChange={(e) => setForm({ ...form, company_id: e.target.value })}
                   required
-                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
                 >
                   <option value="">Seleccionar...</option>
                   {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -479,7 +479,7 @@ export default function AdminSupportPage() {
                   onChange={(e) => setForm({ ...form, subject: e.target.value })}
                   placeholder="Asunto del ticket"
                   required
-                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
                 />
               </div>
               <div className="space-y-1">
@@ -487,7 +487,7 @@ export default function AdminSupportPage() {
                 <select
                   value={form.priority}
                   onChange={(e) => setForm({ ...form, priority: e.target.value })}
-                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
                 >
                   <option value="low">Baja</option>
                   <option value="medium">Media</option>
@@ -503,7 +503,7 @@ export default function AdminSupportPage() {
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 placeholder="Descripción del problema..."
                 rows={3}
-                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-amber-500/30 resize-none"
+                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30 resize-none"
               />
             </div>
             <div className="flex justify-end">
@@ -523,7 +523,7 @@ export default function AdminSupportPage() {
             placeholder="Buscar tickets..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-slate-800/80 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+            className="w-full bg-slate-800/80 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
           />
         </div>
         <div className="flex items-center gap-2">

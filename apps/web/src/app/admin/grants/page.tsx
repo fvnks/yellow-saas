@@ -154,7 +154,7 @@ export default function AdminGrantsPage() {
                 value={form.company_id}
                 onChange={(e) => setForm({ ...form, company_id: e.target.value })}
                 required
-                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
               >
                 <option value="">Seleccionar empresa...</option>
                 {companies.map((c) => (
@@ -167,7 +167,7 @@ export default function AdminGrantsPage() {
               <select
                 value={form.access_level}
                 onChange={(e) => setForm({ ...form, access_level: e.target.value })}
-                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
               >
                 <option value="read">Lectura</option>
                 <option value="full">Completo</option>
@@ -180,7 +180,7 @@ export default function AdminGrantsPage() {
                 value={form.reason}
                 onChange={(e) => setForm({ ...form, reason: e.target.value })}
                 placeholder="Ej: Soporte técnico"
-                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
               />
             </div>
             <div className="space-y-1">
@@ -189,7 +189,7 @@ export default function AdminGrantsPage() {
                 type="date"
                 value={form.expires_at}
                 onChange={(e) => setForm({ ...form, expires_at: e.target.value })}
-                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/30"
+                className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
               />
             </div>
             <div className="flex items-end">
@@ -264,7 +264,7 @@ export default function AdminGrantsPage() {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center">
-                        <Shield className="w-4 h-4 text-amber-400" />
+                        <Shield className="w-4 h-4 text-violet-400" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-white">{grant.super_admin_name}</p>
@@ -280,7 +280,7 @@ export default function AdminGrantsPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${
-                      grant.access_level === 'full' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                      grant.access_level === 'full' ? 'bg-violet-500/10 text-violet-400 border-violet-500/20' : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
                     }`}>
                       {grant.access_level}
                     </span>
@@ -298,7 +298,7 @@ export default function AdminGrantsPage() {
                     <div className="text-xs text-muted-foreground">
                       {new Date(grant.created_at).toLocaleDateString('es-CL')}
                       {grant.expires_at && (
-                        <p className="text-amber-400 mt-0.5">Exp: {new Date(grant.expires_at).toLocaleDateString('es-CL')}</p>
+                        <p className="text-violet-400 mt-0.5">Exp: {new Date(grant.expires_at).toLocaleDateString('es-CL')}</p>
                       )}
                     </div>
                   </td>
