@@ -4,7 +4,8 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
-import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight, X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail, Sparkles, TrendingUp, ShieldCheck, DollarSign, Building, UtensilsCrossed, Stethoscope } from 'lucide-react';
+import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight,
+X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail, Sparkles, TrendingUp, ShieldCheck, DollarSign, Building, UtensilsCrossed, Stethoscope, Shield } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import { getChileanIndicators, ChileanIndicators } from '@/lib/indicators';
 import {
@@ -171,6 +172,7 @@ function getUserFromCookie() {
     const payload = JSON.parse(atob(token.split('.')[1]));
     return {
       role: payload.role || 'member',
+      role_type: payload.role_type || 'company',
       name: payload.name || 'Usuario',
       email: payload.email || '',
     };
@@ -439,6 +441,19 @@ export default function SelectPage() {
                       </DropdownMenuItem>
                     ))}
                     <DropdownMenuSeparator className="bg-slate-100" />
+                  </>
+                )}
+
+                {user?.role_type === 'super_admin' && (
+                  <>
+                    <DropdownMenuSeparator className="bg-slate-100" />
+                    <DropdownMenuItem
+                      onClick={() => router.push('/admin')}
+                      className="flex items-center gap-2.5 px-3 py-2 text-violet-600 hover:bg-violet-50 rounded-xl cursor-pointer transition-colors font-semibold"
+                    >
+                      <Shield className="w-4 h-4" />
+                      <span className="text-xs">Consola SaaS Admin</span>
+                    </DropdownMenuItem>
                   </>
                 )}
 
