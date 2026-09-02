@@ -125,6 +125,10 @@ export default function NuevoEstimadoPage() {
         }),
       });
 
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error?.message || `HTTP ${res.status}`);
+      }
       const data = await res.json();
       if (!data.success) throw new Error(data.error?.message || 'Error creating estimate');
 
@@ -290,19 +294,19 @@ export default function NuevoEstimadoPage() {
           <div className="p-6 space-y-3">
             <div className="flex justify-between text-sm">
               <span className="text-slate-500">Subtotal</span>
-              <span className="font-semibold text-slate-900">{formatCLP(subtotal)}</span>
+              <span className="font-semibold text-slate-900">{clpFmt.format(subtotal)}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-slate-500">Descuento (10%)</span>
-              <span className="font-semibold text-rose-600">-{formatCLP(discount)}</span>
+              <span className="font-semibold text-rose-600">-{clpFmt.format(discount)}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-slate-500">IVA (19%)</span>
-              <span className="font-semibold text-slate-900">{formatCLP(iva)}</span>
+              <span className="font-semibold text-slate-900">{clpFmt.format(iva)}</span>
             </div>
             <div className="border-t border-slate-200 pt-3 flex justify-between">
               <span className="font-bold text-slate-900">Total</span>
-              <span className="text-2xl font-black text-orange-600">{formatCLP(total)}</span>
+              <span className="text-2xl font-black text-orange-600">{clpFmt.format(total)}</span>
             </div>
           </div>
         </div>
@@ -327,8 +331,4 @@ export default function NuevoEstimadoPage() {
       </form>
     </div>
   );
-}
-
-function formatCLP(val: number) {
-  return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(val);
 }
