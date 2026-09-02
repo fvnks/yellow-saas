@@ -1,0 +1,75 @@
+﻿'use client';
+
+import { useState, useEffect } from 'react';
+import { TrendingUp, Calendar } from 'lucide-react';
+
+const monthNames = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+export default function PurchaseForecast() {
+  const [monthly, setMonthly] = useState<any[]>([]);
+  const [forecast, setForecast] = useState<any[]>([]);
+  const [seasonality, setSeasonality] = useState<number[]>([]);
+  const [avgMonthly, setAvgMonthly] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const companyId = localStorage.getItem('company_id');
+    fetch(`/api/companies/${companyId}/purchase-forecast`)
+      .then(r => r.json()).then(d => { const data = d.data || {}; setMonthly(data.monthly || []); setForecast(data.forecast || []); setSeasonality(data.seasonality || []); setAvgMonthly(data.avgMonthly || 0); setLoading(false); }).catch(() => setLoading(false));
+  }, []);
+
+  const fmt = (v: number) => `$${v.toLocaleString('en-US', { minimumFractionDigits: 0 })}`;
+  const last12 = monthly.slice(-12);
+  const maxVal = Math.max(...last12.map(m => m.total), ...forecast.map(f => f.confidence_high), 1);
+
+  if (loading) return null;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-2"><TrendingUp className="w-4 h-4 text-muted-foreground" /><span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Pronóstico de Compras</span></div>
+      <div className="grid grid-cols-3 gap-3">
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border"><p className="text-[9px] font-semibold text-muted-foreground uppercase">Promedio Mensual</p><p className="text-xl font-bold text-foreground mt-1">{fmt(avgMonthly)}</p></div>
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border"><p className="text-[9px] font-semibold text-muted-foreground uppercase">Próximo Mes</p><p className="text-xl font-bold text-emerald-600 mt-1">{fmt(forecast[0]?.predicted_total || 0)}</p></div>
+        <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border"><p className="text-[9px] font-semibold text-muted-foreground uppercase">Rango</p><p className="text-xs text-foreground mt-2">{fmt(forecast[0]?.confidence_low || 0)} — {fmt(forecast[0]?.confidence_high || 0)}</p></div>
+      </div>
+      <div className="bg-card border border-border rounded-xl p-4 dark:bg-primary dark:border-border">
+        <h3 className="text-xs font-semibold text-foreground mb-4">Histórico + Pronóstico</h3>
+        <div className="flex items-end gap-1 h-40">
+          {last12.map((m, i) => (
+            <div key={i} className="flex-1 flex flex-col items-center">
+              <div className="w-full bg-blue-500 rounded-t opacity-80" style={{ height: `${(m.total / maxVal) * 120}px` }}></div>
+              <p className="text-[7px] text-muted-foreground mt-1">{monthNames[m.month - 1]?.substring(0, 3)}</p>
+            </div>
+          ))}
+          {forecast.map((f, i) => (
+            <div key={`f${i}`} className="flex-1 flex flex-col items-center">
+              <div className="w-full bg-emerald-500 border-2 border-dashed border-emerald-400 rounded-t opacity-70" style={{ height: `${(f.predicted_total / maxVal) * 120}px` }}></div>
+              <p className="text-[7px] text-emerald-600 font-semibold mt-1">{monthNames[f.month - 1]?.substring(0, 3)}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-border">
+        <div className="px-6 py-4 border-b border-border"><h3 className="text-xs font-semibold text-foreground">Pronóstico 3 Meses</h3></div>
+        <table className="w-full">
+          <thead><tr className="border-b border-border">
+            <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Período</th>
+            <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Estimado</th>
+            <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Órdenes</th>
+            <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase">Rango</th>
+          </tr></thead>
+          <tbody>
+            {forecast.map((f, i) => (
+              <tr key={i} className="border-b border-border hover:bg-muted transition-colors">
+                <td className="px-4 py-3 text-xs font-medium text-foreground">{monthNames[f.month - 1]} {f.year}</td>
+                <td className="px-4 py-3 text-xs text-right font-bold text-emerald-600">{fmt(f.predicted_total)}</td>
+                <td className="px-4 py-3 text-xs text-center text-foreground">{f.predicted_orders}</td>
+                <td className="px-4 py-3 text-xs text-right text-foreground">{fmt(f.confidence_low)} — {fmt(f.confidence_high)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}

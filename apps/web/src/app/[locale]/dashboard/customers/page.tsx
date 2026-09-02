@@ -1,0 +1,338 @@
+﻿'use client';
+
+import { useEffect, useState, useCallback } from 'react';
+import { Card, CardContent, Button } from '@yellow-erp/ui';
+import { Plus, Search, Download, Eye, Edit, Trash2, Users, Phone, Mail, MapPin, CreditCard, Building2, Tag, Filter, Upload } from 'lucide-react';
+import Link from 'next/link';
+import { toast } from 'sonner';
+import { getApiClient } from '@/lib/api-client';
+import CustomerImport from './components/CustomerImport';
+
+export default function CustomersPage() {
+  const [customers, setCustomers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [taxExemptFilter, setTaxExemptFilter] = useState('all');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [segmentFilter, setSegmentFilter] = useState('all');
+  const [rubroFilter, setRubroFilter] = useState('all');
+  const [categories, setCategories] = useState<any[]>([]);
+  const [segments, setSegments] = useState<any[]>([]);
+  const [rubros, setRubros] = useState<any[]>([]);
+  const [showImport, setShowImport] = useState(false);
+
+  useEffect(() => {
+    const api = getApiClient();
+    Promise.all([
+      api.getCustomers(),
+      api.getCustomerCategories().catch(() => ({ data: [] })),
+      api.getCustomerSegments().catch(() => ({ data: [] })),
+      api.getRubros({ limit: 200 }).catch(() => []),
+    ]).then(([res, catRes, segRes, rubRes]) => {
+      setCustomers(res.data || []);
+      setCategories(catRes.data || []);
+      setSegments(segRes.data || []);
+      setRubros(Array.isArray(rubRes) ? rubRes : []);
+      setLoading(false);
+    }).catch(() => setLoading(false));
+  }, []);
+
+  const filteredCustomers = customers.filter(c => {
+    const matchesSearch = (c.name || '').toLowerCase().includes(search.toLowerCase()) ||
+      (c.tax_id || '').toLowerCase().includes(search.toLowerCase()) ||
+      (c.trade_name || '').toLowerCase().includes(search.toLowerCase()) ||
+      (c.email || '').toLowerCase().includes(search.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || (statusFilter === 'active' && c.is_active) || (statusFilter === 'inactive' && !c.is_active);
+    const matchesTaxExempt = taxExemptFilter === 'all' || (taxExemptFilter === 'exempt' && c.tax_exempt) || (taxExemptFilter === 'non-exempt' && !c.tax_exempt);
+    const matchesCategory = categoryFilter === 'all' || c.category_id === categoryFilter;
+    const matchesSegment = segmentFilter === 'all' || c.segment_id === segmentFilter;
+    const matchesRubro = rubroFilter === 'all' || c.rubro_id === rubroFilter;
+    return matchesSearch && matchesStatus && matchesTaxExempt && matchesCategory && matchesSegment && matchesRubro;
+  });
+
+  const handleExport = useCallback(() => {
+    if (filteredCustomers.length === 0) return;
+    const headers = ['Nombre', 'Razón Social', 'RUT', 'Email', 'Teléfono', 'Ciudad', 'Región', 'Plazo Días', 'Límite Crédito', 'Exento IVA', 'Rubro', 'Activo'];
+    const rows = filteredCustomers.map(c => [c.name, c.trade_name || '', c.tax_id || '', c.email || '', c.phone || '', c.city || '', c.region || '', c.payment_terms || 0, c.credit_limit || 0, c.tax_exempt ? 'Sí' : 'No', rubros.find((r: any) => r.id === c.rubro_id)?.name || '', c.is_active ? 'Sí' : 'No']);
+    const csv = [headers, ...rows].map(r => r.map(v => `"${(v || '').toString().replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `clientes_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [filteredCustomers]);
+
+  const handleDelete = useCallback(async (id: string, name: string) => {
+    if (!confirm(`¿Eliminar cliente "${name}"?`)) return;
+    try {
+      const api = getApiClient();
+      await api.deleteCustomer(id);
+      setCustomers(prev => prev.filter(c => c.id !== id));
+      toast.success('Cliente eliminado');
+    } catch {
+      toast.error('Error al eliminar cliente');
+    }
+  }, []);
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-bold text-foreground">Clientes</h1>
+          <p className="text-sm text-muted-foreground mt-1">Gestión de clientes y contacto comercial</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="secondary" size="sm" onClick={() => setShowImport(true)}>
+            <Upload className="w-4 h-4 mr-2" />
+            Importar
+          </Button>
+          <Button variant="secondary" size="sm" onClick={handleExport}>
+            <Download className="w-4 h-4 mr-2" />
+            Exportar
+          </Button>
+          <Link href="/dashboard/customers/new">
+            <Button>
+              <Plus className="w-4 h-4 mr-2" />
+              Nuevo Cliente
+            </Button>
+          </Link>
+        </div>
+      </div>
+
+      {/* KPIs */}
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total Clientes</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{customers.length}</p>
+              </div>
+              <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                <Users className="w-5 h-5 text-primary" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Activos</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{customers.filter(c => c.is_active).length}</p>
+              </div>
+              <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
+                <Building2 className="w-5 h-5 text-emerald-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Exentos IVA</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{customers.filter(c => c.tax_exempt).length}</p>
+              </div>
+              <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+                <CreditCard className="w-5 h-5 text-amber-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Crédito Total</p>
+                <p className="text-2xl font-bold text-foreground mt-1">${customers.reduce((sum, c) => sum + (c.credit_limit || 0), 0).toLocaleString('es-CL')}</p>
+              </div>
+              <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center">
+                <CreditCard className="w-5 h-5 text-rose-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Filters */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground font-semibold uppercase tracking-wider">
+              <Filter className="w-4 h-4" />
+              Filtros
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <input
+                  type="search"
+                  placeholder="Buscar nombre, RUT, email..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+                />
+              </div>
+              <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
+                <option value="all">Todos los estados</option>
+                <option value="active">Activos</option>
+                <option value="inactive">Inactivos</option>
+              </select>
+              <select value={taxExemptFilter} onChange={(e) => setTaxExemptFilter(e.target.value)} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
+                <option value="all">Todos IVA</option>
+                <option value="exempt">Exentos</option>
+                <option value="non-exempt">No Exentos</option>
+              </select>
+              <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
+                <option value="all">Todas las categorías</option>
+                {categories.map((cat: any) => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+              </select>
+              <select value={segmentFilter} onChange={(e) => setSegmentFilter(e.target.value)} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
+                <option value="all">Todos los segmentos</option>
+                {segments.map((seg: any) => (
+                  <option key={seg.id} value={seg.id}>{seg.name}</option>
+                ))}
+              </select>
+              <select value={rubroFilter} onChange={(e) => setRubroFilter(e.target.value)} className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
+                <option value="all">Todos los rubros</option>
+                {rubros.map((r: any) => (
+                  <option key={r.id} value={r.id}>{r.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Table */}
+      <Card>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nombre</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Razón Social</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">RUT</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Contacto</th>
+                  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Ubicación</th>
+                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Plazo</th>
+                  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Crédito</th>
+                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">IVA</th>
+                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</th>
+                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Categoría</th>
+                  <th className="text-center px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Rubro</th>
+                  <th className="w-12 px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  Array.from({ length: 5 }).map((_, i) => (
+                    <tr key={i} className="border-b border-border">
+                      {Array.from({ length: 12 }).map((_, j) => (
+                        <td key={j} className="px-4 py-3"><div className="h-4 bg-muted rounded animate-pulse" /></td>
+                      ))}
+                    </tr>
+                  ))
+                ) : filteredCustomers.length === 0 ? (
+                  <tr>
+                    <td colSpan={12} className="px-4 py-12 text-center text-sm text-muted-foreground">
+                      No se encontraron clientes
+                    </td>
+                  </tr>
+                ) : filteredCustomers.map((customer) => (
+                  <tr key={customer.id} className="border-b border-border hover:bg-muted transition-colors">
+                    <td className="px-4 py-3">
+                      <div className="text-xs font-medium text-foreground">{customer.name}</div>
+                    </td>
+                    <td className="px-4 py-3 text-xs text-foreground">{customer.trade_name || '—'}</td>
+                    <td className="px-4 py-3 text-xs font-mono text-foreground">{customer.tax_id || '—'}</td>
+                    <td className="px-4 py-3">
+                      <div className="space-y-0.5">
+                        {customer.phone && (
+                          <div className="flex items-center gap-1 text-[10px] text-foreground">
+                            <Phone className="w-3 h-3 text-muted-foreground" />
+                            <span>{customer.phone}</span>
+                          </div>
+                        )}
+                        {customer.email && (
+                          <div className="flex items-center gap-1 text-[10px] text-foreground">
+                            <Mail className="w-3 h-3 text-muted-foreground" />
+                            <span className="truncate max-w-[140px]">{customer.email}</span>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="text-xs text-foreground">{customer.city || '—'}</div>
+                      <div className="text-[10px] text-muted-foreground">{customer.region || ''}</div>
+                    </td>
+                    <td className="px-4 py-3 text-center text-xs font-medium text-foreground">{customer.payment_terms || 0} días</td>
+                    <td className="px-4 py-3 text-right text-xs font-medium text-foreground">${(customer.credit_limit || 0).toLocaleString('es-CL')}</td>
+                    <td className="px-4 py-3 text-center">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${customer.tax_exempt ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-muted text-foreground border border-border'}`}>
+                        {customer.tax_exempt ? 'Exento' : 'Gravado'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${customer.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}`}>
+                        {customer.is_active ? 'Activo' : 'Inactivo'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      {customer.category_id ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-blue-50 text-primary border border-primary/20">
+                          {categories.find((c: any) => c.id === customer.category_id)?.name || '—'}
+                        </span>
+                      ) : (
+                        <span className="text-[10px] text-muted-foreground">—</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      {customer.rubro_id ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                          {rubros.find((r: any) => r.id === customer.rubro_id)?.name || '—'}
+                        </span>
+                      ) : (
+                        <span className="text-[10px] text-muted-foreground">—</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-center gap-1">
+                        <Link href={`/dashboard/customers/${customer.id}`}>
+                          <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors">
+                            <Eye className="w-4 h-4" />
+                          </button>
+                        </Link>
+                        <Link href={`/dashboard/customers/${customer.id}/edit`}>
+                          <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors">
+                            <Edit className="w-4 h-4" />
+                          </button>
+                        </Link>
+                        <button onClick={() => handleDelete(customer.id, customer.name)} className="p-1.5 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded transition-colors">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <p>Mostrando {filteredCustomers.length} de {customers.length} clientes</p>
+      </div>
+
+      {showImport && <CustomerImport open={showImport} onClose={() => setShowImport(false)} onComplete={() => { setShowImport(false); window.location.reload(); }} />}
+    </div>
+  );
+}

@@ -1,0 +1,848 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { Badge } from '@yellow-erp/ui';
+import { ArrowLeft, Plus, Calendar, DollarSign, Users, CheckCircle2, Clock, Edit, Trash2, BarChart3, Flag, Receipt, FileText, TrendingUp, LayoutGrid, Copy, Download, MessageCircle, CheckSquare, Square, Archive, Star } from 'lucide-react';
+import Link from 'next/link';
+import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
+import { downloadCSV, downloadExcel } from '@/lib/export-utils';
+import { generateProjectReportPDF } from '@/lib/project-report-pdf';
+import { generateProjectCalendarICS, downloadICS } from '@/lib/ical-utils';
+import { ContinuousTabs } from '@/components/ui/continuous-tabs';
+import GanttChart from '../components/GanttChart';
+import MilestonesTab from '../components/MilestonesTab';
+import TimesheetsTab from '../components/TimesheetsTab';
+import ExpensesTab from '../components/ExpensesTab';
+import CostsTab from '../components/CostsTab';
+import DocumentsTab from '../components/DocumentsTab';
+import RentabilidadReport from '../components/RentabilidadReport';
+import ActivityLog from '../components/ActivityLog';
+import RisksTab from '../components/RisksTab';
+import ChangeOrdersTab from '../components/ChangeOrdersTab';
+import PortalTab from '../components/PortalTab';
+import KanbanBoard from '../components/KanbanBoard';
+import TemplatesTab from '../components/TemplatesTab';
+import PhasesTab from '../components/PhasesTab';
+import TimerWidget from '../components/TimerWidget';
+import TaskComments from '../components/TaskComments';
+import NotificationsPanel from '../components/NotificationsPanel';
+import ResourceAllocation from '../components/ResourceAllocation';
+import BudgetForecast from '../components/BudgetForecast';
+import SubtaskProgress from '../components/SubtaskProgress';
+import TagsManager, { TaskTagBadges } from '../components/TagsManager';
+import AuditLog from '../components/AuditLog';
+import ProjectMembers from '../components/ProjectMembers';
+import ResourceAllocationForm from '../components/ResourceAllocationForm';
+import AutomationManager from '../components/AutomationManager';
+import ProjectCalendar from '../components/ProjectCalendar';
+import TaskFilters from '../components/TaskFilters';
+import BudgetAlerts from '../components/BudgetAlerts';
+import BulkTaskActions from '../components/BulkTaskActions';
+import HoursReport from '../components/HoursReport';
+import ProjectDashboard from '../components/ProjectDashboard';
+import CustomFields from '../components/CustomFields';
+import TaskChecklist from '../components/TaskChecklist';
+import TaskChangelog from '../components/TaskChangelog';
+import ShortcutsHelp, { useKeyboardShortcuts } from '@/components/ui/keyboard-shortcuts';
+import NotificationSettings from '../components/NotificationSettings';
+
+const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
+  planning: { label: 'Planificacion', variant: 'info' },
+  active: { label: 'Activo', variant: 'success' },
+  on_hold: { label: 'En Pausa', variant: 'warning' },
+  completed: { label: 'Completado', variant: 'neutral' },
+  cancelled: { label: 'Cancelado', variant: 'danger' },
+};
+
+const taskStatusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
+  todo: { label: 'Por Hacer', variant: 'neutral' },
+  in_progress: { label: 'En Progreso', variant: 'info' },
+  review: { label: 'En Revision', variant: 'warning' },
+  done: { label: 'Completada', variant: 'success' },
+};
+
+const priorityConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
+  low: { label: 'Baja', variant: 'neutral' },
+  medium: { label: 'Media', variant: 'info' },
+  high: { label: 'Alta', variant: 'warning' },
+  urgent: { label: 'Urgente', variant: 'danger' },
+};
+
+export default function ProjectDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const projectId = params.id as string;
+
+  const [project, setProject] = useState<any>(null);
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [filteredTasks, setFilteredTasks] = useState<any[]>([]);
+  const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
+  const [customFields, setCustomFields] = useState<any[]>([]);
+  const [customValues, setCustomValues] = useState<Record<string, string>>({});
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [milestones, setMilestones] = useState<any[]>([]);
+  const [timesheets, setTimesheets] = useState<any[]>([]);
+  const [expenses, setExpenses] = useState<any[]>([]);
+  const [costsData, setCostsData] = useState<any>({ costs: [], summary: [] });
+  const [documents, setDocuments] = useState<any[]>([]);
+  const [risks, setRisks] = useState<any[]>([]);
+  const [changeOrders, setChangeOrders] = useState<any[]>([]);
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [dependencies, setDependencies] = useState<any[]>([]);
+  const [phases, setPhases] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [showTaskForm, setShowTaskForm] = useState(false);
+  const [editingTask, setEditingTask] = useState<any>(null);
+  const [taskForm, setTaskForm] = useState({
+    name: '', description: '', assignee_id: '', status: 'todo', priority: 'medium',
+    start_date: '', due_date: '', estimated_hours: '', parent_id: '',
+    recurrence_type: 'none', recurrence_interval: '1', recurrence_end_date: '',
+  });
+  const [saving, setSaving] = useState(false);
+  const [cloning, setCloning] = useState(false);
+  const [commentTaskId, setCommentTaskId] = useState<string | null>(null);
+
+  useEffect(() => { loadData(); }, [projectId]);
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const api = getApiClient();
+      const [projectRes, tasksRes, milestonesRes, timesheetsRes, expensesRes, costsRes, docsRes, employeesRes, usersRes, risksRes, changeOrdersRes, depsRes, phasesRes, customFieldsRes] = await Promise.all([
+        api.getProject(projectId),
+        api.getProjectTasks(projectId),
+        api.getProjectMilestones(projectId),
+        api.getProjectTimesheets(projectId),
+        api.getProjectExpenses(projectId),
+        api.getProjectCosts(projectId),
+        api.getProjectDocuments(projectId),
+        api.getEmployees({ limit: '200' }),
+        api.getUsers({ limit: 100 }),
+        api.getProjectRisks(projectId),
+        api.getProjectChangeOrders(projectId),
+        api.getProjectDependencies(projectId).catch(() => []),
+        api.getProjectPhases(projectId).catch(() => []),
+        fetch(`/api/companies/${localStorage.getItem('company_id')}/projects/${projectId}/custom-fields`).then(r => r.json()).then(j => j.data || []),
+      ]);
+      setProject(projectRes);
+      setTasks(Array.isArray(tasksRes) ? tasksRes : []);
+      setFilteredTasks(Array.isArray(tasksRes) ? tasksRes : []);
+      setMilestones(Array.isArray(milestonesRes) ? milestonesRes : []);
+      setTimesheets(Array.isArray(timesheetsRes) ? timesheetsRes : []);
+      setExpenses(Array.isArray(expensesRes) ? expensesRes : []);
+      setCostsData(costsRes || { costs: [], summary: [] });
+      setDocuments(Array.isArray(docsRes) ? docsRes : []);
+      setEmployees(Array.isArray(employeesRes?.data) ? employeesRes.data : []);
+      setUsers(usersRes?.data || []);
+      setRisks(Array.isArray(risksRes) ? risksRes : []);
+      setChangeOrders(Array.isArray(changeOrdersRes) ? changeOrdersRes : []);
+      setDependencies(Array.isArray(depsRes) ? depsRes : []);
+      setPhases(Array.isArray(phasesRes) ? phasesRes : []);
+      setCustomFields(Array.isArray(customFieldsRes) ? customFieldsRes : []);
+
+      const userId = usersRes?.data?.[0]?.id;
+      if (userId) {
+        const favRes = await fetch(`/api/companies/${localStorage.getItem('company_id')}/projects/${projectId}/favorite?user_id=${userId}`);
+        if (favRes.ok) {
+          const favJson = await favRes.json();
+          setIsFavorite(favJson.data?.is_favorite || false);
+        }
+      }
+    } catch (err) { toast.error('Error al cargar proyecto'); }
+    setLoading(false);
+  };
+
+  const shortcuts = [
+    { keys: ['n'], label: 'Nueva tarea', action: () => { setTaskForm({ name: '', description: '', assignee_id: '', status: 'todo', priority: 'medium', start_date: '', due_date: '', estimated_hours: '', parent_id: '', recurrence_type: 'none', recurrence_interval: '1', recurrence_end_date: '' }); setEditingTask(null); setShowTaskForm(true); } },
+    { keys: ['1'], label: 'Tab Resumen', action: () => setActiveTab('dashboard') },
+    { keys: ['2'], label: 'Tab Tareas', action: () => setActiveTab('tasks') },
+    { keys: ['3'], label: 'Tab Kanban', action: () => setActiveTab('kanban') },
+    { keys: ['4'], label: 'Tab Calendario', action: () => setActiveTab('calendar') },
+    { keys: ['5'], label: 'Tab Gantt', action: () => setActiveTab('gantt') },
+    { keys: ['6'], label: 'Tab Hitos', action: () => setActiveTab('milestones') },
+    { keys: ['Escape'], label: 'Cerrar modales', action: () => { setShowTaskForm(false); setCommentTaskId(null); } },
+    { keys: ['r'], label: 'Recargar datos', action: () => loadData() },
+  ];
+
+  useKeyboardShortcuts(shortcuts);
+
+  const handleSaveTask = async () => {
+    if (!taskForm.name) return;
+    setSaving(true);
+    try {
+      const api = getApiClient();
+      const data = { ...taskForm, estimated_hours: taskForm.estimated_hours ? parseFloat(taskForm.estimated_hours) : null, assignee_id: taskForm.assignee_id || null, parent_id: taskForm.parent_id || null };
+      let taskId: string;
+      if (editingTask) { await api.updateProjectTask(projectId, editingTask.id, data); taskId = editingTask.id; }
+      else { const res = await api.createProjectTask(projectId, data); taskId = res.id; }
+      if (selectedTaskTags.length > 0) {
+        await api.setTaskTags(projectId, taskId, selectedTaskTags);
+      }
+      setShowTaskForm(false); setEditingTask(null);
+      setTaskForm({ name: '', description: '', assignee_id: '', status: 'todo', priority: 'medium', start_date: '', due_date: '', estimated_hours: '', parent_id: '', recurrence_type: 'none', recurrence_interval: '1', recurrence_end_date: '' });
+      setSelectedTaskTags([]);
+      loadData();
+    } catch (err) { toast.error('Error al guardar tarea'); }
+    setSaving(false);
+  };
+
+  const handleEditTask = (task: any) => {
+    setTaskForm({ name: task.name || '', description: task.description || '', assignee_id: task.assignee_id || '', status: task.status || 'todo', priority: task.priority || 'medium', start_date: task.start_date || '', due_date: task.due_date || '', estimated_hours: task.estimated_hours || '', parent_id: task.parent_id || '', recurrence_type: task.recurrence_type || 'none', recurrence_interval: task.recurrence_interval || '1', recurrence_end_date: task.recurrence_end_date || '' });
+    setEditingTask(task); setShowTaskForm(true);
+  };
+
+  const handleClone = async () => {
+    if (!confirm(`Clonar "${project.name}"? Se creara una copia completa con tareas, hitos, fases, miembros, recursos y automatización.`)) return;
+    setCloning(true);
+    try {
+      const api = getApiClient();
+      const res = await api.cloneProject(projectId, {
+        name: `${project.name} (Copia)`,
+        code: `${project.code}-COPY`,
+        copy_members: true,
+        copy_allocations: true,
+        copy_automation: true,
+        copy_phases: true,
+        adjust_dates: true,
+      });
+      router.push(`/dashboard/projects/${res.project.id}`);
+    } catch (err: any) {
+      toast.error(err?.message || 'Error al clonar');
+      setCloning(false);
+    }
+  };
+
+  const handleArchive = async () => {
+    const newArchived = !project.archived;
+    const msg = newArchived 
+      ? `Archivar "${project.name}"? El proyecto se ocultara de la lista principal.`
+      : `Restaurar "${project.name}"? El proyecto volvera a aparecer en la lista.`;
+    if (!confirm(msg)) return;
+    try {
+      const companyId = localStorage.getItem('company_id');
+      await fetch(`/api/companies/${companyId}/projects/${projectId}/archive`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ archived: newArchived }),
+      });
+      setProject({ ...project, archived: newArchived });
+      toast.success(newArchived ? 'Proyecto archivado' : 'Proyecto restaurado');
+    } catch (err) {
+      toast.error('Error al archivar/restaurar');
+    }
+  };
+
+  const toggleFavorite = async () => {
+    try {
+      const companyId = localStorage.getItem('company_id');
+      const userId = users[0]?.id;
+      if (!userId) return;
+      await fetch(`/api/companies/${companyId}/projects/${projectId}/favorite`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userId, is_favorite: !isFavorite }),
+      });
+      setIsFavorite(!isFavorite);
+      toast.success(isFavorite ? 'Removido de favoritos' : 'Agregado a favoritos');
+    } catch (err) {
+      toast.error('Error al actualizar favorito');
+    }
+  };
+
+  const handleDeleteTask = async (taskId: string) => {
+    if (!confirm('Eliminar esta tarea?')) return;
+    try { const api = getApiClient(); await api.deleteProjectTask(projectId, taskId); loadData(); } catch (err) { toast.error('Error al eliminar tarea'); }
+  };
+
+  const handleUpdateTaskStatus = async (task: any, newStatus: string) => {
+    try { const api = getApiClient(); await api.updateProjectTask(projectId, task.id, { ...task, status: newStatus }); loadData(); } catch (err) { toast.error('Error al actualizar tarea'); }
+  };
+
+  const toggleSelectTask = (taskId: string) => {
+    setSelectedTasks(prev => prev.includes(taskId) ? prev.filter(id => id !== taskId) : [...prev, taskId]);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedTasks.length === filteredTasks.filter(t => !t.parent_id).length) {
+      setSelectedTasks([]);
+    } else {
+      setSelectedTasks(filteredTasks.filter(t => !t.parent_id).map(t => t.id));
+    }
+  };
+
+  const handleUpdateProgress = async (progress: number) => {
+    try { const api = getApiClient(); await api.updateProject(projectId, { ...project, progress }); setProject({ ...project, progress }); } catch (err) { toast.error('Error al actualizar progreso'); }
+  };
+
+  const handleAutoProgress = async () => {
+    if (tasks.length === 0) return;
+    const done = tasks.filter(t => t.status === 'done').length;
+    const inProgress = tasks.filter(t => t.status === 'in_progress').length;
+    const review = tasks.filter(t => t.status === 'review').length;
+    const pct = Math.round(((done * 1 + inProgress * 0.5 + review * 0.75) / tasks.length) * 100);
+    await handleUpdateProgress(pct);
+  };
+
+  const [taskTagsMap, setTaskTagsMap] = useState<Record<string, { name: string; color: string }[]>>({});
+  const [selectedTaskTags, setSelectedTaskTags] = useState<string[]>([]);
+
+  const handleSetTaskTags = async (taskId: string, tagIds: string[]) => {
+    try {
+      const api = getApiClient();
+      const result = await api.setTaskTags(projectId, taskId, tagIds);
+      setTaskTagsMap(prev => ({ ...prev, [taskId]: result || [] }));
+      setSelectedTaskTags([]);
+    } catch { toast.error('Error al guardar tags'); }
+  };
+
+  const [exportOpen, setExportOpen] = useState(false);
+
+  const handleExport = (type: 'csv' | 'excel', dataset: string) => {
+    let data: any[] = [];
+    let filename = '';
+
+    switch (dataset) {
+      case 'tasks':
+        data = tasks.map(t => ({
+          Nombre: t.name, Descripcion: t.description, Estado: t.status, Prioridad: t.priority,
+          'Fecha Inicio': t.start_date, 'Fecha Fin': t.due_date, 'Horas Estimadas': t.estimated_hours,
+        }));
+        filename = `${project?.code || 'proyecto'}_tareas`;
+        break;
+      case 'timesheets':
+        data = timesheets.map(t => ({
+          Fecha: t.date, Empleado: t.employee_name, Tarea: t.task_name,
+          Horas: t.hours, Descripcion: t.description,
+        }));
+        filename = `${project?.code || 'proyecto'}_horas`;
+        break;
+      case 'expenses':
+        data = expenses.map(e => ({
+          Fecha: e.date, Tipo: e.type, Monto: e.amount, Descripcion: e.description,
+        }));
+        filename = `${project?.code || 'proyecto'}_gastos`;
+        break;
+      case 'milestones':
+        data = milestones.map(m => ({
+          Nombre: m.name, Estado: m.status, 'Fecha Limite': m.due_date,
+        }));
+        filename = `${project?.code || 'proyecto'}_hitos`;
+        break;
+    }
+
+    if (data.length === 0) { toast.warning('No hay datos para exportar'); return; }
+    if (type === 'csv') downloadCSV(data, filename);
+    else downloadExcel(data, filename);
+    setExportOpen(false);
+    toast.success(`Exportado ${data.length} registros`);
+  };
+
+  const handleExportPDF = () => {
+    const doc = generateProjectReportPDF({
+      project, tasks, milestones, expenses, phases, timesheets,
+    });
+    doc.save(`${project?.code || 'proyecto'}_reporte.pdf`);
+    setExportOpen(false);
+    toast.success('PDF generado');
+  };
+
+  const handleExportCalendar = () => {
+    const ics = generateProjectCalendarICS(milestones, tasks, project.name, project.code);
+    downloadICS(ics, `${project?.code || 'proyecto'}_calendario`);
+    setExportOpen(false);
+    toast.success('Calendario exportado (.ics)');
+  };
+
+  const totalEstimated = tasks.reduce((sum, t) => sum + (parseFloat(t.estimated_hours) || 0), 0);
+  const totalActual = tasks.reduce((sum, t) => sum + (parseFloat(t.actual_hours) || 0), 0);
+  const completedTasks = tasks.filter(t => t.status === 'done').length;
+  const totalExpenses = expenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+  const totalCosts = (costsData.costs || []).reduce((sum: number, c: any) => sum + (parseFloat(c.amount) || 0), 0);
+  const budget = parseFloat(project.budget) || 0;
+  const budgetUsed = budget > 0 ? Math.round(((totalCosts + totalExpenses) / budget) * 100) : 0;
+
+  const tabs = [
+    { id: 'dashboard', label: 'Resumen' },
+    { id: 'tasks', label: `Tareas (${tasks.length})` },
+    { id: 'kanban', label: 'Kanban' },
+    { id: 'calendar', label: 'Calendario' },
+    { id: 'gantt', label: 'Gantt' },
+    { id: 'milestones', label: `Hitos (${milestones.length})` },
+    { id: 'phases', label: `Fases (${phases.length})` },
+    { id: 'templates', label: 'Plantillas' },
+    { id: 'automation', label: 'Automatización' },
+    { id: 'team', label: 'Equipo' },
+    { id: 'resources', label: 'Recursos' },
+    { id: 'forecast', label: 'Forecast' },
+    { id: 'timesheets', label: `Horas (${timesheets.length})` },
+    { id: 'hours-report', label: 'Reporte Horas' },
+    { id: 'expenses', label: `Gastos (${expenses.length})` },
+    { id: 'costs', label: 'Centro Costos' },
+    { id: 'risks', label: `Riesgos (${risks.length})` },
+    { id: 'changes', label: `Cambios (${changeOrders.length})` },
+    { id: 'documents', label: `Docs (${documents.length})` },
+    { id: 'profit', label: 'Rentabilidad' },
+    { id: 'activity', label: 'Actividad' },
+    { id: 'audit', label: 'Historial' },
+    { id: 'portal', label: 'Portal' },
+    { id: 'custom-fields', label: 'Campos' },
+    { id: 'notifications', label: 'Notificaciones' },
+    { id: 'info', label: 'Info' },
+  ];
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-muted rounded w-1/3" />
+          <div className="grid grid-cols-4 gap-4">{[1, 2, 3, 4].map(i => <div key={i} className="h-24 bg-muted rounded-xl" />)}</div>
+          <div className="h-12 bg-muted rounded-xl" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!project) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-sm text-muted-foreground">Proyecto no encontrado</p>
+        <Link href="/dashboard/projects" className="text-primary hover:underline text-sm mt-2 inline-block">Volver a Proyectos</Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {project.archived && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center gap-3">
+          <Archive className="w-4 h-4 text-amber-600" />
+          <span className="text-sm text-amber-700 font-medium">Este proyecto esta archivado. Haz clic en &quot;Restaurar&quot; para volver a mostrarlo.</span>
+        </div>
+      )}
+      <div className="flex items-center gap-4">
+        <button onClick={() => router.back()} className="p-2 hover:bg-muted rounded-lg transition-colors"><ArrowLeft className="w-5 h-5 text-foreground" /></button>
+        <div className="flex-1">
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl font-bold text-foreground">{project.name}</h1>
+            <Badge variant={statusConfig[project.status]?.variant || 'neutral'}>{statusConfig[project.status]?.label || project.status}</Badge>
+          </div>
+          <p className="text-sm text-muted-foreground mt-1">{project.code} {project.customer_name ? `· ${project.customer_name}` : ''}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <ShortcutsHelp shortcuts={shortcuts} />
+          <NotificationsPanel userId={users[0]?.id || ''} />
+          <div className="relative">
+            <button onClick={() => setExportOpen(!exportOpen)}
+              className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              <Download className="w-4 h-4" /> Exportar
+            </button>
+            {exportOpen && (
+              <div className="absolute right-0 top-full mt-2 w-56 bg-card border border-border rounded-xl shadow-xl z-50 py-2">
+                {[
+                  { label: 'Tareas (CSV)', action: () => handleExport('csv', 'tasks') },
+                  { label: 'Tareas (Excel)', action: () => handleExport('excel', 'tasks') },
+                  { label: 'Horas (CSV)', action: () => handleExport('csv', 'timesheets') },
+                  { label: 'Horas (Excel)', action: () => handleExport('excel', 'timesheets') },
+                  { label: 'Gastos (CSV)', action: () => handleExport('csv', 'expenses') },
+                  { label: 'Gastos (Excel)', action: () => handleExport('excel', 'expenses') },
+                  { label: 'Hitos (CSV)', action: () => handleExport('csv', 'milestones') },
+                  { label: 'Hitos (Excel)', action: () => handleExport('excel', 'milestones') },
+                  { label: '─────────', action: () => {} },
+                  { label: 'Reporte Completo (PDF)', action: handleExportPDF },
+                  { label: 'Calendario (.ics)', action: handleExportCalendar },
+                ].map((item, i) => (
+                  <button key={i} onClick={item.action}
+                    className={`w-full text-left px-4 py-2 text-xs hover:bg-muted transition-colors ${item.label.startsWith('─') ? 'text-foreground cursor-default' : 'text-foreground'}`}>
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          <button onClick={handleClone} disabled={cloning}
+            className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50">
+            <Copy className="w-4 h-4" /> {cloning ? 'Clonando...' : 'Clonar'}
+          </button>
+          <Link href={`/dashboard/projects/${projectId}/edit`}>
+            <button className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              <Edit className="w-4 h-4" /> Editar
+            </button>
+          </Link>
+          <button onClick={handleArchive}
+            className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors border ${
+              project.archived 
+                ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                : 'bg-white text-foreground border-border hover:bg-muted dark:bg-card dark:text-foreground dark:border-border dark:hover:bg-primary/90'
+            }`}>
+            <Archive className="w-4 h-4" /> {project.archived ? 'Restaurar' : 'Archivar'}
+          </button>
+        </div>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border">
+          <div className="flex items-center justify-between">
+            <div><p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Presupuesto</p><p className="text-lg font-bold text-foreground mt-1">${budget > 0 ? (budget / 1000000).toFixed(1) + 'M' : '—'}</p></div>
+            <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center"><DollarSign className="w-5 h-5 text-primary" /></div>
+          </div>
+        </div>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border">
+          <div className="flex items-center justify-between">
+            <div><p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Gastado</p><p className="text-lg font-bold text-foreground mt-1">{budgetUsed}%</p><p className="text-[10px] text-muted-foreground">${((totalCosts + totalExpenses) / 1000000).toFixed(1)}M</p></div>
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${budgetUsed > 90 ? 'bg-red-50' : budgetUsed > 70 ? 'bg-amber-50' : 'bg-emerald-50'}`}><DollarSign className={`w-5 h-5 ${budgetUsed > 90 ? 'text-red-600' : budgetUsed > 70 ? 'text-amber-600' : 'text-emerald-600'}`} /></div>
+          </div>
+        </div>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border">
+          <div className="flex items-center justify-between">
+            <div><p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tareas</p><p className="text-lg font-bold text-foreground mt-1">{completedTasks}/{tasks.length}</p></div>
+            <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center"><CheckCircle2 className="w-5 h-5 text-emerald-600" /></div>
+          </div>
+        </div>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border">
+          <div className="flex items-center justify-between">
+            <div><p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Horas</p><p className="text-lg font-bold text-foreground mt-1">{totalActual.toFixed(1)}/{totalEstimated.toFixed(1)}</p></div>
+            <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center"><Clock className="w-5 h-5 text-amber-600" /></div>
+          </div>
+        </div>
+        <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border">
+          <div className="flex items-center justify-between">
+            <div><p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Progreso</p><p className="text-lg font-bold text-foreground mt-1">{project.progress || 0}%</p></div>
+            <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center"><BarChart3 className="w-5 h-5 text-blue-600" /></div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-card border border-border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm text-muted-foreground">Progreso del proyecto</span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-medium text-foreground">{project.progress || 0}%</span>
+            {tasks.length > 0 && (
+              <button onClick={handleAutoProgress} className="text-[10px] font-medium text-primary hover:text-primary bg-blue-50 hover:bg-blue-50 px-2 py-0.5 rounded transition-colors">
+                Auto-calculcar
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
+          <div className="h-full bg-primary rounded-full transition-all duration-300" style={{ width: `${project.progress || 0}%` }} />
+        </div>
+        <div className="flex gap-2 mt-3">
+          {[0, 25, 50, 75, 100].map(p => (
+            <button key={p} onClick={() => handleUpdateProgress(p)}
+              className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${project.progress === p ? 'bg-blue-50 text-primary' : 'bg-muted text-muted-foreground hover:bg-muted'}`}>
+              {p}%
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <BudgetAlerts projectId={projectId} budget={budget} costs={costsData.costs || []} expenses={expenses} />
+
+      <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border">
+        <ContinuousTabs tabs={tabs} defaultActiveId={activeTab} onChange={(id) => setActiveTab(id)} />
+      </div>
+
+      {/* TABS CONTENT */}
+      {activeTab === 'dashboard' && <ProjectDashboard project={project} tasks={tasks} milestones={milestones} expenses={expenses} timesheets={timesheets} costs={costsData.costs || []} employees={employees} />}
+      {activeTab === 'tasks' && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-foreground">Tareas del Proyecto</h2>
+            <button onClick={() => { setShowTaskForm(true); setEditingTask(null); setTaskForm({ name: '', description: '', assignee_id: '', status: 'todo', priority: 'medium', start_date: '', due_date: '', estimated_hours: '', parent_id: '', recurrence_type: 'none', recurrence_interval: '1', recurrence_end_date: '' }); }}
+              className="bg-primary hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+              <Plus className="w-4 h-4" /> Nueva Tarea
+            </button>
+          </div>
+          {tasks.length === 0 ? (
+            <div className="text-center py-12 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+              <CheckCircle2 className="w-12 h-12 text-foreground mx-auto mb-3" />
+              <p className="text-sm text-muted-foreground">No hay tareas creadas</p>
+              <button onClick={() => setShowTaskForm(true)} className="text-primary hover:underline text-sm mt-2">Crear primera tarea</button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <TaskFilters tasks={tasks} users={users} onFilter={setFilteredTasks} />
+              <BulkTaskActions selectedTasks={selectedTasks} onClearSelection={() => setSelectedTasks([])} onRefresh={loadData} users={users} />
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 px-1">
+                  <button onClick={toggleSelectAll} className="p-1 hover:bg-muted rounded transition-colors">
+                    {selectedTasks.length === filteredTasks.filter(t => !t.parent_id).length && filteredTasks.filter(t => !t.parent_id).length > 0 ? (
+                      <CheckSquare className="w-4 h-4 text-primary" />
+                    ) : (
+                      <Square className="w-4 h-4 text-muted-foreground" />
+                    )}
+                  </button>
+                  <span className="text-[9px] text-muted-foreground">Seleccionar todo</span>
+                </div>
+                {filteredTasks.filter(t => !t.parent_id).map(task => {
+                const subtasks = filteredTasks.filter(t => t.parent_id === task.id);
+                return (
+                <div key={task.id}>
+                <div className={`bg-white border rounded-xl shadow-sm p-4 dark:bg-primary dark:border-border hover:shadow-md dark:bg-primary dark:border-border transition-shadow ${selectedTasks.includes(task.id) ? 'border-primary/30 bg-blue-50/30' : 'border-border'}`}>
+                  <div className="flex items-start gap-3">
+                    <button onClick={() => toggleSelectTask(task.id)} className="mt-0.5 p-0.5 hover:bg-muted rounded transition-colors">
+                      {selectedTasks.includes(task.id) ? (
+                        <CheckSquare className="w-4 h-4 text-primary" />
+                      ) : (
+                        <Square className="w-4 h-4 text-muted-foreground" />
+                      )}
+                    </button>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <h3 className="text-sm font-semibold text-foreground">{task.name}</h3>
+                        <Badge variant={taskStatusConfig[task.status]?.variant || 'neutral'}>{taskStatusConfig[task.status]?.label}</Badge>
+                        <Badge variant={priorityConfig[task.priority]?.variant || 'neutral'}>{priorityConfig[task.priority]?.label}</Badge>
+                      </div>
+                      {task.description && <p className="text-xs text-muted-foreground mt-1">{task.description}</p>}
+                      <TaskTagBadges tags={taskTagsMap[task.id] || []} />
+                      <SubtaskProgress tasks={tasks} parentId={task.id} />
+                      <div className="mt-2"><TaskChecklist taskId={task.id} onUpdate={loadData} /></div>
+                      <div className="mt-2 pt-2 border-t border-border"><TaskChangelog taskId={task.id} /></div>
+                      <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+                        {task.assignee_name && <span className="flex items-center gap-1"><Users className="w-3 h-3" />{task.assignee_name}</span>}
+                        {task.due_date && <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{task.due_date}</span>}
+                        {task.estimated_hours && <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{task.estimated_hours}h</span>}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {task.status !== 'done' && (
+                        <TimerWidget projectId={projectId} taskId={task.id} employeeId={task.assignee_id} onTimerUpdate={loadData} />
+                      )}
+                      <div className="flex items-center gap-1">
+                        {task.status !== 'done' && (
+                          <button onClick={() => { const next = task.status === 'todo' ? 'in_progress' : task.status === 'in_progress' ? 'review' : 'done'; handleUpdateTaskStatus(task, next); }}
+                            className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded text-xs font-medium hover:bg-emerald-100 transition-colors">
+                            {task.status === 'todo' ? 'Iniciar' : task.status === 'in_progress' ? 'Revisar' : 'Completar'}
+                          </button>
+                        )}
+                        <button onClick={() => setCommentTaskId(task.id)} className="p-1.5 hover:bg-muted rounded-lg transition-colors"><MessageCircle className="w-3.5 h-3.5 text-muted-foreground" /></button>
+                        <button onClick={() => { setTaskForm({ ...taskForm, parent_id: task.id }); setShowTaskForm(true); }} className="p-1.5 hover:bg-muted rounded-lg transition-colors"><Plus className="w-3.5 h-3.5 text-muted-foreground" /></button>
+                        <button onClick={() => handleEditTask(task)} className="p-1.5 hover:bg-muted rounded-lg transition-colors"><Edit className="w-3.5 h-3.5 text-muted-foreground" /></button>
+                        <button onClick={() => handleDeleteTask(task.id)} className="p-1.5 hover:bg-red-50 rounded-lg transition-colors"><Trash2 className="w-3.5 h-3.5 text-red-500" /></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {subtasks.length > 0 && (
+                  <div className="ml-6 mt-1 space-y-1">
+                    {subtasks.map(sub => (
+                      <div key={sub.id} className="bg-white border border-border rounded-lg p-3 hover:shadow-sm transition-shadow flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-1 h-1 bg-muted rounded-full" />
+                          <span className="text-xs font-medium text-foreground">{sub.name}</span>
+                          <Badge variant={taskStatusConfig[sub.status]?.variant || 'neutral'}>{taskStatusConfig[sub.status]?.label}</Badge>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          {sub.status !== 'done' && (
+                            <button onClick={() => { const next = sub.status === 'todo' ? 'in_progress' : sub.status === 'in_progress' ? 'review' : 'done'; handleUpdateTaskStatus(sub, next); }}
+                              className="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 rounded text-[10px] font-medium hover:bg-emerald-100 transition-colors">
+                              {sub.status === 'todo' ? 'Iniciar' : sub.status === 'in_progress' ? 'Revisar' : 'Completar'}
+                            </button>
+                          )}
+                          <button onClick={() => handleEditTask(sub)} className="p-1 hover:bg-muted rounded transition-colors"><Edit className="w-3 h-3 text-muted-foreground" /></button>
+                          <button onClick={() => handleDeleteTask(sub.id)} className="p-1 hover:bg-red-50 rounded transition-colors"><Trash2 className="w-3 h-3 text-red-400" /></button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                </div>
+              )})}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'gantt' && <GanttChart tasks={tasks} dependencies={dependencies} />}
+
+      {activeTab === 'kanban' && (
+        <KanbanBoard
+          tasks={tasks}
+          onStatusChange={handleUpdateTaskStatus}
+          onEdit={handleEditTask}
+          onDelete={handleDeleteTask}
+          onAddTask={(status) => {
+            setTaskForm({ name: '', description: '', assignee_id: '', status, priority: 'medium', start_date: '', due_date: '', estimated_hours: '', parent_id: '', recurrence_type: 'none', recurrence_interval: '1', recurrence_end_date: '' });
+            setShowTaskForm(true);
+          }}
+        />
+      )}
+      {activeTab === 'calendar' && <ProjectCalendar tasks={tasks} milestones={milestones} />}
+      {activeTab === 'milestones' && <MilestonesTab projectId={projectId} milestones={milestones} onRefresh={loadData} />}
+      {activeTab === 'templates' && <TemplatesTab onApply={loadData} />}
+      {activeTab === 'automation' && <AutomationManager projectId={projectId} />}
+      {activeTab === 'team' && <ProjectMembers projectId={projectId} users={users} />}
+      {activeTab === 'resources' && <ResourceAllocationForm projectId={projectId} employees={employees} />}
+      {activeTab === 'forecast' && <BudgetForecast projectId={projectId} />}
+      {activeTab === 'phases' && <PhasesTab projectId={projectId} phases={phases} onRefresh={loadData} />}
+      {activeTab === 'timesheets' && <TimesheetsTab projectId={projectId} timesheets={timesheets} tasks={tasks} employees={employees} onRefresh={loadData} />}
+      {activeTab === 'hours-report' && <HoursReport timesheets={timesheets} tasks={tasks} employees={employees} />}
+      {activeTab === 'expenses' && <ExpensesTab projectId={projectId} expenses={expenses} onRefresh={loadData} />}
+      {activeTab === 'costs' && <CostsTab costs={costsData.costs || []} budget={project.budget} />}
+      {activeTab === 'risks' && <RisksTab projectId={projectId} risks={risks} employees={employees} onRefresh={loadData} />}
+      {activeTab === 'changes' && <ChangeOrdersTab projectId={projectId} changeOrders={changeOrders} onRefresh={loadData} />}
+      {activeTab === 'documents' && <DocumentsTab projectId={projectId} documents={documents} onRefresh={loadData} />}
+      {activeTab === 'profit' && <RentabilidadReport project={project} costs={costsData.costs || []} expenses={expenses} timesheets={timesheets} />}
+      {activeTab === 'activity' && <ActivityLog projectId={projectId} />}
+      {activeTab === 'audit' && <AuditLog projectId={projectId} />}
+      {activeTab === 'portal' && <PortalTab projectId={projectId} project={project} onRefresh={loadData} />}
+
+      {activeTab === 'notifications' && (
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border">
+          <NotificationSettings projectId={projectId} />
+        </div>
+      )}
+      {activeTab === 'custom-fields' && (
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border">
+          <h2 className="text-sm font-semibold text-foreground mb-4">Campos Personalizados</h2>
+          <CustomFields projectId={projectId} fields={customFields} values={customValues} onChange={(fieldId, value) => setCustomValues({ ...customValues, [fieldId]: value })} onRefresh={loadData} />
+        </div>
+      )}
+      {activeTab === 'info' && (
+        <div className="bg-card border border-border rounded-xl shadow-sm p-6 dark:bg-primary dark:border-border">
+          <h2 className="text-sm font-semibold text-foreground mb-4">Informacion del Proyecto</h2>
+          <div className="grid grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div><p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Nombre</p><p className="text-sm text-foreground mt-1">{project.name}</p></div>
+              <div><p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Codigo</p><p className="text-sm text-foreground mt-1">{project.code}</p></div>
+              <div><p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cliente</p><p className="text-sm text-foreground mt-1">{project.customer_name || '—'}</p></div>
+              <div><p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Gerente</p><p className="text-sm text-foreground mt-1">{project.project_manager_name || '—'}</p></div>
+              <div><p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Creado por</p><p className="text-sm text-foreground mt-1">{project.created_by_name || '—'}</p></div>
+            </div>
+            <div className="space-y-4">
+              <div><p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha Inicio</p><p className="text-sm text-foreground mt-1">{project.start_date || '—'}</p></div>
+              <div><p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha Fin</p><p className="text-sm text-foreground mt-1">{project.end_date || '—'}</p></div>
+              <div><p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Presupuesto</p><p className="text-sm text-foreground mt-1">${(parseFloat(project.budget) || 0).toLocaleString('es-CL')} CLP</p></div>
+              <div><p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Estado</p><p className="text-sm text-foreground mt-1"><Badge variant={statusConfig[project.status]?.variant || 'neutral'}>{statusConfig[project.status]?.label || project.status}</Badge></p></div>
+              <div><p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Descripcion</p><p className="text-sm text-foreground mt-1">{project.description || '—'}</p></div>
+              <div><p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Creado</p><p className="text-sm text-foreground mt-1">{project.created_at?.split('T')[0] || '—'}</p></div>
+              <div><p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Ultima Actualizacion</p><p className="text-sm text-foreground mt-1">{project.updated_at?.split('T')[0] || '—'}</p></div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TASK MODAL */}
+      {showTaskForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w- dark:bg-primarylg mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">{editingTask ? 'Editar Tarea' : 'Nueva Tarea'}</h2>
+              <button onClick={() => { setShowTaskForm(false); setEditingTask(null); }} className="text-muted-foreground hover:text-foreground">X</button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-foreground">Nombre *</label>
+                <input type="text" value={taskForm.name} onChange={e => setTaskForm({ ...taskForm, name: e.target.value })}
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+              </div>
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-foreground">Descripcion</label>
+                <textarea value={taskForm.description} onChange={e => setTaskForm({ ...taskForm, description: e.target.value })} rows={2}
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-foreground">Asignado a</label>
+                  <select value={taskForm.assignee_id} onChange={e => setTaskForm({ ...taskForm, assignee_id: e.target.value })}
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
+                    <option value="">Sin asignar</option>
+                    {users.map(u => <option key={u.id} value={u.id}>{u.full_name || u.email}</option>)}
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-foreground">Prioridad</label>
+                  <select value={taskForm.priority} onChange={e => setTaskForm({ ...taskForm, priority: e.target.value })}
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
+                    <option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="urgent">Urgente</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-foreground">Inicio</label>
+                  <input type="date" value={taskForm.start_date} onChange={e => setTaskForm({ ...taskForm, start_date: e.target.value })}
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-foreground">Limite</label>
+                  <input type="date" value={taskForm.due_date} onChange={e => setTaskForm({ ...taskForm, due_date: e.target.value })}
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-foreground">Horas Est.</label>
+                  <input type="number" step="0.5" value={taskForm.estimated_hours} onChange={e => setTaskForm({ ...taskForm, estimated_hours: e.target.value })}
+                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent" />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-foreground">Tarea Padre</label>
+                <select value={taskForm.parent_id} onChange={e => setTaskForm({ ...taskForm, parent_id: e.target.value })}
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent">
+                  <option value="">Sin tarea padre</option>
+                  {tasks.filter((t: any) => !t.parent_id && (!editingTask || t.id !== editingTask.id)).map((t: any) => (
+                    <option key={t.id} value={t.id}>{t.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-foreground">Etiquetas</label>
+                <TagsManager selectedTagIds={selectedTaskTags} onChange={setSelectedTaskTags} />
+              </div>
+              <div className="border-t border-border pt-3 mt-1">
+                <label className="block text-xs font-medium text-foreground mb-1.5">Recurrencia</label>
+                <div className="grid grid-cols-3 gap-2">
+                  <select value={taskForm.recurrence_type} onChange={e => setTaskForm({ ...taskForm, recurrence_type: e.target.value })}
+                    className="bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary/20">
+                    <option value="none">Sin recurrencia</option>
+                    <option value="daily">Diario</option>
+                    <option value="weekly">Semanal</option>
+                    <option value="monthly">Mensual</option>
+                    <option value="yearly">Anual</option>
+                  </select>
+                  {taskForm.recurrence_type !== 'none' && (
+                    <>
+                      <input type="number" min="1" value={taskForm.recurrence_interval} onChange={e => setTaskForm({ ...taskForm, recurrence_interval: e.target.value })}
+                        className="bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary/20" placeholder="Cada..." />
+                      <input type="date" value={taskForm.recurrence_end_date} onChange={e => setTaskForm({ ...taskForm, recurrence_end_date: e.target.value })}
+                        className="bg-muted border border-border rounded-lg px-2 py-1.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary/20" />
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
+              <button onClick={() => { setShowTaskForm(false); setEditingTask(null); }}
+                className="bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancelar</button>
+              <button onClick={handleSaveTask} disabled={saving || !taskForm.name}
+                className="bg-primary hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                {saving ? 'Guardando...' : editingTask ? 'Actualizar' : 'Crear Tarea'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* COMMENTS MODAL */}
+      {commentTaskId && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w- dark:bg-primarymd mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-foreground">Comentarios</h2>
+              <button onClick={() => setCommentTaskId(null)} className="text-muted-foreground hover:text-foreground">X</button>
+            </div>
+            <div className="p-4">
+              <TaskComments projectId={projectId} taskId={commentTaskId} currentUserId={users[0]?.id || ''} />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

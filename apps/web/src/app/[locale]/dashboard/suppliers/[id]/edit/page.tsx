@@ -1,0 +1,197 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
+import { ArrowLeft, Save, Plus, Trash2, UserPlus, Building2, Loader2 } from 'lucide-react';
+import Link from 'next/link';
+import { getApiClient } from '@/lib/api-client';
+
+const regions = [
+  { value: '15', label: 'Metropolitana de Santiago' },
+  { value: '1', label: 'Tarapacá' },
+  { value: '2', label: 'Antofagasta' },
+  { value: '3', label: 'Atacama' },
+  { value: '4', label: 'Coquimbo' },
+  { value: '5', label: 'Valparaíso' },
+  { value: '6', label: "O'Higgins" },
+  { value: '7', label: 'Maule' },
+  { value: '8', label: 'Biobío' },
+  { value: '9', label: 'La Araucanía' },
+  { value: '10', label: 'Los Ríos' },
+  { value: '11', label: 'Los Lagos' },
+  { value: '12', label: 'Aysén' },
+  { value: '13', label: 'Magallanes' },
+  { value: '14', label: 'Arica y Parinacota' },
+  { value: '16', label: 'Ñuble' },
+];
+
+export default function EditSupplierPage() {
+  const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    trade_name: '',
+    tax_id: '',
+    email: '',
+    phone: '',
+    website: '',
+    address: '',
+    city: '',
+    region: '',
+    is_active: true,
+  });
+
+  useEffect(() => {
+    const api = getApiClient();
+    api.getSupplier(id)
+      .then((data: any) => {
+        setFormData({
+          name: data.name || '',
+          trade_name: data.trade_name || '',
+          tax_id: data.tax_id || '',
+          email: data.email || '',
+          phone: data.phone || '',
+          website: data.website || '',
+          address: data.address || '',
+          city: data.city || '',
+          region: data.region || '',
+          is_active: data.is_active !== false,
+        });
+        setLoading(false);
+      })
+      .catch(() => {
+        setError('No se pudo cargar el proveedor');
+        setLoading(false);
+      });
+  }, [id]);
+
+  const handleFormChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFormData(prev => ({ ...prev, [field]: e.target.value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    setError('');
+    try {
+      const api = getApiClient();
+      await api.updateSupplier(id, {
+        name: formData.name,
+        trade_name: formData.trade_name,
+        tax_id: formData.tax_id,
+        email: formData.email,
+        phone: formData.phone,
+        website: formData.website,
+        address: formData.address,
+        city: formData.city,
+        region: formData.region,
+        is_active: formData.is_active,
+      });
+      router.push(`/dashboard/suppliers/${id}`);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error al actualizar el proveedor');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <div className="w-9 h-9 bg-muted rounded-lg animate-pulse" />
+          <div className="h-6 w-48 bg-muted rounded animate-pulse" />
+        </div>
+        <Card><CardContent><div className="h-96 bg-muted rounded animate-pulse" /></CardContent></Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-4">
+        <Link href={`/dashboard/suppliers/${id}`} className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
+          <ArrowLeft className="w-5 h-5" />
+        </Link>
+        <div>
+          <h1 className="text-xl font-bold text-foreground">Editar Proveedor</h1>
+          <p className="text-sm text-muted-foreground mt-1">Actualizar datos del proveedor</p>
+        </div>
+      </div>
+
+      {error && <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-sm mb-4">{error}</div>}
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2 space-y-6">
+            <Card>
+              <CardHeader className="flex items-center gap-2">
+                <Building2 className="w-5 h-5 text-muted-foreground" />
+                <CardTitle>Datos de la Empresa</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Input label="Nombre / Fantasía" value={formData.name} onChange={handleFormChange('name')} placeholder="Ej: Suministros Tecnológicos" required />
+                  <Input label="Razón Social" value={formData.trade_name} onChange={handleFormChange('trade_name')} placeholder="Ej: Suministros Tecnológicos SpA" />
+                  <Input label="RUT" value={formData.tax_id} onChange={handleFormChange('tax_id')} placeholder="XX.XXX.XXX-X" />
+                  <Input label="Email" type="email" value={formData.email} onChange={handleFormChange('email')} placeholder="contacto@proveedor.cl" />
+                  <Input label="Teléfono" value={formData.phone} onChange={handleFormChange('phone')} placeholder="+56 9 XXXX XXXX" />
+                  <Input label="Sitio Web" value={formData.website} onChange={handleFormChange('website')} placeholder="https://proveedor.cl" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Dirección</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Input label="Dirección" value={formData.address} onChange={handleFormChange('address')} placeholder="Av. Ejemplo 1234, Oficina 501" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Input label="Ciudad" value={formData.city} onChange={handleFormChange('city')} placeholder="Santiago" />
+                  <Select label="Región" value={formData.region} onChange={handleFormChange('region')} options={[{ value: '', label: 'Seleccionar región...' }, ...regions]} />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div>
+            <Card className="sticky top-24">
+              <CardHeader>
+                <CardTitle>Resumen</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Estado</span>
+                    <Badge variant={formData.is_active ? 'success' : 'neutral'}>
+                      {formData.is_active ? 'Activo' : 'Inactivo'}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Moneda</span>
+                    <span className="font-medium">CLP</span>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2 pt-4">
+                  <Button type="submit" className="w-full" loading={saving}>
+                    <Save className="w-4 h-4 mr-2" />
+                    Guardar Cambios
+                  </Button>
+                  <Link href={`/dashboard/suppliers/${id}`} className="w-full">
+                    <Button type="button" variant="secondary" className="w-full">Cancelar</Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+}

@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from '@/i18n';
 import './globals.css';
 import Providers from './providers';
 import { SupportWidget } from '@/components/support/support-widget';
@@ -45,12 +43,11 @@ if ('serviceWorker' in navigator) {
   );
 }
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const messages = await getMessages();
   return (
     <html lang="es" className={`${inter.variable} antialiased`} suppressHydrationWarning>
       <head>
@@ -64,12 +61,10 @@ export default async function RootLayout({
         <PwaScript />
       </head>
       <body className="bg-background text-foreground">
-        <NextIntlClientProvider messages={messages}>
-          <Providers>
-            {children}
-            <SupportWidget />
-          </Providers>
-        </NextIntlClientProvider>
+        <Providers>
+          {children}
+          <SupportWidget />
+        </Providers>
       </body>
     </html>
   );

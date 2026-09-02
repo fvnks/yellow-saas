@@ -1,0 +1,249 @@
+﻿'use client';
+
+import { useState, useEffect } from 'react';
+import { Card, CardHeader, CardTitle, CardContent, Badge, Button, Select, Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@yellow-erp/ui';
+import { ArrowLeft, RefreshCw, Download, Cloud, CloudOff, AlertCircle, CheckCircle, XCircle, Loader2, Filter, Database, Smartphone } from 'lucide-react';
+import Link from 'next/link';
+import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
+
+interface OfflineAction {
+  id: string;
+  user_id: string;
+  action_type: string;
+  entity_type: string;
+  entity_id: string | null;
+  payload: any;
+  status: 'pending' | 'synced' | 'failed' | 'conflict';
+  retry_count: number;
+  last_error: string | null;
+  created_at: string;
+  synced_at: string | null;
+  user: { id: string; email: string; full_name: string } | null;
+}
+
+const ACTION_TYPES = [
+  'create', 'update', 'delete',
+  'stock_adjust', 'stock_transfer', 'stock_receive',
+  'pick_start', 'pick_complete', 'pick_short',
+  'count_start', 'count_item', 'count_complete',
+  'receipt_start', 'receipt_item', 'receipt_complete',
+  'inspection_start', 'inspection_item', 'inspection_complete',
+];
+
+export default function PWAOfflineQueuePage() {
+  const [items, setItems] = useState<OfflineAction[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState({ status: 'all', action_type: 'all', user_id: 'all' });
+  const [users, setUsers] = useState<{ id: string; email: string; full_name: string }[]>([]);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    loadData();
+  }, [filter.status, filter.action_type, filter.user_id]);
+
+  const loadData = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const api = getApiClient();
+      const [itemsRes, usersRes] = await Promise.all([
+        api.getPwaOfflineQueue({ 
+          status: filter.status === 'all' ? '' : filter.status,
+          action_type: filter.action_type === 'all' ? '' : filter.action_type,
+          user_id: filter.user_id === 'all' ? '' : filter.user_id,
+          limit: '500'
+        }),
+        (api as any).getUsers({ limit: '100' })
+      ]);
+      setItems(itemsRes.data || []);
+      setUsers(usersRes.data || []);
+    } catch (err: any) {
+      setError(err.message || 'Error cargando cola offline');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const syncAll = async () => {
+    const pending = items.filter(i => i.status === 'pending' || i.status === 'failed');
+    if (pending.length === 0) return toast('No hay elementos pendientes de sincronizar');
+
+    if (!confirm(`Sincronizar ${pending.length} elementos pendientes?`)) return;
+
+    try {
+      const api = getApiClient();
+      const result = await api.syncOfflineQueue(pending.map(i => i.id));
+      toast.success(`Sincronizados ${result.synced} elementos, fallaron ${result.failed}`);
+      loadData();
+    } catch (err: any) {
+      toast.error(`Error: ${err.message}`);
+    }
+  };
+
+  const retryItem = async (id: string) => {
+    try {
+      const api = getApiClient();
+      await (api as any).syncOfflineAction(id);
+      loadData();
+    } catch (err: any) { toast.error(`Error: ${err.message}`); }
+  };
+
+  const exportCSV = () => {
+    const headers = ['ID', 'Usuario', 'Acción', 'Entidad', 'Entidad ID', 'Estado', 'Intentos', 'Error', 'Creado', 'Sincronizado'];
+    const rows = items.map(i => [
+      i.id,
+      i.user?.email || '—',
+      i.action_type,
+      i.entity_type,
+      i.entity_id || '—',
+      i.status,
+      i.retry_count,
+      i.last_error || '—',
+      new Date(i.created_at).toLocaleString('es-CL'),
+      i.synced_at ? new Date(i.synced_at).toLocaleString('es-CL') : '—',
+    ]);
+    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = `offline-queue-${new Date().toISOString().slice(0,10)}.csv`; a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const getStatusBadge = (status: string) => {
+    const config: Record<string, { variant: 'success' | 'warning' | 'danger' | 'neutral'; label: string }> = {
+      pending: { variant: 'warning', label: 'Pendiente' },
+      synced: { variant: 'success', label: 'Sincronizado' },
+      failed: { variant: 'danger', label: 'Falló' },
+      conflict: { variant: 'danger', label: 'Conflicto' },
+    };
+    return config[status] || { variant: 'neutral', label: status };
+  };
+
+  if (loading) return <div className="space-y-6">{[1,2,3].map(i => <div key={i} className="animate-pulse bg-muted h-32 rounded-xl" />)}</div>;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-bold text-foreground">Cola Offline (PWA)</h1>
+          <p className="text-sm text-muted-foreground mt-1">Gestiona acciones realizadas offline pendientes de sincronizar</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={loadData}><RefreshCw className="w-4 h-4 mr-2" /> Refrescar</Button>
+          <Button variant="outline" size="sm" onClick={exportCSV}><Download className="w-4 h-4 mr-2" /> Exportar CSV</Button>
+          <Button onClick={syncAll} disabled={items.filter(i => i.status !== 'synced').length === 0}>
+            <Cloud className="w-4 h-4 mr-2" /> Sincronizar Todo
+          </Button>
+        </div>
+      </div>
+
+      {error && <div className="bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-lg text-sm">{error}</div>}
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-4">
+          <CardTitle>Cola de Sincronización</CardTitle>
+          <div className="flex items-center gap-4 flex-wrap">
+            <Select value={filter.status} onChange={e => setFilter({...filter, status: e.target.value})} options={[{value:'all',label:'Todos'}, {value:'pending',label:'Pendiente'}, {value:'synced',label:'Sincronizado'}, {value:'failed',label:'Falló'}, {value:'conflict',label:'Conflicto'}]} className="w-36" />
+            <Select value={filter.action_type} onChange={e => setFilter({...filter, action_type: e.target.value})} options={[{value:'all',label:'Todas acciones'}, ...ACTION_TYPES.map(a => ({value:a, label:a}))]} className="w-40" />
+            <Select value={filter.user_id} onChange={e => setFilter({...filter, user_id: e.target.value})} options={[{value:'all',label:'Todos usuarios'}, ...users.map(u => ({value:u.id, label:u.full_name || u.email}))]} className="w-48" />
+          </div>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <div className="space-y-4">{[1,2,3,4,5].map(i => <div key={i} className="animate-pulse bg-muted h-16 rounded-lg" />)}</div>
+          ) : items.length === 0 ? (
+            <div className="text-center py-12">
+              <Database className="w-12 h-12 text-foreground mx-auto mb-3" />
+              <p className="text-sm text-muted-foreground">No hay elementos en la cola</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-36">ID</TableHead>
+                    <TableHead>Usuario</TableHead>
+                    <TableHead>Acción</TableHead>
+                    <TableHead>Entidad</TableHead>
+                    <TableHead>Entidad ID</TableHead>
+                    <TableHead>Estado</TableHead>
+                    <TableHead className="text-center">Intentos</TableHead>
+                    <TableHead>Error</TableHead>
+                    <TableHead>Creado</TableHead>
+                    <TableHead>Sincronizado</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {items.map(item => (
+                    <TableRow key={item.id} className={`border-b border-border hover:bg-muted transition-colors ${item.status === 'failed' ? 'bg-rose-50/50' : item.status === 'conflict' ? 'bg-amber-50/50' : ''}`}>
+                      <TableCell className="font-mono text-xs text-foreground">{item.id.slice(0,8)}...</TableCell>
+                      <TableCell className="text-xs">
+                        {item.user ? (
+                          <div>
+                            <p className="font-medium text-foreground">{item.user.full_name || item.user.email}</p>
+                            <p className="text-[9px] text-muted-foreground">{item.user.email}</p>
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground text-xs">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={item.action_type.includes('stock') ? 'success' : item.action_type.includes('pick') ? 'warning' : item.action_type.includes('count') ? 'info' : 'secondary'} className="text-[9px] capitalize">{item.action_type.replace('_', ' ')}</Badge>
+                      </TableCell>
+                      <TableCell className="text-xs font-medium text-foreground capitalize">{item.entity_type}</TableCell>
+                      <TableCell className="text-xs font-mono text-muted-foreground">{item.entity_id || '—'}</TableCell>
+                      <TableCell>
+                        <Badge variant={getStatusBadge(item.status).variant}>{getStatusBadge(item.status).label}</Badge>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <span className={item.retry_count > 0 ? 'text-amber-600 font-bold' : 'text-muted-foreground'}>
+                          {item.retry_count}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground max-w-[180px] truncate">{item.last_error || '—'}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{new Date(item.created_at).toLocaleString('es-CL')}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{item.synced_at ? new Date(item.synced_at).toLocaleString('es-CL') : '—'}</TableCell>
+                      <TableCell className="text-right">
+                        {item.status !== 'synced' && (
+                          <Button variant="ghost" size="icon" onClick={() => retryItem(item.id)} title="Reintentar sincronización">
+                            <RefreshCw className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader><CardTitle>Estadísticas</CardTitle></CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="bg-muted rounded-xl p-4 border border-border">
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Total</p>
+              <p className="text-2xl font-bold text-foreground mt-1">{items.length}</p>
+            </div>
+            <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-200">
+              <p className="text-[9px] font-semibold text-emerald-700 uppercase tracking-wider">Sincronizados</p>
+              <p className="text-2xl font-bold text-emerald-700 mt-1">{items.filter(i => i.status === 'synced').length}</p>
+            </div>
+            <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
+              <p className="text-[9px] font-semibold text-amber-700 uppercase tracking-wider">Pendientes</p>
+              <p className="text-2xl font-bold text-amber-700 mt-1">{items.filter(i => i.status === 'pending').length}</p>
+            </div>
+            <div className="bg-rose-50 rounded-xl p-4 border border-rose-200">
+              <p className="text-[9px] font-semibold text-rose-700 uppercase tracking-wider">Fallidos</p>
+              <p className="text-2xl font-bold text-rose-700 mt-1">{items.filter(i => i.status === 'failed').length}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
