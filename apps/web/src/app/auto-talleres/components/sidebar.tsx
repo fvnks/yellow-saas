@@ -1,3 +1,5 @@
+'use client';
+
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Car, Wrench, FileText, Calendar, ShieldCheck, Package, Users, ChevronDown, Settings } from 'lucide-react';
