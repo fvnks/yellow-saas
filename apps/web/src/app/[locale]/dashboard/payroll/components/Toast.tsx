@@ -1,0 +1,68 @@
+﻿'use client';
+
+import { useState, useCallback, createContext, useContext } from 'react';
+import { X, CheckCircle, AlertTriangle, Info } from 'lucide-react';
+
+interface Toast {
+  id: string;
+  message: string;
+  type: 'success' | 'error' | 'info';
+}
+
+interface ToastContextValue {
+  toast: (message: string, type?: Toast['type']) => void;
+}
+
+const ToastContext = createContext<ToastContextValue>({ toast: () => {} });
+
+export function useToast() {
+  return useContext(ToastContext);
+}
+
+export function ToastProvider({ children }: { children: React.ReactNode }) {
+  const [toasts, setToasts] = useState<Toast[]>([]);
+
+  const toast = useCallback((message: string, type: Toast['type'] = 'success') => {
+    const id = Math.random().toString(36).slice(2);
+    setToasts(prev => [...prev, { id, message, type }]);
+    setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== id));
+    }, 4000);
+  }, []);
+
+  const dismiss = useCallback((id: string) => {
+    setToasts(prev => prev.filter(t => t.id !== id));
+  }, []);
+
+  const icons = {
+    success: <CheckCircle className="w-4 h-4 text-emerald-500" />,
+    error: <AlertTriangle className="w-4 h-4 text-rose-500" />,
+    info: <Info className="w-4 h-4 text-blue-500" />,
+  };
+
+  const bgColors = {
+    success: 'bg-emerald-50 border-emerald-200 text-emerald-800',
+    error: 'bg-rose-50 border-rose-200 text-rose-800',
+    info: 'bg-blue-50 border-blue-200 text-blue-800',
+  };
+
+  return (
+    <ToastContext.Provider value={{ toast }}>
+      {children}
+      <div className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 max-w-sm">
+        {toasts.map(t => (
+          <div
+            key={t.id}
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg border shadow-lg animate-in slide-in-from-right-5 ${bgColors[t.type]}`}
+          >
+            {icons[t.type]}
+            <p className="text-sm font-medium flex-1">{t.message}</p>
+            <button onClick={() => dismiss(t.id)} className="text-muted-foreground hover:text-foreground">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        ))}
+      </div>
+    </ToastContext.Provider>
+  );
+}

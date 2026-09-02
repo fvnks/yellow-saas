@@ -1,0 +1,274 @@
+﻿'use client';
+
+import { useState, useEffect } from 'react';
+import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
+import { Shield, Plus, Trash2, Mail, Key, Clock, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { toast } from 'sonner';
+import { getApiClient } from '@/lib/api-client';
+
+interface AccessGrant {
+  id: string;
+  super_admin_name: string;
+  super_admin_email: string;
+  access_level: string;
+  reason: string;
+  is_active: boolean;
+  expires_at: string | null;
+  created_at: string;
+  granted_by_name: string;
+}
+
+interface SupportAccessTabProps {
+  companyId: string;
+  userRole: string;
+}
+
+export default function SupportAccessTab({ companyId, userRole }: SupportAccessTabProps) {
+  const [grants, setGrants] = useState<AccessGrant[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showInvite, setShowInvite] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteLevel, setInviteLevel] = useState('read');
+  const [inviteReason, setInviteReason] = useState('');
+  const [inviting, setInviting] = useState(false);
+
+  const canManage = ['owner', 'admin'].includes(userRole);
+
+  useEffect(() => {
+    fetchGrants();
+  }, [companyId]);
+
+  const fetchGrants = async () => {
+    try {
+      const api = getApiClient();
+      const data = await api.getCompanyGrants(companyId);
+      setGrants(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('Failed to load grants:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInvite = async () => {
+    if (!inviteEmail) return;
+    setInviting(true);
+    try {
+      const api = getApiClient();
+      await api.createCompanyGrant(companyId, {
+        super_admin_email: inviteEmail,
+        access_level: inviteLevel,
+        reason: inviteReason || undefined,
+      });
+      toast.success('Acceso concedido correctamente');
+      setInviteEmail('');
+      setInviteLevel('read');
+      setInviteReason('');
+      setShowInvite(false);
+      fetchGrants();
+    } catch (err: any) {
+      toast.error(err?.message || 'Error al conceder acceso');
+    } finally {
+      setInviting(false);
+    }
+  };
+
+  const handleRevoke = async (grantId: string) => {
+    if (!confirm('¿Revocar este acceso? El super admin ya no podrá acceder a tu empresa.')) return;
+    try {
+      const api = getApiClient();
+      await api.revokeCompanyGrant(companyId, grantId);
+      toast.success('Acceso revocado');
+      fetchGrants();
+    } catch (err: any) {
+      toast.error(err?.message || 'Error al revocar acceso');
+    }
+  };
+
+  if (!canManage) {
+    return (
+      <Card>
+        <CardContent className="p-8 text-center">
+          <Shield className="w-12 h-12 text-foreground mx-auto mb-4" />
+          <p className="text-sm text-muted-foreground">Solo los administradores de la empresa pueden gestionar accesos de soporte.</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Info Card */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <AlertTriangle className="w-5 h-5 text-amber-600" />
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-foreground">Acceso de Soporte</h4>
+              <p className="text-xs text-muted-foreground mt-1">
+                Permite a los administradores de Yellow ERP acceder a tu empresa para soporte técnico, 
+                configuración o resolución de problemas. Tú controlas quién tiene acceso y a qué nivel.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Active Grants */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>Accesos Activos</CardTitle>
+          <Button onClick={() => setShowInvite(true)} size="sm">
+            <Plus className="w-4 h-4 mr-1" /> Conceder Acceso
+          </Button>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <div className="space-y-3">
+              {[1, 2].map(i => (
+                <div key={i} className="h-16 bg-muted rounded-lg animate-pulse" />
+              ))}
+            </div>
+          ) : grants.filter(g => g.is_active).length === 0 ? (
+            <div className="text-center py-8">
+              <Key className="w-10 h-10 text-foreground mx-auto mb-3" />
+              <p className="text-sm text-muted-foreground">No hay accesos de soporte activos</p>
+              <p className="text-xs text-muted-foreground mt-1">Concede acceso a un administrador cuando necesites soporte</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {grants.filter(g => g.is_active).map(grant => (
+                <div key={grant.id} className="flex items-center justify-between p-4 bg-muted rounded-xl border border-border">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                      <Shield className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">{grant.super_admin_name}</p>
+                      <p className="text-xs text-muted-foreground">{grant.super_admin_email}</p>
+                      {grant.reason && (
+                        <p className="text-xs text-muted-foreground mt-0.5">Motivo: {grant.reason}</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="text-right">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
+                        grant.access_level === 'full' 
+                          ? 'bg-amber-50 text-amber-700 border border-amber-200' 
+                          : 'bg-blue-50 text-blue-700 border border-blue-200'
+                      }`}>
+                        {grant.access_level === 'full' ? 'Lectura + Escritura' : 'Solo Lectura'}
+                      </span>
+                      {grant.expires_at && (
+                        <p className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1">
+                          <Clock className="w-3 h-3" /> Expira: {new Date(grant.expires_at).toLocaleDateString('es-CL')}
+                        </p>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => handleRevoke(grant.id)}
+                      className="p-2 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                      title="Revocar acceso"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* History */}
+      {grants.filter(g => !g.is_active).length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm">Histórico de Accesos</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {grants.filter(g => !g.is_active).map(grant => (
+                <div key={grant.id} className="flex items-center gap-3 p-3 text-sm text-muted-foreground">
+                  <XCircle className="w-4 h-4 text-muted-foreground" />
+                  <span>{grant.super_admin_name} — Acceso revocado</span>
+                  <span className="text-xs text-muted-foreground ml-auto">
+                    {new Date(grant.created_at).toLocaleDateString('es-CL')}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Invite Modal */}
+      {showInvite && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-card rounded-xl shadow-xl w-full max-w-md mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">Conceder Acceso</h2>
+              <button onClick={() => setShowInvite(false)} className="text-muted-foreground hover:text-foreground">
+                <XCircle className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-foreground mb-1">Email del Super Admin</label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <input
+                    type="email"
+                    value={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.value)}
+                    placeholder="admin@yellow.cl"
+                    className="w-full bg-muted border border-border rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-foreground mb-1">Nivel de Acceso</label>
+                <select
+                  value={inviteLevel}
+                  onChange={(e) => setInviteLevel(e.target.value)}
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                >
+                  <option value="read">Solo Lectura — Puede ver datos pero no modificar</option>
+                  <option value="full">Lectura + Escritura — Puede ver y modificar datos</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-foreground mb-1">Motivo (opcional)</label>
+                <input
+                  type="text"
+                  value={inviteReason}
+                  onChange={(e) => setInviteReason(e.target.value)}
+                  placeholder="Ej: Soporte técnico, configuración inicial..."
+                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+            </div>
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
+              <button
+                onClick={() => setShowInvite(false)}
+                className="px-4 py-2 text-sm font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleInvite}
+                disabled={!inviteEmail || inviting}
+                className="px-4 py-2 bg-primary hover:bg-primary/90 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50"
+              >
+                {inviting ? 'Concediendo...' : 'Conceder Acceso'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

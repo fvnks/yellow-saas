@@ -1,0 +1,272 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { Users, Search, Building2, Mail, Calendar, Shield, Pencil, X, AlertCircle, CheckCircle } from 'lucide-react';
+
+interface User {
+  id: string;
+  email: string;
+  full_name: string;
+  role: string;
+  status: string;
+  created_at: string;
+  company_name: string;
+  company_id: string;
+}
+
+export default function AdminUsersPage() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [message, setMessage] = useState({ type: '', text: '' });
+
+  const [editUser, setEditUser] = useState<User | null>(null);
+  const [editForm, setEditForm] = useState({ role: '', status: '' });
+  const [editSaving, setEditSaving] = useState(false);
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1] || '';
+
+  const fetchUsers = async () => {
+    try {
+      const res = await fetch('/api/super-admin/users', {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      const data = await res.json();
+      if (data.success) setUsers(data.data);
+    } catch (err) {
+      console.error('Failed to load users:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editUser) return;
+    setEditSaving(true);
+
+    try {
+      const res = await fetch(`/api/super-admin/users/${editUser.id}`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(editForm),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setEditUser(null);
+        setMessage({ type: 'success', text: 'Usuario actualizado correctamente' });
+        fetchUsers();
+      } else {
+        setMessage({ type: 'error', text: data.error?.message || 'Error al actualizar' });
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'Error de conexión' });
+    } finally {
+      setEditSaving(false);
+    }
+  };
+
+  const filtered = users.filter(u =>
+    u.full_name?.toLowerCase().includes(search.toLowerCase()) ||
+    u.email?.toLowerCase().includes(search.toLowerCase()) ||
+    u.company_name?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const roleColors: Record<string, string> = {
+    owner: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
+    admin: 'bg-slate-800 text-violet-400 border-violet-500/20',
+    manager: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+    member: 'bg-muted0/10 text-muted-foreground border-border/20',
+    viewer: 'bg-muted0/10 text-muted-foreground border-border/20',
+  };
+
+  const statusColors: Record<string, string> = {
+    active: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+    invited: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
+    suspended: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-bold text-white">Usuarios</h1>
+        <p className="text-sm text-muted-foreground mt-1">Gestiona usuarios de todas las empresas</p>
+      </div>
+
+      {/* Message */}
+      {message.text && (
+        <div className={`flex items-center gap-2 p-3 rounded-lg text-sm ${
+          message.type === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+        }`}>
+          {message.type === 'success' ? <CheckCircle className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+          {message.text}
+          <button onClick={() => setMessage({ type: '', text: '' })} className="ml-auto"><X className="w-4 h-4" /></button>
+        </div>
+      )}
+
+      {/* Search */}
+      <div className="bg-slate-900/80 border border-border rounded-xl p-4">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Buscar por nombre, email o empresa..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full bg-slate-800/80 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-500/50"
+          />
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="bg-slate-900/80 border border-border rounded-xl overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-border">
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Usuario</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Empresa</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Rol</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Estado</th>
+              <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Registro</th>
+              <th className="text-right px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <tr key={i} className="border-b border-border/50">
+                  <td colSpan={6} className="px-6 py-4">
+                    <div className="h-4 bg-card rounded animate-pulse" />
+                  </td>
+                </tr>
+              ))
+            ) : filtered.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="px-6 py-12 text-center text-sm text-muted-foreground">
+                  No se encontraron usuarios
+                </td>
+              </tr>
+            ) : (
+              filtered.map((user) => (
+                <tr key={user.id} className="border-b border-border/50 hover:bg-slate-700/30 transition-colors">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 bg-card rounded-lg flex items-center justify-center">
+                        <span className="text-xs font-bold text-white">{user.full_name?.charAt(0) || 'U'}</span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-white">{user.full_name}</p>
+                        <p className="text-xs text-muted-foreground flex items-center gap-1">
+                          <Mail className="w-3 h-3" /> {user.email}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-1.5 text-sm text-foreground">
+                      <Building2 className="w-3.5 h-3.5 text-muted-foreground" />
+                      {user.company_name || '—'}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${roleColors[user.role] || roleColors.member}`}>
+                      {user.role}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${statusColors[user.status] || statusColors.active}`}>
+                      {user.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-xs text-muted-foreground">
+                    {new Date(user.created_at).toLocaleDateString('es-CL')}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <button
+                      onClick={() => {
+                        setEditUser(user);
+                        setEditForm({ role: user.role, status: user.status });
+                        setMessage({ type: '', text: '' });
+                      }}
+                      className="p-1.5 text-muted-foreground hover:text-violet-400 hover:bg-slate-700/10 rounded-lg transition-colors"
+                      title="Editar"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Edit Modal */}
+      {editUser && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-slate-900/80 border border-border rounded-xl shadow-xl w-full max-w-md mx-4">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-white">Editar Usuario</h2>
+                <p className="text-xs text-muted-foreground mt-0.5">{editUser.full_name} — {editUser.email}</p>
+              </div>
+              <button onClick={() => setEditUser(null)} className="text-muted-foreground hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleUpdate} className="p-6 space-y-4">
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">Rol</label>
+                <select
+                  value={editForm.role}
+                  onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+                >
+                  <option value="owner">Owner</option>
+                  <option value="admin">Admin</option>
+                  <option value="manager">Manager</option>
+                  <option value="member">Member</option>
+                  <option value="viewer">Viewer</option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">Estado</label>
+                <select
+                  value={editForm.status}
+                  onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+                >
+                  <option value="active">Activo</option>
+                  <option value="invited">Invitado</option>
+                  <option value="suspended">Suspendido</option>
+                </select>
+              </div>
+              <div className="flex justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setEditUser(null)}
+                  className="px-4 py-2 bg-card hover:bg-slate-700 rounded-lg text-sm font-medium text-foreground transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={editSaving}
+                  className="px-4 py-2 bg-slate-900/80 hover:bg-slate-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
+                >
+                  {editSaving ? 'Guardando...' : 'Guardar'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -1,0 +1,158 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { ScrollText, Plus, Trash2, Edit3, Eye, Filter, RefreshCw } from 'lucide-react';
+
+interface AuditEntry {
+  id: string;
+  entity_type: string;
+  entity_id: string;
+  entity_name: string;
+  action: string;
+  changes: any;
+  performed_by_name: string;
+  created_at: string;
+}
+
+const actionConfig: Record<string, { label: string; icon: typeof Plus; color: string }> = {
+  create: { label: 'Crear', icon: Plus, color: 'text-emerald-600' },
+  update: { label: 'Actualizar', icon: Edit3, color: 'text-blue-600' },
+  delete: { label: 'Eliminar', icon: Trash2, color: 'text-red-600' },
+};
+
+const entityLabels: Record<string, string> = {
+  product: 'Producto',
+  stock_level: 'Nivel de Stock',
+  warehouse: 'Bodega',
+  stock_movement: 'Movimiento',
+  price_list: 'Lista de Precios',
+  physical_count: 'Conteo Fisico',
+  stock_transfer: 'Transferencia',
+  stock_alert: 'Alerta',
+  serial: 'Serial',
+  expiration: 'Vencimiento',
+};
+
+export default function InventoryAuditTrail() {
+  const [entries, setEntries] = useState<AuditEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [entityFilter, setEntityFilter] = useState('');
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  useEffect(() => { loadEntries(); }, [entityFilter]);
+
+  const loadEntries = async () => {
+    setLoading(true);
+    try {
+      const companyId = localStorage.getItem('company_id');
+      const params = new URLSearchParams();
+      if (entityFilter) params.set('entity_type', entityFilter);
+
+      const res = await fetch(`/api/companies/${companyId}/inventory-audit?${params}`);
+      if (res.ok) {
+        const json = await res.json();
+        setEntries(Array.isArray(json.data) ? json.data : []);
+      }
+    } catch (e) { console.error(e); }
+    setLoading(false);
+  };
+
+  const formatChanges = (changes: any) => {
+    if (!changes) return null;
+    if (typeof changes === 'string') {
+      try { changes = JSON.parse(changes); } catch { return <span className="text-xs text-foreground">{changes}</span>; }
+    }
+
+    return (
+      <div className="space-y-1 mt-2">
+        {Object.entries(changes).map(([key, value]) => (
+          <div key={key} className="flex items-center gap-2 text-xs">
+            <span className="font-medium text-foreground">{key}:</span>
+            {typeof value === 'object' && value !== null && 'old' in (value as any) ? (
+              <span>
+                <span className="text-red-600 line-through">{String((value as any).old)}</span>
+                {' → '}
+                <span className="text-emerald-600">{String((value as any).new)}</span>
+              </span>
+            ) : (
+              <span className="text-foreground">{String(value)}</span>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <ScrollText className="w-4 h-4 text-muted-foreground" />
+          <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Auditoria de Inventario</span>
+        </div>
+        <button onClick={loadEntries}
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-border hover:bg-muted text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground dark:bg-card dark:border-border dark:hover:bg-primary/90 dark:text-foreground rounded-lg text-xs font-medium transition-colors">
+          <RefreshCw className="w-3.5 h-3.5" /> Actualizar
+        </button>
+      </div>
+
+      <div className="bg-card border border-border rounded-xl p-3 dark:bg-primary dark:border-border">
+        <div className="flex items-center gap-2">
+          <Filter className="w-3.5 h-3.5 text-muted-foreground" />
+          <select value={entityFilter} onChange={e => setEntityFilter(e.target.value)}
+            className="bg-muted border border-border rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-primary/20">
+            <option value="">Todas las entidades</option>
+            {Object.entries(entityLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+          </select>
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="space-y-2">
+          {[1, 2, 3, 4, 5].map(i => <div key={i} className="h-16 bg-muted rounded-xl animate-pulse" />)}
+        </div>
+      ) : entries.length === 0 ? (
+        <div className="text-center py-12 bg-muted border border-dashed border-border rounded-xl">
+          <ScrollText className="w-8 h-8 text-foreground mx-auto mb-2" />
+          <p className="text-xs text-muted-foreground">Sin registros de auditoria</p>
+        </div>
+      ) : (
+        <div className="space-y-1">
+          {entries.map(entry => {
+            const cfg = actionConfig[entry.action] || actionConfig.update;
+            const Icon = cfg.icon;
+            const isExpanded = expandedId === entry.id;
+
+            return (
+              <div key={entry.id} className="bg-card border border-border rounded-xl overflow-hidden dark:bg-primary dark:border-border">
+                <div className="flex items-center justify-between p-3 cursor-pointer hover:bg-muted transition-colors"
+                  onClick={() => setExpandedId(isExpanded ? null : entry.id)}>
+                  <div className="flex items-center gap-3">
+                    <Icon className={`w-4 h-4 ${cfg.color}`} />
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-medium text-foreground">{entry.entity_name || entry.entity_id}</span>
+                        <span className="px-1.5 py-0.5 bg-muted text-foreground text-[8px] font-semibold rounded">
+                          {entityLabels[entry.entity_type] || entry.entity_type}
+                        </span>
+                      </div>
+                      <p className="text-[9px] text-muted-foreground">
+                        {entry.performed_by_name || 'Sistema'} | {new Date(entry.created_at).toLocaleString('es-CL')}
+                      </p>
+                    </div>
+                  </div>
+                  <span className={`text-[9px] font-semibold ${cfg.color}`}>{cfg.label}</span>
+                </div>
+                {isExpanded && entry.changes && (
+                  <div className="px-3 pb-3 border-t border-border pt-2">
+                    {formatChanges(entry.changes)}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}

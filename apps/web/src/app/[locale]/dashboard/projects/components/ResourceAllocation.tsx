@@ -1,0 +1,135 @@
+﻿'use client';
+
+import { useState, useEffect } from 'react';
+import { Users, Clock, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { toast } from 'sonner';
+import { getApiClient } from '@/lib/api-client';
+
+interface EmployeeResource {
+  employee_id: string;
+  employee_name: string;
+  position: string;
+  total_tasks: number;
+  completed_tasks: number;
+  active_tasks: number;
+  in_progress_tasks: number;
+  pending_hours: number;
+  total_estimated_hours: number;
+  logged_hours: number;
+  logged_this_week: number;
+}
+
+interface ResourceAllocationProps {
+  projectId?: string;
+}
+
+export default function ResourceAllocation({ projectId }: ResourceAllocationProps) {
+  const [resources, setResources] = useState<EmployeeResource[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => { loadResources(); }, [projectId]);
+
+  const loadResources = async () => {
+    try {
+      const api = getApiClient();
+      const res = await api.getProjectResources(projectId);
+      setResources(Array.isArray(res) ? res : []);
+    } catch (err) { toast.error('Error al cargar recursos'); }
+    finally { setLoading(false); }
+  };
+
+  const getWorkloadLevel = (r: EmployeeResource) => {
+    if (r.in_progress_tasks >= 5 || r.pending_hours >= 40) return { level: 'overloaded', color: 'bg-red-500', label: 'Sobrecargado', textColor: 'text-red-700', bgColor: 'bg-red-50', borderColor: 'border-red-200' };
+    if (r.in_progress_tasks >= 3 || r.pending_hours >= 20) return { level: 'high', color: 'bg-amber-500', label: 'Alta carga', textColor: 'text-amber-700', bgColor: 'bg-amber-50', borderColor: 'border-amber-200' };
+    if (r.active_tasks > 0) return { level: 'normal', color: 'bg-emerald-500', label: 'Normal', textColor: 'text-emerald-700', bgColor: 'bg-emerald-50', borderColor: 'border-emerald-200' };
+    return { level: 'available', color: 'bg-muted', label: 'Disponible', textColor: 'text-muted-foreground', bgColor: 'bg-muted', borderColor: 'border-border' };
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-3">
+        {[1, 2, 3, 4].map(i => <div key={i} className="h-20 bg-muted rounded-xl animate-pulse" />)}
+      </div>
+    );
+  }
+
+  const overloaded = resources.filter(r => getWorkloadLevel(r).level === 'overloaded').length;
+  const highWorkload = resources.filter(r => getWorkloadLevel(r).level === 'high').length;
+  const available = resources.filter(r => getWorkloadLevel(r).level === 'available').length;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-semibold text-foreground">Asignacion de Recursos</h3>
+        <div className="flex items-center gap-3 text-[10px]">
+          <span className="flex items-center gap-1"><span className="w-2 h-2 bg-red-500 rounded-full" />{overloaded} sobrecargados</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 bg-amber-500 rounded-full" />{highWorkload} alta carga</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 bg-muted rounded-full" />{available} disponibles</span>
+        </div>
+      </div>
+
+      {resources.length === 0 ? (
+        <div className="text-center py-8 bg-card border border-border rounded-xl shadow-sm dark:bg-primary dark:border-border">
+          <Users className="w-10 h-10 text-foreground mx-auto mb-2" />
+          <p className="text-xs text-muted-foreground">No hay empleados asignados</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {resources.map(r => {
+            const workload = getWorkloadLevel(r);
+            const completionRate = r.total_tasks > 0 ? Math.round((r.completed_tasks / r.total_tasks) * 100) : 0;
+            return (
+              <div key={r.employee_id} className={`bg-card border ${workload.borderColor} rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow`}>
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
+                      <span className="text-xs font-semibold text-primary">
+                        {r.employee_name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
+                      </span>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-semibold text-foreground">{r.employee_name}</h4>
+                      <p className="text-[10px] text-muted-foreground">{r.position || 'Sin cargo'}</p>
+                    </div>
+                  </div>
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${workload.bgColor} ${workload.textColor} border ${workload.borderColor}`}>
+                    {workload.label}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-4 gap-4 mt-3">
+                  <div>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase">Tareas</p>
+                    <p className="text-sm font-bold text-foreground">{r.active_tasks}<span className="text-xs font-normal text-muted-foreground">/{r.total_tasks}</span></p>
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase">Horas Pend.</p>
+                    <p className="text-sm font-bold text-foreground">{Math.round(r.pending_hours)}h</p>
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase">Registradas</p>
+                    <p className="text-sm font-bold text-foreground">{Math.round(r.logged_hours)}h</p>
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase">Esta Semana</p>
+                    <p className="text-sm font-bold text-foreground">{Math.round(r.logged_this_week)}h</p>
+                  </div>
+                </div>
+
+                <div className="mt-3">
+                  <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
+                    <span>Progreso</span>
+                    <span>{completionRate}%</span>
+                  </div>
+                  <div className="w-full bg-muted rounded-full h-1.5">
+                    <div className={`h-1.5 rounded-full transition-all ${workload.color}`} style={{ width: `${completionRate}%` }} />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}

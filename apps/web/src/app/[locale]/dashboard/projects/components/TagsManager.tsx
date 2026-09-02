@@ -1,0 +1,127 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Plus, X, Tag } from 'lucide-react';
+import { toast } from 'sonner';
+import { getApiClient } from '@/lib/api-client';
+
+interface TagItem {
+  id: string;
+  name: string;
+  color: string;
+  usage_count: number;
+}
+
+interface TagsManagerProps {
+  selectedTagIds: string[];
+  onChange: (tagIds: string[]) => void;
+}
+
+const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
+
+export default function TagsManager({ selectedTagIds, onChange }: TagsManagerProps) {
+  const [tags, setTags] = useState<TagItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showCreate, setShowCreate] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [newColor, setNewColor] = useState(COLORS[0]);
+
+  useEffect(() => { loadTags(); }, []);
+
+  const loadTags = async () => {
+    try {
+      const api = getApiClient();
+      const res = await api.getProjectTags();
+      setTags(Array.isArray(res) ? res : []);
+    } catch {} finally { setLoading(false); }
+  };
+
+  const handleCreate = async () => {
+    if (!newName.trim()) return;
+    try {
+      const api = getApiClient();
+      await api.createProjectTag({ name: newName.trim(), color: newColor });
+      setNewName('');
+      setShowCreate(false);
+      loadTags();
+    } catch { toast.error('Error al crear tag'); }
+  };
+
+  const handleDelete = async (tagId: string) => {
+    try {
+      const api = getApiClient();
+      await api.deleteProjectTag(tagId);
+      onChange(selectedTagIds.filter(id => id !== tagId));
+      loadTags();
+    } catch { toast.error('Error al eliminar'); }
+  };
+
+  const toggleTag = (tagId: string) => {
+    if (selectedTagIds.includes(tagId)) {
+      onChange(selectedTagIds.filter(id => id !== tagId));
+    } else {
+      onChange([...selectedTagIds, tagId]);
+    }
+  };
+
+  if (loading) return <div className="h-8 bg-muted rounded animate-pulse" />;
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-1.5 flex-wrap">
+        {tags.map(tag => {
+          const selected = selectedTagIds.includes(tag.id);
+          return (
+            <button key={tag.id} onClick={() => toggleTag(tag.id)}
+              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border transition-all ${
+                selected ? 'text-white' : 'text-foreground bg-card border-border hover:border-border'
+              }`}
+              style={selected ? { backgroundColor: tag.color, borderColor: tag.color } : {}}>
+              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: tag.color }} />
+              {tag.name}
+              {selected && <X className="w-2.5 h-2.5" />}
+            </button>
+          );
+        })}
+        <button onClick={() => setShowCreate(!showCreate)}
+          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border border-dashed border-border text-muted-foreground hover:text-foreground hover:border-border transition-colors">
+          <Plus className="w-2.5 h-2.5" /> Nuevo
+        </button>
+      </div>
+
+      {showCreate && (
+        <div className="flex items-center gap-2 bg-muted rounded-lg p-2">
+          <div className="flex gap-1">
+            {COLORS.map(c => (
+              <button key={c} onClick={() => setNewColor(c)}
+                className={`w-4 h-4 rounded-full transition-transform ${newColor === c ? 'scale-125 ring-2 ring-offset-1 ring-slate-400' : ''}`}
+                style={{ backgroundColor: c }} />
+            ))}
+          </div>
+          <input type="text" value={newName} onChange={e => setNewName(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleCreate()}
+            className="flex-1 bg-card border border-border rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary/20"
+            placeholder="Nombre del tag..." autoFocus />
+          <button onClick={handleCreate} disabled={!newName.trim()}
+            className="bg-primary text-white px-2 py-1 rounded text-[10px] font-medium disabled:opacity-50">
+            Crear
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function TaskTagBadges({ tags }: { tags: { name: string; color: string }[] }) {
+  if (!tags || tags.length === 0) return null;
+  return (
+    <div className="flex items-center gap-1 flex-wrap mt-1">
+      {tags.map((tag, i) => (
+        <span key={i} className="inline-flex items-center gap-0.5 px-1.5 py-0 rounded text-[8px] font-semibold text-white"
+          style={{ backgroundColor: tag.color }}>
+          {tag.name}
+        </span>
+      ))}
+    </div>
+  );
+}
