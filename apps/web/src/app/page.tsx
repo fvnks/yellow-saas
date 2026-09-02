@@ -112,128 +112,126 @@ function formatPrice(price: number) {
 
 export default function HomePage() {
   return (
-    <div className="landing-page min-h-screen bg-[#F1F5F9] text-[#0F172A]">
+    <div className="landing-page min-h-screen bg-[#F8FAFC] dark:bg-[#0F172A] text-[#0F172A] dark:text-white">
       {/* ─── 1. NAVBAR ─── */}
       <Navbar />
 
       {/* ─── 2. HERO ─── */}
-      <section className="relative pt-32 pb-20 overflow-hidden bg-gradient-to-b from-white via-white to-[#F1F5F9]">
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#E2E8F0] bg-[#F1F5F9] px-4 py-1.5 text-xs font-semibold text-[#0F172A] mb-8 shadow-sm">
-            <span className="inline-block w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-            Modern Yellow ERP SaaS · Hecho para PyMEs en Chile
-          </div>
-
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#0F172A] leading-[1.15] tracking-tight mb-6">
-            El ERP moderno que simplifica
-            <br />
-            <span className="text-[#0F172A]">toda tu empresa en un solo lugar</span>
-          </h1>
-
-          <p className="text-base sm:text-lg text-[#64748B] max-w-2xl mx-auto mb-10 leading-relaxed font-normal">
-            Controla tu Inventario, Ventas, Compras, Contabilidad y Nómina chilena en una plataforma ágil, segura y adaptada al SII.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/register"
-              className="w-full sm:w-auto rounded-xl bg-[#0F172A] hover:bg-[#1E293B] text-white px-8 py-3.5 text-sm font-medium shadow-md shadow-[#0F172A]/25 transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2"
-            >
-              <span>Empezar Gratis — 14 Días</span>
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-            <Link
-              href="#modules"
-              className="w-full sm:w-auto rounded-xl border border-[#E2E8F0] bg-white hover:bg-[#F1F5F9] text-[#0F172A] px-8 py-3.5 text-sm font-medium transition-all duration-150 flex items-center justify-center gap-2"
-            >
-              <span>Explorar Módulos</span>
-              <ArrowRight className="w-4 h-4 text-[#64748B]" />
-            </Link>
-          </div>
-
-          {/* Trust badges */}
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs font-medium text-[#64748B]">
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[#0F172A]" />
-              <span>Multi-tenant Aislado</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Lock className="w-4 h-4 text-amber-400" />
-              <span>Encriptación Supabase RLS</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Globe className="w-4 h-4 text-amber-400" />
-              <span>Facturación SII 100% Nativa</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Yellow ERP Interactive Preview Mockup */}
-        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 mt-14">
-          <div className="relative bg-white border border-[#E2E8F0] rounded-2xl shadow-xl overflow-hidden">
-            {/* Header bar */}
-            <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#E2E8F0] bg-white">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-amber-500" />
-                <div className="w-3 h-3 rounded-full bg-amber-500" />
-                <div className="w-3 h-3 rounded-full bg-amber-500" />
-                <span className="ml-3 text-xs font-semibold text-[#64748B]">app.yellow-erp.cl/dashboard</span>
+      <section className="relative pt-20 pb-16 lg:pt-24 lg:pb-20 overflow-hidden bg-gradient-to-b from-white via-white to-[#F8FAFC] dark:from-[#0F172A] dark:via-[#1E293B] dark:to-[#0F172A]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left: Copy */}
+            <div className="text-left order-2 lg:order-1">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-[#1E293B] px-4 py-1.5 text-xs font-semibold text-[#0F172A] dark:text-white mb-6 shadow-sm">
+                <span className="inline-block w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                ERP SaaS · Hecho para PyMEs en Chile
               </div>
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                ● En vivo
-              </span>
+
+              <h1 className="text-4xl sm:text-5xl lg:text-[4rem] font-bold text-[#0F172A] dark:text-white leading-[1.1] tracking-tight mb-5">
+                El ERP moderno que simplifica
+                <br />
+                <span className="text-amber-500">toda tu empresa</span>
+                <br />
+                en un solo lugar
+              </h1>
+
+              <p className="text-base sm:text-lg text-[#64748B] dark:text-slate-400 max-w-xl mb-8 leading-relaxed font-normal">
+                Controla tu Inventario, Ventas, Compras, Contabilidad y Nómina chilena en una plataforma ágil, segura y adaptada al SII.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-start gap-3">
+                <Link
+                  href="/register"
+                  className="w-full sm:w-auto rounded-xl bg-[#0F172A] hover:bg-[#1E293B] dark:bg-amber-500 dark:hover:bg-amber-400 text-white px-8 py-3.5 text-sm font-medium shadow-md shadow-[#0F172A]/25 dark:shadow-amber-500/25 transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2"
+                >
+                  <span>Empezar Gratis — 14 Días</span>
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  href="#modules"
+                  className="w-full sm:w-auto rounded-xl border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-[#1E293B] hover:bg-[#F8FAFC] dark:hover:bg-slate-800 text-[#0F172A] dark:text-white px-8 py-3.5 text-sm font-medium transition-all duration-150 flex items-center justify-center gap-2"
+                >
+                  <span>Explorar Módulos</span>
+                  <ArrowRight className="w-4 h-4 text-[#64748B] dark:text-slate-400" />
+                </Link>
+              </div>
+
+              {/* Trust badges */}
+              <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs font-medium text-[#64748B] dark:text-slate-400">
+                <div className="flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-amber-500" />
+                  <span>Multi-tenant Aislado</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-amber-500" />
+                  <span>Encriptación Supabase RLS</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-amber-500" />
+                  <span>Facturación SII 100% Nativa</span>
+                </div>
+              </div>
             </div>
 
-            {/* Mock Content */}
-            <div className="p-6 bg-[#F1F5F9]">
-              <div className="flex items-center justify-between mb-5">
-                <div>
-                  <h3 className="text-base font-bold text-[#0F172A]">Resumen Operativo</h3>
-                  <p className="text-xs text-[#64748B]">Empresa Demo Ltda. · Santiago, Chile</p>
-                </div>
-                <div className="flex items-center gap-2 text-xs">
-                  <span className="px-3 py-1.5 rounded-xl bg-white border border-[#E2E8F0] text-[#0F172A] font-medium shadow-xs">
-                    Este Mes
+            {/* Right: Mockup */}
+            <div className="order-1 lg:order-2">
+              <div className="relative bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden">
+                <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-[#1E293B]">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-rose-400" />
+                    <div className="w-3 h-3 rounded-full bg-amber-400" />
+                    <div className="w-3 h-3 rounded-full bg-emerald-400" />
+                    <span className="ml-3 text-xs font-semibold text-[#64748B] dark:text-slate-400">app.yellow-erp.cl/dashboard</span>
+                  </div>
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
+                    ● En vivo
                   </span>
                 </div>
-              </div>
-
-              {/* KPI Cards */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                {[
-                  { label: 'Ventas del Mes', value: '$24.850.000', change: '+18.4%', icon: ShoppingCart, bg: 'bg-blue-50 text-[#0F172A]' },
-                  { label: 'Facturas Emitidas', value: '1.420 DTEs', change: '+8.2%', icon: FileText, bg: 'bg-emerald-50 text-emerald-600' },
-                  { label: 'Valor de Inventario', value: '$82.400.000', change: '+3.1%', icon: Package, bg: 'bg-amber-50 text-amber-400' },
-                  { label: 'Clientes Activos', value: '348', change: '+12%', icon: Users, bg: 'bg-indigo-50 text-[#2D60FF]' },
-                ].map((kpi) => (
-                  <div key={kpi.label} className="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm p-4 hover:border-[#0F172A]/30 transition-all duration-150">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-[9px] font-semibold text-[#64748B] uppercase tracking-wider">{kpi.label}</p>
-                      <div className={`w-8 h-8 ${kpi.bg} rounded-full flex items-center justify-center`}>
-                        <kpi.icon className="w-4 h-4" />
-                      </div>
+                <div className="p-5 bg-[#F8FAFC] dark:bg-[#0F172A]">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 className="text-sm font-bold text-[#0F172A] dark:text-white">Resumen Operativo</h3>
+                      <p className="text-xs text-[#64748B] dark:text-slate-400">Empresa Demo Ltda. · Santiago</p>
                     </div>
-                    <p className="text-lg font-bold text-[#0F172A]">{kpi.value}</p>
-                    <p className="text-[11px] text-emerald-600 font-semibold mt-0.5">{kpi.change} vs mes anterior</p>
+                    <span className="px-3 py-1.5 rounded-xl bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-slate-700 text-[#0F172A] dark:text-white text-xs font-medium shadow-xs">
+                      Este Mes
+                    </span>
                   </div>
-                ))}
-              </div>
-
-              {/* Yellow ERP Sample Bar Graph */}
-              <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm">
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-xs font-semibold text-[#0F172A]">Flujo de Ingresos & Facturación</h4>
-                  <span className="text-[10px] text-[#64748B]">Últimas 12 Semanas</span>
-                </div>
-                <div className="flex items-end gap-3 h-28 pt-4 border-b border-[#E2E8F0]">
-                  {[45, 60, 52, 78, 65, 88, 70, 95, 82, 90, 100, 94].map((h, idx) => (
-                    <div key={idx} className="flex-1 flex flex-col items-center gap-1 group">
-                      <div
-                        className="w-full bg-[#0F172A] rounded-t group-hover:bg-[#1E293B] transition-all duration-150"
-                        style={{ height: `${h}%` }}
-                      />
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+                    {[
+                      { label: 'Ventas del Mes', value: '$24.850.000', change: '+18.4%', icon: ShoppingCart, bg: 'bg-blue-50 dark:bg-blue-500/15 text-[#0F172A] dark:text-blue-400' },
+                      { label: 'Facturas Emitidas', value: '1.420 DTEs', change: '+8.2%', icon: FileText, bg: 'bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' },
+                      { label: 'Valor de Inventario', value: '$82.400.000', change: '+3.1%', icon: Package, bg: 'bg-amber-50 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400' },
+                      { label: 'Clientes Activos', value: '348', change: '+12%', icon: Users, bg: 'bg-indigo-50 dark:bg-indigo-500/15 text-indigo-600 dark:text-indigo-400' },
+                    ].map((kpi) => (
+                      <div key={kpi.label} className="bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-slate-700 rounded-2xl shadow-sm p-3 hover:border-[#0F172A]/30 dark:hover:border-amber-500/30 transition-all duration-150">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <p className="text-[9px] font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider">{kpi.label}</p>
+                          <div className={`w-7 h-7 ${kpi.bg} rounded-full flex items-center justify-center`}>
+                            <kpi.icon className="w-3.5 h-3.5" />
+                          </div>
+                        </div>
+                        <p className="text-sm font-bold text-[#0F172A] dark:text-white">{kpi.value}</p>
+                        <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">{kpi.change}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-slate-700 rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-xs font-semibold text-[#0F172A] dark:text-white">Flujo de Ingresos</h4>
+                      <span className="text-[10px] text-[#64748B] dark:text-slate-400">12 Semanas</span>
                     </div>
-                  ))}
+                    <div className="flex items-end gap-2 h-24 pt-3 border-b border-[#E2E8F0] dark:border-slate-700">
+                      {[45, 60, 52, 78, 65, 88, 70, 95, 82, 90, 100, 94].map((h, idx) => (
+                        <div key={idx} className="flex-1 flex flex-col items-center gap-1">
+                          <div
+                            className="w-full bg-[#0F172A] dark:bg-amber-500 rounded-t hover:bg-[#1E293B] dark:hover:bg-amber-400 transition-all duration-150"
+                            style={{ height: `${h}%` }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -242,7 +240,7 @@ export default function HomePage() {
       </section>
 
       {/* ─── 3. STATS ─── */}
-      <section className="py-14 bg-white border-y border-[#E2E8F0]">
+      <section className="py-14 bg-white dark:bg-[#1E293B] border-y border-[#E2E8F0] dark:border-slate-700">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-2 lg:grid-cols-4 gap-8">
           <StatsCounter value={250} suffix="+" label="Empresas en Chile" />
           <StatsCounter value={12} suffix="k+" label="Usuarios diarios" />
@@ -252,15 +250,12 @@ export default function HomePage() {
       </section>
 
       {/* ─── 4. LOGOS / MARQUEE ─── */}
-      <section className="py-10 bg-[#F1F5F9] border-b border-[#E2E8F0]">
-        <p className="text-center text-[10px] font-semibold text-[#64748B] uppercase tracking-wider mb-6">
-          Tecnología de Vanguardia e Integración Nativa
-        </p>
+      <section className="py-10 bg-[#F8FAFC] dark:bg-[#0F172A] border-b border-[#E2E8F0] dark:border-slate-700">
         <Marquee speed={25} className="py-1">
           {logos.map((logo) => (
             <div
               key={logo}
-              className="flex items-center justify-center px-6 py-2 text-xs font-bold text-[#64748B] hover:text-[#0F172A] transition-colors whitespace-nowrap bg-white border border-[#E2E8F0] rounded-xl mx-2 shadow-xs"
+              className="flex items-center justify-center px-6 py-2 text-xs font-bold text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-white transition-colors whitespace-nowrap bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-slate-700 rounded-xl mx-2 shadow-xs"
             >
               {logo}
             </div>
@@ -269,16 +264,13 @@ export default function HomePage() {
       </section>
 
       {/* ─── 5. MODULES ─── */}
-      <section id="modules" className="py-20 px-4 sm:px-6 bg-white">
+      <section id="modules" className="py-20 px-4 sm:px-6 bg-[#F8FAFC] dark:bg-[#0F172A]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-14">
-            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold bg-blue-50 text-[#0F172A] border border-blue-200 mb-3">
-              MÓDULOS DE NEGOCIO
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#0F172A] mb-3">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#0F172A] dark:text-white mb-3">
               Todo lo que tu empresa necesita para crecer
             </h2>
-            <p className="text-sm sm:text-base text-[#64748B] max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base text-[#64748B] dark:text-slate-400 max-w-2xl mx-auto">
               Módulos diseñados bajo la norma chilena con interfaz limpia, rápida e intuitiva.
             </p>
           </div>
@@ -287,13 +279,13 @@ export default function HomePage() {
             {modules.map((mod) => (
               <div
                 key={mod.title}
-                className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-[#0F172A]/30 transition-all duration-150 group"
+                className="bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-slate-700 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-amber-500/30 transition-all duration-150 group"
               >
                 <div className={`w-11 h-11 ${mod.iconBg} rounded-xl flex items-center justify-center mb-4 transition-transform duration-150 group-hover:scale-110`}>
                   <mod.icon className="w-5 h-5" />
                 </div>
-                <h3 className="text-base font-bold text-[#0F172A] mb-1.5">{mod.title}</h3>
-                <p className="text-xs text-[#64748B] leading-relaxed">{mod.description}</p>
+                <h3 className="text-base font-bold text-[#0F172A] dark:text-white mb-1.5">{mod.title}</h3>
+                <p className="text-xs text-[#64748B] dark:text-slate-400 leading-relaxed">{mod.description}</p>
               </div>
             ))}
           </div>
@@ -301,41 +293,38 @@ export default function HomePage() {
       </section>
 
       {/* ─── 6. FEATURES ─── */}
-      <section id="features" className="py-20 px-4 sm:px-6 bg-[#F1F5F9]">
+      <section id="features" className="py-20 px-4 sm:px-6 bg-white dark:bg-[#1E293B]">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 mb-3">
-                ARQUITECTURA DE ALTO NIVEL
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-bold text-[#0F172A] mb-4">
+              <h2 className="text-3xl sm:text-4xl font-bold text-[#0F172A] dark:text-white mb-4">
                 Construido para Chile,
                 <br />
-                <span className="text-[#0F172A]">preparado para escalar</span>
+                <span className="text-amber-500">preparado para escalar</span>
               </h2>
-              <p className="text-sm text-[#64748B] mb-8 leading-relaxed">
+              <p className="text-sm text-[#64748B] dark:text-slate-400 mb-8 leading-relaxed">
                 Nuestra plataforma fue estructurada desde el día uno para cumplir con las exigencias del Servicio de Impuestos Internos (SII) y las leyes laborales chilenas.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {features.map((f) => (
-                  <div key={f.title} className="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm">
+                  <div key={f.title} className="bg-[#F8FAFC] dark:bg-[#0F172A] border border-[#E2E8F0] dark:border-slate-700 rounded-2xl p-4 shadow-sm">
                     <div className="flex items-center gap-3 mb-2">
                       <div className={`w-8 h-8 ${f.iconBg} rounded-lg flex items-center justify-center flex-shrink-0`}>
                         <f.icon className="w-4 h-4" />
                       </div>
-                      <h3 className="text-xs font-bold text-[#0F172A]">{f.title}</h3>
+                      <h3 className="text-xs font-bold text-[#0F172A] dark:text-white">{f.title}</h3>
                     </div>
-                    <p className="text-[11px] text-[#64748B] leading-relaxed">{f.description}</p>
+                    <p className="text-[11px] text-[#64748B] dark:text-slate-400 leading-relaxed">{f.description}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Feature Mockup Card */}
-            <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-md">
-              <div className="flex items-center justify-between mb-4 border-b border-[#E2E8F0] pb-3">
-                <span className="text-xs font-bold text-[#0F172A]">Control de Documentos SII</span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <div className="bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-slate-700 rounded-2xl p-6 shadow-md">
+              <div className="flex items-center justify-between mb-4 border-b border-[#E2E8F0] dark:border-slate-700 pb-3">
+                <span className="text-xs font-bold text-[#0F172A] dark:text-white">Control de Documentos SII</span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
                   Respuesta SII: 200 OK
                 </span>
               </div>
@@ -345,14 +334,14 @@ export default function HomePage() {
                   { doc: 'Nota de Crédito N° 124', rut: '96.882.110-3', amount: '$320.000', status: 'Aceptado' },
                   { doc: 'Guía de Despacho N° 891', rut: '77.102.340-1', amount: '$1.250.000', status: 'En Tránsito' },
                 ].map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-[#F1F5F9] border border-[#E2E8F0]">
+                  <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-[#F8FAFC] dark:bg-[#0F172A] border border-[#E2E8F0] dark:border-slate-700">
                     <div>
-                      <p className="text-xs font-semibold text-[#0F172A]">{item.doc}</p>
-                      <p className="text-[10px] text-[#64748B]">RUT: {item.rut}</p>
+                      <p className="text-xs font-semibold text-[#0F172A] dark:text-white">{item.doc}</p>
+                      <p className="text-[10px] text-[#64748B] dark:text-slate-400">RUT: {item.rut}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs font-bold text-[#0F172A]">{item.amount}</p>
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <p className="text-xs font-bold text-[#0F172A] dark:text-white">{item.amount}</p>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
                         {item.status}
                       </span>
                     </div>
@@ -365,18 +354,15 @@ export default function HomePage() {
       </section>
 
       {/* ─── 7. TESTIMONIALS ─── */}
-      <section className="py-20 bg-white overflow-hidden border-t border-[#E2E8F0]">
+      <section className="py-20 bg-[#F8FAFC] dark:bg-[#0F172A] overflow-hidden border-t border-[#E2E8F0] dark:border-slate-700">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 mb-10 text-center">
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200 mb-3">
-            TESTIMONIOS REALES
-          </span>
-          <h2 className="text-3xl font-bold text-[#0F172A] mb-3">
+          <h2 className="text-3xl font-bold text-[#0F172A] dark:text-white mb-3">
             Confianza respaldada por líderes de la industria
           </h2>
-          <div className="inline-flex items-center gap-3 rounded-full border border-[#E2E8F0] bg-[#F1F5F9] px-5 py-2">
+          <div className="inline-flex items-center gap-3 rounded-full border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-[#1E293B] px-5 py-2">
             <Stars />
-            <span className="text-xs font-bold text-[#0F172A]">4.9 / 5.0</span>
-            <span className="text-xs text-[#64748B]">· Evaluado por más de 250 empresas</span>
+            <span className="text-xs font-bold text-[#0F172A] dark:text-white">4.9 / 5.0</span>
+            <span className="text-xs text-[#64748B] dark:text-slate-400">· Evaluado por más de 250 empresas</span>
           </div>
         </div>
 
@@ -388,16 +374,13 @@ export default function HomePage() {
       </section>
 
       {/* ─── 8. PRICING ─── */}
-      <section id="pricing" className="py-20 px-4 sm:px-6 bg-[#F1F5F9] border-t border-[#E2E8F0]">
+      <section id="pricing" className="py-20 px-4 sm:px-6 bg-[#F8FAFC] dark:bg-[#0F172A] border-t border-[#E2E8F0] dark:border-slate-700">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold bg-blue-50 text-[#0F172A] border border-blue-200 mb-3">
-              PLANES TRANSPARENTES
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#0F172A] mb-3">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#0F172A] dark:text-white mb-3">
               Planes claros y sin costos ocultos
             </h2>
-            <p className="text-sm text-[#64748B] max-w-xl mx-auto mb-6">
+            <p className="text-sm text-[#64748B] dark:text-slate-400 max-w-xl mx-auto mb-6">
               Comienza hoy con 14 días de prueba totalmente gratis. Cancela en cualquier momento.
             </p>
             <PricingToggle onToggle={() => {}} />
@@ -409,13 +392,13 @@ export default function HomePage() {
                 key={plan.name}
                 className={`bg-white rounded-2xl border p-7 transition-all duration-150 flex flex-col justify-between ${
                   plan.popular
-                    ? 'border-[#0F172A] shadow-lg shadow-[#0F172A]/10 relative'
-                    : 'border-[#E2E8F0] shadow-sm hover:border-[#64748B]/40'
+                    ? 'border-amber-500 shadow-lg shadow-amber-500/10 relative'
+                    : 'border-[#E2E8F0] dark:border-slate-700 shadow-sm hover:border-[#64748B]/40 dark:hover:border-slate-500'
                 }`}
               >
                 <div>
                   {plan.popular && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#0F172A] px-4 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-amber-500 px-4 py-0.5 text-[10px] font-bold text-[#0F172A] uppercase tracking-wider">
                       Recomendado
                     </div>
                   )}
@@ -438,8 +421,8 @@ export default function HomePage() {
                   href="/register"
                   className={`block w-full text-center rounded-xl py-3 text-sm font-medium transition-all duration-150 active:scale-[0.98] ${
                     plan.popular
-                      ? 'bg-[#0F172A] text-white hover:bg-[#1E293B] shadow-sm shadow-[#0F172A]/25'
-                      : 'bg-white border border-[#E2E8F0] hover:bg-[#F1F5F9] text-[#0F172A]'
+                      ? 'bg-[#0F172A] dark:bg-amber-500 text-white hover:bg-[#1E293B] dark:hover:bg-amber-400 shadow-sm shadow-[#0F172A]/25 dark:shadow-amber-500/25'
+                      : 'bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-slate-700 hover:bg-[#F8FAFC] dark:hover:bg-slate-800 text-[#0F172A] dark:text-white'
                   }`}
                 >
                   {plan.cta}
@@ -451,16 +434,13 @@ export default function HomePage() {
       </section>
 
       {/* ─── 9. FAQ ─── */}
-      <section id="faq" className="py-20 px-4 sm:px-6 bg-white border-t border-[#E2E8F0]">
+      <section id="faq" className="py-20 px-4 sm:px-6 bg-white dark:bg-[#1E293B] border-t border-[#E2E8F0] dark:border-slate-700">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
-            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold bg-purple-50 text-purple-700 border border-purple-200 mb-3">
-              PREGUNTAS FRECUENTES
-            </span>
-            <h2 className="text-3xl font-bold text-[#0F172A] mb-2">
+            <h2 className="text-3xl font-bold text-[#0F172A] dark:text-white mb-2">
               ¿Tienes dudas? Te ayudamos
             </h2>
-            <p className="text-xs text-[#64748B]">
+            <p className="text-xs text-[#64748B] dark:text-slate-400">
               Respuestas rápidas sobre la migración, facturación y soporte.
             </p>
           </div>
@@ -469,26 +449,26 @@ export default function HomePage() {
       </section>
 
       {/* ─── 10. CTA ─── */}
-      <section className="py-16 px-4 sm:px-6 bg-[#F1F5F9]">
+      <section className="py-16 px-4 sm:px-6 bg-[#F8FAFC] dark:bg-[#0F172A]">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="bg-white border border-[#E2E8F0] rounded-2xl p-10 sm:p-14 shadow-md">
-            <h2 className="text-3xl font-bold text-[#0F172A] mb-3">
+          <div className="bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-slate-700 rounded-2xl p-10 sm:p-14 shadow-md">
+            <h2 className="text-3xl font-bold text-[#0F172A] dark:text-white mb-3">
               Toma el control total de tu empresa hoy
             </h2>
-            <p className="text-sm text-[#64748B] mb-8 max-w-lg mx-auto">
+            <p className="text-sm text-[#64748B] dark:text-slate-400 mb-8 max-w-lg mx-auto">
               Únete a las más de 250 PyMEs en Chile que ahorran tiempo y automatizan sus procesos con Yellow ERP.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/register"
-                className="w-full sm:w-auto rounded-xl bg-[#0F172A] hover:bg-[#1E293B] text-white px-8 py-3.5 text-sm font-medium shadow-md shadow-[#0F172A]/25 transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2"
+                className="w-full sm:w-auto rounded-xl bg-[#0F172A] hover:bg-[#1E293B] dark:bg-amber-500 dark:hover:bg-amber-400 text-white px-8 py-3.5 text-sm font-medium shadow-md shadow-[#0F172A]/25 dark:shadow-amber-500/25 transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2"
               >
-                <span>Crear Cuenta Gratis</span>
+                <span>Empezar Gratis</span>
                 <ChevronRight className="w-4 h-4" />
               </Link>
               <Link
                 href="mailto:hola@yellow-erp.cl"
-                className="w-full sm:w-auto rounded-xl border border-[#E2E8F0] bg-white hover:bg-[#F1F5F9] text-[#0F172A] px-8 py-3.5 text-sm font-medium transition-all duration-150"
+                className="w-full sm:w-auto rounded-xl border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-[#1E293B] hover:bg-[#F8FAFC] dark:hover:bg-slate-800 text-[#0F172A] dark:text-white px-8 py-3.5 text-sm font-medium transition-all duration-150"
               >
                 Agendar Demo Personalizada
               </Link>

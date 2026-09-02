@@ -132,7 +132,7 @@ function LoginForm() {
                   placeholder="admin@yellow-erp.cl"
                   autoComplete="email"
                   required
-                  className="w-full rounded-lg border border-border bg-card pl-10 pr-4 py-3 text-[14px] text-foreground placeholder:text-muted-foreground focus:border-border focus:outline-none focus:ring-2 focus:ring-slate-900/10 transition-colors"
+                  className="w-full rounded-lg border border-border bg-card pl-10 pr-4 py-3 text-[14px] text-foreground placeholder:text-muted-foreground focus:border-[#0F172A] focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition-colors"
                 />
               </div>
             </motion.div>
@@ -152,7 +152,7 @@ function LoginForm() {
                   placeholder="••••••••"
                   autoComplete="current-password"
                   required
-                  className="w-full rounded-lg border border-border bg-card pl-10 pr-12 py-3 text-[14px] font-mono text-foreground placeholder:text-muted-foreground focus:border-border focus:outline-none focus:ring-2 focus:ring-slate-900/10 transition-colors"
+                  className="w-full rounded-lg border border-border bg-card pl-10 pr-12 py-3 text-[14px] font-mono text-foreground placeholder:text-muted-foreground focus:border-[#0F172A] focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition-colors"
                 />
                 <button
                   type="button"
@@ -173,7 +173,7 @@ function LoginForm() {
                   type="checkbox"
                   checked={remember}
                   onChange={(e) => setRemember(e.target.checked)}
-                  className="size-[18px] rounded border-border text-foreground focus:ring-slate-900 focus:ring-2 transition-colors"
+                  className="size-[18px] rounded border-border text-foreground focus:ring-amber-500 focus:ring-2 transition-colors"
                 />
                 <label htmlFor="remember" className="text-[14px] text-foreground cursor-pointer">
                   {t('rememberMe')}
@@ -192,7 +192,7 @@ function LoginForm() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-lg bg-primary py-3 text-[14px] font-medium text-white transition-all hover:bg-primary/90 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full rounded-lg bg-[#0F172A] hover:bg-[#1E293B] text-white py-3 text-[14px] font-medium transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm shadow-[#0F172A]/20"
               >
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 {loading ? t('signingIn') : t('signIn')}

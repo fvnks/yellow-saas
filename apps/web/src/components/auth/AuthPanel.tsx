@@ -33,9 +33,9 @@ export default function AuthPanel() {
       <div className="relative flex h-full w-full flex-col overflow-hidden rounded-[24px] bg-background shadow-xl">
         {/* Grid pattern + glows */}
         <div className="absolute inset-0 bg-grid opacity-40" />
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />
-        <div className="absolute -top-32 -left-32 w-[420px] h-[420px] bg-blue-600/20 rounded-full blur-[128px]" />
-        <div className="absolute -bottom-40 -right-24 w-[380px] h-[380px] bg-primary/20 rounded-full blur-[128px]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0F172A]" />
+        <div className="absolute -top-32 -left-32 w-[420px] h-[420px] bg-amber-500/15 rounded-full blur-[128px]" />
+        <div className="absolute -bottom-40 -right-24 w-[380px] h-[380px] bg-amber-500/10 rounded-full blur-[128px]" />
 
         <div className="relative z-10 flex flex-col h-full p-10">
           {/* Logo */}
@@ -58,8 +58,8 @@ export default function AuthPanel() {
                   transition={{ duration: 0.5, delay: 0.15 + i * 0.1 }}
                   className="flex items-start gap-4"
                 >
-                  <div className="w-10 h-10 bg-blue-500/15 rounded-xl flex items-center justify-center border border-blue-400/20 flex-shrink-0">
-                    <Icon className="w-5 h-5 text-blue-400" />
+                  <div className="w-10 h-10 bg-amber-500/15 rounded-xl flex items-center justify-center border border-amber-400/20 flex-shrink-0">
+                    <Icon className="w-5 h-5 text-amber-400" />
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-white">{item.title}</p>
@@ -75,7 +75,7 @@ export default function AuthPanel() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-12 rounded-xl bg-primary/80 backdrop-blur border border-border overflow-hidden shadow-2xl"
+            className="mt-12 rounded-xl bg-[#0F172A]/90 backdrop-blur border border-white/10 overflow-hidden shadow-2xl"
           >
             <div className="flex items-center gap-1.5 px-4 py-3 border-b border-border">
               <div className="w-2.5 h-2.5 rounded-full bg-rose-500/70" />
@@ -99,7 +99,7 @@ export default function AuthPanel() {
               <div className="rounded-xl bg-card/60 border border-border/60 p-3">
                 <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Stock</p>
                 <p className="text-lg font-bold text-white mt-1">4.312</p>
-                <p className="text-[10px] text-blue-400 mt-0.5">Óptimo</p>
+                <p className="text-[10px] text-amber-400 mt-0.5">Óptimo</p>
               </div>
             </div>
             {/* Bar chart */}
@@ -108,7 +108,7 @@ export default function AuthPanel() {
                 {[35, 55, 42, 70, 58, 85, 64, 92, 74, 100, 82, 95].map((h, i) => (
                   <div
                     key={i}
-                    className={`flex-1 rounded-t-md ${i >= 7 ? 'bg-blue-500' : 'bg-muted'}`}
+                    className={`flex-1 rounded-t-md ${i >= 7 ? 'bg-amber-500' : 'bg-white/15'}`}
                     style={{ height: `${h}%` }}
                   />
                 ))}

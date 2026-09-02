@@ -16,7 +16,7 @@ export function TestimonialCard({ quote, author, role, company, rating = 5, clas
   return (
     <div
       className={cn(
-        'flex-shrink-0 w-[380px] rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:border-border dark:border-border dark:bg-card/50 dark:hover:border-border',
+          'flex-shrink-0 w-[380px] rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:border-amber-500/30 dark:border-border dark:bg-card/50 dark:hover:border-amber-500/40',
         className
       )}
     >
@@ -25,7 +25,7 @@ export function TestimonialCard({ quote, author, role, company, rating = 5, clas
         &ldquo;{quote}&rdquo;
       </p>
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-primary flex items-center justify-center text-white font-bold text-sm">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-[#0F172A] font-bold text-sm">
           {author.charAt(0)}
         </div>
         <div>
