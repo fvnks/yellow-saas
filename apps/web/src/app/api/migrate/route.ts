@@ -837,6 +837,7 @@ export async function POST(request: Request) {
       { name: 'condominio', label: 'Condominios', description: 'Gastos comunes, Copropiedad, Portal' },
       { name: 'restaurant', label: 'Restaurante & POS', description: 'Mesas, KDS, Comandas, QR' },
       { name: 'veterinaria', label: 'Veterinaria & Clínica', description: 'Pacientes, Consultas, Agenda' },
+      { name: 'auto-talleres', label: 'Talleres Automotrices', description: 'Órdenes de Trabajo, Vehículos, Estimados, Técnicos' },
       { name: 'inventario', label: 'Inventario Avanzado', description: 'ABC, Kardex, Traslados, Conteo' },
       { name: 'ventas', label: 'Ventas & DTE', description: 'Facturación Electrónica, Cobranza' },
       { name: 'compras', label: 'Compras & Proveedores', description: 'Órdenes de Compra, Recepción' },
