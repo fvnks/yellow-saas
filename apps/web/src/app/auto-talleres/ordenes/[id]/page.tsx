@@ -18,6 +18,7 @@ import {
   CheckCircle2,
   AlertCircle,
   TrendingUp,
+  ArrowRight,
 } from 'lucide-react';
 import { formatCLP, formatDate, getStatusBadgeClass, getStatusLabel } from '../../lib/utils';
 
@@ -71,6 +72,21 @@ export default function OrdenDetallePage() {
   const [items, setItems] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [updating, setUpdating] = useState(false);
+
+  const statusFlow: Record<string, string[]> = {
+    checkin: ['diagnostic'],
+    diagnostic: ['estimated', 'waiting_parts'],
+    estimated: ['approved', 'cancelled'],
+    approved: ['in_progress'],
+    waiting_parts: ['in_progress'],
+    in_progress: ['quality_check'],
+    quality_check: ['ready'],
+    ready: ['delivered'],
+    delivered: ['invoiced'],
+  };
+
+  const nextStatuses = order ? (statusFlow[order.status] || []) : [];
 
   useEffect(() => {
     async function loadData() {
@@ -93,6 +109,26 @@ export default function OrdenDetallePage() {
     }
     loadData();
   }, [params.id]);
+
+  const handleStatusChange = async (newStatus: string) => {
+    setUpdating(true);
+    try {
+      const res = await fetch(`/api/auto-talleres/orders/${params.id}?company_id=${process.env.NEXT_PUBLIC_COMPANY_ID}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (data.success) {
+        setOrder(data.data);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error updating status');
+    } finally {
+      setUpdating(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -160,6 +196,36 @@ export default function OrdenDetallePage() {
           </button>
         </div>
       </div>
+
+      {/* Error */}
+      {error && (
+        <div className="flex items-center gap-2 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700">
+          <AlertCircle className="w-5 h-5 flex-shrink-0" />
+          <span className="text-sm">{error}</span>
+        </div>
+      )}
+
+      {/* Status Transition Buttons */}
+      {nextStatuses.length > 0 && (
+        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-4">
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
+            Cambiar Estado
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {nextStatuses.map((status) => (
+              <button
+                key={status}
+                onClick={() => handleStatusChange(status)}
+                disabled={updating}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed bg-orange-500 hover:bg-orange-600 text-white shadow-sm"
+              >
+                <ArrowRight className="w-3 h-3" />
+                {getStatusLabel(status)}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
         {/* Main Content */}
