@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { useReducedMotion } from 'motion/react';
 import { motion } from 'motion/react';
@@ -7,14 +8,11 @@ import {
   Package, ShoppingCart, Users, BarChart3, Shield, Settings,
   Truck, Calculator, Briefcase, ChevronRight, Check, Zap,
   Building2, FileText, Globe, Lock, Eye, ArrowRight,
-  CreditCard, Wallet, TrendingUp, Bell
+  CreditCard, Wallet, TrendingUp, Bell, Send, Mail, MapPin, Phone, CheckCircle2
 } from 'lucide-react';
 import { Marquee } from '@/components/landing/Marquee';
-import { TestimonialCard } from '@/components/landing/TestimonialCard';
-import { FaqAccordion } from '@/components/landing/FaqAccordion';
 import { PricingToggle } from '@/components/landing/PricingToggle';
 import { StatsCounter } from '@/components/landing/StatsCounter';
-import { Stars } from '@/components/landing/Stars';
 import { Navbar } from './components/navbar';
 import { Footer } from './components/footer';
 
@@ -41,22 +39,6 @@ const features = [
 const logos = [
   'SII Chile', 'Supabase', 'Next.js 14', 'TypeScript', 'Tailwind CSS', 'PostgreSQL',
   'Turborepo', 'Vercel', 'Docker', 'Redis', 'Lucide React', 'Framer Motion',
-];
-
-const testimonials = [
-  { quote: 'Yellow ERP transformó nuestra operación. Pasamos de planillas Excel dispersas a un sistema unificado y veloz en 2 semanas.', author: 'Carolina Muñoz', role: 'Gerente General', company: 'TechSpa Ltda.' },
-  { quote: 'La facturación electrónica con el SII es instantánea. Ahorramos más de 12 horas semanales en conciliación manual.', author: 'Rodrigo Fernández', role: 'Jefe Contable', company: 'Construcciones RF' },
-  { quote: 'El módulo de inventario con trazabilidad por lote fue un cambio drástico para nuestra cadena de distribución.', author: 'María José Soto', role: 'Directora de Operaciones', company: 'AgroSolutions' },
-  { quote: 'La arquitectura multi-tenant nos permitió consolidar 4 empresas del holding en una sola pantalla.', author: 'Andrés Vega', role: 'CIO', company: 'Grupo Vega Chile' },
-  { quote: 'El soporte técnico y el cálculo automático de nómina chilena son simplemente impecables.', author: 'Patricia Lagos', role: 'Gerente de Administración', company: 'Logística PL' },
-];
-
-const faqItems = [
-  { question: '¿Cuánto tarda la implementación inicial?', answer: 'Una PyME típica queda lista y operando en menos de 7 días. Incluimos asistentes de migración para cargar tus datos desde Excel o sistemas previos.' },
-  { question: '¿Está 100% adaptado a la normativa chilena?', answer: 'Sí. Integra formato RUT, emisión de DTEs validados con el SII, UF/UTM, cálculo de cotizaciones previsionales (AFP, Fonasa, Isapre) e impuestos chilenos.' },
-  { question: '¿Cómo funciona la seguridad multi-tenant?', answer: 'Utilizamos aislamiento estricto por `company_id` con políticas RLS (Row Level Security) directamente en la base de datos PostgreSQL, previniendo cualquier fuga de información.' },
-  { question: '¿Puedo integrar Yellow ERP con mis propias aplicaciones?', answer: 'Absolutamente. Todas las funciones cuentan con APIs RESTful documentadas y autenticación mediante JWT de grado empresarial.' },
-  { question: '¿Qué plan incluye el módulo de Facturación SII?', answer: 'Todos los planes (Starter, Professional y Enterprise) cuentan con emisión ilimitada de documentos tributarios electrónicos.' },
 ];
 
 const pricingPlans = [
@@ -114,6 +96,16 @@ function formatPrice(price: number) {
 
 export default function HomePage() {
   const reduce = useReducedMotion();
+  const [contactSent, setContactSent] = useState(false);
+  const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
+  const [contactSubmitting, setContactSubmitting] = useState(false);
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setContactSubmitting(true);
+    await new Promise(r => setTimeout(r, 900));
+    setContactSubmitting(false);
+    setContactSent(true);
+  };
   return (
     <div className="landing-page min-h-screen bg-[#F8FAFC] dark:bg-[#0F172A] text-[#0F172A] dark:text-white">
       {/* ─── 1. NAVBAR ─── */}
@@ -128,7 +120,7 @@ export default function HomePage() {
               <motion.div
                 initial={reduce ? false : { opacity: 0, y: 14 }}
                 animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                transition={{ type: 'spring', damping: 1.0, stiffness: 120, mass: 0.8, delay: 0 }}
+                transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0 }}
                 className="inline-flex items-center gap-2 rounded-full border border-[#E2E8F0]/80 dark:border-slate-700/60 bg-white/60 dark:bg-[#1E293B]/60 backdrop-blur-md px-4 py-1.5 text-xs font-semibold text-[#0F172A] dark:text-white mb-6 shadow-sm"
               >
                 <span className="inline-block w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
@@ -138,7 +130,7 @@ export default function HomePage() {
               <motion.h1
                 initial={reduce ? false : { opacity: 0, y: 14 }}
                 animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                transition={{ type: 'spring', damping: 1.0, stiffness: 120, mass: 0.8, delay: 0.04 }}
+                transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0.04 }}
                 className="text-4xl sm:text-5xl lg:text-[4rem] font-bold text-[#0F172A] dark:text-white leading-[1.05] tracking-[-0.025em] mb-5"
               >
                 El ERP moderno que simplifica
@@ -151,7 +143,7 @@ export default function HomePage() {
               <motion.p
                 initial={reduce ? false : { opacity: 0, y: 14 }}
                 animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                transition={{ type: 'spring', damping: 1.0, stiffness: 120, mass: 0.8, delay: 0.08 }}
+                transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0.08 }}
                 className="text-base sm:text-lg text-[#64748B] dark:text-slate-400 max-w-xl mb-8 leading-relaxed font-normal"
               >
                 Controla tu Inventario, Ventas, Compras, Contabilidad y Nómina chilena en una plataforma ágil, segura y adaptada al SII.
@@ -160,7 +152,7 @@ export default function HomePage() {
               <motion.div
                 initial={reduce ? false : { opacity: 0, y: 14 }}
                 animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                transition={{ type: 'spring', damping: 1.0, stiffness: 120, mass: 0.8, delay: 0.12 }}
+                transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0.12 }}
                 className="flex flex-col sm:flex-row items-start gap-3"
               >
                 <Link
@@ -183,7 +175,7 @@ export default function HomePage() {
               <motion.div
                 initial={reduce ? false : { opacity: 0, y: 14 }}
                 animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                transition={{ type: 'spring', damping: 1.0, stiffness: 120, mass: 0.8, delay: 0.16 }}
+                transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0.16 }}
                 className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs font-medium text-[#64748B] dark:text-slate-400"
               >
                 <div className="flex items-center gap-2">
@@ -206,14 +198,14 @@ export default function HomePage() {
               className="order-1 lg:order-2"
               initial={reduce ? false : { opacity: 0, x: 32, scale: 0.94 }}
               animate={reduce ? { opacity: 1 } : { opacity: 1, x: 0, scale: 1 }}
-              transition={{ type: 'spring', damping: 0.85, stiffness: 100, mass: 1.2, delay: 0.1 }}
+              transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0.1 }}
             >
               <div
                 className="relative bg-white/80 dark:bg-[#1E293B]/80 backdrop-blur-xl border border-white/40 dark:border-slate-700/50 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3),0_2px_8px_rgba(0,0,0,0.2)] overflow-hidden"
                 style={reduce ? undefined : {
                   transform: 'translateY(0px)',
                   transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                  animation: 'hero-float 4s ease-in-out infinite',
+                  animation: 'hero-float 3s ease-in-out infinite',
                 }}
               >
                 <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/30 dark:border-slate-700/50 bg-white/50 dark:bg-[#1E293B]/50 backdrop-blur-sm">
@@ -393,27 +385,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── 7. TESTIMONIALS ─── */}
-      <section className="py-20 bg-[#F8FAFC] dark:bg-[#0F172A] overflow-hidden border-t border-[#E2E8F0] dark:border-slate-700">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 mb-10 text-center">
-          <h2 className="text-3xl font-bold text-[#0F172A] dark:text-white mb-3">
-            Confianza respaldada por líderes de la industria
-          </h2>
-          <div className="inline-flex items-center gap-3 rounded-full border border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-[#1E293B] px-5 py-2">
-            <Stars />
-            <span className="text-xs font-bold text-[#0F172A] dark:text-white">4.9 / 5.0</span>
-            <span className="text-xs text-[#64748B] dark:text-slate-400">· Evaluado por más de 250 empresas</span>
-          </div>
-        </div>
-
-        <Marquee speed={35} className="py-2">
-          {testimonials.map((t, i) => (
-            <TestimonialCard key={i} {...t} />
-          ))}
-        </Marquee>
-      </section>
-
-      {/* ─── 8. PRICING ─── */}
+      {/* ─── 7. PRICING ─── */}
       <section id="pricing" className="py-20 px-4 sm:px-6 bg-[#F8FAFC] dark:bg-[#0F172A] border-t border-[#E2E8F0] dark:border-slate-700">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
@@ -473,22 +445,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── 9. FAQ ─── */}
-      <section id="faq" className="py-20 px-4 sm:px-6 bg-white dark:bg-[#1E293B] border-t border-[#E2E8F0] dark:border-slate-700">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-[#0F172A] dark:text-white mb-2">
-              ¿Tienes dudas? Te ayudamos
-            </h2>
-            <p className="text-xs text-[#64748B] dark:text-slate-400">
-              Respuestas rápidas sobre la migración, facturación y soporte.
-            </p>
-          </div>
-          <FaqAccordion items={faqItems} />
-        </div>
-      </section>
-
-      {/* ─── 10. CTA ─── */}
+      {/* ─── 8. CTA ─── */}
       <section className="py-16 px-4 sm:px-6 bg-[#F8FAFC] dark:bg-[#0F172A]">
         <div className="max-w-4xl mx-auto text-center">
           <div className="bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-slate-700 rounded-2xl p-10 sm:p-14 shadow-md">
@@ -517,7 +474,147 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── 11. FOOTER ─── */}
+      {/* ─── 9. CONTACTO ─── */}
+      <section id="contacto" className="py-20 px-4 sm:px-6 bg-[#F8FAFC] dark:bg-[#0F172A] border-t border-[#E2E8F0] dark:border-slate-700">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#0F172A] dark:text-white mb-3">
+              Contáctanos
+            </h2>
+            <p className="text-sm text-[#64748B] dark:text-slate-400 max-w-xl mx-auto">
+              ¿Tienes preguntas o quieres una demo personalizada? Nuestro equipo te responde en menos de 24 horas hábiles.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+            {/* Info */}
+            <div className="lg:col-span-2 space-y-4">
+              <div className="bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-slate-700 rounded-2xl p-6 shadow-sm">
+                <h3 className="text-sm font-bold text-[#0F172A] dark:text-white mb-4">Información de contacto</h3>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-9 h-9 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Mail className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider">Email</p>
+                      <a href="mailto:hola@yellow-erp.cl" className="text-sm font-medium text-[#0F172A] dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors">hola@yellow-erp.cl</a>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-9 h-9 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Phone className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider">Teléfono</p>
+                      <p className="text-sm font-medium text-[#0F172A] dark:text-white">+56 9 1234 5678</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-9 h-9 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider">Ubicación</p>
+                      <p className="text-sm font-medium text-[#0F172A] dark:text-white">Santiago, Chile</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-[#0F172A] dark:bg-amber-500 rounded-2xl p-6 text-white">
+                <div className="flex items-center gap-2 mb-3">
+                  <Send className="w-4 h-4 text-amber-400 dark:text-[#0F172A]" />
+                  <h3 className="text-sm font-bold">Ventas</h3>
+                </div>
+                <p className="text-xs text-slate-300 dark:text-[#0F172A]/70 leading-relaxed mb-4">
+                  ¿Quieres una demo personalizada o tienes preguntas sobre planes y precios? Escríbenos y te contactamos hoy mismo.
+                </p>
+                <a href="mailto:ventas@yellow-erp.cl" className="inline-flex items-center gap-2 bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-amber-500 px-4 py-2 rounded-xl text-xs font-semibold hover:bg-slate-50 dark:hover:bg-[#1E293B] transition-colors">
+                  <Mail className="w-3.5 h-3.5" />
+                  ventas@yellow-erp.cl
+                </a>
+              </div>
+            </div>
+            {/* Form */}
+            <div className="lg:col-span-3">
+              <div className="bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-slate-700 rounded-2xl shadow-sm p-8">
+                {contactSent ? (
+                  <div className="text-center py-10">
+                    <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <CheckCircle2 className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
+                    </div>
+                    <h3 className="text-xl font-bold text-[#0F172A] dark:text-white mb-2">¡Mensaje enviado!</h3>
+                    <p className="text-sm text-[#64748B] dark:text-slate-400 mb-6">Te responderemos dentro de 24 horas hábiles.</p>
+                    <button
+                      onClick={() => { setContactSent(false); setContactForm({ name: '', email: '', message: '' }); }}
+                      className="text-sm font-semibold text-[#0F172A] dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors underline underline-offset-2"
+                    >
+                      Enviar otro mensaje
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleContactSubmit} className="space-y-5">
+                    <div className="grid gap-5 sm:grid-cols-2">
+                      <div className="space-y-1.5">
+                        <label className="block text-xs font-semibold text-[#0F172A] dark:text-white">Nombre *</label>
+                        <input
+                          type="text"
+                          required
+                          value={contactForm.name}
+                          onChange={e => setContactForm({ ...contactForm, name: e.target.value })}
+                          className="w-full bg-[#F8FAFC] dark:bg-[#0F172A] border border-[#E2E8F0] dark:border-slate-700 rounded-xl px-4 py-3 text-sm text-[#0F172A] dark:text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition-all"
+                          placeholder="Tu nombre"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="block text-xs font-semibold text-[#0F172A] dark:text-white">Correo electrónico *</label>
+                        <input
+                          type="email"
+                          required
+                          value={contactForm.email}
+                          onChange={e => setContactForm({ ...contactForm, email: e.target.value })}
+                          className="w-full bg-[#F8FAFC] dark:bg-[#0F172A] border border-[#E2E8F0] dark:border-slate-700 rounded-xl px-4 py-3 text-sm text-[#0F172A] dark:text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition-all"
+                          placeholder="tu@empresa.cl"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-semibold text-[#0F172A] dark:text-white">Mensaje *</label>
+                      <textarea
+                        required
+                        rows={5}
+                        value={contactForm.message}
+                        onChange={e => setContactForm({ ...contactForm, message: e.target.value })}
+                        className="w-full bg-[#F8FAFC] dark:bg-[#0F172A] border border-[#E2E8F0] dark:border-slate-700 rounded-xl px-4 py-3 text-sm text-[#0F172A] dark:text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition-all resize-none"
+                        placeholder="Cuéntanos en qué podemos ayudarte..."
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={contactSubmitting}
+                      className="w-full bg-[#0F172A] hover:bg-[#1E293B] dark:bg-amber-500 dark:hover:bg-amber-400 text-white px-6 py-3.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-md shadow-[#0F172A]/20 dark:shadow-amber-500/20 disabled:opacity-60"
+                    >
+                      {contactSubmitting ? (
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" />
+                          Enviar mensaje
+                        </>
+                      )}
+                    </button>
+                    <p className="text-[10px] text-[#94A3B8] dark:text-slate-400 text-center">
+                      Al enviar aceptas nuestra{' '}
+                      <Link href="/privacy" className="text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 underline underline-offset-2">Política de Privacidad</Link>.
+                    </p>
+                  </form>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 10. FOOTER ─── */}
       <Footer />
     </div>
   );
