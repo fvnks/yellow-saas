@@ -1,9 +1,10 @@
 ﻿'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu, X, ChevronRight, Sun, Moon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTheme } from '@/components/ui/theme-toggle';
 
 const navLinks = [
   { label: 'Módulos', href: '#modules' },
@@ -14,7 +15,7 @@ const navLinks = [
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [dark, setDark] = useState(false);
+  const { theme, toggle } = useTheme();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-[#0F172A]/90 backdrop-blur-xl border-b border-[#E2E8F0] dark:border-slate-700">
@@ -48,11 +49,11 @@ export function Navbar() {
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-3">
           <button
-            onClick={() => setDark(!dark)}
+            onClick={toggle}
             className="p-2 rounded-lg hover:bg-[#F1F5F9] dark:hover:bg-slate-800 transition-colors"
             aria-label="Cambiar tema"
           >
-            {dark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-[#64748B]" />}
+            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-[#64748B]" />}
           </button>
           <Link
             href="/login"
@@ -100,11 +101,11 @@ export function Navbar() {
           ))}
           <div className="pt-3 border-t border-[#E2E8F0] dark:border-slate-700 space-y-2">
             <button
-              onClick={() => setDark(!dark)}
+              onClick={toggle}
               className="flex items-center gap-2 w-full text-sm font-medium text-[#64748B] dark:text-slate-400 py-2"
             >
-              {dark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
-              {dark ? 'Modo Claro' : 'Modo Oscuro'}
+              {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
+              {theme === 'dark' ? 'Modo Claro' : 'Modo Oscuro'}
             </button>
             <Link
               href="/login"

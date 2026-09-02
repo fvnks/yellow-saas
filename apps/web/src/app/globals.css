@@ -325,7 +325,17 @@ h1.text-xl.font-bold.text-foreground {
   --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
 }
 
-@keyframes fadeInUp {
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  @keyframes hero-float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+  }
+}
   from {
     opacity: 0;
     transform: translateY(8px);
@@ -375,6 +385,9 @@ h1.text-xl.font-bold.text-foreground {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
+  }
+  [style*="animation: hero-float"] {
+    animation: none !important;
   }
 }
 
