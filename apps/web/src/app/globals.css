@@ -336,6 +336,8 @@ h1.text-xl.font-bold.text-foreground {
     50% { transform: translateY(-6px); }
   }
 }
+
+@keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(8px);
