@@ -172,7 +172,7 @@ export default function NuevoVehiculoPage() {
               <input
                 type="number"
                 value={formData.year}
-                onChange={(e) => handleChange('year', Number(e.target.value))}
+                onChange={(e) => handleChange('year', Math.max(1900, Math.min(new Date().getFullYear() + 1, Number(e.target.value) || 0)))}
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200/80 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
                 min="1900"
                 max={new Date().getFullYear() + 1}
@@ -237,7 +237,7 @@ export default function NuevoVehiculoPage() {
               <input
                 type="number"
                 value={formData.mileage}
-                onChange={(e) => handleChange('mileage', Number(e.target.value))}
+                onChange={(e) => handleChange('mileage', Math.max(0, Number(e.target.value) || 0))}
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200/80 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
                 min="0"
               />

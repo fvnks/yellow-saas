@@ -51,12 +51,17 @@ export async function PUT(
       return errorResponse('company_id is required', 400);
     }
 
-    const setClauses = Object.keys(body)
-      .filter(key => !['id', 'company_id', 'created_at'].includes(key))
-      .map((key, index) => `${key} = $${index + 2}`)
-      .join(', ');
+    const excludedKeys = new Set(['id', 'company_id', 'created_at']);
+    const setClauses: string[] = [];
+    const values: any[] = [];
+    let idx = 2;
 
-    const values = [...Object.values(body).filter(v => v !== undefined), params.id, company_id];
+    for (const key of Object.keys(body)) {
+      if (!excludedKeys.has(key) && body[key] !== undefined) {
+        setClauses.push(`${key} = $${idx++}`);
+        values.push(body[key]);
+      }
+    }
 
     const { rows } = await query(
       `UPDATE auto_vehicles SET ${setClauses}, updated_at = NOW()

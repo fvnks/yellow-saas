@@ -1,12 +1,14 @@
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
+const clpFormatter = new Intl.NumberFormat('es-CL', {
+  style: 'currency',
+  currency: 'CLP',
+  maximumFractionDigits: 0,
+});
+
 export function formatCLP(value: number): string {
-  return new Intl.NumberFormat('es-CL', {
-    style: 'currency',
-    currency: 'CLP',
-    maximumFractionDigits: 0,
-  }).format(value);
+  return clpFormatter.format(value);
 }
 
 export function formatDate(value: Date | string): string {

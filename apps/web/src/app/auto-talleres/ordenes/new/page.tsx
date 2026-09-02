@@ -13,6 +13,12 @@ import {
   AlertCircle,
 } from 'lucide-react';
 
+const clpFmt = new Intl.NumberFormat('es-CL', {
+  style: 'currency',
+  currency: 'CLP',
+  maximumFractionDigits: 0,
+});
+
 export default function NuevaOrdenPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -249,7 +255,7 @@ export default function NuevaOrdenPage() {
               <input
                 type="number"
                 value={formData.subtotal}
-                onChange={(e) => handleChange('subtotal', Number(e.target.value))}
+                onChange={(e) => handleChange('subtotal', Math.max(0, Number(e.target.value) || 0))}
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200/80 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
                 min="0"
                 step="1000"
@@ -259,7 +265,7 @@ export default function NuevaOrdenPage() {
               <label className="block text-sm font-semibold text-slate-700 mb-1.5">IVA (19%)</label>
               <input
                 type="text"
-                value={new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(formData.iva)}
+                value={clpFmt.format(formData.iva)}
                 readOnly
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200/80 text-sm bg-slate-50 text-slate-600"
               />
@@ -268,7 +274,7 @@ export default function NuevaOrdenPage() {
               <label className="block text-sm font-semibold text-slate-700 mb-1.5">Total</label>
               <input
                 type="text"
-                value={new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(formData.total)}
+                value={clpFmt.format(formData.total)}
                 readOnly
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200/80 text-sm bg-slate-50 font-bold text-slate-900"
               />
