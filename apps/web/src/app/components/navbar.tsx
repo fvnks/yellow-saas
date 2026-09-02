@@ -18,7 +18,7 @@ export function Navbar() {
   const { theme, toggle } = useTheme();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-[#0F172A]/90 backdrop-blur-xl border-b border-[#E2E8F0] dark:border-slate-700">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/70 dark:bg-[#0F172A]/70 backdrop-blur-2xl border-b border-white/40 dark:border-slate-700/40 shadow-[0_1px_0_0_rgba(255,255,255,0.5)] dark:shadow-none">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
