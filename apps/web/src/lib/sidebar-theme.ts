@@ -9,7 +9,8 @@ export type ModuleType =
   | 'admin'
   | 'restaurante'
   | 'veterinaria'
-  | 'gastos';
+  | 'gastos'
+  | 'auto-talleres';
 
 export interface ModuleSidebarTheme {
   moduleKey: ModuleType;
@@ -216,5 +217,22 @@ export const MODULE_SIDEBAR_THEMES: Record<ModuleType, ModuleSidebarTheme> = {
     activeBadgeClass: 'bg-rose-500 text-white border-rose-400 font-black',
     inactiveBadgeClass: 'bg-rose-500/20 text-slate-900 border-rose-500/30 font-extrabold',
     avatarClass: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
+  },
+  'auto-talleres': {
+    moduleKey: 'auto-talleres',
+    title: 'Talleres Automotrices',
+    badgeLabel: 'Talleres',
+    subtitle: 'Órdenes, Vehículos & Técnicos',
+    headerBadgeBg: 'bg-orange-500/10',
+    headerBadgeText: 'text-orange-400',
+    headerBadgeBorder: 'border-orange-500/20',
+    activeBorderClass: 'border-orange-500',
+    iconActiveColorClass: 'text-orange-400',
+    backIconColorClass: 'text-orange-400',
+    activeSubItemText: 'text-orange-400',
+    groupActiveText: 'text-orange-400',
+    activeBadgeClass: 'bg-orange-500 text-slate-950 border-orange-400 font-black',
+    inactiveBadgeClass: 'bg-orange-500/20 text-slate-900 border-orange-500/30 font-extrabold',
+    avatarClass: 'bg-orange-500/20 text-orange-300 border-orange-500/40',
   },
 };
