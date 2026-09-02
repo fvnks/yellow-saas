@@ -4,6 +4,10 @@ import './globals.css';
 import Providers from './providers';
 import { SupportWidget } from '@/components/support/support-widget';
 
+// Force all pages to be dynamic (no static generation)
+// This prevents build-time errors when database is not available
+export const dynamic = 'force-dynamic';
+
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-sans',
