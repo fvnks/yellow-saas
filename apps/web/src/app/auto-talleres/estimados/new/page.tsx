@@ -16,6 +16,12 @@ import {
   Trash2,
 } from 'lucide-react';
 
+const clpFmt = new Intl.NumberFormat('es-CL', {
+  style: 'currency',
+  currency: 'CLP',
+  maximumFractionDigits: 0,
+});
+
 interface Vehicle {
   id: string;
   plate: string;
@@ -244,7 +250,7 @@ export default function NuevoEstimadoPage() {
                         type="number"
                         placeholder="Cant."
                         value={item.quantity}
-                        onChange={(e) => updateItem(item.id, 'quantity', Number(e.target.value))}
+                        onChange={(e) => updateItem(item.id, 'quantity', Math.max(1, Number(e.target.value) || 1))}
                         className="w-20 px-3 py-2 rounded-lg border border-slate-200/80 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                         min="1"
                       />
@@ -252,14 +258,14 @@ export default function NuevoEstimadoPage() {
                         type="number"
                         placeholder="Precio"
                         value={item.unit_price}
-                        onChange={(e) => updateItem(item.id, 'unit_price', Number(e.target.value))}
+                        onChange={(e) => updateItem(item.id, 'unit_price', Math.max(0, Number(e.target.value) || 0))}
                         className="flex-1 px-3 py-2 rounded-lg border border-slate-200/80 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                         min="0"
                       />
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-bold text-slate-900">
-                        {new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(item.subtotal)}
+                        {clpFmt.format(item.subtotal)}
                       </p>
                     </div>
                   </div>

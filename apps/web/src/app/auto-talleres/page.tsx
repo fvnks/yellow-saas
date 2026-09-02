@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Wrench,
@@ -21,11 +21,40 @@ import {
   Timer,
   Package,
 } from 'lucide-react';
+import { formatCLP } from './lib/utils';
 
-const formatCLP = (val: number) =>
-  new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(val);
+interface DashboardStats {
+  vehicleCount: number;
+  activeOrdersCount: number;
+  totalRevenue: number;
+  technicianCount: number;
+  occupiedBays: number;
+}
 
 export default function AutoTalleresDashboardPage() {
+  const [stats, setStats] = useState<DashboardStats>({
+    vehicleCount: 0,
+    activeOrdersCount: 0,
+    totalRevenue: 0,
+    technicianCount: 0,
+    occupiedBays: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadStats() {
+      try {
+        const res = await fetch(`/api/auto-talleres/stats?company_id=${process.env.NEXT_PUBLIC_COMPANY_ID || ''}`);
+        const data = await res.json();
+        if (data.success) setStats(data.data);
+      } catch (err) {
+        console.error('Error loading stats:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadStats();
+  }, []);
   return (
     <div className="space-y-6 animate-fade-in-up">
       {/* Header Banner */}
@@ -70,74 +99,63 @@ export default function AutoTalleresDashboardPage() {
       </div>
 
       {/* KPI Stats */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        {/* Vehículos en Taller */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Vehículos en Taller</p>
-              <p className="text-3xl font-black text-[#0F172A] mt-1">12</p>
-              <p className="text-xs text-emerald-600 mt-1 flex items-center gap-1">
-                <ArrowUpRight className="w-3 h-3" />
-                +3 vs ayer
-              </p>
-            </div>
-            <div className="h-10 w-10 rounded-xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
-              <Car className="w-5 h-5 text-orange-500" />
+      {loading ? (
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="bg-white border border-slate-200/80 rounded-2xl h-32 animate-pulse" />
+          ))}
+        </div>
+      ) : (
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Vehículos Registrados</p>
+                <p className="text-3xl font-black text-[#0F172A] mt-1">{stats.vehicleCount}</p>
+              </div>
+              <div className="h-10 w-10 rounded-xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
+                <Car className="w-5 h-5 text-orange-500" />
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Órdenes Hoy */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Órdenes Hoy</p>
-              <p className="text-3xl font-black text-[#0F172A] mt-1">8</p>
-              <p className="text-xs text-emerald-600 mt-1 flex items-center gap-1">
-                <ArrowUpRight className="w-3 h-3" />
-                5 completadas
-              </p>
-            </div>
-            <div className="h-10 w-10 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
-              <FileText className="w-5 h-5 text-blue-500" />
+          <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Órdenes Activas</p>
+                <p className="text-3xl font-black text-[#0F172A] mt-1">{stats.activeOrdersCount}</p>
+              </div>
+              <div className="h-10 w-10 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                <FileText className="w-5 h-5 text-blue-500" />
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Revenue del Mes */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Revenue del Mes</p>
-              <p className="text-3xl font-black text-[#0F172A] mt-1">{formatCLP(4850000)}</p>
-              <p className="text-xs text-emerald-600 mt-1 flex items-center gap-1">
-                <ArrowUpRight className="w-3 h-3" />
-                +12.5% vs mes anterior
-              </p>
-            </div>
-            <div className="h-10 w-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
-              <DollarSign className="w-5 h-5 text-emerald-500" />
+          <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Revenue del Mes</p>
+                <p className="text-3xl font-black text-[#0F172A] mt-1">{formatCLP(stats.totalRevenue)}</p>
+              </div>
+              <div className="h-10 w-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                <DollarSign className="w-5 h-5 text-emerald-500" />
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* ARO */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">ARO (Promedio por Orden)</p>
-              <p className="text-3xl font-black text-[#0F172A] mt-1">{formatCLP(606250)}</p>
-              <p className="text-xs text-slate-500 mt-1">
-                {formatCLP(4850000)} / 8 órdenes
-              </p>
-            </div>
-            <div className="h-10 w-10 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
-              <TrendingUp className="w-5 h-5 text-purple-500" />
+          <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Técnicos Activos</p>
+                <p className="text-3xl font-black text-[#0F172A] mt-1">{stats.technicianCount}</p>
+              </div>
+              <div className="h-10 w-10 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
+                <Users className="w-5 h-5 text-purple-500" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Main Content Grid */}
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
