@@ -5,8 +5,12 @@ import { useTranslations } from 'next-intl';
 import { NavGroup } from '@/navigation/sidebar/sidebar-items';
 
 function translateIfNeeded(t: (key: string) => string, value: string): string {
-  // If the value matches a known nav key, translate it
-  return t(`nav.${value}`) !== `nav.${value}` ? t(`nav.${value}`) : value;
+  try {
+    const translated = t(`nav.${value}`);
+    return translated !== `nav.${value}` ? translated : value;
+  } catch {
+    return value;
+  }
 }
 
 export function useTranslatedSidebar(items: NavGroup[]): NavGroup[] {
