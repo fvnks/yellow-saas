@@ -31,6 +31,19 @@ interface DashboardStats {
   occupiedBays: number;
 }
 
+interface RecentOrder {
+  id: string;
+  order_number: string;
+  status: string;
+  priority: string;
+  total: number;
+  patente: string;
+  brand: string;
+  model: string;
+  client_name: string;
+  created_at: string;
+}
+
 export default function AutoTalleresDashboardPage() {
   const [stats, setStats] = useState<DashboardStats>({
     vehicleCount: 0,
@@ -39,21 +52,28 @@ export default function AutoTalleresDashboardPage() {
     technicianCount: 0,
     occupiedBays: 0,
   });
+  const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadStats() {
+    async function loadData() {
       try {
-        const res = await fetch(`/api/auto-talleres/stats?company_id=${process.env.NEXT_PUBLIC_COMPANY_ID || ''}`);
-        const data = await res.json();
-        if (data.success) setStats(data.data);
+        const companyId = process.env.NEXT_PUBLIC_COMPANY_ID || '';
+        const [statsRes, ordersRes] = await Promise.all([
+          fetch(`/api/auto-talleres/stats?company_id=${companyId}`),
+          fetch(`/api/auto-talleres/orders?company_id=${companyId}&limit=5`),
+        ]);
+        const statsData = await statsRes.json();
+        const ordersData = await ordersRes.json();
+        if (statsData.success) setStats(statsData.data);
+        if (ordersData.success) setRecentOrders(ordersData.data);
       } catch (err) {
-        console.error('Error loading stats:', err);
+        console.error('Error loading dashboard data:', err);
       } finally {
         setLoading(false);
       }
     }
-    loadStats();
+    loadData();
   }, []);
   return (
     <div className="space-y-6 animate-fade-in-up">
@@ -162,7 +182,7 @@ export default function AutoTalleresDashboardPage() {
         {/* Work Orders Activity */}
         <div className="lg:col-span-2 bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-200/80 flex items-center justify-between">
-            <h3 className="text-sm font-bold text-slate-900">Órdenes de Trabajo Activas</h3>
+            <h3 className="text-sm font-bold text-slate-900">Órdenes Recientes</h3>
             <Link
               href="/auto-talleres/ordenes"
               className="text-xs font-semibold text-orange-600 hover:text-orange-700 flex items-center gap-1"
@@ -172,74 +192,64 @@ export default function AutoTalleresDashboardPage() {
             </Link>
           </div>
           <div className="p-4">
-            <div className="space-y-3">
-              {[
-                { id: 'OT-2024-001', vehicle: 'Toyota Corolla 2022', plate: 'ABCD12', client: 'Juan Pérez', status: 'in_progress', priority: 'alta', technician: 'Carlos Muñoz', bay: 'Bay 3', progress: 65 },
-                { id: 'OT-2024-002', vehicle: 'Chevrolet Spark 2020', plate: 'EFGH34', client: 'María González', status: 'diagnostic', priority: 'normal', technician: 'Pedro Silva', bay: 'Bay 1', progress: 30 },
-                { id: 'OT-2024-003', vehicle: 'Ford Ranger 2021', plate: 'IJKL56', client: 'Roberto Díaz', status: 'approved', priority: 'urgente', technician: 'Ana Torres', bay: 'Bay 2', progress: 0 },
-                { id: 'OT-2024-004', vehicle: 'VW Golf 2019', plate: 'MNOP78', client: 'Claudia López', status: 'quality_check', priority: 'normal', technician: 'Carlos Muñoz', bay: 'Bay 4', progress: 90 },
-                { id: 'OT-2024-005', vehicle: 'Hyundai Tucson 2023', plate: 'QRST90', client: 'Felipe Muñoz', status: 'ready', priority: 'baja', technician: 'Pedro Silva', bay: 'Bay 5', progress: 100 },
-              ].map((order) => (
-                <div
-                  key={order.id}
-                  className="flex items-center gap-4 p-4 rounded-xl bg-slate-50/50 hover:bg-slate-50 transition-colors border border-slate-100"
-                >
-                  {/* Status Badge */}
-                  <div className={`flex-shrink-0 w-2 h-2 rounded-full ${
-                    order.status === 'in_progress' ? 'bg-blue-500' :
-                    order.status === 'diagnostic' ? 'bg-amber-500' :
-                    order.status === 'approved' ? 'bg-purple-500' :
-                    order.status === 'quality_check' ? 'bg-orange-500' :
-                    order.status === 'ready' ? 'bg-emerald-500' :
-                    'bg-slate-400'
-                  }`} />
-                  
-                  {/* Order Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono text-slate-500">{order.id}</span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                        order.priority === 'urgente' ? 'bg-rose-100 text-rose-700' :
-                        order.priority === 'alta' ? 'bg-amber-100 text-amber-700' :
-                        'bg-slate-100 text-slate-600'
-                      }`}>
-                        {order.priority.toUpperCase()}
-                      </span>
-                    </div>
-                    <p className="text-sm font-bold text-slate-900 truncate">{order.vehicle}</p>
-                    <p className="text-xs text-slate-500">{order.plate} · {order.client}</p>
-                  </div>
-
-                  {/* Technician & Bay */}
-                  <div className="text-right hidden sm:block">
-                    <p className="text-xs font-semibold text-slate-700">{order.technician}</p>
-                    <p className="text-xs text-slate-500">{order.bay}</p>
-                  </div>
-
-                  {/* Progress */}
-                  <div className="w-24 hidden md:block">
-                    <div className="flex items-center justify-between text-xs text-slate-500 mb-1">
-                      <span>Progreso</span>
-                      <span className="font-semibold">{order.progress}%</span>
-                    </div>
-                    <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-orange-500 rounded-full transition-all"
-                        style={{ width: `${order.progress}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  <Link
-                    href={`/auto-talleres/ordenes/${order.id}`}
-                    className="flex-shrink-0 p-2 hover:bg-slate-200/50 rounded-lg transition-colors"
+            {loading ? (
+              <div className="space-y-3">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="h-16 rounded-xl bg-slate-100 animate-pulse" />
+                ))}
+              </div>
+            ) : recentOrders.length === 0 ? (
+              <div className="text-center py-8 text-slate-500">
+                <p className="text-sm">No hay órdenes aún</p>
+                <Link href="/auto-talleres/ordenes/new" className="text-xs text-orange-600 font-semibold mt-1 inline-block">
+                  Crear primera orden
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {recentOrders.map((order) => (
+                  <div
+                    key={order.id}
+                    className="flex items-center gap-4 p-3 rounded-xl bg-slate-50/50 hover:bg-slate-50 transition-colors border border-slate-100"
                   >
-                    <ArrowUpRight className="w-4 h-4 text-slate-400" />
-                  </Link>
-                </div>
-              ))}
-            </div>
+                    <div className={`flex-shrink-0 w-2 h-2 rounded-full ${
+                      order.status === 'in_progress' ? 'bg-blue-500' :
+                      order.status === 'diagnostic' ? 'bg-amber-500' :
+                      order.status === 'approved' ? 'bg-purple-500' :
+                      order.status === 'quality_check' ? 'bg-orange-500' :
+                      order.status === 'ready' ? 'bg-emerald-500' :
+                      order.status === 'checkin' ? 'bg-slate-400' :
+                      'bg-slate-300'
+                    }`} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-mono text-slate-500">{order.order_number}</span>
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
+                          order.priority === 'urgente' ? 'bg-rose-100 text-rose-700' :
+                          order.priority === 'alta' ? 'bg-amber-100 text-amber-700' :
+                          'bg-slate-100 text-slate-600'
+                        }`}>
+                          {order.priority.toUpperCase()}
+                        </span>
+                      </div>
+                      <p className="text-sm font-bold text-slate-900 truncate">
+                        {order.brand} {order.model}
+                      </p>
+                      <p className="text-xs text-slate-500">{order.patente} · {order.client_name}</p>
+                    </div>
+                    <div className="text-right hidden sm:block">
+                      <p className="text-xs font-bold text-slate-700">{formatCLP(order.total)}</p>
+                    </div>
+                    <Link
+                      href={`/auto-talleres/ordenes/${order.id}`}
+                      className="flex-shrink-0 p-2 hover:bg-slate-200/50 rounded-lg transition-colors"
+                    >
+                      <ArrowUpRight className="w-4 h-4 text-slate-400" />
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 

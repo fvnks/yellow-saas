@@ -13,21 +13,39 @@ import {
 } from 'lucide-react';
 import { getStatusBadgeClass, getStatusLabel } from '../lib/utils';
 
-const bays = [
-  { id: 'b1', bay_number: 1, type: 'general', status: 'available', max_weight: 3000, equipment: 'Elevador' },
-  { id: 'b2', bay_number: 2, type: 'elevador', status: 'occupied', max_weight: 5000, equipment: 'Elevador 2 Postos' },
-  { id: 'b3', bay_number: 3, type: 'general', status: 'occupied', max_weight: 3000, equipment: 'Ninguno' },
-  { id: 'b4', bay_number: 4, type: 'alineacion', status: 'occupied', max_weight: 3500, equipment: 'Alineadora 3D' },
-  { id: 'b5', bay_number: 5, type: 'express', status: 'available', max_weight: 2000, equipment: 'Ninguno' },
-];
+interface Bay {
+  id: string;
+  number: string;
+  type: string;
+  status: string;
+  capacity: number;
+  equipment: string;
+}
 
 export default function BaysPage() {
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [bays, setBays] = useState<Bay[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useState(() => {
+    async function loadBays() {
+      try {
+        const res = await fetch(`/api/auto-talleres/bays?company_id=${process.env.NEXT_PUBLIC_COMPANY_ID}`);
+        const data = await res.json();
+        if (data.success) setBays(data.data);
+      } catch (err) {
+        console.error('Error loading bays:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadBays();
+  });
 
   const filteredBays = bays.filter((bay) => {
     const matchesType = !selectedType || bay.type === selectedType;
-    const matchesSearch = bay.bay_number.toString().includes(search) ||
+    const matchesSearch = bay.number.toString().includes(search) ||
       bay.type.toLowerCase().includes(search.toLowerCase());
     return matchesType && matchesSearch;
   });
@@ -121,7 +139,7 @@ export default function BaysPage() {
                   <Wrench className="w-6 h-6 text-orange-500" />
                 </div>
                 <div>
-                  <p className="text-lg font-black text-[#0F172A]">Bay {bay.bay_number}</p>
+                  <p className="text-lg font-black text-[#0F172A]">Bay {bay.number}</p>
                   <p className="text-xs text-slate-500 capitalize">{bay.type}</p>
                 </div>
               </div>
@@ -133,7 +151,7 @@ export default function BaysPage() {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-slate-500">Peso Máximo</span>
-                <span className="font-semibold text-slate-900">{bay.max_weight} kg</span>
+                <span className="font-semibold text-slate-900">{bay.capacity} kg</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Equipamiento</span>

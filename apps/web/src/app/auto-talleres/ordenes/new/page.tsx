@@ -76,6 +76,10 @@ export default function NuevaOrdenPage() {
         body: JSON.stringify({ ...formData, company_id: process.env.NEXT_PUBLIC_COMPANY_ID }),
       });
 
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error?.message || `HTTP ${res.status}`);
+      }
       const data = await res.json();
       if (!data.success) throw new Error(data.error?.message || 'Error creating order');
 
