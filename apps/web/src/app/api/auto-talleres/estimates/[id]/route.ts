@@ -16,7 +16,7 @@ export async function GET(
 
     const { rows } = await query(
       `SELECT ae.*, 
-              av.patente, av.brand, av.model,
+              av.plate, av.brand, av.model,
               c.nombre as client_name, c.rut as client_rut
        FROM auto_estimates ae
        LEFT JOIN auto_vehicles av ON av.id = ae.vehicle_id

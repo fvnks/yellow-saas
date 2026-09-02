@@ -49,7 +49,7 @@ export default function TecnicosPage() {
     const searchLower = search.toLowerCase();
     return (
       tech.full_name.toLowerCase().includes(searchLower) ||
-      tech.specialization.toLowerCase().includes(searchLower) ||
+      (tech.specialization || '').toLowerCase().includes(searchLower) ||
       (tech.rut || '').includes(search)
     );
   });

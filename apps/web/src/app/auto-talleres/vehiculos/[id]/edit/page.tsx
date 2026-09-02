@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   ArrowLeft,
@@ -9,19 +9,20 @@ import {
   Car,
   User,
   AlertCircle,
+  Loader2,
 } from 'lucide-react';
 
 interface Customer {
   id: string;
   nombre: string;
   rut: string;
-  telefono: string;
-  email: string;
 }
 
-export default function NuevoVehiculoPage() {
+export default function EditarVehiculoPage() {
+  const params = useParams();
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,32 +43,52 @@ export default function NuevoVehiculoPage() {
   });
 
   useEffect(() => {
-    async function loadCustomers() {
+    async function loadData() {
       try {
-        const res = await fetch('/api/customers?company_id=' + process.env.NEXT_PUBLIC_COMPANY_ID);
-        if (!res.ok) {
-          console.error('Failed to load customers');
-          return;
-        }
-        const data = await res.json();
-        if (data.success) setCustomers(data.data);
+        const [vehicleRes, customersRes] = await Promise.all([
+          fetch(`/api/auto-talleres/vehicles/${params.id}?company_id=${process.env.NEXT_PUBLIC_COMPANY_ID}`),
+          fetch('/api/customers?company_id=' + process.env.NEXT_PUBLIC_COMPANY_ID),
+        ]);
+        if (!vehicleRes.ok) throw new Error(`HTTP ${vehicleRes.status}`);
+        const vehicleData = await vehicleRes.json();
+        const customersData = await customersRes.json();
+        if (!vehicleData.success) throw new Error(vehicleData.error?.message || 'Error loading vehicle');
+        const v = vehicleData.data;
+        setFormData({
+          client_id: v.client_id || '',
+          plate: v.plate || '',
+          plate_type: v.plate_type || 'normal',
+          brand: v.brand || '',
+          model: v.model || '',
+          year: v.year || new Date().getFullYear(),
+          color: v.color || '',
+          fuel_type: v.fuel_type || 'naftero',
+          transmission: v.transmission || 'manual',
+          mileage: v.mileage || 0,
+          engine_capacity: v.engine_capacity || '',
+          vin: v.vin || '',
+          observation: v.observation || '',
+        });
+        if (customersData.success) setCustomers(customersData.data);
       } catch (err) {
-        console.error('Error loading customers:', err);
+        setError(err instanceof Error ? err.message : 'Error loading vehicle');
+      } finally {
+        setLoading(false);
       }
     }
-    loadCustomers();
-  }, []);
+    loadData();
+  }, [params.id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setSaving(true);
     setError(null);
 
     try {
-      const res = await fetch('/api/auto-talleres/vehicles', {
-        method: 'POST',
+      const res = await fetch(`/api/auto-talleres/vehicles/${params.id}?company_id=${process.env.NEXT_PUBLIC_COMPANY_ID}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, company_id: process.env.NEXT_PUBLIC_COMPANY_ID }),
+        body: JSON.stringify(formData),
       });
 
       if (!res.ok) {
@@ -75,13 +96,13 @@ export default function NuevoVehiculoPage() {
         throw new Error(err.error?.message || `HTTP ${res.status}`);
       }
       const data = await res.json();
-      if (!data.success) throw new Error(data.error?.message || 'Error creating vehicle');
+      if (!data.success) throw new Error(data.error?.message || 'Error updating vehicle');
 
-      router.push('/auto-talleres/vehiculos');
+      router.push(`/auto-talleres/vehiculos/${params.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
@@ -89,19 +110,27 @@ export default function NuevoVehiculoPage() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 animate-fade-in-up max-w-3xl">
       {/* Header */}
       <div className="flex items-center gap-4">
         <Link
-          href="/auto-talleres/vehiculos"
+          href={`/auto-talleres/vehiculos/${params.id}`}
           className="p-2 hover:bg-slate-100 rounded-xl transition-colors"
         >
           <ArrowLeft className="w-5 h-5 text-slate-600" />
         </Link>
         <div>
-          <h1 className="text-2xl font-black text-[#0F172A]">Registrar Vehículo</h1>
-          <p className="text-sm text-slate-500 mt-1">Agrega un nuevo vehículo al sistema</p>
+          <h1 className="text-2xl font-black text-[#0F172A]">Editar Vehículo</h1>
+          <p className="text-sm text-slate-500 mt-1">{formData.plate} — Actualiza los datos del vehículo</p>
         </div>
       </div>
 
@@ -183,7 +212,6 @@ export default function NuevoVehiculoPage() {
                 onChange={(e) => handleChange('year', Math.max(1900, Math.min(new Date().getFullYear() + 1, Number(e.target.value) || 0)))}
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200/80 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
                 min="1900"
-                max={new Date().getFullYear() + 1}
                 required
               />
             </div>
@@ -301,18 +329,18 @@ export default function NuevoVehiculoPage() {
         {/* Actions */}
         <div className="px-6 py-4 border-t border-slate-200/80 flex items-center justify-end gap-3 bg-slate-50/50">
           <Link
-            href="/auto-talleres/vehiculos"
+            href={`/auto-talleres/vehiculos/${params.id}`}
             className="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors"
           >
             Cancelar
           </Link>
           <button
             type="submit"
-            disabled={loading || !formData.plate || !formData.brand || !formData.model || !formData.client_id}
+            disabled={saving || !formData.plate || !formData.brand || !formData.model || !formData.client_id}
             className="bg-[#FACC15] hover:bg-[#EAB308] disabled:bg-slate-300 disabled:cursor-not-allowed text-slate-950 font-bold px-6 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
           >
             <Save className="w-4 h-4" />
-            {loading ? 'Guardando...' : 'Guardar Vehículo'}
+            {saving ? 'Guardando...' : 'Guardar Cambios'}
           </button>
         </div>
       </form>

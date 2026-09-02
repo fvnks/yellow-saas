@@ -45,7 +45,7 @@ export async function getOrders(filters?: {
   
   const { rows } = await query(
     `SELECT wo.*, 
-            av.patente, av.brand as marca, av.model as modelo, av.year as anio, av.color,
+            av.plate, av.brand as marca, av.model as modelo, av.year as anio, av.color,
             c.nombre as client_name, c.rut as client_rut, c.email, c.telefono,
             at.full_name as technician_name, at.specialization as especialidad
      FROM auto_work_orders wo
@@ -67,7 +67,7 @@ export async function getOrders(filters?: {
 export async function getOrderById(id: string, companyId: string) {
   const { rows } = await query(
     `SELECT wo.*, 
-            av.patente, av.brand as marca, av.model as modelo, av.year as anio, av.color,
+            av.plate, av.brand as marca, av.model as modelo, av.year as anio, av.color,
             c.nombre as client_name, c.rut as client_rut, c.email, c.telefono,
             at.full_name as technician_name, at.specialization as especialidad
      FROM auto_work_orders wo

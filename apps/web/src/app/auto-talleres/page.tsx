@@ -33,7 +33,7 @@ interface RecentOrder {
   status: string;
   priority: string;
   total: number;
-  patente: string;
+  plate: string;
   brand: string;
   model: string;
   client_name: string;
@@ -290,7 +290,7 @@ export default function AutoTalleresDashboardPage() {
                       <p className="text-sm font-bold text-slate-900 truncate">
                         {order.brand} {order.model}
                       </p>
-                      <p className="text-xs text-slate-500">{order.patente} · {order.client_name}</p>
+                      <p className="text-xs text-slate-500">{order.plate} · {order.client_name}</p>
                     </div>
                     <div className="text-right hidden sm:block">
                       <p className="text-xs font-bold text-slate-700">{formatCLP(order.total)}</p>
