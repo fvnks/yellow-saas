@@ -75,7 +75,7 @@ export async function getOrderStatusCounts(companyId: string) {
 export async function getRecentOrders(companyId: string, limit = 5) {
   const { rows } = await query(
     `SELECT wo.id, wo.order_number, wo.status, wo.priority, wo.total, wo.created_at,
-            av.patente, av.brand, av.model,
+            av.plate, av.brand, av.model,
             c.nombre as client_name
      FROM auto_work_orders wo
      LEFT JOIN auto_vehicles av ON av.id = wo.vehicle_id

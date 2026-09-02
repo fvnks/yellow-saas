@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -19,6 +19,7 @@ import {
   AlertCircle,
   TrendingUp,
   ArrowRight,
+  Pencil,
 } from 'lucide-react';
 import { formatCLP, formatDate, getStatusBadgeClass, getStatusLabel } from '../../lib/utils';
 
@@ -46,23 +47,17 @@ interface Order {
   customer_complaint: string;
   diagnosis: string;
   notes: string;
-  auto_vehicles?: {
-    patente: string;
-    brand: string;
-    model: string;
-    year: number;
-    color: string;
-  };
-  customers?: {
-    nombre: string;
-    rut: string;
-    email: string;
-    telefono: string;
-  };
-  auto_technicians?: {
-    full_name: string;
-    specialization: string;
-  };
+  plate: string;
+  brand: string;
+  model: string;
+  year: number;
+  color: string;
+  client_name: string;
+  client_rut: string;
+  client_email: string;
+  client_telefono: string;
+  technician_name: string;
+  specialization: string;
 }
 
 export default function OrdenDetallePage() {
@@ -74,7 +69,7 @@ export default function OrdenDetallePage() {
   const [error, setError] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
 
-  const statusFlow: Record<string, string[]> = {
+  const statusFlow = useMemo<Record<string, string[]>>(() => ({
     checkin: ['diagnostic'],
     diagnostic: ['estimated', 'waiting_parts'],
     estimated: ['approved', 'cancelled'],
@@ -84,7 +79,7 @@ export default function OrdenDetallePage() {
     quality_check: ['ready'],
     ready: ['delivered'],
     delivered: ['invoiced'],
-  };
+  }), []);
 
   useEffect(() => {
     async function loadData() {
@@ -151,9 +146,8 @@ export default function OrdenDetallePage() {
     );
   }
 
-  const vehicle = order.auto_vehicles;
-  const client = order.customers;
-  const technician = order.auto_technicians;
+  const vehicle = order;
+  const client = order;
 
   return (
     <div className="space-y-6 animate-fade-in-up">
@@ -186,6 +180,13 @@ export default function OrdenDetallePage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <Link
+            href={`/auto-talleres/ordenes/${params.id}/edit`}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0F172A] hover:bg-[#1E293B] text-white text-sm font-semibold transition-colors"
+          >
+            <Pencil className="w-4 h-4" />
+            Editar
+          </Link>
           <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200/80 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
             <Printer className="w-4 h-4" />
             Imprimir
@@ -242,15 +243,15 @@ export default function OrdenDetallePage() {
                 <p className="text-lg font-bold text-slate-900 mt-1">
                   {vehicle?.brand} {vehicle?.model}
                 </p>
-                <p className="text-sm text-slate-500">{vehicle?.patente} · {vehicle?.year}</p>
+                <p className="text-sm text-slate-500">{vehicle?.plate} · {vehicle?.year}</p>
                 <p className="text-sm text-slate-500">{vehicle?.color}</p>
               </div>
               <div>
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Cliente</p>
-                <p className="text-lg font-bold text-slate-900 mt-1">{client?.nombre}</p>
-                <p className="text-sm text-slate-500">{client?.rut}</p>
-                <p className="text-sm text-slate-500">{client?.telefono}</p>
-                <p className="text-sm text-slate-500">{client?.email}</p>
+                <p className="text-lg font-bold text-slate-900 mt-1">{client?.client_name}</p>
+                <p className="text-sm text-slate-500">{client?.client_rut}</p>
+                <p className="text-sm text-slate-500">{client?.client_telefono}</p>
+                <p className="text-sm text-slate-500">{client?.client_email}</p>
               </div>
             </div>
           </div>
@@ -286,10 +287,13 @@ export default function OrdenDetallePage() {
                 <DollarSign className="w-4 h-4 text-orange-500" />
                 <h2 className="text-sm font-bold text-slate-900">Items de la Orden</h2>
               </div>
-              <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-orange-500/10 text-orange-600 text-sm font-semibold hover:bg-orange-500/20 transition-colors">
+              <Link
+                href={`/auto-talleres/ordenes/${params.id}/edit`}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-orange-500/10 text-orange-600 text-sm font-semibold hover:bg-orange-500/20 transition-colors"
+              >
                 <Plus className="w-4 h-4" />
                 Agregar Item
-              </button>
+              </Link>
             </div>
             <div className="p-4">
               <table className="w-full">
@@ -404,14 +408,14 @@ export default function OrdenDetallePage() {
               <h2 className="text-sm font-bold text-slate-900">Asignaciones</h2>
             </div>
             <div className="p-6 space-y-4">
-              {technician ? (
+              {order.technician_name ? (
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
                     <User className="w-5 h-5 text-orange-500" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">{technician.full_name}</p>
-                    <p className="text-xs text-slate-500">{technician.specialization}</p>
+                    <p className="text-sm font-semibold text-slate-900">{order.technician_name}</p>
+                    <p className="text-xs text-slate-500">{order.specialization}</p>
                   </div>
                 </div>
               ) : (

@@ -148,7 +148,7 @@ export default function NuevaOrdenPage() {
                 <option value="">Seleccionar vehículo...</option>
                 {vehicles.map((v) => (
                   <option key={v.id} value={v.id}>
-                    {v.patente} - {v.brand} {v.model} ({v.year})
+                    {v.plate} - {v.brand} {v.model} ({v.year})
                   </option>
                 ))}
               </select>

@@ -33,7 +33,7 @@ interface Vehicle {
   fuel_type: string;
   transmission: string;
   mileage: number;
-  motor: string;
+  engine_capacity: string;
   vin: string;
   observation: string;
   status: string;
@@ -57,6 +57,7 @@ export default function VehicleDetailPage() {
     async function loadVehicle() {
       try {
         const res = await fetch(`/api/auto-talleres/vehicles/${params.id}?company_id=${process.env.NEXT_PUBLIC_COMPANY_ID}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (data.success) setVehicle(data.data);
         else setError(data.error?.message || 'Vehicle not found');
@@ -118,10 +119,13 @@ export default function VehicleDetailPage() {
             <Printer className="w-4 h-4" />
             Imprimir Ficha
           </button>
-          <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200/80 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
+          <Link
+            href={`/auto-talleres/vehiculos/${vehicle.id}/edit`}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200/80 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
+          >
             <Edit className="w-4 h-4" />
             Editar
-          </button>
+          </Link>
           <button
             onClick={() => setShowOrderModal(true)}
             className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
@@ -172,7 +176,7 @@ export default function VehicleDetailPage() {
               </div>
               <div>
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Motor</p>
-                <p className="text-sm font-bold text-slate-900 mt-1">{vehicle.motor || 'N/A'}</p>
+                <p className="text-sm font-bold text-slate-900 mt-1">{vehicle.engine_capacity || 'N/A'}</p>
               </div>
               <div>
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">VIN (Chasis)</p>
