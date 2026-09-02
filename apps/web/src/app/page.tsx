@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import { useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 import {
   Package, ShoppingCart, Users, BarChart3, Shield, Settings,
   Truck, Calculator, Briefcase, ChevronRight, Check, Zap,
@@ -111,6 +113,7 @@ function formatPrice(price: number) {
 }
 
 export default function HomePage() {
+  const reduce = useReducedMotion();
   return (
     <div className="landing-page min-h-screen bg-[#F8FAFC] dark:bg-[#0F172A] text-[#0F172A] dark:text-white">
       {/* ─── 1. NAVBAR ─── */}
@@ -122,24 +125,44 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left: Copy */}
             <div className="text-left order-2 lg:order-1">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-[#1E293B] px-4 py-1.5 text-xs font-semibold text-[#0F172A] dark:text-white mb-6 shadow-sm">
+              <motion.div
+                initial={reduce ? false : { opacity: 0, y: 12 }}
+                animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+                className="inline-flex items-center gap-2 rounded-full border border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-[#1E293B] px-4 py-1.5 text-xs font-semibold text-[#0F172A] dark:text-white mb-6 shadow-sm"
+              >
                 <span className="inline-block w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
                 ERP SaaS · Hecho para PyMEs en Chile
-              </div>
+              </motion.div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-[4rem] font-bold text-[#0F172A] dark:text-white leading-[1.1] tracking-tight mb-5">
+              <motion.h1
+                initial={reduce ? false : { opacity: 0, y: 12 }}
+                animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: 0.05, ease: [0.23, 1, 0.32, 1] }}
+                className="text-4xl sm:text-5xl lg:text-[4rem] font-bold text-[#0F172A] dark:text-white leading-[1.1] tracking-tight mb-5"
+              >
                 El ERP moderno que simplifica
                 <br />
                 <span className="text-amber-500">toda tu empresa</span>
                 <br />
                 en un solo lugar
-              </h1>
+              </motion.h1>
 
-              <p className="text-base sm:text-lg text-[#64748B] dark:text-slate-400 max-w-xl mb-8 leading-relaxed font-normal">
+              <motion.p
+                initial={reduce ? false : { opacity: 0, y: 12 }}
+                animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: 0.1, ease: [0.23, 1, 0.32, 1] }}
+                className="text-base sm:text-lg text-[#64748B] dark:text-slate-400 max-w-xl mb-8 leading-relaxed font-normal"
+              >
                 Controla tu Inventario, Ventas, Compras, Contabilidad y Nómina chilena en una plataforma ágil, segura y adaptada al SII.
-              </p>
+              </motion.p>
 
-              <div className="flex flex-col sm:flex-row items-start gap-3">
+              <motion.div
+                initial={reduce ? false : { opacity: 0, y: 12 }}
+                animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: 0.15, ease: [0.23, 1, 0.32, 1] }}
+                className="flex flex-col sm:flex-row items-start gap-3"
+              >
                 <Link
                   href="/register"
                   className="w-full sm:w-auto rounded-xl bg-[#0F172A] hover:bg-[#1E293B] dark:bg-amber-500 dark:hover:bg-amber-400 text-white px-8 py-3.5 text-sm font-medium shadow-md shadow-[#0F172A]/25 dark:shadow-amber-500/25 transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2"
@@ -154,10 +177,15 @@ export default function HomePage() {
                   <span>Explorar Módulos</span>
                   <ArrowRight className="w-4 h-4 text-[#64748B] dark:text-slate-400" />
                 </Link>
-              </div>
+              </motion.div>
 
               {/* Trust badges */}
-              <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs font-medium text-[#64748B] dark:text-slate-400">
+              <motion.div
+                initial={reduce ? false : { opacity: 0, y: 12 }}
+                animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: 0.2, ease: [0.23, 1, 0.32, 1] }}
+                className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs font-medium text-[#64748B] dark:text-slate-400"
+              >
                 <div className="flex items-center gap-2">
                   <Shield className="w-4 h-4 text-amber-500" />
                   <span>Multi-tenant Aislado</span>
@@ -170,12 +198,22 @@ export default function HomePage() {
                   <Globe className="w-4 h-4 text-amber-500" />
                   <span>Facturación SII 100% Nativa</span>
                 </div>
-              </div>
+              </motion.div>
             </div>
 
             {/* Right: Mockup */}
-            <div className="order-1 lg:order-2">
-              <div className="relative bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden">
+            <motion.div
+              className="order-1 lg:order-2"
+              initial={reduce ? false : { opacity: 0, x: 24, scale: 0.96 }}
+              animate={reduce ? { opacity: 1 } : { opacity: 1, x: 0, scale: 1 }}
+              transition={{ duration: 0.45, delay: 0.12, ease: [0.23, 1, 0.32, 1] }}
+            >
+              <div
+                className="relative bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden"
+                style={reduce ? undefined : {
+                  animation: 'hero-float 4s ease-in-out infinite',
+                }}
+              >
                 <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-[#1E293B]">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-rose-400" />
@@ -234,7 +272,7 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
