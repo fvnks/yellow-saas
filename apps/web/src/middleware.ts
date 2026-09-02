@@ -194,6 +194,6 @@ export const config = {
     // Public pages (login/register/etc.) are intentionally NOT excluded so the
     // next-intl middleware localizes them into /[locale] where the
     // NextIntlClientProvider is mounted.
-    '/((?!_next/static|_next/image|favicon.ico|public/|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$|admin|ayuda|portal|view).*)',
+    '/((?!_next/static|_next/image|favicon.ico|manifest.json|public/|.*\.(?:svg|png|jpg|jpeg|gif|webp|json|ico|js|css|woff2?|ttf|eot)$|admin|ayuda|portal|view).*)',
   ],
 };

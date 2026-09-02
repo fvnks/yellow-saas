@@ -462,6 +462,11 @@ export const sidebarItems: NavGroup[] = [
         icon: "UtensilsCrossed",
       },
       {
+        title: "Talleres Automotrices",
+        path: "/auto-talleres",
+        icon: "Wrench",
+      },
+      {
         title: "Alertas",
         path: "/dashboard/alerts",
         icon: "Bell",
