@@ -190,7 +190,10 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Skip Next.js internals, static files, and root app (landing/public pages)
-    '/((?!_next/static|_next/image|favicon.ico|public/|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$|admin|ayuda|portal|view|login|register|forgot-password|reset-password|select|privacy|terms|contact).*)',
+    // Skip Next.js internals, static files, and authenticated dashboard areas.
+    // Public pages (login/register/etc.) are intentionally NOT excluded so the
+    // next-intl middleware localizes them into /[locale] where the
+    // NextIntlClientProvider is mounted.
+    '/((?!_next/static|_next/image|favicon.ico|public/|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$|admin|ayuda|portal|view).*)',
   ],
 };
