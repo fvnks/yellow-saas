@@ -32,6 +32,7 @@ export default function BaysPage() {
     async function loadBays() {
       try {
         const res = await fetch(`/api/auto-talleres/bays?company_id=${process.env.NEXT_PUBLIC_COMPANY_ID}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (data.success) setBays(data.data);
       } catch (err) {
