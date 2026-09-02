@@ -126,20 +126,20 @@ export default function HomePage() {
             {/* Left: Copy */}
             <div className="text-left order-2 lg:order-1">
               <motion.div
-                initial={reduce ? false : { opacity: 0, y: 12 }}
+                initial={reduce ? false : { opacity: 0, y: 14 }}
                 animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
-                className="inline-flex items-center gap-2 rounded-full border border-[#E2E8F0] dark:border-slate-700 bg-[#F8FAFC] dark:bg-[#1E293B] px-4 py-1.5 text-xs font-semibold text-[#0F172A] dark:text-white mb-6 shadow-sm"
+                transition={{ type: 'spring', damping: 1.0, stiffness: 120, mass: 0.8, delay: 0 }}
+                className="inline-flex items-center gap-2 rounded-full border border-[#E2E8F0]/80 dark:border-slate-700/60 bg-white/60 dark:bg-[#1E293B]/60 backdrop-blur-md px-4 py-1.5 text-xs font-semibold text-[#0F172A] dark:text-white mb-6 shadow-sm"
               >
                 <span className="inline-block w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
                 ERP SaaS · Hecho para PyMEs en Chile
               </motion.div>
 
               <motion.h1
-                initial={reduce ? false : { opacity: 0, y: 12 }}
+                initial={reduce ? false : { opacity: 0, y: 14 }}
                 animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, delay: 0.05, ease: [0.23, 1, 0.32, 1] }}
-                className="text-4xl sm:text-5xl lg:text-[4rem] font-bold text-[#0F172A] dark:text-white leading-[1.1] tracking-tight mb-5"
+                transition={{ type: 'spring', damping: 1.0, stiffness: 120, mass: 0.8, delay: 0.04 }}
+                className="text-4xl sm:text-5xl lg:text-[4rem] font-bold text-[#0F172A] dark:text-white leading-[1.05] tracking-[-0.025em] mb-5"
               >
                 El ERP moderno que simplifica
                 <br />
@@ -149,18 +149,18 @@ export default function HomePage() {
               </motion.h1>
 
               <motion.p
-                initial={reduce ? false : { opacity: 0, y: 12 }}
+                initial={reduce ? false : { opacity: 0, y: 14 }}
                 animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, delay: 0.1, ease: [0.23, 1, 0.32, 1] }}
+                transition={{ type: 'spring', damping: 1.0, stiffness: 120, mass: 0.8, delay: 0.08 }}
                 className="text-base sm:text-lg text-[#64748B] dark:text-slate-400 max-w-xl mb-8 leading-relaxed font-normal"
               >
                 Controla tu Inventario, Ventas, Compras, Contabilidad y Nómina chilena en una plataforma ágil, segura y adaptada al SII.
               </motion.p>
 
               <motion.div
-                initial={reduce ? false : { opacity: 0, y: 12 }}
+                initial={reduce ? false : { opacity: 0, y: 14 }}
                 animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, delay: 0.15, ease: [0.23, 1, 0.32, 1] }}
+                transition={{ type: 'spring', damping: 1.0, stiffness: 120, mass: 0.8, delay: 0.12 }}
                 className="flex flex-col sm:flex-row items-start gap-3"
               >
                 <Link
@@ -181,9 +181,9 @@ export default function HomePage() {
 
               {/* Trust badges */}
               <motion.div
-                initial={reduce ? false : { opacity: 0, y: 12 }}
+                initial={reduce ? false : { opacity: 0, y: 14 }}
                 animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, delay: 0.2, ease: [0.23, 1, 0.32, 1] }}
+                transition={{ type: 'spring', damping: 1.0, stiffness: 120, mass: 0.8, delay: 0.16 }}
                 className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs font-medium text-[#64748B] dark:text-slate-400"
               >
                 <div className="flex items-center gap-2">
@@ -204,17 +204,19 @@ export default function HomePage() {
             {/* Right: Mockup */}
             <motion.div
               className="order-1 lg:order-2"
-              initial={reduce ? false : { opacity: 0, x: 24, scale: 0.96 }}
+              initial={reduce ? false : { opacity: 0, x: 32, scale: 0.94 }}
               animate={reduce ? { opacity: 1 } : { opacity: 1, x: 0, scale: 1 }}
-              transition={{ duration: 0.45, delay: 0.12, ease: [0.23, 1, 0.32, 1] }}
+              transition={{ type: 'spring', damping: 0.85, stiffness: 100, mass: 1.2, delay: 0.1 }}
             >
               <div
-                className="relative bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden"
+                className="relative bg-white/80 dark:bg-[#1E293B]/80 backdrop-blur-xl border border-white/40 dark:border-slate-700/50 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3),0_2px_8px_rgba(0,0,0,0.2)] overflow-hidden"
                 style={reduce ? undefined : {
+                  transform: 'translateY(0px)',
+                  transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
                   animation: 'hero-float 4s ease-in-out infinite',
                 }}
               >
-                <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#E2E8F0] dark:border-slate-700 bg-white dark:bg-[#1E293B]">
+                <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/30 dark:border-slate-700/50 bg-white/50 dark:bg-[#1E293B]/50 backdrop-blur-sm">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-rose-400" />
                     <div className="w-3 h-3 rounded-full bg-amber-400" />
@@ -225,13 +227,13 @@ export default function HomePage() {
                     ● En vivo
                   </span>
                 </div>
-                <div className="p-5 bg-[#F8FAFC] dark:bg-[#0F172A]">
+                <div className="p-5 bg-gradient-to-b from-[#F8FAFC]/50 to-[#F1F5F9]/30 dark:from-[#0F172A]/50 dark:to-[#1E293B]/30 backdrop-blur-sm">
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <h3 className="text-sm font-bold text-[#0F172A] dark:text-white">Resumen Operativo</h3>
                       <p className="text-xs text-[#64748B] dark:text-slate-400">Empresa Demo Ltda. · Santiago</p>
                     </div>
-                    <span className="px-3 py-1.5 rounded-xl bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-slate-700 text-[#0F172A] dark:text-white text-xs font-medium shadow-xs">
+                    <span className="px-3 py-1.5 rounded-xl bg-white/70 dark:bg-[#1E293B]/70 backdrop-blur-sm border border-white/50 dark:border-slate-700/50 text-[#0F172A] dark:text-white text-xs font-medium shadow-xs">
                       Este Mes
                     </span>
                   </div>
@@ -242,7 +244,7 @@ export default function HomePage() {
                       { label: 'Valor de Inventario', value: '$82.400.000', change: '+3.1%', icon: Package, bg: 'bg-amber-50 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400' },
                       { label: 'Clientes Activos', value: '348', change: '+12%', icon: Users, bg: 'bg-indigo-50 dark:bg-indigo-500/15 text-indigo-600 dark:text-indigo-400' },
                     ].map((kpi) => (
-                      <div key={kpi.label} className="bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-slate-700 rounded-2xl shadow-sm p-3 hover:border-[#0F172A]/30 dark:hover:border-amber-500/30 transition-all duration-150">
+                      <div key={kpi.label} className="bg-white/70 dark:bg-[#1E293B]/70 backdrop-blur-sm border border-white/50 dark:border-slate-700/50 rounded-2xl shadow-sm p-3 hover:border-amber-500/30 dark:hover:border-amber-500/30 transition-all duration-150">
                         <div className="flex items-center justify-between mb-1.5">
                           <p className="text-[9px] font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wider">{kpi.label}</p>
                           <div className={`w-7 h-7 ${kpi.bg} rounded-full flex items-center justify-center`}>
@@ -254,7 +256,7 @@ export default function HomePage() {
                       </div>
                     ))}
                   </div>
-                  <div className="bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-slate-700 rounded-2xl p-4 shadow-sm">
+                  <div className="bg-white/70 dark:bg-[#1E293B]/70 backdrop-blur-sm border border-white/50 dark:border-slate-700/50 rounded-2xl p-4 shadow-sm">
                     <div className="flex items-center justify-between mb-3">
                       <h4 className="text-xs font-semibold text-[#0F172A] dark:text-white">Flujo de Ingresos</h4>
                       <span className="text-[10px] text-[#64748B] dark:text-slate-400">12 Semanas</span>
