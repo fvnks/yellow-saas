@@ -86,8 +86,6 @@ export default function OrdenDetallePage() {
     delivered: ['invoiced'],
   };
 
-  const nextStatuses = order ? (statusFlow[order.status] || []) : [];
-
   useEffect(() => {
     async function loadData() {
       try {
@@ -109,6 +107,8 @@ export default function OrdenDetallePage() {
     }
     loadData();
   }, [params.id]);
+
+  const nextStatuses = order ? (statusFlow[order.status] || []) : [];
 
   const handleStatusChange = async (newStatus: string) => {
     setUpdating(true);
@@ -206,7 +206,7 @@ export default function OrdenDetallePage() {
       )}
 
       {/* Status Transition Buttons */}
-      {nextStatuses.length > 0 && (
+      {order && nextStatuses.length > 0 && (
         <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-4">
           <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
             Cambiar Estado
