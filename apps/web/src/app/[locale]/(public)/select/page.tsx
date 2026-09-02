@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
 import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight,
-X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail, Sparkles, TrendingUp, ShieldCheck, DollarSign, Building, UtensilsCrossed, Stethoscope, Shield } from 'lucide-react';
+X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail, Sparkles, TrendingUp, ShieldCheck, DollarSign, Building, UtensilsCrossed, Stethoscope, Shield, Car } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import { getChileanIndicators, ChileanIndicators } from '@/lib/indicators';
 import {
@@ -133,6 +133,19 @@ const modules: ModuleOption[] = [
     href: '/veterinaria',
     requiredModules: ['veterinaria'],
     moduleName: 'veterinaria',
+  },
+  {
+    id: 'auto-talleres',
+    title: 'Talleres Automotrices',
+    subtitle: 'Órdenes y Vehículos',
+    description: ['Órdenes de Trabajo', 'Vehículos y Patentes', 'Estimados y Repuestos', 'Técnicos y Agenda'],
+    icon: Car,
+    iconBg: 'bg-orange-50 border-orange-200/80',
+    iconColor: 'text-orange-600',
+    accentBadge: 'bg-orange-50 text-orange-700 border-orange-200',
+    href: '/auto-talleres',
+    requiredModules: ['auto-talleres'],
+    moduleName: 'auto-talleres',
   },
   {
     id: 'mi-cuenta',
