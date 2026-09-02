@@ -8,7 +8,6 @@ import { checkRateLimit, AUTH_CONFIG } from '@/lib/rate-limiter';
 const intlMiddleware = createIntlMiddleware(routing);
 const JWT_SECRET = getJwtSecret();
 
-// Detect demo mode only when DATABASE_URL is explicitly absent (local dev signal)
 const isLocalDev = !process.env.DATABASE_URL || process.env.DATABASE_URL?.includes('localhost');
 
 async function verifyToken(token: string) {
@@ -43,45 +42,22 @@ function setSecurityHeaders(response: NextResponse) {
 }
 
 export async function middleware(request: NextRequest) {
-  // First, run next-intl locale detection middleware
-  const intlResponse = intlMiddleware(request);
-  if (intlResponse) return intlResponse;
-
-  const response = NextResponse.next({
-    request: { headers: request.headers },
-  });
-  setSecurityHeaders(response);
-
-  // Skip all auth checks in local dev mode (has no real security impact)
-  if (isLocalDev) return response;
-
   const pathname = request.nextUrl.pathname;
 
-  // Public paths - no auth required
-  const publicPaths = ['/', '/login', '/register', '/auth/callback', '/forgot-password', '/reset-password'];
-  if (publicPaths.some(path => pathname === path)) return response;
-
-  // Redirect super-admin login to unified login
-  if (pathname === '/super-admin/login') {
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
-
-  // Static assets and internal Next.js paths
-  if (pathname.startsWith('/_next') || pathname.startsWith('/favicon') || pathname.includes('.')) return response;
-
-  // API routes
+  // ── API routes: skip next-intl entirely ──
+  // next-intl rewrites /api/* → /es/api/* which causes 404s on all API routes.
   if (pathname.startsWith('/api/')) {
-    // Public API routes - no auth required
+    const response = NextResponse.next({ request: { headers: request.headers } });
+    setSecurityHeaders(response);
+    if (isLocalDev) return response;
+
     const publicApiPaths = ['/api/health', '/api/upload', '/api/migrate', '/api/migrate-fix', '/api/payroll/migrate'];
     if (publicApiPaths.some(p => pathname.startsWith(p))) return response;
 
-    // Public dynamic routes
     if (pathname.startsWith('/api/public/') || pathname.startsWith('/api/portal/')) return response;
 
-    // Auth routes - no token verification needed (they issue tokens)
     if (pathname.startsWith('/api/auth/login') || pathname.startsWith('/api/auth/register')) return response;
 
-    // Rate limit auth-related mutation routes
     if (pathname.startsWith('/api/auth/')) {
       const ip = getClientIp(request);
       const { allowed, remaining, resetAt } = checkRateLimit(ip, pathname, AUTH_CONFIG);
@@ -93,58 +69,55 @@ export async function middleware(request: NextRequest) {
       return response;
     }
 
-    // Super admin API routes - MUST verify JWT token and role
     if (pathname.startsWith('/api/super-admin/') || pathname.startsWith('/api/auth/super-admin/')) {
       const token = request.cookies.get('auth-token')?.value || request.headers.get('authorization')?.replace('Bearer ', '');
-      if (!token) {
-        return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
-      }
+      if (!token) return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
       const payload = await verifyToken(token);
-      if (!payload) {
-        return NextResponse.json({ error: 'Token invalido' }, { status: 401 });
-      }
-      const roleType = payload.role_type as string | undefined;
-      if (roleType !== 'super_admin') {
-        return NextResponse.json({ error: 'No autorizado' }, { status: 403 });
-      }
+      if (!payload) return NextResponse.json({ error: 'Token invalido' }, { status: 401 });
+      if (payload.role_type !== 'super_admin') return NextResponse.json({ error: 'No autorizado' }, { status: 403 });
       return response;
     }
 
-    // Company data routes - MUST verify JWT and company_id match
     if (pathname.startsWith('/api/companies/')) {
       const token = request.cookies.get('auth-token')?.value || request.headers.get('authorization')?.replace('Bearer ', '');
-      if (!token) {
-        return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
-      }
+      if (!token) return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
       const payload = await verifyToken(token);
-      if (!payload) {
-        return NextResponse.json({ error: 'Token invalido' }, { status: 401 });
-      }
-      // Extract company_id from URL: /api/companies/{id}/...
-      const urlParts = pathname.split('/');
-      const urlCompanyId = urlParts[3];
+      if (!payload) return NextResponse.json({ error: 'Token invalido' }, { status: 401 });
+      const urlCompanyId = pathname.split('/')[3];
       const tokenCompanyId = payload.company_id as string | undefined;
-      const roleType = payload.role_type as string | undefined;
-      // Super admins can access any company
-      if (roleType !== 'super_admin' && tokenCompanyId && urlCompanyId && tokenCompanyId !== urlCompanyId) {
+      if (payload.role_type !== 'super_admin' && tokenCompanyId && urlCompanyId && tokenCompanyId !== urlCompanyId) {
         return NextResponse.json({ error: 'No autorizado para esta empresa' }, { status: 403 });
       }
       return response;
     }
 
-    // All other API routes - verify auth
     const token = request.cookies.get('auth-token')?.value || request.headers.get('authorization')?.replace('Bearer ', '');
-    if (!token) {
-      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
-    }
+    if (!token) return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     const payload = await verifyToken(token);
-    if (!payload) {
-      return NextResponse.json({ error: 'Token invalido' }, { status: 401 });
-    }
+    if (!payload) return NextResponse.json({ error: 'Token invalido' }, { status: 401 });
     return response;
   }
 
-  // Page routes - require valid token
+  // ── Non-API routes: run next-intl locale detection ──
+  const intlResponse = intlMiddleware(request);
+  if (intlResponse) return intlResponse;
+
+  const response = NextResponse.next({
+    request: { headers: request.headers },
+  });
+  setSecurityHeaders(response);
+
+  if (isLocalDev) return response;
+
+  const publicPaths = ['/', '/login', '/register', '/auth/callback', '/forgot-password', '/reset-password'];
+  if (publicPaths.some(path => pathname === path)) return response;
+
+  if (pathname === '/super-admin/login') {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+
+  if (pathname.startsWith('/_next') || pathname.startsWith('/favicon') || pathname.includes('.')) return response;
+
   const token = request.cookies.get('auth-token')?.value;
   if (!token) {
     const redirectUrl = new URL('/login', request.url);
@@ -163,7 +136,6 @@ export async function middleware(request: NextRequest) {
 
   const roleType = payload.role_type as string | undefined;
 
-  // Super admin routes - require super_admin role
   if (pathname.startsWith('/admin') || pathname.startsWith('/super-admin')) {
     if (roleType !== 'super_admin') {
       return NextResponse.redirect(new URL('/login', request.url));
@@ -171,7 +143,6 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
-  // Company dashboard routes
   if (pathname.startsWith('/dashboard')) {
     if (roleType === 'super_admin') {
       return NextResponse.redirect(new URL('/admin', request.url));
@@ -184,16 +155,11 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
-  // Any other authenticated route
   return response;
 }
 
 export const config = {
   matcher: [
-    // Skip Next.js internals, static files, and authenticated dashboard areas.
-    // Public pages (login/register/etc.) are intentionally NOT excluded so the
-    // next-intl middleware localizes them into /[locale] where the
-    // NextIntlClientProvider is mounted.
-    '/((?!_next/static|_next/image|favicon.ico|manifest.json|public/|.*\.(?:svg|png|jpg|jpeg|gif|webp|json|ico|js|css|woff2?|ttf|eot)$|admin|ayuda|portal|view).*)',
+    '/((?!_next/static|_next/image|favicon.ico|manifest.json|public/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|json|ico|js|css|woff2?|ttf|eot)$|admin|ayuda|portal|view).*)',
   ],
 };
