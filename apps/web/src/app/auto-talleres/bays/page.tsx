@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Search,
@@ -10,16 +10,17 @@ import {
   CheckCircle,
   AlertCircle,
   Wrench,
+  Users,
 } from 'lucide-react';
 import { getStatusBadgeClass, getStatusLabel } from '../lib/utils';
 
 interface Bay {
   id: string;
+  name: string;
   number: string;
   type: string;
   status: string;
   capacity: number;
-  equipment: string;
 }
 
 export default function BaysPage() {
@@ -28,7 +29,7 @@ export default function BaysPage() {
   const [bays, setBays] = useState<Bay[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useState(() => {
+  useEffect(() => {
     async function loadBays() {
       try {
         const res = await fetch(`/api/auto-talleres/bays?company_id=${process.env.NEXT_PUBLIC_COMPANY_ID}`);
@@ -42,7 +43,7 @@ export default function BaysPage() {
       }
     }
     loadBays();
-  });
+  }, []);
 
   const filteredBays = bays.filter((bay) => {
     const matchesType = !selectedType || bay.type === selectedType;
@@ -151,12 +152,12 @@ export default function BaysPage() {
             
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-slate-500">Peso Máximo</span>
-                <span className="font-semibold text-slate-900">{bay.capacity} kg</span>
+                <span className="text-slate-500">Capacidad</span>
+                <span className="font-semibold text-slate-900">{bay.capacity} puesto{bay.capacity !== 1 ? 's' : ''}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Equipamiento</span>
-                <span className="font-semibold text-slate-900">{bay.equipment}</span>
+                <span className="text-slate-500">Nombre</span>
+                <span className="font-semibold text-slate-900">{bay.name}</span>
               </div>
             </div>
             

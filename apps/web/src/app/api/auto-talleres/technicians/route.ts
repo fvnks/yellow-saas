@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     }
     
     const { rows } = await query(
-      'SELECT * FROM technicians WHERE company_id = $1 ORDER BY nombre',
+      'SELECT * FROM auto_technicians WHERE company_id = $1 ORDER BY full_name',
       [company_id]
     );
     
