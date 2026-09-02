@@ -43,6 +43,21 @@ export function getStatusBadgeClass(status: string): string {
     disponible: 'bg-emerald-100 text-emerald-700 border-emerald-200',
     ocupado: 'bg-amber-100 text-amber-700 border-amber-200',
     mantenimiento: 'bg-rose-100 text-rose-700 border-rose-200',
+    available: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+    occupied: 'bg-amber-100 text-amber-700 border-amber-200',
+    maintenance: 'bg-rose-100 text-rose-700 border-rose-200',
+    inactive: 'bg-slate-100 text-slate-500 border-slate-200',
+    checkin: 'bg-slate-100 text-slate-700 border-slate-200',
+    diagnostic: 'bg-purple-100 text-purple-700 border-purple-200',
+    estimated: 'bg-blue-100 text-blue-700 border-blue-200',
+    approved: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+    waiting_parts: 'bg-amber-100 text-amber-700 border-amber-200',
+    in_progress: 'bg-blue-100 text-blue-700 border-blue-200',
+    quality_check: 'bg-orange-100 text-orange-700 border-orange-200',
+    ready: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+    delivered: 'bg-slate-100 text-slate-700 border-slate-200',
+    invoiced: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+    cancelled: 'bg-rose-100 text-rose-700 border-rose-200',
   };
   return classes[status] || 'bg-slate-100 text-slate-700 border-slate-200';
 }
@@ -60,6 +75,21 @@ export function getStatusLabel(status: string): string {
     disponible: 'Disponible',
     ocupado: 'Ocupado',
     mantenimiento: 'En Mantenimiento',
+    available: 'Disponible',
+    occupied: 'Ocupado',
+    maintenance: 'En Mantenimiento',
+    inactive: 'Inactivo',
+    checkin: 'Check-in',
+    diagnostic: 'En Diagnóstico',
+    estimated: 'Estimado',
+    approved: 'Aprobado',
+    waiting_parts: 'Esperando Repuestos',
+    in_progress: 'En Proceso',
+    quality_check: 'Revisión Calidad',
+    ready: 'Listo para Entrega',
+    delivered: 'Entregado',
+    invoiced: 'Facturado',
+    cancelled: 'Cancelado',
   };
   return labels[status] || status;
 }

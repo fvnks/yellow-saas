@@ -3,25 +3,21 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
-  Wrench,
   Car,
-  Clock,
   Users,
-  Building2,
   FileText,
   Calendar,
-  ShieldCheck,
   Plus,
   ArrowUpRight,
-  ArrowDownRight,
-  TrendingUp,
   DollarSign,
   CheckCircle2,
   AlertCircle,
   Timer,
   Package,
+  Wrench,
 } from 'lucide-react';
-import { formatCLP } from './lib/utils';
+import { formatCLP, getStatusBadgeClass, getStatusLabel } from './lib/utils';
+import { ThemedBarChart } from '@/components/ui/chart';
 
 interface DashboardStats {
   vehicleCount: number;
@@ -44,6 +40,28 @@ interface RecentOrder {
   created_at: string;
 }
 
+interface BayData {
+  name: string;
+  number: string;
+  type: string;
+  status: string;
+  activeOrders: number;
+  isOccupied: boolean;
+}
+
+interface Technician {
+  id: string;
+  full_name: string;
+  specialization: string;
+  status: string;
+}
+
+interface RevenueDataPoint {
+  date: string;
+  revenue: number;
+  orders: number;
+}
+
 export default function AutoTalleresDashboardPage() {
   const [stats, setStats] = useState<DashboardStats>({
     vehicleCount: 0,
@@ -53,20 +71,34 @@ export default function AutoTalleresDashboardPage() {
     occupiedBays: 0,
   });
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
+  const [baysData, setBaysData] = useState<BayData[]>([]);
+  const [techniciansData, setTechniciansData] = useState<Technician[]>([]);
+  const [revenueData, setRevenueData] = useState<RevenueDataPoint[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadData() {
       try {
         const companyId = process.env.NEXT_PUBLIC_COMPANY_ID || '';
-        const [statsRes, ordersRes] = await Promise.all([
+        const [statsRes, ordersRes, baysRes, techRes, revenueRes] = await Promise.all([
           fetch(`/api/auto-talleres/stats?company_id=${companyId}`),
           fetch(`/api/auto-talleres/orders?company_id=${companyId}&limit=5`),
+          fetch(`/api/auto-talleres/charts/bay-occupancy?company_id=${companyId}`),
+          fetch(`/api/auto-talleres/technicians?company_id=${companyId}`),
+          fetch(`/api/auto-talleres/charts/revenue?company_id=${companyId}`),
         ]);
+
         const statsData = await statsRes.json();
         const ordersData = await ordersRes.json();
+        const baysResp = await baysRes.json();
+        const techResp = await techRes.json();
+        const revenueResp = await revenueRes.json();
+
         if (statsData.success) setStats(statsData.data);
         if (ordersData.success) setRecentOrders(ordersData.data);
+        if (baysResp.success) setBaysData(baysResp.data);
+        if (techResp.success) setTechniciansData(techResp.data);
+        if (revenueResp.success) setRevenueData(revenueResp.data);
       } catch (err) {
         console.error('Error loading dashboard data:', err);
       } finally {
@@ -75,6 +107,9 @@ export default function AutoTalleresDashboardPage() {
     }
     loadData();
   }, []);
+
+  const activeTechnicians = techniciansData.filter((t) => t.status === 'active');
+
   return (
     <div className="space-y-6 animate-fade-in-up">
       {/* Header Banner */}
@@ -113,7 +148,6 @@ export default function AutoTalleresDashboardPage() {
             </Link>
           </div>
         </div>
-        {/* Background decoration */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-amber-500/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
       </div>
@@ -166,13 +200,34 @@ export default function AutoTalleresDashboardPage() {
           <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Técnicos Activos</p>
-                <p className="text-3xl font-black text-[#0F172A] mt-1">{stats.technicianCount}</p>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Bays Ocupados</p>
+                <p className="text-3xl font-black text-[#0F172A] mt-1">{stats.occupiedBays}</p>
               </div>
               <div className="h-10 w-10 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
-                <Users className="w-5 h-5 text-purple-500" />
+                <Wrench className="w-5 h-5 text-purple-500" />
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Revenue Chart */}
+      {!loading && revenueData.length > 0 && (
+        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
+          <div className="px-6 py-4 border-b border-slate-200/80 flex items-center justify-between">
+            <h3 className="text-sm font-bold text-slate-900">Revenue Últimos 30 Días</h3>
+            <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
+              {revenueData.length} días con facturación
+            </span>
+          </div>
+          <div className="p-4">
+            <ThemedBarChart
+              data={revenueData}
+              bars={[{ dataKey: 'revenue', color: '#F97316' }]}
+              xKey="date"
+              height={240}
+              formatter={(val) => [formatCLP(val), 'Revenue']}
+            />
           </div>
         </div>
       )}
@@ -255,51 +310,55 @@ export default function AutoTalleresDashboardPage() {
 
         {/* Side Panels */}
         <div className="space-y-6">
-          {/* Bays Status */}
+          {/* Bays Status - Real Data */}
           <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-200/80">
+            <div className="px-6 py-4 border-b border-slate-200/80 flex items-center justify-between">
               <h3 className="text-sm font-bold text-slate-900">Estado de Bays</h3>
-            </div>
-            <div className="p-4">
-              <div className="space-y-3">
-                {[
-                  { number: 'Bay 1', type: 'general', status: 'occupied', order: 'OT-2024-002' },
-                  { number: 'Bay 2', type: 'elevador', status: 'available', order: null },
-                  { number: 'Bay 3', type: 'general', status: 'occupied', order: 'OT-2024-001' },
-                  { number: 'Bay 4', type: 'alineacion', status: 'occupied', order: 'OT-2024-004' },
-                  { number: 'Bay 5', type: 'express', status: 'available', order: null },
-                ].map((bay) => (
-                  <div key={bay.number} className="flex items-center justify-between p-3 rounded-xl bg-slate-50/50">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-3 h-3 rounded-full ${
-                        bay.status === 'available' ? 'bg-emerald-500' : 'bg-amber-500'
-                      }`} />
-                      <div>
-                        <p className="text-sm font-semibold text-slate-900">{bay.number}</p>
-                        <p className="text-xs text-slate-500 capitalize">{bay.type}</p>
-                      </div>
-                    </div>
-                    <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                      bay.status === 'available'
-                        ? 'bg-emerald-100 text-emerald-700'
-                        : 'bg-amber-100 text-amber-700'
-                    }`}>
-                      {bay.status === 'available' ? 'Libre' : 'Ocupado'}
-                    </span>
-                  </div>
-                ))}
-              </div>
               <Link
                 href="/auto-talleres/bays"
-                className="mt-4 w-full text-center text-xs font-semibold text-orange-600 hover:text-orange-700 flex items-center justify-center gap-1 py-2 rounded-lg hover:bg-orange-50 transition-colors"
+                className="text-xs font-semibold text-orange-600 hover:text-orange-700 flex items-center gap-1"
               >
-                Gestionar Bays
+                Gestionar
                 <ArrowUpRight className="w-3 h-3" />
               </Link>
             </div>
+            <div className="p-4">
+              {loading ? (
+                <div className="space-y-3">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="h-14 rounded-xl bg-slate-100 animate-pulse" />
+                  ))}
+                </div>
+              ) : baysData.length === 0 ? (
+                <div className="text-center py-6 text-slate-500">
+                  <p className="text-sm">No hay bays registrados</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {baysData.map((bay) => (
+                    <div key={bay.name || bay.number} className="flex items-center justify-between p-3 rounded-xl bg-slate-50/50">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-3 h-3 rounded-full ${bay.isOccupied ? 'bg-amber-500' : 'bg-emerald-500'}`} />
+                        <div>
+                          <p className="text-sm font-semibold text-slate-900">{bay.name || `Bay ${bay.number}`}</p>
+                          <p className="text-xs text-slate-500 capitalize">{bay.type}</p>
+                        </div>
+                      </div>
+                      <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                        bay.isOccupied
+                          ? 'bg-amber-100 text-amber-700'
+                          : 'bg-emerald-100 text-emerald-700'
+                      }`}>
+                        {bay.isOccupied ? 'Ocupado' : 'Libre'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Technicians */}
+          {/* Technicians - Real Data */}
           <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
             <div className="px-6 py-4 border-b border-slate-200/80 flex items-center justify-between">
               <h3 className="text-sm font-bold text-slate-900">Técnicos Activos</h3>
@@ -312,27 +371,34 @@ export default function AutoTalleresDashboardPage() {
               </Link>
             </div>
             <div className="p-4">
-              <div className="space-y-3">
-                {[
-                  { name: 'Carlos Muñoz', specialty: 'Mecánica General', activeOrders: 3, avgRating: 4.8 },
-                  { name: 'Pedro Silva', specialty: 'Electricidad', activeOrders: 2, avgRating: 4.6 },
-                  { name: 'Ana Torres', specialty: 'Frenos & Suspensión', activeOrders: 1, avgRating: 4.9 },
-                ].map((tech) => (
-                  <div key={tech.name} className="flex items-center gap-3 p-3 rounded-xl bg-slate-50/50">
-                    <div className="h-10 w-10 rounded-xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
-                      <Users className="w-5 h-5 text-orange-500" />
+              {loading ? (
+                <div className="space-y-3">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="h-14 rounded-xl bg-slate-100 animate-pulse" />
+                  ))}
+                </div>
+              ) : activeTechnicians.length === 0 ? (
+                <div className="text-center py-6 text-slate-500">
+                  <p className="text-sm">No hay técnicos activos</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {activeTechnicians.map((tech) => (
+                    <div key={tech.id} className="flex items-center gap-3 p-3 rounded-xl bg-slate-50/50">
+                      <div className="h-10 w-10 rounded-xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
+                        <Users className="w-5 h-5 text-orange-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-slate-900 truncate">{tech.full_name}</p>
+                        <p className="text-xs text-slate-500">{tech.specialization || 'General'}</p>
+                      </div>
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${getStatusBadgeClass(tech.status)}`}>
+                        {getStatusLabel(tech.status)}
+                      </span>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-slate-900 truncate">{tech.name}</p>
-                      <p className="text-xs text-slate-500">{tech.specialty}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs font-bold text-slate-700">{tech.activeOrders}</p>
-                      <p className="text-xs text-slate-500">órdenes</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
@@ -347,7 +413,7 @@ export default function AutoTalleresDashboardPage() {
                 { icon: Car, label: 'Registrar Vehículo', path: '/auto-talleres/vehiculos/new', color: 'blue' },
                 { icon: FileText, label: 'Crear Estimado', path: '/auto-talleres/estimados/new', color: 'purple' },
                 { icon: Calendar, label: 'Agendar Cita', path: '/auto-talleres/agenda/new', color: 'emerald' },
-                { icon: ShieldCheck, label: 'Nueva Inspección', path: '/auto-talleres/inspecciones/new', color: 'amber' },
+                { icon: Wrench, label: 'Nueva Inspección', path: '/auto-talleres/inspecciones/new', color: 'amber' },
                 { icon: Package, label: 'Pedido Repuestos', path: '/auto-talleres/pedidos-repuestos/new', color: 'rose' },
               ].map((action) => (
                 <Link
@@ -372,11 +438,13 @@ export default function AutoTalleresDashboardPage() {
               <CheckCircle2 className="w-5 h-5 text-emerald-500" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Tasa de Conversión</p>
-              <p className="text-2xl font-black text-[#0F172A]">78%</p>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Bays Disponibles</p>
+              <p className="text-2xl font-black text-[#0F172A]">
+                {baysData.filter((b) => !b.isOccupied).length}
+              </p>
             </div>
           </div>
-          <p className="text-xs text-slate-500 mt-2">Estimados convertidos a órdenes</p>
+          <p className="text-xs text-slate-500 mt-2">De {baysData.length} bays del taller</p>
         </div>
 
         <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
@@ -385,11 +453,11 @@ export default function AutoTalleresDashboardPage() {
               <Timer className="w-5 h-5 text-blue-500" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Tiempo Promedio</p>
-              <p className="text-2xl font-black text-[#0F172A]">2.4 horas</p>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Técnicos Registrados</p>
+              <p className="text-2xl font-black text-[#0F172A]">{techniciansData.length}</p>
             </div>
           </div>
-          <p className="text-xs text-slate-500 mt-2">Desde check-in hasta entrega</p>
+          <p className="text-xs text-slate-500 mt-2">Activos: {activeTechnicians.length}</p>
         </div>
 
         <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
@@ -398,11 +466,11 @@ export default function AutoTalleresDashboardPage() {
               <AlertCircle className="w-5 h-5 text-rose-500" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Repuestos Pendientes</p>
-              <p className="text-2xl font-black text-[#0F172A]">5</p>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Órdenes Entregadas</p>
+              <p className="text-2xl font-black text-[#0F172A]">{revenueData.length}</p>
             </div>
           </div>
-          <p className="text-xs text-slate-500 mt-2">Órdenes esperando repuestos</p>
+          <p className="text-xs text-slate-500 mt-2">Con facturación en 30 días</p>
         </div>
       </div>
     </div>

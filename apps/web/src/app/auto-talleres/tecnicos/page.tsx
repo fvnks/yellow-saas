@@ -1,69 +1,56 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Search,
   Plus,
   Users,
   ArrowUpRight,
-  Star,
   Wrench,
-  CheckCircle,
-  XCircle,
+  Phone,
+  Mail,
 } from 'lucide-react';
+import { formatCLP, getStatusBadgeClass, getStatusLabel } from '../lib/utils';
 
-const technicians = [
-  {
-    id: 't1',
-    nombre: 'Carlos Muñoz',
-    rut: '12.345.678-9',
-    especialidad: 'Mecánica General',
-    telefono: '+56 9 1111 2222',
-    email: 'carlos.munoz@taller.cl',
-    horario: 'Lun-Vie 08:00-18:00',
-    ordenes_activas: 3,
-    tasa_rechazo: 2.1,
-    rating: 4.8,
-    disponibilidad: 'available',
-  },
-  {
-    id: 't2',
-    nombre: 'Pedro Silva',
-    rut: '9.876.543-2',
-    especialidad: 'Electricidad Automotriz',
-    telefono: '+56 9 2222 3333',
-    email: 'pedro.silva@taller.cl',
-    horario: 'Lun-Vie 08:00-18:00',
-    ordenes_activas: 2,
-    tasa_rechazo: 1.5,
-    rating: 4.6,
-    disponibilidad: 'available',
-  },
-  {
-    id: 't3',
-    nombre: 'Ana Torres',
-    rut: '11.222.333-4',
-    especialidad: 'Frenos y Suspensión',
-    telefono: '+56 9 3333 4444',
-    email: 'ana.torres@taller.cl',
-    horario: 'Lun-Vie 09:00-19:00',
-    ordenes_activas: 1,
-    tasa_rechazo: 0.8,
-    rating: 4.9,
-    disponibilidad: 'busy',
-  },
-];
+interface Technician {
+  id: string;
+  rut: string;
+  full_name: string;
+  phone: string;
+  email: string;
+  specialization: string;
+  hourly_rate: number;
+  status: string;
+}
 
 export default function TecnicosPage() {
   const [search, setSearch] = useState('');
+  const [technicians, setTechnicians] = useState<Technician[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadTechnicians() {
+      try {
+        const res = await fetch(`/api/auto-talleres/technicians?company_id=${process.env.NEXT_PUBLIC_COMPANY_ID}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (data.success) setTechnicians(data.data);
+      } catch (err) {
+        console.error('Error loading technicians:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadTechnicians();
+  }, []);
 
   const filteredTechnicians = technicians.filter((tech) => {
     const searchLower = search.toLowerCase();
     return (
-      tech.nombre.toLowerCase().includes(searchLower) ||
-      tech.especialidad.toLowerCase().includes(searchLower) ||
-      tech.rut.includes(search)
+      tech.full_name.toLowerCase().includes(searchLower) ||
+      tech.specialization.toLowerCase().includes(searchLower) ||
+      (tech.rut || '').includes(search)
     );
   });
 
@@ -96,70 +83,71 @@ export default function TecnicosPage() {
       </div>
 
       {/* Technicians Grid */}
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-        {filteredTechnicians.map((tech) => (
-          <div
-            key={tech.id}
-            className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5 hover:shadow-md transition-shadow"
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="h-12 w-12 rounded-xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
-                  <Users className="w-6 h-6 text-orange-500" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="text-lg font-black text-[#0F172A]">{tech.nombre}</p>
-                    <span className={`w-2 h-2 rounded-full ${
-                      tech.disponibilidad === 'available' ? 'bg-emerald-500' : 'bg-amber-500'
-                    }`} />
+      {loading ? (
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="bg-white border border-slate-200/80 rounded-2xl h-48 animate-pulse" />
+          ))}
+        </div>
+      ) : filteredTechnicians.length === 0 ? (
+        <div className="text-center py-12 text-slate-500 bg-white border border-slate-200/80 rounded-2xl">
+          <Users className="w-10 h-10 mx-auto text-slate-300 mb-2" />
+          <p className="text-sm font-semibold text-slate-700">No hay técnicos registrados</p>
+        </div>
+      ) : (
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+          {filteredTechnicians.map((tech) => (
+            <div
+              key={tech.id}
+              className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5 hover:shadow-md transition-shadow"
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 rounded-xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
+                    <Users className="w-6 h-6 text-orange-500" />
                   </div>
-                  <p className="text-xs text-slate-500">{tech.especialidad}</p>
+                  <div>
+                    <p className="text-lg font-black text-[#0F172A]">{tech.full_name}</p>
+                    <p className="text-xs text-slate-500">{tech.specialization}</p>
+                  </div>
+                </div>
+                <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${getStatusBadgeClass(tech.status)}`}>
+                  {getStatusLabel(tech.status)}
+                </span>
+              </div>
+
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-slate-500">RUT</span>
+                  <span className="font-semibold text-slate-900">{tech.rut || '—'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Teléfono</span>
+                  <span className="font-semibold text-slate-900">{tech.phone || '—'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Email</span>
+                  <span className="font-semibold text-slate-900 truncate">{tech.email || '—'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Tarifa Hora</span>
+                  <span className="font-semibold text-slate-900">{formatCLP(tech.hourly_rate)}</span>
                 </div>
               </div>
-              <Link
-                href={`/auto-talleres/tecnicos/${tech.id}`}
-                className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
-              >
-                <ArrowUpRight className="w-4 h-4 text-slate-400" />
-              </Link>
-            </div>
-            
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-slate-500">RUT</span>
-                <span className="font-semibold text-slate-900">{tech.rut}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">Teléfono</span>
-                <span className="font-semibold text-slate-900">{tech.telefono}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">Horario</span>
-                <span className="font-semibold text-slate-900">{tech.horario}</span>
+
+              <div className="mt-4 pt-4 border-t border-slate-100">
+                <Link
+                  href={`/auto-talleres/tecnicos/${tech.id}`}
+                  className="text-sm font-semibold text-orange-600 hover:text-orange-700 flex items-center gap-1"
+                >
+                  Ver detalles
+                  <ArrowUpRight className="w-3 h-3" />
+                </Link>
               </div>
             </div>
-            
-            <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-3 gap-3">
-              <div className="text-center">
-                <p className="text-lg font-black text-[#0F172A]">{tech.ordenes_activas}</p>
-                <p className="text-xs text-slate-500">Órdenes</p>
-              </div>
-              <div className="text-center">
-                <p className="text-lg font-black text-[#0F172A]">{tech.rating}</p>
-                <div className="flex items-center justify-center gap-1">
-                  <Star className="w-3 h-3 text-amber-500 fill-current" />
-                  <span className="text-xs text-slate-500">Rating</span>
-                </div>
-              </div>
-              <div className="text-center">
-                <p className="text-lg font-black text-[#0F172A]">{tech.tasa_rechazo}%</p>
-                <p className="text-xs text-slate-500">Rechazo</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
