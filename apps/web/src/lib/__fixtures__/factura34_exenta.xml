@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DTE version="1.0">
+  <Documento ID="F34T000000001">
+    <Encabezado>
+      <IdDoc>
+        <TipoDTE>34</TipoDTE>
+        <Folio>501</Folio>
+        <FchEmis>2026-02-20</FchEmis>
+        <Moneda>CLP</Moneda>
+      </IdDoc>
+      <Emisor>
+        <RUTEmisor>76987654-3</RUTEmisor>
+        <RznSocEmisor>Proveedor Exento SpA</RznSocEmisor>
+        <GiroEmisor>Servicios Exentos</GiroEmisor>
+        <DirEmisor>Oficina 501</DirEmisor>
+        <CmnaEmisor>Las Condes</CmnaEmisor>
+        <CiudadEmisor>Santiago</CiudadEmisor>
+      </Emisor>
+      <Receptor>
+        <RUTRecep>77888999-0</RUTRecep>
+        <RznSocRecep>Cliente Test Ltda</RznSocRecep>
+        <DirRecep>Calle Falsa 567</DirRecep>
+        <CmnaRecep>Providencia</CmnaRecep>
+        <CiudadRecep>Santiago</CiudadRecep>
+      </Receptor>
+      <Totales>
+        <MntExe>50000</MntExe>
+        <MntTotal>50000</MntTotal>
+      </Totales>
+    </Encabezado>
+    <Detalle>
+      <NmbItem>Servicio de Consultoría</NmbItem>
+      <QtyItem>1</QtyItem>
+      <UnmdItem>服务体系</UnmdItem>
+      <PrcItem>50000</PrcItem>
+      <IndExe>1</IndExe>
+      <MontoItem>50000</MontoItem>
+    </Detalle>
+  </Documento>
+</DTE>

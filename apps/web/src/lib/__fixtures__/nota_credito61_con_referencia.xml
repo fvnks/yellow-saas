@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DTE version="1.0">
+  <Documento ID="NC61T000000001">
+    <Encabezado>
+      <IdDoc>
+        <TipoDTE>61</TipoDTE>
+        <Folio>201</Folio>
+        <FchEmis>2026-03-10</FchEmis>
+      </IdDoc>
+      <Emisor>
+        <RUTEmisor>76123456-7</RUTEmisor>
+        <RznSocEmisor>Empresa Demo SpA</RznSocEmisor>
+        <GiroEmisor>Venta de Productos</GiroEmisor>
+        <DirEmisor>Av. Principal 1234</DirEmisor>
+        <CmnaEmisor>Santiago</CmnaEmisor>
+        <CiudadEmisor>Santiago</CiudadEmisor>
+      </Emisor>
+      <Receptor>
+        <RUTRecep>77888999-0</RUTRecep>
+        <RznSocRecep>Cliente Test Ltda</RznSocRecep>
+        <DirRecep>Calle Falsa 567</DirRecep>
+        <CmnaRecep>Providencia</CmnaRecep>
+        <CiudadRecep>Santiago</CiudadRecep>
+      </Receptor>
+      <Totales>
+        <MntNeto>50000</MntNeto>
+        <IVA>9500</IVA>
+        <MntTotal>59500</MntTotal>
+      </Totales>
+    </Encabezado>
+    <Detalle>
+      <NmbItem>Devolución producto A</NmbItem>
+      <QtyItem>5</QtyItem>
+      <UnmdItem>UN</UnmdItem>
+      <PrcItem>10000</PrcItem>
+      <MontoItem>50000</MontoItem>
+    </Detalle>
+    <Referencia>
+      <TpoDocRef>33</TpoDocRef>
+      <FolioRef>1</FolioRef>
+      <FchRef>2026-01-15</FchRef>
+      <RazonRef>Devolución parcial</RazonRef>
+    </Referencia>
+  </Documento>
+</DTE>
