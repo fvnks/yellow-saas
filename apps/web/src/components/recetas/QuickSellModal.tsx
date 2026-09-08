@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { X, ShoppingCart, Receipt, FileText, CreditCard, Banknote, Check, Search, User, Printer, Download } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import { generatePOSVoucher } from '@/lib/pdf-design';
@@ -65,7 +66,7 @@ export default function QuickSellModal({ open, onClose, productName, productId, 
   const qty = parseFloat(quantity) || 0;
   const price = parseFloat(unitPrice) || 0;
   const subtotal = qty * price;
-  const taxAmount = Math.round(subtotal * 0.19);
+  const taxAmount = Math.round(subtotal * IVA_RATE);
   const total = subtotal + taxAmount;
 
   const filteredCustomers = customers.filter(c =>
@@ -122,8 +123,8 @@ export default function QuickSellModal({ open, onClose, productName, productId, 
       } : { name: 'Empresa' },
       customer: selectedCustomer ? { name: selectedCustomer.name, rut: selectedCustomer.tax_id } : undefined,
       items: [{ name: productName || 'Producto', quantity: qty, unit_price: price, total: subtotal }],
-      subtotal: Math.round(total / 1.19),
-      tax_amount: total - Math.round(total / 1.19),
+      subtotal: Math.round(total / (1 + IVA_RATE)),
+      tax_amount: total - Math.round(total / (1 + IVA_RATE)),
       total,
       payment_method: paymentMethod,
       amount_paid: paymentMethod === 'cash' ? amountPaid : total,

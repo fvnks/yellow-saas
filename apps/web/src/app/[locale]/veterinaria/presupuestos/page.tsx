@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import {
   FileText,
   Plus,
@@ -83,7 +84,7 @@ export default function VeterinaryEstimatesPage() {
   });
 
   const subtotal = (e: VeterinaryEstimate) => e.items.reduce((a, i) => a + i.quantity * i.unitPriceCLP, 0);
-  const totalWithIVA = (e: VeterinaryEstimate) => Math.round(subtotal(e) * 1.19);
+  const totalWithIVA = (e: VeterinaryEstimate) => Math.round(subtotal(e) * (1 + IVA_RATE));
 
   const handleAddItem = () =>
     setNewItems([...newItems, { id: `ni-${Date.now()}`, description: '', quantity: 1, unitPriceCLP: 0 }]);
@@ -487,8 +488,8 @@ export default function VeterinaryEstimatesPage() {
                 </div>
                 <div className="mt-3 flex justify-end items-center gap-4 text-sm">
                   <span className="text-xs text-slate-500">Neto: <strong className="font-mono">{formatCLP(newItemsSubtotal)}</strong></span>
-                  <span className="text-xs text-slate-500">IVA 19%: <strong className="font-mono">{formatCLP(Math.round(newItemsSubtotal * 0.19))}</strong></span>
-                  <span className="text-xs font-black text-slate-900">Total: <strong className="font-mono">{formatCLP(Math.round(newItemsSubtotal * 1.19))}</strong></span>
+                  <span className="text-xs text-slate-500">IVA 19%: <strong className="font-mono">{formatCLP(Math.round(newItemsSubtotal * IVA_RATE))}</strong></span>
+                  <span className="text-xs font-black text-slate-900">Total: <strong className="font-mono">{formatCLP(Math.round(newItemsSubtotal * (1 + IVA_RATE)))}</strong></span>
                 </div>
               </div>
 

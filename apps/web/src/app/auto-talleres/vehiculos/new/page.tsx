@@ -11,6 +11,8 @@ import {
   AlertCircle,
 } from 'lucide-react';
 
+import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog';
+
 interface Customer {
   id: string;
   nombre: string;
@@ -19,10 +21,17 @@ interface Customer {
   email: string;
 }
 
+interface Brand {
+  id: string;
+  name: string;
+}
+
 export default function NuevoVehiculoPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [customers, setCustomers] = useState<Customer[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
+  const [newBrand, setNewBrand] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
@@ -57,6 +66,38 @@ export default function NuevoVehiculoPage() {
     }
     loadCustomers();
   }, []);
+
+  useEffect(() => {
+    async function loadBrands() {
+      try {
+        const res = await fetch('/api/auto-talleres/brands');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.success) setBrands(data.data);
+      } catch (err) {
+        console.error('Error loading brands:', err);
+      }
+    }
+    loadBrands();
+  }, []);
+
+  const handleAddBrand = async () => {
+    if (!newBrand) return;
+    try {
+      const res = await fetch('/api/auto-talleres/brands', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newBrand }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setBrands([...brands, data.data]);
+        setNewBrand('');
+      }
+    } catch (err) {
+      console.error('Error adding brand:', err);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -155,14 +196,35 @@ export default function NuevoVehiculoPage() {
           <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-1.5">Marca *</label>
-              <input
-                type="text"
-                value={formData.brand}
-                onChange={(e) => handleChange('brand', e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200/80 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
-                placeholder="Toyota"
-                required
-              />
+               <div className="flex">
+                 <select
+                   value={formData.brand}
+                   onChange={(e) => handleChange('brand', e.target.value)}
+                   className="flex-1 px-4 py-2.5 rounded-l-xl border border-slate-200/80 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                   required
+                 >
+                   <option value="">Seleccionar marca...</option>
+                   {brands.map((b) => (
+                     <option key={b.id} value={b.name}>
+                       {b.name}
+                     </option>
+                   ))}
+                 </select>
+                 <Dialog>
+                   <DialogTrigger className="bg-orange-500 text-white px-4 py-2 rounded-r-xl hover:bg-orange-600 focus:ring-2 focus:ring-offset-2 focus:ring-orange-300">
+                     + Marca
+                   </DialogTrigger>
+                   <DialogContent>
+                     <h3 className="dialog-title">Nueva Marca</h3>
+                     <input
+                       className="input mb-4"
+                       placeholder="Nombre de la marca"
+                       onChange={(e) => setNewBrand(e.target.value)}
+                     />
+                     <button className="button" onClick={handleAddBrand}>Guardar</button>
+                   </DialogContent>
+                 </Dialog>
+               </div>
             </div>
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-1.5">Modelo *</label>

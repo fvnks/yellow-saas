@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { Search, Eye, Download, FileText, Filter, X, ChevronDown } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import { getCompanyIdFromToken } from '@/lib/api-client';
@@ -99,8 +100,8 @@ function generateInvoiceXml(doc: UnifiedDocument) {
         <RznSocRecep>${doc.customerName}</RznSocRecep>
       </Receptor>
       <Totales>
-        <MntNeto>${Math.round(doc.amount / 1.19)}</MntNeto>
-        <IVA>${Math.round(doc.amount * 0.19 / 1.19)}</IVA>
+        <MntNeto>${Math.round(doc.amount / (1 + IVA_RATE))}</MntNeto>
+        <IVA>${Math.round(doc.amount * IVA_RATE / (1 + IVA_RATE))}</IVA>
         <MntTotal>${doc.amount}</MntTotal>
       </Totales>
     </Encabezado>
@@ -264,7 +265,7 @@ export default function SalesDocumentsPage() {
         observation: item.description,
       })),
       subtotal: doc.amount || 0,
-      tax_amount: doc.amount ? Math.round(doc.amount * 0.19 / 1.19) : 0,
+      tax_amount: doc.amount ? Math.round(doc.amount * IVA_RATE / (1 + IVA_RATE)) : 0,
       total: doc.amount || 0,
       notes: '',
       reason: doc.reason,

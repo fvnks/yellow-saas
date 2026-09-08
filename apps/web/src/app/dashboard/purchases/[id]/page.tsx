@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button } from '@yellow-erp/ui';
 import { ArrowLeft, Printer, Calendar, Truck, MapPin, CheckCircle, Download, Send, XCircle, Pencil } from 'lucide-react';
 import Link from 'next/link';
@@ -91,7 +92,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
     const companyRes = await api.getCompany().catch(() => null);
     const items = order.items || [];
     const subtotal = items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0);
-    const tax = Math.round(subtotal * 0.19);
+    const tax = Math.round(subtotal * IVA_RATE);
     const doc = await generateOrdenCompraPDF({
       id: order.id,
       number: order.number,
@@ -128,7 +129,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
     const c = company || {};
     const items = order.items || [];
     const subtotal = items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0);
-    const tax = Math.round(subtotal * 0.19);
+    const tax = Math.round(subtotal * IVA_RATE);
     const total = order.total_amount || subtotal + tax;
     print('purchase-order', {
       id: order.id,
@@ -206,7 +207,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
   const status = statusConfig[order.status] || { label: order.status, variant: 'neutral' as const };
   const items = order.items || [];
   const subtotal = items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0);
-  const tax = Math.round(subtotal * 0.19);
+  const tax = Math.round(subtotal * IVA_RATE);
   const totalReceived = items.reduce((sum, item) => sum + item.received_quantity, 0);
   const totalOrdered = items.reduce((sum, item) => sum + item.quantity, 0);
 

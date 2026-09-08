@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { useRouter, useParams } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select } from '@yellow-erp/ui';
 import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react';
@@ -96,7 +97,7 @@ export default function EditPurchaseOrderPage() {
   const removeItem = (index: number) => { if (items.length > 1) setItems(prev => prev.filter((_, i) => i !== index)); };
 
   const subtotal = items.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0);
-  const taxAmount = Math.round(subtotal * 0.19);
+  const taxAmount = Math.round(subtotal * IVA_RATE);
   const total = subtotal + taxAmount;
 
   const handleSubmit = async (e: React.FormEvent) => {

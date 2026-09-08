@@ -47,10 +47,27 @@ export async function POST(request: NextRequest) {
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const {
-      name, code, trade_name, tax_id, tax_id_type, address, city, region,
-      country, postal_code, phone, email, website, contact_person,
-      contact_phone, contact_email, payment_terms, credit_limit, price_list_id,
-      tax_exempt, notes,
+      name,
+      code,
+      trade_name,
+      tax_id,
+      tax_id_type,
+      address,
+      city,
+      region,
+      country,
+      postal_code,
+      phone,
+      email,
+      website,
+      contact_person,
+      contact_phone,
+      contact_email,
+      payment_terms,
+      credit_limit,
+      price_list_id,
+      tax_exempt,
+      notes,
     } = body;
 
     if (!name) {
@@ -75,11 +92,30 @@ export async function POST(request: NextRequest) {
         tax_exempt, notes
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
       RETURNING *`,
-      [companyId, name, code || null, trade_name || null, tax_id || null, tax_id_type || 'RUT',
-       address || null, city || null, region || null, country || 'CL', postal_code || null,
-       phone || null, email || null, website || null, contact_person || null,
-       contact_phone || null, contact_email || null, payment_terms || 0, credit_limit || 0,
-       price_list_id || null, tax_exempt || false, notes || null]
+      [
+        companyId,
+        name,
+        code || null,
+        trade_name || null,
+        tax_id || null,
+        tax_id_type || 'RUT',
+        address || null,
+        city || null,
+        region || null,
+        country || 'CL',
+        postal_code || null,
+        phone || null,
+        email || null,
+        website || null,
+        contact_person || null,
+        contact_phone || null,
+        contact_email || null,
+        payment_terms || 0,
+        credit_limit || 0,
+        price_list_id || null,
+        tax_exempt || false,
+        notes || null,
+      ]
     );
 
     return successResponse(result.rows[0], 201);

@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -12,6 +13,8 @@ import {
   Settings as SettingsIcon,
   AlertCircle,
 } from 'lucide-react';
+
+import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog';
 
 const clpFmt = new Intl.NumberFormat('es-CL', {
   style: 'currency',
@@ -25,6 +28,8 @@ export default function NuevaOrdenPage() {
   const [vehicles, setVehicles] = useState<any[]>([]);
   const [technicians, setTechnicians] = useState<any[]>([]);
   const [bays, setBays] = useState<any[]>([]);
+  const [brands, setBrands] = useState<any[]>([]);
+  const [newBrand, setNewBrand] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
@@ -64,6 +69,24 @@ export default function NuevaOrdenPage() {
     loadSelectData();
   }, []);
 
+  const handleAddBrand = async () => {
+    if (!newBrand) return;
+    try {
+      const res = await fetch('/api/auto-talleres/brands', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newBrand }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setBrands([...brands, data.data]);
+        setNewBrand('');
+      }
+    } catch (err) {
+      console.error('Error adding brand:', err);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -95,7 +118,7 @@ export default function NuevaOrdenPage() {
     setFormData(prev => {
       const next = { ...prev, [field]: value };
       if (field === 'subtotal') {
-        const iva = Number(value) * 0.19;
+        const iva = Number(value) * IVA_RATE;
         next.iva = Math.round(iva);
         next.total = Number(value) + iva;
       }
@@ -139,19 +162,35 @@ export default function NuevaOrdenPage() {
               <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 Vehículo *
               </label>
-              <select
-                value={formData.vehicle_id}
-                onChange={(e) => handleChange('vehicle_id', e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200/80 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 bg-white"
-                required
-              >
-                <option value="">Seleccionar vehículo...</option>
-                {vehicles.map((v) => (
-                  <option key={v.id} value={v.id}>
-                    {v.plate} - {v.brand} {v.model} ({v.year})
-                  </option>
-                ))}
-              </select>
+               <div className="flex">
+                 <select
+                   value={formData.vehicle_id}
+                   onChange={(e) => handleChange('vehicle_id', e.target.value)}
+                   className="flex-1 px-4 py-2.5 rounded-l-xl border border-slate-200/80 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 bg-white"
+                   required
+                 >
+                   <option value="">Seleccionar vehículo...</option>
+                   {vehicles.map((v) => (
+                     <option key={v.id} value={v.id}>
+                       {v.plate} - {v.brand} {v.model} ({v.year})
+                     </option>
+                   ))}
+                 </select>
+                 <Dialog>
+                   <DialogTrigger className="bg-orange-500 text-white px-4 py-2 rounded-r-xl hover:bg-orange-600 focus:ring-2 focus:ring-offset-2 focus:ring-orange-300">
+                     + Marca
+                   </DialogTrigger>
+                   <DialogContent>
+                     <h3 className="dialog-title">Nueva Marca</h3>
+                     <input
+                       className="input mb-4"
+                       placeholder="Nombre de la marca"
+                       onChange={(e) => setNewBrand(e.target.value)}
+                     />
+                     <button className="button" onClick={handleAddBrand}>Guardar</button>
+                   </DialogContent>
+                 </Dialog>
+               </div>
             </div>
 
             <div>

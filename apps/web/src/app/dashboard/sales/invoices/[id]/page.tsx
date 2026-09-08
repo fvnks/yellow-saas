@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { ArrowLeft, Printer, Download, CreditCard, User, Calendar, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -90,7 +91,7 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
     const c = company || {};
     const items = invoice.items || [];
     const subtotal = invoice.subtotal || items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0);
-    const tax = invoice.tax_amount || Math.round(subtotal * 0.19);
+    const tax = invoice.tax_amount || Math.round(subtotal * IVA_RATE);
     const total = invoice.total_amount || subtotal + tax;
     const docType = invoice.document_type === 'boleta' ? 'boleta' : 'factura';
     print(docType, {
@@ -177,7 +178,7 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
 
   const status = STATUS_MAP[invoice.status] || STATUS_MAP.draft;
   const subtotal = invoice.subtotal || (invoice.items || []).reduce((sum, item) => sum + item.line_total, 0);
-  const tax = invoice.tax_amount || Math.round(subtotal * 0.19);
+  const tax = invoice.tax_amount || Math.round(subtotal * IVA_RATE);
   const total = invoice.total_amount || subtotal + tax;
 
   return (

@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import { Suspense, useEffect, useState } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { Card, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button, Select, Input } from '@yellow-erp/ui';
 import { Plus, Search, Download, Eye, Edit, Trash2, ShoppingCart, DollarSign, Truck, CreditCard, Package, FileText, Monitor, Users, RotateCcw, AlertTriangle, TrendingUp, ReceiptText, Target, BarChart3, MapPin, Star, FileSignature, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
@@ -573,8 +574,8 @@ function SalesPageContent() {
                                 unit_price: it.unit_price,
                                 total: it.line_total || it.quantity * it.unit_price,
                               })),
-                              subtotal: Math.round((inv.total_amount || 0) / 1.19),
-                              tax_amount: (inv.total_amount || 0) - Math.round((inv.total_amount || 0) / 1.19),
+                              subtotal: Math.round((inv.total_amount || 0) / (1 + IVA_RATE)),
+                              tax_amount: (inv.total_amount || 0) - Math.round((inv.total_amount || 0) / (1 + IVA_RATE)),
                               total: inv.total_amount || 0,
                             });
                             doc.save(`${inv.invoice_number || invoice.number}.pdf`);

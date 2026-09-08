@@ -29,7 +29,6 @@ export const SALES_CONFIG = {
     { value: 'FELIPE', label: 'Felipe', color: 'bg-blue-50 text-primary border border-primary/20' },
     { value: 'MACA', label: 'Maca', color: 'bg-blue-50 text-blue-700 border border-blue-200' },
   ],
-  ivaRate: 0.19,
 } as const;
 
 export const IVA_RATE = 0.19;

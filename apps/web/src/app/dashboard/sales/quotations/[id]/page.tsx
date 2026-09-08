@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { ArrowLeft, Printer, Download, ShoppingCart, Trash2, Calendar, User, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -119,7 +120,7 @@ export default function SalesQuotationDetailPage({ params }: { params: { id: str
     const c = company || {};
     const items = quotation.items || [];
     const subtotal = items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0);
-    const tax = Math.round(subtotal * 0.19);
+    const tax = Math.round(subtotal * IVA_RATE);
     const doc = await generateCotizacionPDF({
       id: quotation.id,
       number: quotation.quotation_number,
@@ -225,7 +226,7 @@ export default function SalesQuotationDetailPage({ params }: { params: { id: str
   const status = STATUS_MAP[quotation.status] || STATUS_MAP.draft;
   const items = quotation.items || [];
   const subtotal = items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0);
-  const tax = Math.round(subtotal * 0.19);
+  const tax = Math.round(subtotal * IVA_RATE);
   const total = subtotal + tax;
 
   return (

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { IVA_RATE } from '@/lib/erp-config';
 
 export async function GET(request: Request) {
   try {
@@ -79,8 +80,8 @@ export async function POST(request: Request) {
       destination: body.destination || 'Santiago, Chile',
       items_count: Number(body.items_count) || 1,
       net_amount: Number(body.net_amount) || 0,
-      iva_amount: Math.round((Number(body.net_amount) || 0) * 0.19),
-      total_amount: Math.round((Number(body.net_amount) || 0) * 1.19),
+      iva_amount: Math.round((Number(body.net_amount) || 0) * IVA_RATE),
+      total_amount: Math.round((Number(body.net_amount) || 0) * (1 + IVA_RATE)),
       transfer_type: body.transfer_type || '1',
       transfer_label: body.transfer_label || 'Operación constituye venta',
       referenced_invoice: body.referenced_invoice || null,

@@ -1,11 +1,5 @@
 import { query } from '@/api/lib/db';
-import {
-  getCompanyId,
-  successResponse,
-  errorResponse,
-  parseSearchParams,
-  paginatedResponse,
-} from '@/api/lib/helpers';
+import { getCompanyId, successResponse, errorResponse, parseSearchParams, paginatedResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
@@ -14,38 +8,32 @@ export async function GET(request: NextRequest) {
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const { page, limit, search, sort: requestedSort, order, offset } = parseSearchParams(request);
-    const allowedSortColumns = ['created_at', 'name', 'code', 'city', 'is_default', 'id'];
+    const allowedSortColumns = ['created_at', 'name', 'code', 'city', 'region', 'is_active', 'id'];
     const sort = allowedSortColumns.includes(requestedSort) ? requestedSort : 'created_at';
 
+    let whereClause = 'WHERE company_id = $1';
     const params: any[] = [companyId];
-    let where = 'WHERE w.company_id = $1 AND w.is_active = true';
     let paramIndex = 2;
 
     if (search) {
-      where += ` AND (w.name ILIKE $${paramIndex} OR w.code ILIKE $${paramIndex} OR w.city ILIKE $${paramIndex})`;
+      whereClause += ` AND (name ILIKE $${paramIndex} OR code ILIKE $${paramIndex} OR city ILIKE $${paramIndex})`;
       params.push(`%${search}%`);
       paramIndex++;
     }
 
     const countResult = await query(
-      `SELECT COUNT(*) as count FROM warehouses w ${where}`,
-      params
-    );
-    const total = parseInt(countResult.rows[0]?.count || '0');
-
-    params.push(offset, limit);
-    const { rows } = await query(
-      `SELECT w.*,
-        (SELECT COUNT(*) FROM stock_levels sl WHERE sl.warehouse_id = w.id) as total_products,
-        (SELECT COALESCE(SUM(sl.quantity), 0) FROM stock_levels sl WHERE sl.warehouse_id = w.id) as total_stock_value
-       FROM warehouses w
-       ${where}
-       ORDER BY w.${sort} ${order === 'asc' ? 'ASC' : 'DESC'}
-       OFFSET $${paramIndex} LIMIT $${paramIndex + 1}`,
+      `SELECT COUNT(*) FROM warehouses ${whereClause}`,
       params
     );
 
-    return paginatedResponse(rows, total, page, limit);
+    const dataResult = await query(`
+      SELECT * FROM warehouses
+      ${whereClause}
+      ORDER BY ${sort} ${order === 'asc' ? 'ASC' : 'DESC'}
+      LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
+    `, [...params, limit, offset]);
+
+    return paginatedResponse(dataResult.rows, parseInt(countResult.rows[0].count), page, limit);
   } catch {
     return errorResponse('Internal server error', 500);
   }
@@ -58,30 +46,55 @@ export async function POST(request: NextRequest) {
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
-    const { name, code, address, city, region, country, phone, email, is_default } = body;
+    const {
+      name,
+      code,
+      address,
+      city,
+      region,
+      country = 'CL',
+      postal_code,
+      phone,
+      email,
+      is_default = false,
+      is_active = true,
+    } = body;
 
     if (!name || !code) {
       return errorResponse('Name and code are required', 400);
     }
 
-    if (is_default) {
-      await query(
-        `UPDATE warehouses SET is_default = false WHERE company_id = $1 AND is_default = true`,
-        [companyId]
-      );
+    const existing = await query(
+      'SELECT id FROM warehouses WHERE company_id = $1 AND code = $2',
+      [companyId, code]
+    );
+    if (existing.rows.length > 0) {
+      return errorResponse('Ya existe una bodega con este código', 409);
     }
 
-    const { rows } = await query(
-      `INSERT INTO warehouses (company_id, name, code, address, city, region, country, phone, email, is_default)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-       RETURNING *`,
+    const result = await query(
+      `INSERT INTO warehouses (
+        company_id, name, code, address, city, region, country, postal_code,
+        phone, email, is_default, is_active
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+      RETURNING *`,
       [
-        companyId, name, code, address || null, city || null, region || null,
-        country || 'CL', phone || null, email || null, is_default || false,
+        companyId,
+        name,
+        code,
+        address || null,
+        city || null,
+        region || null,
+        country,
+        postal_code || null,
+        phone || null,
+        email || null,
+        is_default,
+        is_active,
       ]
     );
 
-    return successResponse(rows[0], 201);
+    return successResponse(result.rows[0], 201);
   } catch {
     return errorResponse('Internal server error', 500);
   }

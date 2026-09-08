@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { FileText, Plus, Trash2, Eye, Printer, Download, X } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -140,7 +141,7 @@ export default function CreditNotes() {
   };
 
   const subtotal = items.reduce((sum, item) => sum + item.quantity * item.unit_price * (1 - item.discount_percent / 100), 0);
-  const tax = subtotal * 0.19;
+  const tax = subtotal * IVA_RATE;
   const total = subtotal + tax;
 
   const handleViewDetail = async (noteId: string) => {

@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { Receipt, FileText, CheckCircle2, Download, Printer, RefreshCw, Search, ShieldCheck, DollarSign, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import { INITIAL_BOLETAS_DTE, INITIAL_ORDERS } from '../lib/restaurant-store';
@@ -51,7 +52,7 @@ export default function RestaurantSalesPage() {
     const pendingOrders = INITIAL_ORDERS;
     const created: DteBoleta[] = pendingOrders.map((order, idx) => {
       const neto = order.totalCLP;
-      const iva = Math.round(neto * 0.19);
+      const iva = Math.round(neto * IVA_RATE);
       const tip = Math.round(neto * 0.1);
       return {
         id: `bol-${Date.now()}-${idx}`,

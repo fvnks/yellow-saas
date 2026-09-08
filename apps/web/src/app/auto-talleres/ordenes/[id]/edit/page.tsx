@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -231,7 +232,7 @@ export default function EditarOrdenPage() {
   };
 
   const itemsSubtotal = items.reduce((sum, it) => sum + Number(it.subtotal || 0), 0);
-  const iva = Math.round(itemsSubtotal * 0.19);
+  const iva = Math.round(itemsSubtotal * IVA_RATE);
   const total = itemsSubtotal + iva;
 
   if (loading) {

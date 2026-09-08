@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button } from '@yellow-erp/ui';
 import { ArrowLeft, Printer, Calendar, Truck, CheckCircle, Clock, AlertTriangle, XCircle, ArrowRight, Pencil } from 'lucide-react';
 import Link from 'next/link';
@@ -82,7 +83,7 @@ export default function QuotationDetailPage({ params }: { params: { id: string }
     const c = company || {};
     const items = quotation.items || [];
     const subtotal = quotation.subtotal || items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0);
-    const tax = quotation.tax_amount || Math.round(subtotal * 0.19);
+    const tax = quotation.tax_amount || Math.round(subtotal * IVA_RATE);
     const total = quotation.total_amount || subtotal + tax;
     print('quotation', {
       id: quotation.id,
