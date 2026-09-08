@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { BookOpen, Search, Download, Calendar, DollarSign, FileText, Send, Eye, CheckCircle2, XCircle, Clock, AlertTriangle, Zap, RefreshCw } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
@@ -78,7 +79,7 @@ export default function PurchaseBookPage() {
 
   const calculateIVA = (amount: number, docType: string) => {
     if (docType === '34' || docType === '61') return { neto: amount, iva: 0, total: amount };
-    const neto = Math.round(amount / 1.19);
+    const neto = Math.round(amount / (1 + IVA_RATE));
     const iva = amount - neto;
     return { neto, iva, total: amount };
   };

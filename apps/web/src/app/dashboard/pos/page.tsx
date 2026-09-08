@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { Card, CardHeader, CardTitle, CardContent, Button, Badge, Input, Select } from '@yellow-erp/ui';
 import { Monitor, ShoppingCart, Plus, Search, CreditCard, Banknote, Receipt, ArrowRight, Package, X, Check, User, FileText, Printer, Download } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
@@ -92,7 +93,7 @@ export default function POSPage() {
   );
 
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const taxAmount = Math.round(subtotal * 0.19);
+  const taxAmount = Math.round(subtotal * IVA_RATE);
   const total = subtotal + taxAmount;
 
   const addToCart = (product: Product) => {
@@ -202,8 +203,8 @@ export default function POSPage() {
         unit_price: item.price,
         total: (item.price || 0) * (item.quantity || 0),
       })),
-      subtotal: Math.round(completedInvoice.total / 1.19),
-      tax_amount: completedInvoice.total - Math.round(completedInvoice.total / 1.19),
+      subtotal: Math.round(completedInvoice.total / (1 + IVA_RATE)),
+      tax_amount: completedInvoice.total - Math.round(completedInvoice.total / (1 + IVA_RATE)),
       total: completedInvoice.total,
       payment_method: completedInvoice.paymentMethod,
       card_transaction_number: completedInvoice.paymentMethod === 'card' ? cardTransactionNumber : undefined,

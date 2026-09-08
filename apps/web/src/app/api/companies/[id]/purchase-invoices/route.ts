@@ -1,5 +1,5 @@
 import { query } from '@/api/lib/db';
-import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { getCompanyId, successResponse, errorResponse, getCompanyIvaRate } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
@@ -43,7 +43,8 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     }
 
     const subtotal = (items || []).reduce((sum: number, i: any) => sum + (parseFloat(i.quantity) || 0) * (parseFloat(i.unit_price) || 0) * (1 - (parseFloat(i.discount_pct) || 0) / 100), 0);
-    const taxAmount = subtotal * 0.19;
+    const ivaRate = await getCompanyIvaRate(companyId);
+    const taxAmount = subtotal * ivaRate;
     const totalAmount = subtotal + taxAmount;
 
     const { rows } = await query(

@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -74,7 +75,7 @@ export default function NuevoEstimadoPage() {
 
   const subtotal = items.reduce((sum, item) => sum + item.subtotal, 0);
   const discount = subtotal * 0.1;
-  const iva = (subtotal - discount) * 0.19;
+  const iva = (subtotal - discount) * IVA_RATE;
   const total = subtotal - discount + iva;
 
   const addItem = () => {

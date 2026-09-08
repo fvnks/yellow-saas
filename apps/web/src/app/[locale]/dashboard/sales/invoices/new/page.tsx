@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import { useState, useEffect } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input, Select } from '@yellow-erp/ui';
 import { ArrowLeft, Save, FileText, Plus, Trash2 } from 'lucide-react';
@@ -88,7 +89,7 @@ export default function NewInvoicePage() {
   };
 
   const subtotal = items.reduce((sum, item) => sum + getLineTotal(item), 0);
-  const taxAmount = Math.round(subtotal * 0.19);
+  const taxAmount = Math.round(subtotal * IVA_RATE);
   const total = subtotal + taxAmount;
   const balance = total - paidAmount;
 

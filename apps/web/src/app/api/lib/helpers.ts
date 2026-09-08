@@ -40,6 +40,20 @@ export function parseSearchParams(request: NextRequest) {
   return { page, limit, search, sort, order, offset };
 }
 
+export async function getCompanyIvaRate(companyId: string): Promise<number> {
+  try {
+    const { rows } = await query(
+      `SELECT setting_value FROM company_settings WHERE company_id = $1 AND setting_key = 'iva_rate'`,
+      [companyId]
+    );
+    if (rows[0]) {
+      const rate = parseFloat(rows[0].setting_value);
+      if (rate > 0 && rate < 1) return rate;
+    }
+  } catch {}
+  return 0.19;
+}
+
 export async function checkAndCreateLowStockNotification(companyId: string, productId: string, warehouseId: string) {
   try {
     const result = await query(

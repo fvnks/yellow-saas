@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Upload, Eye, Save, Palette, FileText, Hash, Type, LayoutTemplate, Check, Sparkles, Zap, Minus } from 'lucide-react';
 import { toast } from 'sonner';
 import { useDocumentSettings } from '@/lib/use-document-settings';
+import { getCompanyIdFromToken } from '@/lib/api-client';
 import {
   DOCUMENT_TEMPLATES, CURRENCIES, LANGUAGES,
   type DocumentSettings,
@@ -34,12 +35,22 @@ export function DocumentsTab() {
   const handleSave = async () => {
     setSavingStatus('saving');
     const ok = await save(settings);
-    setSavingStatus(ok ? 'saved' : 'idle');
     if (ok) {
+      const companyId = getCompanyIdFromToken();
+      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+      if (companyId && token) {
+        fetch(`/api/companies/${companyId}/settings/iva`, {
+          method: 'PUT',
+          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ iva_rate: settings.iva_rate }),
+        }).catch(() => {});
+      }
       toast.success('Configuración de documentos guardada');
+      setSavingStatus('saved');
       setTimeout(() => setSavingStatus('idle'), 2500);
     } else {
       toast.error('Error al guardar la configuración');
+      setSavingStatus('idle');
     }
   };
 
@@ -184,9 +195,32 @@ export function DocumentsTab() {
                     </div>
                   </div>
                 </div>
-                <div className="space-y-1.5">
-                  <label className="block text-xs font-medium text-foreground">Etiqueta de impuesto</label>
-                  <input type="text" value={settings.tax_label} onChange={e => update({ tax_label: e.target.value })} className={STYLE.input} placeholder="IVA (19%)" />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-medium text-foreground">Etiqueta de impuesto</label>
+                    <input type="text" value={settings.tax_label} onChange={e => update({ tax_label: e.target.value })} className={STYLE.input} placeholder="IVA" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-medium text-foreground">Tasa IVA (%)</label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="0.1"
+                        value={Math.round(settings.iva_rate * 100 * 10) / 10}
+                        onChange={e => {
+                          const pct = parseFloat(e.target.value);
+                          if (!isNaN(pct) && pct >= 0 && pct <= 100) {
+                            update({ iva_rate: Math.round(pct * 10) / 1000 });
+                          }
+                        }}
+                        className={STYLE.input}
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground font-medium">%</span>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">Valor decimal en documentos: {settings.iva_rate}</p>
+                  </div>
                 </div>
               </div>
             </div>

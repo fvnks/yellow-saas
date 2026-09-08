@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button } from '@yellow-erp/ui';
 import { ArrowLeft, Printer, Send, Edit, X, Calendar, User, CreditCard, Truck, MapPin, Download } from 'lucide-react';
 import Link from 'next/link';
@@ -92,7 +93,7 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
     const companyRes = await api.getCompany().catch(() => null);
     const items = order.items || [];
     const subtotal = items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0);
-    const tax = Math.round(subtotal * 0.19);
+    const tax = Math.round(subtotal * IVA_RATE);
     const doc = await generateOrdenVentaPDF({
       id: order.id,
       number: order.order_number,
@@ -130,7 +131,7 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
     const c = company || {};
     const items = order.items || [];
     const subtotal = items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0);
-    const tax = Math.round(subtotal * 0.19);
+    const tax = Math.round(subtotal * IVA_RATE);
     const total = order.total || subtotal + tax;
     print('sales-order', {
       id: order.id,
@@ -214,7 +215,7 @@ export default function SaleDetailPage({ params }: { params: { id: string } }) {
   const status = statusConfig[order.status] || { label: order.status, variant: 'neutral' as const };
   const items = order.items || [];
   const subtotal = items.reduce((sum, item) => sum + (item.line_total || item.quantity * item.unit_price), 0);
-  const tax = Math.round(subtotal * 0.19);
+  const tax = Math.round(subtotal * IVA_RATE);
 
   return (
     <div className="space-y-6">

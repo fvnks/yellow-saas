@@ -1,5 +1,5 @@
 import { query } from '@/api/lib/db';
-import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
+import { getCompanyId, successResponse, errorResponse, getCompanyIvaRate } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
 export async function GET(
@@ -82,7 +82,8 @@ export async function PUT(
         );
       }
 
-      const taxAmount = Math.round(subtotal * 0.19);
+      const ivaRate = await getCompanyIvaRate(companyId);
+      const taxAmount = Math.round(subtotal * ivaRate);
       await query(
         `UPDATE sales_orders SET subtotal = $1, tax_amount = $2, total = $3 WHERE id = $4 AND company_id = $5`,
         [subtotal, taxAmount, subtotal + taxAmount, params.orderId, companyId]

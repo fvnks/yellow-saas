@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { INITIAL_TABLES, INITIAL_ORDERS, INITIAL_MENU_ITEMS, TableSession, Order, OrderItem } from '../lib/restaurant-store';
 import { Utensils, Plus, CheckCircle, Receipt, RefreshCw, X, ShieldCheck, CreditCard } from 'lucide-react';
 import { toast } from 'sonner';
@@ -378,11 +379,11 @@ export default function WaiterPOSPage() {
                   <div className="space-y-1 text-xs text-slate-600">
                     <div className="flex justify-between">
                       <span>Subtotal Neto</span>
-                      <span>{formatCLP(Math.round(activeOrder.totalCLP / 1.19))}</span>
+                      <span>{formatCLP(Math.round(activeOrder.totalCLP / (1 + IVA_RATE)))}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>IVA (19%)</span>
-                      <span>{formatCLP(activeOrder.totalCLP - Math.round(activeOrder.totalCLP / 1.19))}</span>
+                      <span>{formatCLP(activeOrder.totalCLP - Math.round(activeOrder.totalCLP / (1 + IVA_RATE)))}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Propina Sugerida (10%)</span>

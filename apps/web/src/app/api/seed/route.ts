@@ -1,6 +1,7 @@
-import { query } from '@/api/lib/db';
+﻿import { query } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
+import { IVA_RATE } from '@/lib/erp-config';
 
 async function safeInsert(sql: string, params: unknown[]): Promise<boolean> {
   try { await query(sql, params); return true; } catch { return false; }
@@ -153,7 +154,7 @@ export async function POST(request: NextRequest) {
         subtotal += lineTotal;
         await query(`INSERT INTO sales_order_items (company_id, order_id, product_id, quantity, unit_price) VALUES ($1, $2, $3, $4, $5)`, [company_id, orderId, productIds[prodIdx], qty, price]);
       }
-      const tax = Math.round(subtotal * 0.19);
+      const tax = Math.round(subtotal * IVA_RATE);
       await query(`UPDATE sales_orders SET subtotal = $1, tax_amount = $2, total = $3 WHERE id = $4`, [subtotal, tax, subtotal + tax, orderId]);
     }
     results.push('15 sales orders');
@@ -181,7 +182,7 @@ export async function POST(request: NextRequest) {
         subtotal += lineTotal;
         await query(`INSERT INTO purchase_order_items (company_id, order_id, product_id, quantity, unit_price) VALUES ($1, $2, $3, $4, $5)`, [company_id, orderId, productIds[prodIdx], qty, cost]);
       }
-      const tax = Math.round(subtotal * 0.19);
+      const tax = Math.round(subtotal * IVA_RATE);
       await query(`UPDATE purchase_orders SET subtotal = $1, tax_amount = $2, total = $3 WHERE id = $4`, [subtotal, tax, subtotal + tax, orderId]);
     }
     results.push('10 purchase orders');
@@ -196,7 +197,7 @@ export async function POST(request: NextRequest) {
       const paid = status === 'paid' ? total : 0;
       await safeInsert(
         `INSERT INTO invoices (company_id, invoice_number, customer_id, status, invoice_date, due_date, subtotal, tax_amount, total_amount, paid_amount, notes) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'Factura demo')`,
-        [company_id, `FE-${String(3001 + i).padStart(4, '0')}`, customerIds[custIdx], status, invDate.toISOString(), dueDate.toISOString(), Math.round(total / 1.19), Math.round(total - total / 1.19), total, paid]
+        [company_id, `FE-${String(3001 + i).padStart(4, '0')}`, customerIds[custIdx], status, invDate.toISOString(), dueDate.toISOString(), Math.round(total / (1 + IVA_RATE)), Math.round(total - total / (1 + IVA_RATE)), total, paid]
       );
     }
     results.push('12 invoices');

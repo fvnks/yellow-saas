@@ -7,14 +7,11 @@ export async function GET(request: NextRequest) {
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
-    const { page, limit, search, sort, order, offset } = parseSearchParams(request);
-    const url = new URL(request.url);
-    const category = url.searchParams.get('category');
-    const warehouse = url.searchParams.get('warehouse');
-    const type = url.searchParams.get('type');
-    const includeInactive = url.searchParams.get('include_inactive') === 'true';
+    const { page, limit, search, sort: requestedSort, order, offset } = parseSearchParams(request);
+    const allowedSortColumns = ['created_at', 'name', 'sku', 'cost_price', 'sale_price', 'is_active', 'id'];
+    const sort = allowedSortColumns.includes(requestedSort) ? requestedSort : 'created_at';
 
-    let whereClause = `WHERE p.company_id = $1${includeInactive ? '' : ' AND p.is_active = true'}`;
+    let whereClause = 'WHERE p.company_id = $1';
     const params: any[] = [companyId];
     let paramIndex = 2;
 
@@ -24,36 +21,54 @@ export async function GET(request: NextRequest) {
       paramIndex++;
     }
 
-    if (category) {
-      whereClause += ` AND p.category_id = $${paramIndex}`;
-      params.push(category);
-      paramIndex++;
-    }
-
-    if (type) {
-      whereClause += ` AND p.type = $${paramIndex}`;
-      params.push(type);
-      paramIndex++;
-    }
-
     const countResult = await query(
       `SELECT COUNT(*) FROM products p ${whereClause}`,
       params
     );
 
-    const dataResult = await query(
-      `SELECT p.*,
-        CASE WHEN c.id IS NOT NULL THEN json_build_object('id', c.id, 'name', c.name) ELSE NULL END as category,
-        CASE WHEN cc.id IS NOT NULL THEN json_build_object('id', cc.id, 'name', cc.name, 'code', cc.code) ELSE NULL END as cost_center,
-        (SELECT json_build_object('id', t.id, 'name', t.name, 'rate', t.rate, 'code', t.code) FROM taxes t WHERE t.id = p.tax_id AND t.company_id = p.company_id) as tax
-       FROM products p
-       LEFT JOIN inventory_categories c ON p.category_id = c.id AND c.company_id = p.company_id
-       LEFT JOIN cost_centers cc ON p.cost_center_id = cc.id AND cc.company_id = p.company_id
-       ${whereClause}
-       ORDER BY p.name ASC
-       LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
-      [...params, limit, offset]
-    );
+    const dataResult = await query(`
+      SELECT 
+        p.id,
+        p.company_id,
+        p.sku,
+        p.name,
+        p.description,
+        p.type,
+        p.category_id,
+        p.unit_of_measure,
+        p.cost_price,
+        p.sale_price,
+        p.min_stock,
+        p.max_stock,
+        p.track_stock,
+        p.barcode,
+        p.tax_id,
+        p.is_active,
+        p.created_at,
+        p.updated_at,
+        ic.name as category_name,
+        (
+          SELECT json_agg(
+            json_build_object(
+              'id', sl.id,
+              'quantity', sl.quantity,
+              'warehouse', json_build_object(
+                'id', w.id,
+                'name', w.name,
+                'code', w.code
+              )
+            )
+          )
+          FROM stock_levels sl
+          JOIN warehouses w ON w.id = sl.warehouse_id
+          WHERE sl.product_id = p.id AND sl.company_id = p.company_id
+        ) as stock_levels
+      FROM products p
+      LEFT JOIN inventory_categories ic ON ic.id = p.category_id
+      ${whereClause}
+      ORDER BY ${sort} ${order === 'asc' ? 'ASC' : 'DESC'}
+      LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
+    `, [...params, limit, offset]);
 
     return paginatedResponse(dataResult.rows, parseInt(countResult.rows[0].count), page, limit);
   } catch {
@@ -69,35 +84,69 @@ export async function POST(request: NextRequest) {
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const {
-      sku, name, category_id, description, type, unit_of_measure,
-      cost_price, sale_price, min_stock, max_stock, track_stock,
-      barcode, tax_id, initial_stock, warehouse_id, cost_center_id,
-      image_url,
+      name,
+      sku,
+      description,
+      type = 'product',
+      category_id,
+      unit_of_measure = 'UN',
+      cost_price = 0,
+      sale_price = 0,
+      min_stock = 0,
+      max_stock = 0,
+      track_stock = true,
+      barcode,
+      tax_id,
+      is_active = true,
+      warehouse_id,
+      initial_stock,
     } = body;
 
-    if (!sku || !name) {
-      return errorResponse('SKU and name are required', 400);
+    if (!name || !sku) {
+      return errorResponse('Name and SKU are required', 400);
     }
 
-    const productResult = await query(
-      `INSERT INTO products (company_id, sku, name, category_id, description, type, unit_of_measure, cost_price, sale_price, min_stock, max_stock, track_stock, barcode, tax_id, cost_center_id, image_url)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
-       RETURNING *`,
-      [companyId, sku, name, category_id || null, description || null, type || 'product', unit_of_measure || 'UN', cost_price || 0, sale_price || 0, min_stock || 0, max_stock || 0, track_stock !== false, barcode || null, tax_id || null, cost_center_id || null, image_url || null]
+    const existing = await query(
+      'SELECT id FROM products WHERE company_id = $1 AND sku = $2',
+      [companyId, sku]
+    );
+    if (existing.rows.length > 0) {
+      return errorResponse('Ya existe un producto con este SKU', 409);
+    }
+
+    const result = await query(
+      `INSERT INTO products (
+        company_id, sku, name, description, type, category_id, unit_of_measure,
+        cost_price, sale_price, min_stock, max_stock, track_stock, barcode, tax_id, is_active
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+      RETURNING *`,
+      [
+        companyId,
+        sku,
+        name,
+        description || null,
+        type,
+        category_id || null,
+        unit_of_measure,
+        cost_price,
+        sale_price,
+        min_stock,
+        max_stock,
+        track_stock,
+        barcode || null,
+        tax_id || null,
+        is_active,
+      ]
     );
 
-    const product = productResult.rows[0];
+    const product = result.rows[0];
 
-    if (initial_stock && warehouse_id && initial_stock > 0) {
+    if (warehouse_id && initial_stock && track_stock) {
       await query(
         `INSERT INTO stock_levels (company_id, product_id, warehouse_id, quantity)
-         VALUES ($1, $2, $3, $4)`,
-        [companyId, product.id, warehouse_id, initial_stock]
-      );
-
-      await query(
-        `INSERT INTO stock_movements (company_id, product_id, warehouse_id, type, quantity, notes)
-         VALUES ($1, $2, $3, 'initial', $4, 'Stock inicial')`,
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (company_id, product_id, warehouse_id)
+         DO UPDATE SET quantity = stock_levels.quantity + $4`,
         [companyId, product.id, warehouse_id, initial_stock]
       );
     }

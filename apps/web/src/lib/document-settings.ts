@@ -7,6 +7,7 @@ export interface DocumentSettings {
   language: 'es' | 'en';
   currency: 'CLP' | 'USD' | 'EUR';
   tax_label: string;
+  iva_rate: number;
   header_text: string;
   footer_text: string;
   default_notes: string;
@@ -27,7 +28,8 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   show_qr: true,
   language: 'es',
   currency: 'CLP',
-  tax_label: 'IVA (19%)',
+  tax_label: 'IVA',
+  iva_rate: 0.19,
   header_text: '',
   footer_text: 'Documento generado por Yellow ERP',
   default_notes: '',
@@ -67,9 +69,11 @@ export function hexToRgb(hex: string): [number, number, number] {
 
 export function mergeSettings(raw: unknown): DocumentSettings {
   const r = (raw || {}) as Partial<DocumentSettings>;
+  const ivaRate = typeof r.iva_rate === 'number' && r.iva_rate > 0 ? r.iva_rate : DEFAULT_DOCUMENT_SETTINGS.iva_rate;
   return {
     ...DEFAULT_DOCUMENT_SETTINGS,
     ...r,
+    iva_rate: ivaRate,
     document_titles: {
       ...DEFAULT_DOCUMENT_SETTINGS.document_titles,
       ...(r.document_titles || {}),

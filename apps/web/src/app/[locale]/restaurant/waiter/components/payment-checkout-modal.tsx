@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { Order } from '../../lib/restaurant-store';
 import { X, CheckCircle, CreditCard, DollarSign, QrCode, Building, Receipt, Printer, ArrowRight, ShieldCheck, Users, Percent, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
@@ -40,7 +41,7 @@ export function PaymentCheckoutModal({
   const formatCLP = (val: number) =>
     new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(Math.round(val));
 
-  const subtotalNeto = Math.round(order.totalCLP / 1.19);
+  const subtotalNeto = Math.round(order.totalCLP / (1 + IVA_RATE));
   const ivaCLP = Math.round(order.totalCLP - subtotalNeto);
   const perGuestCLP = Math.round(grandTotalCLP / Math.max(1, splitGuests));
   const cashChangeCLP = Math.max(0, Math.round(cashReceivedCLP - grandTotalCLP));

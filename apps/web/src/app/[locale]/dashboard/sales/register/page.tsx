@@ -1,11 +1,11 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Plus, Search, Edit, Trash2, Receipt } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import SearchableSelect from '@/components/SearchableSelect';
-import { SALES_CONFIG } from '@/lib/erp-config';
+import { SALES_CONFIG, IVA_RATE } from '@/lib/erp-config';
 
 interface SalesRegister {
   id: string;
@@ -72,7 +72,7 @@ export default function SalesRegisterPage() {
   useEffect(() => {
     const net = parseFloat(form.net_amount) || 0;
     if (net > 0) {
-      setForm(prev => ({ ...prev, total_amount: String(Math.round(net * 1.19)) }));
+      setForm(prev => ({ ...prev, total_amount: String(Math.round(net * (1 + IVA_RATE))) }));
     }
   }, [form.net_amount]);
 

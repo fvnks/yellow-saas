@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
+import { IVA_RATE } from '@/lib/erp-config';
 import { Receipt, DollarSign, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { InventoryMedication } from './medication-stock-selector';
 
@@ -45,7 +46,7 @@ export default function BillingOrderGenerator({
   ];
 
   const subtotal = charges.reduce((acc, curr) => acc + curr.quantity * curr.unitPriceCLP, 0);
-  const vatIVA = Math.round(subtotal * 0.19);
+  const vatIVA = Math.round(subtotal * IVA_RATE);
   const totalNetPlusVat = subtotal; // If price includes IVA or net
 
   return (

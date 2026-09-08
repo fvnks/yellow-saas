@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
+import { IVA_RATE } from '@/lib/erp-config';
 import { query } from '@/api/lib/db';
 
 // GET: Calculate F29 Monthly Tax Return for Chilean SMEs
@@ -17,12 +18,12 @@ export async function GET(request: Request) {
     );
 
     const totalSalesGross = Number(salesRes.rows[0]?.total_sales || 12500000);
-    const totalSalesNet = Math.round(totalSalesGross / 1.19);
+    const totalSalesNet = Math.round(totalSalesGross / (1 + IVA_RATE));
     const debitIva = totalSalesGross - totalSalesNet;
 
     // Fetch purchase DTE totals
     const totalPurchasesGross = 6800000;
-    const totalPurchasesNet = Math.round(totalPurchasesGross / 1.19);
+    const totalPurchasesNet = Math.round(totalPurchasesGross / (1 + IVA_RATE));
     const creditIva = totalPurchasesGross - totalPurchasesNet;
 
     // PPM Rate (1.5%)

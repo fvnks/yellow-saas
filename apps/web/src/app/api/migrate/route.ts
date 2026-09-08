@@ -828,6 +828,30 @@ export async function POST(request: Request) {
       results.push(`ecommerce tables warn: ${e.message?.substring(0, 80)}`);
     }
 
+    // Create vehicle_brands
+    await query(`
+      CREATE TABLE IF NOT EXISTS vehicle_brands (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        name TEXT NOT NULL UNIQUE,
+        is_active BOOLEAN DEFAULT true,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+      )
+    `);
+    
+    // Seed vehicle_brands
+    const brands = [
+      'Toyota', 'Chevrolet', 'Hyundai', 'Kia', 'Nissan', 'Ford', 'Mazda', 'Suzuki',
+      'Volkswagen', 'Peugeot', 'Mitsubishi', 'Subaru', 'Renault', 'Citroen', 'Jeep',
+      'Fiat', 'Chery', 'MG', 'JAC', 'DFSK', 'Great Wall', 'Changan'
+    ];
+    for (const brand of brands) {
+      await query(
+        `INSERT INTO vehicle_brands (name) VALUES ($1) ON CONFLICT (name) DO NOTHING`,
+        [brand]
+      );
+    }
+    results.push(`Seeded ${brands.length} vehicle brands`);
+
     // Seed module catalog
     const moduleCatalog = [
       { name: 'erp', label: 'ERP & Gestión', description: 'Inventario, Ventas, Compras, CRM, Contabilidad' },
