@@ -1957,6 +1957,53 @@ async deleteAdjustmentReason(id: string) {
     return this.request<{ id: string; status: string }>('/reconciliation/sessions/' + sessionId + '/cancel', { method: 'POST' });
   }
 
+  // =============================================
+  // Received Documents (Documentos Recibidos)
+  // =============================================
+
+  async getReceivedDocuments(params?: Record<string, string>) {
+    const qs = params ? '?' + new URLSearchParams(params).toString() : '';
+    return this.requestWithPagination<any>('/received-documents' + qs, params || {});
+  }
+
+  async getReceivedDocument(docId: string) {
+    return this.request<any>('/received-documents/' + docId);
+  }
+
+  async importReceivedDocument(xmlContent: string, fileName: string, source?: string) {
+    return this.request<any>('/received-documents/import', {
+      method: 'POST',
+      body: JSON.stringify({ xml_content: xmlContent, file_name: fileName, source }),
+    });
+  }
+
+  async importReceivedDocumentsBulk(formData: FormData) {
+    const url = `${API_BASE}/companies/${this.companyId}/received-documents/import`;
+    const token = getTokenFromCookie();
+    const response = await fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: formData,
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error?.message || 'Error importing documents');
+    return data.data;
+  }
+
+  async deleteReceivedDocument(docId: string) {
+    return this.request<{ deleted: boolean }>('/received-documents/' + docId, { method: 'DELETE' });
+  }
+
+  async getReceivedDocumentXml(docId: string) {
+    return this.request<any>('/received-documents/' + docId + '/xml');
+  }
+
+  async getReceivedDocumentsSummary(params?: Record<string, string>) {
+    const qs = params ? '?' + new URLSearchParams(params).toString() : '';
+    return this.request<any>('/received-documents/summary' + qs);
+  }
+
 }
 
 // Singleton with dynamic company_id from JWT
