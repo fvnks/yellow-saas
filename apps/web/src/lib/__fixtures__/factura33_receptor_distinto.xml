@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DTE version="1.0">
+  <Documento ID="F33T000000003">
+    <Encabezado>
+      <IdDoc>
+        <TipoDTE>33</TipoDTE>
+        <Folio>3</Folio>
+        <FchEmis>2026-01-15</FchEmis>
+      </IdDoc>
+      <Emisor>
+        <RUTEmisor>76123456-7</RUTEmisor>
+        <RznSocEmisor>Empresa Demo SpA</RznSocEmisor>
+        <GiroEmisor>Venta de Productos</GiroEmisor>
+        <DirEmisor>Av. Principal 1234</DirEmisor>
+        <CmnaEmisor>Santiago</CmnaEmisor>
+        <CiudadEmisor>Santiago</CiudadEmisor>
+      </Emisor>
+      <Receptor>
+        <RUTRecep>99999999-9</RUTRecep>
+        <RznSocRecep>Otra Empresa Diferente</RznSocRecep>
+        <DirRecep>Otra Dirección</DirRecep>
+        <CmnaRecep>Ñuñoa</CmnaRecep>
+        <CiudadRecep>Santiago</CiudadRecep>
+      </Receptor>
+      <Totales>
+        <MntNeto>100000</MntNeto>
+        <IVA>19000</IVA>
+        <MntTotal>119000</MntTotal>
+      </Totales>
+    </Encabezado>
+    <Detalle>
+      <NmbItem>Producto C</NmbItem>
+      <QtyItem>10</QtyItem>
+      <UnmdItem>UN</UnmdItem>
+      <PrcItem>10000</PrcItem>
+      <MontoItem>100000</MontoItem>
+    </Detalle>
+  </Documento>
+</DTE>

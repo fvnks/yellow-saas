@@ -52,6 +52,7 @@ import {
   Building,
   UtensilsCrossed,
   RefreshCw,
+  FileDown,
 } from "lucide-react";
 
 export const ICON_MAP = {
@@ -107,6 +108,7 @@ export const ICON_MAP = {
   FlaskConical,
   Play,
   Building,
+  FileDown,
 };
 
 export const resolveIcon = (iconName: keyof typeof ICON_MAP | undefined): LucideIcon => {
@@ -415,6 +417,7 @@ export const sidebarItems: NavGroup[] = [
           { title: "Flujo de Caja Proyectado", path: "/dashboard/accounting/cashflow", icon: "TrendingUp", requiredPermission: { module: "finanzas", action: "read" } },
           { title: "Asistente F29 SII", path: "/dashboard/accounting/f29", icon: "Calculator", requiredPermission: { module: "finanzas", action: "read" } },
           { title: "Honorarios BHE", path: "/dashboard/accounting/honorarios", icon: "FileText", requiredPermission: { module: "finanzas", action: "read" } },
+          { title: "Documentos Recibidos", path: "/dashboard/received-documents", icon: "FileDown", requiredPermission: { module: "documentos_recibidos", action: "read" } },
         ],
       },
       {
