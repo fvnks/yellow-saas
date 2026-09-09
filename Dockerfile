@@ -21,8 +21,8 @@ RUN npm ci
 # Copy all source code
 COPY . .
 
-# Clean turbo cache to force fresh build
-RUN rm -rf .turbo
+# Clean turbo and next.js cache to force fresh build
+RUN rm -rf .turbo apps/web/.next apps/web/.next-static
 
 # Build only the web app and its dependencies
 RUN turbo run build --filter=@yellow-erp/web...
