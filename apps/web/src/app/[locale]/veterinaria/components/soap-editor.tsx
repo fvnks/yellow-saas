@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { X, Save, Stethoscope } from 'lucide-react';
-import { VeterinaryEvolution, EvolutionType, SoapNote, INITIAL_PROFESSIONALS } from '../lib/veterinary-store';
+import { VeterinaryEvolution, EvolutionType, SoapNote } from '../lib/veterinary-store';
+import { useProfessionals } from '@/app/veterinaria/hooks/use-professionals';
 
 interface SoapEditorProps {
   patientId: string;
@@ -30,7 +31,8 @@ export default function SoapEditor({
   onClose,
   prefillSoap,
 }: SoapEditorProps) {
-  const defaultProfessional = INITIAL_PROFESSIONALS[0];
+  const { data: professionals } = useProfessionals();
+  const defaultProfessional = professionals[0];
   const [type, setType] = useState<EvolutionType>('consulta');
   const [soap, setSoap] = useState<SoapNote>(
     prefillSoap || { subjective: '', objective: '', assessment: '', plan: '' }
@@ -51,7 +53,7 @@ export default function SoapEditor({
     }
 
     const now = new Date();
-    const pro = INITIAL_PROFESSIONALS.find((p) => p.id === selectedProfId);
+    const pro = professionals.find((p: any) => p.id === selectedProfId);
 
     onSave({
       patientId,
@@ -115,7 +117,7 @@ export default function SoapEditor({
                 onChange={(e) => setSelectedProfId(e.target.value)}
                 className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
               >
-                {INITIAL_PROFESSIONALS.map((p) => (
+                {professionals.map((p: any) => (
                   <option key={p.id} value={p.id}>{p.fullName}</option>
                 ))}
               </select>

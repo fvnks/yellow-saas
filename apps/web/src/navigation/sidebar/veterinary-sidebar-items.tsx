@@ -22,6 +22,7 @@ import {
   DollarSign,
   Key,
   ListOrdered,
+  BarChart3,
 } from "lucide-react";
 
 export interface VeterinaryNavItem {
@@ -165,6 +166,11 @@ export const veterinarySidebarItems: VeterinaryNavGroup[] = [
         title: "Portal de Tutores",
         path: "/veterinaria/portal-tokens",
         icon: Key,
+      },
+      {
+        title: "Reportes & Analytics",
+        path: "/veterinaria/reportes",
+        icon: BarChart3,
       },
     ],
   },
