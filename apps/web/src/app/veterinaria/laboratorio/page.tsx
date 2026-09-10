@@ -15,15 +15,11 @@ import {
   FileText,
   X,
 } from 'lucide-react';
-import {
-  INITIAL_PATIENTS,
-  INITIAL_CLIENTS,
-  INITIAL_PROFESSIONALS,
-  INITIAL_LAB_ORDERS,
-  INITIAL_LAB_PANELS,
-  LabOrder,
-  LabPanel,
-} from '../lib/veterinary-store';
+import { useLabPanels, useLabOrders } from '../hooks/use-lab';
+import { usePatients } from '../hooks/use-patients';
+import { useProfessionals } from '../hooks/use-professionals';
+import { getApiClient } from '@/lib/api-client';
+import { LabOrder, LabPanel } from '../lib/veterinary-store';
 
 const statusBadges: Record<string, string> = {
   ordenada: 'bg-blue-100 text-blue-800 border-blue-200',
@@ -61,7 +57,10 @@ const sampleTypeLabels: Record<string, string> = {
 };
 
 export default function VeterinaryLabPage() {
-  const [orders, setOrders] = useState<LabOrder[]>(INITIAL_LAB_ORDERS);
+  const { data: orders, loading: loadingOrders, error: errorOrders, refresh: refreshOrders, mutate: mutateOrders } = useLabOrders();
+  const { data: labPanels, loading: loadingPanels } = useLabPanels();
+  const { data: patients } = usePatients();
+  const { data: professionals } = useProfessionals();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('todos');
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -69,13 +68,34 @@ export default function VeterinaryLabPage() {
   const [showResults, setShowResults] = useState(false);
 
   const [formData, setFormData] = useState({
-    patientId: INITIAL_PATIENTS[0]?.id || '',
-    professionalId: INITIAL_PROFESSIONALS[0]?.id || '',
-    panelId: INITIAL_LAB_PANELS[0]?.id || '',
+    patientId: '',
+    professionalId: '',
+    panelId: '',
     sampleType: 'sangre' as LabOrder['sampleType'],
     priority: 'rutina' as LabOrder['priority'],
     note: '',
   });
+
+  if (loadingOrders || loadingPanels) {
+    return (
+      <div className="space-y-6">
+        <div className="h-8 w-64 bg-slate-200 rounded-xl animate-pulse" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => <div key={i} className="h-24 bg-slate-100 rounded-2xl animate-pulse" />)}
+        </div>
+        <div className="h-96 bg-slate-100 rounded-2xl animate-pulse" />
+      </div>
+    );
+  }
+
+  if (errorOrders) {
+    return (
+      <div className="bg-rose-50 border border-rose-200 rounded-2xl p-6 text-center">
+        <p className="text-rose-700 font-bold">Error al cargar órdenes: {errorOrders}</p>
+        <button onClick={refreshOrders} className="mt-2 text-sm text-rose-600 underline">Reintentar</button>
+      </div>
+    );
+  }
 
   const filtered = orders.filter((o) => {
     const ms =
@@ -88,46 +108,42 @@ export default function VeterinaryLabPage() {
   });
 
   const selectedOrder = orders.find((o) => o.id === selectedId);
-  const selectedPanel = INITIAL_LAB_PANELS.find((p) => p.id === formData.panelId);
+  const selectedPanel = labPanels.find((p) => p.id === formData.panelId);
 
-  const handleRegisterOrder = (e: React.FormEvent) => {
+  const handleRegisterOrder = async (e: React.FormEvent) => {
     e.preventDefault();
-    const patient = INITIAL_PATIENTS.find((p) => p.id === formData.patientId);
-    const client = INITIAL_CLIENTS.find((c) => c.id === patient?.clientId);
-    const pro = INITIAL_PROFESSIONALS.find((p) => p.id === formData.professionalId);
-    const panel = INITIAL_LAB_PANELS.find((p) => p.id === formData.panelId);
-    if (!patient || !client || !pro || !panel) return;
+    const patient = patients.find((p) => p.id === formData.patientId);
+    const pro = professionals.find((p) => p.id === formData.professionalId);
+    const panel = labPanels.find((p) => p.id === formData.panelId);
+    if (!patient || !pro || !panel) return;
 
-    const today = new Date().toISOString().split('T')[0];
-    const nextNum = `${orders.length + 1}`.padStart(3, '0');
-
-    const newOrder: LabOrder = {
-      id: `lab-${Date.now()}`,
-      orderNumber: `LAB-2025-${nextNum}`,
-      patientId: patient.id,
-      patientName: patient.name,
-      species: patient.species,
-      clientId: client.id,
-      clientName: client.fullName,
-      clientRut: client.rut,
-      professionalId: pro.id,
-      professionalName: pro.fullName,
-      panelId: panel.id,
-      panelName: panel.name,
-      orderedDate: today,
-      sampleType: formData.sampleType,
-      status: 'ordenada',
-      priority: formData.priority,
-      notes: formData.note,
-    };
-
-    setOrders([newOrder, ...orders]);
-    setShowModal(false);
-    setFormData({ ...formData, note: '' });
+    try {
+      const api = getApiClient();
+      await api.createVetLabOrder({
+        patientId: patient.id,
+        professionalId: pro.id,
+        panelId: panel.id,
+        sampleType: formData.sampleType,
+        priority: formData.priority,
+        notes: formData.note,
+      });
+      await refreshOrders();
+      setShowModal(false);
+      setFormData({ ...formData, note: '' });
+    } catch (err) {
+      console.error('Error creating lab order:', err);
+    }
   };
 
-  const handleAdvance = (id: string, status: LabOrder['status']) =>
-    setOrders(orders.map((o) => (o.id === id ? { ...o, status } : o)));
+  const handleAdvance = async (id: string, status: LabOrder['status']) => {
+    try {
+      const api = getApiClient();
+      await api.updateVetLabOrder(id, { status });
+      await refreshOrders();
+    } catch (err) {
+      console.error('Error updating lab order:', err);
+    }
+  };
 
   const readyCount = orders.filter((o) => o.status === 'resultados_listos').length;
   const inProcess = orders.filter((o) => o.status === 'ordenada' || o.status === 'muestra_tomada' || o.status === 'en_proceso').length;
@@ -178,7 +194,7 @@ export default function VeterinaryLabPage() {
           <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 flex items-center justify-center"><AlertTriangle className="w-5 h-5" /></div>
           <div>
             <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Paneles Disponibles</div>
-            <div className="text-xl font-black text-slate-900">{INITIAL_LAB_PANELS.length}</div>
+            <div className="text-xl font-black text-slate-900">{labPanels.length}</div>
           </div>
         </div>
       </div>
@@ -319,7 +335,7 @@ export default function VeterinaryLabPage() {
                     onChange={(e) => setFormData({ ...formData, patientId: e.target.value })}
                     className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 font-medium"
                   >
-                    {INITIAL_PATIENTS.map((p) => (
+                    {patients.map((p) => (
                       <option key={p.id} value={p.id}>{p.name} - {p.breed} ({p.species})</option>
                     ))}
                   </select>
@@ -331,7 +347,7 @@ export default function VeterinaryLabPage() {
                     onChange={(e) => setFormData({ ...formData, professionalId: e.target.value })}
                     className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 font-medium"
                   >
-                    {INITIAL_PROFESSIONALS.map((p) => (
+                    {professionals.map((p) => (
                       <option key={p.id} value={p.id}>{p.fullName}</option>
                     ))}
                   </select>
@@ -345,13 +361,13 @@ export default function VeterinaryLabPage() {
                   onChange={(e) => setFormData({ ...formData, panelId: e.target.value })}
                   className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 font-medium"
                 >
-                  {INITIAL_LAB_PANELS.map((p) => (
+                  {labPanels.map((p) => (
                     <option key={p.id} value={p.id}>{p.name} ({p.tests.length} pruebas)</option>
                   ))}
                 </select>
                 {selectedPanel && (
                   <div className="mt-2 flex flex-wrap gap-1.5">
-                    {selectedPanel.tests.slice(0, 6).map((t) => (
+                    {selectedPanel.tests.slice(0, 6).map((t: any) => (
                       <span key={t.id} className="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-lg">{t.name}</span>
                     ))}
                     {selectedPanel.tests.length > 6 && (
@@ -445,7 +461,7 @@ export default function VeterinaryLabPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {selectedOrder.results.map((r) => (
+                    {selectedOrder.results.map((r: any) => (
                       <tr key={r.id} className="hover:bg-slate-50/60">
                         <td className="px-4 py-3 font-semibold text-slate-800">{r.testName}</td>
                         <td className="px-4 py-3 font-mono font-bold text-slate-900">{r.value}</td>

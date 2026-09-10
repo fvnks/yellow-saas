@@ -15,15 +15,12 @@ import {
   ChevronUp,
   Trash2,
 } from 'lucide-react';
-import {
-  INITIAL_PATIENTS,
-  INITIAL_CLIENTS,
-  INITIAL_PROFESSIONALS,
-  INITIAL_ESTIMATES,
-  INITIAL_PAYMENTS,
-  VeterinaryEstimate,
-  EstimateItem,
-} from '../lib/veterinary-store';
+import { useEstimates } from '../hooks/use-estimates';
+import { usePatients } from '../hooks/use-patients';
+import { useClients } from '../hooks/use-clients';
+import { useProfessionals } from '../hooks/use-professionals';
+import { getApiClient } from '@/lib/api-client';
+import { VeterinaryEstimate, EstimateItem, PaymentRecord } from '../lib/veterinary-store';
 
 const formatCLP = (val: number) =>
   new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(Math.round(val));
@@ -57,22 +54,46 @@ const paymentMethodLabels: Record<string, string> = {
 };
 
 export default function VeterinaryEstimatesPage() {
-  const [estimates, setEstimates] = useState<VeterinaryEstimate[]>(INITIAL_ESTIMATES);
-  const [payments] = useState(INITIAL_PAYMENTS);
+  const { data: estimates, loading: loadingEstimates, error: errorEstimates, refresh: refreshEstimates, mutate: mutateEstimates } = useEstimates();
+  const { data: patients } = usePatients();
+  const { data: clients } = useClients();
+  const { data: professionals } = useProfessionals();
+  const [payments] = useState<PaymentRecord[]>([]);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('todos');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
 
   const [formData, setFormData] = useState({
-    patientId: INITIAL_PATIENTS[0]?.id || '',
-    professionalId: INITIAL_PROFESSIONALS[0]?.id || '',
+    patientId: '',
+    professionalId: '',
     validUntil: '',
     note: '',
   });
   const [newItems, setNewItems] = useState<EstimateItem[]>([
     { id: 'ni-1', description: '', quantity: 1, unitPriceCLP: 0 },
   ]);
+
+  if (loadingEstimates) {
+    return (
+      <div className="space-y-6">
+        <div className="h-8 w-64 bg-slate-200 rounded-xl animate-pulse" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => <div key={i} className="h-24 bg-slate-100 rounded-2xl animate-pulse" />)}
+        </div>
+        <div className="h-96 bg-slate-100 rounded-2xl animate-pulse" />
+      </div>
+    );
+  }
+
+  if (errorEstimates) {
+    return (
+      <div className="bg-rose-50 border border-rose-200 rounded-2xl p-6 text-center">
+        <p className="text-rose-700 font-bold">Error al cargar presupuestos: {errorEstimates}</p>
+        <button onClick={refreshEstimates} className="mt-2 text-sm text-rose-600 underline">Reintentar</button>
+      </div>
+    );
+  }
 
   const filtered = estimates.filter((e) => {
     const matchesSearch =
@@ -94,54 +115,57 @@ export default function VeterinaryEstimatesPage() {
 
   const removeItem = (id: string) => setNewItems(newItems.filter((i) => i.id !== id));
 
-  const handleCreateEstimate = (e: React.FormEvent) => {
+  const handleCreateEstimate = async (e: React.FormEvent) => {
     e.preventDefault();
-    const patient = INITIAL_PATIENTS.find((p) => p.id === formData.patientId);
-    const client = INITIAL_CLIENTS.find((c) => c.id === patient?.clientId);
-    const pro = INITIAL_PROFESSIONALS.find((p) => p.id === formData.professionalId);
+    const patient = patients.find((p) => p.id === formData.patientId);
+    const client = clients.find((c) => c.id === patient?.clientId);
+    const pro = professionals.find((p) => p.id === formData.professionalId);
     const validItems = newItems.filter((i) => i.description && i.unitPriceCLP > 0);
     if (!patient || !client || !pro || validItems.length === 0) return;
 
     const today = new Date();
     const validUntil =
       formData.validUntil || new Date(today.getTime() + 30 * 86400000).toISOString().split('T')[0];
-    const nextNum = `${estimates.length + 1}`.padStart(3, '0');
 
-    const newEstimate: VeterinaryEstimate = {
-      id: `est-${Date.now()}`,
-      estimateNumber: `COT-2025-${nextNum}`,
-      patientId: patient.id,
-      patientName: patient.name,
-      species: patient.species,
-      clientId: client.id,
-      clientName: client.fullName,
-      clientRut: client.rut,
-      professionalId: pro.id,
-      professionalName: pro.fullName,
-      issueDate: today.toISOString().split('T')[0],
-      validUntil,
-      items: validItems,
-      currency: 'CLP',
-      note: formData.note,
-      status: 'pendiente_aprobacion',
-    };
-
-    setEstimates([newEstimate, ...estimates]);
-    setShowModal(false);
-    setNewItems([{ id: 'ni-1', description: '', quantity: 1, unitPriceCLP: 0 }]);
-    setFormData({
-      patientId: INITIAL_PATIENTS[0]?.id || '',
-      professionalId: INITIAL_PROFESSIONALS[0]?.id || '',
-      validUntil: '',
-      note: '',
-    });
+    try {
+      const api = getApiClient();
+      await api.createVetEstimate({
+        patientId: patient.id,
+        professionalId: pro.id,
+        validUntil,
+        items: validItems,
+        currency: 'CLP',
+        note: formData.note,
+        status: 'pendiente_aprobacion',
+      });
+      await refreshEstimates();
+      setShowModal(false);
+      setNewItems([{ id: 'ni-1', description: '', quantity: 1, unitPriceCLP: 0 }]);
+      setFormData({ patientId: '', professionalId: '', validUntil: '', note: '' });
+    } catch (err) {
+      console.error('Error creating estimate:', err);
+    }
   };
 
-  const handleApprove = (id: string) =>
-    setEstimates(estimates.map((e) => (e.id === id ? { ...e, status: 'aprobado' } : e)));
+  const handleApprove = async (id: string) => {
+    try {
+      const api = getApiClient();
+      await api.updateVetEstimate(id, { status: 'aprobado' });
+      await refreshEstimates();
+    } catch (err) {
+      console.error('Error approving estimate:', err);
+    }
+  };
 
-  const handleReject = (id: string) =>
-    setEstimates(estimates.map((e) => (e.id === id ? { ...e, status: 'rechazado' } : e)));
+  const handleReject = async (id: string) => {
+    try {
+      const api = getApiClient();
+      await api.updateVetEstimate(id, { status: 'rechazado' });
+      await refreshEstimates();
+    } catch (err) {
+      console.error('Error rejecting estimate:', err);
+    }
+  };
 
   const pendingCount = estimates.filter((e) => e.status === 'pendiente_aprobacion').length;
   const approvedCount = estimates.filter((e) => e.status === 'aprobado').length;
@@ -320,7 +344,7 @@ export default function VeterinaryEstimatesPage() {
                                   </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100">
-                                  {e.items.map((it) => (
+                                  {e.items.map((it: any) => (
                                     <tr key={it.id}>
                                       <td className="px-3 py-2 font-medium text-slate-700">{it.description}</td>
                                       <td className="px-3 py-2">{it.quantity}</td>
@@ -409,7 +433,7 @@ export default function VeterinaryEstimatesPage() {
                     onChange={(e) => setFormData({ ...formData, patientId: e.target.value })}
                     className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 font-medium"
                   >
-                    {INITIAL_PATIENTS.map((p) => (
+                    {patients.map((p) => (
                       <option key={p.id} value={p.id}>{p.name} - {p.breed} ({p.species})</option>
                     ))}
                   </select>
@@ -421,7 +445,7 @@ export default function VeterinaryEstimatesPage() {
                     onChange={(e) => setFormData({ ...formData, professionalId: e.target.value })}
                     className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 font-medium"
                   >
-                    {INITIAL_PROFESSIONALS.map((p) => (
+                    {professionals.map((p) => (
                       <option key={p.id} value={p.id}>{p.fullName}</option>
                     ))}
                   </select>

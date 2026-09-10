@@ -12,9 +12,14 @@ import {
   Heart,
   Wind,
   FileText,
+  Loader2,
 } from 'lucide-react';
-import { INITIAL_PATIENTS, INITIAL_SPECIES, INITIAL_EVOLUTIONS, VeterinaryEvolution } from '../lib/veterinary-store';
+import { useEvolutions } from '../hooks/use-evolutions';
+import { usePatients } from '../hooks/use-patients';
+import { useSpecies } from '../hooks/use-species';
+import { getApiClient } from '@/lib/api-client';
 import SoapEditor from '../components/soap-editor';
+
 const typeLabels: Record<string, string> = {
   consulta: 'Consulta',
   control: 'Control',
@@ -34,32 +39,81 @@ const typeBadges: Record<string, string> = {
 };
 
 export default function VeterinaryEvolutionsPage() {
-  const [evolutions, setEvolutions] = useState<VeterinaryEvolution[]>(INITIAL_EVOLUTIONS);
+  const { data: evolutions, loading, refresh } = useEvolutions();
+  const { data: patients } = usePatients();
+  const { data: speciesData } = useSpecies();
   const [selectedPatientId, setSelectedPatientId] = useState<string>('todos');
   const [typeFilter, setTypeFilter] = useState<string>('todos');
   const [showEditor, setShowEditor] = useState(false);
-  const [fastPatientId, setFastPatientId] = useState(INITIAL_PATIENTS[0]?.id || '');
+  const [fastPatientId, setFastPatientId] = useState('');
 
-  const selectedPatient = INITIAL_PATIENTS.find((p) => p.id === selectedPatientId);
+  const selectedPatient = patients.find((p: any) => p.id === selectedPatientId);
   const speciesName = (key: string) => {
-    const sp = INITIAL_SPECIES.find((s) => s.key === key);
+    const sp = speciesData.find((s: any) => s.key === key);
     return sp ? sp.name.split('(')[0].trim() : key;
   };
 
   const filtered = evolutions
-    .filter((e) => selectedPatientId === 'todos' || e.patientId === selectedPatientId)
-    .filter((e) => typeFilter === 'todos' || e.type === typeFilter)
-    .sort((a, b) => (a.evolutionDate + a.evolutionTime > b.evolutionDate + b.evolutionTime ? -1 : 1));
+    .filter((e: any) => selectedPatientId === 'todos' || e.patientId === selectedPatientId)
+    .filter((e: any) => typeFilter === 'todos' || e.type === typeFilter)
+    .sort((a: any, b: any) => (a.evolutionDate + a.evolutionTime > b.evolutionDate + b.evolutionTime ? -1 : 1));
 
-  const handleSave = (evo: Omit<VeterinaryEvolution, 'id' | 'createdAt'>) => {
-    const newEvo: VeterinaryEvolution = {
-      ...evo,
-      id: `ev-${Date.now()}`,
-      createdAt: new Date().toISOString().split('T')[0],
-    };
-    setEvolutions([newEvo, ...evolutions]);
-    setShowEditor(false);
+  const handleSave = async (evo: any) => {
+    try {
+      const api = getApiClient();
+      await api.createVetEvolution(evo);
+      refresh();
+      setShowEditor(false);
+    } catch (err) {
+      console.error('Error saving evolution:', err);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="h-8 w-80 bg-slate-200 rounded-xl animate-pulse" />
+            <div className="h-4 w-96 bg-slate-100 rounded-lg animate-pulse mt-2" />
+          </div>
+          <div className="h-10 w-40 bg-slate-200 rounded-xl animate-pulse" />
+        </div>
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
+          <div className="h-10 bg-slate-100 rounded-xl animate-pulse" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-200 animate-pulse" />
+              <div className="space-y-2">
+                <div className="h-3 w-24 bg-slate-100 rounded animate-pulse" />
+                <div className="h-6 w-16 bg-slate-200 rounded animate-pulse" />
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="space-y-4">
+          {[...Array(2)].map((_, i) => (
+            <div key={i} className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-slate-200 animate-pulse" />
+                <div className="space-y-2">
+                  <div className="h-4 w-48 bg-slate-200 rounded animate-pulse" />
+                  <div className="h-3 w-32 bg-slate-100 rounded animate-pulse" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {[...Array(4)].map((_, j) => (
+                  <div key={j} className="h-16 bg-slate-50 rounded-xl animate-pulse" />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -92,7 +146,7 @@ export default function VeterinaryEvolutionsPage() {
             className="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-800 cursor-pointer"
           >
             <option value="todos">Todos los Pacientes</option>
-            {INITIAL_PATIENTS.map((p) => (
+            {patients.map((p: any) => (
               <option key={p.id} value={p.id}>{p.name} - {speciesName(p.species)}</option>
             ))}
           </select>
@@ -151,7 +205,7 @@ export default function VeterinaryEvolutionsPage() {
             No hay evoluciones clínicas registradas para este filtro.
           </div>
         ) : (
-          filtered.map((evo) => (
+          filtered.map((evo: any) => (
             <div key={evo.id} className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm space-y-4">
               {/* Header */}
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -209,7 +263,7 @@ export default function VeterinaryEvolutionsPage() {
       {showEditor && (
         <SoapEditor
           patientId={fastPatientId}
-          patientName={(() => { const p = INITIAL_PATIENTS.find((x) => x.id === fastPatientId); return p ? p.name : 'Paciente'; })()}
+          patientName={(() => { const p = patients.find((x: any) => x.id === fastPatientId); return p ? p.name : 'Paciente'; })()}
           onSave={handleSave}
           onClose={() => setShowEditor(false)}
         />

@@ -2004,6 +2004,327 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>('/received-documents/summary' + qs);
   }
 
+  // ── Veterinary Module ──
+
+  // Species
+  async getVetSpecies(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/species', params || {});
+  }
+  async createVetSpecies(data: any) {
+    return this.request<any>('/veterinary/species', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetSpecies(id: string, data: any) {
+    return this.request<any>(`/veterinary/species/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetSpecies(id: string) {
+    return this.request<any>(`/veterinary/species/${id}`, { method: 'DELETE' });
+  }
+
+  // Clients
+  async getVetClients(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/clients', params || {});
+  }
+  async getVetClient(id: string) {
+    return this.request<any>(`/veterinary/clients/${id}`);
+  }
+  async createVetClient(data: any) {
+    return this.request<any>('/veterinary/clients', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetClient(id: string, data: any) {
+    return this.request<any>(`/veterinary/clients/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetClient(id: string) {
+    return this.request<any>(`/veterinary/clients/${id}`, { method: 'DELETE' });
+  }
+
+  // Patients
+  async getVetPatients(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/patients', params || {});
+  }
+  async getVetPatient(id: string) {
+    return this.request<any>(`/veterinary/patients/${id}`);
+  }
+  async createVetPatient(data: any) {
+    return this.request<any>('/veterinary/patients', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetPatient(id: string, data: any) {
+    return this.request<any>(`/veterinary/patients/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetPatient(id: string) {
+    return this.request<any>(`/veterinary/patients/${id}`, { method: 'DELETE' });
+  }
+
+  // Professionals
+  async getVetProfessionals(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/professionals', params || {});
+  }
+  async getVetProfessional(id: string) {
+    return this.request<any>(`/veterinary/professionals/${id}`);
+  }
+  async createVetProfessional(data: any) {
+    return this.request<any>('/veterinary/professionals', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetProfessional(id: string, data: any) {
+    return this.request<any>(`/veterinary/professionals/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetProfessional(id: string) {
+    return this.request<any>(`/veterinary/professionals/${id}`, { method: 'DELETE' });
+  }
+
+  // Services
+  async getVetServices(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/services', params || {});
+  }
+  async createVetService(data: any) {
+    return this.request<any>('/veterinary/services', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetService(id: string, data: any) {
+    return this.request<any>(`/veterinary/services/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetService(id: string) {
+    return this.request<any>(`/veterinary/services/${id}`, { method: 'DELETE' });
+  }
+
+  // Rooms
+  async getVetRooms(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/rooms', params || {});
+  }
+  async createVetRoom(data: any) {
+    return this.request<any>('/veterinary/rooms', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetRoom(id: string, data: any) {
+    return this.request<any>(`/veterinary/rooms/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetRoom(id: string) {
+    return this.request<any>(`/veterinary/rooms/${id}`, { method: 'DELETE' });
+  }
+
+  // Appointments
+  async getVetAppointments(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/appointments', params || {});
+  }
+  async getVetAppointment(id: string) {
+    return this.request<any>(`/veterinary/appointments/${id}`);
+  }
+  async createVetAppointment(data: any) {
+    return this.request<any>('/veterinary/appointments', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetAppointment(id: string, data: any) {
+    return this.request<any>(`/veterinary/appointments/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetAppointment(id: string) {
+    return this.request<any>(`/veterinary/appointments/${id}`, { method: 'DELETE' });
+  }
+
+  // Consultations
+  async getVetConsultations(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/consultations', params || {});
+  }
+  async getVetConsultation(id: string) {
+    return this.request<any>(`/veterinary/consultations/${id}`);
+  }
+  async createVetConsultation(data: any) {
+    return this.request<any>('/veterinary/consultations', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetConsultation(id: string, data: any) {
+    return this.request<any>(`/veterinary/consultations/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetConsultation(id: string) {
+    return this.request<any>(`/veterinary/consultations/${id}`, { method: 'DELETE' });
+  }
+
+  // Evolutions
+  async getVetEvolutions(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/evolutions', params || {});
+  }
+  async createVetEvolution(data: any) {
+    return this.request<any>('/veterinary/evolutions', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetEvolution(id: string, data: any) {
+    return this.request<any>(`/veterinary/evolutions/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetEvolution(id: string) {
+    return this.request<any>(`/veterinary/evolutions/${id}`, { method: 'DELETE' });
+  }
+
+  // Vaccinations
+  async getVetVaccinations(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/vaccinations', params || {});
+  }
+  async createVetVaccination(data: any) {
+    return this.request<any>('/veterinary/vaccinations', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetVaccination(id: string, data: any) {
+    return this.request<any>(`/veterinary/vaccinations/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetVaccination(id: string) {
+    return this.request<any>(`/veterinary/vaccinations/${id}`, { method: 'DELETE' });
+  }
+
+  // Dewormings
+  async getVetDewormings(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/dewormings', params || {});
+  }
+  async createVetDeworming(data: any) {
+    return this.request<any>('/veterinary/dewormings', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetDeworming(id: string, data: any) {
+    return this.request<any>(`/veterinary/dewormings/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetDeworming(id: string) {
+    return this.request<any>(`/veterinary/dewormings/${id}`, { method: 'DELETE' });
+  }
+
+  // Prescriptions
+  async getVetPrescriptions(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/prescriptions', params || {});
+  }
+  async getVetPrescription(id: string) {
+    return this.request<any>(`/veterinary/prescriptions/${id}`);
+  }
+  async createVetPrescription(data: any) {
+    return this.request<any>('/veterinary/prescriptions', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetPrescription(id: string, data: any) {
+    return this.request<any>(`/veterinary/prescriptions/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetPrescription(id: string) {
+    return this.request<any>(`/veterinary/prescriptions/${id}`, { method: 'DELETE' });
+  }
+
+  // Surgeries
+  async getVetSurgeries(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/surgeries', params || {});
+  }
+  async getVetSurgery(id: string) {
+    return this.request<any>(`/veterinary/surgeries/${id}`);
+  }
+  async createVetSurgery(data: any) {
+    return this.request<any>('/veterinary/surgeries', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetSurgery(id: string, data: any) {
+    return this.request<any>(`/veterinary/surgeries/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetSurgery(id: string) {
+    return this.request<any>(`/veterinary/surgeries/${id}`, { method: 'DELETE' });
+  }
+
+  // Hospitalizations
+  async getVetHospitalizations(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/hospitalizations', params || {});
+  }
+  async getVetHospitalization(id: string) {
+    return this.request<any>(`/veterinary/hospitalizations/${id}`);
+  }
+  async createVetHospitalization(data: any) {
+    return this.request<any>('/veterinary/hospitalizations', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetHospitalization(id: string, data: any) {
+    return this.request<any>(`/veterinary/hospitalizations/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async dischargeVetHospitalization(id: string, data: { discharge_summary?: string }) {
+    return this.request<any>(`/veterinary/hospitalizations/${id}`, { method: 'PUT', body: JSON.stringify({ status: 'discharged', discharge_date: new Date().toISOString(), ...data }) });
+  }
+
+  // Hospitalization Logs
+  async getVetHospitalizationLogs(params?: Record<string, string>) {
+    const qs = params ? '?' + new URLSearchParams(params).toString() : '';
+    return this.request<any>('/veterinary/hospitalization-logs' + qs);
+  }
+  async createVetHospitalizationLog(data: any) {
+    return this.request<any>('/veterinary/hospitalization-logs', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  // Reminders
+  async getVetReminders(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/reminders', params || {});
+  }
+  async createVetReminder(data: any) {
+    return this.request<any>('/veterinary/reminders', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetReminder(id: string, data: any) {
+    return this.request<any>(`/veterinary/reminders/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetReminder(id: string) {
+    return this.request<any>(`/veterinary/reminders/${id}`, { method: 'DELETE' });
+  }
+
+  // Lab Panels
+  async getVetLabPanels(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/lab-panels', params || {});
+  }
+  async createVetLabPanel(data: any) {
+    return this.request<any>('/veterinary/lab-panels', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetLabPanel(id: string, data: any) {
+    return this.request<any>(`/veterinary/lab-panels/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetLabPanel(id: string) {
+    return this.request<any>(`/veterinary/lab-panels/${id}`, { method: 'DELETE' });
+  }
+
+  // Lab Orders
+  async getVetLabOrders(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/lab-orders', params || {});
+  }
+  async getVetLabOrder(id: string) {
+    return this.request<any>(`/veterinary/lab-orders/${id}`);
+  }
+  async createVetLabOrder(data: any) {
+    return this.request<any>('/veterinary/lab-orders', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetLabOrder(id: string, data: any) {
+    return this.request<any>(`/veterinary/lab-orders/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetLabOrder(id: string) {
+    return this.request<any>(`/veterinary/lab-orders/${id}`, { method: 'DELETE' });
+  }
+
+  // Lab Results
+  async getVetLabResults(params?: Record<string, string>) {
+    const qs = params ? '?' + new URLSearchParams(params).toString() : '';
+    return this.request<any>('/veterinary/lab-results' + qs);
+  }
+  async createVetLabResult(data: any) {
+    return this.request<any>('/veterinary/lab-results', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetLabResult(id: string, data: any) {
+    return this.request<any>(`/veterinary/lab-results/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetLabResult(id: string) {
+    return this.request<any>(`/veterinary/lab-results/${id}`, { method: 'DELETE' });
+  }
+
+  // Estimates
+  async getVetEstimates(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/estimates', params || {});
+  }
+  async getVetEstimate(id: string) {
+    return this.request<any>(`/veterinary/estimates/${id}`);
+  }
+  async createVetEstimate(data: any) {
+    return this.request<any>('/veterinary/estimates', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetEstimate(id: string, data: any) {
+    return this.request<any>(`/veterinary/estimates/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetEstimate(id: string) {
+    return this.request<any>(`/veterinary/estimates/${id}`, { method: 'DELETE' });
+  }
+
+  // Payments
+  async getVetPayments(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/payments', params || {});
+  }
+  async createVetPayment(data: any) {
+    return this.request<any>('/veterinary/payments', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  // Dashboard
+  async getVetDashboard() {
+    return this.request<any>('/veterinary/dashboard');
+  }
+
 }
 
 // Singleton with dynamic company_id from JWT

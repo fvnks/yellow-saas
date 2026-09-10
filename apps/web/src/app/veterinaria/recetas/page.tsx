@@ -1,21 +1,11 @@
 'use client';
 
 import React from 'react';
-import { FileText, Pill, Printer, Download, CheckCircle2 } from 'lucide-react';
-import { INITIAL_PATIENTS, INITIAL_PROFESSIONALS } from '../lib/veterinary-store';
+import { FileText, Pill, Printer, Download, CheckCircle2, Loader2 } from 'lucide-react';
+import { usePrescriptions } from '../hooks/use-prescriptions';
 
 export default function VeterinaryPrescriptionsPage() {
-  const prescriptions = [
-    {
-      id: 'rec-001',
-      prescriptionDate: '2025-02-15',
-      patientName: 'Apollo',
-      clientName: 'María José Valenzuela',
-      professionalName: 'Dr. Sebastián Contreras P.',
-      medicationsCount: 2,
-      status: 'activa',
-    },
-  ];
+  const { data: prescriptions, loading, error, refresh } = usePrescriptions();
 
   return (
     <div className="space-y-6">
@@ -31,6 +21,17 @@ export default function VeterinaryPrescriptionsPage() {
       </div>
 
       <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
+        {loading ? (
+          <div className="p-12 flex flex-col items-center justify-center gap-3">
+            <Loader2 className="w-6 h-6 text-slate-400 animate-spin" />
+            <p className="text-sm text-slate-500 font-medium">Cargando recetas...</p>
+          </div>
+        ) : error ? (
+          <div className="p-6 text-center">
+            <p className="text-sm text-rose-700 font-bold">{error}</p>
+            <button onClick={refresh} className="mt-2 text-xs text-rose-600 underline font-semibold">Reintentar</button>
+          </div>
+        ) : (
         <div className="divide-y divide-slate-100">
           {prescriptions.map((p) => (
             <div key={p.id} className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -58,6 +59,7 @@ export default function VeterinaryPrescriptionsPage() {
             </div>
           ))}
         </div>
+        )}
       </div>
     </div>
   );
