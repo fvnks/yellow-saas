@@ -14,11 +14,15 @@ import {
   UserCheck,
   Building,
   CheckCircle2,
+  Loader2,
 } from 'lucide-react';
-import { INITIAL_CLIENTS, INITIAL_PATIENTS, VeterinaryClient } from '../lib/veterinary-store';
+import { useClients } from '@/app/veterinaria/hooks/use-clients';
+import { usePatients } from '@/app/veterinaria/hooks/use-patients';
+import { getApiClient } from '@/lib/api-client';
 
 export default function VeterinaryClientsPage() {
-  const [clients, setClients] = useState<VeterinaryClient[]>(INITIAL_CLIENTS);
+  const { data: clients, loading, refresh: refreshClients } = useClients();
+  const { data: patients } = usePatients();
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -28,44 +32,71 @@ export default function VeterinaryClientsPage() {
     email: '',
     address: '',
     commune: '',
-    city: 'Santiago',
+    city: '',
     secondaryContactName: '',
     secondaryContactPhone: '',
   });
 
   const filteredClients = clients.filter(
-    (c) =>
-      c.fullName.toLowerCase().includes(search.toLowerCase()) ||
-      c.rut.includes(search) ||
-      c.phone.includes(search) ||
-      c.email.toLowerCase().includes(search.toLowerCase())
+    (c: any) =>
+      (c.fullName || '').toLowerCase().includes(search.toLowerCase()) ||
+      (c.rut || '').includes(search) ||
+      (c.phone || '').includes(search) ||
+      (c.email || '').toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleAddClient = (e: React.FormEvent) => {
+  const handleAddClient = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.fullName || !formData.rut) return;
 
-    const newClient: VeterinaryClient = {
-      id: `cli-${Date.now()}`,
-      ...formData,
-      status: 'active',
-      createdAt: new Date().toISOString().split('T')[0],
-    };
-
-    setClients([newClient, ...clients]);
-    setShowModal(false);
-    setFormData({
-      fullName: '',
-      rut: '',
-      phone: '',
-      email: '',
-      address: '',
-      commune: '',
-      city: 'Santiago',
-      secondaryContactName: '',
-      secondaryContactPhone: '',
-    });
+    try {
+      const api = getApiClient();
+      await api.createVetClient(formData);
+      refreshClients();
+      setShowModal(false);
+      setFormData({
+        fullName: '',
+        rut: '',
+        phone: '',
+        email: '',
+        address: '',
+        commune: '',
+        city: '',
+        secondaryContactName: '',
+        secondaryContactPhone: '',
+      });
+    } catch (err) {
+      console.error('Error creating client:', err);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="h-8 w-64 bg-slate-200 rounded-xl animate-pulse" />
+            <div className="h-4 w-96 bg-slate-100 rounded-lg animate-pulse mt-2" />
+          </div>
+          <div className="h-10 w-32 bg-slate-200 rounded-xl animate-pulse" />
+        </div>
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
+          <div className="h-10 bg-slate-100 rounded-xl animate-pulse" />
+        </div>
+        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="p-6 border-b border-slate-100 flex items-center gap-4">
+              <div className="w-9 h-9 rounded-xl bg-slate-200 animate-pulse" />
+              <div className="flex-1 space-y-2">
+                <div className="h-4 w-40 bg-slate-200 rounded animate-pulse" />
+                <div className="h-3 w-24 bg-slate-100 rounded animate-pulse" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -121,14 +152,14 @@ export default function VeterinaryClientsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm">
-              {filteredClients.map((client) => {
-                const clientPatients = INITIAL_PATIENTS.filter((p) => p.clientId === client.id);
+              {filteredClients.map((client: any) => {
+                const clientPatients = patients.filter((p: any) => p.clientId === client.id);
                 return (
                   <tr key={client.id} className="hover:bg-slate-50/80 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-xl bg-slate-900 text-white font-bold flex items-center justify-center text-sm shadow-xs shrink-0">
-                          {client.fullName.charAt(0)}
+                          {(client.fullName || '').charAt(0)}
                         </div>
                         <div>
                           <div className="font-bold text-slate-900">{client.fullName}</div>
@@ -164,7 +195,7 @@ export default function VeterinaryClientsPage() {
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-1.5">
                         {clientPatients.length > 0 ? (
-                          clientPatients.map((pat) => (
+                          clientPatients.map((pat: any) => (
                             <Link
                               key={pat.id}
                               href={`/veterinaria/pacientes/${pat.id}`}

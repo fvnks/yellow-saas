@@ -1,51 +1,95 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Syringe, ShieldCheck, Printer, Calendar, Plus, Search, Dog, Cat, Cpu, CheckCircle2 } from 'lucide-react';
-import { INITIAL_PATIENTS, INITIAL_VACCINATIONS, VaccinationRecord } from '../lib/veterinary-store';
+import React, { useState, useMemo } from 'react';
+import { Syringe, ShieldCheck, Printer, Calendar, Plus, Search, Dog, Cat, Cpu, CheckCircle2, Loader2, MessageCircle, Download } from 'lucide-react';
+import { usePatients } from '@/app/veterinaria/hooks/use-patients';
+import { useProfessionals } from '@/app/veterinaria/hooks/use-professionals';
+import { useVaccinations } from '@/app/veterinaria/hooks/use-vaccinations';
+import { getApiClient } from '@/lib/api-client';
+import PrintModal from '@/app/veterinaria/components/print-modal';
 
 export default function VeterinaryVaccinationsPage() {
-  const [vaccinations, setVaccinations] = useState<VaccinationRecord[]>(INITIAL_VACCINATIONS);
+  const { data: patients, loading: loadingPatients } = usePatients();
+  const { data: professionals, loading: loadingProfessionals } = useProfessionals();
+  const { data: vaccinationsData, loading: loadingVaccinations, refresh } = useVaccinations();
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedPatientId, setSelectedPatientId] = useState<string>('pat-1');
+  const [selectedPatientId, setSelectedPatientId] = useState<string>('');
 
   // Form State
-  const [vaccineName, setVaccineName] = useState('Séxtuple Canine (DHPPi)');
-  const [batchNumber, setBatchNumber] = useState('LT-98214');
-  const [laboratory, setLaboratory] = useState('Zoetis / Pfizer');
-  const [applicationDate, setApplicationDate] = useState('2025-02-15');
-  const [nextDueDate, setNextDueDate] = useState('2026-02-15');
+  const [vaccineName, setVaccineName] = useState('');
+  const [batchNumber, setBatchNumber] = useState('');
+  const [laboratory, setLaboratory] = useState('');
+  const [applicationDate, setApplicationDate] = useState('');
+  const [nextDueDate, setNextDueDate] = useState('');
+  const [selectedProfessionalId, setSelectedProfessionalId] = useState('');
 
-  const filteredVaccinations = vaccinations.filter(
-    (v) =>
-      v.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      v.vaccineName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      v.batchNumber.toLowerCase().includes(searchTerm.toLowerCase())
+  const selectedPatient = useMemo(() => patients.find((p: any) => p.id === selectedPatientId) || patients[0] || null, [patients, selectedPatientId]);
+  const [printModal, setPrintModal] = useState<{ html: string; title: string } | null>(null);
+
+  const handleWhatsAppReminder = async () => {
+    if (!selectedPatient) return;
+    try {
+      const api = getApiClient();
+      const result = await api.sendVetWhatsApp({
+        type: 'vaccination_reminder',
+        id: selectedPatient.id,
+        patient_name: selectedPatient.name,
+        client_name: selectedPatient.clientName || '',
+        client_phone: selectedPatient.clientPhone || '',
+        title: 'Recordatorio de Vacunación',
+      });
+      setPrintModal({ html: '', title: 'Mensaje WhatsApp' });
+      alert('Recordatorio enviado por WhatsApp');
+    } catch (err) {
+      console.error('Error sending WhatsApp reminder:', err);
+    }
+  };
+
+  const handleCarnetPDF = async () => {
+    if (!selectedPatient) return;
+    try {
+      const api = getApiClient();
+      const result = await api.getVetVaccinationCarnetPDF({ patient_id: selectedPatient.id });
+      setPrintModal({ html: result?.html || '', title: 'Carnet de Vacunación' });
+    } catch (err) {
+      console.error('Error generating carnet PDF:', err);
+    }
+  };
+
+  const filteredVaccinations = vaccinationsData.filter(
+    (v: any) =>
+      (v.patientName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (v.vaccineName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (v.batchNumber || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const selectedPatient = INITIAL_PATIENTS.find((p) => p.id === selectedPatientId) || INITIAL_PATIENTS[0] || null;
-  const patientVaccines = vaccinations.filter((v) => v.patientId === selectedPatient?.id);
+  const patientVaccines = vaccinationsData.filter((v: any) => v.patientId === selectedPatient?.id);
 
-  const handleRegisterVaccine = (e: React.FormEvent) => {
+  const handleRegisterVaccine = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedPatient) {
       alert('Debe registrar o seleccionar un paciente antes de emitir la vacuna.');
       return;
     }
-    const newRecord: VaccinationRecord = {
-      id: `vac-${Date.now()}`,
-      patientId: selectedPatient.id,
-      patientName: selectedPatient.name,
-      vaccineName,
-      dose: '1 mL Subcutánea',
-      batchNumber,
-      manufacturer: laboratory,
-      applicationDate,
-      nextDueDate,
-      professionalName: 'Dra. Andrea Morales Soto',
-    };
-    setVaccinations([newRecord, ...vaccinations]);
-    alert('¡Vacuna registrada con éxito en el Carnet Sanitario Ley 21.020!');
+    const professionalName = professionals.find((p: any) => p.id === selectedProfessionalId)?.fullName || '';
+    try {
+      const api = getApiClient();
+      await api.createVetVaccination({
+        patientId: selectedPatient.id,
+        patientName: selectedPatient.name,
+        vaccineName,
+        dose: '1 mL Subcutánea',
+        batchNumber,
+        manufacturer: laboratory,
+        applicationDate,
+        nextDueDate,
+        professionalName,
+      });
+      refresh();
+      alert('¡Vacuna registrada con éxito en el Carnet Sanitario Ley 21.020!');
+    } catch {
+      alert('Error al registrar la vacuna.');
+    }
   };
 
   return (
@@ -61,13 +105,22 @@ export default function VeterinaryVaccinationsPage() {
           </p>
         </div>
 
-        <button
-          onClick={() => window.print()}
-          className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 self-start sm:self-center"
-        >
-          <Printer className="w-4 h-4" />
-          Imprimir Carnet Sanitario
-        </button>
+        <div className="flex items-center gap-2 self-start sm:self-center">
+          <button
+            onClick={handleWhatsAppReminder}
+            className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold px-4 py-2 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 border border-emerald-200"
+          >
+            <MessageCircle className="w-4 h-4" />
+            Recordatorio WhatsApp
+          </button>
+          <button
+            onClick={handleCarnetPDF}
+            className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2"
+          >
+            <Download className="w-4 h-4" />
+            Carnet PDF
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -86,11 +139,15 @@ export default function VeterinaryVaccinationsPage() {
                 onChange={(e) => setSelectedPatientId(e.target.value)}
                 className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-emerald-500"
               >
-                {INITIAL_PATIENTS.map((p) => (
+                {loadingPatients ? (
+                  <option value="">Cargando pacientes...</option>
+                ) : (
+                patients.map((p: any) => (
                   <option key={p.id} value={p.id}>
                     {p.name} ({p.species} • Microchip: {p.microchip || 'Sin chip'})
                   </option>
-                ))}
+                ))
+                )}
               </select>
             </div>
 
@@ -154,6 +211,27 @@ export default function VeterinaryVaccinationsPage() {
                   required
                 />
               </div>
+            </div>
+
+            <div>
+              <label className="block font-bold text-slate-700 uppercase mb-1">Veterinario/a Responsable *</label>
+              <select
+                value={selectedProfessionalId}
+                onChange={(e) => setSelectedProfessionalId(e.target.value)}
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-emerald-500"
+                required
+              >
+                <option value="">-- Seleccionar profesional --</option>
+                {loadingProfessionals ? (
+                  <option value="">Cargando...</option>
+                ) : (
+                professionals.map((p: any) => (
+                  <option key={p.id} value={p.id}>
+                    {p.fullName}
+                  </option>
+                ))
+                )}
+              </select>
             </div>
 
             <button
@@ -250,6 +328,12 @@ export default function VeterinaryVaccinationsPage() {
             </div>
 
             <div className="overflow-x-auto">
+              {loadingVaccinations ? (
+                <div className="p-12 flex flex-col items-center justify-center gap-3">
+                  <Loader2 className="w-6 h-6 text-slate-400 animate-spin" />
+                  <p className="text-sm text-slate-500 font-medium">Cargando vacunas...</p>
+                </div>
+              ) : (
               <table className="w-full text-left text-xs">
                 <thead>
                   <tr className="border-b border-slate-200 text-slate-500 bg-slate-50">
@@ -272,10 +356,18 @@ export default function VeterinaryVaccinationsPage() {
                   ))}
                 </tbody>
               </table>
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      <PrintModal
+        isOpen={!!printModal}
+        onClose={() => setPrintModal(null)}
+        html={printModal?.html}
+        title={printModal?.title}
+      />
     </div>
   );
 }
