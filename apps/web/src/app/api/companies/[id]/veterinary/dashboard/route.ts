@@ -4,84 +4,104 @@ import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
-    const companyId = await getCompanyId(request);
+    const companyId = getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const [
-      appointmentsToday,
-      appointmentsByStatus,
-      activePatients,
-      activeHospitalizations,
-      pendingReminders,
-      recentConsultations,
-      upcomingAppointments,
-      overdueVaccinations,
+      appointmentsResult,
+      patientsResult,
+      hospitalizationsResult,
+      remindersResult,
     ] = await Promise.all([
+      // Today's appointments with full detail for the agenda list
       query(
-        `SELECT COUNT(*) as count FROM veterinary_appointments
-         WHERE company_id = $1 AND appointment_date = CURRENT_DATE`,
-        [companyId]
-      ),
-      query(
-        `SELECT status, COUNT(*)::int as count FROM veterinary_appointments
-         WHERE company_id = $1 AND appointment_date >= CURRENT_DATE
-         GROUP BY status ORDER BY count DESC`,
-        [companyId]
-      ),
-      query(
-        `SELECT COUNT(*) as count FROM veterinary_patients
-         WHERE company_id = $1 AND status = 'active'`,
-        [companyId]
-      ),
-      query(
-        `SELECT COUNT(*) as count FROM veterinary_hospitalizations
-         WHERE company_id = $1 AND status = 'active'`,
-        [companyId]
-      ),
-      query(
-        `SELECT COUNT(*) as count FROM veterinary_reminders
-         WHERE company_id = $1 AND status = 'pending' AND due_date <= CURRENT_DATE`,
-        [companyId]
-      ),
-      query(
-        `SELECT vc.diagnosis, vc.created_at as date, vp.name as patient_name
-         FROM veterinary_consultations vc
-         LEFT JOIN veterinary_patients vp ON vp.id = vc.patient_id
-         WHERE vc.company_id = $1
-         ORDER BY vc.created_at DESC LIMIT 5`,
-        [companyId]
-      ),
-      query(
-        `SELECT va.appointment_date, va.reason, vp.name as patient_name,
-          vc.full_name as client_name, vepr.full_name as professional_name
+        `SELECT va.id, va.appointment_date, va.appointment_time, va.reason, va.status,
+                vp.name as patient_name, vp.species, vp.breed,
+                vc.full_name as client_name, vc.phone as client_phone,
+                vs.name as service_name,
+                vepr.full_name as professional_name
          FROM veterinary_appointments va
          LEFT JOIN veterinary_patients vp ON vp.id = va.patient_id
          LEFT JOIN veterinary_clients vc ON vc.id = va.client_id
+         LEFT JOIN veterinary_services vs ON vs.id = va.service_id
          LEFT JOIN veterinary_professionals vepr ON vepr.id = va.professional_id
-         WHERE va.company_id = $1 AND va.appointment_date >= CURRENT_DATE AND va.status NOT IN ('cancelada', 'finalizada')
-         ORDER BY va.appointment_date ASC LIMIT 5`,
+         WHERE va.company_id = $1 AND va.appointment_date = CURRENT_DATE
+           AND va.status NOT IN ('cancelada', 'finalizada')
+         ORDER BY va.appointment_time ASC`,
         [companyId]
       ),
+      // Active patients
       query(
-        `SELECT vv.next_due_date, vp.name as patient_name, vv.vaccine_name
-         FROM veterinary_vaccinations vv
-         LEFT JOIN veterinary_patients vp ON vp.id = vv.patient_id
-         WHERE vv.company_id = $1 AND vv.next_due_date < CURRENT_DATE
-           AND vp.status = 'active'
-         ORDER BY vv.next_due_date ASC`,
+        `SELECT id, name, species, breed, sex,
+                (microchip_number IS NOT NULL) as has_chip,
+                (is_sterilized = true) as is_sterilized
+         FROM veterinary_patients
+         WHERE company_id = $1 AND status = 'active'
+         ORDER BY name ASC`,
+        [companyId]
+      ),
+      // Active hospitalizations
+      query(
+        `SELECT vh.id, vh.priority, vh.cage_number, vh.initial_diagnosis,
+                vp.name as patient_name,
+                vepr.full_name as attending_vet_name
+         FROM veterinary_hospitalizations vh
+         LEFT JOIN veterinary_patients vp ON vp.id = vh.patient_id
+         LEFT JOIN veterinary_professionals vepr ON vepr.id = vh.attending_vet_id
+         WHERE vh.company_id = $1 AND vh.status = 'active'
+         ORDER BY vh.priority ASC, vh.admitted_at DESC`,
+        [companyId]
+      ),
+      // Pending reminders (vaccines + deworming)
+      query(
+        `SELECT vr.id, vr.title, vr.due_date,
+                vp.name as patient_name,
+                vc.full_name as client_name
+         FROM veterinary_reminders vr
+         LEFT JOIN veterinary_patients vp ON vp.id = vr.patient_id
+         LEFT JOIN veterinary_clients vc ON vc.id = vr.client_id
+         WHERE vr.company_id = $1 AND vr.status = 'pending'
+         ORDER BY vr.due_date ASC`,
         [companyId]
       ),
     ]);
 
     return successResponse({
-      appointments_today: parseInt(appointmentsToday.rows[0]?.count || '0'),
-      appointments_by_status: appointmentsByStatus.rows,
-      active_patients: parseInt(activePatients.rows[0]?.count || '0'),
-      active_hospitalizations: parseInt(activeHospitalizations.rows[0]?.count || '0'),
-      pending_reminders: parseInt(pendingReminders.rows[0]?.count || '0'),
-      recent_consultations: recentConsultations.rows,
-      upcoming_appointments: upcomingAppointments.rows,
-      overdue_vaccinations: overdueVaccinations.rows,
+      appointments: appointmentsResult.rows.map((r) => ({
+        id: r.id,
+        appointmentTime: r.appointment_time,
+        patientName: r.patient_name,
+        species: r.species,
+        breed: r.breed,
+        status: r.status,
+        clientName: r.client_name,
+        clientPhone: r.client_phone,
+        serviceName: r.service_name,
+        professionalName: r.professional_name,
+      })),
+      patients: patientsResult.rows.map((r) => ({
+        id: r.id,
+        name: r.name,
+        species: r.species,
+        breed: r.breed,
+        hasChip: r.has_chip,
+        isSterilized: r.is_sterilized,
+      })),
+      hospitalizations: hospitalizationsResult.rows.map((r) => ({
+        id: r.id,
+        patientName: r.patient_name,
+        priority: r.priority,
+        cageNumber: r.cage_number,
+        initialDiagnosis: r.initial_diagnosis,
+        attendingVetName: r.attending_vet_name,
+      })),
+      reminders: remindersResult.rows.map((r) => ({
+        id: r.id,
+        title: r.title,
+        patientName: r.patient_name,
+        clientName: r.client_name,
+        dueDate: r.due_date,
+      })),
     });
   } catch {
     return errorResponse('Internal server error', 500);
