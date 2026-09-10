@@ -22,6 +22,26 @@ import { useSpecies } from '@/app/veterinaria/hooks/use-species';
 import { getApiClient } from '@/lib/api-client';
 import { Species } from '@/app/veterinaria/lib/veterinary-store';
 
+function getSpeciesBadge(species: string) {
+  const spKey = species.toLowerCase();
+  if (spKey.includes('perro') || spKey.includes('canino')) {
+    return <span className="bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1"><Dog className="w-3.5 h-3.5" /> Canino</span>;
+  }
+  if (spKey.includes('gato') || spKey.includes('felino')) {
+    return <span className="bg-purple-100 text-purple-900 border border-purple-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1"><Cat className="w-3.5 h-3.5" /> Felino</span>;
+  }
+  if (spKey.includes('ave')) {
+    return <span className="bg-blue-100 text-blue-900 border border-blue-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1"><Bird className="w-3.5 h-3.5" /> Ave</span>;
+  }
+  if (spKey.includes('equino') || spKey.includes('caballo')) {
+    return <span className="bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1">Equino</span>;
+  }
+  if (spKey.includes('bovino') || spKey.includes('vacuno')) {
+    return <span className="bg-sky-100 text-sky-900 border border-sky-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1">Bovino</span>;
+  }
+  return <span className="bg-slate-100 text-slate-800 border border-slate-300 text-xs font-bold px-2 py-0.5 rounded-lg uppercase">{species}</span>;
+}
+
 export default function VeterinaryPatientsPage() {
   const { data: patients, loading, refresh } = usePatients();
   const { data: clients } = useClients();
@@ -104,26 +124,6 @@ export default function VeterinaryPatientsPage() {
     } finally {
       setSaving(false);
     }
-  };
-
-  const getSpeciesBadge = (species: string) => {
-    const spKey = species.toLowerCase();
-    if (spKey.includes('perro') || spKey.includes('canino')) {
-      return <span className="bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1"><Dog className="w-3.5 h-3.5" /> Canino</span>;
-    }
-    if (spKey.includes('gato') || spKey.includes('felino')) {
-      return <span className="bg-purple-100 text-purple-900 border border-purple-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1"><Cat className="w-3.5 h-3.5" /> Felino</span>;
-    }
-    if (spKey.includes('ave')) {
-      return <span className="bg-blue-100 text-blue-900 border border-blue-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1"><Bird className="w-3.5 h-3.5" /> Ave</span>;
-    }
-    if (spKey.includes('equino') || spKey.includes('caballo')) {
-      return <span className="bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1">Equino</span>;
-    }
-    if (spKey.includes('bovino') || spKey.includes('vacuno')) {
-      return <span className="bg-sky-100 text-sky-900 border border-sky-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1">Bovino</span>;
-    }
-    return <span className="bg-slate-100 text-slate-800 border border-slate-300 text-xs font-bold px-2 py-0.5 rounded-lg uppercase">{species}</span>;
   };
 
   return (
