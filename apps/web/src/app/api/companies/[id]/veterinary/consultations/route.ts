@@ -78,6 +78,15 @@ export async function POST(request: NextRequest) {
       return errorResponse('patient_id, client_id, professional_id, and reason_for_visit are required', 400);
     }
 
+    const [patientCheck, clientCheck, professionalCheck] = await Promise.all([
+      query('SELECT id FROM veterinary_patients WHERE id = $1 AND company_id = $2', [patient_id, companyId]),
+      query('SELECT id FROM veterinary_clients WHERE id = $1 AND company_id = $2', [client_id, companyId]),
+      query('SELECT id FROM veterinary_professionals WHERE id = $1 AND company_id = $2', [professional_id, companyId]),
+    ]);
+    if (patientCheck.rows.length === 0) return errorResponse('Paciente no encontrado', 404);
+    if (clientCheck.rows.length === 0) return errorResponse('Cliente no encontrado', 404);
+    if (professionalCheck.rows.length === 0) return errorResponse('Profesional no encontrado', 404);
+
     const validStatuses = ['draft', 'completed', 'cancelled'];
     if (!validStatuses.includes(status)) return errorResponse('Invalid status', 400);
 

@@ -23,6 +23,7 @@ import {
   Key,
   ListOrdered,
   BarChart3,
+  Scan,
 } from "lucide-react";
 
 export interface VeterinaryNavItem {
@@ -121,6 +122,11 @@ export const veterinarySidebarItems: VeterinaryNavGroup[] = [
         title: "Laboratorio Clínico",
         path: "/veterinaria/laboratorio",
         icon: FlaskConical,
+      },
+      {
+        title: "Imagenología",
+        path: "/veterinaria/imagenologia",
+        icon: Scan,
       },
       {
         title: "Presupuestos & Estimaciones",

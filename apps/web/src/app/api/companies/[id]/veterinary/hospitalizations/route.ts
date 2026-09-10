@@ -90,6 +90,13 @@ export async function POST(request: NextRequest) {
       return errorResponse('patient_id, client_id y attending_vet_id son requeridos', 400);
     }
 
+    const [patientCheck, clientCheck] = await Promise.all([
+      query('SELECT id FROM veterinary_patients WHERE id = $1 AND company_id = $2', [patient_id, companyId]),
+      query('SELECT id FROM veterinary_clients WHERE id = $1 AND company_id = $2', [client_id, companyId]),
+    ]);
+    if (patientCheck.rows.length === 0) return errorResponse('Paciente no encontrado', 404);
+    if (clientCheck.rows.length === 0) return errorResponse('Cliente no encontrado', 404);
+
     const result = await query(
       `INSERT INTO veterinary_hospitalizations
         (company_id, patient_id, client_id, attending_vet_id, cage_number,

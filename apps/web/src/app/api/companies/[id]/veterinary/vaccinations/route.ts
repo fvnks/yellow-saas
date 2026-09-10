@@ -72,6 +72,12 @@ export async function POST(request: NextRequest) {
       return errorResponse('patient_id, vaccine_name, and application_date are required', 400);
     }
 
+    const parentCheck = await query(
+      'SELECT id FROM veterinary_patients WHERE id = $1 AND company_id = $2',
+      [patient_id, companyId]
+    );
+    if (parentCheck.rows.length === 0) return errorResponse('Paciente no encontrado', 404);
+
     const result = await query(
       `INSERT INTO veterinary_vaccinations (
         company_id, patient_id, professional_id, consultation_id, vaccine_name,

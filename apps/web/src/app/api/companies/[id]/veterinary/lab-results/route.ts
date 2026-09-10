@@ -54,6 +54,12 @@ export async function POST(request: NextRequest) {
 
       if (!order_id || !test_name) return errorResponse('Order ID and test name are required', 400);
 
+      const orderCheck = await query(
+        'SELECT id FROM veterinary_lab_orders WHERE id = $1 AND company_id = $2',
+        [order_id, companyId]
+      );
+      if (orderCheck.rows.length === 0) return errorResponse('Orden de laboratorio no encontrada', 404);
+
       if (flag) {
         const validFlags = ['bajo', 'normal', 'alto', 'critico'];
         if (!validFlags.includes(flag)) return errorResponse('Invalid flag', 400);
@@ -71,6 +77,12 @@ export async function POST(request: NextRequest) {
     const insertedResults: any[] = [];
     for (const r of results) {
       if (!r.order_id || !r.test_name) return errorResponse('Each result must have order_id and test_name', 400);
+
+      const orderCheck = await query(
+        'SELECT id FROM veterinary_lab_orders WHERE id = $1 AND company_id = $2',
+        [r.order_id, companyId]
+      );
+      if (orderCheck.rows.length === 0) return errorResponse(`Orden de laboratorio no encontrada para resultado '${r.test_name}'`, 404);
 
       if (r.flag) {
         const validFlags = ['bajo', 'normal', 'alto', 'critico'];

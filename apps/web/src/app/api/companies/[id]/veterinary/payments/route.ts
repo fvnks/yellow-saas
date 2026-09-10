@@ -85,6 +85,13 @@ export async function POST(request: NextRequest) {
     if (!patient_id || !client_id) return errorResponse('Patient and client are required', 400);
     if (!amount || Number(amount) <= 0) return errorResponse('Amount must be greater than 0', 400);
 
+    const [patientCheck, clientCheck] = await Promise.all([
+      query('SELECT id FROM veterinary_patients WHERE id = $1 AND company_id = $2', [patient_id, companyId]),
+      query('SELECT id FROM veterinary_clients WHERE id = $1 AND company_id = $2', [client_id, companyId]),
+    ]);
+    if (patientCheck.rows.length === 0) return errorResponse('Paciente no encontrado', 404);
+    if (clientCheck.rows.length === 0) return errorResponse('Cliente no encontrado', 404);
+
     const validMethods = ['efectivo', 'debito', 'credito_webpay', 'transbank_credito', 'transferencia', 'cheque', 'mercadopago'];
     if (!validMethods.includes(method)) return errorResponse('Invalid payment method', 400);
 
