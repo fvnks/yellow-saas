@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Users, Search, Building2, Mail, Calendar, Shield, Pencil, X, AlertCircle, CheckCircle } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface User {
   id: string;
@@ -52,7 +53,7 @@ export default function AdminUsersPage() {
       const data = await res.json();
       if (data.success) setUsers(data.data);
     } catch (err) {
-      console.error('Failed to load users:', err);
+      toast.error('Error al cargar usuarios');
     } finally {
       setLoading(false);
     }

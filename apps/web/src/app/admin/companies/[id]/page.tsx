@@ -106,34 +106,47 @@ export default function AdminCompanyDetailPage() {
       });
       const data = await res.json();
       if (data.success) {
+        toast.success('Ingresando como usuario...');
         window.location.href = '/dashboard';
+      } else {
+        toast.error(data.error?.message || 'Error al impersonar');
       }
     } catch (err) {
-      console.error('Failed to login as user:', err);
+      toast.error('Error de conexión');
     }
   };
 
   const handleExport = async () => {
     try {
       const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
-      const res = await fetch('/api/super-admin/export?type=companies', {
+      const res = await fetch(`/api/super-admin/export?type=companies&company_id=${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
-      if (data.success) {
+      if (data.success && data.data.data.length > 0) {
+        const escapeCsv = (val: unknown) => {
+          const str = String(val ?? '');
+          return str.includes(',') || str.includes('"') || str.includes('\n')
+            ? `"${str.replace(/"/g, '""')}"`
+            : str;
+        };
         const csv = [
-          Object.keys(data.data.data[0] || {}).join(','),
-          ...data.data.data.map((row: Record<string, unknown>) => Object.values(row).join(','))
+          Object.keys(data.data.data[0]).join(','),
+          ...data.data.data.map((row: Record<string, unknown>) =>
+            Object.values(row).map(escapeCsv).join(',')
+          )
         ].join('\n');
         const blob = new Blob([csv], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `empresas_${new Date().toISOString().split('T')[0]}.csv`;
+        a.download = `empresa_${company?.slug || id}_${new Date().toISOString().split('T')[0]}.csv`;
         a.click();
+        URL.revokeObjectURL(url);
+        toast.success('Exportación descargada');
       }
     } catch (err) {
-      console.error('Failed to export:', err);
+      toast.error('Error al exportar');
     }
   };
 

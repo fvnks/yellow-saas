@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { KeyRound, Search, Building2, Shield, CheckCircle, XCircle, Clock, AlertTriangle, Plus, X } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Grant {
   id: string;
@@ -48,7 +49,7 @@ export default function AdminGrantsPage() {
       const data = await res.json();
       if (data.success) setGrants(data.data);
     } catch (err) {
-      console.error('Failed to load grants:', err);
+      toast.error('Error al cargar accesos');
     } finally {
       setLoading(false);
     }
@@ -62,7 +63,7 @@ export default function AdminGrantsPage() {
       const data = await res.json();
       if (data.success) setCompanies(data.data);
     } catch (err) {
-      console.error('Failed to load companies:', err);
+      toast.error('Error al cargar empresas');
     }
   };
 
@@ -108,7 +109,7 @@ export default function AdminGrantsPage() {
       });
       fetchGrants();
     } catch (err) {
-      console.error('Failed to revoke grant:', err);
+      toast.error('Error al revocar acceso');
     }
   };
 

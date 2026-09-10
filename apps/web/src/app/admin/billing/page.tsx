@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { CreditCard, Building2, Users, Edit3, CheckCircle, AlertTriangle, Save, Plus, Trash2, GripVertical } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Company {
   id: string;
@@ -71,7 +72,7 @@ export default function AdminBillingPage() {
         setPlans(data.data.plans);
       }
     } catch (err) {
-      console.error('Failed to load billing data:', err);
+      toast.error('Error al cargar datos de facturación');
     } finally {
       setLoading(false);
     }
