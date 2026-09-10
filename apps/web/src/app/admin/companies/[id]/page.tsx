@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Building2, Users, Calendar, Shield, AlertTriangle, CheckCircle, Clock, LogIn, Download, Package } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface ModuleActivation {
   id: string;
@@ -77,14 +78,20 @@ export default function AdminCompanyDetailPage() {
     if (!confirm('¿Estás seguro de suspender esta empresa?')) return;
     try {
       const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
-      await fetch(`/api/super-admin/companies/${id}/suspend`, {
+      const res = await fetch(`/api/super-admin/companies/${id}/suspend`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: company?.status === 'suspended' ? 'activate' : 'suspend' }),
       });
-      fetchCompany();
+      const data = await res.json();
+      if (data.success) {
+        toast.success(company?.status === 'suspended' ? 'Empresa activada' : 'Empresa suspendida');
+        fetchCompany();
+      } else {
+        toast.error(data.error?.message || 'Error al cambiar estado');
+      }
     } catch (err) {
-      console.error('Failed to toggle company status:', err);
+      toast.error('Error de conexión');
     }
   };
 
@@ -133,14 +140,20 @@ export default function AdminCompanyDetailPage() {
   const handleToggleModule = async (moduleName: string, isActive: boolean) => {
     try {
       const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
-      await fetch(`/api/super-admin/companies/${id}`, {
+      const res = await fetch(`/api/super-admin/companies/${id}`, {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: isActive ? 'activate' : 'deactivate', module_name: moduleName }),
       });
-      fetchCompany();
+      const data = await res.json();
+      if (data.success) {
+        toast.success(isActive ? `Módulo ${moduleName} activado` : `Módulo ${moduleName} desactivado`);
+        fetchCompany();
+      } else {
+        toast.error(data.error?.message || 'Error al actualizar módulo');
+      }
     } catch (err) {
-      console.error('Failed to toggle module:', err);
+      toast.error('Error de conexión');
     }
   };
 

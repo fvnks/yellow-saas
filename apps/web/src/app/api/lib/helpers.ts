@@ -19,6 +19,7 @@ export function errorResponse(message: string, status = 400) {
 
 export function paginatedResponse(data: unknown[], total: number, page: number, limit: number) {
   return NextResponse.json({
+    success: true,
     data,
     pagination: {
       total,
