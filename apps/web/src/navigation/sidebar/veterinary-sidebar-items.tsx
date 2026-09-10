@@ -18,6 +18,7 @@ import {
   FlaskConical,
   FileSpreadsheet,
   DoorOpen,
+  Pill,
 } from "lucide-react";
 
 export interface VeterinaryNavItem {
@@ -96,6 +97,11 @@ export const veterinarySidebarItems: VeterinaryNavGroup[] = [
         title: "Recetas Médicas",
         path: "/veterinaria/recetas",
         icon: FileText,
+      },
+      {
+        title: "Farmacia",
+        path: "/veterinaria/farmacia",
+        icon: Pill,
       },
     ],
   },

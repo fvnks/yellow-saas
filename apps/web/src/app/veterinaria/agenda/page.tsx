@@ -14,68 +14,82 @@ import {
   XCircle,
   Filter,
 } from 'lucide-react';
-import {
-  INITIAL_APPOINTMENTS,
-  INITIAL_PATIENTS,
-  INITIAL_PROFESSIONALS,
-  INITIAL_SERVICES,
-  INITIAL_ROOMS,
-  VeterinaryAppointment,
-} from '../lib/veterinary-store';
+import { useAppointments } from '../hooks/use-appointments';
+import { usePatients } from '../hooks/use-patients';
+import { useProfessionals } from '../hooks/use-professionals';
+import { useServices } from '../hooks/use-services';
+import { useRooms } from '../hooks/use-rooms';
+import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 export default function VeterinaryAgendaPage() {
-  const [appointments, setAppointments] = useState<VeterinaryAppointment[]>(INITIAL_APPOINTMENTS);
+  const { data: appointments, loading, refresh } = useAppointments();
+  const { data: patients } = usePatients();
+  const { data: professionals } = useProfessionals();
+  const { data: services } = useServices();
+  const { data: rooms } = useRooms();
   const [showModal, setShowModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [saving, setSaving] = useState(false);
 
   const [formData, setFormData] = useState({
-    patientId: INITIAL_PATIENTS[0]?.id || '',
-    professionalId: INITIAL_PROFESSIONALS[0]?.id || '',
-    serviceId: INITIAL_SERVICES[0]?.id || '',
-    roomId: INITIAL_ROOMS[0]?.id || '',
+    patientId: '',
+    professionalId: '',
+    serviceId: '',
+    roomId: '',
     appointmentDate: selectedDate,
     appointmentTime: '12:00',
     reason: '',
   });
 
-  const handleCreateAppointment = (e: React.FormEvent) => {
+  const handleCreateAppointment = async (e: React.FormEvent) => {
     e.preventDefault();
-    const pat = INITIAL_PATIENTS.find((p) => p.id === formData.patientId);
-    const pro = INITIAL_PROFESSIONALS.find((pr) => pr.id === formData.professionalId);
-    const srv = INITIAL_SERVICES.find((s) => s.id === formData.serviceId);
-    const rm = INITIAL_ROOMS.find((r) => r.id === formData.roomId);
+    const pat = patients.find((p: any) => p.id === formData.patientId);
+    const pro = professionals.find((pr: any) => pr.id === formData.professionalId);
+    const srv = services.find((s: any) => s.id === formData.serviceId);
 
     if (!pat || !pro || !srv) return;
 
-    const newApt: VeterinaryAppointment = {
-      id: `apt-${Date.now()}`,
-      patientId: pat.id,
-      patientName: pat.name,
-      species: pat.species,
-      clientId: pat.clientId,
-      clientName: pat.clientName,
-      clientPhone: pat.clientPhone,
-      professionalId: pro.id,
-      professionalName: pro.fullName,
-      serviceId: srv.id,
-      serviceName: srv.name,
-      roomId: rm?.id,
-      roomName: rm?.name,
-      appointmentDate: formData.appointmentDate,
-      appointmentTime: formData.appointmentTime,
-      durationMinutes: srv.durationMinutes,
-      reason: formData.reason || 'Consulta agendada',
-      status: 'agendada',
-    };
-
-    setAppointments([newApt, ...appointments]);
-    setShowModal(false);
+    setSaving(true);
+    try {
+      const api = getApiClient();
+      await api.createVetAppointment({
+        patientId: pat.id,
+        patientName: pat.name,
+        species: pat.species,
+        clientId: pat.clientId,
+        clientName: pat.clientName,
+        clientPhone: pat.clientPhone,
+        professionalId: pro.id,
+        professionalName: pro.fullName,
+        serviceId: srv.id,
+        serviceName: srv.name,
+        roomId: formData.roomId || undefined,
+        appointmentDate: formData.appointmentDate,
+        appointmentTime: formData.appointmentTime,
+        durationMinutes: srv.durationMinutes,
+        reason: formData.reason || 'Consulta agendada',
+        status: 'agendada',
+      });
+      await refresh();
+      setShowModal(false);
+      toast.success('Cita agendada correctamente');
+    } catch (err) {
+      console.error('Error creating appointment:', err);
+      toast.error('Error al agendar la cita');
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleUpdateStatus = (id: string, newStatus: VeterinaryAppointment['status']) => {
-    setAppointments((prev) =>
-      prev.map((apt) => (apt.id === id ? { ...apt, status: newStatus } : apt))
-    );
+  const handleUpdateStatus = async (id: string, newStatus: string) => {
+    try {
+      const api = getApiClient();
+      await api.updateVetAppointment(id, { status: newStatus });
+      await refresh();
+    } catch (err) {
+      console.error('Error updating status:', err);
+    }
   };
 
   return (
@@ -123,7 +137,11 @@ export default function VeterinaryAgendaPage() {
       {/* Agenda Appointments List */}
       <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
         <div className="divide-y divide-slate-100">
-          {appointments.map((apt) => (
+          {loading ? (
+            <div className="p-6 space-y-3">
+              {[...Array(5)].map((_, i) => <div key={i} className="h-20 bg-slate-100 rounded-xl animate-pulse" />)}
+            </div>
+          ) : appointments.map((apt: any) => (
             <div key={apt.id} className="p-5 hover:bg-slate-50/80 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-start gap-4">
                 <div className="bg-[#0F172A] text-white font-mono text-sm font-bold px-3 py-2 rounded-xl text-center shrink-0">
@@ -156,7 +174,7 @@ export default function VeterinaryAgendaPage() {
               <div className="flex flex-wrap items-center gap-2 self-end md:self-center">
                 <select
                   value={apt.status}
-                  onChange={(e) => handleUpdateStatus(apt.id, e.target.value as any)}
+                  onChange={(e) => handleUpdateStatus(apt.id, e.target.value)}
                   className="bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 >
                   <option value="agendada">Agendada</option>
@@ -199,7 +217,7 @@ export default function VeterinaryAgendaPage() {
                     onChange={(e) => setFormData({ ...formData, patientId: e.target.value })}
                     className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   >
-                    {INITIAL_PATIENTS.map((p) => (
+                    {patients.map((p: any) => (
                       <option key={p.id} value={p.id}>
                         {p.name} ({p.species} - Tutor: {p.clientName})
                       </option>
@@ -214,7 +232,7 @@ export default function VeterinaryAgendaPage() {
                     onChange={(e) => setFormData({ ...formData, professionalId: e.target.value })}
                     className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   >
-                    {INITIAL_PROFESSIONALS.map((pr) => (
+                    {professionals.map((pr: any) => (
                       <option key={pr.id} value={pr.id}>
                         {pr.fullName} - {pr.specialty}
                       </option>
@@ -229,9 +247,9 @@ export default function VeterinaryAgendaPage() {
                     onChange={(e) => setFormData({ ...formData, serviceId: e.target.value })}
                     className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   >
-                    {INITIAL_SERVICES.map((s) => (
+                    {services.map((s: any) => (
                       <option key={s.id} value={s.id}>
-                        {s.name} (${s.priceCLP.toLocaleString('es-CL')})
+                        {s.name} (${(s.sale_price || s.priceCLP || 0).toLocaleString('es-CL')})
                       </option>
                     ))}
                   </select>
@@ -244,7 +262,8 @@ export default function VeterinaryAgendaPage() {
                     onChange={(e) => setFormData({ ...formData, roomId: e.target.value })}
                     className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   >
-                    {INITIAL_ROOMS.map((r) => (
+                    <option value="">Sin asignar</option>
+                    {rooms.map((r: any) => (
                       <option key={r.id} value={r.id}>
                         {r.name}
                       </option>
@@ -296,9 +315,10 @@ export default function VeterinaryAgendaPage() {
                 </button>
                 <button
                   type="submit"
-                  className="bg-[#0F172A] hover:bg-slate-800 text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm"
+                  disabled={saving}
+                  className="bg-[#0F172A] hover:bg-slate-800 text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm disabled:opacity-50"
                 >
-                  Confirmar Cita
+                  {saving ? 'Agendando...' : 'Confirmar Cita'}
                 </button>
               </div>
             </form>

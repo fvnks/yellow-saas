@@ -204,6 +204,7 @@ export default function VeterinarySurgeriesPage() {
         <InformedConsentModal
           isOpen={!!selectedSurgery}
           onClose={() => setSelectedSurgery(null)}
+          surgeryId={selectedSurgery.id}
           patientName={selectedSurgery.patientName}
           species={selectedSurgery.species}
           breed={selectedSurgery.breed}

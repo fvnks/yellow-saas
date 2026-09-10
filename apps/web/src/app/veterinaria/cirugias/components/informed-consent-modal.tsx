@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { ShieldCheck, FileText, Printer, CheckCircle2, AlertTriangle, Download } from 'lucide-react';
+import { getApiClient } from '@/lib/api-client';
 
 interface Props {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface Props {
   clientRut: string;
   surgeryName: string;
   surgeonName: string;
+  surgeryId: string;
 }
 
 export default function InformedConsentModal({
@@ -25,10 +27,13 @@ export default function InformedConsentModal({
   clientRut,
   surgeryName,
   surgeonName,
+  surgeryId,
 }: Props) {
   const [signed, setSigned] = useState(false);
 
   if (!isOpen) return null;
+
+  const legalText = `Consentimiento informado quirúrgico y anestésico para el paciente ${patientName} (${species}, ${breed}), procedimiento: ${surgeryName}, tutor: ${clientName} (RUT ${clientRut}), veterinario responsable: ${surgeonName}.`;
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4">
@@ -99,7 +104,15 @@ export default function InformedConsentModal({
               Cancelar
             </button>
             <button
-              onClick={() => {
+              onClick={async () => {
+                try {
+                  const api = getApiClient();
+                  await api.updateVetSurgery(surgeryId, {
+                    pre_op_evaluation: `Consentimiento informado firmado digitalmente el ${new Date().toLocaleDateString('es-CL')} por ${patientName}. ${legalText}`,
+                  });
+                } catch (e) {
+                  console.error('Error saving consent:', e);
+                }
                 setSigned(true);
                 setTimeout(onClose, 800);
               }}
