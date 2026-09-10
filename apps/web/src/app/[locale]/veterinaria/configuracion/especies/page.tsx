@@ -25,6 +25,19 @@ import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
 import { VeterinarySpecies } from '@/app/veterinaria/lib/veterinary-store';
 
+const getCategoryBadge = (category: VeterinarySpecies['category']) => {
+  switch (category) {
+    case 'pequeños_animales':
+      return <span className="bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold px-2 py-0.5 rounded-lg">Pequeños Animales</span>;
+    case 'exoticos':
+      return <span className="bg-purple-100 text-purple-900 border border-purple-300 text-xs font-bold px-2 py-0.5 rounded-lg">Exóticos & Aves</span>;
+    case 'mayores_ganado':
+      return <span className="bg-blue-100 text-blue-900 border border-blue-300 text-xs font-bold px-2 py-0.5 rounded-lg">Mayores & Ganado</span>;
+    case 'silvestres':
+      return <span className="bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-bold px-2 py-0.5 rounded-lg">Fauna Silvestre</span>;
+  }
+};
+
 export default function VeterinarySpeciesPage() {
   const { data: speciesList, loading, refresh } = useSpecies();
   const [search, setSearch] = useState('');
@@ -129,19 +142,6 @@ export default function VeterinarySpeciesPage() {
       toast.success('Especie eliminada');
     } catch (err: any) {
       toast.error(err.message || 'Error al eliminar la especie');
-    }
-  };
-
-  const getCategoryBadge = (category: VeterinarySpecies['category']) => {
-    switch (category) {
-      case 'pequeños_animales':
-        return <span className="bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold px-2 py-0.5 rounded-lg">Pequeños Animales</span>;
-      case 'exoticos':
-        return <span className="bg-purple-100 text-purple-900 border border-purple-300 text-xs font-bold px-2 py-0.5 rounded-lg">Exóticos & Aves</span>;
-      case 'mayores_ganado':
-        return <span className="bg-blue-100 text-blue-900 border border-blue-300 text-xs font-bold px-2 py-0.5 rounded-lg">Mayores & Ganado</span>;
-      case 'silvestres':
-        return <span className="bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-bold px-2 py-0.5 rounded-lg">Fauna Silvestre</span>;
     }
   };
 
