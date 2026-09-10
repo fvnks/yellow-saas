@@ -26,6 +26,13 @@ const MODULE_OPTIONS = [
   { id: 'projects_pro', label: 'Proyectos Pro', icon: FolderKanban, color: 'text-purple-600 bg-purple-50 border-purple-200' },
   { id: 'support_chat', label: 'Soporte en Vivo', icon: Users, color: 'text-cyan-600 bg-cyan-50 border-cyan-200' },
   { id: 'api_access', label: 'Acceso API', icon: Package, color: 'text-slate-600 bg-slate-50 border-slate-200' },
+  { id: 'veterinaria', label: 'Veterinaria', icon: FlaskConical, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
+  { id: 'auto-talleres', label: 'Talleres Auto', icon: Package, color: 'text-orange-600 bg-orange-50 border-orange-200' },
+  { id: 'restaurant', label: 'Restaurante', icon: Package, color: 'text-amber-600 bg-amber-50 border-amber-200' },
+  { id: 'recetas', label: 'Recetas BOM', icon: FlaskConical, color: 'text-orange-600 bg-orange-50 border-orange-200' },
+  { id: 'condominiums', label: 'Condominios', icon: Package, color: 'text-cyan-600 bg-cyan-50 border-cyan-200' },
+  { id: 'expense_management', label: 'Gestión de Gastos', icon: Package, color: 'text-rose-600 bg-rose-50 border-rose-200' },
+  { id: 'documentos_recibidos', label: 'Documentos Recibidos', icon: Package, color: 'text-blue-600 bg-blue-50 border-blue-200' },
 ];
 
 const statusColors: Record<string, string> = {
