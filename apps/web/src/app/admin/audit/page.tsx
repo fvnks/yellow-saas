@@ -27,6 +27,13 @@ interface Company {
   name: string;
 }
 
+const actionColors: Record<string, string> = {
+  login: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+  access: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+  modify: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
+  logout: 'bg-slate-500/10 text-muted-foreground border-border/20',
+};
+
 export default function AdminAuditPage() {
   const [entries, setEntries] = useState<AuditEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -101,13 +108,6 @@ export default function AdminAuditPage() {
   const clearFilters = () => {
     setFilters({ action: '', super_admin_id: '', company_id: '', date_from: '', date_to: '' });
     setPage(0);
-  };
-
-  const actionColors: Record<string, string> = {
-    login: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    access: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    modify: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
-    logout: 'bg-slate-500/10 text-muted-foreground border-border/20',
   };
 
   const totalPages = Math.ceil(total / limit);

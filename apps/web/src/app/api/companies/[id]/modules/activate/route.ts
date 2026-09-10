@@ -1,11 +1,29 @@
 import { query } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
-import { verifySuperAdmin } from '@/api/super-admin/lib/auth';
+import { jwtVerify } from 'jose';
+import { getJwtSecret } from '@/lib/env';
+
+const JWT_SECRET = getJwtSecret();
+
+async function getUserFromRequest(request: NextRequest): Promise<{ id: string; company_id: string; role: string } | null> {
+  const authHeader = request.headers.get('Authorization');
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : request.cookies.get('auth-token')?.value;
+  if (!token) return null;
+  try {
+    const { payload } = await jwtVerify(token, JWT_SECRET);
+    if (!payload.company_id) return null;
+    return { id: payload.id as string, company_id: payload.company_id as string, role: payload.role as string };
+  } catch {
+    return null;
+  }
+}
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
-  const admin = await verifySuperAdmin(request);
-  if (!admin) return errorResponse('No autorizado', 401);
+  const user = await getUserFromRequest(request);
+  if (!user) return errorResponse('No autorizado', 401);
+  if (user.company_id !== params.id) return errorResponse('Acceso denegado', 403);
+  if (!['owner', 'admin'].includes(user.role)) return errorResponse('Se requiere rol de administrador', 403);
 
   try {
     const companyId = params.id;
@@ -34,15 +52,15 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     }
 
     const result = await query(
-      `INSERT INTO module_activations (company_id, module_name, status, activated_at)
-       VALUES ($1, $2, 'active', now())
+      `INSERT INTO module_activations (company_id, module_name, status, activated_at, activated_by)
+       VALUES ($1, $2, 'active', now(), $3)
        ON CONFLICT (company_id, module_name) DO UPDATE SET
          status = 'active',
          activated_at = now(),
          cancelled_at = NULL,
          expires_at = NULL
        RETURNING *`,
-      [companyId, module_name]
+      [companyId, module_name, user.id]
     );
 
     return successResponse({
@@ -61,8 +79,10 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
-  const admin = await verifySuperAdmin(request);
-  if (!admin) return errorResponse('No autorizado', 401);
+  const user = await getUserFromRequest(request);
+  if (!user) return errorResponse('No autorizado', 401);
+  if (user.company_id !== params.id) return errorResponse('Acceso denegado', 403);
+  if (!['owner', 'admin'].includes(user.role)) return errorResponse('Se requiere rol de administrador', 403);
 
   try {
     const companyId = params.id;

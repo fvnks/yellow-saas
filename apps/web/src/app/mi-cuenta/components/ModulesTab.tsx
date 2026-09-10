@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Puzzle, Check, Plus } from 'lucide-react';
+import { Puzzle, Check, Plus, Minus } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -38,6 +38,7 @@ export default function ModulesTab() {
   const [activated, setActivated] = useState<ActivatedModule[]>([]);
   const [loading, setLoading] = useState(true);
   const [activating, setActivating] = useState<string | null>(null);
+  const [deactivating, setDeactivating] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>('');
 
   useEffect(() => {
@@ -95,6 +96,31 @@ export default function ModulesTab() {
       toast.error('Error al activar módulo');
     }
     setActivating(null);
+  };
+
+  const handleDeactivate = async (moduleName: string) => {
+    setDeactivating(moduleName);
+    try {
+      const api = getApiClient();
+      const companyId = api['companyId'];
+      const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+
+      const res = await fetch(`/api/companies/${companyId}/modules/activate?module_name=${encodeURIComponent(moduleName)}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        toast.success('Módulo desactivado correctamente');
+        loadData();
+      } else {
+        toast.error(data.error?.message || 'Error al desactivar módulo');
+      }
+    } catch (err) {
+      toast.error('Error al desactivar módulo');
+    }
+    setDeactivating(null);
   };
 
   const isActivated = (name: string) => activated.some(a => a.module_name === name && a.status === 'active');
@@ -181,9 +207,13 @@ export default function ModulesTab() {
               </div>
 
               {active ? (
-                <div className="flex items-center justify-center gap-2 w-full py-2 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-200 text-xs font-semibold">
-                  <Check className="w-3.5 h-3.5" /> Módulo Activo
-                </div>
+                <button
+                  onClick={() => handleDeactivate(module.name)}
+                  disabled={deactivating === module.name}
+                  className="w-full bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-4 py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50"
+                >
+                  {deactivating === module.name ? 'Desactivando...' : <><Minus className="w-3.5 h-3.5" /> Desactivar Módulo</>}
+                </button>
               ) : (
                 <button
                   onClick={() => handleActivate(module.name)}

@@ -14,6 +14,20 @@ interface User {
   company_id: string;
 }
 
+const roleColors: Record<string, string> = {
+  owner: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
+  admin: 'bg-slate-800 text-violet-400 border-violet-500/20',
+  manager: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+  member: 'bg-slate-500/10 text-muted-foreground border-border/20',
+  viewer: 'bg-slate-500/10 text-muted-foreground border-border/20',
+};
+
+const statusColors: Record<string, string> = {
+  active: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+  invited: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
+  suspended: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
+};
+
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -76,20 +90,6 @@ export default function AdminUsersPage() {
     u.email?.toLowerCase().includes(search.toLowerCase()) ||
     u.company_name?.toLowerCase().includes(search.toLowerCase())
   );
-
-  const roleColors: Record<string, string> = {
-    owner: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
-    admin: 'bg-slate-800 text-violet-400 border-violet-500/20',
-    manager: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    member: 'bg-slate-500/10 text-muted-foreground border-border/20',
-    viewer: 'bg-slate-500/10 text-muted-foreground border-border/20',
-  };
-
-  const statusColors: Record<string, string> = {
-    active: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    invited: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
-    suspended: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-  };
 
   return (
     <div className="space-y-6">

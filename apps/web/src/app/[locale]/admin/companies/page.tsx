@@ -28,6 +28,20 @@ const MODULE_OPTIONS = [
   { id: 'api_access', label: 'Acceso API', icon: Package, color: 'text-slate-600 bg-slate-50 border-slate-200' },
 ];
 
+const statusColors: Record<string, string> = {
+  active: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+  trial: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
+  suspended: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
+  cancelled: 'bg-slate-500/10 text-muted-foreground border-border/20',
+};
+
+const planColors: Record<string, string> = {
+  free: 'bg-slate-500/10 text-muted-foreground border-border/20',
+  starter: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+  professional: 'bg-blue-600/10 text-blue-500 border-blue-500/20',
+  enterprise: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
+};
+
 export default function AdminCompaniesPage() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
@@ -80,20 +94,6 @@ export default function AdminCompaniesPage() {
     const matchStatus = statusFilter === 'all' || c.status === statusFilter;
     return matchSearch && matchStatus;
   });
-
-  const statusColors: Record<string, string> = {
-    active: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    trial: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
-    suspended: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-    cancelled: 'bg-slate-500/10 text-muted-foreground border-border/20',
-  };
-
-  const planColors: Record<string, string> = {
-    free: 'bg-slate-500/10 text-muted-foreground border-border/20',
-    starter: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    professional: 'bg-blue-600/10 text-blue-500 border-blue-500/20',
-    enterprise: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
-  };
 
   return (
     <div className="space-y-6">
