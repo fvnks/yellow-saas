@@ -218,7 +218,7 @@ export default function VeterinaryConsultationsPage() {
                 step="0.1"
                 required
                 value={weightKg}
-                onChange={(e) => setWeightKg(parseFloat(e.target.value))}
+                onChange={(e) => setWeightKg(parseFloat(e.target.value) || 0)}
                 className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500"
               />
             </div>
@@ -230,7 +230,7 @@ export default function VeterinaryConsultationsPage() {
                 step="0.1"
                 required
                 value={temperatureC}
-                onChange={(e) => setTemperatureC(parseFloat(e.target.value))}
+                onChange={(e) => setTemperatureC(parseFloat(e.target.value) || 0)}
                 className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500"
               />
             </div>
@@ -240,7 +240,7 @@ export default function VeterinaryConsultationsPage() {
               <input
                 type="number"
                 value={heartRateBpm}
-                onChange={(e) => setHeartRateBpm(parseInt(e.target.value))}
+                onChange={(e) => setHeartRateBpm(parseInt(e.target.value) || 0)}
                 className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500"
               />
             </div>
@@ -250,7 +250,7 @@ export default function VeterinaryConsultationsPage() {
               <input
                 type="number"
                 value={respiratoryRateBpm}
-                onChange={(e) => setRespiratoryRateBpm(parseInt(e.target.value))}
+                onChange={(e) => setRespiratoryRateBpm(parseInt(e.target.value) || 0)}
                 className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500"
               />
             </div>
@@ -260,7 +260,7 @@ export default function VeterinaryConsultationsPage() {
               <input
                 type="number"
                 value={capillaryRefillTimeSec}
-                onChange={(e) => setCapillaryRefillTimeSec(parseInt(e.target.value))}
+                onChange={(e) => setCapillaryRefillTimeSec(parseInt(e.target.value) || 0)}
                 className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500"
               />
             </div>
