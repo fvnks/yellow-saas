@@ -13,6 +13,8 @@ import {
   AlertCircle,
   XCircle,
   Filter,
+  MessageCircle,
+  Smartphone,
 } from 'lucide-react';
 import { useAppointments } from '@/app/veterinaria/hooks/use-appointments';
 import { usePatients } from '@/app/veterinaria/hooks/use-patients';
@@ -92,8 +94,44 @@ export default function VeterinaryAgendaPage() {
     }
   };
 
+  const handleSendWhatsApp = async (apt: any) => {
+    try {
+      const api = getApiClient();
+      await api.sendVetWhatsApp({
+        type: 'appointment_reminder',
+        id: apt.id,
+        patient_name: apt.patientName,
+        client_name: apt.clientName,
+        client_phone: apt.clientPhone,
+        title: `Cita: ${apt.serviceName} el ${apt.appointmentDate} a las ${apt.appointmentTime}`,
+        professional_name: apt.professionalName,
+      });
+      toast.success(`WhatsApp enviado a ${apt.clientName}`);
+    } catch (err: any) {
+      toast.error(err.message || 'Error al enviar WhatsApp');
+    }
+  };
+
+  const handleSendSMS = async (apt: any) => {
+    try {
+      const api = getApiClient();
+      await api.sendVetSMS({
+        type: 'appointment_reminder',
+        id: apt.id,
+        patient_name: apt.patientName,
+        client_name: apt.clientName,
+        client_phone: apt.clientPhone,
+        title: `Recordatorio: ${apt.patientName} tiene cita el ${apt.appointmentDate} a las ${apt.appointmentTime} con Dr(a). ${apt.professionalName} — ${apt.serviceName}`,
+      });
+      toast.success(`SMS enviado a ${apt.clientName}`);
+    } catch (err: any) {
+      toast.error(err.message || 'Error al enviar SMS');
+    }
+  };
+
   return (
     <div className="space-y-6">
+      {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight">
@@ -113,6 +151,7 @@ export default function VeterinaryAgendaPage() {
         </button>
       </div>
 
+      {/* Date Bar */}
       <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <CalendarIcon className="w-5 h-5 text-slate-700" />
@@ -132,6 +171,7 @@ export default function VeterinaryAgendaPage() {
         </div>
       </div>
 
+      {/* Agenda Appointments List */}
       <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
         <div className="divide-y divide-slate-100">
           {loading ? (
@@ -167,6 +207,7 @@ export default function VeterinaryAgendaPage() {
                 </div>
               </div>
 
+              {/* Status & Actions */}
               <div className="flex flex-wrap items-center gap-2 self-end md:self-center">
                 <select
                   value={apt.status}
@@ -181,6 +222,25 @@ export default function VeterinaryAgendaPage() {
                   <option value="cancelada">Cancelada</option>
                 </select>
 
+                {apt.clientPhone && (
+                  <>
+                    <button
+                      onClick={() => handleSendWhatsApp(apt)}
+                      className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold px-2.5 py-2 rounded-xl transition-all flex items-center gap-1"
+                      title="Enviar recordatorio por WhatsApp"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
+                    </button>
+                    <button
+                      onClick={() => handleSendSMS(apt)}
+                      className="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold px-2.5 py-2 rounded-xl transition-all flex items-center gap-1"
+                      title="Enviar recordatorio por SMS"
+                    >
+                      <Smartphone className="w-3.5 h-3.5" /> SMS
+                    </button>
+                  </>
+                )}
+
                 <Link
                   href={`/veterinaria/pacientes/${apt.patientId}`}
                   className="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold px-3 py-2 rounded-xl transition-all"
@@ -193,6 +253,7 @@ export default function VeterinaryAgendaPage() {
         </div>
       </div>
 
+      {/* Modal Agendar Cita */}
       {showModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl border border-slate-200 shadow-xl max-w-xl w-full p-6 space-y-4">

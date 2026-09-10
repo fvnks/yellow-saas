@@ -13,6 +13,8 @@ import {
   AlertCircle,
   XCircle,
   Filter,
+  MessageCircle,
+  Smartphone,
 } from 'lucide-react';
 import { useAppointments } from '../hooks/use-appointments';
 import { usePatients } from '../hooks/use-patients';
@@ -89,6 +91,41 @@ export default function VeterinaryAgendaPage() {
       await refresh();
     } catch (err) {
       console.error('Error updating status:', err);
+    }
+  };
+
+  const handleSendWhatsApp = async (apt: any) => {
+    try {
+      const api = getApiClient();
+      await api.sendVetWhatsApp({
+        type: 'appointment_reminder',
+        id: apt.id,
+        patient_name: apt.patientName,
+        client_name: apt.clientName,
+        client_phone: apt.clientPhone,
+        title: `Cita: ${apt.serviceName} el ${apt.appointmentDate} a las ${apt.appointmentTime}`,
+        professional_name: apt.professionalName,
+      });
+      toast.success(`WhatsApp enviado a ${apt.clientName}`);
+    } catch (err: any) {
+      toast.error(err.message || 'Error al enviar WhatsApp');
+    }
+  };
+
+  const handleSendSMS = async (apt: any) => {
+    try {
+      const api = getApiClient();
+      await api.sendVetSMS({
+        type: 'appointment_reminder',
+        id: apt.id,
+        patient_name: apt.patientName,
+        client_name: apt.clientName,
+        client_phone: apt.clientPhone,
+        title: `Recordatorio: ${apt.patientName} tiene cita el ${apt.appointmentDate} a las ${apt.appointmentTime} con Dr(a). ${apt.professionalName} — ${apt.serviceName}`,
+      });
+      toast.success(`SMS enviado a ${apt.clientName}`);
+    } catch (err: any) {
+      toast.error(err.message || 'Error al enviar SMS');
     }
   };
 
@@ -184,6 +221,25 @@ export default function VeterinaryAgendaPage() {
                   <option value="finalizada">Finalizada</option>
                   <option value="cancelada">Cancelada</option>
                 </select>
+
+                {apt.clientPhone && (
+                  <>
+                    <button
+                      onClick={() => handleSendWhatsApp(apt)}
+                      className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold px-2.5 py-2 rounded-xl transition-all flex items-center gap-1"
+                      title="Enviar recordatorio por WhatsApp"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
+                    </button>
+                    <button
+                      onClick={() => handleSendSMS(apt)}
+                      className="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold px-2.5 py-2 rounded-xl transition-all flex items-center gap-1"
+                      title="Enviar recordatorio por SMS"
+                    >
+                      <Smartphone className="w-3.5 h-3.5" /> SMS
+                    </button>
+                  </>
+                )}
 
                 <Link
                   href={`/veterinaria/pacientes/${apt.patientId}`}
