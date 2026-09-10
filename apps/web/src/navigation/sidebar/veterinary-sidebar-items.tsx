@@ -17,6 +17,7 @@ import {
   ClipboardList,
   FlaskConical,
   FileSpreadsheet,
+  DoorOpen,
 } from "lucide-react";
 
 export interface VeterinaryNavItem {
@@ -135,6 +136,11 @@ export const veterinarySidebarItems: VeterinaryNavGroup[] = [
         title: "Recordatorios",
         path: "/veterinaria/recordatorios",
         icon: Bell,
+      },
+      {
+        title: "Boxes & Salas",
+        path: "/veterinaria/rooms",
+        icon: DoorOpen,
       },
     ],
   },

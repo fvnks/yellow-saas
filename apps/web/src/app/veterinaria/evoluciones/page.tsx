@@ -14,6 +14,7 @@ import {
   FileText,
   Loader2,
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { useEvolutions } from '../hooks/use-evolutions';
 import { usePatients } from '../hooks/use-patients';
 import { useSpecies } from '../hooks/use-species';
@@ -46,6 +47,7 @@ export default function VeterinaryEvolutionsPage() {
   const [typeFilter, setTypeFilter] = useState<string>('todos');
   const [showEditor, setShowEditor] = useState(false);
   const [fastPatientId, setFastPatientId] = useState('');
+  const [saving, setSaving] = useState(false);
 
   const selectedPatient = patients.find((p: any) => p.id === selectedPatientId);
   const speciesName = (key: string) => {
@@ -59,13 +61,18 @@ export default function VeterinaryEvolutionsPage() {
     .sort((a: any, b: any) => (a.evolutionDate + a.evolutionTime > b.evolutionDate + b.evolutionTime ? -1 : 1));
 
   const handleSave = async (evo: any) => {
+    setSaving(true);
     try {
       const api = getApiClient();
       await api.createVetEvolution(evo);
+      toast.success('Evolución clínica registrada correctamente');
       refresh();
       setShowEditor(false);
     } catch (err) {
+      toast.error('Error al registrar evolución clínica');
       console.error('Error saving evolution:', err);
+    } finally {
+      setSaving(false);
     }
   };
 
