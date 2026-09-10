@@ -1,6 +1,6 @@
 import { query } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { verifySuperAdmin } from '@/api/super-admin/lib/auth';
 import { SignJWT } from 'jose';
 import { getJwtSecret } from '@/lib/env';
@@ -45,7 +45,20 @@ export async function POST(request: NextRequest) {
       [admin.id, company_id, JSON.stringify({ action: 'login_as', target_user: user.email })]
     );
 
-    return successResponse({ token, user: { id: user.id, email: user.email, name: user.full_name } });
+    const response = NextResponse.json(
+      { success: true, data: { user: { id: user.id, email: user.email, name: user.full_name } } },
+      { status: 200 }
+    );
+
+    response.cookies.set('auth-token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 4 * 60 * 60, // 4 hours
+    });
+
+    return response;
   } catch (err) {
     console.error('Login as error:', err);
     return errorResponse('Error al impersonar usuario', 500);

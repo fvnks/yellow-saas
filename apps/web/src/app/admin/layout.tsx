@@ -96,8 +96,15 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }, [router, session]);
 
   const isActive = (path: string) => {
-    if (path === '/admin') return pathname === '/admin';
-    return pathname.startsWith(path);
+    const cleanPathname = pathname.replace(/^\/[a-z]{2}(?=\/)/, '');
+    if (path === '/admin') return cleanPathname === '/admin';
+    if (cleanPathname === path) return true;
+    const pathSegments = path.split('/').filter(Boolean);
+    const pathnameSegments = cleanPathname.split('/').filter(Boolean);
+    if (pathnameSegments.length === pathSegments.length + 1 && cleanPathname.startsWith(path + '/')) {
+      return true;
+    }
+    return false;
   };
 
   const filteredSidebarItems = useMemo(() => {
@@ -177,7 +184,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                       {item.path === '/admin/support' && supportPending > 0 && (
                         <span className={`ml-auto inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-[9px] font-black ${
                           supportUnassigned > 0
-                            ? 'bg-violet-600/80 text-white'
+                            ? 'bg-rose-500 text-white animate-pulse'
                             : 'bg-violet-600/80 text-white'
                         }`}>
                           {supportPending}

@@ -99,7 +99,6 @@ export default function AdminCompanyDetailPage() {
       });
       const data = await res.json();
       if (data.success) {
-        document.cookie = `auth-token=${data.data.token}; path=/; max-age=${4 * 60 * 60}`;
         window.location.href = '/dashboard';
       }
     } catch (err) {
