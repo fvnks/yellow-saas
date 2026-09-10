@@ -67,7 +67,7 @@ const modules: ModuleOption[] = [
     accentBadge: 'bg-rose-50 text-rose-700 border-rose-200',
     href: '/hr',
     requiredModules: [],
-    moduleName: 'hr',
+    moduleName: 'hr_premium',
   },
   {
     id: 'projects',
@@ -80,7 +80,7 @@ const modules: ModuleOption[] = [
     accentBadge: 'bg-purple-50 text-purple-700 border-purple-200',
     href: '/projects',
     requiredModules: [],
-    moduleName: 'projects',
+    moduleName: 'projects_pro',
   },
   {
     id: 'formulas',
@@ -106,7 +106,7 @@ const modules: ModuleOption[] = [
     accentBadge: 'bg-cyan-50 text-cyan-700 border-cyan-200',
     href: '/condominio',
     requiredModules: [],
-    moduleName: 'condominio',
+    moduleName: 'condominiums',
   },
   {
     id: 'restaurante',
