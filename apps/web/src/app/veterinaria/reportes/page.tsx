@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { BarChart3, TrendingUp, Calendar, Dog, Stethoscope, DollarSign, Users, Activity, Loader2 } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
 
-const formatCLP = (val: number) => new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(val);
+const clpFormatter = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 });
+const formatCLP = (val: number) => clpFormatter.format(val);
 
 export default function VetReportsPage() {
   const [data, setData] = useState<any>(null);
@@ -16,10 +17,12 @@ export default function VetReportsPage() {
       setLoading(true);
       try {
         const api = getApiClient();
-        const dashboard = await api.getVetDashboard();
-        const appointments = await api.getVetAppointments({ limit: '200' });
-        const payments = await api.getVetPayments({ limit: '200', status: 'completado' });
-        const patients = await api.getVetPatients({ limit: '500' });
+        const [dashboard, appointments, payments, patients] = await Promise.all([
+          api.getVetDashboard(),
+          api.getVetAppointments({ limit: '200' }),
+          api.getVetPayments({ limit: '200', status: 'completado' }),
+          api.getVetPatients({ limit: '500' }),
+        ]);
 
         const aptData = appointments.data || [];
         const payData = payments.data || [];

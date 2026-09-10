@@ -2294,6 +2294,12 @@ async deleteAdjustmentReason(id: string) {
   async deleteVetLabResult(id: string) {
     return this.request<any>(`/veterinary/lab-results/${id}`, { method: 'DELETE' });
   }
+  async generateVetLabResultPdf(data: { order_id: string }) {
+    return this.request<any>('/veterinary/notifications/lab-result-pdf', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async generateVetAutoReminders(data?: { days_ahead?: number; types?: string[] }) {
+    return this.request<any>('/veterinary/auto-reminders', { method: 'POST', body: JSON.stringify(data || {}) });
+  }
 
   // Estimates
   async getVetEstimates(params?: Record<string, string>) {
