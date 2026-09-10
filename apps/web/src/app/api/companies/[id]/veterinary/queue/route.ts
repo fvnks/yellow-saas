@@ -7,11 +7,19 @@ export async function GET(req: NextRequest) {
     const companyId = getCompanyId(req);
 
     const result = await query(
-      `SELECT a.id, a.patient_name, a.species, a.client_name, a.client_phone,
-              a.appointment_time, a.reason, a.status, a.service_name, a.professional_name,
-              a.room_name, a.created_at,
+      `SELECT a.id, a.appointment_time, a.reason, a.status, a.created_at,
+              vp.name AS patient_name, vp.species,
+              vc.full_name AS client_name, vc.phone AS client_phone,
+              vs.name AS service_name,
+              vepr.full_name AS professional_name,
+              vr.name AS room_name,
               EXTRACT(EPOCH FROM (now() - a.created_at::timestamptz)) / 60 as wait_minutes
        FROM veterinary_appointments a
+       LEFT JOIN veterinary_patients vp ON vp.id = a.patient_id
+       LEFT JOIN veterinary_clients vc ON vc.id = a.client_id
+       LEFT JOIN veterinary_services vs ON vs.id = a.service_id
+       LEFT JOIN veterinary_professionals vepr ON vepr.id = a.professional_id
+       LEFT JOIN veterinary_rooms vr ON vr.id = a.room_id
        WHERE a.company_id = $1
          AND a.status IN ('agendada', 'confirmada', 'en_espera', 'en_atencion')
          AND a.appointment_date = CURRENT_DATE
@@ -26,7 +34,6 @@ export async function GET(req: NextRequest) {
       [companyId]
     );
 
-    // Get summary counts
     const counts = await query(
       `SELECT status, COUNT(*) as count
        FROM veterinary_appointments
