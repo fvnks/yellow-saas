@@ -112,9 +112,9 @@ export async function POST(request: NextRequest) {
         for (const item of items) {
           await client.query(
             `INSERT INTO veterinary_prescription_items
-              (prescription_id, medication_name, active_ingredient, presentation, dose, frequency, duration, route, quantity, special_instructions)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-            [presc.rows[0].id, item.medication_name, item.active_ingredient || null,
+              (prescription_id, company_id, medication_name, active_ingredient, presentation, dose, frequency, duration, route, quantity, special_instructions)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+            [presc.rows[0].id, companyId, item.medication_name, item.active_ingredient || null,
              item.presentation || null, item.dose || null, item.frequency || null,
              item.duration || null, item.route || null, item.quantity || null,
              item.special_instructions || null]
