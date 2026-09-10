@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Syringe, ShieldCheck, Printer, Calendar, Plus, Search, Dog, Cat, Cpu, CheckCircle2, Loader2 } from 'lucide-react';
+import { Syringe, ShieldCheck, Printer, Calendar, Plus, Search, Dog, Cat, Cpu, CheckCircle2, Loader2, MessageCircle, Download } from 'lucide-react';
 import { usePatients } from '../hooks/use-patients';
 import { useProfessionals } from '../hooks/use-professionals';
 import { useVaccinations } from '../hooks/use-vaccinations';
 import { getApiClient } from '@/lib/api-client';
+import PrintModal from '../components/print-modal';
 
 export default function VeterinaryVaccinationsPage() {
   const { data: patients, loading: loadingPatients } = usePatients();
@@ -23,6 +24,37 @@ export default function VeterinaryVaccinationsPage() {
   const [selectedProfessionalId, setSelectedProfessionalId] = useState('');
 
   const selectedPatient = useMemo(() => patients.find((p: any) => p.id === selectedPatientId) || patients[0] || null, [patients, selectedPatientId]);
+  const [printModal, setPrintModal] = useState<{ html: string; title: string } | null>(null);
+
+  const handleWhatsAppReminder = async () => {
+    if (!selectedPatient) return;
+    try {
+      const api = getApiClient();
+      const result = await api.sendVetWhatsApp({
+        type: 'vaccination_reminder',
+        id: selectedPatient.id,
+        patient_name: selectedPatient.name,
+        client_name: selectedPatient.clientName || '',
+        client_phone: selectedPatient.clientPhone || '',
+        title: 'Recordatorio de Vacunación',
+      });
+      setPrintModal({ html: '', title: 'Mensaje WhatsApp' });
+      alert('Recordatorio enviado por WhatsApp');
+    } catch (err) {
+      console.error('Error sending WhatsApp reminder:', err);
+    }
+  };
+
+  const handleCarnetPDF = async () => {
+    if (!selectedPatient) return;
+    try {
+      const api = getApiClient();
+      const result = await api.getVetVaccinationCarnetPDF({ patient_id: selectedPatient.id });
+      setPrintModal({ html: result?.html || '', title: 'Carnet de Vacunación' });
+    } catch (err) {
+      console.error('Error generating carnet PDF:', err);
+    }
+  };
 
   const filteredVaccinations = vaccinationsData.filter(
     (v: any) =>
@@ -73,13 +105,22 @@ export default function VeterinaryVaccinationsPage() {
           </p>
         </div>
 
-        <button
-          onClick={() => window.print()}
-          className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 self-start sm:self-center"
-        >
-          <Printer className="w-4 h-4" />
-          Imprimir Carnet Sanitario
-        </button>
+        <div className="flex items-center gap-2 self-start sm:self-center">
+          <button
+            onClick={handleWhatsAppReminder}
+            className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold px-4 py-2 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 border border-emerald-200"
+          >
+            <MessageCircle className="w-4 h-4" />
+            Recordatorio WhatsApp
+          </button>
+          <button
+            onClick={handleCarnetPDF}
+            className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2"
+          >
+            <Download className="w-4 h-4" />
+            Carnet PDF
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -320,6 +361,13 @@ export default function VeterinaryVaccinationsPage() {
           </div>
         </div>
       </div>
+
+      <PrintModal
+        isOpen={!!printModal}
+        onClose={() => setPrintModal(null)}
+        html={printModal?.html}
+        title={printModal?.title}
+      />
     </div>
   );
 }

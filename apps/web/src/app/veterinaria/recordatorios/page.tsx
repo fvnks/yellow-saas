@@ -1,13 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Bell, Syringe, Shield, Send, CheckCircle2, Plus, Loader2 } from 'lucide-react';
+import { Bell, Syringe, Shield, Send, CheckCircle2, Plus, Loader2, MessageCircle, Smartphone } from 'lucide-react';
 import { useReminders } from '../hooks/use-reminders';
 import { getApiClient } from '@/lib/api-client';
+import PrintModal from '../components/print-modal';
 
 export default function VeterinaryRemindersPage() {
   const { data: reminders, loading, refresh } = useReminders();
   const [showModal, setShowModal] = useState(false);
+  const [printModal, setPrintModal] = useState<{ type: 'whatsapp' | 'sms'; message: string; whatsappLink?: string } | null>(null);
   const [formData, setFormData] = useState({
     title: '',
     type: 'vacuna',
@@ -50,6 +52,49 @@ export default function VeterinaryRemindersPage() {
       refresh();
     } catch (err) {
       console.error('Error deleting reminder:', err);
+    }
+  };
+
+  const handleSendWhatsApp = async (reminder: any) => {
+    try {
+      const api = getApiClient();
+      const result = await api.sendVetWhatsApp({
+        type: 'reminder',
+        id: reminder.id,
+        patient_name: reminder.patientName,
+        client_name: reminder.clientName,
+        client_phone: reminder.clientPhone,
+        title: reminder.title,
+        due_date: reminder.dueDate,
+      });
+      setPrintModal({
+        type: 'whatsapp',
+        message: result?.message || `Recordatorio: ${reminder.title}\nPaciente: ${reminder.patientName}\nVence: ${reminder.dueDate}`,
+        whatsappLink: result?.whatsappLink,
+      });
+    } catch (err) {
+      console.error('Error sending WhatsApp:', err);
+    }
+  };
+
+  const handleSendSMS = async (reminder: any) => {
+    try {
+      const api = getApiClient();
+      const result = await api.sendVetSMS({
+        type: 'reminder',
+        id: reminder.id,
+        patient_name: reminder.patientName,
+        client_name: reminder.clientName,
+        client_phone: reminder.clientPhone,
+        title: reminder.title,
+        due_date: reminder.dueDate,
+      });
+      setPrintModal({
+        type: 'sms',
+        message: result?.message || `Recordatorio: ${reminder.title}\nPaciente: ${reminder.patientName}\nVence: ${reminder.dueDate}`,
+      });
+    } catch (err) {
+      console.error('Error sending SMS:', err);
     }
   };
 
@@ -132,9 +177,19 @@ export default function VeterinaryRemindersPage() {
                     Completar
                   </button>
                 )}
-                <button className="bg-[#0F172A] hover:bg-slate-800 text-white text-xs font-bold px-3 py-2 rounded-xl transition-all flex items-center gap-1.5">
-                  <Send className="w-3.5 h-3.5 text-emerald-400" />
-                  Enviar WhatsApp/SMS
+                <button
+                  onClick={() => handleSendWhatsApp(rem)}
+                  className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-2 rounded-xl transition-all border border-emerald-200 flex items-center gap-1.5"
+                >
+                  <MessageCircle className="w-3.5 h-3.5" />
+                  WhatsApp
+                </button>
+                <button
+                  onClick={() => handleSendSMS(rem)}
+                  className="bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold px-3 py-2 rounded-xl transition-all border border-blue-200 flex items-center gap-1.5"
+                >
+                  <Smartphone className="w-3.5 h-3.5" />
+                  SMS
                 </button>
                 <button
                   onClick={() => handleDelete(rem.id)}
@@ -252,6 +307,13 @@ export default function VeterinaryRemindersPage() {
           </div>
         </div>
       )}
+
+      <PrintModal
+        isOpen={!!printModal}
+        onClose={() => setPrintModal(null)}
+        title={printModal?.type === 'whatsapp' ? 'Mensaje WhatsApp' : 'Mensaje SMS'}
+        message={printModal?.message}
+      />
     </div>
   );
 }

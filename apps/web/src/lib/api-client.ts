@@ -2325,6 +2325,32 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>('/veterinary/dashboard');
   }
 
+  // ── Veterinary Notifications ──
+
+  async sendVetWhatsApp(data: { type: string; id: string; patient_name: string; client_name: string; client_phone: string; title: string; due_date?: string; estimate_number?: string; total?: number; items?: any[]; professional_name?: string; clinic_name?: string; clinic_phone?: string }) {
+    return this.request<any>('/veterinary/notifications/whatsapp', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async sendVetEmail(data: { type: string; id: string; patient_name: string; client_name: string; email: string; estimate_number?: string; total?: number; items?: any[]; clinic_name?: string; clinic_phone?: string }) {
+    return this.request<any>('/veterinary/notifications/email', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async sendVetSMS(data: { type: string; id: string; patient_name: string; client_name: string; client_phone: string; title: string; due_date?: string; professional_name?: string; clinic_name?: string; clinic_phone?: string }) {
+    return this.request<any>('/veterinary/notifications/sms', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async getVetPrescriptionPDF(data: { prescription_id: string }) {
+    return this.request<any>('/veterinary/notifications/prescription-pdf', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async getVetEstimatePDF(data: { estimate_id: string }) {
+    return this.request<any>('/veterinary/notifications/estimate-pdf', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  async getVetVaccinationCarnetPDF(data: { patient_id: string }) {
+    return this.request<any>('/veterinary/notifications/vaccination-carnet', { method: 'POST', body: JSON.stringify(data) });
+  }
+
 }
 
 // Singleton with dynamic company_id from JWT

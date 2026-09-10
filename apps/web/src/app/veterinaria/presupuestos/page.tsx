@@ -14,7 +14,11 @@ import {
   ChevronDown,
   ChevronUp,
   Trash2,
+  MessageCircle,
+  Mail,
+  Download,
 } from 'lucide-react';
+import PrintModal from '../components/print-modal';
 import { useEstimates } from '../hooks/use-estimates';
 import { usePatients } from '../hooks/use-patients';
 import { useClients } from '../hooks/use-clients';
@@ -63,6 +67,7 @@ export default function VeterinaryEstimatesPage() {
   const [statusFilter, setStatusFilter] = useState('todos');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [printModal, setPrintModal] = useState<{ type: 'whatsapp' | 'email' | 'pdf'; data: any } | null>(null);
 
   const [formData, setFormData] = useState({
     patientId: '',
@@ -175,6 +180,56 @@ export default function VeterinaryEstimatesPage() {
   const depositsTotal = payments.reduce((a, p) => a + p.amountCLP, 0);
 
   const newItemsSubtotal = newItems.reduce((a, i) => a + i.quantity * i.unitPriceCLP, 0);
+
+  const handleWhatsApp = async (estimate: VeterinaryEstimate) => {
+    try {
+      const api = getApiClient();
+      const result = await api.sendVetWhatsApp({
+        type: 'estimate',
+        id: estimate.id,
+        patient_name: estimate.patientName,
+        client_name: estimate.clientName,
+        client_phone: '',
+        title: `Presupuesto ${estimate.estimateNumber}`,
+        estimate_number: estimate.estimateNumber,
+        total: totalWithIVA(estimate),
+        items: estimate.items,
+        professional_name: estimate.professionalName,
+      });
+      setPrintModal({ type: 'whatsapp', data: result });
+    } catch (err) {
+      console.error('Error sending WhatsApp:', err);
+    }
+  };
+
+  const handleEmail = async (estimate: VeterinaryEstimate) => {
+    try {
+      const api = getApiClient();
+      await api.sendVetEmail({
+        type: 'estimate',
+        id: estimate.id,
+        patient_name: estimate.patientName,
+        client_name: estimate.clientName,
+        email: '',
+        estimate_number: estimate.estimateNumber,
+        total: totalWithIVA(estimate),
+        items: estimate.items,
+      });
+      alert('Email enviado exitosamente');
+    } catch (err) {
+      console.error('Error sending email:', err);
+    }
+  };
+
+  const handlePDF = async (estimate: VeterinaryEstimate) => {
+    try {
+      const api = getApiClient();
+      const result = await api.getVetEstimatePDF({ estimate_id: estimate.id });
+      setPrintModal({ type: 'pdf', data: result });
+    } catch (err) {
+      console.error('Error generating PDF:', err);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -324,6 +379,27 @@ export default function VeterinaryEstimatesPage() {
                             <BadgeCheck className="w-3.5 h-3.5" /> Listo para Cobro
                           </span>
                         )}
+                        <button
+                          onClick={() => handleWhatsApp(e)}
+                          className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-[11px] font-bold px-2 py-1.5 rounded-xl border border-emerald-200 flex items-center gap-1"
+                          title="Enviar por WhatsApp"
+                        >
+                          <MessageCircle className="w-3 h-3" />
+                        </button>
+                        <button
+                          onClick={() => handleEmail(e)}
+                          className="bg-blue-50 hover:bg-blue-100 text-blue-700 text-[11px] font-bold px-2 py-1.5 rounded-xl border border-blue-200 flex items-center gap-1"
+                          title="Enviar por Email"
+                        >
+                          <Mail className="w-3 h-3" />
+                        </button>
+                        <button
+                          onClick={() => handlePDF(e)}
+                          className="bg-amber-50 hover:bg-amber-100 text-amber-700 text-[11px] font-bold px-2 py-1.5 rounded-xl border border-amber-200 flex items-center gap-1"
+                          title="Descargar PDF"
+                        >
+                          <Download className="w-3 h-3" />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -548,6 +624,14 @@ export default function VeterinaryEstimatesPage() {
           </div>
         </div>
       )}
+
+      <PrintModal
+        isOpen={!!printModal}
+        onClose={() => setPrintModal(null)}
+        html={printModal?.type === 'pdf' ? printModal.data?.html : undefined}
+        title={printModal?.type === 'whatsapp' ? 'Mensaje WhatsApp' : printModal?.type === 'pdf' ? 'Presupuesto PDF' : 'Email Enviado'}
+        message={printModal?.type === 'whatsapp' ? printModal.data?.message : undefined}
+      />
     </div>
   );
 }
