@@ -14,7 +14,9 @@ import {
   AlertCircle,
   FileText,
   Loader2,
+  Stethoscope,
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { useHospitalizations } from '../hooks/use-hospitalizations';
 import { usePatients } from '../hooks/use-patients';
 import { useProfessionals } from '../hooks/use-professionals';
@@ -30,16 +32,22 @@ export default function VeterinaryHospitalizationPage() {
     temperatureC: '',
     heartRateBpm: '',
     respiratoryRateBpm: '',
+    feeding: '',
     hydration: '',
     medicationGiven: '',
+    urinated: false,
+    defecated: false,
     notes: '',
     professionalId: '',
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [dischargingId, setDischargingId] = useState<string | null>(null);
+  const [confirmDischargeId, setConfirmDischargeId] = useState<string | null>(null);
 
   const handleAddLog = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedHospId) return;
-
+    setSubmitting(true);
     try {
       const api = getApiClient();
       await api.createVetHospitalizationLog({
@@ -47,26 +55,39 @@ export default function VeterinaryHospitalizationPage() {
         temperature_c: logForm.temperatureC ? parseFloat(logForm.temperatureC) : null,
         heart_rate_bpm: logForm.heartRateBpm ? parseInt(logForm.heartRateBpm) : null,
         respiratory_rate_bpm: logForm.respiratoryRateBpm ? parseInt(logForm.respiratoryRateBpm) : null,
+        feeding: logForm.feeding || null,
         hydration: logForm.hydration || null,
         medication_given: logForm.medicationGiven || null,
+        urinated: logForm.urinated,
+        defecated: logForm.defecated,
         notes: logForm.notes || null,
         professional_id: logForm.professionalId || null,
       });
+      toast.success('Control de enfermería registrado correctamente');
       refresh();
       setShowLogModal(false);
-      setLogForm({ temperatureC: '', heartRateBpm: '', respiratoryRateBpm: '', hydration: '', medicationGiven: '', notes: '', professionalId: '' });
+      setLogForm({ temperatureC: '', heartRateBpm: '', respiratoryRateBpm: '', feeding: '', hydration: '', medicationGiven: '', urinated: false, defecated: false, notes: '', professionalId: '' });
     } catch (err) {
+      toast.error('Error al registrar control de enfermería');
       console.error('Error creating log:', err);
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const handleDischarge = async (hospId: string) => {
+    setDischargingId(hospId);
     try {
       const api = getApiClient();
-      await api.dischargeVetHospitalization(hospId, {});
+      await api.dischargeVetHospitalization(hospId, { discharge_summary: 'Paciente dado de alta' });
+      toast.success('Paciente dado de alta correctamente');
       refresh();
     } catch (err) {
+      toast.error('Error al dar de alta al paciente');
       console.error('Error discharging:', err);
+    } finally {
+      setDischargingId(null);
+      setConfirmDischargeId(null);
     }
   };
 
@@ -116,7 +137,15 @@ export default function VeterinaryHospitalizationPage() {
 
       {/* Hospitalization Cards */}
       <div className="space-y-6">
-        {hospitalizations.map((hosp: any) => (
+        {hospitalizations.map((hosp: any) => {
+          const priorityBadge: Record<string, string> = {
+            baja: 'bg-slate-100 text-slate-700 border-slate-200',
+            media: 'bg-blue-100 text-blue-800 border-blue-200',
+            alta: 'bg-amber-100 text-amber-800 border-amber-200',
+            critica: 'bg-rose-100 text-rose-800 border-rose-200',
+          };
+          const badgeClass = priorityBadge[hosp.priority] || priorityBadge.media;
+          return (
           <div key={hosp.id} className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
               <div className="flex items-center gap-3">
@@ -129,7 +158,7 @@ export default function VeterinaryHospitalizationPage() {
                     <span className="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-semibold capitalize">
                       {hosp.species}
                     </span>
-                    <span className="bg-rose-100 text-rose-800 text-xs font-extrabold px-2.5 py-0.5 rounded-full uppercase border border-rose-200">
+                    <span className={`text-xs font-extrabold px-2.5 py-0.5 rounded-full uppercase border ${badgeClass}`}>
                       Prioridad {hosp.priority}
                     </span>
                   </div>
@@ -155,13 +184,31 @@ export default function VeterinaryHospitalizationPage() {
                     <Plus className="w-3 h-3" /> Nuevo Control
                   </button>
                 )}
-                {hosp.status !== 'discharged' && (
+                {hosp.status !== 'discharged' && !confirmDischargeId && (
                   <button
-                    onClick={() => handleDischarge(hosp.id)}
+                    onClick={() => setConfirmDischargeId(hosp.id)}
                     className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold px-3 py-1.5 rounded-xl text-xs transition-all border border-emerald-200 flex items-center gap-1"
                   >
                     <CheckCircle2 className="w-3 h-3" /> Alta
                   </button>
+                )}
+                {hosp.status !== 'discharged' && confirmDischargeId === hosp.id && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate-600 font-semibold">¿Dar de alta?</span>
+                    <button
+                      onClick={() => handleDischarge(hosp.id)}
+                      disabled={dischargingId === hosp.id}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1"
+                    >
+                      {dischargingId === hosp.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle2 className="w-3 h-3" />} Confirmar
+                    </button>
+                    <button
+                      onClick={() => setConfirmDischargeId(null)}
+                      className="text-xs text-slate-500 hover:text-slate-700 font-semibold"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
@@ -198,7 +245,8 @@ export default function VeterinaryHospitalizationPage() {
               </div>
             </div>
           </div>
-        ))}
+        );
+        })}
       </div>
 
       {/* Add Log Modal */}
@@ -248,6 +296,17 @@ export default function VeterinaryHospitalizationPage() {
               </div>
 
               <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Alimentación</label>
+                <input
+                  type="text"
+                  value={logForm.feeding}
+                  onChange={(e) => setLogForm({ ...logForm, feeding: e.target.value })}
+                  placeholder="Ej. Comió ración completa 200g"
+                  className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Hidratación</label>
                 <input
                   type="text"
@@ -267,6 +326,27 @@ export default function VeterinaryHospitalizationPage() {
                   placeholder="Ej. Meloxicam 0.2mg/kg"
                   className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
+              </div>
+
+              <div className="flex items-center gap-6">
+                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                  <input
+                    type="checkbox"
+                    checked={logForm.urinated}
+                    onChange={(e) => setLogForm({ ...logForm, urinated: e.target.checked })}
+                    className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                  />
+                  Orinó
+                </label>
+                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                  <input
+                    type="checkbox"
+                    checked={logForm.defecated}
+                    onChange={(e) => setLogForm({ ...logForm, defecated: e.target.checked })}
+                    className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                  />
+                  Defecó
+                </label>
               </div>
 
               <div>
@@ -304,8 +384,10 @@ export default function VeterinaryHospitalizationPage() {
                 </button>
                 <button
                   type="submit"
-                  className="bg-[#0F172A] hover:bg-slate-800 text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm"
+                  disabled={submitting}
+                  className="bg-[#0F172A] hover:bg-slate-800 text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm flex items-center gap-2 disabled:opacity-50"
                 >
+                  {submitting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Stethoscope className="w-3 h-3" />}
                   Guardar Control
                 </button>
               </div>

@@ -10,12 +10,19 @@ import {
   ShieldCheck,
   Stethoscope,
   Building,
+  Edit,
+  Trash2,
+  Loader2,
 } from 'lucide-react';
-import { INITIAL_PROFESSIONALS, VeterinaryProfessional } from '../lib/veterinary-store';
+import { useProfessionals } from '../hooks/use-professionals';
+import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
 
 export default function VeterinaryProfessionalsPage() {
-  const [professionals, setProfessionals] = useState<VeterinaryProfessional[]>(INITIAL_PROFESSIONALS);
+  const { data: professionals, loading, refresh } = useProfessionals();
   const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -24,21 +31,10 @@ export default function VeterinaryProfessionalsPage() {
     specialty: 'Medicina General',
     phone: '',
     email: '',
-    role: 'veterinario' as const,
+    role: 'veterinario' as string,
   });
 
-  const handleAddProfessional = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.fullName || !formData.rut) return;
-
-    const newPro: VeterinaryProfessional = {
-      id: `pro-${Date.now()}`,
-      ...formData,
-      status: 'active',
-    };
-
-    setProfessionals([...professionals, newPro]);
-    setShowModal(false);
+  const resetForm = () => {
     setFormData({
       fullName: '',
       rut: '',
@@ -48,6 +44,61 @@ export default function VeterinaryProfessionalsPage() {
       email: '',
       role: 'veterinario',
     });
+    setEditingId(null);
+  };
+
+  const openCreate = () => {
+    resetForm();
+    setShowModal(true);
+  };
+
+  const openEdit = (pro: any) => {
+    setEditingId(pro.id);
+    setFormData({
+      fullName: pro.fullName || '',
+      rut: pro.rut || '',
+      professionalLicense: pro.professionalLicense || '',
+      specialty: pro.specialty || 'Medicina General',
+      phone: pro.phone || '',
+      email: pro.email || '',
+      role: pro.role || 'veterinario',
+    });
+    setShowModal(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.fullName || !formData.rut) return;
+    setSaving(true);
+    try {
+      const api = getApiClient();
+      if (editingId) {
+        await api.updateVetProfessional(editingId, { ...formData });
+        toast.success('Profesional actualizado correctamente');
+      } else {
+        await api.createVetProfessional({ ...formData });
+        toast.success('Profesional registrado correctamente');
+      }
+      await refresh();
+      setShowModal(false);
+      resetForm();
+    } catch (err: any) {
+      toast.error(err.message || 'Error al guardar el profesional');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (id: string, name: string) => {
+    if (!confirm(`¿Eliminar al profesional "${name}"? Esta acción no se puede deshacer.`)) return;
+    try {
+      const api = getApiClient();
+      await api.deleteVetProfessional(id);
+      await refresh();
+      toast.success('Profesional eliminado');
+    } catch (err: any) {
+      toast.error(err.message || 'Error al eliminar el profesional');
+    }
   };
 
   return (
@@ -64,7 +115,7 @@ export default function VeterinaryProfessionalsPage() {
         </div>
 
         <button
-          onClick={() => setShowModal(true)}
+          onClick={openCreate}
           className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
         >
           <Plus className="w-4 h-4" />
@@ -72,54 +123,77 @@ export default function VeterinaryProfessionalsPage() {
         </button>
       </div>
 
-      {/* Grid of Professionals */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {professionals.map((pro) => (
-          <div key={pro.id} className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:border-emerald-300 transition-all space-y-4">
-            <div className="flex items-start justify-between">
-              <div className="w-12 h-12 rounded-2xl bg-[#0F172A] text-white font-bold flex items-center justify-center text-lg shadow-sm">
-                {pro.fullName.charAt(4) || pro.fullName.charAt(0)}
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="h-48 bg-slate-100 rounded-2xl animate-pulse" />
+          ))}
+        </div>
+      ) : (
+        /* Grid of Professionals */
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {professionals.map((pro) => (
+            <div key={pro.id} className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:border-emerald-300 transition-all space-y-4">
+              <div className="flex items-start justify-between">
+                <div className="w-12 h-12 rounded-2xl bg-[#0F172A] text-white font-bold flex items-center justify-center text-lg shadow-sm">
+                  {pro.fullName.charAt(4) || pro.fullName.charAt(0)}
+                </div>
+                <span className="bg-emerald-100 text-emerald-800 text-[11px] font-extrabold px-2.5 py-0.5 rounded-md border border-emerald-200 capitalize">
+                  {pro.role}
+                </span>
               </div>
-              <span className="bg-emerald-100 text-emerald-800 text-[11px] font-extrabold px-2.5 py-0.5 rounded-md border border-emerald-200 capitalize">
-                {pro.role}
-              </span>
-            </div>
 
-            <div>
-              <h3 className="text-base font-bold text-slate-900">{pro.fullName}</h3>
-              <p className="text-xs text-emerald-700 font-semibold mt-0.5">{pro.specialty}</p>
-            </div>
+              <div>
+                <h3 className="text-base font-bold text-slate-900">{pro.fullName}</h3>
+                <p className="text-xs text-emerald-700 font-semibold mt-0.5">{pro.specialty}</p>
+              </div>
 
-            <div className="space-y-2 pt-2 border-t border-slate-100 text-xs">
-              <div className="flex items-center gap-2 text-slate-700">
-                <Award className="w-3.5 h-3.5 text-slate-400" />
-                <span className="font-mono font-bold">{pro.professionalLicense || 'N° Reg. Colvet Pendiente'}</span>
+              <div className="space-y-2 pt-2 border-t border-slate-100 text-xs">
+                <div className="flex items-center gap-2 text-slate-700">
+                  <Award className="w-3.5 h-3.5 text-slate-400" />
+                  <span className="font-mono font-bold">{pro.professionalLicense || 'N° Reg. Colvet Pendiente'}</span>
+                </div>
+                <div className="flex items-center gap-2 text-slate-700">
+                  <Phone className="w-3.5 h-3.5 text-slate-400" />
+                  <span>{pro.phone}</span>
+                </div>
+                <div className="flex items-center gap-2 text-slate-700">
+                  <Mail className="w-3.5 h-3.5 text-slate-400" />
+                  <span>{pro.email}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-slate-700">
-                <Phone className="w-3.5 h-3.5 text-slate-400" />
-                <span>{pro.phone}</span>
-              </div>
-              <div className="flex items-center gap-2 text-slate-700">
-                <Mail className="w-3.5 h-3.5 text-slate-400" />
-                <span>{pro.email}</span>
+
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+                <button
+                  onClick={() => openEdit(pro)}
+                  className="text-[11px] font-bold bg-slate-50 text-slate-600 border border-slate-200 px-3 py-1.5 rounded-xl hover:bg-slate-100 flex items-center gap-1"
+                >
+                  <Edit className="w-3 h-3" /> Editar
+                </button>
+                <button
+                  onClick={() => handleDelete(pro.id, pro.fullName)}
+                  className="text-[11px] font-bold bg-rose-50 text-rose-600 border border-rose-200 px-3 py-1.5 rounded-xl hover:bg-rose-100 flex items-center gap-1"
+                >
+                  <Trash2 className="w-3 h-3" /> Eliminar
+                </button>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
-      {/* Modal Registrar Profesional */}
+      {/* Modal Registrar / Editar Profesional */}
       {showModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl border border-slate-200 shadow-xl max-w-lg w-full p-6 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-lg font-bold text-slate-900">Registrar Nuevo Médico / Técnico</h3>
-              <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600 text-lg font-bold">
+              <h3 className="text-lg font-bold text-slate-900">{editingId ? 'Editar Profesional' : 'Registrar Nuevo Médico / Técnico'}</h3>
+              <button onClick={() => { setShowModal(false); resetForm(); }} className="text-slate-400 hover:text-slate-600 text-lg font-bold">
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleAddProfessional} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Nombre Completo *</label>
                 <input
@@ -173,30 +247,57 @@ export default function VeterinaryProfessionalsPage() {
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Rol Operativo</label>
                   <select
                     value={formData.role}
-                    onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
+                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                     className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500"
                   >
                     <option value="veterinario">Veterinario/a</option>
                     <option value="cirujano">Cirujano/a</option>
                     <option value="tecnico">Técnico/a Veterinario</option>
                     <option value="asistente">Asistente Clínico</option>
+                    <option value="recepcion">Recepción</option>
                   </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Teléfono</label>
+                  <input
+                    type="text"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    placeholder="+56 9 1234 5678"
+                    className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Email</label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="doctor@clinica.cl"
+                    className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500"
+                  />
                 </div>
               </div>
 
               <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
                 <button
                   type="button"
-                  onClick={() => setShowModal(false)}
+                  onClick={() => { setShowModal(false); resetForm(); }}
                   className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="bg-[#0F172A] hover:bg-slate-800 text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm"
+                  disabled={saving}
+                  className="bg-[#0F172A] hover:bg-slate-800 text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm flex items-center gap-2 disabled:opacity-50"
                 >
-                  Guardar Profesional
+                  {saving && <Loader2 className="w-3 h-3 animate-spin" />}
+                  {editingId ? 'Actualizar Profesional' : 'Guardar Profesional'}
                 </button>
               </div>
             </form>

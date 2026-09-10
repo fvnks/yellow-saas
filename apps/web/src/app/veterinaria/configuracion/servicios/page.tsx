@@ -10,13 +10,21 @@ import {
   Tag,
   Clock,
   ShieldAlert,
+  Edit,
+  Trash2,
+  Loader2,
 } from 'lucide-react';
-import { INITIAL_SERVICES, VeterinaryService, ServiceCategory } from '../../lib/veterinary-store';
+import { useServices } from '../../hooks/use-services';
+import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
+import { ServiceCategory } from '../../lib/veterinary-store';
 
 export default function VeterinaryServicesPage() {
-  const [services, setServices] = useState<VeterinaryService[]>(INITIAL_SERVICES);
+  const { data: services, loading, refresh } = useServices();
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -26,6 +34,18 @@ export default function VeterinaryServicesPage() {
     durationMinutes: 30,
     requiresConsent: false,
   });
+
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      description: '',
+      category: 'consulta',
+      priceCLP: 30000,
+      durationMinutes: 30,
+      requiresConsent: false,
+    });
+    setEditingId(null);
+  };
 
   const formatCLP = (val: number) => {
     return new Intl.NumberFormat('es-CL', {
@@ -41,26 +61,57 @@ export default function VeterinaryServicesPage() {
       s.category.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleAddService = (e: React.FormEvent) => {
+  const openCreate = () => {
+    resetForm();
+    setShowModal(true);
+  };
+
+  const openEdit = (srv: any) => {
+    setEditingId(srv.id);
+    setFormData({
+      name: srv.name || '',
+      description: srv.description || '',
+      category: srv.category || 'consulta',
+      priceCLP: srv.priceCLP || 30000,
+      durationMinutes: srv.durationMinutes || 30,
+      requiresConsent: srv.requiresConsent || false,
+    });
+    setShowModal(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name) return;
+    setSaving(true);
+    try {
+      const api = getApiClient();
+      if (editingId) {
+        await api.updateVetService(editingId, { ...formData });
+        toast.success('Servicio actualizado correctamente');
+      } else {
+        await api.createVetService({ ...formData });
+        toast.success('Servicio creado correctamente');
+      }
+      await refresh();
+      setShowModal(false);
+      resetForm();
+    } catch (err: any) {
+      toast.error(err.message || 'Error al guardar el servicio');
+    } finally {
+      setSaving(false);
+    }
+  };
 
-    const newSrv: VeterinaryService = {
-      id: `srv-${Date.now()}`,
-      ...formData,
-      status: 'active',
-    };
-
-    setServices([newSrv, ...services]);
-    setShowModal(false);
-    setFormData({
-      name: '',
-      description: '',
-      category: 'consulta',
-      priceCLP: 30000,
-      durationMinutes: 30,
-      requiresConsent: false,
-    });
+  const handleDelete = async (id: string, name: string) => {
+    if (!confirm(`¿Eliminar el servicio "${name}"? Esta acción no se puede deshacer.`)) return;
+    try {
+      const api = getApiClient();
+      await api.deleteVetService(id);
+      await refresh();
+      toast.success('Servicio eliminado');
+    } catch (err: any) {
+      toast.error(err.message || 'Error al eliminar el servicio');
+    }
   };
 
   return (
@@ -77,7 +128,7 @@ export default function VeterinaryServicesPage() {
         </div>
 
         <button
-          onClick={() => setShowModal(true)}
+          onClick={openCreate}
           className="bg-amber-500 hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
         >
           <Plus className="w-4 h-4" />
@@ -113,10 +164,17 @@ export default function VeterinaryServicesPage() {
                 <th className="px-6 py-3.5">Duración Estimada</th>
                 <th className="px-6 py-3.5">Consentimiento Informado</th>
                 <th className="px-6 py-3.5 text-right">Precio Neto / Final CLP</th>
+                <th className="px-6 py-3.5 text-right">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm">
-              {filteredServices.map((srv) => (
+              {loading ? (
+                [...Array(3)].map((_, i) => (
+                  <tr key={i}>
+                    <td colSpan={6} className="px-6 py-4"><div className="h-8 bg-slate-100 rounded-xl animate-pulse" /></td>
+                  </tr>
+                ))
+              ) : filteredServices.map((srv) => (
                 <tr key={srv.id} className="hover:bg-slate-50/80 transition-colors">
                   <td className="px-6 py-4">
                     <div className="font-bold text-slate-900">{srv.name}</div>
@@ -149,6 +207,23 @@ export default function VeterinaryServicesPage() {
                   <td className="px-6 py-4 text-right font-mono font-bold text-slate-900 text-base">
                     {formatCLP(srv.priceCLP)}
                   </td>
+
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => openEdit(srv)}
+                        className="text-[11px] font-bold bg-slate-50 text-slate-600 border border-slate-200 px-3 py-1.5 rounded-xl hover:bg-slate-100 flex items-center gap-1"
+                      >
+                        <Edit className="w-3 h-3" /> Editar
+                      </button>
+                      <button
+                        onClick={() => handleDelete(srv.id, srv.name)}
+                        className="text-[11px] font-bold bg-rose-50 text-rose-600 border border-rose-200 px-3 py-1.5 rounded-xl hover:bg-rose-100 flex items-center gap-1"
+                      >
+                        <Trash2 className="w-3 h-3" /> Eliminar
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -156,18 +231,18 @@ export default function VeterinaryServicesPage() {
         </div>
       </div>
 
-      {/* Modal Modal Nuevo Servicio */}
+      {/* Modal Nuevo / Editar Servicio */}
       {showModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl border border-slate-200 shadow-xl max-w-lg w-full p-6 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-lg font-bold text-slate-900">Agregar Nuevo Servicio al Arancel</h3>
-              <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600 text-lg font-bold">
+              <h3 className="text-lg font-bold text-slate-900">{editingId ? 'Editar Servicio' : 'Agregar Nuevo Servicio al Arancel'}</h3>
+              <button onClick={() => { setShowModal(false); resetForm(); }} className="text-slate-400 hover:text-slate-600 text-lg font-bold">
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleAddService} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Nombre del Servicio *</label>
                 <input
@@ -210,6 +285,30 @@ export default function VeterinaryServicesPage() {
                 </div>
               </div>
 
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Duración (min)</label>
+                  <input
+                    type="number"
+                    value={formData.durationMinutes}
+                    onChange={(e) => setFormData({ ...formData, durationMinutes: parseInt(e.target.value) || 30 })}
+                    className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+
+                <div className="flex items-end pb-1">
+                  <label className="flex items-center gap-2 cursor-pointer text-sm text-slate-700 font-semibold">
+                    <input
+                      type="checkbox"
+                      checked={formData.requiresConsent}
+                      onChange={(e) => setFormData({ ...formData, requiresConsent: e.target.checked })}
+                      className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                    />
+                    Requiere Consentimiento Informado
+                  </label>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Descripción</label>
                 <textarea
@@ -224,16 +323,18 @@ export default function VeterinaryServicesPage() {
               <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
                 <button
                   type="button"
-                  onClick={() => setShowModal(false)}
+                  onClick={() => { setShowModal(false); resetForm(); }}
                   className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="bg-[#0F172A] hover:bg-slate-800 text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm"
+                  disabled={saving}
+                  className="bg-[#0F172A] hover:bg-slate-800 text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm flex items-center gap-2 disabled:opacity-50"
                 >
-                  Guardar Servicio
+                  {saving && <Loader2 className="w-3 h-3 animate-spin" />}
+                  {editingId ? 'Actualizar Servicio' : 'Guardar Servicio'}
                 </button>
               </div>
             </form>
