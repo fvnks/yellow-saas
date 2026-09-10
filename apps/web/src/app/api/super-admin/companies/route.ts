@@ -54,7 +54,14 @@ export async function POST(request: NextRequest) {
     );
 
     if (Array.isArray(modules) && modules.length > 0) {
+      const validModules = await query('SELECT name FROM module_catalog WHERE name = ANY($1) AND is_active = true', [modules]);
+      const validNames = new Set(validModules.rows.map((r: any) => r.name));
+      
       for (const moduleName of modules) {
+        if (!validNames.has(moduleName)) {
+          console.warn(`Module '${moduleName}' not found in catalog, skipping`);
+          continue;
+        }
         await query(
           `INSERT INTO module_activations (company_id, module_name, status, activated_at)
            VALUES ($1, $2, 'active', now())

@@ -164,7 +164,7 @@ export default function AdminCompanyDetailPage() {
     active: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     trial: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
     suspended: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-    cancelled: 'bg-muted0/10 text-muted-foreground border-border/20',
+    cancelled: 'bg-slate-500/10 text-muted-foreground border-border/20',
   };
 
   return (

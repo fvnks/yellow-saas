@@ -1,8 +1,12 @@
 import { query } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
+import { verifySuperAdmin } from '@/api/super-admin/lib/auth';
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+  const admin = await verifySuperAdmin(request);
+  if (!admin) return errorResponse('No autorizado', 401);
+
   try {
     const companyId = params.id;
     const body = await request.json();
@@ -12,7 +16,6 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       return errorResponse('module_name es requerido', 400);
     }
 
-    // Check if module exists in catalog
     const catalogResult = await query(
       `SELECT * FROM module_catalog WHERE name = $1 AND is_active = true`,
       [module_name]
@@ -22,7 +25,6 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     }
     const moduleInfo = catalogResult.rows[0];
 
-    // Check if already activated
     const existingResult = await query(
       `SELECT id, status FROM module_activations WHERE company_id = $1 AND module_name = $2`,
       [companyId, module_name]
@@ -31,7 +33,6 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       return errorResponse('Módulo ya está activo', 409);
     }
 
-    // Activate or reactivate
     const result = await query(
       `INSERT INTO module_activations (company_id, module_name, status, activated_at)
        VALUES ($1, $2, 'active', now())
@@ -60,6 +61,9 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  const admin = await verifySuperAdmin(request);
+  if (!admin) return errorResponse('No autorizado', 401);
+
   try {
     const companyId = params.id;
     const { searchParams } = new URL(request.url);
