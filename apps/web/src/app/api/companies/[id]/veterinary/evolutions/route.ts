@@ -71,6 +71,14 @@ export async function POST(request: NextRequest) {
 
     if (!patient_id) return errorResponse('patient_id is required', 400);
 
+    const parentChecks = [query('SELECT id FROM veterinary_patients WHERE id = $1 AND company_id = $2', [patient_id, companyId])];
+    if (professional_id) {
+      parentChecks.push(query('SELECT id FROM veterinary_professionals WHERE id = $1 AND company_id = $2', [professional_id, companyId]));
+    }
+    const results = await Promise.all(parentChecks);
+    if (results[0].rows.length === 0) return errorResponse('Paciente no encontrado', 404);
+    if (professional_id && results[1]?.rows.length === 0) return errorResponse('Profesional no encontrado', 404);
+
     const validTypes = ['consulta', 'control', 'procedimiento', 'post_operatorio', 'hospitalizacion', 'examen'];
     if (!validTypes.includes(evolution_type)) return errorResponse('Invalid evolution type', 400);
 

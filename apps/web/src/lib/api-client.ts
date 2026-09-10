@@ -2379,6 +2379,17 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>(`/veterinary/lab-tests/${id}`, { method: 'DELETE' });
   }
 
+  // Imaging Studies
+  async getVetImaging(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/imaging', params || {});
+  }
+  async createVetImaging(data: any) {
+    return this.request<any>('/veterinary/imaging', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetImaging(data: any) {
+    return this.request<any>('/veterinary/imaging', { method: 'PATCH', body: JSON.stringify(data) });
+  }
+
   // Pharmacy Stock
   async getVetPharmacyStock(params?: Record<string, string>) {
     return this.requestWithPagination<any>('/veterinary/pharmacy/stock', params || {});

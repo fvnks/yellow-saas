@@ -19,6 +19,11 @@ function generateReminderSms(body: SmsBody): string {
   return msg.length <= 160 ? msg : msg.substring(0, 157) + '...';
 }
 
+// STUB: Returns message/url for client-side delivery.
+// WhatsApp: returns wa.me deep link (open in browser/app)
+// Email: returns HTML body (frontend sends via SendGrid/Resend)
+// SMS: returns sms: URL (frontend sends via Twilio)
+// TODO: Integrate server-side sending when API keys are configured
 export async function POST(request: NextRequest) {
   try {
     const companyId = await getCompanyId(request);

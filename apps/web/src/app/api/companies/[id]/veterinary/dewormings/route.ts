@@ -74,6 +74,12 @@ export async function POST(request: NextRequest) {
       return errorResponse('patient_id y product_name son requeridos', 400);
     }
 
+    const parentCheck = await query(
+      'SELECT id FROM veterinary_patients WHERE id = $1 AND company_id = $2',
+      [patient_id, companyId]
+    );
+    if (parentCheck.rows.length === 0) return errorResponse('Paciente no encontrado', 404);
+
     const result = await query(
       `INSERT INTO veterinary_dewormings
         (company_id, patient_id, professional_id, product_name, type, dose, application_date, next_due_date, notes)

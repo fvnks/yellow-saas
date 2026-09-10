@@ -88,6 +88,15 @@ export async function POST(request: NextRequest) {
 
     if (!patient_id || !client_id || !panel_id) return errorResponse('Patient, client, and panel are required', 400);
 
+    const [patientCheck, clientCheck, panelCheck] = await Promise.all([
+      query('SELECT id FROM veterinary_patients WHERE id = $1 AND company_id = $2', [patient_id, companyId]),
+      query('SELECT id FROM veterinary_clients WHERE id = $1 AND company_id = $2', [client_id, companyId]),
+      query('SELECT id FROM veterinary_lab_panels WHERE id = $1 AND company_id = $2', [panel_id, companyId]),
+    ]);
+    if (patientCheck.rows.length === 0) return errorResponse('Paciente no encontrado', 404);
+    if (clientCheck.rows.length === 0) return errorResponse('Cliente no encontrado', 404);
+    if (panelCheck.rows.length === 0) return errorResponse('Panel de laboratorio no encontrado', 404);
+
     const validSampleTypes = ['sangre', 'orina', 'heces', 'raspado_piel', 'frotis_sanguineo', 'aspiracion', 'otro'];
     if (!validSampleTypes.includes(sample_type)) return errorResponse('Invalid sample type', 400);
 
