@@ -2389,6 +2389,9 @@ async deleteAdjustmentReason(id: string) {
   async updateVetImaging(data: any) {
     return this.request<any>('/veterinary/imaging', { method: 'PATCH', body: JSON.stringify(data) });
   }
+  async deleteVetImaging(id: string) {
+    return this.request<any>(`/veterinary/imaging?id=${id}`, { method: 'DELETE' });
+  }
 
   // Pharmacy Stock
   async getVetPharmacyStock(params?: Record<string, string>) {

@@ -139,3 +139,23 @@ export async function PATCH(request: NextRequest) {
     return errorResponse(error.message || 'Error al actualizar estudio', 500);
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const companyId = getCompanyId(request);
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) return errorResponse('id es requerido', 400);
+
+    const result = await query(
+      'DELETE FROM veterinary_imaging_studies WHERE id = $1 AND company_id = $2 RETURNING id',
+      [id, companyId]
+    );
+
+    if (result.rows.length === 0) return errorResponse('Estudio no encontrado', 404);
+    return successResponse({ deleted: true });
+  } catch (error: any) {
+    return errorResponse(error.message || 'Error al eliminar estudio', 500);
+  }
+}

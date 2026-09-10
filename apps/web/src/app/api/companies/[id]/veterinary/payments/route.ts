@@ -92,6 +92,11 @@ export async function POST(request: NextRequest) {
     if (patientCheck.rows.length === 0) return errorResponse('Paciente no encontrado', 404);
     if (clientCheck.rows.length === 0) return errorResponse('Cliente no encontrado', 404);
 
+    if (estimate_id) {
+      const estimateCheck = await query('SELECT id FROM veterinary_estimates WHERE id = $1 AND company_id = $2', [estimate_id, companyId]);
+      if (estimateCheck.rows.length === 0) return errorResponse('Presupuesto no encontrado', 404);
+    }
+
     const validMethods = ['efectivo', 'debito', 'credito_webpay', 'transbank_credito', 'transferencia', 'cheque', 'mercadopago'];
     if (!validMethods.includes(method)) return errorResponse('Invalid payment method', 400);
 
