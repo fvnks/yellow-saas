@@ -19,6 +19,14 @@ import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
 import { ServiceCategory } from '@/app/veterinaria/lib/veterinary-store';
 
+const formatCLP = (val: number) => {
+  return new Intl.NumberFormat('es-CL', {
+    style: 'currency',
+    currency: 'CLP',
+    maximumFractionDigits: 0,
+  }).format(Math.round(val));
+};
+
 export default function VeterinaryServicesPage() {
   const { data: services, loading, refresh } = useServices();
   const [search, setSearch] = useState('');
@@ -45,14 +53,6 @@ export default function VeterinaryServicesPage() {
       requiresConsent: false,
     });
     setEditingId(null);
-  };
-
-  const formatCLP = (val: number) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP',
-      maximumFractionDigits: 0,
-    }).format(Math.round(val));
   };
 
   const filteredServices = services.filter(
@@ -279,7 +279,7 @@ export default function VeterinaryServicesPage() {
                     type="number"
                     required
                     value={formData.priceCLP}
-                    onChange={(e) => setFormData({ ...formData, priceCLP: parseFloat(e.target.value) })}
+                    onChange={(e) => setFormData({ ...formData, priceCLP: parseFloat(e.target.value) || 0 })}
                     className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl font-mono font-bold focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>

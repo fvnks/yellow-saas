@@ -47,6 +47,9 @@ const statusLabels: Record<string, string> = {
   convertido: 'Convertido a Venta',
 };
 
+const subtotal = (e: VeterinaryEstimate) => e.items.reduce((a, i) => a + i.quantity * i.unitPriceCLP, 0);
+const totalWithIVA = (e: VeterinaryEstimate) => Math.round(subtotal(e) * (1 + IVA_RATE));
+
 const paymentMethodLabels: Record<string, string> = {
   efectivo: 'Efectivo',
   debito: 'Débito',
@@ -108,9 +111,6 @@ export default function VeterinaryEstimatesPage() {
     const matchesStatus = statusFilter === 'todos' || e.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
-
-  const subtotal = (e: VeterinaryEstimate) => e.items.reduce((a, i) => a + i.quantity * i.unitPriceCLP, 0);
-  const totalWithIVA = (e: VeterinaryEstimate) => Math.round(subtotal(e) * (1 + IVA_RATE));
 
   const handleAddItem = () =>
     setNewItems([...newItems, { id: `ni-${Date.now()}`, description: '', quantity: 1, unitPriceCLP: 0 }]);
