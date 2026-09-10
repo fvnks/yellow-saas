@@ -21,6 +21,8 @@ const routeLabels: Record<string, string> = {
   '/veterinaria/configuracion/servicios': 'Servicios & Aranceles',
   '/veterinaria/profesionales': 'Profesionales Vet',
   '/veterinaria/recordatorios': 'Recordatorios Preventivos',
+  '/veterinaria/rooms': 'Boxes & Salas',
+  '/veterinaria/farmacia': 'Farmacia',
 };
 
 export default function VeterinarySidebarBreadcrumbs() {

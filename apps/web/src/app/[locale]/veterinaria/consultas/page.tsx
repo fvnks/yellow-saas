@@ -15,31 +15,33 @@ import {
   AlertTriangle,
   Heart,
   Thermometer,
+  Loader2,
 } from 'lucide-react';
 import MedicationStockSelector, { InventoryMedication } from './components/medication-stock-selector';
 import BillingOrderGenerator from './components/billing-order-generator';
-import {
-  INITIAL_PATIENTS,
-  INITIAL_CLIENTS,
-  INITIAL_PROFESSIONALS,
-  INITIAL_CONSULTATIONS,
-  VeterinaryConsultation,
-  PrescriptionItem,
-  SoapNote,
-} from '../lib/veterinary-store';
+import { usePatients } from '@/app/veterinaria/hooks/use-patients';
+import { useProfessionals } from '@/app/veterinaria/hooks/use-professionals';
+import { useServices } from '@/app/veterinaria/hooks/use-services';
+import { useConsultations } from '@/app/veterinaria/hooks/use-consultations';
+import { getApiClient } from '@/lib/api-client';
 
 export default function VeterinaryConsultationsPage() {
-  const [selectedPatientId, setSelectedPatientId] = useState(INITIAL_PATIENTS[0]?.id || '');
-  const [selectedProfessionalId, setSelectedProfessionalId] = useState(INITIAL_PROFESSIONALS[0]?.id || '');
+  const { data: patients, loading: loadingPatients } = usePatients();
+  const { data: professionals, loading: loadingProfessionals } = useProfessionals();
+  const { data: services } = useServices();
+  const { data: consultationsData, refresh: refreshConsultations } = useConsultations();
+
+  const [selectedPatientId, setSelectedPatientId] = useState('');
+  const [selectedProfessionalId, setSelectedProfessionalId] = useState('');
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   // Form Vitals
-  const [weightKg, setWeightKg] = useState<number>(INITIAL_PATIENTS[0]?.currentWeightKg || 10.0);
-  const [temperatureC, setTemperatureC] = useState<number>(38.5);
-  const [heartRateBpm, setHeartRateBpm] = useState<number>(90);
-  const [respiratoryRateBpm, setRespiratoryRateBpm] = useState<number>(24);
-  const [capillaryRefillTimeSec, setCapillaryRefillTimeSec] = useState<number>(2);
-  const [mucousMembranes, setMucousMembranes] = useState<string>('Rosadas y húmedas');
+  const [weightKg, setWeightKg] = useState<number>(0);
+  const [temperatureC, setTemperatureC] = useState<number>(0);
+  const [heartRateBpm, setHeartRateBpm] = useState<number>(0);
+  const [respiratoryRateBpm, setRespiratoryRateBpm] = useState<number>(0);
+  const [capillaryRefillTimeSec, setCapillaryRefillTimeSec] = useState<number>(0);
+  const [mucousMembranes, setMucousMembranes] = useState<string>('');
   const [bodyCondition, setBodyCondition] = useState<'1/5' | '2/5' | '3/5' | '4/5' | '5/5'>('3/5');
 
   // Form Clinical
@@ -50,40 +52,31 @@ export default function VeterinaryConsultationsPage() {
   const [treatmentPlan, setTreatmentPlan] = useState<string>('');
 
   // SOAP Clinical Evolution
-  const [soap, setSoap] = useState<SoapNote>({
+  const [soap, setSoap] = useState({
     subjective: '',
     objective: '',
     assessment: '',
     plan: '',
   });
-  const updateSoap = (key: keyof SoapNote, value: string) => setSoap((s) => ({ ...s, [key]: value }));
+  const updateSoap = (key: string, value: string) => setSoap((s) => ({ ...s, [key]: value }));
 
   // Prescription Items
-  const [prescriptionItems, setPrescriptionItems] = useState<PrescriptionItem[]>([
-    {
-      id: 'pitem-1',
-      medicationName: 'Amoxicilina + Ac. Clavulánico 250mg',
-      dose: '1/2 comprimido',
-      frequency: 'Cada 12 horas',
-      duration: '7 días',
-      route: 'oral',
-      specialInstructions: 'Administrar junto a las comidas principales.',
-    },
-  ]);
+  const [prescriptionItems, setPrescriptionItems] = useState<{id: string; medicationName: string; dose: string; frequency: string; duration: string; route: string; specialInstructions?: string}[]>([]);
 
   const [dispensedMeds, setDispensedMeds] = useState<{ med: InventoryMedication; quantity: number }[]>([]);
 
-  const selectedPatient = INITIAL_PATIENTS.find((p) => p.id === selectedPatientId) || INITIAL_PATIENTS[0] || null;
-  const selectedClient = INITIAL_CLIENTS.find((c) => c.id === selectedPatient?.clientId);
-  const selectedProfessional = INITIAL_PROFESSIONALS.find((pr) => pr.id === selectedProfessionalId) || INITIAL_PROFESSIONALS[0] || null;
+  const selectedPatient = patients.find((p: any) => p.id === selectedPatientId) || patients[0] || null;
+  const selectedProfessional = professionals.find((pr: any) => pr.id === selectedProfessionalId) || professionals[0] || null;
+
+  const consultationFeeCLP = services.find((s: any) => (s.category || '').toLowerCase() === 'consulta')?.sale_price || 0;
 
   const handleAddMedication = () => {
-    const newItem: PrescriptionItem = {
+    const newItem = {
       id: `pitem-${Date.now()}`,
       medicationName: '',
       dose: '',
-      frequency: 'Cada 24 horas',
-      duration: '5 días',
+      frequency: '',
+      duration: '',
       route: 'oral',
     };
     setPrescriptionItems([...prescriptionItems, newItem]);
@@ -93,12 +86,38 @@ export default function VeterinaryConsultationsPage() {
     setPrescriptionItems(prescriptionItems.filter((i) => i.id !== id));
   };
 
-  const handleSaveConsultation = (e: React.FormEvent) => {
+  const handleSaveConsultation = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!reasonForVisit || !primaryDiagnosis) return;
 
-    setSavedSuccess(true);
-    setTimeout(() => setSavedSuccess(false), 4000);
+    try {
+      const api = getApiClient();
+      await api.createVetConsultation({
+        patientId: selectedPatient?.id,
+        patientName: selectedPatient?.name,
+        professionalId: selectedProfessional?.id,
+        professionalName: selectedProfessional?.fullName,
+        weightKg,
+        temperatureC,
+        heartRateBpm,
+        respiratoryRateBpm,
+        capillaryRefillTimeSec,
+        mucousMembranes,
+        bodyCondition,
+        reasonForVisit,
+        anamnesis,
+        physicalExamFindings,
+        primaryDiagnosis,
+        treatmentPlan,
+        soap,
+        prescriptionItems,
+      });
+      refreshConsultations();
+      setSavedSuccess(true);
+      setTimeout(() => setSavedSuccess(false), 4000);
+    } catch {
+      alert('Error al guardar la consulta.');
+    }
   };
 
   return (
@@ -138,16 +157,20 @@ export default function VeterinaryConsultationsPage() {
             value={selectedPatientId}
             onChange={(e) => {
               setSelectedPatientId(e.target.value);
-              const p = INITIAL_PATIENTS.find((item) => item.id === e.target.value);
-              if (p) setWeightKg(p.currentWeightKg);
+              const p = patients.find((item: any) => item.id === e.target.value);
+              if (p) setWeightKg(p.currentWeightKg || 0);
             }}
             className="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
-            {INITIAL_PATIENTS.map((p) => (
+            {loadingPatients ? (
+              <option value="">Cargando pacientes...</option>
+            ) : (
+            patients.map((p: any) => (
               <option key={p.id} value={p.id}>
                 {p.name} - {p.species.toUpperCase()} ({p.breed}) • Tutor: {p.clientName}
               </option>
-            ))}
+            ))
+            )}
           </select>
 
           {selectedPatient && (
@@ -165,11 +188,15 @@ export default function VeterinaryConsultationsPage() {
             onChange={(e) => setSelectedProfessionalId(e.target.value)}
             className="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
-            {INITIAL_PROFESSIONALS.map((pr) => (
+            {loadingProfessionals ? (
+              <option value="">Cargando profesionales...</option>
+            ) : (
+            professionals.map((pr: any) => (
               <option key={pr.id} value={pr.id}>
                 {pr.fullName} ({pr.professionalLicense}) - {pr.specialty}
               </option>
-            ))}
+            ))
+            )}
           </select>
         </div>
       </div>
@@ -468,9 +495,9 @@ export default function VeterinaryConsultationsPage() {
 
         <BillingOrderGenerator
           patientName={selectedPatient?.name || ''}
-          clientName={selectedClient?.fullName || selectedPatient?.clientName || ''}
-          clientRut={selectedClient?.rut || ''}
-          consultationFeeCLP={32000}
+          clientName={selectedPatient?.clientName || ''}
+          clientRut={selectedPatient?.clientRut || ''}
+          consultationFeeCLP={consultationFeeCLP}
           dispensedMeds={dispensedMeds}
         />
 

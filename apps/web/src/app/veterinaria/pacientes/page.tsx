@@ -16,18 +16,25 @@ import {
   Shield,
   Stethoscope,
 } from 'lucide-react';
-import { INITIAL_PATIENTS, INITIAL_CLIENTS, INITIAL_SPECIES, VeterinaryPatient, Species } from '../lib/veterinary-store';
+import { usePatients } from '../hooks/use-patients';
+import { useClients } from '../hooks/use-clients';
+import { useSpecies } from '../hooks/use-species';
+import { getApiClient } from '@/lib/api-client';
+import { Species } from '../lib/veterinary-store';
 
 export default function VeterinaryPatientsPage() {
-  const [patients, setPatients] = useState<VeterinaryPatient[]>(INITIAL_PATIENTS);
+  const { data: patients, loading, refresh } = usePatients();
+  const { data: clients } = useClients();
+  const { data: speciesList } = useSpecies();
   const [search, setSearch] = useState('');
   const [selectedSpecies, setSelectedSpecies] = useState<string>('todos');
   const [showModal, setShowModal] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
-    clientId: INITIAL_CLIENTS[0]?.id || '',
-    species: 'perro' as Species,
+    clientId: '',
+    species: 'perro' as Species | string,
     breed: '',
     gender: 'macho' as const,
     birthDate: '',
@@ -39,7 +46,7 @@ export default function VeterinaryPatientsPage() {
     notes: '',
   });
 
-  const filteredPatients = patients.filter((p) => {
+  const filteredPatients = patients.filter((p: any) => {
     const matchesSearch =
       p.name.toLowerCase().includes(search.toLowerCase()) ||
       p.clientName.toLowerCase().includes(search.toLowerCase()) ||
@@ -50,39 +57,56 @@ export default function VeterinaryPatientsPage() {
     return matchesSearch && matchesSpecies;
   });
 
-  const handleAddPatient = (e: React.FormEvent) => {
+  const handleAddPatient = async (e: React.FormEvent) => {
     e.preventDefault();
-    const selectedClient = INITIAL_CLIENTS.find((c) => c.id === formData.clientId);
+    const selectedClient = clients.find((c: any) => c.id === formData.clientId);
     if (!formData.name || !selectedClient) return;
 
-    const newPatient: VeterinaryPatient = {
-      id: `pat-${Date.now()}`,
-      ...formData,
-      clientName: selectedClient.fullName,
-      clientPhone: selectedClient.phone,
-      status: 'active',
-      createdAt: new Date().toISOString().split('T')[0],
-    };
-
-    setPatients([newPatient, ...patients]);
-    setShowModal(false);
-    setFormData({
-      name: '',
-      clientId: INITIAL_CLIENTS[0]?.id || '',
-      species: 'perro',
-      breed: '',
-      gender: 'macho',
-      birthDate: '',
-      color: '',
-      currentWeightKg: 5.0,
-      microchip: '',
-      isSterilized: true,
-      allergies: '',
-      notes: '',
-    });
+    setSaving(true);
+    try {
+      const api = getApiClient();
+      await api.createVetPatient({
+        name: formData.name,
+        clientId: selectedClient.id,
+        clientName: selectedClient.fullName,
+        clientPhone: selectedClient.phone,
+        species: formData.species,
+        breed: formData.breed,
+        gender: formData.gender,
+        birthDate: formData.birthDate,
+        color: formData.color,
+        currentWeightKg: formData.currentWeightKg,
+        microchip: formData.microchip,
+        isSterilized: formData.isSterilized,
+        allergies: formData.allergies,
+        notes: formData.notes,
+        status: 'active',
+      });
+      await refresh();
+      setShowModal(false);
+      setFormData({
+        name: '',
+        clientId: clients[0]?.id || '',
+        species: 'perro',
+        breed: '',
+        gender: 'macho',
+        birthDate: '',
+        color: '',
+        currentWeightKg: 5.0,
+        microchip: '',
+        isSterilized: true,
+        allergies: '',
+        notes: '',
+      });
+    } catch (err) {
+      console.error('Error creating patient:', err);
+      alert('Error al guardar la mascota.');
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const getSpeciesBadge = (species: Species) => {
+  const getSpeciesBadge = (species: string) => {
     const spKey = species.toLowerCase();
     if (spKey.includes('perro') || spKey.includes('canino')) {
       return <span className="bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1"><Dog className="w-3.5 h-3.5" /> Canino</span>;
@@ -159,6 +183,11 @@ export default function VeterinaryPatientsPage() {
       {/* Patients Table */}
       <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
+          {loading ? (
+            <div className="p-6 space-y-3">
+              {[...Array(5)].map((_, i) => <div key={i} className="h-16 bg-slate-100 rounded-xl animate-pulse" />)}
+            </div>
+          ) : (
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50/80 border-b border-slate-200/80 text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">
@@ -171,7 +200,7 @@ export default function VeterinaryPatientsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm">
-              {filteredPatients.map((patient) => (
+              {filteredPatients.map((patient: any) => (
                 <tr key={patient.id} className="hover:bg-slate-50/80 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
@@ -238,6 +267,7 @@ export default function VeterinaryPatientsPage() {
               ))}
             </tbody>
           </table>
+          )}
         </div>
       </div>
 
@@ -273,7 +303,7 @@ export default function VeterinaryPatientsPage() {
                     onChange={(e) => setFormData({ ...formData, clientId: e.target.value })}
                     className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   >
-                    {INITIAL_CLIENTS.map((c) => (
+                    {clients.map((c: any) => (
                       <option key={c.id} value={c.id}>
                         {c.fullName} ({c.rut})
                       </option>
@@ -288,7 +318,7 @@ export default function VeterinaryPatientsPage() {
                     onChange={(e) => setFormData({ ...formData, species: e.target.value })}
                     className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
                   >
-                    {INITIAL_SPECIES.map((sp) => (
+                    {(speciesList.length > 0 ? speciesList : [{ id: 'perro', key: 'perro', name: 'Perro' }, { id: 'gato', key: 'gato', name: 'Gato' }]).map((sp: any) => (
                       <option key={sp.id} value={sp.key}>
                         {sp.name}
                       </option>
@@ -340,9 +370,10 @@ export default function VeterinaryPatientsPage() {
                 </button>
                 <button
                   type="submit"
-                  className="bg-[#0F172A] hover:bg-slate-800 text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm"
+                  disabled={saving}
+                  className="bg-[#0F172A] hover:bg-slate-800 text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm disabled:opacity-50"
                 >
-                  Guardar Mascota
+                  {saving ? 'Guardando...' : 'Guardar Mascota'}
                 </button>
               </div>
             </form>
