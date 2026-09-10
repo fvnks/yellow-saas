@@ -15,15 +15,12 @@ import {
   FileText,
   X,
 } from 'lucide-react';
-import {
-  INITIAL_PATIENTS,
-  INITIAL_CLIENTS,
-  INITIAL_PROFESSIONALS,
-  INITIAL_LAB_ORDERS,
-  INITIAL_LAB_PANELS,
-  LabOrder,
-  LabPanel,
-} from '../lib/veterinary-store';
+import { useLabPanels, useLabOrders } from '@/app/veterinaria/hooks/use-lab';
+import { usePatients } from '@/app/veterinaria/hooks/use-patients';
+import { useProfessionals } from '@/app/veterinaria/hooks/use-professionals';
+import { getApiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
+import { LabOrder, LabPanel } from '@/app/veterinaria/lib/veterinary-store';
 
 const statusBadges: Record<string, string> = {
   ordenada: 'bg-blue-100 text-blue-800 border-blue-200',
@@ -61,21 +58,55 @@ const sampleTypeLabels: Record<string, string> = {
 };
 
 export default function VeterinaryLabPage() {
-  const [orders, setOrders] = useState<LabOrder[]>(INITIAL_LAB_ORDERS);
+  const { data: orders, loading: loadingOrders, error: errorOrders, refresh: refreshOrders, mutate: mutateOrders } = useLabOrders();
+  const { data: labPanels, loading: loadingPanels } = useLabPanels();
+  const { data: patients } = usePatients();
+  const { data: professionals } = useProfessionals();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('todos');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [showResults, setShowResults] = useState(false);
 
+  const [savingResults, setSavingResults] = useState(false);
+  const [resultFormEntries, setResultFormEntries] = useState<{
+    testId: string;
+    testName: string;
+    unit: string;
+    referenceRange: string;
+    value: string;
+    flag: string;
+  }[]>([]);
+
   const [formData, setFormData] = useState({
-    patientId: INITIAL_PATIENTS[0]?.id || '',
-    professionalId: INITIAL_PROFESSIONALS[0]?.id || '',
-    panelId: INITIAL_LAB_PANELS[0]?.id || '',
+    patientId: '',
+    professionalId: '',
+    panelId: '',
     sampleType: 'sangre' as LabOrder['sampleType'],
     priority: 'rutina' as LabOrder['priority'],
     note: '',
   });
+
+  if (loadingOrders || loadingPanels) {
+    return (
+      <div className="space-y-6">
+        <div className="h-8 w-64 bg-slate-200 rounded-xl animate-pulse" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => <div key={i} className="h-24 bg-slate-100 rounded-2xl animate-pulse" />)}
+        </div>
+        <div className="h-96 bg-slate-100 rounded-2xl animate-pulse" />
+      </div>
+    );
+  }
+
+  if (errorOrders) {
+    return (
+      <div className="bg-rose-50 border border-rose-200 rounded-2xl p-6 text-center">
+        <p className="text-rose-700 font-bold">Error al cargar órdenes: {errorOrders}</p>
+        <button onClick={refreshOrders} className="mt-2 text-sm text-rose-600 underline">Reintentar</button>
+      </div>
+    );
+  }
 
   const filtered = orders.filter((o) => {
     const ms =
@@ -88,46 +119,100 @@ export default function VeterinaryLabPage() {
   });
 
   const selectedOrder = orders.find((o) => o.id === selectedId);
-  const selectedPanel = INITIAL_LAB_PANELS.find((p) => p.id === formData.panelId);
+  const selectedPanel = labPanels.find((p) => p.id === formData.panelId);
 
-  const handleRegisterOrder = (e: React.FormEvent) => {
+  const handleRegisterOrder = async (e: React.FormEvent) => {
     e.preventDefault();
-    const patient = INITIAL_PATIENTS.find((p) => p.id === formData.patientId);
-    const client = INITIAL_CLIENTS.find((c) => c.id === patient?.clientId);
-    const pro = INITIAL_PROFESSIONALS.find((p) => p.id === formData.professionalId);
-    const panel = INITIAL_LAB_PANELS.find((p) => p.id === formData.panelId);
-    if (!patient || !client || !pro || !panel) return;
+    const patient = patients.find((p) => p.id === formData.patientId);
+    const pro = professionals.find((p) => p.id === formData.professionalId);
+    const panel = labPanels.find((p) => p.id === formData.panelId);
+    if (!patient || !pro || !panel) return;
 
-    const today = new Date().toISOString().split('T')[0];
-    const nextNum = `${orders.length + 1}`.padStart(3, '0');
-
-    const newOrder: LabOrder = {
-      id: `lab-${Date.now()}`,
-      orderNumber: `LAB-2025-${nextNum}`,
-      patientId: patient.id,
-      patientName: patient.name,
-      species: patient.species,
-      clientId: client.id,
-      clientName: client.fullName,
-      clientRut: client.rut,
-      professionalId: pro.id,
-      professionalName: pro.fullName,
-      panelId: panel.id,
-      panelName: panel.name,
-      orderedDate: today,
-      sampleType: formData.sampleType,
-      status: 'ordenada',
-      priority: formData.priority,
-      notes: formData.note,
-    };
-
-    setOrders([newOrder, ...orders]);
-    setShowModal(false);
-    setFormData({ ...formData, note: '' });
+    try {
+      const api = getApiClient();
+      await api.createVetLabOrder({
+        patientId: patient.id,
+        professionalId: pro.id,
+        panelId: panel.id,
+        sampleType: formData.sampleType,
+        priority: formData.priority,
+        notes: formData.note,
+      });
+      await refreshOrders();
+      setShowModal(false);
+      setFormData({ ...formData, note: '' });
+      toast.success('Orden de laboratorio creada correctamente');
+    } catch (err: any) {
+      toast.error(err.message || 'Error al crear la orden');
+    }
   };
 
-  const handleAdvance = (id: string, status: LabOrder['status']) =>
-    setOrders(orders.map((o) => (o.id === id ? { ...o, status } : o)));
+  const handleAdvance = async (id: string, status: LabOrder['status']) => {
+    try {
+      const api = getApiClient();
+      await api.updateVetLabOrder(id, { status });
+      await refreshOrders();
+      toast.success(`Estado actualizado a: ${statusLabels[status]}`);
+    } catch (err: any) {
+      toast.error(err.message || 'Error al actualizar la orden');
+    }
+  };
+
+  const openResultsForm = (order: any) => {
+    const panel = labPanels.find((p) => p.id === order.panelId);
+    if (!panel) {
+      toast.error('Panel no encontrado');
+      return;
+    }
+    const entries = panel.tests.map((t: any) => ({
+      testId: t.id,
+      testName: t.name,
+      unit: t.unit,
+      referenceRange: t.referenceRange,
+      value: '',
+      flag: 'normal',
+    }));
+    setResultFormEntries(entries);
+    setSelectedId(order.id);
+    setShowResults(true);
+  };
+
+  const updateResultEntry = (index: number, field: string, value: string) => {
+    setResultFormEntries((prev) => prev.map((e, i) => (i === index ? { ...e, [field]: value } : e)));
+  };
+
+  const handleSubmitResults = async () => {
+    if (!selectedId) return;
+    const hasEmpty = resultFormEntries.some((e) => !e.value.trim());
+    if (hasEmpty) {
+      toast.error('Completa todos los valores de resultado antes de guardar');
+      return;
+    }
+    setSavingResults(true);
+    try {
+      const api = getApiClient();
+      for (const entry of resultFormEntries) {
+        await api.createVetLabResult({
+          lab_order_id: selectedId,
+          test_id: entry.testId,
+          test_name: entry.testName,
+          value: entry.value,
+          unit: entry.unit,
+          reference_range: entry.referenceRange,
+          flag: entry.flag,
+        });
+      }
+      await api.updateVetLabOrder(selectedId, { status: 'resultados_listos' });
+      await refreshOrders();
+      setShowResults(false);
+      setSelectedId(null);
+      toast.success('Resultados registrados y orden marcada como lista');
+    } catch (err: any) {
+      toast.error(err.message || 'Error al guardar resultados');
+    } finally {
+      setSavingResults(false);
+    }
+  };
 
   const readyCount = orders.filter((o) => o.status === 'resultados_listos').length;
   const inProcess = orders.filter((o) => o.status === 'ordenada' || o.status === 'muestra_tomada' || o.status === 'en_proceso').length;
@@ -178,7 +263,7 @@ export default function VeterinaryLabPage() {
           <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 flex items-center justify-center"><AlertTriangle className="w-5 h-5" /></div>
           <div>
             <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Paneles Disponibles</div>
-            <div className="text-xl font-black text-slate-900">{INITIAL_LAB_PANELS.length}</div>
+            <div className="text-xl font-black text-slate-900">{labPanels.length}</div>
           </div>
         </div>
       </div>
@@ -257,21 +342,26 @@ export default function VeterinaryLabPage() {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <button
-                        onClick={() => {
-                          setSelectedId(o.id);
-                          setShowResults(true);
-                        }}
-                        disabled={o.status !== 'resultados_listos'}
-                        title={o.status === 'resultados_listos' ? 'Ver resultados' : 'Resultados aún no listos'}
-                        className={`text-[11px] font-bold px-3 py-1.5 rounded-xl flex items-center gap-1 border ${
-                          o.status === 'resultados_listos'
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
-                            : 'bg-slate-50 text-slate-400 border-slate-200 cursor-not-allowed'
-                        }`}
-                      >
-                        <FlaskConical className="w-3 h-3" /> Resultados
-                      </button>
+                      {o.status === 'en_proceso' && (
+                        <button
+                          onClick={() => openResultsForm(o)}
+                          className="text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-xl hover:bg-emerald-100 flex items-center gap-1"
+                        >
+                          <FlaskConical className="w-3 h-3" /> Ingresar Resultados
+                        </button>
+                      )}
+                      {o.status === 'resultados_listos' && (
+                        <button
+                          onClick={() => {
+                            setSelectedId(o.id);
+                            setShowResults(true);
+                            setResultFormEntries([]);
+                          }}
+                          className="text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-xl hover:bg-emerald-100 flex items-center gap-1"
+                        >
+                          <FlaskConical className="w-3 h-3" /> Resultados
+                        </button>
+                      )}
                       {o.status === 'ordenada' && (
                         <button
                           onClick={() => handleAdvance(o.id, 'muestra_tomada')}
@@ -283,11 +373,6 @@ export default function VeterinaryLabPage() {
                       {o.status === 'muestra_tomada' && (
                         <button onClick={() => handleAdvance(o.id, 'en_proceso')} className="text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1.5 rounded-xl hover:bg-amber-100">
                           Analizar
-                        </button>
-                      )}
-                      {o.status === 'en_proceso' && (
-                        <button onClick={() => { setSelectedId(o.id); setShowResults(true); }} className="text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-xl hover:bg-emerald-100">
-                          Registrar Resultados
                         </button>
                       )}
                     </div>
@@ -319,7 +404,7 @@ export default function VeterinaryLabPage() {
                     onChange={(e) => setFormData({ ...formData, patientId: e.target.value })}
                     className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 font-medium"
                   >
-                    {INITIAL_PATIENTS.map((p) => (
+                    {patients.map((p) => (
                       <option key={p.id} value={p.id}>{p.name} - {p.breed} ({p.species})</option>
                     ))}
                   </select>
@@ -331,7 +416,7 @@ export default function VeterinaryLabPage() {
                     onChange={(e) => setFormData({ ...formData, professionalId: e.target.value })}
                     className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 font-medium"
                   >
-                    {INITIAL_PROFESSIONALS.map((p) => (
+                    {professionals.map((p) => (
                       <option key={p.id} value={p.id}>{p.fullName}</option>
                     ))}
                   </select>
@@ -345,13 +430,13 @@ export default function VeterinaryLabPage() {
                   onChange={(e) => setFormData({ ...formData, panelId: e.target.value })}
                   className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 font-medium"
                 >
-                  {INITIAL_LAB_PANELS.map((p) => (
+                  {labPanels.map((p) => (
                     <option key={p.id} value={p.id}>{p.name} ({p.tests.length} pruebas)</option>
                   ))}
                 </select>
                 {selectedPanel && (
                   <div className="mt-2 flex flex-wrap gap-1.5">
-                    {selectedPanel.tests.slice(0, 6).map((t) => (
+                    {selectedPanel.tests.slice(0, 6).map((t: any) => (
                       <span key={t.id} className="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-lg">{t.name}</span>
                     ))}
                     {selectedPanel.tests.length > 6 && (
@@ -417,7 +502,7 @@ export default function VeterinaryLabPage() {
         </div>
       )}
 
-      {/* Modal Resultados */}
+      {/* Modal Resultados / Ingreso de Resultados */}
       {showResults && selectedOrder && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-white rounded-2xl border border-slate-200 shadow-xl w-full max-w-3xl p-6 space-y-4 my-6">
@@ -425,14 +510,86 @@ export default function VeterinaryLabPage() {
               <div>
                 <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
                   <FlaskConical className="w-5 h-5 text-emerald-600" />
-                  Resultados Laboratorio
+                  {resultFormEntries.length > 0 ? 'Ingresar Resultados' : 'Resultados Laboratorio'}
                 </h3>
                 <p className="text-xs text-slate-500">{selectedOrder.orderNumber} · {selectedOrder.panelName} · {selectedOrder.patientName}</p>
               </div>
-              <button onClick={() => setShowResults(false)} className="text-slate-400 hover:text-slate-600 text-lg font-bold">✕</button>
+              <button onClick={() => { setShowResults(false); setResultFormEntries([]); }} className="text-slate-400 hover:text-slate-600 text-lg font-bold">✕</button>
             </div>
 
-            {selectedOrder.results && selectedOrder.results.length > 0 ? (
+            {/* Results entry form (when in en_proceso) */}
+            {resultFormEntries.length > 0 ? (
+              <div className="space-y-4">
+                <div className="overflow-hidden border border-slate-200 rounded-2xl">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-slate-50 border-b border-slate-200 text-[11px] uppercase tracking-wider text-slate-500 font-extrabold">
+                      <tr>
+                        <th className="px-4 py-3">Examen</th>
+                        <th className="px-4 py-3">Valor</th>
+                        <th className="px-4 py-3">Unidad</th>
+                        <th className="px-4 py-3">Rango Ref.</th>
+                        <th className="px-4 py-3">Bandera</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {resultFormEntries.map((entry, idx) => (
+                        <tr key={entry.testId} className="hover:bg-slate-50/60">
+                          <td className="px-4 py-3 font-semibold text-slate-800 text-xs">{entry.testName}</td>
+                          <td className="px-4 py-3">
+                            <input
+                              type="text"
+                              value={entry.value}
+                              onChange={(e) => updateResultEntry(idx, 'value', e.target.value)}
+                              placeholder="Valor"
+                              className="w-full px-2 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 font-mono font-bold"
+                            />
+                          </td>
+                          <td className="px-4 py-3 text-slate-500 text-xs">{entry.unit}</td>
+                          <td className="px-4 py-3 text-slate-500 text-xs">{entry.referenceRange}</td>
+                          <td className="px-4 py-3">
+                            <select
+                              value={entry.flag}
+                              onChange={(e) => updateResultEntry(idx, 'flag', e.target.value)}
+                              className="text-[10px] font-bold px-2 py-1 rounded-lg border bg-white focus:ring-2 focus:ring-emerald-500"
+                            >
+                              <option value="bajo">Bajo</option>
+                              <option value="normal">Normal</option>
+                              <option value="alto">Alto</option>
+                              <option value="critico">Crítico</option>
+                            </select>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="flex items-center justify-end gap-3 pt-2 border-t border-slate-100">
+                  <button
+                    onClick={() => { setShowResults(false); setResultFormEntries([]); }}
+                    className="px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={handleSubmitResults}
+                    disabled={savingResults}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {savingResults ? (
+                      <>
+                        <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                        Guardando...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle2 className="w-4 h-4" />
+                        Guardar Resultados
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            ) : selectedOrder.results && selectedOrder.results.length > 0 ? (
               <div className="overflow-hidden border border-slate-200 rounded-2xl">
                 <table className="w-full text-left text-sm">
                   <thead className="bg-slate-50 border-b border-slate-200 text-[11px] uppercase tracking-wider text-slate-500 font-extrabold">
@@ -445,7 +602,7 @@ export default function VeterinaryLabPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {selectedOrder.results.map((r) => (
+                    {selectedOrder.results.map((r: any) => (
                       <tr key={r.id} className="hover:bg-slate-50/60">
                         <td className="px-4 py-3 font-semibold text-slate-800">{r.testName}</td>
                         <td className="px-4 py-3 font-mono font-bold text-slate-900">{r.value}</td>
@@ -468,13 +625,10 @@ export default function VeterinaryLabPage() {
                 <p className="text-sm text-slate-500 mb-4">La muestra {sampleTypeLabels[selectedOrder.sampleType].toLowerCase()} está {selectedOrder.status === 'en_proceso' ? 'en análisis' : 'pendiente de tomar'}.</p>
                 {selectedOrder.status === 'en_proceso' && (
                   <button
-                    onClick={() => {
-                      handleAdvance(selectedOrder.id, 'resultados_listos');
-                      setShowResults(false);
-                    }}
+                    onClick={() => openResultsForm(selectedOrder)}
                     className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm"
                   >
-                    Marcar Resultados Listos / Entregar
+                    Ingresar Resultados
                   </button>
                 )}
               </div>
@@ -488,7 +642,7 @@ export default function VeterinaryLabPage() {
 
             <div className="flex items-center justify-between pt-2 border-t border-slate-100">
               <span className="text-[11px] text-slate-400">Profesional: <strong>{selectedOrder.professionalName}</strong></span>
-              <button onClick={() => setShowResults(false)} className="px-4 py-2 rounded-xl text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">
+              <button onClick={() => { setShowResults(false); setResultFormEntries([]); }} className="px-4 py-2 rounded-xl text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">
                 Cerrar
               </button>
             </div>

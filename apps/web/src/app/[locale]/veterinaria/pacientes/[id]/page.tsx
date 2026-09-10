@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import {
@@ -26,36 +26,116 @@ import {
   Clock,
   FlaskConical,
   TestTube,
+  Loader2,
 } from 'lucide-react';
-import PatientRecordPDF from './components/patient-record-pdf';
-import {
-  INITIAL_PATIENTS,
-  INITIAL_CLIENTS,
-  INITIAL_CONSULTATIONS,
-  INITIAL_VACCINATIONS,
-  INITIAL_DEWORMINGS,
-  INITIAL_REMINDERS,
-  INITIAL_EVOLUTIONS,
-  INITIAL_LAB_ORDERS,
-  VeterinaryPatient,
-} from '../../lib/veterinary-store';
+import PatientRecordPDF from '@/app/veterinaria/pacientes/[id]/components/patient-record-pdf';
+import { getApiClient } from '@/lib/api-client';
+import { useConsultations } from '@/app/veterinaria/hooks/use-consultations';
+import { useVaccinations } from '@/app/veterinaria/hooks/use-vaccinations';
+import { useEvolutions } from '@/app/veterinaria/hooks/use-evolutions';
+import { useDewormings } from '@/app/veterinaria/hooks/use-dewormings';
+import { useLabOrders } from '@/app/veterinaria/hooks/use-lab';
 
 export default function VeterinaryPatientDetailPage() {
   const params = useParams();
   const patientId = params.id as string;
 
-  const patient = INITIAL_PATIENTS.find((p) => p.id === patientId) || INITIAL_PATIENTS[0] || null;
-  const client = INITIAL_CLIENTS.find((c) => c.id === patient?.clientId) || null;
+  const [patient, setPatient] = useState<any>(null);
+  const [loadingPatient, setLoadingPatient] = useState(true);
+  const [patientError, setPatientError] = useState<string | null>(null);
+
+  const { data: consultationsData, loading: loadingConsultations } = useConsultations(
+    patientId ? { patient_id: patientId } : undefined,
+    !!patientId
+  );
+  const { data: vaccinationsData, loading: loadingVaccinations } = useVaccinations(
+    patientId ? { patient_id: patientId } : undefined,
+    !!patientId
+  );
+  const { data: evolutionsData, loading: loadingEvolutions } = useEvolutions(
+    patientId ? { patient_id: patientId } : undefined,
+    !!patientId
+  );
+  const { data: dewormingsData, loading: loadingDewormings } = useDewormings(
+    patientId ? { patient_id: patientId } : undefined,
+    !!patientId
+  );
+  const { data: labOrdersData, loading: loadingLabOrders } = useLabOrders(
+    patientId ? { patient_id: patientId } : undefined,
+    !!patientId
+  );
 
   const [activeTab, setActiveTab] = useState<'resumen' | 'consultas' | 'evoluciones' | 'vacunas' | 'desparasitaciones' | 'laboratorio' | 'recetas' | 'peso'>('resumen');
 
-  const patientConsultations = INITIAL_CONSULTATIONS.filter((c) => c.patientId === patient?.id);
-  const patientVaccinations = INITIAL_VACCINATIONS.filter((v) => v.patientId === patient?.id);
-  const patientDewormings = INITIAL_DEWORMINGS.filter((d) => d.patientId === patient?.id);
-  const patientEvolutions = INITIAL_EVOLUTIONS.filter((e) => e.patientId === patient?.id);
-  const patientLabOrders = INITIAL_LAB_ORDERS.filter((lo) => lo.patientId === patient?.id);
+  useEffect(() => {
+    if (!patientId) return;
+    setLoadingPatient(true);
+    getApiClient()
+      .getVetPatient(patientId)
+      .then((p) => setPatient(p))
+      .catch((e) => setPatientError(e.message))
+      .finally(() => setLoadingPatient(false));
+  }, [patientId]);
 
-  if (!patient) {
+  const client = patient
+    ? {
+        fullName: patient.client_name,
+        rut: patient.client_rut,
+        phone: patient.client_phone,
+        email: patient.client_email,
+        address: patient.client_address,
+        commune: patient.client_commune,
+      }
+    : null;
+
+  if (loadingPatient) {
+    return (
+      <div className="space-y-6">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-start gap-4">
+            <div className="w-16 h-16 rounded-2xl bg-slate-200 animate-pulse shrink-0" />
+            <div className="space-y-3">
+              <div className="h-8 w-48 bg-slate-200 rounded-xl animate-pulse" />
+              <div className="h-4 w-64 bg-slate-100 rounded animate-pulse" />
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <div className="h-10 w-32 bg-slate-200 rounded-xl animate-pulse" />
+            <div className="h-10 w-32 bg-slate-200 rounded-xl animate-pulse" />
+          </div>
+        </div>
+        <div className="flex gap-2">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="h-10 w-24 bg-slate-200 rounded-xl animate-pulse" />
+          ))}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-4">
+            <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm">
+              <div className="space-y-3">
+                <div className="h-4 w-48 bg-slate-200 rounded animate-pulse" />
+                <div className="grid grid-cols-2 gap-3">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="h-20 bg-slate-100 rounded-xl animate-pulse" />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm">
+            <div className="space-y-3">
+              <div className="h-4 w-40 bg-slate-200 rounded animate-pulse" />
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="h-8 bg-slate-100 rounded animate-pulse" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (patientError || !patient) {
     return (
       <div className="space-y-6">
         <div className="bg-white border border-slate-200/80 rounded-2xl p-10 shadow-sm flex flex-col items-center justify-center text-center">
@@ -118,10 +198,10 @@ export default function VeterinaryPatientDetailPage() {
         <div className="flex flex-wrap items-center gap-3 self-start md:self-center">
           <PatientRecordPDF
             patient={patient}
-            client={client || { fullName: patient.clientName, rut: '15.482.910-K', phone: '+56 9 8765 4321', email: 'tutor@ejemplo.cl' }}
-            consultations={patientConsultations}
-            vaccinations={patientVaccinations}
-            dewormings={patientDewormings}
+            client={client}
+            consultations={consultationsData}
+            vaccinations={vaccinationsData}
+            dewormings={dewormingsData}
           />
           <Link
             href="/veterinaria/consultas"
@@ -144,11 +224,11 @@ export default function VeterinaryPatientDetailPage() {
       <div className="flex items-center gap-2 border-b border-slate-200 overflow-x-auto pb-1">
         {[
           { id: 'resumen', label: 'Resumen 360°', icon: Activity },
-          { id: 'consultas', label: `Consultas (${patientConsultations.length})`, icon: Stethoscope },
-          { id: 'evoluciones', label: `Evoluciones SOAP (${patientEvolutions.length})`, icon: FileText },
-          { id: 'vacunas', label: `Vacunación (${patientVaccinations.length})`, icon: Syringe },
-          { id: 'desparasitacion', label: `Desparasitaciones (${patientDewormings.length})`, icon: Shield },
-          { id: 'laboratorio', label: `Laboratorio (${patientLabOrders.length})`, icon: FlaskConical },
+          { id: 'consultas', label: `Consultas (${consultationsData.length})`, icon: Stethoscope },
+          { id: 'evoluciones', label: `Evoluciones SOAP (${evolutionsData.length})`, icon: FileText },
+          { id: 'vacunas', label: `Vacunación (${vaccinationsData.length})`, icon: Syringe },
+          { id: 'desparasitacion', label: `Desparasitaciones (${dewormingsData.length})`, icon: Shield },
+          { id: 'laboratorio', label: `Laboratorio (${labOrdersData.length})`, icon: FlaskConical },
           { id: 'recetas', label: 'Recetas Médicas', icon: Pill },
           { id: 'peso', label: 'Curva de Peso', icon: Weight },
         ].map((tab) => {
@@ -229,9 +309,9 @@ export default function VeterinaryPatientDetailPage() {
                 <span className="text-xs font-bold text-emerald-600">Historial completo disponible</span>
               </div>
 
-              {patientConsultations.length > 0 ? (
+              {consultationsData.length > 0 ? (
                 <div className="p-6 space-y-3">
-                  {patientConsultations.map((c) => (
+                  {consultationsData.map((c: any) => (
                     <div key={c.id} className="bg-slate-50 rounded-xl p-4 border border-slate-200/60 space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-mono font-bold text-slate-500">{c.consultationDate}</span>
@@ -307,7 +387,7 @@ export default function VeterinaryPatientDetailPage() {
           </div>
 
           <div className="space-y-4">
-            {patientConsultations.map((c) => (
+            {consultationsData.map((c: any) => (
               <div key={c.id} className="border border-slate-200 rounded-2xl p-5 space-y-3 bg-slate-50/50">
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/60 pb-2">
                   <div>
@@ -355,12 +435,12 @@ export default function VeterinaryPatientDetailPage() {
             </Link>
           </div>
 
-          {patientEvolutions.length > 0 ? (
+          {evolutionsData.length > 0 ? (
             <div className="space-y-4">
-              {patientEvolutions
+              {evolutionsData
                 .slice()
-                .sort((a, b) => (a.evolutionDate + a.evolutionTime > b.evolutionDate + b.evolutionTime ? -1 : 1))
-                .map((evo) => (
+                .sort((a: any, b: any) => (a.evolutionDate + a.evolutionTime > b.evolutionDate + b.evolutionTime ? -1 : 1))
+                .map((evo: any) => (
                   <div key={evo.id} className="border border-slate-200 rounded-2xl p-5 space-y-3 bg-slate-50/50">
                     <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/60 pb-2">
                       <div className="flex items-center gap-2">
@@ -399,7 +479,7 @@ export default function VeterinaryPatientDetailPage() {
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
               <FlaskConical className="w-4 h-4 text-emerald-600" />
-              Órdenes de Laboratorio ({patientLabOrders.length})
+              Órdenes de Laboratorio ({labOrdersData.length})
             </h3>
             <Link
               href="/veterinaria/laboratorio"
@@ -408,9 +488,9 @@ export default function VeterinaryPatientDetailPage() {
               <Plus className="w-3 h-3" /> Nueva Orden
             </Link>
           </div>
-          {patientLabOrders.length > 0 ? (
+          {labOrdersData.length > 0 ? (
             <div className="space-y-3">
-              {patientLabOrders.map((lo) => (
+              {labOrdersData.map((lo: any) => (
                 <div key={lo.id} className="bg-white border border-slate-200/80 rounded-2xl px-5 py-4 shadow-sm">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="space-y-1">
@@ -431,7 +511,7 @@ export default function VeterinaryPatientDetailPage() {
                     </div>
                     {lo.results && lo.results.length > 0 && (
                       <div className="flex flex-wrap gap-1.5">
-                        {lo.results.filter((r) => r.flag !== 'normal').map((r) => (
+                        {lo.results.filter((r: any) => r.flag !== 'normal').map((r: any) => (
                           <span key={r.id} className={`text-[10px] font-black px-2 py-0.5 rounded-lg border ${
                             r.flag === 'alto' ? 'bg-amber-50 text-amber-700 border-amber-200'
                             : r.flag === 'bajo' ? 'bg-blue-50 text-blue-700 border-blue-200'

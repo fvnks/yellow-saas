@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Pill,
   Plus,
@@ -12,15 +12,11 @@ import {
   Boxes,
   Stethoscope,
 } from 'lucide-react';
-import {
-  INITIAL_PATIENTS,
-  INITIAL_CLIENTS,
-  INITIAL_PROFESSIONALS,
-  INITIAL_PHARMACY_STOCK,
-  INITIAL_PHARMACY_DISPENSES,
-  PharmacyStockItem,
-  PharmacyDispense,
-} from '../lib/veterinary-store';
+import { usePatients } from '@/app/veterinaria/hooks/use-patients';
+import { useProfessionals } from '@/app/veterinaria/hooks/use-professionals';
+import { usePharmacy } from '@/app/veterinaria/hooks/use-pharmacy';
+import { getApiClient } from '@/lib/api-client';
+import { PharmacyStockItem, PharmacyDispense } from '@/app/veterinaria/lib/veterinary-store';
 
 const formatCLP = (val: number) =>
   new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(Math.round(val));
@@ -57,20 +53,79 @@ const statusBadges: Record<string, string> = {
 };
 
 export default function VeterinaryPharmacyPage() {
-  const [stock, setStock] = useState<PharmacyStockItem[]>(INITIAL_PHARMACY_STOCK);
-  const [dispenses, setDispenses] = useState<PharmacyDispense[]>(INITIAL_PHARMACY_DISPENSES);
+  const [stock, setStock] = useState<PharmacyStockItem[]>([]);
+  const [dispenses, setDispenses] = useState<PharmacyDispense[]>([]);
+  const [loadingStock, setLoadingStock] = useState(true);
+  const [loadingDispenses, setLoadingDispenses] = useState(true);
+  const [errorData, setErrorData] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('todos');
   const [detailId, setDetailId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [cart, setCart] = useState<{ itemId: string; quantity: number }[]>([]);
+  const { loading: dispensing, dispenseMedication } = usePharmacy();
+
+  const { data: patients } = usePatients();
+  const { data: professionals } = useProfessionals();
+
+  const fetchStock = useCallback(async () => {
+    setLoadingStock(true);
+    try {
+      const api = getApiClient();
+      const result = await api.getVetLabOrders();
+      setStock((result.data as any[]) || []);
+    } catch (e: any) {
+      setErrorData(e.message);
+    } finally {
+      setLoadingStock(false);
+    }
+  }, []);
+
+  const fetchDispenses = useCallback(async () => {
+    setLoadingDispenses(true);
+    try {
+      const api = getApiClient();
+      const result = await api.getVetPayments();
+      setDispenses((result.data as any[]) || []);
+    } catch (e: any) {
+      setErrorData(e.message);
+    } finally {
+      setLoadingDispenses(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchStock();
+    fetchDispenses();
+  }, [fetchStock, fetchDispenses]);
 
   const [formData, setFormData] = useState({
-    patientId: INITIAL_PATIENTS[0]?.id || '',
-    professionalId: INITIAL_PROFESSIONALS[0]?.id || '',
+    patientId: '',
+    professionalId: '',
   });
   const [cartItemId, setCartItemId] = useState('');
   const [cartQty, setCartQty] = useState(1);
+
+  if (loadingStock || loadingDispenses) {
+    return (
+      <div className="space-y-6">
+        <div className="h-8 w-64 bg-slate-200 rounded-xl animate-pulse" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => <div key={i} className="h-24 bg-slate-100 rounded-2xl animate-pulse" />)}
+        </div>
+        <div className="h-96 bg-slate-100 rounded-2xl animate-pulse" />
+      </div>
+    );
+  }
+
+  if (errorData) {
+    return (
+      <div className="bg-rose-50 border border-rose-200 rounded-2xl p-6 text-center">
+        <p className="text-rose-700 font-bold">Error al cargar farmacia: {errorData}</p>
+        <button onClick={() => { fetchStock(); fetchDispenses(); }} className="mt-2 text-sm text-rose-600 underline">Reintentar</button>
+      </div>
+    );
+  }
 
   const filtered = stock.filter((s) => {
     const ms = s.name.toLowerCase().includes(search.toLowerCase()) || s.sku.toLowerCase().includes(search.toLowerCase());
@@ -109,47 +164,32 @@ export default function VeterinaryPharmacyPage() {
 
   const removeFromCart = (itemId: string) => setCart(cart.filter((c) => c.itemId !== itemId));
 
-  const handleConfirmDispense = (e: React.FormEvent) => {
+  const handleConfirmDispense = async (e: React.FormEvent) => {
     e.preventDefault();
     if (cartItems.length === 0) return;
-    const patient = INITIAL_PATIENTS.find((p) => p.id === formData.patientId);
-    const client = INITIAL_CLIENTS.find((c) => c.id === patient?.clientId);
-    const pro = INITIAL_PROFESSIONALS.find((p) => p.id === formData.professionalId);
-    if (!patient || !client || !pro) return;
+    const patient = patients.find((p) => p.id === formData.patientId);
+    const pro = professionals.find((p) => p.id === formData.professionalId);
+    if (!patient || !pro) return;
 
-    const today = new Date().toISOString().split('T')[0];
-    const nextNum = `${dispenses.length + 1}`.padStart(3, '0');
-
-    const newDispense: PharmacyDispense = {
-      id: `disp-${Date.now()}`,
-      dispenseNumber: `DESP-2025-${nextNum}`,
-      patientId: patient.id,
-      patientName: patient.name,
-      clientId: client.id,
-      clientName: client.fullName,
-      clientRut: client.rut,
-      professionalId: pro.id,
-      professionalName: pro.fullName,
-      dispenseDate: today,
-      items: cartItems.map((c) => ({ itemId: c.item.id, name: c.item.name, quantity: c.quantity, priceCLP: c.item.priceCLP })),
-      totalCLP: cartTotal,
-      status: 'despachado',
-    };
-
-    setStock((prev) =>
-      prev.map((s) => {
-        const c = cart.find((x) => x.itemId === s.id);
-        return c ? { ...s, currentStock: Math.max(0, s.currentStock - c.quantity) } : s;
-      })
-    );
-
-    setDispenses([newDispense, ...dispenses]);
-    setShowModal(false);
-    setCart([]);
+    try {
+      const api = getApiClient();
+      await api.createVetPayment({
+        patientId: patient.id,
+        professionalId: pro.id,
+        items: cartItems.map((c) => ({ itemId: c.item.id, name: c.item.name, quantity: c.quantity, priceCLP: c.item.priceCLP })),
+        totalCLP: cartTotal,
+      });
+      await fetchStock();
+      await fetchDispenses();
+      setShowModal(false);
+      setCart([]);
+    } catch (err) {
+      console.error('Error dispensing medication:', err);
+    }
   };
 
   const selectedDetail = dispenses.find((d) => d.id === detailId);
-  const selectedPatient = INITIAL_PATIENTS.find((p) => p.id === formData.patientId);
+  const selectedPatient = patients.find((p) => p.id === formData.patientId);
 
   return (
     <div className="space-y-6">
@@ -346,7 +386,15 @@ export default function VeterinaryPharmacyPage() {
                     <div className="flex items-center justify-end gap-2">
                       {d.status === 'despachado' && (
                         <button
-                          onClick={() => setDispenses(dispenses.map((x) => (x.id === d.id ? { ...x, status: 'entregado' } : x)))}
+                          onClick={async () => {
+                            try {
+                              const api = getApiClient();
+                              await api.updateVetAppointment(d.id, { status: 'entregado' });
+                              await fetchDispenses();
+                            } catch (err) {
+                              console.error('Error marking dispense as delivered:', err);
+                            }
+                          }}
                           className="bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl flex items-center gap-1"
                         >
                           <CheckCircle2 className="w-3 h-3" /> Entregar
@@ -433,7 +481,7 @@ export default function VeterinaryPharmacyPage() {
                     onChange={(e) => setFormData({ ...formData, patientId: e.target.value })}
                     className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl font-medium"
                   >
-                    {INITIAL_PATIENTS.map((p) => (
+                    {patients.map((p) => (
                       <option key={p.id} value={p.id}>{p.name} - {p.breed} ({p.species})</option>
                     ))}
                   </select>
@@ -445,7 +493,7 @@ export default function VeterinaryPharmacyPage() {
                     onChange={(e) => setFormData({ ...formData, professionalId: e.target.value })}
                     className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl font-medium"
                   >
-                    {INITIAL_PROFESSIONALS.map((p) => (
+                    {professionals.map((p) => (
                       <option key={p.id} value={p.id}>{p.fullName}</option>
                     ))}
                   </select>
