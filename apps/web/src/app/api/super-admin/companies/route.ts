@@ -1,5 +1,5 @@
 import { query } from '@/api/lib/db';
-import { successResponse, errorResponse } from '@/api/lib/helpers';
+import { successResponse, errorResponse, parseSearchParams, paginatedResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 import { verifySuperAdmin } from '@/api/super-admin/lib/auth';
 import bcrypt from 'bcryptjs';
@@ -9,15 +9,44 @@ export async function GET(request: NextRequest) {
   if (!admin) return errorResponse('No autorizado', 401);
 
   try {
-    const result = await query(`
-      SELECT 
-        c.id, c.name, c.slug, c.plan, c.status, c.created_at, c.trial_ends_at,
-        (SELECT COUNT(*) FROM profiles WHERE company_id = c.id) as user_count
-      FROM companies c
-      ORDER BY c.created_at DESC
-    `);
+    const { page, limit, search, sort, order, offset } = parseSearchParams(request);
+    const url = new URL(request.url);
+    const statusFilter = url.searchParams.get('status');
 
-    return successResponse(result.rows);
+    const conditions: string[] = [];
+    const params: unknown[] = [];
+    let paramIndex = 1;
+
+    if (search) {
+      conditions.push(`(c.name ILIKE $${paramIndex} OR c.slug ILIKE $${paramIndex})`);
+      params.push(`%${search}%`);
+      paramIndex++;
+    }
+    if (statusFilter) {
+      conditions.push(`c.status = $${paramIndex}`);
+      params.push(statusFilter);
+      paramIndex++;
+    }
+
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+
+    const countResult = await query(`SELECT COUNT(*) FROM companies c ${whereClause}`, params);
+    const total = parseInt(countResult.rows[0]?.count || '0');
+
+    const allowedSorts: Record<string, string> = { created_at: 'c.created_at', name: 'c.name', plan: 'c.plan' };
+    const sortColumn = allowedSorts[sort] || 'c.created_at';
+
+    const result = await query(
+      `SELECT c.id, c.name, c.slug, c.plan, c.status, c.created_at, c.trial_ends_at,
+        (SELECT COUNT(*) FROM profiles WHERE company_id = c.id) as user_count
+       FROM companies c
+       ${whereClause}
+       ORDER BY ${sortColumn} ${order === 'asc' ? 'ASC' : 'DESC'}
+       LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
+      [...params, limit, offset]
+    );
+
+    return paginatedResponse(result.rows, total, page, limit);
   } catch (err) {
     console.error('Companies list error:', err);
     return errorResponse('Error al obtener empresas', 500);
