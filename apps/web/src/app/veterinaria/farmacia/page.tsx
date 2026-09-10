@@ -14,9 +14,8 @@ import {
 } from 'lucide-react';
 import { usePatients } from '../hooks/use-patients';
 import { useProfessionals } from '../hooks/use-professionals';
-import { usePharmacy } from '../hooks/use-pharmacy';
+import { usePharmacyStock, usePharmacyDispenses } from '../hooks/use-pharmacy';
 import { getApiClient } from '@/lib/api-client';
-import { PharmacyStockItem, PharmacyDispense } from '../lib/veterinary-store';
 
 const formatCLP = (val: number) =>
   new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(Math.round(val));
@@ -53,8 +52,8 @@ const statusBadges: Record<string, string> = {
 };
 
 export default function VeterinaryPharmacyPage() {
-  const [stock, setStock] = useState<PharmacyStockItem[]>([]);
-  const [dispenses, setDispenses] = useState<PharmacyDispense[]>([]);
+  const [stock, setStock] = useState<any[]>([]);
+  const [dispenses, setDispenses] = useState<any[]>([]);
   const [loadingStock, setLoadingStock] = useState(true);
   const [loadingDispenses, setLoadingDispenses] = useState(true);
   const [errorData, setErrorData] = useState<string | null>(null);
@@ -63,7 +62,7 @@ export default function VeterinaryPharmacyPage() {
   const [detailId, setDetailId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [cart, setCart] = useState<{ itemId: string; quantity: number }[]>([]);
-  const { loading: dispensing, dispenseMedication } = usePharmacy();
+  const [dispensing, setDispensing] = useState(false);
 
   const { data: patients } = usePatients();
   const { data: professionals } = useProfessionals();
@@ -72,8 +71,8 @@ export default function VeterinaryPharmacyPage() {
     setLoadingStock(true);
     try {
       const api = getApiClient();
-      const result = await api.getVetLabOrders();
-      setStock((result.data as any[]) || []);
+      const result = await api.getVetPharmacyStock();
+      setStock(result.data || []);
     } catch (e: any) {
       setErrorData(e.message);
     } finally {
@@ -85,8 +84,8 @@ export default function VeterinaryPharmacyPage() {
     setLoadingDispenses(true);
     try {
       const api = getApiClient();
-      const result = await api.getVetPayments();
-      setDispenses((result.data as any[]) || []);
+      const result = await api.getVetPharmacyDispenses();
+      setDispenses(result.data || []);
     } catch (e: any) {
       setErrorData(e.message);
     } finally {
@@ -128,12 +127,12 @@ export default function VeterinaryPharmacyPage() {
   }
 
   const filtered = stock.filter((s) => {
-    const ms = s.name.toLowerCase().includes(search.toLowerCase()) || s.sku.toLowerCase().includes(search.toLowerCase());
+    const ms = s.medication_name.toLowerCase().includes(search.toLowerCase()) || s.batch_number.toLowerCase().includes(search.toLowerCase());
     const mc = categoryFilter === 'todos' || s.category === categoryFilter;
     return ms && mc;
   });
 
-  const lowStock = stock.filter((s) => s.currentStock <= s.minStock);
+  const lowStock = stock.filter((s) => s.quantity <= s.min_stock);
   const expiringSoon = stock.filter(
     (s) => s.expirationDate && new Date(s.expirationDate).getTime() - Date.now() < 90 * 86400000
   );
@@ -143,14 +142,14 @@ export default function VeterinaryPharmacyPage() {
       const item = stock.find((s) => s.id === c.itemId);
       return item ? { item, quantity: c.quantity } : null;
     })
-    .filter((x): x is { item: PharmacyStockItem; quantity: number } => x !== null);
+    .filter((x): x is { item: any; quantity: number } => x !== null);
 
-  const cartTotal = cartItems.reduce((a, c) => a + c.quantity * c.item.priceCLP, 0);
+  const cartTotal = cartItems.reduce((a: number, c: { item: any; quantity: number }) => a + c.quantity * (c.item.sale_price_clp || c.item.unit_price_clp || 0), 0);
 
   const handleAddToCart = () => {
     if (!cartItemId) return;
     const item = stock.find((s) => s.id === cartItemId);
-    if (!item || cartQty <= 0 || cartQty > item.currentStock) return;
+    if (!item || cartQty <= 0 || cartQty > item.quantity) return;
     setCart((prev) => {
       const existing = prev.find((c) => c.itemId === cartItemId);
       if (existing) {
@@ -167,24 +166,30 @@ export default function VeterinaryPharmacyPage() {
   const handleConfirmDispense = async (e: React.FormEvent) => {
     e.preventDefault();
     if (cartItems.length === 0) return;
-    const patient = patients.find((p) => p.id === formData.patientId);
-    const pro = professionals.find((p) => p.id === formData.professionalId);
+    const patient = patients.find((p: any) => p.id === formData.patientId);
+    const pro = professionals.find((p: any) => p.id === formData.professionalId);
     if (!patient || !pro) return;
 
+    setDispensing(true);
     try {
       const api = getApiClient();
-      await api.createVetPayment({
-        patientId: patient.id,
-        professionalId: pro.id,
-        items: cartItems.map((c) => ({ itemId: c.item.id, name: c.item.name, quantity: c.quantity, priceCLP: c.item.priceCLP })),
-        totalCLP: cartTotal,
-      });
+      for (const ci of cartItems) {
+        await api.dispenseVetMedication({
+          stock_id: ci.item.id,
+          patient_id: patient.id,
+          professional_id: pro.id,
+          quantity_dispensed: ci.quantity,
+          unit_price_clp: ci.item.sale_price_clp || ci.item.unit_price_clp || 0,
+        });
+      }
       await fetchStock();
       await fetchDispenses();
       setShowModal(false);
       setCart([]);
     } catch (err) {
       console.error('Error dispensing medication:', err);
+    } finally {
+      setDispensing(false);
     }
   };
 
@@ -216,7 +221,7 @@ export default function VeterinaryPharmacyPage() {
           <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 flex items-center justify-center"><Boxes className="w-5 h-5" /></div>
           <div>
             <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Ítems en Stock</div>
-            <div className="text-xl font-black text-slate-900">{stock.reduce((a, s) => a + s.currentStock, 0)}</div>
+            <div className="text-xl font-black text-slate-900">{stock.reduce((a, s) => a + s.quantity, 0)}</div>
             <div className="text-[10px] text-slate-400">{stock.length} SKUs</div>
           </div>
         </div>
@@ -298,13 +303,13 @@ export default function VeterinaryPharmacyPage() {
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm">
               {filtered.map((s) => {
-                const isLow = s.currentStock <= s.minStock;
+                const isLow = s.quantity <= s.min_stock;
                 const expiring = new Date(s.expirationDate).getTime() - Date.now() < 90 * 86400000;
                 return (
                   <tr key={s.id} className="hover:bg-slate-50/80 transition-colors">
                     <td className="px-6 py-3">
-                      <div className="font-bold text-slate-900 text-xs">{s.name}</div>
-                      <div className="text-[10px] text-slate-400 font-mono">{s.sku}</div>
+                      <div className="font-bold text-slate-900 text-xs">{s.medication_name}</div>
+                      <div className="text-[10px] text-slate-400 font-mono">{s.batch_number}</div>
                     </td>
                     <td className="px-6 py-3">
                       <span className={`text-[10px] font-black px-2 py-0.5 rounded-lg border ${categoryBadges[s.category]}`}>
@@ -321,18 +326,18 @@ export default function VeterinaryPharmacyPage() {
                       )}
                     </td>
                     <td className="px-6 py-3">
-                      <div className="text-xs font-mono font-bold text-slate-700">{s.batchNumber}</div>
+                      <div className="text-xs font-mono font-bold text-slate-700">{s.batch_number}</div>
                       <div className={`text-[10px] font-mono ${expiring ? 'text-rose-600 font-bold' : 'text-slate-400'}`}>
                         {s.expirationDate}{expiring ? ' ⚠' : ''}
                       </div>
                     </td>
                     <td className="px-6 py-3 text-center">
                       <span className={`inline-flex items-center gap-1 text-sm font-black px-2 py-1 rounded-lg ${isLow ? 'text-rose-700' : 'text-slate-900'}`}>
-                        {s.currentStock} <span className="text-[10px] font-semibold text-slate-400">{s.unit}</span>
+                        {s.quantity} <span className="text-[10px] font-semibold text-slate-400">{s.pharmaceutical_form}</span>
                         {isLow && <AlertTriangle className="w-3.5 h-3.5 text-rose-500" />}
                       </span>
                     </td>
-                    <td className="px-6 py-3 text-right font-mono font-bold text-slate-800 text-xs">{formatCLP(s.priceCLP)}</td>
+                    <td className="px-6 py-3 text-right font-mono font-bold text-slate-800 text-xs">{formatCLP((s.sale_price_clp || s.pharmaceutical_form_price_clp || 0))}</td>
                     <td className="px-6 py-3 text-[11px] text-slate-500">{s.location}</td>
                   </tr>
                 );
@@ -374,7 +379,7 @@ export default function VeterinaryPharmacyPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-xs font-semibold text-slate-700">{d.items[0]?.name}{d.items.length > 1 ? ` +${d.items.length - 1}` : ''}</div>
-                    <div className="text-[11px] text-slate-400">{d.items.reduce((a, i) => a + i.quantity, 0)} und. · {d.professionalName}</div>
+                    <div className="text-[11px] text-slate-400">{d.items.reduce((a: number, i: any) => a + i.quantity, 0)} und. · {d.professionalName}</div>
                   </td>
                   <td className="px-6 py-4 font-mono font-black text-slate-900 text-xs text-right">{formatCLP(d.totalCLP)}</td>
                   <td className="px-6 py-4">
@@ -439,12 +444,12 @@ export default function VeterinaryPharmacyPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {selectedDetail.items.map((it, i) => (
+                {selectedDetail.items.map((it: any, i: number) => (
                   <tr key={i}>
                     <td className="px-4 py-2 font-medium text-slate-700">{it.name}</td>
                     <td className="px-4 py-2 text-center">{it.quantity}</td>
-                    <td className="px-4 py-2 text-right font-mono">{formatCLP(it.priceCLP)}</td>
-                    <td className="px-4 py-2 text-right font-mono font-bold">{formatCLP(it.quantity * it.priceCLP)}</td>
+                    <td className="px-4 py-2 text-right font-mono">{formatCLP((it.sale_price_clp || it.unit_price_clp || 0))}</td>
+                    <td className="px-4 py-2 text-right font-mono font-bold">{formatCLP(it.quantity * (it.sale_price_clp || it.unit_price_clp || 0))}</td>
                   </tr>
                 ))}
                 <tr className="bg-emerald-50 border-t border-emerald-200 font-black text-emerald-800">
@@ -508,9 +513,9 @@ export default function VeterinaryPharmacyPage() {
                     className="flex-1 px-3 py-2 text-sm bg-white border border-slate-200 rounded-xl font-medium"
                   >
                     <option value="">-- Agregar medicamento al carrito --</option>
-                    {stock.filter((s) => s.currentStock > 0).map((s) => (
+                    {stock.filter((s) => s.quantity > 0).map((s) => (
                       <option key={s.id} value={s.id}>
-                        {s.name} (Stock: {s.currentStock} · Lote: {s.batchNumber})
+                        {s.medication_name} (Stock: {s.quantity} · Lote: {s.batch_number})
                       </option>
                     ))}
                   </select>
@@ -535,9 +540,9 @@ export default function VeterinaryPharmacyPage() {
                   <div className="divide-y divide-slate-100">
                     {cartItems.map((c) => (
                       <div key={c.item.id} className="py-2 flex items-center justify-between text-xs">
-                        <div className="font-semibold text-slate-800">{c.item.name} <span className="text-slate-400">x{c.quantity}</span></div>
+                        <div className="font-semibold text-slate-800">{c.item.medication_name} <span className="text-slate-400">x{c.quantity}</span></div>
                         <div className="flex items-center gap-3">
-                          <span className="font-mono font-bold text-slate-900">{formatCLP(c.quantity * c.item.priceCLP)}</span>
+                          <span className="font-mono font-bold text-slate-900">{formatCLP(c.quantity * (c.item.sale_price_clp || c.item.unit_price_clp || 0))}</span>
                           <button type="button" onClick={() => removeFromCart(c.item.id)} className="text-rose-500 hover:text-rose-700">
                             <AlertTriangle className="w-3.5 h-3.5 hidden" /> ✕
                           </button>

@@ -1,24 +1,53 @@
 'use client';
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getApiClient } from '@/lib/api-client';
 
-export function usePharmacy() {
-  const [loading, setLoading] = useState(false);
+export function usePharmacyStock(params?: Record<string, string>) {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [pagination, setPagination] = useState({ page: 1, limit: 50, total: 0, totalPages: 1 });
 
-  const dispenseMedication = useCallback(async (data: any) => {
-    setLoading(true);
-    setError(null);
+  const fetch = useCallback(async () => {
     try {
+      setLoading(true);
       const api = getApiClient();
-      return { success: true };
-    } catch (e: any) {
-      setError(e.message);
-      return { success: false, error: e.message };
+      const result = await api.getVetPharmacyStock(params);
+      setData(result.data || []);
+      setPagination(result.pagination || { page: 1, limit: 50, total: 0, totalPages: 1 });
+    } catch (err: any) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [JSON.stringify(params)]);
 
-  return { loading, error, dispenseMedication };
+  useEffect(() => { fetch(); }, [fetch]);
+
+  return { data, loading, error, pagination, refresh: fetch };
+}
+
+export function usePharmacyDispenses(params?: Record<string, string>) {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [pagination, setPagination] = useState({ page: 1, limit: 50, total: 0, totalPages: 1 });
+
+  const fetch = useCallback(async () => {
+    try {
+      setLoading(true);
+      const api = getApiClient();
+      const result = await api.getVetPharmacyDispenses(params);
+      setData(result.data || []);
+      setPagination(result.pagination || { page: 1, limit: 50, total: 0, totalPages: 1 });
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => { fetch(); }, [fetch]);
+
+  return { data, loading, error, pagination, refresh: fetch };
 }

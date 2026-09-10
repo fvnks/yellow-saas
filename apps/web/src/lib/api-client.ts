@@ -2351,6 +2351,69 @@ async deleteAdjustmentReason(id: string) {
     return this.request<any>('/veterinary/notifications/vaccination-carnet', { method: 'POST', body: JSON.stringify(data) });
   }
 
+  // Payments (update/delete)
+  async updateVetPayment(id: string, data: any) {
+    return this.request<any>(`/veterinary/payments/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetPayment(id: string) {
+    return this.request<any>(`/veterinary/payments/${id}`, { method: 'DELETE' });
+  }
+
+  // Lab Tests
+  async getVetLabTests(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/lab-tests', params || {});
+  }
+  async createVetLabTest(data: any) {
+    return this.request<any>('/veterinary/lab-tests', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetLabTest(id: string, data: any) {
+    return this.request<any>(`/veterinary/lab-tests/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetLabTest(id: string) {
+    return this.request<any>(`/veterinary/lab-tests/${id}`, { method: 'DELETE' });
+  }
+
+  // Pharmacy Stock
+  async getVetPharmacyStock(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/pharmacy/stock', params || {});
+  }
+  async createVetPharmacyStock(data: any) {
+    return this.request<any>('/veterinary/pharmacy/stock', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetPharmacyStock(id: string, data: any) {
+    return this.request<any>(`/veterinary/pharmacy/stock/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetPharmacyStock(id: string) {
+    return this.request<any>(`/veterinary/pharmacy/stock/${id}`, { method: 'DELETE' });
+  }
+
+  // Pharmacy Dispense
+  async getVetPharmacyDispenses(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/pharmacy/dispense', params || {});
+  }
+  async dispenseVetMedication(data: any) {
+    return this.request<any>('/veterinary/pharmacy/dispense', { method: 'POST', body: JSON.stringify(data) });
+  }
+
+  // Portal Tokens
+  async getVetPortalTokens(params?: Record<string, string>) {
+    return this.requestWithPagination<any>('/veterinary/portal-tokens', params || {});
+  }
+  async createVetPortalToken(data: { patient_id: string; client_id: string; expires_at?: string }) {
+    return this.request<any>('/veterinary/portal-tokens', { method: 'POST', body: JSON.stringify(data) });
+  }
+  async updateVetPortalToken(id: string, data: { is_active?: boolean; expires_at?: string }) {
+    return this.request<any>(`/veterinary/portal-tokens/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  async deleteVetPortalToken(id: string) {
+    return this.request<any>(`/veterinary/portal-tokens/${id}`, { method: 'DELETE' });
+  }
+
+  // Queue
+  async getVetQueue() {
+    return this.request<any>('/veterinary/queue');
+  }
+
 }
 
 // Singleton with dynamic company_id from JWT
