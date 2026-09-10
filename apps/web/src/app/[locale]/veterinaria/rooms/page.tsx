@@ -24,6 +24,10 @@ const ROOM_TYPES = [
   { value: 'peluqueria', label: 'Peluquería' },
 ];
 
+function getTypeLabel(type: string) {
+  return ROOM_TYPES.find((t) => t.value === type)?.label || type;
+}
+
 const roomTypeBadges: Record<string, string> = {
   box: 'bg-blue-100 text-blue-800 border-blue-200',
   quirofano: 'bg-rose-100 text-rose-800 border-rose-200',
@@ -111,10 +115,6 @@ export default function RoomsPage() {
     } catch (err: any) {
       toast.error(err.message || 'Error al eliminar la sala');
     }
-  };
-
-  const getTypeLabel = (type: string) => {
-    return ROOM_TYPES.find((t) => t.value === type)?.label || type;
   };
 
   const availableCount = rooms.filter((r) => r.status === 'active').length;
