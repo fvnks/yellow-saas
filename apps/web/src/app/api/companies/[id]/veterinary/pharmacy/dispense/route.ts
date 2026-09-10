@@ -1,6 +1,22 @@
 import { NextRequest } from 'next/server';
-import { query } from '@/api/lib/db';
+import { query, transaction } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse, parseSearchParams, paginatedResponse } from '@/api/lib/helpers';
+import { jwtVerify } from 'jose';
+import { getJwtSecret } from '@/lib/env';
+
+const JWT_SECRET = getJwtSecret();
+
+async function getUserId(req: NextRequest): Promise<string | null> {
+  const authHeader = req.headers.get('Authorization');
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : req.cookies.get('auth-token')?.value;
+  if (!token) return null;
+  try {
+    const { payload } = await jwtVerify(token, JWT_SECRET);
+    return payload.id as string;
+  } catch {
+    return null;
+  }
+}
 
 export async function GET(req: NextRequest) {
   try {
@@ -53,6 +69,9 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const companyId = getCompanyId(req);
+    const userId = await getUserId(req);
+    if (!userId) return errorResponse('No autorizado', 401);
+
     const body = await req.json();
     const { stock_id, patient_id, prescription_id, professional_id, quantity_dispensed, unit_price_clp, notes } = body;
 
@@ -60,41 +79,43 @@ export async function POST(req: NextRequest) {
       return errorResponse('stock_id y quantity_dispensed (>0) son requeridos', 400);
     }
 
-    // Check stock availability
-    const stockResult = await query(
-      'SELECT * FROM veterinary_pharmacy_stock WHERE id = $1 AND company_id = $2',
-      [stock_id, companyId]
-    );
-    if (stockResult.rows.length === 0) return errorResponse('Medicamento no encontrado', 404);
+    const result = await transaction(async (client) => {
+      // Lock stock row for update to prevent race condition
+      const stockResult = await client.query(
+        'SELECT * FROM veterinary_pharmacy_stock WHERE id = $1 AND company_id = $2 FOR UPDATE',
+        [stock_id, companyId]
+      );
+      if (stockResult.rows.length === 0) throw new Error('Medicamento no encontrado');
 
-    const stock = stockResult.rows[0];
-    if (stock.quantity < quantity_dispensed) {
-      return errorResponse(`Stock insuficiente. Disponible: ${stock.quantity}`, 400);
-    }
+      const stock = stockResult.rows[0];
+      if (stock.quantity < quantity_dispensed) {
+        throw new Error(`Stock insuficiente. Disponible: ${stock.quantity}`);
+      }
 
-    const total_price = (unit_price_clp || stock.sale_price_clp || 0) * quantity_dispensed;
+      const total_price = (unit_price_clp || stock.sale_price_clp || 0) * quantity_dispensed;
 
-    // Create dispense record
-    const dispenseResult = await query(
-      `INSERT INTO veterinary_pharmacy_dispenses
-       (company_id, stock_id, patient_id, prescription_id, professional_id,
-        quantity_dispensed, unit_price_clp, total_price_clp, dispensed_by)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8, auth.uid())
-       RETURNING *`,
-      [companyId, stock_id, patient_id || null, prescription_id || null,
-       professional_id || null, quantity_dispensed, unit_price_clp || stock.sale_price_clp || 0, total_price]
-    );
+      const dispenseResult = await client.query(
+        `INSERT INTO veterinary_pharmacy_dispenses
+         (company_id, stock_id, patient_id, prescription_id, professional_id,
+          quantity_dispensed, unit_price_clp, total_price_clp, dispensed_by)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+         RETURNING *`,
+        [companyId, stock_id, patient_id || null, prescription_id || null,
+         professional_id || null, quantity_dispensed, unit_price_clp || stock.sale_price_clp || 0, total_price, userId]
+      );
 
-    // Decrease stock
-    await query(
-      `UPDATE veterinary_pharmacy_stock SET quantity = quantity - $1,
-        status = CASE WHEN quantity - $1 <= 0 THEN 'depleted' ELSE status END,
-        updated_at = now()
-       WHERE id = $2 AND company_id = $3`,
-      [quantity_dispensed, stock_id, companyId]
-    );
+      await client.query(
+        `UPDATE veterinary_pharmacy_stock SET quantity = quantity - $1,
+          status = CASE WHEN quantity - $1 <= 0 THEN 'depleted' ELSE status END,
+          updated_at = now()
+         WHERE id = $2 AND company_id = $3`,
+        [quantity_dispensed, stock_id, companyId]
+      );
 
-    return successResponse(dispenseResult.rows[0], 201);
+      return dispenseResult.rows[0];
+    });
+
+    return successResponse(result, 201);
   } catch (error: any) {
     return errorResponse(error.message || 'Error al dispensar medicamento', 500);
   }

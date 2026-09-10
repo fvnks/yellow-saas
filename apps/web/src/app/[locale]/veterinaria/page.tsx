@@ -163,7 +163,7 @@ export default function VeterinaryDashboardPage() {
             <h3 className="text-2xl font-black text-slate-900 mt-1">{hospitalizations.length}</h3>
             <p className="text-xs text-rose-600 font-semibold mt-1 flex items-center gap-1">
               <Activity className="w-3.5 h-3.5" />
-              1 paciente prioridad alta
+              {hospitalizations.filter((h) => h.priority === 'alta' || h.priority === 'critica').length} prioridad alta
             </p>
           </div>
           <div className="w-12 h-12 bg-rose-50 rounded-2xl border border-rose-100 flex items-center justify-center text-rose-600">

@@ -1,7 +1,23 @@
 import { NextRequest } from 'next/server';
 import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse, parseSearchParams, paginatedResponse } from '@/api/lib/helpers';
+import { jwtVerify } from 'jose';
+import { getJwtSecret } from '@/lib/env';
 import crypto from 'crypto';
+
+const JWT_SECRET = getJwtSecret();
+
+async function getUserId(req: NextRequest): Promise<string | null> {
+  const authHeader = req.headers.get('Authorization');
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : req.cookies.get('auth-token')?.value;
+  if (!token) return null;
+  try {
+    const { payload } = await jwtVerify(token, JWT_SECRET);
+    return payload.id as string;
+  } catch {
+    return null;
+  }
+}
 
 export async function GET(req: NextRequest) {
   try {
@@ -44,6 +60,8 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const companyId = getCompanyId(req);
+    const userId = await getUserId(req);
+    if (!userId) return errorResponse('No autorizado', 401);
     const body = await req.json();
     const { patient_id, client_id, expires_at } = body;
 
@@ -55,9 +73,9 @@ export async function POST(req: NextRequest) {
 
     const result = await query(
       `INSERT INTO veterinary_portal_tokens (company_id, patient_id, client_id, token, expires_at, created_by)
-       VALUES ($1, $2, $3, $4, $5, auth.uid())
+       VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
-      [companyId, patient_id, client_id, token, expires_at || null]
+      [companyId, patient_id, client_id, token, expires_at || null, userId]
     );
 
     return successResponse(result.rows[0], 201);
