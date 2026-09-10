@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Settings, Shield, Save, AlertCircle, CheckCircle, Database, Globe, Key, Pencil, Trash2, X } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface SuperAdmin {
   id: string;
@@ -41,7 +42,7 @@ export default function AdminSettingsPage() {
       const data = await res.json();
       if (data.success) setAdmins(data.data);
     } catch (err) {
-      console.error('Failed to load admins:', err);
+      toast.error('Error al cargar administradores');
     } finally {
       setLoading(false);
     }

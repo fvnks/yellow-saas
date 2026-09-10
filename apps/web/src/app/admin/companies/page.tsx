@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Building2, Search, ExternalLink, Users, Calendar, Plus, X, FlaskConical, Package, FolderKanban, UsersRound, CreditCard } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Company {
   id: string;
@@ -67,7 +68,7 @@ export default function AdminCompaniesPage() {
       const res = await fetch('/api/super-admin/companies', { headers: { Authorization: `Bearer ${token}` } });
       const data = await res.json();
       if (data.success) setCompanies(data.data);
-    } catch (err) { console.error('Failed to load companies:', err); }
+    } catch (err) { toast.error('Error al cargar empresas'); }
     setLoading(false);
   };
 
@@ -83,12 +84,13 @@ export default function AdminCompaniesPage() {
       });
       const data = await res.json();
       if (data.success) {
+        toast.success('Empresa creada correctamente');
         setShowCreate(false);
         setForm({ name: '', slug: '', email: '', password: '', plan: 'professional' });
         setSelectedModules(['mi-cuenta']);
         fetchCompanies();
       }
-    } catch (err) { console.error('Failed to create company:', err); }
+    } catch (err) { toast.error('Error al crear empresa'); }
     setCreating(false);
   };
 

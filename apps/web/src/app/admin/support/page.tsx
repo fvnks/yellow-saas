@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Headphones, Plus, Search, Building2, AlertTriangle, CheckCircle, Clock, MessageSquare, Send, X, UserCheck, Star, Paperclip, FileText, Image as ImageIcon, History, CheckCircle2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Ticket {
   id: string;
@@ -114,7 +115,7 @@ export default function AdminSupportPage() {
       const data = await res.json();
       if (data.success) setTickets(data.data);
     } catch (err) {
-      console.error('Failed to load tickets:', err);
+      toast.error('Error al cargar tickets');
     } finally {
       setLoading(false);
     }
@@ -128,7 +129,7 @@ export default function AdminSupportPage() {
       const data = await res.json();
       if (data.success) setCompanies(data.data);
     } catch (err) {
-      console.error('Failed to load companies:', err);
+      toast.error('Error al cargar empresas');
     }
   };
 
@@ -140,7 +141,7 @@ export default function AdminSupportPage() {
       const data = await res.json();
       if (data.success) setSuperAdmins(data.data);
     } catch (err) {
-      console.error('Failed to load super admins:', err);
+      toast.error('Error al cargar super admins');
     }
   };
 
@@ -154,7 +155,7 @@ export default function AdminSupportPage() {
       fetchTickets();
       if (selectedTicket?.id === ticketId) fetchTicketDetail(ticketId);
     } catch (err) {
-      console.error('Failed to assign ticket:', err);
+      toast.error('Error al asignar ticket');
     }
   };
 
@@ -167,7 +168,7 @@ export default function AdminSupportPage() {
       const data = await res.json();
       if (data.success) setSelectedTicket(data.data);
     } catch (err) {
-      console.error('Failed to load ticket:', err);
+      toast.error('Error al cargar detalle del ticket');
     } finally {
       setLoadingDetail(false);
     }
@@ -220,7 +221,7 @@ export default function AdminSupportPage() {
         fetchTicketDetail(selectedTicket.id);
       }
     } catch (err) {
-      console.error('Failed to send reply:', err);
+      toast.error('Error al enviar respuesta');
     } finally {
       setSending(false);
     }
@@ -243,7 +244,7 @@ export default function AdminSupportPage() {
       fetchTickets();
       if (selectedTicket?.id === ticketId) fetchTicketDetail(ticketId);
     } catch (err) {
-      console.error('Failed to update status:', err);
+      toast.error('Error al actualizar estado');
     }
   };
 
@@ -276,7 +277,10 @@ export default function AdminSupportPage() {
             {['open', 'in_progress', 'resolved', 'closed'].map((s) => (
               <button
                 key={s}
-                onClick={() => handleStatusChange(selectedTicket.id, s)}
+                onClick={() => {
+                  if (selectedTicket.status !== s && !confirm(`¿Cambiar estado a "${s === 'in_progress' ? 'En progreso' : s === 'open' ? 'Abierto' : s === 'resolved' ? 'Resuelto' : 'Cerrado'}"?`)) return;
+                  handleStatusChange(selectedTicket.id, s);
+                }}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                   selectedTicket.status === s ? 'bg-slate-900/80 text-white' : 'bg-card text-muted-foreground hover:text-white'
                 }`}

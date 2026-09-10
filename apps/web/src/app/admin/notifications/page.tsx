@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Bell, Send, Building2, CheckCircle, AlertTriangle, Info, AlertCircle, Plus, X, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Notification {
   id: string;
@@ -44,7 +45,7 @@ export default function AdminNotificationsPage() {
       const data = await res.json();
       if (data.success) setNotifications(data.data);
     } catch (err) {
-      console.error('Failed to load notifications:', err);
+      toast.error('Error al cargar notificaciones');
     } finally {
       setLoading(false);
     }
@@ -58,7 +59,7 @@ export default function AdminNotificationsPage() {
       const data = await res.json();
       if (data.success) setCompanies(data.data);
     } catch (err) {
-      console.error('Failed to load companies:', err);
+      toast.error('Error al cargar empresas');
     }
   };
 
@@ -71,7 +72,7 @@ export default function AdminNotificationsPage() {
       });
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: isRead } : n));
     } catch (err) {
-      console.error('Failed to update notification:', err);
+      toast.error('Error al actualizar notificación');
     }
   };
 
@@ -88,7 +89,7 @@ export default function AdminNotificationsPage() {
       });
       setNotifications(prev => prev.filter(n => n.id !== id));
     } catch (err) {
-      console.error('Failed to delete notification:', err);
+      toast.error('Error al eliminar notificación');
     }
   };
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { ScrollText, Search, Shield, Building2, ChevronLeft, ChevronRight, Filter, X } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface AuditEntry {
   id: string;
@@ -73,7 +74,7 @@ export default function AdminAuditPage() {
         setTotal(data.data.total);
       }
     } catch (err) {
-      console.error('Failed to load audit log:', err);
+      toast.error('Error al cargar registros de auditoría');
     } finally {
       setLoading(false);
     }
@@ -87,7 +88,7 @@ export default function AdminAuditPage() {
       const data = await res.json();
       if (data.success) setSuperAdmins(data.data);
     } catch (err) {
-      console.error('Failed to load super admins:', err);
+      toast.error('Error al cargar super admins');
     }
   };
 
@@ -99,7 +100,7 @@ export default function AdminAuditPage() {
       const data = await res.json();
       if (data.success) setCompanies(data.data);
     } catch (err) {
-      console.error('Failed to load companies:', err);
+      toast.error('Error al cargar empresas');
     }
   };
 
