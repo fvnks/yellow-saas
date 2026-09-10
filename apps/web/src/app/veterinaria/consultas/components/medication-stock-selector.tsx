@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Package, AlertCircle, CheckCircle2, Search, ArrowDown } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Package, AlertCircle, CheckCircle2, Search, ArrowDown, Loader2 } from 'lucide-react';
+import { getApiClient } from '@/lib/api-client';
 
 export interface InventoryMedication {
   id: string;
@@ -14,14 +15,6 @@ export interface InventoryMedication {
   priceCLP: number;
 }
 
-const MOCK_INVENTORY_MEDS: InventoryMedication[] = [
-  { id: 'med-01', name: 'Amoxicilina + Ac. Clavulánico 250mg', sku: 'VET-AMOX-250', currentStock: 45, unit: 'comprimidos', batchNumber: 'LOTE-88491', expirationDate: '2026-08-15', priceCLP: 1200 },
-  { id: 'med-02', name: 'Meloxicam 0.5mg/ml Inyectable', sku: 'VET-MELOX-05', currentStock: 12, unit: 'frascos 10ml', batchNumber: 'LOTE-99201', expirationDate: '2026-03-30', priceCLP: 14500 },
-  { id: 'med-03', name: 'Ondansetrón 2mg/ml Inyectable', sku: 'VET-OND-02', currentStock: 8, unit: 'ampollas', batchNumber: 'LOTE-77123', expirationDate: '2025-11-20', priceCLP: 3800 },
-  { id: 'med-04', name: 'Endogard 30kg Desparasitante', sku: 'VET-END30KG', currentStock: 60, unit: 'comprimidos', batchNumber: 'LOTE-11029', expirationDate: '2027-01-10', priceCLP: 4500 },
-  { id: 'med-05', name: 'Bravecto 20-40kg Masticable', sku: 'VET-BRAV-40', currentStock: 15, unit: 'cajas', batchNumber: 'LOTE-33412', expirationDate: '2026-10-05', priceCLP: 34900 },
-];
-
 interface Props {
   onSelectMedication: (med: InventoryMedication, quantity: number) => void;
 }
@@ -30,8 +23,35 @@ export default function MedicationStockSelector({ onSelectMedication }: Props) {
   const [search, setSearch] = useState('');
   const [selectedMed, setSelectedMed] = useState<InventoryMedication | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
+  const [allMeds, setAllMeds] = useState<InventoryMedication[]>([]);
+  const [loadingMeds, setLoadingMeds] = useState(true);
 
-  const filtered = MOCK_INVENTORY_MEDS.filter(
+  useEffect(() => {
+    const fetchMeds = async () => {
+      try {
+        const api = getApiClient();
+        const result = await api.getProducts({ search: '' });
+        const mapped: InventoryMedication[] = (result.data || []).map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          sku: p.sku || '',
+          currentStock: p.stock || 0,
+          unit: p.unit_of_measure || 'unidades',
+          batchNumber: p.batchNumber || '',
+          expirationDate: p.expirationDate || '',
+          priceCLP: p.sale_price || p.price || 0,
+        }));
+        setAllMeds(mapped);
+      } catch {
+        setAllMeds([]);
+      } finally {
+        setLoadingMeds(false);
+      }
+    };
+    fetchMeds();
+  }, []);
+
+  const filtered = allMeds.filter(
     (m) => m.name.toLowerCase().includes(search.toLowerCase()) || m.sku.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -50,7 +70,11 @@ export default function MedicationStockSelector({ onSelectMedication }: Props) {
           Rebajar Fármacos & Insumos de Bodega ERP
         </h4>
         <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
-          Stock en Tiempo Real
+          {loadingMeds ? (
+            <span className="flex items-center gap-1"><Loader2 className="w-3 h-3 animate-spin" /> Cargando...</span>
+          ) : (
+            'Stock en Tiempo Real'
+          )}
         </span>
       </div>
 
@@ -68,12 +92,14 @@ export default function MedicationStockSelector({ onSelectMedication }: Props) {
         <select
           value={selectedMed?.id || ''}
           onChange={(e) => {
-            const found = MOCK_INVENTORY_MEDS.find((m) => m.id === e.target.value);
+            const found = allMeds.find((m) => m.id === e.target.value);
             setSelectedMed(found || null);
           }}
           className="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500"
         >
-          <option value="">-- Seleccionar de la lista --</option>
+          <option value="">
+            {loadingMeds ? 'Cargando medicamentos...' : '-- Seleccionar de la lista --'}
+          </option>
           {filtered.map((m) => (
             <option key={m.id} value={m.id}>
               {m.name} (Stock: {m.currentStock} {m.unit} • Lote: {m.batchNumber})

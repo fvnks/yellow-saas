@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import {
   Stethoscope,
@@ -18,21 +18,36 @@ import {
   Search,
   Activity,
 } from 'lucide-react';
-import {
-  INITIAL_PATIENTS,
-  INITIAL_APPOINTMENTS,
-  INITIAL_HOSPITALIZATIONS,
-  INITIAL_REMINDERS,
-  VeterinaryAppointment,
-} from './lib/veterinary-store';
+import { getApiClient } from '@/lib/api-client';
+import { VeterinaryAppointment, VeterinaryPatient, Hospitalization, Reminder } from './lib/veterinary-store';
 
 export default function VeterinaryDashboardPage() {
-  const [appointments, setAppointments] = useState<VeterinaryAppointment[]>(INITIAL_APPOINTMENTS);
-  const patients = INITIAL_PATIENTS;
-  const hospitalizations = INITIAL_HOSPITALIZATIONS;
-  const reminders = INITIAL_REMINDERS;
+  const [appointments, setAppointments] = useState<VeterinaryAppointment[]>([]);
+  const [patients, setPatients] = useState<VeterinaryPatient[]>([]);
+  const [hospitalizations, setHospitalizations] = useState<Hospitalization[]>([]);
+  const [reminders, setReminders] = useState<Reminder[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Formatting helper CLP
+  const fetchDashboard = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const api = getApiClient();
+      const result = await api.getVetDashboard();
+      setAppointments(result.data?.appointments || []);
+      setPatients(result.data?.patients || []);
+      setHospitalizations(result.data?.hospitalizations || []);
+      setReminders(result.data?.reminders || []);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchDashboard(); }, [fetchDashboard]);
+
   const formatCLP = (amount: number) => {
     return new Intl.NumberFormat('es-CL', {
       style: 'currency',
@@ -41,11 +56,36 @@ export default function VeterinaryDashboardPage() {
     }).format(Math.round(amount));
   };
 
-  const handleUpdateStatus = (id: string, newStatus: VeterinaryAppointment['status']) => {
-    setAppointments((prev) =>
-      prev.map((apt) => (apt.id === id ? { ...apt, status: newStatus } : apt))
-    );
+  const handleUpdateStatus = async (id: string, newStatus: VeterinaryAppointment['status']) => {
+    try {
+      const api = getApiClient();
+      await api.updateVetAppointment(id, { status: newStatus });
+      await fetchDashboard();
+    } catch (err) {
+      console.error('Error updating appointment status:', err);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="h-32 bg-slate-200 rounded-2xl animate-pulse" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => <div key={i} className="h-28 bg-slate-100 rounded-2xl animate-pulse" />)}
+        </div>
+        <div className="h-64 bg-slate-100 rounded-2xl animate-pulse" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-rose-50 border border-rose-200 rounded-2xl p-6 text-center">
+        <p className="text-rose-700 font-bold">Error al cargar el dashboard: {error}</p>
+        <button onClick={fetchDashboard} className="mt-2 text-sm text-rose-600 underline">Reintentar</button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

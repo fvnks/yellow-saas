@@ -1,28 +1,19 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Syringe, Calendar, Clock, User, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Syringe, Calendar, Clock, User, CheckCircle2, ShieldCheck, Loader2 } from 'lucide-react';
 import InformedConsentModal from './components/informed-consent-modal';
+import { useSurgeries } from '../hooks/use-surgeries';
+import { usePatients } from '../hooks/use-patients';
+import { useProfessionals } from '../hooks/use-professionals';
+import { useRooms } from '../hooks/use-rooms';
 
 export default function VeterinarySurgeriesPage() {
   const [selectedSurgery, setSelectedSurgery] = useState<any | null>(null);
-
-  const surgeries = [
-    {
-      id: 'surg-1',
-      patientName: 'Luna',
-      species: 'gato',
-      breed: 'Mestizo Felino',
-      clientName: 'María José Valenzuela',
-      clientRut: '15.482.910-K',
-      surgeryName: 'OVH / Esterilización Felina + Limpieza Dental',
-      surgeonName: 'Dra. Andrea Morales Soto',
-      anesthetistName: 'Dr. Sebastián Contreras P.',
-      scheduledDate: '2025-03-02 09:30',
-      roomName: 'Quirófano Principal',
-      status: 'programada',
-    },
-  ];
+  const { data: surgeries, loading, error, refresh } = useSurgeries();
+  const { data: patients } = usePatients();
+  const { data: professionals } = useProfessionals();
+  const { data: rooms } = useRooms();
 
   return (
     <div className="space-y-6">
@@ -37,6 +28,17 @@ export default function VeterinarySurgeriesPage() {
         </div>
       </div>
 
+      {loading ? (
+        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-12 flex flex-col items-center justify-center gap-3">
+          <Loader2 className="w-6 h-6 text-slate-400 animate-spin" />
+          <p className="text-sm text-slate-500 font-medium">Cargando cirugías...</p>
+        </div>
+      ) : error ? (
+        <div className="bg-rose-50 border border-rose-200 rounded-2xl p-6 text-center">
+          <p className="text-sm text-rose-700 font-bold">{error}</p>
+          <button onClick={refresh} className="mt-2 text-xs text-rose-600 underline font-semibold">Reintentar</button>
+        </div>
+      ) : (
       <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden divide-y divide-slate-100">
         {surgeries.map((s) => (
           <div key={s.id} className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -71,6 +73,7 @@ export default function VeterinarySurgeriesPage() {
           </div>
         ))}
       </div>
+      )}
 
       {selectedSurgery && (
         <InformedConsentModal
