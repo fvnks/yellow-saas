@@ -107,7 +107,7 @@ export default function AdminAuditPage() {
     login: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     access: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
     modify: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
-    logout: 'bg-muted0/10 text-muted-foreground border-border/20',
+    logout: 'bg-slate-500/10 text-muted-foreground border-border/20',
   };
 
   const totalPages = Math.ceil(total / limit);

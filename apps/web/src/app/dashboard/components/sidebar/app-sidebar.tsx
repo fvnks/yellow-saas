@@ -61,7 +61,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   const translatedItems = useTranslatedSidebar(sidebarItems);
 
   const filteredSidebarItems = useMemo(() => {
-    if (activatedModules.size === 0) return translatedItems;
+    if (activatedModules.size === 0) return translatedItems.filter(g => !g.requiredModule);
     return translatedItems.filter(group => {
       if (!group.requiredModule) return true;
       return activatedModules.has(group.requiredModule);

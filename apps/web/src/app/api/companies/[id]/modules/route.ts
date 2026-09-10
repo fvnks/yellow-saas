@@ -1,8 +1,12 @@
 import { query } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
+import { verifySuperAdmin } from '@/api/super-admin/lib/auth';
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+  const admin = await verifySuperAdmin(request);
+  if (!admin) return errorResponse('No autorizado', 401);
+
   try {
     const companyId = params.id;
 

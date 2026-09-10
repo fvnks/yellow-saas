@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { Settings, Shield, Save, AlertCircle, CheckCircle, Database, Globe, Key, Pencil, Trash2, X } from 'lucide-react';
@@ -288,7 +288,7 @@ export default function AdminSettingsPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${
-                      adm.is_active ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-muted0/10 text-muted-foreground border-border/20'
+                      adm.is_active ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-slate-500/10 text-muted-foreground border-border/20'
                     }`}>
                       {adm.is_active ? 'Activo' : 'Inactivo'}
                     </span>
@@ -381,7 +381,7 @@ export default function AdminSettingsPage() {
                   }`}
                 >
                   <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-card transition-transform ${
-                    editForm.is_active ? 'translate-x-4.5' : 'translate-x-0.5'
+                    editForm.is_active ? 'translate-x-5' : 'translate-x-0.5'
                   }`} />
                 </button>
                 <span className="text-xs text-muted-foreground">{editForm.is_active ? 'Activo' : 'Inactivo'}</span>

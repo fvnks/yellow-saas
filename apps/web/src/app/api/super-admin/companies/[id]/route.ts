@@ -83,7 +83,8 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
       );
     } else if (action === 'deactivate') {
       await query(
-        'DELETE FROM module_activations WHERE company_id = $1 AND module_name = $2',
+        `UPDATE module_activations SET status = 'cancelled', cancelled_at = now()
+         WHERE company_id = $1 AND module_name = $2 AND status = 'active'`,
         [id, module_name]
       );
     } else {

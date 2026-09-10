@@ -288,7 +288,7 @@ export default function AdminGrantsPage() {
                   <td className="px-6 py-4 text-xs text-muted-foreground">{grant.reason || '—'}</td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold ${
-                      grant.is_active ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-muted0/10 text-muted-foreground border border-border/20'
+                      grant.is_active ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-500/10 text-muted-foreground border border-border/20'
                     }`}>
                       {grant.is_active ? <CheckCircle className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
                       {grant.is_active ? 'Activo' : 'Inactivo'}

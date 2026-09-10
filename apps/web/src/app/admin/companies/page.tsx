@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -16,11 +16,16 @@ interface Company {
 }
 
 const MODULE_OPTIONS = [
-  { id: 'recetas', label: 'Recetas', icon: FlaskConical, color: 'text-orange-600 bg-orange-50 border-orange-200' },
-  { id: 'erp', label: 'ERP', icon: Package, color: 'text-violet-400 bg-blue-50 border-violet-500/20' },
-  { id: 'hr', label: 'RRHH', icon: UsersRound, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
-  { id: 'projects', label: 'Proyectos', icon: FolderKanban, color: 'text-orange-600 bg-orange-50 border-orange-200' },
+  { id: 'erp', label: 'ERP Core', icon: Package, color: 'text-violet-600 bg-violet-50 border-violet-200' },
   { id: 'mi-cuenta', label: 'Mi Cuenta', icon: CreditCard, color: 'text-blue-700 bg-blue-50 border-blue-200' },
+  { id: 'advanced_crm', label: 'CRM Avanzado', icon: Users, color: 'text-orange-600 bg-orange-50 border-orange-200' },
+  { id: 'hr_premium', label: 'RRHH Premium', icon: UsersRound, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
+  { id: 'pos_plus', label: 'POS Plus', icon: Package, color: 'text-pink-600 bg-pink-50 border-pink-200' },
+  { id: 'accounting_pro', label: 'Contabilidad Pro', icon: Package, color: 'text-amber-600 bg-amber-50 border-amber-200' },
+  { id: 'inventory_plus', label: 'Inventario Plus', icon: Package, color: 'text-teal-600 bg-teal-50 border-teal-200' },
+  { id: 'projects_pro', label: 'Proyectos Pro', icon: FolderKanban, color: 'text-purple-600 bg-purple-50 border-purple-200' },
+  { id: 'support_chat', label: 'Soporte en Vivo', icon: Users, color: 'text-cyan-600 bg-cyan-50 border-cyan-200' },
+  { id: 'api_access', label: 'Acceso API', icon: Package, color: 'text-slate-600 bg-slate-50 border-slate-200' },
 ];
 
 export default function AdminCompaniesPage() {
@@ -80,11 +85,11 @@ export default function AdminCompaniesPage() {
     active: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     trial: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
     suspended: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-    cancelled: 'bg-muted0/10 text-muted-foreground border-border/20',
+    cancelled: 'bg-slate-500/10 text-muted-foreground border-border/20',
   };
 
   const planColors: Record<string, string> = {
-    free: 'bg-muted0/10 text-muted-foreground border-border/20',
+    free: 'bg-slate-500/10 text-muted-foreground border-border/20',
     starter: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
     professional: 'bg-blue-600/10 text-blue-500 border-blue-500/20',
     enterprise: 'bg-violet-500/10 text-violet-400 border-violet-500/20',

@@ -81,8 +81,8 @@ export default function AdminUsersPage() {
     owner: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
     admin: 'bg-slate-800 text-violet-400 border-violet-500/20',
     manager: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    member: 'bg-muted0/10 text-muted-foreground border-border/20',
-    viewer: 'bg-muted0/10 text-muted-foreground border-border/20',
+    member: 'bg-slate-500/10 text-muted-foreground border-border/20',
+    viewer: 'bg-slate-500/10 text-muted-foreground border-border/20',
   };
 
   const statusColors: Record<string, string> = {

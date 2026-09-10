@@ -99,7 +99,7 @@ export default function ModulesTab() {
 
   const isActivated = (name: string) => activated.some(a => a.module_name === name && a.status === 'active');
 
-  const formatPrice = (cents: number) => `$${(cents / 100).toLocaleString('es-CL')}`;
+  const formatPrice = (cents: number) => `$${cents.toLocaleString('es-CL')}`;
 
   const categories = [...new Set(catalog.map(m => m.category))];
   const filteredModules = catalog.filter(m => m.category === activeCategory);
