@@ -4,6 +4,7 @@ import { ReactNode, useEffect, useRef, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { NextIntlClientProvider } from 'next-intl';
 import { toast, Toaster } from 'sonner';
 import {
   Shield, Building2, Users, KeyRound, Settings,
@@ -14,6 +15,7 @@ import ModuleSidebarHeader from '@/components/sidebar/module-sidebar-header';
 import ModuleSidebarBackButton from '@/components/sidebar/module-sidebar-back-button';
 import ModuleSidebarFooter from '@/components/sidebar/module-sidebar-footer';
 import { MODULE_SIDEBAR_THEMES } from '@/lib/sidebar-theme';
+import esMessages from '@/messages/es.json';
 
 const sidebarItems = [
   { label: 'Plataforma', items: [
@@ -112,6 +114,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }, [searchQuery]);
 
   return (
+    <NextIntlClientProvider locale="es" messages={esMessages}>
     <div className="flex min-h-screen bg-slate-950 text-slate-100 select-none">
       <Toaster position="top-right" richColors closeButton />
 
@@ -228,5 +231,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         </div>
       </main>
     </div>
+    </NextIntlClientProvider>
   );
 }
