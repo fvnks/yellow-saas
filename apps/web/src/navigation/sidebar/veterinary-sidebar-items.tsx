@@ -19,6 +19,9 @@ import {
   FileSpreadsheet,
   DoorOpen,
   Pill,
+  DollarSign,
+  Key,
+  ListOrdered,
 } from "lucide-react";
 
 export interface VeterinaryNavItem {
@@ -52,6 +55,11 @@ export const veterinarySidebarItems: VeterinaryNavGroup[] = [
         title: "Consultas Clínicas",
         path: "/veterinaria/consultas",
         icon: Stethoscope,
+      },
+      {
+        title: "Sala de Espera",
+        path: "/veterinaria/cola",
+        icon: ListOrdered,
       },
       {
         title: "Evolución & Notas SOAP",
@@ -118,6 +126,11 @@ export const veterinarySidebarItems: VeterinaryNavGroup[] = [
         path: "/veterinaria/presupuestos",
         icon: FileSpreadsheet,
       },
+      {
+        title: "Pagos & Cobranzas",
+        path: "/veterinaria/pagos",
+        icon: DollarSign,
+      },
     ],
   },
   {
@@ -147,6 +160,11 @@ export const veterinarySidebarItems: VeterinaryNavGroup[] = [
         title: "Boxes & Salas",
         path: "/veterinaria/rooms",
         icon: DoorOpen,
+      },
+      {
+        title: "Portal de Tutores",
+        path: "/veterinaria/portal-tokens",
+        icon: Key,
       },
     ],
   },
