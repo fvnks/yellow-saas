@@ -775,23 +775,6 @@ export class ApiClient {
     return this.request<{ id: string; name: string }>('', { method: 'PUT', body: JSON.stringify(data) });
   }
 
-  // Dashboard KPIs
-  async getDashboardKpis() {
-    return this.request<{
-      total_products: number;
-      total_stock_value: number;
-      low_stock_count: number;
-      out_of_stock_count: number;
-      total_customers: number;
-      total_suppliers: number;
-      pending_orders: number;
-      pending_deliveries: number;
-      pending_invoices: number;
-      total_sales_month: number;
-      total_purchases_month: number;
-    }>('/dashboard/kpis');
-  }
-
   // Cost Centers
   async getCostCenters(params?: { search?: string; page?: number; limit?: number }) {
     const searchParams: Record<string, string> = {};

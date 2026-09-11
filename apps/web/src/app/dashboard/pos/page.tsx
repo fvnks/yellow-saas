@@ -235,6 +235,7 @@ export default function POSPage() {
     const blob = doc.output('blob');
     const url = URL.createObjectURL(blob);
     window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
   };
 
   const handleDownloadPDF = async () => {
