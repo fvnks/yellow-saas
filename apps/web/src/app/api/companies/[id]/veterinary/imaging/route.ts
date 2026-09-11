@@ -4,7 +4,7 @@ import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
-    const companyId = getCompanyId(request);
+    const companyId = await getCompanyId(request);
     const { page, limit, search, sort: requestedSort, order, offset } = parseSearchParams(request);
     const allowedSortColumns = ['created_at', 'study_date'];
     const sort = allowedSortColumns.includes(requestedSort) ? requestedSort : 'study_date';
@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const companyId = getCompanyId(request);
+    const companyId = await getCompanyId(request);
     const body = await request.json();
     const {
       patient_id, client_id, professional_id, study_type,
@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
-    const companyId = getCompanyId(request);
+    const companyId = await getCompanyId(request);
     const body = await request.json();
     const { id, findings, conclusion, status, notes, image_count } = body;
 
@@ -142,7 +142,7 @@ export async function PATCH(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const companyId = getCompanyId(request);
+    const companyId = await getCompanyId(request);
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 

@@ -14,7 +14,7 @@ export async function GET(
       `SELECT je.*,
         (SELECT json_agg(json_build_object(
           'id', jel.id, 'account_id', jel.account_id, 'description', jel.description,
-          'debit', jel.debit, 'credit', jel.credit, 'sort_order', jel.sort_order,
+          'debit', jel.debit, 'credit', jel.credit,
           'account', (SELECT json_build_object('id', a.id, 'code', a.code, 'name', a.name, 'type', a.type) FROM accounts a WHERE a.id = jel.account_id)
         )) FROM journal_entry_lines jel WHERE jel.entry_id = je.id) as lines
        FROM journal_entries je
@@ -42,7 +42,7 @@ export async function PUT(
 
     const { rows } = await query(
       `UPDATE journal_entries SET
-        date = $1, description = $2, reference_type = $3, reference_id = $4,
+        entry_date = $1, description = $2, reference_type = $3, reference_id = $4,
         status = $5, updated_at = NOW()
        WHERE id = $6 AND company_id = $7
        RETURNING *`,
@@ -61,21 +61,20 @@ export async function PUT(
       );
 
       if (body.lines.length > 0) {
-        const entryLines = body.lines.map((line: Record<string, unknown>, index: number) => ({
+        const entryLines = body.lines.map((line: Record<string, unknown>) => ({
           entry_id: params.entryId,
           company_id: companyId,
           account_id: line.account_id,
           description: line.description || null,
           debit: Number(line.debit) || 0,
           credit: Number(line.credit) || 0,
-          sort_order: index,
         }));
 
         for (const el of entryLines) {
           await query(
-            `INSERT INTO journal_entry_lines (entry_id, company_id, account_id, description, debit, credit, sort_order)
-             VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-            [el.entry_id, el.company_id, el.account_id, el.description, el.debit, el.credit, el.sort_order]
+            `INSERT INTO journal_entry_lines (entry_id, company_id, account_id, description, debit, credit)
+             VALUES ($1, $2, $3, $4, $5, $6)`,
+            [el.entry_id, el.company_id, el.account_id, el.description, el.debit, el.credit]
           );
         }
 
@@ -99,7 +98,7 @@ export async function PUT(
       `SELECT je.*,
         (SELECT json_agg(json_build_object(
           'id', jel.id, 'account_id', jel.account_id, 'description', jel.description,
-          'debit', jel.debit, 'credit', jel.credit, 'sort_order', jel.sort_order,
+          'debit', jel.debit, 'credit', jel.credit,
           'account', (SELECT json_build_object('id', a.id, 'code', a.code, 'name', a.name, 'type', a.type) FROM accounts a WHERE a.id = jel.account_id)
         )) FROM journal_entry_lines jel WHERE jel.entry_id = je.id) as lines
        FROM journal_entries je

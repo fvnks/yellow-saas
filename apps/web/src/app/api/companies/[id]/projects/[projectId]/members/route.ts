@@ -11,11 +11,11 @@ export async function GET(
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const result = await query(
-      `SELECT pm.*, p.first_name || ' ' || p.last_name as user_name, p.email, p.avatar_url
+      `SELECT pm.*, p.full_name as user_name, p.email, p.avatar_url
        FROM project_members pm
        JOIN profiles p ON p.id = pm.user_id
        WHERE pm.project_id = $1 AND pm.company_id = $2
-       ORDER BY pm.role, p.first_name`,
+       ORDER BY pm.role, p.full_name`,
       [params.projectId, companyId]
     );
 

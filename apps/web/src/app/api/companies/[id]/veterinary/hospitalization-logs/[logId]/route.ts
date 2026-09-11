@@ -7,7 +7,7 @@ export async function GET(
   { params }: { params: { id: string; logId: string } }
 ) {
   try {
-    const companyId = getCompanyId(request);
+    const companyId = await getCompanyId(request);
     const { logId } = params;
 
     const result = await query(
@@ -35,7 +35,7 @@ export async function PUT(
   { params }: { params: { id: string; logId: string } }
 ) {
   try {
-    const companyId = getCompanyId(request);
+    const companyId = await getCompanyId(request);
     const { logId } = params;
     const body = await request.json();
 
@@ -82,7 +82,7 @@ export async function DELETE(
   { params }: { params: { id: string; logId: string } }
 ) {
   try {
-    const companyId = getCompanyId(request);
+    const companyId = await getCompanyId(request);
     const { logId } = params;
 
     const result = await query(

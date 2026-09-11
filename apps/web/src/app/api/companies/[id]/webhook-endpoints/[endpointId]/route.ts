@@ -83,7 +83,7 @@ export async function PUT(
         updated_at = NOW()
        WHERE id = $8 AND company_id = $9
        RETURNING *`,
-      [name, url, secret, events ? JSON.stringify(events) : null, is_active, retry_policy, headers, params.endpointId, companyId]
+      [name, url, secret, events || null, is_active, retry_policy, headers, params.endpointId, companyId]
     );
 
     if (result.rows.length === 0) return errorResponse('Webhook endpoint not found', 404);

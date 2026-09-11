@@ -4,7 +4,7 @@ import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string; stockId: string } }) {
   try {
-    const companyId = getCompanyId(req);
+    const companyId = await getCompanyId(req);
     const result = await query(
       'SELECT * FROM veterinary_pharmacy_stock WHERE id = $1 AND company_id = $2',
       [params.stockId, companyId]
@@ -18,7 +18,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string; 
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string; stockId: string } }) {
   try {
-    const companyId = getCompanyId(req);
+    const companyId = await getCompanyId(req);
     const body = await req.json();
     const {
       medication_name, active_ingredient, concentration, pharmaceutical_form,
@@ -55,7 +55,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string; 
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string; stockId: string } }) {
   try {
-    const companyId = getCompanyId(req);
+    const companyId = await getCompanyId(req);
     const result = await query(
       'DELETE FROM veterinary_pharmacy_stock WHERE id = $1 AND company_id = $2 RETURNING id',
       [params.stockId, companyId]

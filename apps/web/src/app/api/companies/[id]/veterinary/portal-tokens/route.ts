@@ -21,7 +21,7 @@ async function getUserId(req: NextRequest): Promise<string | null> {
 
 export async function GET(req: NextRequest) {
   try {
-    const companyId = getCompanyId(req);
+    const companyId = await getCompanyId(req);
     const params = parseSearchParams(req);
     const { page = 1, limit = 50, search = '' } = params;
     const offset = (page - 1) * limit;
@@ -59,7 +59,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const companyId = getCompanyId(req);
+    const companyId = await getCompanyId(req);
     const userId = await getUserId(req);
     if (!userId) return errorResponse('No autorizado', 401);
     const body = await req.json();

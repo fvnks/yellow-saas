@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const { page, limit, search, sort: requestedSort, order, offset } = parseSearchParams(request);
-    const allowedSortColumns = ['created_at', 'entry_number', 'status', 'date', 'id'];
+    const allowedSortColumns = ['created_at', 'entry_number', 'status', 'entry_date', 'id'];
     const sort = allowedSortColumns.includes(requestedSort) ? requestedSort : 'created_at';
     const url = new URL(request.url);
     const status = url.searchParams.get('status');
@@ -38,13 +38,13 @@ export async function GET(request: NextRequest) {
     }
 
     if (from) {
-      where += ` AND je.date >= $${paramIndex}`;
+      where += ` AND je.entry_date >= $${paramIndex}`;
       params.push(from);
       paramIndex++;
     }
 
     if (to) {
-      where += ` AND je.date <= $${paramIndex}`;
+      where += ` AND je.entry_date <= $${paramIndex}`;
       params.push(to);
       paramIndex++;
     }
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
       `SELECT je.*,
         (SELECT json_agg(json_build_object(
           'id', jel.id, 'account_id', jel.account_id, 'description', jel.description,
-          'debit', jel.debit, 'credit', jel.credit, 'sort_order', jel.sort_order,
+          'debit', jel.debit, 'credit', jel.credit,
           'account', (SELECT json_build_object('id', a.id, 'code', a.code, 'name', a.name, 'type', a.type) FROM accounts a WHERE a.id = jel.account_id)
         )) FROM journal_entry_lines jel WHERE jel.entry_id = je.id) as lines
        FROM journal_entries je
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
     const entryNumber = `CE-${String((parseInt(countRows[0]?.count || '0') + 1)).padStart(6, '0')}`;
 
     const { rows: entryRows } = await query(
-      `INSERT INTO journal_entries (company_id, entry_number, date, description, reference_type, reference_id, total_debit, total_credit, status)
+      `INSERT INTO journal_entries (company_id, entry_number, entry_date, description, reference_type, reference_id, total_debit, total_credit, status)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'draft')
        RETURNING *`,
       [
@@ -124,21 +124,20 @@ export async function POST(request: NextRequest) {
 
     const entry = entryRows[0];
 
-    const entryLines = lines.map((line: Record<string, unknown>, index: number) => ({
+    const entryLines = lines.map((line: Record<string, unknown>) => ({
       entry_id: entry.id,
       company_id: companyId,
       account_id: line.account_id,
       description: line.description || null,
       debit: Number(line.debit) || 0,
       credit: Number(line.credit) || 0,
-      sort_order: index,
     }));
 
     for (const el of entryLines) {
       await query(
-        `INSERT INTO journal_entry_lines (entry_id, company_id, account_id, description, debit, credit, sort_order)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-        [el.entry_id, el.company_id, el.account_id, el.description, el.debit, el.credit, el.sort_order]
+        `INSERT INTO journal_entry_lines (entry_id, company_id, account_id, description, debit, credit)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [el.entry_id, el.company_id, el.account_id, el.description, el.debit, el.credit]
       );
     }
 

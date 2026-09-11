@@ -144,7 +144,7 @@ export async function calculateTermination(
     12,
     monthsBetween(`${currentYear}-01-01`, input.termination_date) + 1
   );
-  const proportionalGrat = Math.round(monthlySalary * 0.01 * monthsWorkedThisYear);
+  const proportionalGrat = Math.round(monthlySalary * 0.25 * (monthsWorkedThisYear / 12));
     const maxGrat = Math.round(4.75 * getUFValue());
   const gratAmount = Math.min(proportionalGrat, maxGrat);
   if (gratAmount > 0 && input.termination_type !== 'despido_con_causa') {

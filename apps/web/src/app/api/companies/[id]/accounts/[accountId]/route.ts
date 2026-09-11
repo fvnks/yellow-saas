@@ -11,12 +11,12 @@ export async function GET(
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const { rows } = await query(
-      `SELECT a.*, COALESCE(je平衡.balance, 0) as balance
+      `SELECT a.*, COALESCE(je_bal.balance, 0) as balance
        FROM accounts a
        LEFT JOIN (
          SELECT account_id, COALESCE(SUM(debit), 0) - COALESCE(SUM(credit), 0) as balance
          FROM journal_entry_lines GROUP BY account_id
-       ) je平衡 ON je平衡.account_id = a.id
+       ) je_bal ON je_bal.account_id = a.id
        WHERE a.id = $1 AND a.company_id = $2`,
       [params.accountId, companyId]
     );
@@ -37,16 +37,15 @@ export async function PUT(
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const body = await request.json();
-    const { name, type, parent_id, description, currency, is_active } = body;
+    const { name, type, parent_id, is_active } = body;
 
     const { rows } = await query(`
       UPDATE accounts SET
         name = COALESCE($1, name), type = COALESCE($2, type),
-        parent_id = $3, description = $4, currency = COALESCE($5, currency),
-        is_active = COALESCE($6, is_active)
-      WHERE id = $7 AND company_id = $8
+        parent_id = $3, is_active = COALESCE($4, is_active)
+      WHERE id = $5 AND company_id = $6
       RETURNING *
-    `, [name, type, parent_id || null, description || null, currency, is_active, params.accountId, companyId]);
+    `, [name, type, parent_id || null, is_active, params.accountId, companyId]);
 
     if (rows.length === 0) return errorResponse('Account not found', 404);
     return successResponse(rows[0]);

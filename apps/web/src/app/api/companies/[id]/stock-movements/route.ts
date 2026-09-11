@@ -65,3 +65,29 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     return errorResponse(e.message, 500);
   }
 }
+
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const companyId = await getCompanyId(req);
+    if (!companyId) return errorResponse('Company ID not found', 400);
+
+    const body = await req.json();
+    const { product_id, warehouse_id, type, quantity, unit_cost, reference_type, reference_id, notes } = body;
+
+    if (!product_id || !warehouse_id || !type || quantity === undefined) {
+      return errorResponse('product_id, warehouse_id, type, and quantity are required', 400);
+    }
+
+    const { rows } = await query(
+      `INSERT INTO stock_movements (company_id, product_id, warehouse_id, type, quantity, unit_cost, reference_type, reference_id, notes, created_by)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+       RETURNING *`,
+      [companyId, product_id, warehouse_id, type, quantity, unit_cost || null,
+       reference_type || null, reference_id || null, notes || null, null]
+    );
+
+    return successResponse(rows[0], 201);
+  } catch (e: any) {
+    return errorResponse(e.message, 500);
+  }
+}

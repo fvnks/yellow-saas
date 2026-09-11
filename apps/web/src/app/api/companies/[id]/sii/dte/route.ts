@@ -17,9 +17,8 @@ export async function GET(request: NextRequest) {
     }
 
     const doc = await query(
-      `SELECT id, type, folio, fecha_emision, 
-              seller_id, buyer_id, subtotal, descuento, monto_net, iva, monto_total,
-              payment_method, payment_terms, observations
+      `SELECT id, invoice_number, customer_id, invoice_date, 
+              subtotal, tax_amount, total_amount, payment_terms, notes
        FROM invoices WHERE id = $1 AND company_id = $2`,
       [documentId, companyId]
     );
@@ -37,20 +36,20 @@ export async function GET(request: NextRequest) {
 
     const buyer = await query(
       `SELECT name, tax_id as rut, address, city, region, phone, email FROM customers WHERE id = $1`,
-      [invoice.seller_id]
+      [invoice.customer_id]
     );
 
     const items = await query(
-      `SELECT quantity, description, unit_price, discount, total 
+      `SELECT quantity, description, unit_price, discount_percent, line_total 
        FROM invoice_items WHERE invoice_id = $1`,
       [documentId]
     );
 
     const dteData: DTEData = {
       id: invoice.id,
-      type: invoice.type || '33',
-      folio: invoice.folio,
-      date: invoice.fecha_emision,
+      type: '33',
+      folio: parseInt(invoice.invoice_number.replace(/\D/g, '')) || 0,
+      date: invoice.invoice_date,
       seller: {
         id: companyId,
         name: seller.rows[0]?.name || '',
@@ -62,7 +61,7 @@ export async function GET(request: NextRequest) {
         email: seller.rows[0]?.email || '',
       },
       buyer: {
-        id: invoice.buyer_id,
+        id: invoice.customer_id,
         name: buyer.rows[0]?.name || '',
         rut: buyer.rows[0]?.rut || '',
         address: buyer.rows[0]?.address || '',
@@ -76,19 +75,19 @@ export async function GET(request: NextRequest) {
         unit: 'KGM',
         description: item.description,
         price: item.unit_price,
-        discount: item.discount,
-        total: item.total,
+        discount: item.discount_percent,
+        total: item.line_total,
       })),
       subtotal: invoice.subtotal,
-      discount: invoice.descuento,
-      taxable: invoice.monto_net,
-      iva: invoice.iva,
-      total: invoice.monto_total,
-      payment: invoice.payment_method ? {
-        method: invoice.payment_method,
+      discount: 0,
+      taxable: invoice.subtotal,
+      iva: invoice.tax_amount,
+      total: invoice.total_amount,
+      payment: invoice.payment_terms ? {
+        method: '0',
         terms: invoice.payment_terms?.toString() || '0',
       } : undefined,
-      observations: invoice.observations,
+      observations: invoice.notes,
     };
 
     const xml = generateDTE(dteData.type, dteData);

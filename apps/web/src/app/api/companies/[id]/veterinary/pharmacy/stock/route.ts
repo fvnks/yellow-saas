@@ -4,7 +4,7 @@ import { getCompanyId, successResponse, errorResponse, parseSearchParams, pagina
 
 export async function GET(req: NextRequest) {
   try {
-    const companyId = getCompanyId(req);
+    const companyId = await getCompanyId(req);
     const params = parseSearchParams(req);
     const { page = 1, limit = 50, search = '' } = params;
     const offset = (page - 1) * limit;
@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const companyId = getCompanyId(req);
+    const companyId = await getCompanyId(req);
     const body = await req.json();
     const {
       medication_name, active_ingredient, concentration, pharmaceutical_form,

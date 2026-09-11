@@ -4,7 +4,7 @@ import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers'
 
 export async function GET(req: NextRequest) {
   try {
-    const companyId = getCompanyId(req);
+    const companyId = await getCompanyId(req);
 
     const result = await query(
       `SELECT a.id, a.appointment_time, a.reason, a.status, a.created_at,
