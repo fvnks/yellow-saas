@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
 import { query, transaction } from '@/api/lib/db';
 
+// STUB: Simulated SII integration. Replace with real SII SOAP/API call when digital certificate is configured.
 // GET: Fetch Credit & Debit Notes DTE SII
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const companyId = searchParams.get('company_id') || '00000000-0000-0000-0000-000000000001';
+    const companyId = searchParams.get('company_id');
+    if (!companyId) {
+      return NextResponse.json({ success: false, error: { message: 'company_id is required' } }, { status: 400 });
+    }
 
     const mockNotes = [
       {
@@ -42,6 +46,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       success: true,
+      simulated: true,
       data: mockNotes
     });
   } catch (error: any) {
@@ -50,6 +55,7 @@ export async function GET(request: Request) {
   }
 }
 
+// STUB: Simulated SII integration. Replace with real SII SOAP/API call when digital certificate is configured.
 // POST: Issue new Credit / Debit Note DTE
 export async function POST(request: Request) {
   try {
@@ -75,7 +81,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: `${newNote.type_label} N° ${folio} emitida y timbrada exitosamente ante el SII.`,
+      simulated: true,
+      message: `${newNote.type_label} N° ${folio} emitida y timbrada exitosamente ante el SII (simulated — no real submission made).`,
       data: newNote
     });
   } catch (error: any) {

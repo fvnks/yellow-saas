@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/api/lib/db';
 
+// STUB: Simulated SII integration. Replace with real financial statement data from accounting tables when available.
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const companyId = searchParams.get('company_id') || '00000000-0000-0000-0000-000000000001';
+    const companyId = searchParams.get('company_id');
+    if (!companyId) {
+      return NextResponse.json({ success: false, error: { message: 'company_id is required' } }, { status: 400 });
+    }
     const period = searchParams.get('period') || '2026-03';
 
     const mockBalance = [
@@ -41,6 +45,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       success: true,
+      simulated: true,
       balance: mockBalance,
       income_statement: incomeStatement
     });
