@@ -8,7 +8,7 @@ import SidebarBrandHeader from "./sidebar-header";
 import SidebarNavigation from "./sidebar-navigation";
 import ModuleSidebarBackButton from '@/components/sidebar/module-sidebar-back-button';
 import ModuleSidebarFooter from '@/components/sidebar/module-sidebar-footer';
-import { getApiClient } from '@/lib/api-client';
+import { getCompanyIdFromToken } from '@/lib/api-client';
 import { useTranslatedSidebar } from '@/hooks/use-translated-sidebar';
 
 function getUserFromCookie(getText: (key: string) => string) {
@@ -33,20 +33,24 @@ function getUserFromCookie(getText: (key: string) => string) {
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
  const t = useTranslations('common');
  const [user, setUser] = useState({ name: t('usuario'), email: '', avatar: '', role: 'Admin ERP' });
- const [activatedModules, setActivatedModules] = useState<Set<string>>(new Set());
+ const [activatedModules, setActivatedModules] = useState<Set<string> | null>(null);
 
  useEffect(() => {
  setUser(getUserFromCookie(t));
 
- const api = getApiClient();
- const companyId = api['companyId'];
+ try {
+ const companyId = getCompanyIdFromToken();
  const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
  if (companyId && token) {
  fetch(`/api/companies/${companyId}/modules`, {
  headers: { Authorization: `Bearer ${token}` },
  })
- .then(res => res.json())
+ .then(res => {
+ if (!res.ok) return null;
+ return res.json();
+ })
  .then(data => {
+ if (!data) return;
  const active = new Set<string>(
  (data.data?.modules || [])
  .filter((m: any) => m.status === 'active')
@@ -54,14 +58,19 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
  );
  setActivatedModules(active);
  })
- .catch(() => {});
+ .catch(() => setActivatedModules(new Set()));
+ } else {
+ setActivatedModules(new Set());
+ }
+ } catch {
+ setActivatedModules(new Set());
  }
  }, []);
 
  const translatedItems = useTranslatedSidebar(sidebarItems);
 
  const filteredSidebarItems = useMemo(() => {
- if (activatedModules.size === 0) return translatedItems.filter(g => !g.requiredModule);
+ if (activatedModules === null) return translatedItems;
  return translatedItems.filter(group => {
  if (!group.requiredModule) return true;
  return activatedModules.has(group.requiredModule);

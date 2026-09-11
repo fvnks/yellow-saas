@@ -34,7 +34,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const result = await query(
       `SELECT ma.*, mc.name as display_name, mc.description, mc.icon, mc.route
        FROM module_activations ma
-       JOIN module_catalog mc ON mc.name = ma.module_name
+       LEFT JOIN module_catalog mc ON mc.name = ma.module_name
        WHERE ma.company_id = $1 AND ma.status = 'active'
        ORDER BY mc.name`,
       [companyId]
@@ -43,6 +43,6 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     return successResponse({ modules: result.rows });
   } catch (err) {
     console.error('Get modules error:', err);
-    return errorResponse(err instanceof Error ? err.message : 'Internal server error', 500);
+    return successResponse({ modules: [] });
   }
 }
