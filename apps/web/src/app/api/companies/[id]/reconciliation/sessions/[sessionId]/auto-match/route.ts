@@ -109,7 +109,8 @@ export async function POST(
     });
 
     return successResponse(result);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Auto-match failed', 500);
   }
 }

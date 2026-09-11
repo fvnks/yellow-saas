@@ -16,7 +16,8 @@ export async function verifySuperAdmin(request: NextRequest): Promise<{ id: stri
       const { payload } = await jwtVerify(cookieToken, JWT_SECRET);
       if (payload.role_type !== 'super_admin') return null;
       return { id: payload.id as string, email: payload.email as string };
-    } catch {
+    } catch (err) {
+      console.error('Super admin cookie auth error:', err);
       return null;
     }
   }
@@ -25,7 +26,8 @@ export async function verifySuperAdmin(request: NextRequest): Promise<{ id: stri
     const { payload } = await jwtVerify(token, JWT_SECRET);
     if (payload.role_type !== 'super_admin') return null;
     return { id: payload.id as string, email: payload.email as string };
-  } catch {
+  } catch (err) {
+    console.error('Super admin token auth error:', err);
     return null;
   }
 }

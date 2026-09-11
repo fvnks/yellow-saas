@@ -28,7 +28,7 @@ const ensureTables = async () => {
       company_id UUID REFERENCES companies(id) ON DELETE CASCADE,
       quotation_id UUID REFERENCES sales_quotations(id) ON DELETE CASCADE,
       product_id UUID REFERENCES products(id),
-      quantity INTEGER NOT NULL,
+      quantity NUMERIC(12,2) NOT NULL,
       unit_price NUMERIC(12,2) NOT NULL,
       discount_percent NUMERIC(5,2) DEFAULT 0,
       tax_rate NUMERIC(5,2) DEFAULT 19,
@@ -90,7 +90,8 @@ export async function GET(request: NextRequest) {
     );
 
     return paginatedResponse(rows, total, page, limit);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -141,7 +142,8 @@ export async function POST(request: NextRequest) {
     }
 
     return successResponse(quotation, 201);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

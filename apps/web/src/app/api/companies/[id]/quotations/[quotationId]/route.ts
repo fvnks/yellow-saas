@@ -31,7 +31,8 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     if (!rows[0]) return errorResponse('Quotation not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -110,7 +111,8 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     return successResponse(quotation);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -126,7 +128,8 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     await query(`DELETE FROM quotations WHERE id = $1 AND company_id = $2`, [quotationId, companyId]);
 
     return successResponse({ id: quotationId, deleted: true });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

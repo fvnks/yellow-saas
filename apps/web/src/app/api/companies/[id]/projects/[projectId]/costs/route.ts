@@ -96,7 +96,7 @@ export async function GET(
     ];
 
     return successResponse({ costs: allCosts, summary: autoSummary });
-  } catch { return errorResponse('Internal server error', 500); }
+  } catch (err) { console.error('Route error:', err); return errorResponse('Internal server error', 500); }
 }
 
 export async function POST(
@@ -118,5 +118,5 @@ export async function POST(
        body.category, body.description || null, body.amount, body.cost_date]
     );
     return successResponse(result.rows[0], 201);
-  } catch { return errorResponse('Internal server error', 500); }
+  } catch (err) { console.error('Route error:', err); return errorResponse('Internal server error', 500); }
 }

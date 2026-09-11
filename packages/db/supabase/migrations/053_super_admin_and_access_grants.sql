@@ -70,13 +70,16 @@ CREATE INDEX IF NOT EXISTS idx_access_audit_log_company ON access_audit_log(comp
 CREATE INDEX IF NOT EXISTS idx_profiles_role_type ON profiles(role_type);
 
 -- ============================================================
--- 6. Insert default super admin (password: SuperAdmin123!)
---    bcrypt hash of 'SuperAdmin123!' — change in production
+-- 6. Insert default super admin (DEV ONLY)
+--    IMPORTANT: In production, override this via SEED_ADMIN_PASSWORD env var
+--    in the /api/migrate route. The hash below is a placeholder ('CHANGE_ME_ON_FIRST_LOGIN').
+--    Rotate credentials immediately after first deploy.
 -- ============================================================
 INSERT INTO super_admins (email, name, password_hash, is_active)
 VALUES (
     'superadmin@yellow.cl',
     'Super Admin',
+    -- Placeholder hash: override with SEED_ADMIN_PASSWORD env var via /api/migrate in production
     '$2a$12$LJ3m4ys4Gz8DQz8e8Qz8xeYQz8e8Qz8xeYQz8e8Qz8xeYQz8e8Qz8',
     true
 )

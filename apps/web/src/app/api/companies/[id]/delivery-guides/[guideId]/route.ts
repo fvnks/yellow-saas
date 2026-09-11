@@ -26,7 +26,8 @@ export async function GET(
     if (!rows[0]) return errorResponse('Delivery guide not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch delivery guide', 500);
   }
 }
@@ -60,7 +61,8 @@ export async function PUT(
     if (!rows[0]) return errorResponse('Delivery guide not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update delivery guide', 500);
   }
 }
@@ -81,7 +83,7 @@ export async function DELETE(
     if (!guide[0]) return errorResponse('Delivery guide not found', 404);
 
     const { rows: movements } = await query(
-      `SELECT * FROM stock_movements WHERE reference_type = 'delivery_guide' AND reference_id = $1`,
+      `SELECT * FROM stock_movements WHERE reference_type = '\'$1\'' AND reference_id = $1`,
       [params.guideId]
     );
 
@@ -105,7 +107,8 @@ export async function DELETE(
     await query(`DELETE FROM delivery_guides WHERE id = $1 AND company_id = $2`, [params.guideId, companyId]);
 
     return successResponse({ message: 'Delivery guide deleted successfully' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete delivery guide', 500);
   }
 }

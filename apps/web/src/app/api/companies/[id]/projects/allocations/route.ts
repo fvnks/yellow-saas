@@ -45,7 +45,8 @@ export async function GET(
     }
 
     return successResponse(Array.from(employeeMap.values()));
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

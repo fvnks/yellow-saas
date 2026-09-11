@@ -23,7 +23,8 @@ export async function GET(
     if (!rows[0]) return errorResponse('Vaccination not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch vaccination', 500);
   }
 }
@@ -66,7 +67,8 @@ export async function PUT(
     if (!rows[0]) return errorResponse('Vaccination not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update vaccination', 500);
   }
 }
@@ -87,7 +89,8 @@ export async function DELETE(
     if (!rows[0]) return errorResponse('Vaccination not found', 404);
 
     return successResponse({ message: 'Vaccination deleted successfully' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete vaccination', 500);
   }
 }

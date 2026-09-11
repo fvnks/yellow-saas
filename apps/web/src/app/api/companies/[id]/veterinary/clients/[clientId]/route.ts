@@ -17,7 +17,8 @@ export async function GET(
 
     if (rows.length === 0) return errorResponse('Client not found', 404);
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -73,7 +74,8 @@ export async function PUT(
 
     if (rows.length === 0) return errorResponse('Client not found', 404);
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -93,7 +95,8 @@ export async function DELETE(
 
     if (rows.length === 0) return errorResponse('Client not found', 404);
     return successResponse({ message: 'Client deleted' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

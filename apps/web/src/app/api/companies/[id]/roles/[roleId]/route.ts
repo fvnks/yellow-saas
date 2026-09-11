@@ -32,7 +32,8 @@ export async function GET(
     const permissions = rolePerms.map((rp: any) => rp.permission);
 
     return successResponse({ ...roleRows[0], permissions });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -63,7 +64,8 @@ export async function PUT(
       if (error.code === '23505') return errorResponse('Ya existe un rol con ese nombre', 400);
       return errorResponse(error.message, 500);
     }
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -97,7 +99,8 @@ export async function DELETE(
     await query(`DELETE FROM roles WHERE id = $1 AND company_id = $2`, [params.roleId, companyId]);
 
     return successResponse({ deleted: true });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

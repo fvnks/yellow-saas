@@ -25,7 +25,8 @@ export async function GET(
     if (!rows[0]) return errorResponse('Consultation not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch consultation', 500);
   }
 }
@@ -90,7 +91,8 @@ export async function PUT(
     if (!rows[0]) return errorResponse('Consultation not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update consultation', 500);
   }
 }
@@ -111,7 +113,8 @@ export async function DELETE(
     if (!rows[0]) return errorResponse('Consultation not found', 404);
 
     return successResponse({ message: 'Consultation deleted successfully' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete consultation', 500);
   }
 }

@@ -24,7 +24,8 @@ export async function GET(request: NextRequest) {
     }
 
     return await getAllRates(companyId);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -101,7 +102,7 @@ async function getUSD(companyId: string, date?: string) {
 
     const cached = await query(
       `SELECT value as rate, currency, date, source FROM exchange_rates
-       WHERE company_id = $1 AND currency = 'USD' AND date = $2`,
+       WHERE company_id = $1 AND currency = '\'$1\'' AND date = $2`,
       [companyId, targetDate]
     );
 
@@ -140,7 +141,8 @@ async function getAllRates(companyId: string) {
       utm: extractData(utmRes),
       usd: extractData(usdRes),
     });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -159,7 +161,8 @@ async function fetchUFFromBC(date: string) {
     if (isNaN(value) || value <= 0) return null;
 
     return { value, date, source: 'banco_central' };
-  } catch {
+  } catch (err) {
+    console.error('Silenced error:', err);
     return null;
   }
 }
@@ -179,7 +182,8 @@ async function fetchUTMFromSII(month: number, year: number) {
     if (isNaN(value) || value <= 0) return null;
 
     return { value, month, year, source: 'sii' };
-  } catch {
+  } catch (err) {
+    console.error('Silenced error:', err);
     return null;
   }
 }
@@ -198,7 +202,8 @@ async function fetchUSDFromBC(date: string) {
     if (isNaN(value) || value <= 0) return null;
 
     return { rate: 1 / value, date, currency: 'USD', source: 'bc_chile' };
-  } catch {
+  } catch (err) {
+    console.error('Silenced error:', err);
     return null;
   }
 }
@@ -220,7 +225,8 @@ export async function POST(request: NextRequest) {
     }
 
     return await syncAllRates(companyId);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

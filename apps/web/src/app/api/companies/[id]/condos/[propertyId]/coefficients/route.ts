@@ -12,8 +12,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       [companyId, pParams.propertyId],
     );
     return successResponse(result.rows);
-  } catch {
-    return errorResponse("Internal server error", 500);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
   }
 }
 
@@ -40,7 +41,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       [companyId, pParams.propertyId],
     );
     return successResponse(result.rows);
-  } catch {
-    return errorResponse("Internal server error", 500);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
   }
 }

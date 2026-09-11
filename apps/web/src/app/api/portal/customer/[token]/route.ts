@@ -64,7 +64,8 @@ export async function GET(request: NextRequest, { params }: { params: { token: s
         created_at: i.created_at,
       })),
     });
-  } catch {
+  } catch (err) {
+    console.error('Customer portal error:', err);
     return NextResponse.json({ error: 'Error al cargar datos del portal' }, { status: 500 });
   }
 }

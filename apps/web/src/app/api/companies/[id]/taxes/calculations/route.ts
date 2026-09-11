@@ -55,7 +55,8 @@ export async function GET(request: NextRequest) {
       },
       igh: igrh.rows[0] || { total_ingresos: 0, transaction_count: 0 },
     });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -115,7 +116,8 @@ export async function POST(request: NextRequest) {
     );
 
     return successResponse(results.rows[0], 201);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

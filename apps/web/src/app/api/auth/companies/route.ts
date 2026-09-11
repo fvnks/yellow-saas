@@ -21,7 +21,8 @@ export async function GET(request: NextRequest) {
     try {
       const { payload: verified } = await jwtVerify(token, JWT_SECRET);
       payload = verified as any;
-    } catch {
+    } catch (err) {
+      console.error('Route error:', err);
       return errorResponse('Token inválido', 401);
     }
 

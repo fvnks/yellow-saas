@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       try {
         const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
         importedBy = payload.user_id || payload.sub;
-      } catch {}
+      } catch (err) { console.error('Silenced error:', err); }
     }
 
     // Handle JSON body with base64 XML content

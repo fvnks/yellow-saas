@@ -32,7 +32,8 @@ export async function GET(
     if (!rows[0]) return errorResponse('Estimate not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch estimate', 500);
   }
 }
@@ -137,7 +138,8 @@ export async function DELETE(
     );
 
     return successResponse({ message: 'Estimate deleted successfully' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete estimate', 500);
   }
 }

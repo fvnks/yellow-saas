@@ -27,7 +27,8 @@ export async function GET(request: NextRequest) {
       quota_limit: config.sii_quota_limit,
       last_submission: config.sii_last_submission_at,
     });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -80,7 +81,8 @@ export async function PUT(request: NextRequest) {
     }
 
     return successResponse(result.rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

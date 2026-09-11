@@ -18,7 +18,8 @@ export async function GET(
     if (result.rows.length === 0) return errorResponse('Contact not found', 404);
 
     return successResponse(result.rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch contact', 500);
   }
 }
@@ -53,7 +54,8 @@ export async function PUT(
     if (result.rows.length === 0) return errorResponse('Contact not found', 404);
 
     return successResponse(result.rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update contact', 500);
   }
 }
@@ -74,7 +76,8 @@ export async function DELETE(
     if (result.rows.length === 0) return errorResponse('Contact not found', 404);
 
     return successResponse({ message: 'Contact deleted successfully' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete contact', 500);
   }
 }

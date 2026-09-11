@@ -97,7 +97,8 @@ export async function GET(
       weekly_burn: weeklyBurn,
       expense_count: allExpenses.length,
     });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

@@ -24,7 +24,8 @@ export async function GET(request: NextRequest) {
     }
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch notification preferences', 500);
   }
 }
@@ -59,7 +60,8 @@ export async function PUT(request: NextRequest) {
     );
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update notification preferences', 500);
   }
 }

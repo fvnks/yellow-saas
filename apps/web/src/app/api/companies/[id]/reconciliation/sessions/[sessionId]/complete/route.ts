@@ -39,7 +39,8 @@ export async function POST(
     );
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to complete session', 500);
   }
 }

@@ -20,7 +20,8 @@ export async function GET(
     );
 
     return successResponse(result.rows);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -46,7 +47,8 @@ export async function POST(
     );
 
     return successResponse(result.rows[0], 201);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -71,7 +73,8 @@ export async function DELETE(
     if (result.rows.length === 0) return errorResponse('Comment not found', 404);
 
     return successResponse({ message: 'Comment deleted' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

@@ -28,7 +28,7 @@ export async function GET(request: Request) {
 
     const revenueResult = await query(
       `SELECT COALESCE(SUM(total), 0) as total FROM auto_work_orders 
-       WHERE company_id = $1 AND status = 'invoiced' AND created_at >= $2`,
+       WHERE company_id = $1 AND status = '\'$1\'' AND created_at >= $2`,
       [company_id, startDate.toISOString()]
     );
 

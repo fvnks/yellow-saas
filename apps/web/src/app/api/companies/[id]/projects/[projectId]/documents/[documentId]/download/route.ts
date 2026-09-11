@@ -31,7 +31,8 @@ export async function GET(
         'Content-Length': buffer.length.toString(),
       },
     });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

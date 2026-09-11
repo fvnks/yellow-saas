@@ -43,7 +43,8 @@ export async function PUT(request: NextRequest) {
     );
 
     return successResponse({ uf_value, message: 'Valor UF actualizado' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

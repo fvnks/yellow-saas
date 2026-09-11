@@ -24,7 +24,8 @@ export async function getCompanyId(request: NextRequest): Promise<string | null>
     if (!jwtCompanyId) return null;
 
     return jwtCompanyId === urlCompanyId ? urlCompanyId : null;
-  } catch {
+  } catch (err) {
+    console.error('Auth verification error:', err);
     return null;
   }
 }
@@ -71,7 +72,9 @@ export async function getCompanyIvaRate(companyId: string): Promise<number> {
       const rate = parseFloat(rows[0].setting_value);
       if (rate > 0 && rate < 1) return rate;
     }
-  } catch {}
+  } catch (err) {
+    console.error('IVA rate lookup error:', err);
+  }
   return 0.19;
 }
 
@@ -90,7 +93,7 @@ export async function checkAndCreateLowStockNotification(companyId: string, prod
 
     const existing = await query(
       `SELECT id FROM notifications
-       WHERE company_id = $1 AND type = 'low_stock' AND reference_type = 'product' AND reference_id = $2 AND read = false`,
+       WHERE company_id = $1 AND type = '\'$1\'' AND reference_type = '\'$1\'' AND reference_id = $2 AND read = false`,
       [companyId, productId]
     );
     if (existing.rows.length > 0) return;

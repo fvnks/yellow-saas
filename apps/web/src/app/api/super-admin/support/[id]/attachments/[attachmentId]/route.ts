@@ -30,7 +30,8 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         'Content-Length': buffer.length.toString(),
       },
     });
-  } catch {
+  } catch (err) {
+    console.error('Support attachment error:', err);
     return NextResponse.json({ success: false, error: { message: 'Internal server error' } }, { status: 500 });
   }
 }

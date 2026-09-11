@@ -29,7 +29,8 @@ export async function GET(
     if (!rows[0]) return errorResponse('Invoice not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch invoice', 500);
   }
 }
@@ -61,7 +62,8 @@ export async function PUT(
     if (!rows[0]) return errorResponse('Invoice not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update invoice', 500);
   }
 }
@@ -85,7 +87,8 @@ export async function DELETE(
     await query(`DELETE FROM invoices WHERE id = $1 AND company_id = $2`, [params.invoiceId, companyId]);
 
     return successResponse({ message: 'Invoice deleted successfully' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete invoice', 500);
   }
 }

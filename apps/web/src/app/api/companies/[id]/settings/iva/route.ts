@@ -41,7 +41,8 @@ export async function PUT(request: NextRequest) {
     );
 
     return successResponse({ iva_rate, message: 'Tasa IVA actualizada' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

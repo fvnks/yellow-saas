@@ -18,7 +18,8 @@ export async function GET(
     if (!rows[0]) return errorResponse('Supplier not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch supplier', 500);
   }
 }
@@ -56,7 +57,8 @@ export async function PUT(
     if (!rows[0]) return errorResponse('Supplier not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update supplier', 500);
   }
 }
@@ -84,7 +86,8 @@ export async function DELETE(
     );
 
     return successResponse({ message: 'Supplier deleted successfully' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete supplier', 500);
   }
 }

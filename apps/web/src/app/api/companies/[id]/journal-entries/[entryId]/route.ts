@@ -25,7 +25,8 @@ export async function GET(
     if (!rows[0]) return errorResponse('Journal entry not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch journal entry', 500);
   }
 }
@@ -107,7 +108,8 @@ export async function PUT(
     );
 
     return successResponse(updated[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update journal entry', 500);
   }
 }
@@ -135,7 +137,8 @@ export async function DELETE(
     await query(`DELETE FROM journal_entries WHERE id = $1 AND company_id = $2`, [params.entryId, companyId]);
 
     return successResponse({ message: 'Journal entry deleted successfully' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete journal entry', 500);
   }
 }

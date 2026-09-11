@@ -108,7 +108,8 @@ export async function POST(
       await query('ROLLBACK');
       throw err;
     }
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to confirm transfer', 500);
   }
 }

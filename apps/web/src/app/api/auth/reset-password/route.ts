@@ -31,7 +31,8 @@ export async function POST(request: NextRequest) {
     try {
       const result = await jwtVerify(token, JWT_SECRET);
       payload = result.payload as Record<string, unknown>;
-    } catch {
+    } catch (err) {
+      console.error('Route error:', err);
       return errorResponse('El enlace es inválido o ha expirado', 400);
     }
 

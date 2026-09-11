@@ -83,7 +83,8 @@ export async function GET(
       })),
       costs,
     });
-  } catch {
+  } catch (err) {
+    console.error('Portal route error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

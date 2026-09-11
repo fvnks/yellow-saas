@@ -75,7 +75,8 @@ export async function POST(
     });
 
     return successResponse(result, 201);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to create match', 500);
   }
 }

@@ -56,7 +56,8 @@ export async function GET(request: NextRequest) {
     );
 
     return paginatedResponse(dataResult.rows, parseInt(countResult.rows[0].count), page, limit);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -77,7 +78,7 @@ export async function POST(request: NextRequest) {
       return errorResponse('A product cannot be related to itself', 400);
     }
 
-    const validTypes = ['upsell', 'cross_sell', 'accessory', 'alternative', 'bundle'];
+    const validTypes = ['upsell', 'up_sell', 'cross_sell', 'substitute', 'accessory', 'alternative', 'component', 'bundle'];
     if (!validTypes.includes(relation_type)) {
       return errorResponse(`Invalid relation_type. Must be one of: ${validTypes.join(', ')}`, 400);
     }
@@ -98,7 +99,8 @@ export async function POST(request: NextRequest) {
     );
 
     return successResponse(result.rows[0], 201);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

@@ -19,7 +19,7 @@ export async function GET(
       [params.projectId, companyId]
     );
     return successResponse(result.rows);
-  } catch { return errorResponse('Internal server error', 500); }
+  } catch (err) { console.error('Route error:', err); return errorResponse('Internal server error', 500); }
 }
 
 export async function POST(
@@ -39,5 +39,5 @@ export async function POST(
        body.currency || 'CLP', body.expense_date, body.invoice_number || null, body.supplier_name || null, body.created_by || null]
     );
     return successResponse(result.rows[0], 201);
-  } catch { return errorResponse('Internal server error', 500); }
+  } catch (err) { console.error('Route error:', err); return errorResponse('Internal server error', 500); }
 }

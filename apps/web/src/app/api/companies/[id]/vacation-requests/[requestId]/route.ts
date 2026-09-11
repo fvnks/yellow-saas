@@ -22,7 +22,8 @@ export async function GET(
     if (!rows[0]) return errorResponse('Solicitud no encontrada', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch request', 500);
   }
 }
@@ -136,7 +137,8 @@ export async function DELETE(
     );
 
     return successResponse({ message: 'Solicitud eliminada' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete request', 500);
   }
 }

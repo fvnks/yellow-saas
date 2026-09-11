@@ -84,7 +84,8 @@ export async function GET(request: NextRequest) {
     );
 
     return paginatedResponse(rows || [], rows.length, 1, 100);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

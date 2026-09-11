@@ -35,7 +35,8 @@ export async function PUT(
 
     if (result.rows.length === 0) return errorResponse('Adjustment reason not found', 404);
     return successResponse(result.rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -55,7 +56,8 @@ export async function DELETE(
 
     if (result.rows.length === 0) return errorResponse('Adjustment reason not found', 404);
     return successResponse({ message: 'Adjustment reason deleted' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

@@ -17,7 +17,8 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     if (result.rows.length === 0) return errorResponse('Record not found', 404);
     return successResponse(result.rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -53,7 +54,8 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
     if (result.rows.length === 0) return errorResponse('Record not found', 404);
     return successResponse(result.rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -70,7 +72,8 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
 
     if (result.rows.length === 0) return errorResponse('Record not found', 404);
     return successResponse({ message: 'Record deleted' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

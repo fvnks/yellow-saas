@@ -88,7 +88,7 @@ export async function GET(request: NextRequest) {
         `SELECT p.name, p.sku, COALESCE(SUM(ABS(sm.quantity)), 0) as total_sold
          FROM stock_movements sm
          JOIN products p ON p.id = sm.product_id
-         WHERE sm.company_id = $1 AND sm.type = 'out' AND sm.created_at >= $2
+         WHERE sm.company_id = $1 AND sm.type = '\'$1\'' AND sm.created_at >= $2
          GROUP BY p.id, p.name, p.sku
          ORDER BY total_sold DESC
          LIMIT 5`,

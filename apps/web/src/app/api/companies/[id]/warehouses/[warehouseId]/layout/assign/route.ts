@@ -31,7 +31,8 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     );
 
     return successResponse({ assigned: true, position_id, product_id });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

@@ -143,7 +143,7 @@ export async function POST(
         [companyId, newProject.id, newProject.id, newProject.name,
          JSON.stringify({ from_project_id: orig.id, from_project_name: orig.name, tasks: origTasks.length, milestones: origMilestones.length })]
       );
-    } catch {}
+    } catch (err) { console.error('Silenced error:', err); }
 
     return successResponse({
       project: newProject,

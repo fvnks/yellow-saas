@@ -18,7 +18,8 @@ export async function GET(request: NextRequest) {
     );
 
     return successResponse(rows);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch users', 500);
   }
 }
@@ -47,7 +48,8 @@ export async function POST(request: NextRequest) {
     );
 
     return successResponse(rows[0], 201);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to create user', 500);
   }
 }
@@ -72,7 +74,8 @@ export async function PUT(request: NextRequest) {
 
     if (rows.length === 0) return errorResponse('User not found', 404);
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update user', 500);
   }
 }
@@ -93,7 +96,8 @@ export async function DELETE(request: NextRequest) {
 
     if (result.rowCount === 0) return errorResponse('Cannot delete this user', 400);
     return successResponse({ deleted: true });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete user', 500);
   }
 }

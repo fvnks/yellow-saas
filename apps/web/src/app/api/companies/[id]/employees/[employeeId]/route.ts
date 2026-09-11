@@ -18,7 +18,8 @@ export async function GET(
     if (!rows[0]) return errorResponse('Empleado no encontrado', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch employee', 500);
   }
 }
@@ -62,7 +63,8 @@ export async function PUT(
     if (!rows[0]) return errorResponse('Empleado no encontrado', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update employee', 500);
   }
 }
@@ -81,7 +83,8 @@ export async function DELETE(
     );
 
     return successResponse({ message: 'Empleado eliminado' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete employee', 500);
   }
 }

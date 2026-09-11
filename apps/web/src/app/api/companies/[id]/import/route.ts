@@ -71,7 +71,8 @@ export async function POST(request: NextRequest) {
     }
 
     return successResponse({ imported, errors });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Import failed', 500);
   }
 }

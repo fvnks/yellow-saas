@@ -47,7 +47,8 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     await query(`UPDATE condos_periods SET status = 'calculated', calculated_at = now(), total_amount = $1 WHERE id = $2 AND company_id = $3`, [totalExpenses.toFixed(2), periodId, companyId]);
 
     return successResponse({ total_expenses: totalExpenses, statements, units_count: statements.length });
-  } catch {
-    return errorResponse("Internal server error", 500);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
   }
 }

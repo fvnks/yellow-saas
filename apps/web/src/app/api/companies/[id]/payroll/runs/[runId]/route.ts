@@ -26,7 +26,8 @@ export async function GET(
     );
 
     return successResponse({ ...runRows[0], items });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch payroll run', 500);
   }
 }
@@ -61,7 +62,8 @@ export async function PUT(
     if (!rows[0]) return errorResponse('Payroll run not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update payroll run', 500);
   }
 }
@@ -88,7 +90,8 @@ export async function DELETE(
     await query(`DELETE FROM payroll_runs WHERE id = $1 AND company_id = $2`, [params.runId, companyId]);
 
     return successResponse({ message: 'Payroll run deleted' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete payroll run', 500);
   }
 }

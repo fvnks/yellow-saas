@@ -36,7 +36,8 @@ export async function GET(request: NextRequest) {
     );
 
     return paginatedResponse(dataResult.rows, total, page, limit);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -98,7 +99,8 @@ export async function POST(request: NextRequest) {
     }
 
     return successResponse(insertedResults, 201);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

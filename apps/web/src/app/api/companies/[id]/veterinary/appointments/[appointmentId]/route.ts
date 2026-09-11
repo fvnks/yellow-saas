@@ -29,7 +29,8 @@ export async function GET(
     if (!rows[0]) return errorResponse('Appointment not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch appointment', 500);
   }
 }
@@ -80,7 +81,8 @@ export async function PUT(
     if (!rows[0]) return errorResponse('Appointment not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update appointment', 500);
   }
 }
@@ -101,7 +103,8 @@ export async function DELETE(
     if (!rows[0]) return errorResponse('Appointment not found', 404);
 
     return successResponse({ message: 'Appointment deleted successfully' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete appointment', 500);
   }
 }

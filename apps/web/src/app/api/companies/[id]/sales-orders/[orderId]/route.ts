@@ -28,7 +28,8 @@ export async function GET(
     if (!rows[0]) return errorResponse('Sales order not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch sales order', 500);
   }
 }
@@ -91,7 +92,8 @@ export async function PUT(
     }
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update sales order', 500);
   }
 }
@@ -119,7 +121,8 @@ export async function DELETE(
     await query(`DELETE FROM sales_orders WHERE id = $1 AND company_id = $2`, [params.orderId, companyId]);
 
     return successResponse({ message: 'Sales order deleted successfully' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete sales order', 500);
   }
 }

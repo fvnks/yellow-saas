@@ -17,8 +17,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       [companyId, pParams.propertyId, limit, offset],
     );
     return paginatedResponse(dataResult.rows, parseInt(countResult.rows[0].count), page, limit);
-  } catch {
-    return errorResponse("Internal server error", 500);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
   }
 }
 
@@ -47,7 +48,8 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     await query(`UPDATE condos_unit_statements SET amount_paid = $1, status = $2, updated_at = now() WHERE id = $3 AND company_id = $4`, [newPaid.toFixed(2), newStatus, statement_id, companyId]);
 
     return successResponse(paymentResult.rows[0], 201);
-  } catch {
-    return errorResponse("Internal server error", 500);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
   }
 }

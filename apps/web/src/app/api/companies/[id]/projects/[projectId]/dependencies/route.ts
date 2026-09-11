@@ -23,7 +23,8 @@ export async function GET(
     );
 
     return successResponse(result.rows);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -69,7 +70,8 @@ export async function POST(
     );
 
     return successResponse(result.rows[0], 201);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

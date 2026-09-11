@@ -20,7 +20,7 @@ export async function PUT(
     );
     if (result.rows.length === 0) return errorResponse('Milestone not found', 404);
     return successResponse(result.rows[0]);
-  } catch { return errorResponse('Internal server error', 500); }
+  } catch (err) { console.error('Route error:', err); return errorResponse('Internal server error', 500); }
 }
 
 export async function DELETE(
@@ -36,5 +36,5 @@ export async function DELETE(
     );
     if (result.rows.length === 0) return errorResponse('Milestone not found', 404);
     return successResponse({ message: 'Deleted' });
-  } catch { return errorResponse('Internal server error', 500); }
+  } catch (err) { console.error('Route error:', err); return errorResponse('Internal server error', 500); }
 }

@@ -17,7 +17,8 @@ export async function GET(request: NextRequest) {
     );
 
     return successResponse(rows || []);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -39,7 +40,8 @@ export async function POST(request: NextRequest) {
     );
 
     return successResponse(rows[0], 201);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -60,7 +62,8 @@ export async function DELETE(request: NextRequest) {
     );
 
     return successResponse({ deleted: true });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
