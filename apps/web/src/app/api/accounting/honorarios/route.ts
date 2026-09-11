@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/api/lib/db';
 
+// STUB: Simulated SII integration. Replace with real SII SOAP/API call when digital certificate is configured.
 // GET: Fetch Electronic Fee Receipts (Boletas de Honorarios BHE SII) & 13.75% Tax Retentions
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const companyId = searchParams.get('company_id') || '00000000-0000-0000-0000-000000000001';
+    const companyId = searchParams.get('company_id');
+    if (!companyId) {
+      return NextResponse.json({ success: false, error: { message: 'company_id is required' } }, { status: 400 });
+    }
 
     const mockBHE = [
       {
@@ -38,6 +42,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       success: true,
+      simulated: true,
       data: mockBHE
     });
   } catch (error: any) {

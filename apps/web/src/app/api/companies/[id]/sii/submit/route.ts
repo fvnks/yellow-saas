@@ -2,6 +2,7 @@ import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
+// STUB: Simulated SII integration. Replace with real SII SOAP/API call when digital certificate is configured.
 export async function POST(request: NextRequest) {
   try {
     const companyId = await getCompanyId(request);
@@ -46,9 +47,10 @@ export async function POST(request: NextRequest) {
 
     const response = {
       success: true,
+      simulated: true,
       track_id: `SII-${Date.now()}-${Math.random().toString(36).substring(7)}`,
       status: 'pending',
-      message: 'DTE sent to SII for processing',
+      message: 'DTE sent to SII for processing (simulated — no real submission made)',
     };
 
     await query(
@@ -73,6 +75,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// STUB: Simulated SII integration. Replace with real SII SOAP/API call when digital certificate is configured.
 export async function GET(request: NextRequest) {
   try {
     const companyId = await getCompanyId(request);

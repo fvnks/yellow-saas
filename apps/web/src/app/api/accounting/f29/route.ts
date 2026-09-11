@@ -2,11 +2,15 @@
 import { IVA_RATE } from '@/lib/erp-config';
 import { query } from '@/api/lib/db';
 
+// STUB: Simulated SII integration. Replace with real SII SOAP/API call when digital certificate is configured.
 // GET: Calculate F29 Monthly Tax Return for Chilean SMEs
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const companyId = searchParams.get('company_id') || '00000000-0000-0000-0000-000000000001';
+    const companyId = searchParams.get('company_id');
+    if (!companyId) {
+      return NextResponse.json({ success: false, error: { message: 'company_id is required' } }, { status: 400 });
+    }
     const period = searchParams.get('period') || new Date().toISOString().substring(0, 7); // YYYY-MM
 
     // Fetch sales DTE totals
@@ -22,6 +26,7 @@ export async function GET(request: Request) {
     const debitIva = totalSalesGross - totalSalesNet;
 
     // Fetch purchase DTE totals
+    // TODO: Replace hardcoded purchases with real DB query once purchase ledger is implemented
     const totalPurchasesGross = 6800000;
     const totalPurchasesNet = Math.round(totalPurchasesGross / (1 + IVA_RATE));
     const creditIva = totalPurchasesGross - totalPurchasesNet;
@@ -30,6 +35,7 @@ export async function GET(request: Request) {
     const ppmRate = 0.015;
     const ppmAmount = Math.round(totalSalesNet * ppmRate);
 
+    // TODO: Replace hardcoded honorarios with real DB query
     // Honorarios (13.75% for year 2026 in Chile)
     const honorariosNet = 850000;
     const honorariosRetencion = Math.round(honorariosNet * 0.1375);
@@ -43,6 +49,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       success: true,
+      simulated: true,
       data: {
         period,
         summary: {

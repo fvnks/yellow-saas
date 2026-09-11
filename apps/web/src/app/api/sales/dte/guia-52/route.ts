@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 import { IVA_RATE } from '@/lib/erp-config';
 
+// STUB: Simulated SII integration. Replace with real SII SOAP/API call when digital certificate is configured.
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const companyId = searchParams.get('company_id') || '00000000-0000-0000-0000-000000000001';
+    const companyId = searchParams.get('company_id');
+    if (!companyId) {
+      return NextResponse.json({ success: false, error: { message: 'company_id is required' } }, { status: 400 });
+    }
 
     const mockGuides = [
       {
@@ -60,13 +64,14 @@ export async function GET(request: Request) {
       }
     ];
 
-    return NextResponse.json({ success: true, data: mockGuides });
+    return NextResponse.json({ success: true, simulated: true, data: mockGuides });
   } catch (error: any) {
     console.error('Error fetching DTE 52 guides:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
 
+// STUB: Simulated SII integration. Replace with real SII SOAP/API call when digital certificate is configured.
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -91,7 +96,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: `Guía de Despacho Electrónica DTE 52 N° ${folio} timbrada ante el SII.`,
+      simulated: true,
+      message: `Guía de Despacho Electrónica DTE 52 N° ${folio} timbrada ante el SII (simulated — no real submission made).`,
       data: newGuide
     });
   } catch (error: any) {
