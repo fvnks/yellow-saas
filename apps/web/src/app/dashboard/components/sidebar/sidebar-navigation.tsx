@@ -61,7 +61,7 @@ interface SidebarNavigationProps {
 const IsComingSoon = () => {
   const t = useTranslations('status');
   return (
-    <span className="ml-auto rounded-md bg-amber-500/10 px-2 py-0.5 text-[9px] font-bold text-amber-400 border border-amber-500/20">
+    <span className="ml-auto rounded-md bg-peach/30 px-2 py-0.5 text-[9px] font-bold text-[#c64d00] border border-peach/50">
       {t('processing')}
     </span>
   );
@@ -204,7 +204,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
 
   const renderIcon = (iconName: keyof typeof ICON_MAP | undefined, itemActive?: boolean): React.ReactNode => {
     const Icon = resolveIcon(iconName);
-    return <Icon className={cn("h-4 w-4 shrink-0", itemActive ? theme.iconActiveColorClass : "text-slate-400")} />;
+    return <Icon className={cn("h-4 w-4 shrink-0", itemActive ? theme.iconActiveColorClass : "text-iron")} />;
   };
 
   const isActive = (itemPath: string, subItems?: NavMainItem["subItems"]) => {
@@ -243,23 +243,23 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
     <div className="flex flex-col gap-2 px-2">
       <div className="px-1 group-data-[collapsible=icon]:hidden">
         <div className="relative flex items-center">
-          <Search className="absolute left-2.5 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+          <Search className="absolute left-2.5 w-3.5 h-3.5 text-iron pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t('searchMenu')}
-            className="w-full bg-slate-900/80 border border-slate-800 text-xs text-slate-200 placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
+            className="w-full bg-cloud border border-mist text-xs text-ink placeholder:text-iron rounded-md pl-8 pr-7 py-1.5 focus:outline-none focus:border-monday-violet focus:ring-1 focus:ring-monday-violet/20 transition-all"
           />
           {searchQuery ? (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-2 text-slate-400 hover:text-slate-200"
+              className="absolute right-2 text-iron hover:text-ink"
             >
               <X className="w-3.5 h-3.5" />
             </button>
           ) : (
-            <span className="absolute right-2 text-[9px] font-mono font-bold text-slate-500 bg-slate-800/80 px-1.5 py-0.5 rounded">
+            <span className="absolute right-2 text-[9px] font-mono font-bold text-iron bg-mist/50 px-1.5 py-0.5 rounded">
               ⌘K
             </span>
           )}
@@ -267,7 +267,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
       </div>
 
       {filteredItems.length === 0 ? (
-        <p className="text-xs text-slate-500 text-center py-4 px-2 group-data-[collapsible=icon]:hidden">
+        <p className="text-xs text-iron text-center py-4 px-2 group-data-[collapsible=icon]:hidden">
           {t('noMatches')}
         </p>
       ) : (
@@ -284,7 +284,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
             >
               <div className={cn(
                 "rounded-xl transition-all duration-150",
-                groupOpen && "bg-slate-900/40"
+                groupOpen && "bg-cloud"
               )}>
                 {navGroup.label && (
                   <CollapsibleTrigger asChild>
@@ -295,17 +295,17 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                         "text-[10px] font-black uppercase tracking-widest",
                         "transition-all duration-150 cursor-pointer",
                         groupActive
-                          ? "text-amber-400"
-                          : "text-slate-400 hover:text-slate-200",
-                        "hover:bg-slate-800/50"
+                          ? "text-monday-violet"
+                          : "text-iron hover:text-ink",
+                        "hover:bg-cloud"
                       )}>
                       <ChevronDown className={cn(
-                        "h-3 w-3 flex-shrink-0 transition-transform duration-200 text-slate-400",
+                        "h-3 w-3 flex-shrink-0 transition-transform duration-200 text-iron",
                         !groupOpen && "-rotate-90"
                       )} />
                       <span className="truncate">{navGroup.label}</span>
                       {groupActive && !groupOpen && (
-                        <div className="ml-auto w-2 h-2 rounded-full bg-amber-500 animate-pulse flex-shrink-0 shadow-sm shadow-amber-400/50" />
+                        <div className="ml-auto w-2 h-2 rounded-full bg-monday-violet animate-pulse flex-shrink-0 shadow-sm shadow-monday-violet/50" />
                       )}
                     </button>
                   </CollapsibleTrigger>
@@ -333,22 +333,22 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                                   className={cn(
                                     "whitespace-nowrap rounded-xl transition-all duration-150 py-2.5 px-3 text-xs font-semibold",
                                     itemActive
-                                      ? `bg-slate-800 text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-xs`
-                                      : "text-slate-300 hover:text-slate-100 hover:bg-slate-800/60"
+                                      ? `bg-monday-violet/10 text-monday-violet font-bold border-l-4 ${theme.activeBorderClass} shadow-xs`
+                                      : "text-slate-text hover:text-ink hover:bg-cloud"
                                   )}
                                 >
                                   {renderIcon(item.icon, itemActive)}
                                   <span className="text-xs">{item.title}</span>
                                   {item.comingSoon && <IsComingSoon />}
                                   <ChevronRight className={cn(
-                                    "ml-auto h-3.5 w-3.5 transition-transform duration-200 text-slate-400",
+                                    "ml-auto h-3.5 w-3.5 transition-transform duration-200 text-iron",
                                     "group-data-[state=open]/collapsible:rotate-90"
                                   )} />
                                 </SidebarMenuButton>
                               </CollapsibleTrigger>
                               {item.subItems && (
                                 <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
-                                  <SidebarMenuSub className="border-l border-slate-800 ml-3 pl-2 space-y-0.5 my-1">
+                                  <SidebarMenuSub className="border-l border-mist ml-3 pl-2 space-y-0.5 my-1">
                                     {item.subItems.map((subItem) => {
                                       const subActive = isActive(subItem.path);
                                       return (
@@ -360,8 +360,8 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
                                             className={cn(
                                               "rounded-xl text-xs py-1.5 px-2.5 transition-colors font-medium",
                                               subActive
-                                                ? `bg-slate-800/90 ${theme.activeSubItemText} font-bold`
-                                                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
+                                                ? `bg-monday-violet/10 ${theme.activeSubItemText} font-bold`
+                                                : "text-iron hover:text-ink hover:bg-cloud"
                                             )}
                                           >
                                             <a href={subItem.path}>
@@ -386,7 +386,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
               </div>
 
               {groupIndex < filteredItems.length - 1 && (
-                <div className="my-1 mx-3 h-px bg-slate-800/60" />
+                <div className="my-1 mx-3 h-px bg-mist" />
               )}
             </Collapsible>
           );

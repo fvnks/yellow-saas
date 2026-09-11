@@ -69,18 +69,18 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   }, [activatedModules, translatedItems]);
 
   return (
-    <Sidebar className="border-r border-slate-800 bg-[#0F172A] text-slate-300 select-none shadow-xl" collapsible="icon" {...props}>
-      <SidebarHeader className="bg-[#0F172A] pt-3">
+    <Sidebar className="border-r border-mist bg-snow text-ink select-none shadow-card" collapsible="icon" {...props}>
+      <SidebarHeader className="bg-snow pt-3">
         <SidebarBrandHeader />
-        <SidebarSeparator className="mx-3 bg-slate-800/80 my-2" />
+        <SidebarSeparator className="mx-3 bg-mist my-2" />
       </SidebarHeader>
 
-      <SidebarContent className="bg-[#0F172A]">
+      <SidebarContent className="bg-snow">
         <ModuleSidebarBackButton moduleKey="dashboard" />
         <SidebarNavigation sidebarItems={filteredSidebarItems} />
       </SidebarContent>
 
-      <SidebarFooter className="bg-[#0F172A] p-3 border-t border-slate-800/80">
+      <SidebarFooter className="bg-snow p-3 border-t border-mist">
         <ModuleSidebarFooter moduleKey="dashboard" user={user} />
       </SidebarFooter>
 
