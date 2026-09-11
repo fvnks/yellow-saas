@@ -6,8 +6,8 @@ import { NavGroup } from '@/navigation/sidebar/sidebar-items';
 
 function translateIfNeeded(t: (key: string) => string, value: string): string {
   try {
-    const translated = t(`nav.${value}`);
-    return translated !== `nav.${value}` ? translated : value;
+    const translated = t(value);
+    return translated !== value ? translated : value;
   } catch {
     return value;
   }
