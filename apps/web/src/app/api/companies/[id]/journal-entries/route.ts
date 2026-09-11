@@ -1,4 +1,4 @@
-import { query } from '@/api/lib/db';
+import { query, transaction } from '@/api/lib/db';
 import {
   getCompanyId,
   successResponse,
@@ -106,42 +106,46 @@ export async function POST(request: NextRequest) {
       return errorResponse('Debit and credit totals cannot both be zero', 400);
     }
 
-    const { rows: countRows } = await query(
-      `SELECT COUNT(*) as count FROM journal_entries WHERE company_id = $1`,
-      [companyId]
-    );
-    const entryNumber = `CE-${String((parseInt(countRows[0]?.count || '0') + 1)).padStart(6, '0')}`;
-
-    const { rows: entryRows } = await query(
-      `INSERT INTO journal_entries (company_id, entry_number, entry_date, description, reference_type, reference_id, total_debit, total_credit, status)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'draft')
-       RETURNING *`,
-      [
-        companyId, entryNumber, date, description,
-        reference_type || null, reference_id || null, totalDebit, totalCredit,
-      ]
-    );
-
-    const entry = entryRows[0];
-
-    const entryLines = lines.map((line: Record<string, unknown>) => ({
-      entry_id: entry.id,
-      company_id: companyId,
-      account_id: line.account_id,
-      description: line.description || null,
-      debit: Number(line.debit) || 0,
-      credit: Number(line.credit) || 0,
-    }));
-
-    for (const el of entryLines) {
-      await query(
-        `INSERT INTO journal_entry_lines (entry_id, company_id, account_id, description, debit, credit)
-         VALUES ($1, $2, $3, $4, $5, $6)`,
-        [el.entry_id, el.company_id, el.account_id, el.description, el.debit, el.credit]
+    const result = await transaction(async (client) => {
+      const { rows: countRows } = await client.query(
+        `SELECT COUNT(*) as count FROM journal_entries WHERE company_id = $1`,
+        [companyId]
       );
-    }
+      const entryNumber = `CE-${String((parseInt(countRows[0]?.count || '0') + 1)).padStart(6, '0')}`;
 
-    return successResponse({ ...entry, lines: entryLines }, 201);
+      const { rows: entryRows } = await client.query(
+        `INSERT INTO journal_entries (company_id, entry_number, entry_date, description, reference_type, reference_id, total_debit, total_credit, status)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'draft')
+         RETURNING *`,
+        [
+          companyId, entryNumber, date, description,
+          reference_type || null, reference_id || null, totalDebit, totalCredit,
+        ]
+      );
+
+      const entry = entryRows[0];
+
+      const entryLines = lines.map((line: Record<string, unknown>) => ({
+        entry_id: entry.id,
+        company_id: companyId,
+        account_id: line.account_id,
+        description: line.description || null,
+        debit: Number(line.debit) || 0,
+        credit: Number(line.credit) || 0,
+      }));
+
+      for (const el of entryLines) {
+        await client.query(
+          `INSERT INTO journal_entry_lines (entry_id, company_id, account_id, description, debit, credit)
+           VALUES ($1, $2, $3, $4, $5, $6)`,
+          [el.entry_id, el.company_id, el.account_id, el.description, el.debit, el.credit]
+        );
+      }
+
+      return { ...entry, lines: entryLines };
+    });
+
+    return successResponse(result, 201);
   } catch {
     return errorResponse('Internal server error', 500);
   }

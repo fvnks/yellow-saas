@@ -42,6 +42,18 @@ export async function POST(
     if (!task_id || !depends_on_id) return errorResponse('task_id and depends_on_id are required', 400);
     if (task_id === depends_on_id) return errorResponse('A task cannot depend on itself', 400);
 
+    const taskCheck = await query(
+      'SELECT id FROM project_tasks WHERE id = $1 AND project_id = $2 AND company_id = $3',
+      [task_id, params.projectId, companyId]
+    );
+    if (taskCheck.rows.length === 0) return errorResponse('Task not found in this project', 404);
+
+    const dependsCheck = await query(
+      'SELECT id FROM project_tasks WHERE id = $1 AND project_id = $2 AND company_id = $3',
+      [depends_on_id, params.projectId, companyId]
+    );
+    if (dependsCheck.rows.length === 0) return errorResponse('Depends-on task not found in this project', 404);
+
     const existing = await query(
       `SELECT id FROM project_task_dependencies
        WHERE task_id = $1 AND depends_on_id = $2 AND company_id = $3`,

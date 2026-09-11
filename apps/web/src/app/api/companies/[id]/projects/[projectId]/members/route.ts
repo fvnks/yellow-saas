@@ -38,6 +38,18 @@ export async function POST(
 
     if (!user_id) return errorResponse('user_id required', 400);
 
+    const projectCheck = await query(
+      'SELECT id FROM projects WHERE id = $1 AND company_id = $2',
+      [params.projectId, companyId]
+    );
+    if (projectCheck.rows.length === 0) return errorResponse('Project not found', 404);
+
+    const userCheck = await query(
+      'SELECT id FROM profiles WHERE id = $1',
+      [user_id]
+    );
+    if (userCheck.rows.length === 0) return errorResponse('User not found', 404);
+
     const result = await query(
       `INSERT INTO project_members (company_id, project_id, user_id, role)
        VALUES ($1, $2, $3, $4)

@@ -42,6 +42,12 @@ export async function POST(
 
     if (!name) return errorResponse('Task name is required', 400);
 
+    const projectCheck = await query(
+      'SELECT id FROM projects WHERE id = $1 AND company_id = $2',
+      [params.projectId, companyId]
+    );
+    if (projectCheck.rows.length === 0) return errorResponse('Project not found', 404);
+
     const result = await query(
       `INSERT INTO project_tasks (
         company_id, project_id, name, description, assignee_id, status, priority,
