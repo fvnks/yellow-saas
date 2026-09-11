@@ -27,12 +27,11 @@ export async function GET(request: NextRequest) {
       paramIndex++;
     }
 
-    const allowedSort = ['code', 'name', 'type', 'balance', 'created_at'];
+    const allowedSort = ['code', 'name', 'type', 'created_at'];
     const sortColumn = allowedSort.includes(sort) ? sort : 'code';
 
     const { rows } = await query(`
-      SELECT a.id, a.code, a.name, a.type, a.parent_id, a.level, a.description,
-        a.currency, a.is_active, a.is_system, a.created_at, a.updated_at,
+      SELECT a.id, a.code, a.name, a.type, a.parent_id, a.is_active, a.is_control, a.created_at, a.updated_at,
         COALESCE(jel_bal.balance, 0) as balance
       FROM accounts a
       LEFT JOIN (
@@ -61,17 +60,17 @@ export async function POST(request: NextRequest) {
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const body = await request.json();
-    const { code, name, type, parent_id, description, currency } = body;
+    const { code, name, type, parent_id } = body;
 
     if (!code || !name || !type) {
       return errorResponse('code, name, and type are required', 400);
     }
 
     const { rows } = await query(`
-      INSERT INTO accounts (company_id, code, name, type, parent_id, description, currency)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      INSERT INTO accounts (company_id, code, name, type, parent_id)
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING *
-    `, [companyId, code, name, type, parent_id || null, description || null, currency || 'CLP']);
+    `, [companyId, code, name, type, parent_id || null]);
 
     return successResponse(rows[0], 201);
   } catch (err: any) {

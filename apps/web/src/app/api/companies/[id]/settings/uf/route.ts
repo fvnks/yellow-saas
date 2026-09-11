@@ -43,31 +43,7 @@ export async function PUT(request: NextRequest) {
     );
 
     return successResponse({ uf_value, message: 'Valor UF actualizado' });
-  } catch (e: any) {
-    if (e?.code === '42P01' || e?.message?.includes('relation') || e?.message?.includes('does not exist')) {
-      try {
-        await query(`
-          CREATE TABLE IF NOT EXISTS company_settings (
-            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-            company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
-            setting_key TEXT NOT NULL,
-            setting_value TEXT NOT NULL,
-            created_at TIMESTAMPTZ DEFAULT now(),
-            updated_at TIMESTAMPTZ DEFAULT now(),
-            UNIQUE (company_id, setting_key)
-          )
-        `);
-        await query(
-          `INSERT INTO company_settings (company_id, setting_key, setting_value)
-           VALUES ($1, 'uf_value', $2)
-           ON CONFLICT (company_id, setting_key) DO UPDATE SET setting_value = $2, updated_at = NOW()`,
-          [companyId, uf_value.toString()]
-        );
-        return successResponse({ uf_value, message: 'Valor UF actualizado' });
-      } catch {
-        return errorResponse('Failed to create settings table', 500);
-      }
-    }
+  } catch {
     return errorResponse('Internal server error', 500);
   }
 }

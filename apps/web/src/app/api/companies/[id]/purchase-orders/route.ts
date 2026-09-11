@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const { page, limit, search, sort: requestedSort, order, offset } = parseSearchParams(request);
-    const allowedSortColumns = ['created_at', 'number', 'status', 'total_amount', 'order_date', 'id'];
+    const allowedSortColumns = ['created_at', 'order_number', 'status', 'total_amount', 'order_date', 'id'];
     const sort = allowedSortColumns.includes(requestedSort) ? requestedSort : 'created_at';
     const url = new URL(request.url);
     const status = url.searchParams.get('status');
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     let paramIndex = 2;
 
     if (search) {
-      where += ` AND po.number ILIKE $${paramIndex}`;
+      where += ` AND po.order_number ILIKE $${paramIndex}`;
       params.push(`%${search}%`);
       paramIndex++;
     }
@@ -54,8 +54,8 @@ export async function GET(request: NextRequest) {
         (SELECT json_agg(json_build_object(
           'id', poi.id, 'product_id', poi.product_id, 'quantity', poi.quantity,
           'received_quantity', poi.received_quantity, 'unit_price', poi.unit_price,
-          'discount_percent', poi.discount_percent, 'discount_amount', poi.discount_amount,
-          'tax_rate', poi.tax_rate, 'tax_amount', poi.tax_amount, 'line_total', poi.line_total, 'notes', poi.notes,
+          'discount_percent', poi.discount_percent,
+          'tax_rate', poi.tax_rate, 'line_total', poi.line_total,
           'product', (SELECT json_build_object('id', p.id, 'name', p.name, 'sku', p.sku) FROM products p WHERE p.id = poi.product_id)
         )) FROM purchase_order_items poi WHERE poi.order_id = po.id) as items
        FROM purchase_orders po
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { rows: orderRows } = await query(
-      `INSERT INTO purchase_orders (company_id, supplier_id, warehouse_id, number, status, order_date, expected_date, payment_terms, subtotal, tax_amount, total, notes, internal_notes, project_id)
+      `INSERT INTO purchase_orders (company_id, supplier_id, warehouse_id, order_number, status, order_date, expected_date, payment_terms, subtotal, tax_amount, total, notes, internal_notes, project_id)
        VALUES ($1, $2, $3, $4, 'draft', $5, $6, $7, $8, $9, $10, $11, $12, $13)
        RETURNING *`,
       [
@@ -120,7 +120,6 @@ export async function POST(request: NextRequest) {
       const taxRate = Number(item.tax_rate) || 0;
       const quantity = Number(item.quantity) || 0;
       const unitPrice = Number(item.unit_price) || 0;
-      const discountAmount = Number(item.discount_amount) || 0;
       return {
         order_id: order.id,
         company_id: companyId,
@@ -129,21 +128,17 @@ export async function POST(request: NextRequest) {
         received_quantity: 0,
         unit_price: unitPrice,
         discount_percent: item.discount_percent || 0,
-        discount_amount: discountAmount,
         tax_rate: taxRate,
-        tax_amount: taxRate > 0 ? (quantity * unitPrice - discountAmount) * (taxRate / 100) : 0,
-        notes: item.notes || null,
-        sort_order: index,
+        _index: index,
       };
     });
 
     for (const oi of orderItems) {
       await query(
-        `INSERT INTO purchase_order_items (order_id, company_id, product_id, quantity, received_quantity, unit_price, discount_percent, discount_amount, tax_rate, tax_amount, notes, sort_order)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+        `INSERT INTO purchase_order_items (order_id, company_id, product_id, quantity, received_quantity, unit_price, discount_percent, tax_rate)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
         [oi.order_id, oi.company_id, oi.product_id, oi.quantity,
-         oi.received_quantity, oi.unit_price, oi.discount_percent, oi.discount_amount,
-         oi.tax_rate, oi.tax_amount, oi.notes, oi.sort_order]
+         oi.received_quantity, oi.unit_price, oi.discount_percent, oi.tax_rate]
       );
     }
 

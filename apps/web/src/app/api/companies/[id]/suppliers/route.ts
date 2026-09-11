@@ -63,7 +63,6 @@ export async function POST(request: NextRequest) {
       contact_phone,
       contact_email,
       payment_terms,
-      notes,
     } = body;
 
     if (!name) {
@@ -84,8 +83,8 @@ export async function POST(request: NextRequest) {
       `INSERT INTO suppliers (
         company_id, name, code, trade_name, tax_id, tax_id_type, address, city, region,
         country, postal_code, phone, email, contact_person,
-        contact_phone, contact_email, payment_terms, notes
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
+        contact_phone, contact_email, payment_terms
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
       RETURNING *`,
       [
         companyId,
@@ -105,7 +104,6 @@ export async function POST(request: NextRequest) {
         contact_phone || null,
         contact_email || null,
         payment_terms || 0,
-        notes || null,
       ]
     );
 

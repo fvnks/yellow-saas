@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { jwtVerify } from 'jose';
+import { getJwtSecret } from '@/lib/env';
 import { query } from './db';
 
 export async function getCompanyId(request: NextRequest): Promise<string | null> {
@@ -6,7 +8,25 @@ export async function getCompanyId(request: NextRequest): Promise<string | null>
   const pathParts = url.pathname.split('/');
   const companiesIndex = pathParts.indexOf('companies');
   if (companiesIndex === -1 || !pathParts[companiesIndex + 1]) return null;
-  return pathParts[companiesIndex + 1];
+  const urlCompanyId = pathParts[companiesIndex + 1];
+
+  const authHeader = request.headers.get('Authorization');
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : request.cookies.get('auth-token')?.value;
+
+  if (!token) return null;
+
+  try {
+    const { payload } = await jwtVerify(token, getJwtSecret());
+
+    if (payload.role_type === 'super_admin') return urlCompanyId;
+
+    const jwtCompanyId = payload.company_id as string | undefined;
+    if (!jwtCompanyId) return null;
+
+    return jwtCompanyId === urlCompanyId ? urlCompanyId : null;
+  } catch {
+    return null;
+  }
 }
 
 export function successResponse(data: unknown, status = 200) {

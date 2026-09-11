@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const { page, limit, search, sort: requestedSort, order, offset } = parseSearchParams(request);
-    const allowedSortColumns = ['created_at', 'first_name', 'last_name', 'rut', 'email', 'status', 'base_salary', 'id'];
+    const allowedSortColumns = ['created_at', 'first_name', 'last_name', 'employee_code', 'email', 'status', 'base_salary', 'id'];
     const sort = allowedSortColumns.includes(requestedSort) ? requestedSort : 'created_at';
     const url = new URL(request.url);
     const status = url.searchParams.get('status');
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     let paramIndex = 2;
 
     if (search) {
-      where += ` AND (first_name ILIKE $${paramIndex} OR last_name ILIKE $${paramIndex} OR rut ILIKE $${paramIndex} OR email ILIKE $${paramIndex})`;
+      where += ` AND (first_name ILIKE $${paramIndex} OR last_name ILIKE $${paramIndex} OR employee_code ILIKE $${paramIndex} OR email ILIKE $${paramIndex})`;
       params.push(`%${search}%`);
       paramIndex++;
     }
@@ -59,48 +59,32 @@ export async function POST(request: NextRequest) {
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const {
-      first_name, last_name, rut, email, phone, address,
-      position, department, hire_date, contract_type, base_salary,
-      bank_name, bank_account, emergency_contact, emergency_phone, notes,
-      afp_fund, afp_rate, afp_commission,
-      health_type, health_amount,
-      mutual_type, mutual_rate,
-      apv_amount, image_url,
+      first_name, last_name, employee_code, email, phone, address,
+      birth_date, position, department, hire_date, contract_type, base_salary,
+      salary_frequency, bank_name, bank_account, tax_id, afp_id, health_id, notes,
     } = body;
 
-    if (!first_name || !last_name || !rut) {
-      return errorResponse('Nombre, apellido y RUT son obligatorios', 400);
+    if (!first_name || !last_name) {
+      return errorResponse('Nombre y apellido son obligatorios', 400);
     }
 
     const { rows } = await query(
       `INSERT INTO employees (
-        company_id, first_name, last_name, rut, email, phone, address,
-        position, department, hire_date, contract_type, base_salary,
-        bank_name, bank_account, emergency_contact, emergency_phone, notes,
-        afp_fund, afp_rate, afp_commission,
-        health_type, health_amount,
-        mutual_type, mutual_rate,
-        apv_amount, image_url, status
+        company_id, first_name, last_name, employee_code, email, phone, address,
+        birth_date, position, department, hire_date, contract_type, base_salary,
+        salary_frequency, bank_name, bank_account, tax_id, afp_id, health_id, notes, status
        ) VALUES (
         $1, $2, $3, $4, $5, $6, $7,
-        $8, $9, $10, $11, $12,
-        $13, $14, $15, $16, $17,
-        $18, $19, $20,
-        $21, $22,
-        $23, $24,
-        $25, $26, 'active'
+        $8, $9, $10, $11, $12, $13,
+        $14, $15, $16, $17, $18, $19, $20, 'active'
        )
        RETURNING *`,
       [
-        companyId, first_name, last_name, rut, email || null, phone || null,
-        address || null, position || null, department || null,
-        hire_date || new Date().toISOString().split('T')[0], contract_type || 'indefinido',
-        base_salary || 0, bank_name || null, bank_account || null,
-        emergency_contact || null, emergency_phone || null, notes || null,
-        afp_fund || 'AFP Habitat', afp_rate || 10.58, afp_commission || 0.60,
-        health_type || 'fonasa', health_amount || 0,
-        mutual_type || 'achs', mutual_rate || 0.93,
-        apv_amount || 0, image_url || null,
+        companyId, first_name, last_name, employee_code || null, email || null, phone || null,
+        address || null, birth_date || null, position || null, department || null,
+        hire_date || new Date().toISOString().split('T')[0], contract_type || 'indefinite',
+        base_salary || 0, salary_frequency || 'monthly', bank_name || null, bank_account || null,
+        tax_id || null, afp_id || null, health_id || null, notes || null,
       ]
     );
 

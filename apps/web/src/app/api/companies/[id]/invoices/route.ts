@@ -103,11 +103,6 @@ export async function POST(request: NextRequest) {
       return errorResponse('Items are required', 400);
     }
 
-    // Ensure customer_id allows NULL (for boletas without customer)
-    try { await query('ALTER TABLE invoices ALTER COLUMN customer_id DROP NOT NULL', []); } catch { /* already nullable */ }
-    // Ensure document_type column exists
-    try { await query(`DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_attribute WHERE attrelid = 'invoices'::regclass AND attname = 'document_type') THEN ALTER TABLE invoices ADD COLUMN document_type TEXT DEFAULT 'factura' CHECK (document_type IN ('boleta', 'factura')); END IF; END $$`, []); } catch { /* already exists */ }
-
     const docType = document_type === 'boleta' ? 'boleta' : 'factura';
     if (docType === 'factura' && !customer_id) {
       return errorResponse('Customer is required for facturas', 400);
@@ -126,13 +121,10 @@ export async function POST(request: NextRequest) {
       const discountPct = Number(item.discount_percent || item.discount || 0);
       const lineSubtotal = item.quantity * item.unit_price;
       const discountAmount = lineSubtotal * (discountPct / 100);
-      const lineTax = (lineSubtotal - discountAmount) * ((item.tax_rate || 0) / 100);
+      const lineTax = (lineSubtotal - discountAmount) * ((item.tax_rate ?? 0.19) / 100);
       subtotal += lineSubtotal - discountAmount;
       taxAmount += lineTax;
     }
-
-    // Ensure payment_method column exists
-    try { await query(`DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_attribute WHERE attrelid = 'invoices'::regclass AND attname = 'payment_method') THEN ALTER TABLE invoices ADD COLUMN payment_method TEXT; END IF; END $$`, []); } catch { /* already exists */ }
 
     const { rows: invoiceRows } = await query(
       `INSERT INTO invoices (company_id, customer_id, order_id, invoice_number, document_type, status, invoice_date, due_date, payment_terms, subtotal, tax_amount, total_amount, notes, payment_method, card_transaction_number)
@@ -150,7 +142,7 @@ export async function POST(request: NextRequest) {
     const invoice = invoiceRows[0];
 
     const invoiceItems = items.map((item: Record<string, unknown>) => {
-      const taxRate = Number(item.tax_rate) || 0;
+      const taxRate = Number(item.tax_rate ?? 0.19);
       const quantity = Number(item.quantity) || 0;
       const unitPrice = Number(item.unit_price) || 0;
       const discountPct = Number(item.discount_percent || item.discount || 0);

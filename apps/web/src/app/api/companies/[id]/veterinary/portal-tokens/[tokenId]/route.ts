@@ -4,7 +4,7 @@ import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string; tokenId: string } }) {
   try {
-    const companyId = getCompanyId(req);
+    const companyId = await getCompanyId(req);
     const result = await query(
       `SELECT pt.*, p.name as patient_name, p.species, p.breed,
               c.full_name as client_name, c.rut as client_rut
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string; 
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string; tokenId: string } }) {
   try {
-    const companyId = getCompanyId(req);
+    const companyId = await getCompanyId(req);
     const body = await req.json();
     const { is_active, expires_at } = body;
 
@@ -43,7 +43,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string; 
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string; tokenId: string } }) {
   try {
-    const companyId = getCompanyId(req);
+    const companyId = await getCompanyId(req);
     const result = await query(
       'DELETE FROM veterinary_portal_tokens WHERE id = $1 AND company_id = $2 RETURNING id',
       [params.tokenId, companyId]

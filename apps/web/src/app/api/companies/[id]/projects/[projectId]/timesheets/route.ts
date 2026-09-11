@@ -11,7 +11,7 @@ export async function GET(
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const result = await query(
-      `SELECT pt.*, e.name as employee_name, pt2.name as task_name
+      `SELECT pt.*, e.first_name || ' ' || e.last_name as employee_name, pt2.name as task_name
        FROM project_timesheets pt
        LEFT JOIN employees e ON pt.employee_id = e.id
        LEFT JOIN project_tasks pt2 ON pt.task_id = pt2.id

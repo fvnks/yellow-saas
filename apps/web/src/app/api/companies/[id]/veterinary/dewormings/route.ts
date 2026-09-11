@@ -4,7 +4,7 @@ import { getCompanyId, successResponse, errorResponse, parseSearchParams, pagina
 
 export async function GET(request: NextRequest) {
   try {
-    const companyId = getCompanyId(request);
+    const companyId = await getCompanyId(request);
     const { page, limit, search, sort, order, offset } = parseSearchParams(request);
     const url = new URL(request.url);
     const patientId = url.searchParams.get('patient_id');
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const companyId = getCompanyId(request);
+    const companyId = await getCompanyId(request);
     const body = await request.json();
 
     const {

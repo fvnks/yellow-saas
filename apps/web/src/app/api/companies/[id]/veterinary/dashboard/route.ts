@@ -4,7 +4,7 @@ import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
-    const companyId = getCompanyId(request);
+    const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const [

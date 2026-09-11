@@ -7,7 +7,7 @@ export async function GET(
   { params }: { params: { id: string; surgeryId: string } }
 ) {
   try {
-    const companyId = getCompanyId(request);
+    const companyId = await getCompanyId(request);
     const { surgeryId } = params;
 
     const result = await query(
@@ -42,7 +42,7 @@ export async function PUT(
   { params }: { params: { id: string; surgeryId: string } }
 ) {
   try {
-    const companyId = getCompanyId(request);
+    const companyId = await getCompanyId(request);
     const { surgeryId } = params;
     const body = await request.json();
 
@@ -88,7 +88,7 @@ export async function DELETE(
   { params }: { params: { id: string; surgeryId: string } }
 ) {
   try {
-    const companyId = getCompanyId(request);
+    const companyId = await getCompanyId(request);
     const { surgeryId } = params;
 
     const result = await query(

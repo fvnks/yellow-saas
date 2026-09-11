@@ -4,6 +4,7 @@
  */
 
 // ── UF Value (configurable per period) ──
+// TODO: Replace with configurable per-period UF value (e.g. from DB or API)
 let _ufValue = 38500;
 export function setUFValue(value: number) { _ufValue = value; }
 export function getUFValue() { return _ufValue; }
@@ -536,7 +537,7 @@ export function calculateEmployeePayroll(
   const totalDeductions = items.filter(i => i.category === 'deduction' && !i.is_employer).reduce((sum, i) => sum + i.amount, 0);
   const totalEmployer = items.filter(i => i.category === 'employer').reduce((sum, i) => sum + i.amount, 0);
   const totalTax = items.filter(i => i.code === 'IMP-2C').reduce((sum, i) => sum + i.amount, 0);
-  const netPay = totalEarnings - totalDeductions - totalTax;
+  const netPay = totalEarnings - totalDeductions;
 
   return {
     employee_id: employee.id,

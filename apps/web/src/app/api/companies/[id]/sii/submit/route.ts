@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     }
 
     const doc = await query(
-      `SELECT id, type, folio, fecha_emision, seller_id, buyer_id, subtotal, descuento, monto_net, iva, monto_total, sii_status FROM invoices WHERE id = $1 AND company_id = $2`,
+      `SELECT id, invoice_number, customer_id, invoice_date, subtotal, tax_amount, total_amount, sii_status FROM invoices WHERE id = $1 AND company_id = $2`,
       [document_id, companyId]
     );
 
@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
 
     if (documentId) {
       const doc = await query(
-        `SELECT id, type, folio, sii_status, sii_track_id, sii_sent_at, sii_response_at, sii_error 
+        `SELECT id, invoice_number, sii_status, sii_track_id, sii_sent_at, sii_response_at, sii_error 
          FROM invoices WHERE id = $1 AND company_id = $2`,
         [documentId, companyId]
       );
@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
     }
 
     const result = await query(
-      `SELECT id, type, folio, sii_status, sii_sent_at, sii_error 
+      `SELECT id, invoice_number, sii_status, sii_sent_at, sii_error 
        FROM invoices WHERE company_id = $1 
        ORDER BY sii_sent_at DESC LIMIT 10`,
       [companyId]

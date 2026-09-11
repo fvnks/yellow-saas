@@ -72,8 +72,8 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     const result = await query(`
       INSERT INTO expenses (company_id, expense_number, expense_date, amount, tax_amount, total_amount,
-        category_id, supplier_name, supplier_rut, document_type, document_number, description, notes, cost_center_id, status, created_by)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, current_user_id())
+        category_id, supplier_name, supplier_rut, document_type, document_number, description, notes, cost_center_id, status)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
       RETURNING *
     `, [
       companyId, expenseNumber, expense_date || new Date().toISOString().split('T')[0],
