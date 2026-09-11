@@ -6,6 +6,7 @@ import { Card, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, 
 import { ArrowLeft, Download, Trash2, CheckCircle, AlertTriangle, XCircle, Copy, Clock, FileText, RefreshCw, Calendar, MapPin, Hash, Building2 } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { formatCLP } from '@/lib/format';
 import { toast } from 'sonner';
 
 const DTE_TYPES: Record<string, string> = {
@@ -28,10 +29,6 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; icon: typeof
   received: { label: 'Recibido', color: 'bg-blue-50 text-blue-700 border border-blue-200', icon: Clock },
   processing: { label: 'Procesando', color: 'bg-purple-50 text-purple-700 border border-purple-200', icon: RefreshCw },
 };
-
-function formatCLP(amount: number): string {
-  return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(amount);
-}
 
 export default function ReceivedDocumentDetailPage() {
   const params = useParams();

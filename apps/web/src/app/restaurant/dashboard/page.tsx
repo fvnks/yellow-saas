@@ -4,12 +4,10 @@ import { useState } from 'react';
 import { LayoutDashboard, TrendingUp, DollarSign, User, Clock, UtensilsCrossed, CalendarCheck, Receipt, Wallet } from 'lucide-react';
 import Link from 'next/link';
 import { INITIAL_TABLES, INITIAL_RESERVATIONS, INITIAL_MENU_ITEMS } from '../lib/restaurant-store';
+import { formatCLP } from '@/lib/format';
 
 export default function RestaurantDashboardPage() {
   const [range, setRange] = useState<'hoy' | 'semana' | 'mes'>('hoy');
-
-  const formatCLP = (val: number) =>
-    new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(val);
 
   const tables = INITIAL_TABLES;
   const reservations = INITIAL_RESERVATIONS;

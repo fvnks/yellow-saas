@@ -28,10 +28,13 @@ export async function query<T extends QueryResultRow = any>(text: string, params
   }
 }
 
-export async function transaction<T>(fn: (client: PoolClient) => Promise<T>): Promise<T> {
+export async function transaction<T>(fn: (client: PoolClient) => Promise<T>, companyId?: string): Promise<T> {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
+    if (companyId) {
+      await client.query(`SET LOCAL app.current_company_id = $1`, [companyId]);
+    }
     const result = await fn(client);
     await client.query('COMMIT');
     return result;

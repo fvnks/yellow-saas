@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { PaymentCheckoutModal } from './components/payment-checkout-modal';
 import { useRestaurantRole } from '../lib/role-context';
 import RoleProtected from '../components/role-protected';
+import { formatCLP } from '@/lib/format';
 
 export default function WaiterPOSPage() {
   const [tables, setTables] = useState<TableSession[]>(INITIAL_TABLES);
@@ -22,9 +23,6 @@ export default function WaiterPOSPage() {
   const [isNewTableModalOpen, setIsNewTableModalOpen] = useState(false);
   const [newTableName, setNewTableName] = useState('');
   const [newTableCapacity, setNewTableCapacity] = useState(4);
-
-  const formatCLP = (val: number) =>
-    new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(Math.round(val || 0));
 
   const activeOrder = orders.find(o => o.tableId === selectedTable?.tableId && o.status === 'active');
 

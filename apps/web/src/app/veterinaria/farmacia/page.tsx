@@ -16,9 +16,7 @@ import { usePatients } from '../hooks/use-patients';
 import { useProfessionals } from '../hooks/use-professionals';
 import { usePharmacyStock, usePharmacyDispenses } from '../hooks/use-pharmacy';
 import { getApiClient } from '@/lib/api-client';
-
-const formatCLP = (val: number) =>
-  new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(Math.round(val));
+import { formatCLP } from '@/lib/format';
 
 const categoryLabels: Record<string, string> = {
   antibiotico: 'Antibiótico',
