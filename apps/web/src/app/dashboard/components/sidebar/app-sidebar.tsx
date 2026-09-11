@@ -33,7 +33,7 @@ function getUserFromCookie(getText: (key: string) => string) {
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
  const t = useTranslations('common');
  const [user, setUser] = useState({ name: t('usuario'), email: '', avatar: '', role: 'Admin ERP' });
- const [activatedModules, setActivatedModules] = useState<Set<string>>(new Set());
+ const [activatedModules, setActivatedModules] = useState<Set<string> | null>(null);
 
  useEffect(() => {
  setUser(getUserFromCookie(t));
@@ -45,8 +45,12 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
  fetch(`/api/companies/${companyId}/modules`, {
  headers: { Authorization: `Bearer ${token}` },
  })
- .then(res => res.json())
+ .then(res => {
+ if (!res.ok) return null;
+ return res.json();
+ })
  .then(data => {
+ if (!data) return;
  const active = new Set<string>(
  (data.data?.modules || [])
  .filter((m: any) => m.status === 'active')
@@ -54,17 +58,19 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
  );
  setActivatedModules(active);
  })
- .catch(() => {});
+ .catch(() => setActivatedModules(new Set()));
+ } else {
+ setActivatedModules(new Set());
  }
  } catch {
- // Silent fail — sidebar will show only base sections
+ setActivatedModules(new Set());
  }
  }, []);
 
  const translatedItems = useTranslatedSidebar(sidebarItems);
 
  const filteredSidebarItems = useMemo(() => {
- if (activatedModules.size === 0) return translatedItems.filter(g => !g.requiredModule);
+ if (activatedModules === null) return translatedItems;
  return translatedItems.filter(group => {
  if (!group.requiredModule) return true;
  return activatedModules.has(group.requiredModule);
