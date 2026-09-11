@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Anchor, Calculator, FileText, Download, Plus, CheckCircle2, ShieldCheck, DollarSign, ArrowUpRight, Globe } from 'lucide-react';
@@ -51,7 +51,7 @@ export default function ImportsPage() {
  <div className="flex items-center gap-2">
  <button
  onClick={() => toast.info('Nuevo calculador de importación abierto')}
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
  >
  <Plus className="w-4 h-4" />
  Registrar DIN de Importación

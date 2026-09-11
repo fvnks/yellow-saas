@@ -51,7 +51,7 @@ export default function AutoTalleresSidebarItems() {
  <item.icon className="w-5 h-5 flex-shrink-0" />
  <span className="flex-1">{item.label}</span>
  {item.badge && (
- <span className="bg-orange-500 text-slate-950 text-xs font-bold px-2 py-0.5 rounded-full">
+ <span className="bg-orange-500 text-ink text-xs font-bold px-2 py-0.5 rounded-full">
  {item.badge}
  </span>
  )}

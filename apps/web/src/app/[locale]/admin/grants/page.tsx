@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { KeyRound, Search, Building2, Shield, CheckCircle, XCircle, Clock, AlertTriangle, Plus, X } from 'lucide-react';
@@ -123,12 +123,12 @@ export default function AdminGrantsPage() {
  {/* Header */}
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-white">Accesos</h1>
+ <h1 className="text-2xl font-bold text-ink">Accesos</h1>
  <p className="text-sm text-muted-foreground mt-1">Gestiona los accesos de super admin a empresas</p>
  </div>
  <button
  onClick={() => { setShowCreate(!showCreate); setMessage({ type: '', text: '' }); }}
- className="flex items-center gap-2 px-4 py-2 bg-cloud hover:bg-slate-700 rounded-lg text-sm font-medium text-white transition-colors"
+ className="flex items-center gap-2 px-4 py-2 bg-cloud hover:bg-mist rounded-lg text-sm font-medium text-ink transition-colors"
  >
  <Plus className="w-4 h-4" />
  {showCreate ? 'Cancelar' : 'Nuevo Acceso'}
@@ -138,7 +138,7 @@ export default function AdminGrantsPage() {
  {/* Create Form */}
  {showCreate && (
  <div className="bg-cloud border border-border rounded-xl p-6">
- <h3 className="text-sm font-semibold text-white mb-4">Crear Acceso</h3>
+ <h3 className="text-sm font-semibold text-ink mb-4">Crear Acceso</h3>
  {message.text && (
  <div className={`mb-4 flex items-center gap-2 p-3 rounded-lg text-sm ${
  message.type === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
@@ -154,7 +154,7 @@ export default function AdminGrantsPage() {
  value={form.company_id}
  onChange={(e) => setForm({ ...form, company_id: e.target.value })}
  required
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  >
  <option value="">Seleccionar empresa...</option>
  {companies.map((c) => (
@@ -167,7 +167,7 @@ export default function AdminGrantsPage() {
  <select
  value={form.access_level}
  onChange={(e) => setForm({ ...form, access_level: e.target.value })}
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  >
  <option value="read">Lectura</option>
  <option value="full">Completo</option>
@@ -180,7 +180,7 @@ export default function AdminGrantsPage() {
  value={form.reason}
  onChange={(e) => setForm({ ...form, reason: e.target.value })}
  placeholder="Ej: Soporte técnico"
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink placeholder:text-iron focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  <div className="space-y-1">
@@ -189,14 +189,14 @@ export default function AdminGrantsPage() {
  type="date"
  value={form.expires_at}
  onChange={(e) => setForm({ ...form, expires_at: e.target.value })}
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  <div className="flex items-end">
  <button
  type="submit"
  disabled={saving}
- className="w-full px-4 py-2 bg-cloud hover:bg-slate-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
+ className="w-full px-4 py-2 bg-cloud hover:bg-mist rounded-lg text-sm font-medium text-ink transition-colors disabled:opacity-50"
  >
  {saving ? 'Creando...' : 'Crear Acceso'}
  </button>
@@ -218,8 +218,8 @@ export default function AdminGrantsPage() {
  onClick={() => setFilter(opt.value)}
  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
  filter === opt.value
- ? 'bg-cloud text-white'
- : 'bg-card text-muted-foreground hover:text-white hover:bg-slate-700'
+ ? 'bg-cloud text-ink'
+ : 'bg-card text-muted-foreground hover:text-ink hover:bg-mist'
  }`}
  >
  {opt.label}
@@ -260,14 +260,14 @@ export default function AdminGrantsPage() {
  </tr>
  ) : (
  filtered.map((grant) => (
- <tr key={grant.id} className="border-b border-border/50 hover:bg-slate-700/30 transition-colors">
+ <tr key={grant.id} className="border-b border-border/50 hover:bg-mist/30 transition-colors">
  <td className="px-6 py-4">
  <div className="flex items-center gap-2">
  <div className="w-8 h-8 bg-cloud rounded-lg flex items-center justify-center">
  <Shield className="w-4 h-4 text-violet-400" />
  </div>
  <div>
- <p className="text-sm font-medium text-white">{grant.super_admin_name}</p>
+ <p className="text-sm font-medium text-ink">{grant.super_admin_name}</p>
  <p className="text-xs text-muted-foreground">{grant.super_admin_email}</p>
  </div>
  </div>

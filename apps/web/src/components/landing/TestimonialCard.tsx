@@ -25,7 +25,7 @@ export function TestimonialCard({ quote, author, role, company, rating = 5, clas
  &ldquo;{quote}&rdquo;
  </p>
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-[#0F172A] font-bold text-sm">
+ <div className="w-10 h-10 rounded-full bg-gradient-to-br from-monday-violet to-monday-violet-hover flex items-center justify-center text-ink font-bold text-sm">
  {author.charAt(0)}
  </div>
  <div>

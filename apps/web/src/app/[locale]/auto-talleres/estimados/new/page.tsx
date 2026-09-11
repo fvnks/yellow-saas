@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { IVA_RATE } from '@/lib/erp-config';
@@ -323,7 +323,7 @@ export default function NuevoEstimadoPage() {
  <button
  type="submit"
  disabled={loading || !formData.vehicle_id}
- className="bg-[#FACC15] hover:bg-[#EAB308] disabled:bg-slate-300 disabled:cursor-not-allowed text-slate-950 font-bold px-6 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-monday-violet hover:bg-monday-violet-hover disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Save className="w-4 h-4" />
  {loading ? 'Guardando...' : 'Guardar Estimado'}

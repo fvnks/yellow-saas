@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { ReactNode, useEffect, useRef, useState, useMemo } from 'react';
 import { Toaster, toast } from 'sonner';
@@ -119,7 +119,7 @@ function AyudaSidebar() {
  <Icon className={`w-4 h-4 shrink-0 ${isActive ? theme.iconActiveColorClass : 'text-iron'}`} />
  <span className="flex-1">{item.label}</span>
  {item.href === '/ayuda/tickets' && unread > 0 && (
- <span className="ml-auto bg-emerald-500 text-slate-950 font-extrabold text-[10px] px-1.5 py-0.2 rounded-full">
+ <span className="ml-auto bg-emerald-500 text-white font-extrabold text-[10px] px-1.5 py-0.2 rounded-full">
  {unread}
  </span>
  )}

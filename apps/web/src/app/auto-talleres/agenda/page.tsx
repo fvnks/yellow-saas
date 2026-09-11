@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -67,12 +67,12 @@ export default function AgendaPage() {
  {/* Header */}
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
- <h1 className="text-2xl font-black text-[#0F172A]">Agenda</h1>
+ <h1 className="text-2xl font-black text-ink">Agenda</h1>
  <p className="text-sm text-slate-500 mt-1">Programa y gestiona citas del taller</p>
  </div>
  <Link
  href="/auto-talleres/agenda/new"
- className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Calendar className="w-4 h-4" />
  Nueva Cita

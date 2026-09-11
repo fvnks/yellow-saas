@@ -22,18 +22,18 @@ export function RestaurantSidebar(props: React.ComponentProps<typeof Sidebar>) {
  : { name: 'Usuario', email: '', role: 'Usuario', badge: '' };
 
  return (
- <Sidebar className="border-r border-mist bg-monday-violet text-ink select-none shadow-xl" collapsible="icon" {...props}>
- <SidebarHeader className="bg-monday-violet pt-3">
+ <Sidebar className="border-r border-mist bg-snow text-ink select-none shadow-xl" collapsible="icon" {...props}>
+ <SidebarHeader className="bg-snow pt-3">
  <RestaurantSidebarHeader />
  <SidebarSeparator className="mx-3 bg-cloud/80 my-2" />
  </SidebarHeader>
 
- <SidebarContent className="bg-monday-violet scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
+ <SidebarContent className="bg-snow scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
  <ModuleSidebarBackButton moduleKey="restaurante" />
  <RestaurantSidebarNavigation sidebarItems={restaurantSidebarItems} />
  </SidebarContent>
 
- <SidebarFooter className="bg-monday-violet p-3 border-t border-mist/80 space-y-2">
+ <SidebarFooter className="bg-snow p-3 border-t border-mist/80 space-y-2">
  <div className="flex items-center gap-2.5 px-2 py-1.5 rounded-xl bg-cloud/60 border border-mist group-data-[collapsible=icon]:hidden group-data-[collapsible=icon]:justify-center">
  <div className="w-7 h-7 rounded-full flex items-center justify-center font-black text-xs shrink-0 bg-peach text-slate-900 border border-[#c64d00]/60">
  {user.name.slice(0, 2).toUpperCase()}

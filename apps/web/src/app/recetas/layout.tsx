@@ -36,7 +36,7 @@ function RecetasSidebar() {
  }, [navItems, searchQuery]);
 
  return (
- <div className="w-64 bg-monday-violet border-r border-mist h-screen fixed left-0 top-0 z-40 flex flex-col text-slate-300 select-none shadow-xl">
+  <div className="w-64 bg-snow border-r border-mist h-screen fixed left-0 top-0 z-40 flex flex-col text-ink select-none shadow-xl">
  {/* Brand Header */}
  <div className="p-3 border-b border-mist/80 bg-cloud/40">
  <ModuleSidebarHeader moduleKey="recetas" icon={FlaskConical} />
@@ -78,7 +78,7 @@ function RecetasSidebar() {
  className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
  isActive
  ? `bg-cloud text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-sm shadow-amber-500/10`
- : 'text-slate-300 hover:text-slate-100 hover:bg-cloud/60'
+ : 'text-iron hover:text-ink hover:bg-cloud/60'
  }`}>
  <Icon className={`w-4 h-4 shrink-0 ${isActive ? theme.iconActiveColorClass : 'text-slate-400'}`} />
  <span>{item.label}</span>

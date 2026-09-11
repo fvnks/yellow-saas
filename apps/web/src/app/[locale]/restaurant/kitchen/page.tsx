@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { INITIAL_ORDERS, Order, OrderItem } from '../lib/restaurant-store';
@@ -61,7 +61,7 @@ export default function KDSKitchenPage() {
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {kitchenOrders.length === 0 ? (
  <div className="col-span-full text-center py-16 bg-white border border-slate-200/80 rounded-2xl p-8 space-y-3">
- <ChefHat className="w-10 h-10 mx-auto text-slate-300" />
+ <ChefHat className="w-10 h-10 mx-auto text-iron" />
  <h3 className="text-sm font-bold text-slate-700">Sin comandas de cocina en espera</h3>
  <p className="text-xs text-slate-400">Los nuevos pedidos de platos aparecerán automáticamente en esta pantalla.</p>
  </div>
@@ -82,7 +82,7 @@ export default function KDSKitchenPage() {
  <h3 className="text-sm font-bold">{order.tableName}</h3>
  <p className="text-[11px] text-slate-400">PIN: {order.pinCode} • Hora: {order.createdAt}</p>
  </div>
- <span className="font-mono text-xs font-bold bg-monday-violet text-slate-950 px-2 py-0.5 rounded">
+ <span className="font-mono text-xs font-bold bg-monday-violet text-white px-2 py-0.5 rounded">
  {order.id}
  </span>
  </div>
@@ -122,7 +122,7 @@ export default function KDSKitchenPage() {
  {item.status === 'pending' && (
  <button
  onClick={() => handleUpdateItemStatus(order.id, item.id, 'preparing')}
- className="bg-monday-violet hover:bg-[#c64d00] text-slate-950 font-bold px-2.5 py-1 rounded-lg text-[11px] flex items-center gap-1 transition-all"
+ className="bg-monday-violet hover:bg-[#c64d00] text-white font-bold px-2.5 py-1 rounded-lg text-[11px] flex items-center gap-1 transition-all"
  >
  <Flame className="w-3.5 h-3.5" /> Preparar
  </button>

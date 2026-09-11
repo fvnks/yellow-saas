@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useMemo } from 'react';
 import { Syringe, ShieldCheck, Printer, Calendar, Plus, Search, Dog, Cat, Cpu, CheckCircle2, Loader2, MessageCircle, Download } from 'lucide-react';
@@ -115,7 +115,7 @@ export default function VeterinaryVaccinationsPage() {
  </button>
  <button
  onClick={handleCarnetPDF}
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-4 py-2 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2"
  >
  <Download className="w-4 h-4" />
  Carnet PDF
@@ -236,7 +236,7 @@ export default function VeterinaryVaccinationsPage() {
 
  <button
  type="submit"
- className="w-full bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-extrabold py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 active:scale-[0.98] mt-2"
+ className="w-full bg-monday-violet hover:bg-monday-violet-hover text-ink font-extrabold py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 active:scale-[0.98] mt-2"
  >
  <Plus className="w-4 h-4" />
  Guardar en Carnet
@@ -253,10 +253,10 @@ export default function VeterinaryVaccinationsPage() {
  <ShieldCheck className="w-6 h-6 text-[#c64d00]/70" />
  <div>
  <h2 className="text-base font-black uppercase tracking-wider">Carnet Sanitario Veterinario</h2>
- <p className="text-[10px] text-slate-300">Cumplimiento Oficial Ley 21.020 • Tenencia Responsable</p>
+ <p className="text-[10px] text-iron">Cumplimiento Oficial Ley 21.020 • Tenencia Responsable</p>
  </div>
  </div>
- <span className="text-xs font-mono bg-emerald-500 text-slate-950 font-extrabold px-2.5 py-1 rounded">
+ <span className="text-xs font-mono bg-emerald-500 text-ink font-extrabold px-2.5 py-1 rounded">
  AL DÍA
  </span>
  </div>

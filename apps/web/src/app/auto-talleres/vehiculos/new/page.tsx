@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -141,7 +141,7 @@ export default function NuevoVehiculoPage() {
  <ArrowLeft className="w-5 h-5 text-slate-600" />
  </Link>
  <div>
- <h1 className="text-2xl font-black text-[#0F172A]">Registrar Vehículo</h1>
+ <h1 className="text-2xl font-black text-ink">Registrar Vehículo</h1>
  <p className="text-sm text-slate-500 mt-1">Agrega un nuevo vehículo al sistema</p>
  </div>
  </div>
@@ -371,7 +371,7 @@ export default function NuevoVehiculoPage() {
  <button
  type="submit"
  disabled={loading || !formData.plate || !formData.brand || !formData.model || !formData.client_id}
- className="bg-[#FACC15] hover:bg-[#EAB308] disabled:bg-slate-300 disabled:cursor-not-allowed text-slate-950 font-bold px-6 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-monday-violet hover:bg-monday-violet-hover disabled:bg-slate-300 disabled:cursor-not-allowed text-ink font-bold px-6 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Save className="w-4 h-4" />
  {loading ? 'Guardando...' : 'Guardar Vehículo'}

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -113,7 +113,7 @@ export default function AutoTalleresDashboardPage() {
  return (
  <div className="space-y-6 animate-fade-in-up">
  {/* Header Banner */}
- <div className="bg-gradient-to-r from-[#0F172A] via-slate-900 to-orange-950 rounded-2xl p-6 text-white shadow-md relative overflow-hidden border border-mist">
+ <div className="bg-gradient-to-r from-monday-violet via-monday-violet-hover to-monday-violet rounded-2xl p-6 text-white shadow-md relative overflow-hidden border border-mist">
  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
  <div className="flex items-center gap-2 mb-2">
@@ -127,21 +127,21 @@ export default function AutoTalleresDashboardPage() {
  <h1 className="text-2xl font-black text-white tracking-tight">
  Consola Operativa Taller
  </h1>
- <p className="text-slate-300 text-sm mt-1 max-w-2xl">
+ <p className="text-iron text-sm mt-1 max-w-2xl">
  Gestión integral de órdenes de trabajo, vehículos, técnicos y presupuestos con facturación electrónica SII integrada.
  </p>
  </div>
  <div className="flex flex-wrap items-center gap-3">
  <Link
  href="/auto-talleres/ordenes/new"
- className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Plus className="w-4 h-4" />
  Nueva Orden
  </Link>
  <Link
  href="/auto-talleres/vehiculos/new"
- className="bg-monday-violet hover:bg-[#1E293B] text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Car className="w-4 h-4" />
  Registrar Vehículo
@@ -165,7 +165,7 @@ export default function AutoTalleresDashboardPage() {
  <div className="flex items-start justify-between">
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Vehículos Registrados</p>
- <p className="text-3xl font-black text-[#0F172A] mt-1">{stats.vehicleCount}</p>
+ <p className="text-3xl font-black text-ink mt-1">{stats.vehicleCount}</p>
  </div>
  <div className="h-10 w-10 rounded-xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
  <Car className="w-5 h-5 text-orange-500" />
@@ -177,7 +177,7 @@ export default function AutoTalleresDashboardPage() {
  <div className="flex items-start justify-between">
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Órdenes Activas</p>
- <p className="text-3xl font-black text-[#0F172A] mt-1">{stats.activeOrdersCount}</p>
+ <p className="text-3xl font-black text-ink mt-1">{stats.activeOrdersCount}</p>
  </div>
  <div className="h-10 w-10 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
  <FileText className="w-5 h-5 text-blue-500" />
@@ -189,7 +189,7 @@ export default function AutoTalleresDashboardPage() {
  <div className="flex items-start justify-between">
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Revenue del Mes</p>
- <p className="text-3xl font-black text-[#0F172A] mt-1">{formatCLP(stats.totalRevenue)}</p>
+ <p className="text-3xl font-black text-ink mt-1">{formatCLP(stats.totalRevenue)}</p>
  </div>
  <div className="h-10 w-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
  <DollarSign className="w-5 h-5 text-emerald-500" />
@@ -201,7 +201,7 @@ export default function AutoTalleresDashboardPage() {
  <div className="flex items-start justify-between">
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Bays Ocupados</p>
- <p className="text-3xl font-black text-[#0F172A] mt-1">{stats.occupiedBays}</p>
+ <p className="text-3xl font-black text-ink mt-1">{stats.occupiedBays}</p>
  </div>
  <div className="h-10 w-10 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
  <Wrench className="w-5 h-5 text-purple-500" />
@@ -439,7 +439,7 @@ export default function AutoTalleresDashboardPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Bays Disponibles</p>
- <p className="text-2xl font-black text-[#0F172A]">
+ <p className="text-2xl font-black text-ink">
  {baysData.filter((b) => !b.isOccupied).length}
  </p>
  </div>
@@ -454,7 +454,7 @@ export default function AutoTalleresDashboardPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Técnicos Registrados</p>
- <p className="text-2xl font-black text-[#0F172A]">{techniciansData.length}</p>
+ <p className="text-2xl font-black text-ink">{techniciansData.length}</p>
  </div>
  </div>
  <p className="text-xs text-slate-500 mt-2">Activos: {activeTechnicians.length}</p>
@@ -467,7 +467,7 @@ export default function AutoTalleresDashboardPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Órdenes Entregadas</p>
- <p className="text-2xl font-black text-[#0F172A]">{revenueData.length}</p>
+ <p className="text-2xl font-black text-ink">{revenueData.length}</p>
  </div>
  </div>
  <p className="text-xs text-slate-500 mt-2">Con facturación en 30 días</p>

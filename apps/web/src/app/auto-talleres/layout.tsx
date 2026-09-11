@@ -8,7 +8,7 @@ export default function AutoTalleresLayout({ children }: Props) {
  return (
  <div className="flex h-screen bg-[#F8FAFC]">
  {/* Sidebar */}
- <aside className="w-64 bg-monday-violet text-slate-300 h-screen fixed left-0 top-0 border-r border-mist z-20">
+ <aside className="w-64 bg-snow text-iron h-screen fixed left-0 top-0 border-r border-mist z-20">
  <AutoTalleresSidebar />
  </aside>
  

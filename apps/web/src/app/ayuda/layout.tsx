@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { ReactNode, useEffect, useRef, useState, useMemo } from 'react';
 import { Toaster, toast } from 'sonner';
@@ -72,7 +72,7 @@ function AyudaSidebar() {
  }, [navItems, searchQuery]);
 
  return (
- <div className="w-64 bg-monday-violet border-r border-mist h-screen fixed left-0 top-0 z-40 flex flex-col text-slate-300 select-none shadow-xl">
+  <div className="w-64 bg-snow border-r border-mist h-screen fixed left-0 top-0 z-40 flex flex-col text-ink select-none shadow-xl">
  {/* Brand Header */}
  <div className="p-3 border-b border-mist/80 bg-cloud/40">
  <ModuleSidebarHeader moduleKey="ayuda" icon={LifeBuoy} />
@@ -114,12 +114,12 @@ function AyudaSidebar() {
  className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
  isActive
  ? `bg-cloud text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-sm shadow-emerald-500/10`
- : 'text-slate-300 hover:text-slate-100 hover:bg-cloud/60'
+ : 'text-iron hover:text-ink hover:bg-cloud/60'
  }`}>
  <Icon className={`w-4 h-4 shrink-0 ${isActive ? theme.iconActiveColorClass : 'text-slate-400'}`} />
  <span className="flex-1">{item.label}</span>
  {item.href === '/ayuda/tickets' && unread > 0 && (
- <span className="ml-auto bg-emerald-500 text-slate-950 font-extrabold text-[10px] px-1.5 py-0.2 rounded-full">
+ <span className="ml-auto bg-emerald-500 text-white font-extrabold text-[10px] px-1.5 py-0.2 rounded-full">
  {unread}
  </span>
  )}

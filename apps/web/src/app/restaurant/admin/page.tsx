@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { INITIAL_MENU_ITEMS, INITIAL_TABLES, MenuItem, TableSession } from '../lib/restaurant-store';
@@ -227,7 +227,7 @@ export default function RestaurantAdminPage() {
 
  <button
  type="submit"
- className="w-full bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-bold py-2.5 rounded-xl text-xs transition-all shadow-xs mt-2"
+ className="w-full bg-monday-violet hover:bg-monday-violet-hover text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-xs mt-2"
  >
  Agregar a la Carta
  </button>

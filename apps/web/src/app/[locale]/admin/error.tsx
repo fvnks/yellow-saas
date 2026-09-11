@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect } from 'react';
 import { ShieldAlert, RefreshCw, ArrowLeft } from 'lucide-react';
@@ -21,21 +21,21 @@ export default function AdminError({
  <div className="w-14 h-14 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
  <ShieldAlert className="w-7 h-7 text-rose-400" />
  </div>
- <h2 className="text-lg font-bold text-white mb-2">Error en Console</h2>
+ <h2 className="text-lg font-bold text-ink mb-2">Error en Console</h2>
  <p className="text-sm text-slate-400 mb-6">
  No se pudo cargar la consola de administración.
  </p>
  <div className="flex items-center justify-center gap-3">
  <button
  onClick={reset}
- className="inline-flex items-center gap-2 bg-cloud hover:bg-slate-700 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition-all active:scale-[0.98] border border-slate-700"
+ className="inline-flex items-center gap-2 bg-cloud hover:bg-mist text-ink font-medium px-5 py-2.5 rounded-xl text-sm transition-all active:scale-[0.98] border border-mist"
  >
  <RefreshCw className="w-4 h-4" />
  Reintentar
  </button>
  <Link
  href="/admin"
- className="inline-flex items-center gap-2 text-slate-400 hover:text-white text-sm transition-colors"
+ className="inline-flex items-center gap-2 text-slate-400 hover:text-ink text-sm transition-colors"
  >
  <ArrowLeft className="w-4 h-4" />
  Volver

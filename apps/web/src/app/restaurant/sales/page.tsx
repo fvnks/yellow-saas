@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { IVA_RATE } from '@/lib/erp-config';
@@ -88,7 +88,7 @@ export default function RestaurantSalesPage() {
  <div className="flex items-center gap-2">
  <button
  onClick={emitirBoleta}
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-semibold px-3 py-2 rounded-xl text-xs transition-all duration-150 shadow-sm flex items-center gap-2"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-3 py-2 rounded-xl text-xs transition-all duration-150 shadow-sm flex items-center gap-2"
  >
  <Plus className="w-3.5 h-3.5" /> Emitir Boletas desde Órdenes POS
  </button>
@@ -158,7 +158,7 @@ export default function RestaurantSalesPage() {
  {filtered.length === 0 ? (
  <tr>
  <td colSpan={10} className="py-8 text-center text-slate-500">
- <Receipt className="w-8 h-8 mx-auto text-slate-300 mb-2" />
+ <Receipt className="w-8 h-8 mx-auto text-iron mb-2" />
  <p className="font-bold text-xs text-slate-700">No se han registrado boletas electrónicas</p>
  <p className="text-[11px] text-slate-400">Las boletas emitidas desde el POS Garzón aparecerán automáticamente aquí.</p>
  </td>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Scan, Plus, Search, Filter, Eye, ChevronLeft, X } from 'lucide-react';
@@ -110,11 +110,11 @@ export default function ImagingPage() {
  </span>
  </div>
  <h1 className="text-2xl font-black text-white tracking-tight">Estudios de Imagen</h1>
- <p className="text-slate-300 text-sm mt-1">Radiografías, ecografías, TAC, resonancias y más.</p>
+ <p className="text-iron text-sm mt-1">Radiografías, ecografías, TAC, resonancias y más.</p>
  </div>
  <button
  onClick={() => setShowForm(true)}
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Plus className="w-4 h-4" />
  Nuevo Estudio
@@ -147,7 +147,7 @@ export default function ImagingPage() {
  </div>
  ) : studies.length === 0 ? (
  <div className="p-12 text-center">
- <Scan className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+ <Scan className="w-12 h-12 text-iron mx-auto mb-3" />
  <p className="text-slate-500 text-sm">No hay estudios de imagen registrados</p>
  </div>
  ) : (

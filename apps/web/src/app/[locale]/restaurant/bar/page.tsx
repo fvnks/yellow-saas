@@ -61,7 +61,7 @@ export default function KDSBarPage() {
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {barOrders.length === 0 ? (
  <div className="col-span-full text-center py-16 bg-white border border-slate-200/80 rounded-2xl p-8 space-y-3">
- <Wine className="w-10 h-10 mx-auto text-slate-300" />
+ <Wine className="w-10 h-10 mx-auto text-iron" />
  <h3 className="text-sm font-bold text-slate-700">Sin bebidas en preparación</h3>
  <p className="text-xs text-slate-400">Los nuevos pedidos de bar y cafetería se actualizarán en vivo aquí.</p>
  </div>

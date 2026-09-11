@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { Users, Search, Building2, Mail, Calendar, Shield, Pencil, X, AlertCircle, CheckCircle } from 'lucide-react';
@@ -96,7 +96,7 @@ export default function AdminUsersPage() {
  <div className="space-y-6">
  {/* Header */}
  <div>
- <h1 className="text-2xl font-bold text-white">Usuarios</h1>
+ <h1 className="text-2xl font-bold text-ink">Usuarios</h1>
  <p className="text-sm text-muted-foreground mt-1">Gestiona usuarios de todas las empresas</p>
  </div>
 
@@ -120,7 +120,7 @@ export default function AdminUsersPage() {
  placeholder="Buscar por nombre, email o empresa..."
  value={search}
  onChange={(e) => setSearch(e.target.value)}
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-500/50"
+ className="w-full bg-white border border-mist rounded-lg pl-10 pr-4 py-2 text-sm text-ink placeholder:text-iron focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-500/50"
  />
  </div>
  </div>
@@ -155,14 +155,14 @@ export default function AdminUsersPage() {
  </tr>
  ) : (
  filtered.map((user) => (
- <tr key={user.id} className="border-b border-border/50 hover:bg-slate-700/30 transition-colors">
+ <tr key={user.id} className="border-b border-border/50 hover:bg-mist/30 transition-colors">
  <td className="px-6 py-4">
  <div className="flex items-center gap-3">
  <div className="w-9 h-9 bg-card rounded-lg flex items-center justify-center">
- <span className="text-xs font-bold text-white">{user.full_name?.charAt(0) || 'U'}</span>
+ <span className="text-xs font-bold text-ink">{user.full_name?.charAt(0) || 'U'}</span>
  </div>
  <div>
- <p className="text-sm font-medium text-white">{user.full_name}</p>
+ <p className="text-sm font-medium text-ink">{user.full_name}</p>
  <p className="text-xs text-muted-foreground flex items-center gap-1">
  <Mail className="w-3 h-3" /> {user.email}
  </p>
@@ -195,7 +195,7 @@ export default function AdminUsersPage() {
  setEditForm({ role: user.role, status: user.status });
  setMessage({ type: '', text: '' });
  }}
- className="p-1.5 text-muted-foreground hover:text-violet-400 hover:bg-slate-700/10 rounded-lg transition-colors"
+ className="p-1.5 text-muted-foreground hover:text-violet-400 hover:bg-mist/10 rounded-lg transition-colors"
  title="Editar"
  >
  <Pencil className="w-4 h-4" />
@@ -214,10 +214,10 @@ export default function AdminUsersPage() {
  <div className="bg-cloud/80 border border-border rounded-xl shadow-xl w-full max-w-md mx-4">
  <div className="px-6 py-4 border-b border-border flex items-center justify-between">
  <div>
- <h2 className="text-lg font-semibold text-white">Editar Usuario</h2>
+ <h2 className="text-lg font-semibold text-ink">Editar Usuario</h2>
  <p className="text-xs text-muted-foreground mt-0.5">{editUser.full_name} — {editUser.email}</p>
  </div>
- <button onClick={() => setEditUser(null)} className="text-muted-foreground hover:text-white">
+ <button onClick={() => setEditUser(null)} className="text-muted-foreground hover:text-ink">
  <X className="w-5 h-5" />
  </button>
  </div>
@@ -227,7 +227,7 @@ export default function AdminUsersPage() {
  <select
  value={editForm.role}
  onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  >
  <option value="owner">Owner</option>
  <option value="admin">Admin</option>
@@ -241,7 +241,7 @@ export default function AdminUsersPage() {
  <select
  value={editForm.status}
  onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  >
  <option value="active">Activo</option>
  <option value="invited">Invitado</option>
@@ -252,14 +252,14 @@ export default function AdminUsersPage() {
  <button
  type="button"
  onClick={() => setEditUser(null)}
- className="px-4 py-2 bg-card hover:bg-slate-700 rounded-lg text-sm font-medium text-foreground transition-colors"
+ className="px-4 py-2 bg-card hover:bg-mist rounded-lg text-sm font-medium text-foreground transition-colors"
  >
  Cancelar
  </button>
  <button
  type="submit"
  disabled={editSaving}
- className="px-4 py-2 bg-cloud/80 hover:bg-slate-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
+ className="px-4 py-2 bg-cloud/80 hover:bg-mist rounded-lg text-sm font-medium text-ink transition-colors disabled:opacity-50"
  >
  {editSaving ? 'Guardando...' : 'Guardar'}
  </button>

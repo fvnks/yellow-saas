@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { ShieldCheck, Key, Download, Upload, AlertCircle, CheckCircle2 } from 'lucide-react';
@@ -263,7 +263,7 @@ export default function SIIConfigPage() {
 
  <button
  onClick={testConnection}
- className="w-full bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2"
+ className="w-full bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2"
  >
  <CheckCircle2 className="w-4 h-4" />
  Probar Conexión SII

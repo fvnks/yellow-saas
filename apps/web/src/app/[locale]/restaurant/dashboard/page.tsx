@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { LayoutDashboard, TrendingUp, DollarSign, User, Clock, UtensilsCrossed, CalendarCheck, Receipt, Wallet } from 'lucide-react';
@@ -49,7 +49,7 @@ export default function RestaurantDashboardPage() {
  <button
  key={r}
  onClick={() => setRange(r)}
- className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${range === r ? 'bg-monday-violet text-slate-950 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+ className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${range === r ? 'bg-monday-violet text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
  >
  {r === 'hoy' ? 'Hoy' : r === 'semana' ? 'Semana' : 'Mes'}
  </button>
@@ -143,7 +143,7 @@ export default function RestaurantDashboardPage() {
  { h: '22:00', v: 60 },
  ].map((b) => (
  <div key={b.h} className="flex-1 flex flex-col items-center gap-1">
- <div className="w-full rounded-t-lg bg-monday-violet/80 hover:bg-[#EAB308] transition-colors" style={{ height: `${b.v}%` }} />
+ <div className="w-full rounded-t-lg bg-monday-violet/80 hover:bg-monday-violet-hover transition-colors" style={{ height: `${b.v}%` }} />
  <span className="text-[9px] font-semibold text-slate-400">{b.h}</span>
  </div>
  ))}
@@ -160,7 +160,7 @@ export default function RestaurantDashboardPage() {
  <div className="divide-y divide-slate-100">
  {INITIAL_MENU_ITEMS.slice(0, 5).map((m, i) => (
  <div key={m.id} className="px-4 py-2.5 flex items-center gap-3">
- <span className="text-xs font-black text-slate-300 w-4">{i + 1}</span>
+ <span className="text-xs font-black text-iron w-4">{i + 1}</span>
  <span className="text-xs">{m.image}</span>
  <div className="flex-1 min-w-0">
  <p className="text-xs font-semibold text-slate-800 truncate">{m.name}</p>

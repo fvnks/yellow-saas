@@ -151,7 +151,7 @@ export default function MiCuentaSidebarNavigation({ sidebarItems }: MiCuentaSide
  "transition-all duration-150 cursor-pointer",
  groupActive
  ? "text-monday-violet"
- : "text-slate-500 hover:text-slate-300",
+ : "text-slate-500 hover:text-iron",
  "hover:bg-cloud/40"
  )}>
  <ChevronDown className={cn(
@@ -186,7 +186,7 @@ export default function MiCuentaSidebarNavigation({ sidebarItems }: MiCuentaSide
  "whitespace-nowrap rounded-xl transition-all duration-150 text-xs",
  itemActive
  ? "bg-cloud text-white font-bold border-l-4 border-monday-violet shadow-sm shadow-monday-violet/10"
- : "text-slate-300 hover:text-ink hover:bg-cloud"
+ : "text-iron hover:text-ink hover:bg-cloud"
  )}
  >
  {renderIcon(item.icon)}
@@ -205,7 +205,7 @@ export default function MiCuentaSidebarNavigation({ sidebarItems }: MiCuentaSide
  "whitespace-nowrap rounded-xl transition-all duration-150 text-xs w-full",
  itemActive
  ? "bg-cloud text-white font-bold border-l-4 border-monday-violet shadow-sm shadow-monday-violet/10"
- : "text-slate-300 hover:text-ink hover:bg-cloud"
+ : "text-iron hover:text-ink hover:bg-cloud"
  )}
  >
  {renderIcon(item.icon)}

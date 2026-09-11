@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { Building2, Users, TrendingUp, DollarSign, Shield, Activity } from 'lucide-react';
@@ -55,7 +55,7 @@ export default function AdminDashboard() {
  <div className="space-y-6">
  {/* Header */}
  <div>
- <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+ <h1 className="text-2xl font-bold text-ink">Dashboard</h1>
  <p className="text-sm text-muted-foreground mt-1">Vista general de la plataforma Yellow ERP</p>
  </div>
 
@@ -68,7 +68,7 @@ export default function AdminDashboard() {
  <div className="flex items-center justify-between">
  <div>
  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{card.label}</p>
- <p className="text-3xl font-bold text-white mt-2">
+ <p className="text-3xl font-bold text-ink mt-2">
  {loading ? (
  <span className="inline-block w-16 h-8 bg-card rounded animate-pulse" />
  ) : (
@@ -88,25 +88,25 @@ export default function AdminDashboard() {
  {/* Quick Actions */}
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
  <div className="bg-cloud border border-mist rounded-xl p-6">
- <h3 className="text-sm font-semibold text-white mb-4">Acciones Rápidas</h3>
+ <h3 className="text-sm font-semibold text-ink mb-4">Acciones Rápidas</h3>
  <div className="space-y-3">
- <a href="/admin/companies" className="flex items-center gap-3 p-3 bg-cloud/60 rounded-lg hover:bg-slate-700/50 border border-mist hover:border-slate-600 transition-colors">
+ <a href="/admin/companies" className="flex items-center gap-3 p-3 bg-cloud/60 rounded-lg hover:bg-mist/50 border border-mist hover:border-fog transition-colors">
  <Building2 className="w-4 h-4 text-violet-400" />
- <span className="text-sm text-slate-200">Gestionar Empresas</span>
+ <span className="text-sm text-ink">Gestionar Empresas</span>
  </a>
- <a href="/admin/users" className="flex items-center gap-3 p-3 bg-cloud/60 rounded-lg hover:bg-slate-700/50 border border-mist hover:border-slate-600 transition-colors">
+ <a href="/admin/users" className="flex items-center gap-3 p-3 bg-cloud/60 rounded-lg hover:bg-mist/50 border border-mist hover:border-fog transition-colors">
  <Users className="w-4 h-4 text-emerald-400" />
- <span className="text-sm text-slate-200">Gestionar Usuarios</span>
+ <span className="text-sm text-ink">Gestionar Usuarios</span>
  </a>
- <a href="/admin/grants" className="flex items-center gap-3 p-3 bg-cloud/60 rounded-lg hover:bg-slate-700/50 border border-mist hover:border-slate-600 transition-colors">
+ <a href="/admin/grants" className="flex items-center gap-3 p-3 bg-cloud/60 rounded-lg hover:bg-mist/50 border border-mist hover:border-fog transition-colors">
  <Shield className="w-4 h-4 text-slate-400" />
- <span className="text-sm text-slate-200">Solicitudes de Acceso</span>
+ <span className="text-sm text-ink">Solicitudes de Acceso</span>
  </a>
  </div>
  </div>
 
  <div className="bg-cloud border border-mist rounded-xl p-6">
- <h3 className="text-sm font-semibold text-white mb-4">Estado del Sistema</h3>
+ <h3 className="text-sm font-semibold text-ink mb-4">Estado del Sistema</h3>
  <div className="space-y-4">
  <div className="flex items-center justify-between">
  <span className="text-sm text-muted-foreground">Base de datos</span>
@@ -128,15 +128,15 @@ export default function AdminDashboard() {
  </div>
  <div className="flex items-center justify-between">
  <span className="text-sm text-muted-foreground">Super Admins</span>
- <span className="text-sm font-medium text-white">{loading ? '—' : metrics.superAdmins}</span>
+ <span className="text-sm font-medium text-ink">{loading ? '—' : metrics.superAdmins}</span>
  </div>
  <div className="flex items-center justify-between">
  <span className="text-sm text-muted-foreground">Empresas Totales</span>
- <span className="text-sm font-medium text-white">{loading ? '—' : metrics.totalCompanies}</span>
+ <span className="text-sm font-medium text-ink">{loading ? '—' : metrics.totalCompanies}</span>
  </div>
  <div className="flex items-center justify-between">
  <span className="text-sm text-muted-foreground">Usuarios Totales</span>
- <span className="text-sm font-medium text-white">{loading ? '—' : metrics.totalUsers}</span>
+ <span className="text-sm font-medium text-ink">{loading ? '—' : metrics.totalUsers}</span>
  </div>
  </div>
  </div>

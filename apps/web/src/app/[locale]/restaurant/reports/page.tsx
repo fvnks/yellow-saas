@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { FileText, TrendingUp, Wallet, Receipt, User, Star, Clock, Download, Filter } from 'lucide-react';
@@ -63,7 +63,7 @@ export default function RestaurantReportsPage() {
  <button
  key={r}
  onClick={() => setRange(r)}
- className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${range === r ? 'bg-monday-violet text-slate-950 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+ className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${range === r ? 'bg-monday-violet text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
  >
  {r === 'hoy' ? 'Hoy' : r === 'semana' ? 'Semana' : 'Mes'}
  </button>
@@ -187,7 +187,7 @@ export default function RestaurantReportsPage() {
  <tbody className="divide-y divide-slate-100">
  {boletas.map((b) => (
  <tr key={b.id} className="hover:bg-slate-50/80 transition-colors">
- <td className="px-5 py-3 font-mono text-xs text-slate-600">#{b.folio} <span className="text-slate-300">·</span> <span className="text-emerald-600 font-semibold">{b.siiStatus === 'Aceptado SII' ? '✔' : '·'}</span></td>
+ <td className="px-5 py-3 font-mono text-xs text-slate-600">#{b.folio} <span className="text-iron">·</span> <span className="text-emerald-600 font-semibold">{b.siiStatus === 'Aceptado SII' ? '✔' : '·'}</span></td>
  <td className="px-5 py-3 text-slate-700">{b.waiterName}</td>
  <td className="px-5 py-3 text-slate-500 text-xs">{b.dateTime}</td>
  <td className="px-5 py-3 text-slate-600">{formatCLP(b.netoCLP)}</td>

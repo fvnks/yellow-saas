@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -205,7 +205,7 @@ export default function VeterinaryPatientDetailPage() {
  />
  <Link
  href="/veterinaria/consultas"
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Stethoscope className="w-4 h-4" />
  Iniciar Consulta
@@ -483,7 +483,7 @@ export default function VeterinaryPatientDetailPage() {
  </h3>
  <Link
  href="/veterinaria/laboratorio"
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-bold px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1 shadow-sm"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1 shadow-sm"
  >
  <Plus className="w-3 h-3" /> Nueva Orden
  </Link>
@@ -528,7 +528,7 @@ export default function VeterinaryPatientDetailPage() {
  </div>
  ) : (
  <div className="text-center py-10 bg-white border border-slate-200/80 rounded-2xl shadow-sm">
- <FlaskConical className="w-10 h-10 text-slate-300 mx-auto mb-2" />
+ <FlaskConical className="w-10 h-10 text-iron mx-auto mb-2" />
  <p className="text-xs text-slate-500">Sin órdenes de laboratorio registradas para este paciente.</p>
  </div>
  )}

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -127,14 +127,14 @@ export default function AutoTalleresDashboardPage() {
  <h1 className="text-2xl font-black text-white tracking-tight">
  Consola Operativa Taller
  </h1>
- <p className="text-slate-300 text-sm mt-1 max-w-2xl">
+ <p className="text-iron text-sm mt-1 max-w-2xl">
  Gestión integral de órdenes de trabajo, vehículos, técnicos y presupuestos con facturación electrónica SII integrada.
  </p>
  </div>
  <div className="flex flex-wrap items-center gap-3">
  <Link
  href="/auto-talleres/ordenes/new"
- className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Plus className="w-4 h-4" />
  Nueva Orden

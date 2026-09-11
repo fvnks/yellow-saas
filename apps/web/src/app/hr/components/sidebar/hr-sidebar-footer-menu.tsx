@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { LogOut, Settings, User, ChevronsUpDown, Building2 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -18,8 +18,8 @@ const ROLE_CONFIG: Record<string, { label: string; classes: string }> = {
  owner: { label: 'Propietario', classes: 'bg-monday-violet/10 text-monday-violet border border-monday-violet/30 font-black' },
  admin: { label: 'Administrador', classes: 'bg-monday-violet/10 text-monday-violet border border-monday-violet/30 font-black' },
  manager: { label: 'Gerente', classes: 'bg-blue-500/10 text-blue-400 border border-blue-500/30 font-bold' },
- member: { label: 'Miembro', classes: 'bg-cloud text-ink border border-slate-700 font-medium' },
- viewer: { label: 'Observador', classes: 'bg-cloud/60 text-slate-400 border border-slate-700/60 font-normal' },
+  member: { label: 'Miembro', classes: 'bg-cloud text-ink border border-mist font-medium' },
+  viewer: { label: 'Observador', classes: 'bg-cloud/60 text-iron border border-mist/60 font-normal' },
 };
 
 interface HRSidebarFooterMenuProps {
@@ -41,7 +41,7 @@ export default function HRSidebarFooterMenu({ user }: HRSidebarFooterMenuProps) 
  <DropdownMenuTrigger asChild>
  <button className="flex w-full items-center gap-3 rounded-xl p-2 text-left text-sm hover:bg-cloud/80 border border-transparent hover:border-mist transition-all duration-200 group/user">
  <Avatar className="h-9 w-9 ring-2 ring-amber-500/40 group-hover/user:ring-amber-500 transition-all shrink-0">
- <AvatarFallback className="bg-gradient-to-br from-amber-500 via-amber-500 to-yellow-600 text-slate-950 text-xs font-black shadow-inner">
+ <AvatarFallback className="bg-gradient-to-br from-amber-500 via-amber-500 to-yellow-600 text-white text-xs font-black shadow-inner">
  {user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)}
  </AvatarFallback>
  </Avatar>
@@ -55,7 +55,7 @@ export default function HRSidebarFooterMenu({ user }: HRSidebarFooterMenuProps) 
  <ChevronsUpDown className="h-3.5 w-3.5 text-slate-400 group-data-[collapsible=icon]:hidden flex-shrink-0" />
  </button>
  </DropdownMenuTrigger>
- <DropdownMenuContent side="top" align="start" className="w-56 bg-monday-violet border border-mist text-ink shadow-xl rounded-xl p-1">
+ <DropdownMenuContent side="top" align="start" className="w-56 bg-snow border border-mist text-ink shadow-xl rounded-xl p-1">
  <DropdownMenuItem className="cursor-pointer text-xs focus:bg-cloud focus:text-white rounded-lg">
  <Building2 className="mr-2 h-4 w-4 text-monday-violet" />
  <span>Mi Empresa</span>

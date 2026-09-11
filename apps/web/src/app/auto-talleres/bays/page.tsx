@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -57,10 +57,10 @@ export default function BaysPage() {
  {/* Header */}
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
- <h1 className="text-2xl font-black text-[#0F172A]">Bays del Taller</h1>
+ <h1 className="text-2xl font-black text-ink">Bays del Taller</h1>
  <p className="text-sm text-slate-500 mt-1">Gestiona los puestos de trabajo</p>
  </div>
- <button className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]">
+ <button className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]">
  <Plus className="w-4 h-4" />
  Nuevo Bay
  </button>
@@ -75,7 +75,7 @@ export default function BaysPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Disponibles</p>
- <p className="text-2xl font-black text-[#0F172A]">{bays.filter(b => b.status === 'available').length}</p>
+ <p className="text-2xl font-black text-ink">{bays.filter(b => b.status === 'available').length}</p>
  </div>
  </div>
  </div>
@@ -86,7 +86,7 @@ export default function BaysPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Ocupados</p>
- <p className="text-2xl font-black text-[#0F172A]">{bays.filter(b => b.status === 'occupied').length}</p>
+ <p className="text-2xl font-black text-ink">{bays.filter(b => b.status === 'occupied').length}</p>
  </div>
  </div>
  </div>
@@ -97,7 +97,7 @@ export default function BaysPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total</p>
- <p className="text-2xl font-black text-[#0F172A]">{bays.length}</p>
+ <p className="text-2xl font-black text-ink">{bays.length}</p>
  </div>
  </div>
  </div>
@@ -141,7 +141,7 @@ export default function BaysPage() {
  <Wrench className="w-6 h-6 text-orange-500" />
  </div>
  <div>
- <p className="text-lg font-black text-[#0F172A]">Bay {bay.number}</p>
+ <p className="text-lg font-black text-ink">Bay {bay.number}</p>
  <p className="text-xs text-slate-500 capitalize">{bay.type}</p>
  </div>
  </div>

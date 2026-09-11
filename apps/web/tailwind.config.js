@@ -43,6 +43,7 @@ module.exports = {
         'peony': '#fcd0f8',
         'periwinkle-wash': '#dbdbff',
         'peach': '#ffe8d6',
+        'prism': '#8181ff',
         /* shadcn/ui compat */
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -64,7 +65,7 @@ module.exports = {
           accent: 'hsl(var(--sidebar-accent))',
           'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
           border: 'hsl(var(--sidebar-border))',
-          ring: 'hsl(var(--sidebar-ring))'
+          ring: 'hsl(var(--sidebar-ring))',
         },
         brand: {
           violet: '#6161ff',
@@ -87,6 +88,8 @@ module.exports = {
         'xl': 'rgba(205, 208, 223, 0.4) 0px 2px 48px 0px',
         'xl-2': 'rgba(0, 0, 0, 0.15) 0px 5px 45px 0px',
         'xl-3': 'rgba(0, 0, 0, 0.15) 0px 4px 40px 0px',
+        'xl-4': 'rgba(0, 0, 0, 0.4) 0px 5px 55px 0px',
+        'subtle': 'rgb(0, 0, 0) 0px -2px 0px 0px inset',
       },
       animation: {
         'fade-in': 'fadeIn 0.2s ease-out',
@@ -154,6 +157,8 @@ module.exports = {
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-apricot': 'linear-gradient(90deg, rgb(254, 129, 228), rgb(254, 129, 228) 31%, rgb(253, 169, 0) 88%)',
+        'gradient-prism': 'conic-gradient(from 270deg, rgb(129, 129, 255) 15%, rgb(51, 219, 219) 40%, rgb(51, 213, 142) 55%, rgb(255, 214, 51) 65%, rgb(252, 82, 125) 85%, rgb(129, 129, 255) 100%)',
       }
     }
   },

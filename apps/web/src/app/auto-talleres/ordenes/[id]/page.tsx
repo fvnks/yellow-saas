@@ -162,7 +162,7 @@ export default function OrdenDetallePage() {
  </Link>
  <div>
  <div className="flex items-center gap-3">
- <h1 className="text-2xl font-black text-[#0F172A]">{order.order_number}</h1>
+ <h1 className="text-2xl font-black text-ink">{order.order_number}</h1>
  <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusBadgeClass(order.status)}`}>
  {getStatusLabel(order.status)}
  </span>
@@ -182,7 +182,7 @@ export default function OrdenDetallePage() {
  <div className="flex items-center gap-2">
  <Link
  href={`/auto-talleres/ordenes/${params.id}/edit`}
- className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-monday-violet hover:bg-[#1E293B] text-white text-sm font-semibold transition-colors"
+ className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-monday-violet hover:bg-monday-violet-hover text-white text-sm font-semibold transition-colors"
  >
  <Pencil className="w-4 h-4" />
  Editar

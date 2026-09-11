@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { FileText, Plus, CheckCircle2, ShieldCheck, DollarSign, RotateCcw, AlertTriangle, ArrowUpRight } from 'lucide-react';
@@ -92,7 +92,7 @@ export default function CreditDebitNotesPage() {
  <div className="flex items-center gap-2">
  <button
  onClick={() => setShowModal(true)}
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
  >
  <Plus className="w-4 h-4" />
  Emitir Nota DTE SII
@@ -254,7 +254,7 @@ export default function CreditDebitNotesPage() {
  </button>
  <button
  type="submit"
- className="px-4 py-2 bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-semibold rounded-xl text-xs shadow-xs"
+ className="px-4 py-2 bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold rounded-xl text-xs shadow-xs"
  >
  Timbrar y Emitir DTE
  </button>

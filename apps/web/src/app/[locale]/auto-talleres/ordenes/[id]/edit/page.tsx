@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { IVA_RATE } from '@/lib/erp-config';
@@ -386,7 +386,7 @@ export default function EditarOrdenPage() {
  {/* Items list */}
  {items.length === 0 ? (
  <div className="text-center py-8 text-slate-500 bg-slate-50/50 rounded-xl mb-6">
- <ClipboardList className="w-8 h-8 mx-auto text-slate-300 mb-2" />
+ <ClipboardList className="w-8 h-8 mx-auto text-iron mb-2" />
  <p className="text-sm">Sin ítems agregados. Agrega mano de obra o repuestos.</p>
  </div>
  ) : (
@@ -504,7 +504,7 @@ export default function EditarOrdenPage() {
  <button
  type="submit"
  disabled={saving || !formData.vehicle_id}
- className="bg-[#FACC15] hover:bg-[#EAB308] disabled:bg-slate-300 disabled:cursor-not-allowed text-slate-950 font-bold px-6 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-monday-violet hover:bg-monday-violet-hover disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Save className="w-4 h-4" />
  {saving ? 'Guardando...' : 'Guardar Cambios'}

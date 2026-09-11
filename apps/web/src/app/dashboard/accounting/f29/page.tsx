@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Calculator, FileText, Download, CheckCircle2, AlertTriangle, ShieldCheck, DollarSign, ArrowUpRight } from 'lucide-react';
@@ -88,7 +88,7 @@ export default function F29AssistantPage() {
 
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs bg-monday-violet/10 border-monday-violet/30">
  <p className="text-xs text-[#c64d00] font-extrabold uppercase">TOTAL F29 A PAGAR</p>
- <p className="text-2xl font-black text-slate-950 mt-1">{clp(data.summary.totalF29Payable)}</p>
+ <p className="text-2xl font-black text-white mt-1">{clp(data.summary.totalF29Payable)}</p>
  <p className="text-[11px] text-[#c64d00] font-bold mt-0.5">Vencimiento: 12 al 20 del mes subsiguiente</p>
  </div>
  </div>

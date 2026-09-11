@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Tag, Plus, Edit, Trash2, X, Palette } from 'lucide-react';
@@ -75,7 +75,7 @@ export default function ExpenseCategoriesPage() {
  </div>
  <button
  onClick={() => { setShowForm(true); setEditingCategory(null); setForm({ name: '', color: '#6B7280', tax_deductible: false }); }}
- className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all active:scale-[0.98] shadow-sm"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all active:scale-[0.98] shadow-sm"
  >
  <Plus className="w-4 h-4" /> Nueva Categoría
  </button>
@@ -93,7 +93,7 @@ export default function ExpenseCategoriesPage() {
  <div className="p-12 text-center text-sm text-slate-500">Cargando...</div>
  ) : categories.length === 0 ? (
  <div className="p-12 text-center">
- <Tag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+ <Tag className="w-12 h-12 text-iron mx-auto mb-3" />
  <p className="text-sm text-slate-500">No hay categorías registradas</p>
  <p className="text-xs text-slate-400 mt-1">Crea tu primera categoría para organizar tus gastos</p>
  </div>
@@ -190,7 +190,7 @@ export default function ExpenseCategoriesPage() {
  Cancelar
  </button>
  <button onClick={handleSave} disabled={saving || !form.name}
- className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all disabled:opacity-50">
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all disabled:opacity-50">
  {saving ? 'Guardando...' : editingCategory ? 'Actualizar' : 'Crear Categoría'}
  </button>
  </div>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -179,7 +179,7 @@ export default function VeterinaryHospitalizationPage() {
  setSelectedHospId(hosp.id);
  setShowLogModal(true);
  }}
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-bold px-3 py-1.5 rounded-xl text-xs transition-all shadow-sm flex items-center gap-1"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-3 py-1.5 rounded-xl text-xs transition-all shadow-sm flex items-center gap-1"
  >
  <Plus className="w-3 h-3" /> Nuevo Control
  </button>

@@ -132,7 +132,7 @@ function ProjectDashboardInner() {
  )}
 
  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
- <div className="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm p-5 hover:border-purple-200 transition-all duration-150">
+ <div className="bg-white border border-mist rounded-2xl shadow-sm p-5 hover:border-purple-200 transition-all duration-150">
  <div className="flex items-center justify-between mb-2">
  <p className="text-[9px] font-semibold text-[#64748B] uppercase tracking-wider">Total Proyectos</p>
  <div className="w-10 h-10 bg-purple-50 rounded-full flex items-center justify-center">
@@ -143,7 +143,7 @@ function ProjectDashboardInner() {
  <p className="text-[11px] text-emerald-600 mt-1 font-medium">{activeProjects} proyectos activos</p>
  </div>
 
- <div className="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm p-5 hover:border-purple-200 transition-all duration-150">
+ <div className="bg-white border border-mist rounded-2xl shadow-sm p-5 hover:border-purple-200 transition-all duration-150">
  <div className="flex items-center justify-between mb-2">
  <p className="text-[9px] font-semibold text-[#64748B] uppercase tracking-wider">En Ejecución</p>
  <div className="w-10 h-10 bg-peach/30 rounded-full flex items-center justify-center">
@@ -154,7 +154,7 @@ function ProjectDashboardInner() {
  <p className="text-[11px] text-[#64748B] mt-1">{completedProjects} entregados</p>
  </div>
 
- <div className="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm p-5 hover:border-purple-200 transition-all duration-150">
+ <div className="bg-white border border-mist rounded-2xl shadow-sm p-5 hover:border-purple-200 transition-all duration-150">
  <div className="flex items-center justify-between mb-2">
  <p className="text-[9px] font-semibold text-[#64748B] uppercase tracking-wider">Presupuesto Asignado</p>
  <div className="w-10 h-10 bg-emerald-50 rounded-full flex items-center justify-center">
@@ -165,7 +165,7 @@ function ProjectDashboardInner() {
  <p className="text-[11px] text-[#64748B] mt-1">Pesos Chilenos (CLP)</p>
  </div>
 
- <div className="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm p-5 hover:border-purple-200 transition-all duration-150">
+ <div className="bg-white border border-mist rounded-2xl shadow-sm p-5 hover:border-purple-200 transition-all duration-150">
  <div className="flex items-center justify-between mb-2">
  <p className="text-[9px] font-semibold text-[#64748B] uppercase tracking-wider">Completados</p>
  <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
@@ -177,7 +177,7 @@ function ProjectDashboardInner() {
  </div>
  </div>
 
- <div className="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden p-2">
+ <div className="bg-white border border-mist rounded-2xl shadow-sm overflow-hidden p-2">
  <ContinuousTabs
  tabs={tabs}
  defaultActiveId={statusFilter}

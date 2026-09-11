@@ -192,7 +192,7 @@ function HRSidebarNavigationContent({ sidebarItems }: HRSidebarNavigationProps) 
  "whitespace-nowrap rounded-xl transition-all duration-150 py-2.5 px-3 text-xs font-semibold",
  itemActive
  ? `bg-cloud text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-xs`
- : "text-slate-300 hover:text-ink hover:bg-cloud"
+ : "text-iron hover:text-ink hover:bg-cloud"
  )}
  >
  {renderIcon(item.icon, itemActive)}
@@ -211,7 +211,7 @@ function HRSidebarNavigationContent({ sidebarItems }: HRSidebarNavigationProps) 
  "rounded-xl transition-all duration-150 py-2.5 px-3 text-xs font-semibold",
  itemActive
  ? `bg-cloud text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-xs`
- : "text-slate-300 hover:text-ink hover:bg-cloud"
+ : "text-iron hover:text-ink hover:bg-cloud"
  )}
  >
  {renderIcon(item.icon, itemActive)}

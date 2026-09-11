@@ -149,7 +149,7 @@ export default function ProjectSidebarNavigation({ sidebarItems }: ProjectSideba
  "transition-all duration-150 cursor-pointer",
  groupActive
  ? theme.groupActiveText
- : "text-slate-500 hover:text-slate-300",
+ : "text-slate-500 hover:text-iron",
  "hover:bg-cloud/40"
  )}>
  <ChevronDown className={cn(
@@ -184,7 +184,7 @@ export default function ProjectSidebarNavigation({ sidebarItems }: ProjectSideba
  "whitespace-nowrap rounded-xl transition-all duration-150 py-2.5 px-3 text-xs font-semibold",
  itemActive
  ? `bg-cloud text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-sm`
- : "text-slate-300 hover:text-ink hover:bg-cloud"
+ : "text-iron hover:text-ink hover:bg-cloud"
  )}
  >
  {renderIcon(item.icon, itemActive)}
@@ -203,7 +203,7 @@ export default function ProjectSidebarNavigation({ sidebarItems }: ProjectSideba
  "whitespace-nowrap rounded-xl transition-all duration-150 py-2.5 px-3 text-xs font-semibold w-full",
  itemActive
  ? `bg-cloud text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-sm`
- : "text-slate-300 hover:text-ink hover:bg-cloud"
+ : "text-iron hover:text-ink hover:bg-cloud"
  )}
  >
  {renderIcon(item.icon, itemActive)}

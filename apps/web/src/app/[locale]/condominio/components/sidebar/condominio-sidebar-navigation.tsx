@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -30,7 +30,7 @@ export default function CondominioSidebarNavigation() {
  rounded-xl transition-all duration-150 py-2.5 px-3 text-xs font-semibold
  ${isActive
  ? 'data-[active=true]:bg-cloud data-[active=true]:text-white font-bold border-l-4 border-cyan-400 pl-2 shadow-xs'
- : 'text-slate-300 hover:text-ink hover:bg-cloud'
+ : 'text-iron hover:text-ink hover:bg-cloud'
  }
  `}
  >
@@ -40,7 +40,7 @@ export default function CondominioSidebarNavigation() {
  <span
  className={`group-data-[collapsible=icon]:hidden text-[9px] font-black px-1.5 py-0.5 rounded transition-colors ${
  isActive
- ? 'bg-cyan-400 text-slate-950 border border-cyan-300'
+ ? 'bg-cyan-400 text-white border border-cyan-300'
  : 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
  }`}
  >

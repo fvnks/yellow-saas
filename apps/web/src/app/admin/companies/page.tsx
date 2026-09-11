@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -108,11 +108,11 @@ export default function AdminCompaniesPage() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-white">Empresas</h1>
+ <h1 className="text-2xl font-bold text-ink">Empresas</h1>
  <p className="text-sm text-muted-foreground mt-1">Gestiona todas las empresas de la plataforma</p>
  </div>
  <button onClick={() => setShowCreate(true)}
- className="bg-cloud hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors border border-slate-700">
+ className="bg-cloud hover:bg-mist text-ink px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors border border-mist">
  <Plus className="w-4 h-4" /> Nueva Empresa
  </button>
  </div>
@@ -121,10 +121,10 @@ export default function AdminCompaniesPage() {
  <div className="relative flex-1">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <input type="text" placeholder="Buscar empresa..." value={search} onChange={e => setSearch(e.target.value)}
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-500/50" />
+ className="w-full bg-white border border-mist rounded-lg pl-10 pr-4 py-2 text-sm text-ink placeholder:text-iron focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-500/50" />
  </div>
  <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
- className="bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-500/50">
+ className="bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-500/50">
  <option value="all">Todos los estados</option>
  <option value="active">Activas</option>
  <option value="trial">En prueba</option>
@@ -163,7 +163,7 @@ export default function AdminCompaniesPage() {
  <Building2 className="w-4 h-4 text-muted-foreground" />
  </div>
  <div>
- <p className="text-sm font-medium text-white">{company.name}</p>
+ <p className="text-sm font-medium text-ink">{company.name}</p>
  <p className="text-xs text-muted-foreground">{company.slug}</p>
  </div>
  </div>
@@ -182,7 +182,7 @@ export default function AdminCompaniesPage() {
  </td>
  <td className="px-6 py-4">
  <Link href={`/admin/companies/${company.id}`}
- className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-cloud hover:bg-slate-700 rounded-lg text-xs font-medium text-foreground hover:text-white transition-colors">
+ className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-cloud hover:bg-mist rounded-lg text-xs font-medium text-foreground hover:text-ink transition-colors">
  <ExternalLink className="w-3.5 h-3.5" /> Ver
  </Link>
  </td>
@@ -195,23 +195,23 @@ export default function AdminCompaniesPage() {
 
  {showCreate && (
  <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setShowCreate(false)}>
- <div className="bg-cloud border border-slate-700 rounded-xl shadow-2xl w-full max-w-lg" onClick={e => e.stopPropagation()}>
+ <div className="bg-cloud border border-mist rounded-xl shadow-2xl w-full max-w-lg" onClick={e => e.stopPropagation()}>
  <div className="px-6 py-4 border-b border-border flex items-center justify-between">
- <h2 className="text-lg font-semibold text-white">Nueva Empresa</h2>
- <button onClick={() => setShowCreate(false)} className="text-muted-foreground hover:text-white"><X className="w-5 h-5" /></button>
+ <h2 className="text-lg font-semibold text-ink">Nueva Empresa</h2>
+ <button onClick={() => setShowCreate(false)} className="text-muted-foreground hover:text-ink"><X className="w-5 h-5" /></button>
  </div>
  <div className="p-6 space-y-4">
  <div className="grid grid-cols-2 gap-3">
  <div className="space-y-1">
  <label className="block text-xs font-medium text-muted-foreground">Nombre *</label>
  <input type="text" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink placeholder:text-iron focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  placeholder="Mi Empresa" autoFocus />
  </div>
  <div className="space-y-1">
  <label className="block text-xs font-medium text-muted-foreground">Slug *</label>
  <input type="text" value={form.slug} onChange={e => setForm(p => ({ ...p, slug: e.target.value }))}
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-violet-500/30 font-mono"
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink placeholder:text-iron focus:outline-none focus:ring-1 focus:ring-violet-500/30 font-mono"
  placeholder="mi-empresa" />
  </div>
  </div>
@@ -219,20 +219,20 @@ export default function AdminCompaniesPage() {
  <div className="space-y-1">
  <label className="block text-xs font-medium text-muted-foreground">Email admin *</label>
  <input type="email" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink placeholder:text-iron focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  placeholder="admin@empresa.cl" />
  </div>
  <div className="space-y-1">
  <label className="block text-xs font-medium text-muted-foreground">Password *</label>
  <input type="password" value={form.password} onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink placeholder:text-iron focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  placeholder="Minimo 8 caracteres" />
  </div>
  </div>
  <div className="space-y-1">
  <label className="block text-xs font-medium text-muted-foreground">Plan</label>
  <select value={form.plan} onChange={e => setForm(p => ({ ...p, plan: e.target.value }))}
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-500/50">
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-500/50">
  <option value="free">Free</option>
  <option value="starter">Starter</option>
  <option value="professional">Professional</option>
@@ -260,11 +260,11 @@ export default function AdminCompaniesPage() {
  </div>
  <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
  <button onClick={() => setShowCreate(false)}
- className="bg-cloud hover:bg-slate-700 text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+ className="bg-cloud hover:bg-mist text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">
  Cancelar
  </button>
  <button onClick={handleCreate} disabled={creating || !form.name || !form.slug || !form.email || !form.password}
- className="bg-cloud hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors border border-slate-700 disabled:opacity-50">
+ className="bg-cloud hover:bg-mist text-ink px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors border border-mist disabled:opacity-50">
  <Plus className="w-4 h-4" /> {creating ? 'Creando...' : 'Crear Empresa'}
  </button>
  </div>

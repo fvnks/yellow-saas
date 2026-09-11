@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useRef } from 'react';
 import { X, Printer, Download, Copy, Check } from 'lucide-react';
@@ -55,11 +55,11 @@ export default function PrintModal({ isOpen, onClose, html, title, message }: Pr
  )}
  {html && (
  <>
- <button onClick={handlePrint} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-monday-violet hover:bg-[#1E293B] rounded-xl transition-colors">
+ <button onClick={handlePrint} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-monday-violet hover:bg-monday-violet-hover rounded-xl transition-colors">
  <Printer className="w-4 h-4" />
  Imprimir
  </button>
- <button onClick={handlePrint} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 rounded-xl transition-colors">
+ <button onClick={handlePrint} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-monday-violet hover:bg-monday-violet-hover text-ink rounded-xl transition-colors">
  <Download className="w-4 h-4" />
  PDF
  </button>

@@ -236,7 +236,7 @@ export default function VeterinaryPatientDetailPage() {
  </p>
  <Link
  href="/veterinaria/pacientes"
- className="mt-5 bg-monday-violet hover:bg-[#1E293B] text-white font-medium px-5 py-2.5 rounded-xl text-sm transition-all shadow-sm"
+ className="mt-5 bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-5 py-2.5 rounded-xl text-sm transition-all shadow-sm"
  >
  Volver a Pacientes
  </Link>
@@ -287,7 +287,7 @@ export default function VeterinaryPatientDetailPage() {
  <div className="flex flex-wrap items-center gap-3 self-start md:self-center">
  <Link
  href="/veterinaria/consultas"
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Stethoscope className="w-4 h-4" />
  Nueva Consulta
@@ -671,7 +671,7 @@ export default function VeterinaryPatientDetailPage() {
  <FlaskConical className="w-4 h-4 text-emerald-600" />
  Órdenes de Laboratorio ({labOrdersData.length})
  </h3>
- <Link href="/veterinaria/laboratorio" className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-bold px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1 shadow-sm">
+ <Link href="/veterinaria/laboratorio" className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1 shadow-sm">
  <Plus className="w-3 h-3" /> Nueva Orden
  </Link>
  </div>
@@ -718,7 +718,7 @@ export default function VeterinaryPatientDetailPage() {
  </div>
  ) : (
  <div className="text-center py-10 bg-white border border-slate-200/80 rounded-2xl shadow-sm">
- <FlaskConical className="w-10 h-10 text-slate-300 mx-auto mb-2" />
+ <FlaskConical className="w-10 h-10 text-iron mx-auto mb-2" />
  <p className="text-xs text-slate-500">Sin órdenes de laboratorio.</p>
  </div>
  )}

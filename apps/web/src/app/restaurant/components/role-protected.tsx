@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { ReactNode } from 'react';
 import Link from 'next/link';
@@ -42,7 +42,7 @@ export default function RoleProtected({ section, children }: RoleProtectedProps)
  </p>
  <Link
  href="/restaurant/waiter"
- className="mt-5 inline-flex items-center gap-2 bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 shadow-sm"
+ className="mt-5 inline-flex items-center gap-2 bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 shadow-sm"
  >
  <ArrowLeft className="w-4 h-4" /> Volver al POS
  </Link>

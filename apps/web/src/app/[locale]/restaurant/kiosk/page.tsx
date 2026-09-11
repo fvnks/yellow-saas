@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { INITIAL_MENU_ITEMS, INITIAL_TABLES, MenuItem } from '../lib/restaurant-store';
@@ -64,11 +64,11 @@ export default function KioskPage() {
  {/* Banner */}
  <div className="bg-gradient-to-r from-monday-violet to-slate-800 text-white rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
- <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-monday-violet text-slate-950 mb-2">
+ <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-monday-violet text-white mb-2">
  <QrCode className="w-3.5 h-3.5" /> Kiosco & Menú QR
  </span>
  <h1 className="text-2xl font-bold">Autoservicio & Pedido en Mesa</h1>
- <p className="text-xs text-slate-300 mt-1">
+ <p className="text-xs text-iron mt-1">
  Escanea el código QR, ingresa con el PIN de mesa y realiza tu pedido directamente.
  </p>
  </div>
@@ -77,11 +77,11 @@ export default function KioskPage() {
  {!sessionJoined ? (
  <form onSubmit={handleJoinSession} className="bg-white/10 p-3.5 rounded-xl border border-white/20 flex flex-col gap-2 min-w-[260px]">
  <div className="flex items-center justify-between text-xs">
- <span className="text-slate-300">Unirse a Mesa:</span>
+ <span className="text-iron">Unirse a Mesa:</span>
  <select
  value={selectedTableId}
  onChange={e => setSelectedTableId(Number(e.target.value))}
- className="bg-cloud border border-slate-700 text-white rounded px-2 py-1 text-xs"
+ className="bg-cloud border border-mist text-white rounded px-2 py-1 text-xs"
  >
  {tables.map(t => (
  <option key={t.tableId} value={t.tableId}>
@@ -97,11 +97,11 @@ export default function KioskPage() {
  value={pinInput}
  onChange={e => setPinInput(e.target.value)}
  placeholder="PIN mesa (ej. 7492)"
- className="w-full bg-cloud border border-slate-700 text-xs text-white px-3 py-1.5 rounded-lg placeholder:text-slate-500 font-mono"
+ className="w-full bg-cloud border border-mist text-xs text-white px-3 py-1.5 rounded-lg placeholder:text-slate-500 font-mono"
  />
  <button
  type="submit"
- className="bg-monday-violet hover:bg-peach text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition-all shrink-0"
+ className="bg-monday-violet hover:bg-peach text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-all shrink-0"
  >
  Unirse
  </button>
@@ -112,7 +112,7 @@ export default function KioskPage() {
  <p className="font-bold text-emerald-300 flex items-center gap-1.5">
  <Check className="w-4 h-4 text-emerald-400" /> Sesión Activa: {selectedTable?.tableName}
  </p>
- <p className="text-slate-300 text-[11px]">PIN: {selectedTable?.pinCode} • Pedidos sincronizados</p>
+ <p className="text-iron text-[11px]">PIN: {selectedTable?.pinCode} • Pedidos sincronizados</p>
  </div>
  )}
  </div>
@@ -136,7 +136,7 @@ export default function KioskPage() {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
  {menu.length === 0 ? (
  <div className="col-span-full text-center py-12 bg-white border border-slate-200/80 rounded-2xl p-6 space-y-2">
- <Utensils className="w-8 h-8 mx-auto text-slate-300" />
+ <Utensils className="w-8 h-8 mx-auto text-iron" />
  <p className="text-sm font-bold text-slate-700">No hay productos en la carta</p>
  <p className="text-xs text-slate-500">Agrega productos desde la Consola Admin del Restaurante.</p>
  </div>
@@ -181,7 +181,7 @@ export default function KioskPage() {
  onClick={() => addToCart(item)}
  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
  item.inStock
- ? 'bg-monday-violet hover:bg-peach text-slate-950 shadow-xs'
+ ? 'bg-monday-violet hover:bg-peach text-white shadow-xs'
  : 'bg-slate-200 text-slate-400 cursor-not-allowed'
  }`}
  >
@@ -208,7 +208,7 @@ export default function KioskPage() {
  <div className="p-4 space-y-3 min-h-[220px] max-h-[360px] overflow-y-auto">
  {cart.length === 0 ? (
  <div className="text-center py-10 text-slate-400 space-y-2">
- <ShoppingBag className="w-8 h-8 mx-auto text-slate-300" />
+ <ShoppingBag className="w-8 h-8 mx-auto text-iron" />
  <p className="text-xs font-medium">Aún no has agregado productos.</p>
  </div>
  ) : (
@@ -235,7 +235,7 @@ export default function KioskPage() {
 
  <button
  onClick={handleSendOrder}
- className="w-full bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-xs"
+ className="w-full bg-monday-violet hover:bg-monday-violet-hover text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-xs"
  >
  Confirmar & Enviar a Cocina <ArrowRight className="w-4 h-4" />
  </button>
