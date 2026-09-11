@@ -339,7 +339,7 @@ export default function CondominioDashboardPage() {
 
  {/* Modal Detail Unit */}
  {selectedUnitForDetail && (
- <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+ <div className="fixed inset-0 bg-cloud/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
  <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-md w-full p-6">
  <div className="flex items-center justify-between border-b pb-3 mb-4">
  <div>
@@ -383,7 +383,7 @@ export default function CondominioDashboardPage() {
  <div className="mt-6 flex justify-end">
  <button
  onClick={() => setSelectedUnitForDetail(null)}
- className="bg-slate-900 hover:bg-slate-800 text-white font-bold px-4 py-2 rounded-xl text-xs"
+ className="bg-cloud hover:bg-cloud text-white font-bold px-4 py-2 rounded-xl text-xs"
  >
  Cerrar
  </button>
@@ -394,7 +394,7 @@ export default function CondominioDashboardPage() {
 
  {/* Add Unit Modal */}
  {showAddUnitModal && (
- <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+ <div className="fixed inset-0 bg-cloud/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
  <form onSubmit={handleCreateUnit} className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 space-y-4">
  <div className="flex items-center justify-between border-b pb-3">
  <h3 className="text-base font-black text-slate-900">Agregar Nueva Unidad al Condominio</h3>
@@ -511,7 +511,7 @@ export default function CondominioDashboardPage() {
 
  {/* Add Sector Modal */}
  {showAddSectorModal && (
- <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+ <div className="fixed inset-0 bg-cloud/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
  <form onSubmit={handleCreateSector} className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-md w-full p-6 space-y-4">
  <div className="flex items-center justify-between border-b pb-3">
  <h3 className="text-base font-black text-slate-900">Crear Nuevo Sector / Torre</h3>

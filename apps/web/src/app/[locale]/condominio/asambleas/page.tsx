@@ -222,7 +222,7 @@ export default function AsambleasPage() {
 
  {/* Add Assembly Modal */}
  {showAddAssemblyModal && (
- <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+ <div className="fixed inset-0 bg-cloud/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
  <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-xl space-y-4">
  <h3 className="text-lg font-bold text-slate-900">Nueva Convocatoria de Asamblea</h3>
  <form onSubmit={handleCreateAssembly} className="space-y-4">
@@ -285,7 +285,7 @@ export default function AsambleasPage() {
 
  {/* Vote Modal */}
  {showVoteModal && selectedTopic && (
- <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+ <div className="fixed inset-0 bg-cloud/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
  <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-xl space-y-4">
  <h3 className="text-base font-bold text-slate-900">Emitir Voto Ley 21.442</h3>
  <p className="text-xs text-slate-500">Tema: <span className="font-semibold text-slate-800">{selectedTopic.title}</span></p>

@@ -90,7 +90,7 @@ export default function VeterinaryDashboardPage() {
  return (
  <div className="space-y-6">
  {/* Header Banner */}
- <div className="bg-gradient-to-r from-monday-violet via-slate-900 to-emerald-950 rounded-2xl p-6 text-white shadow-md relative overflow-hidden border border-slate-800">
+ <div className="bg-gradient-to-r from-monday-violet via-slate-900 to-emerald-950 rounded-2xl p-6 text-white shadow-md relative overflow-hidden border border-mist">
  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
  <div className="flex items-center gap-2 mb-2">
@@ -204,7 +204,7 @@ export default function VeterinaryDashboardPage() {
  {appointments.map((apt) => (
  <div key={apt.id} className="p-4 hover:bg-slate-50/80 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div className="flex items-start gap-3">
- <div className="bg-slate-900 text-white font-mono text-xs font-bold px-2.5 py-1.5 rounded-xl text-center shrink-0">
+ <div className="bg-cloud text-white font-mono text-xs font-bold px-2.5 py-1.5 rounded-xl text-center shrink-0">
  {apt.appointmentTime}
  </div>
  <div>
@@ -237,7 +237,7 @@ export default function VeterinaryDashboardPage() {
  {apt.status !== 'en_atencion' && (
  <button
  onClick={() => handleUpdateStatus(apt.id, 'en_atencion')}
- className="bg-monday-violet hover:bg-slate-800 text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition-all shadow-xs flex items-center gap-1.5"
+ className="bg-monday-violet hover:bg-cloud text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition-all shadow-xs flex items-center gap-1.5"
  >
  <Stethoscope className="w-3.5 h-3.5 text-emerald-400" />
  Llamar a Box

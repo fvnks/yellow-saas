@@ -66,7 +66,7 @@ export default function CostsTab({ costs, budget }: CostsTabProps) {
  </div>
  <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
  <div
- className={`h-full rounded-full transition-all duration-300 ${percentUsed > 100 ? 'bg-red-500' : percentUsed > 80 ? 'bg-amber-500' : 'bg-primary'}`}
+ className={`h-full rounded-full transition-all duration-300 ${percentUsed > 100 ? 'bg-red-500' : percentUsed > 80 ? 'bg-monday-violet' : 'bg-primary'}`}
  style={{ width: `${Math.min(percentUsed, 100)}%` }}
  />
  </div>

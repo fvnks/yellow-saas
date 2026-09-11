@@ -30,7 +30,7 @@ interface GanttChartProps {
 const statusColors: Record<string, string> = {
  todo: 'bg-muted',
  in_progress: 'bg-blue-500',
- review: 'bg-amber-500',
+ review: 'bg-monday-violet',
  done: 'bg-emerald-500',
 };
 

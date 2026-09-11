@@ -103,7 +103,7 @@ export default function ComunicacionesPage() {
  onClick={() => setMessageType('aviso')}
  className={`w-full p-2.5 rounded-xl text-xs font-bold text-left transition-all ${
  messageType === 'aviso'
- ? 'bg-slate-900 text-white shadow-xs'
+ ? 'bg-cloud text-white shadow-xs'
  : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
  }`}
  >
@@ -187,7 +187,7 @@ export default function ComunicacionesPage() {
 
  <button
  onClick={handleSendEmailDemo}
- className="bg-monday-violet hover:bg-slate-800 text-white font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-2 shadow-xs transition-all active:scale-[0.98]"
+ className="bg-monday-violet hover:bg-cloud text-white font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-2 shadow-xs transition-all active:scale-[0.98]"
  >
  <Mail className="w-4 h-4 text-cyan-400" />
  Enviar Notificación por Correo

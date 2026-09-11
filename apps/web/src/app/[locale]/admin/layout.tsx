@@ -119,7 +119,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
  }, [searchQuery]);
 
  return (
- <div className="flex min-h-screen bg-slate-950 text-slate-100 select-none">
+ <div className="flex min-h-screen bg-cloud text-slate-100 select-none">
  <Toaster position="top-right" richColors closeButton />
 
  {/* Sidebar */}
@@ -206,7 +206,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
  {/* Main content */}
  <main className={`flex-1 transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'}`}>
  {/* Top bar */}
- <header className="h-16 bg-slate-900/90 backdrop-blur-xl border-b border-mist sticky top-0 z-40 flex items-center justify-between px-6">
+ <header className="h-16 bg-cloud/90 backdrop-blur-xl border-b border-mist sticky top-0 z-40 flex items-center justify-between px-6">
  <div className="flex items-center gap-4">
  <button
  onClick={() => setSidebarOpen(!sidebarOpen)}

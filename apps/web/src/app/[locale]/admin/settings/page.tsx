@@ -139,7 +139,7 @@ export default function AdminSettingsPage() {
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
  <div className="bg-cloud border border-border rounded-xl p-6">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 bg-slate-800 border border-violet-500/20 rounded-xl flex items-center justify-center">
+ <div className="w-10 h-10 bg-cloud border border-violet-500/20 rounded-xl flex items-center justify-center">
  <Database className="w-5 h-5 text-violet-400" />
  </div>
  <div>
@@ -207,7 +207,7 @@ export default function AdminSettingsPage() {
  onChange={(e) => setForm({ ...form, name: e.target.value })}
  placeholder="Juan Pérez"
  required
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  <div className="space-y-1">
@@ -218,7 +218,7 @@ export default function AdminSettingsPage() {
  onChange={(e) => setForm({ ...form, email: e.target.value })}
  placeholder="admin@yellow.cl"
  required
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  <div className="space-y-1">
@@ -230,7 +230,7 @@ export default function AdminSettingsPage() {
  placeholder="Mínimo 8 caracteres"
  required
  minLength={8}
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  <div className="flex items-end">
@@ -277,7 +277,7 @@ export default function AdminSettingsPage() {
  <tr key={adm.id} className="border-b border-border/50 hover:bg-slate-700/30 transition-colors">
  <td className="px-6 py-4">
  <div className="flex items-center gap-3">
- <div className="w-9 h-9 bg-slate-800 rounded-lg flex items-center justify-center">
+ <div className="w-9 h-9 bg-cloud rounded-lg flex items-center justify-center">
  <Shield className="w-4 h-4 text-violet-400" />
  </div>
  <div>
@@ -347,7 +347,7 @@ export default function AdminSettingsPage() {
  value={editForm.name}
  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
  required
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  <div className="space-y-1">
@@ -357,7 +357,7 @@ export default function AdminSettingsPage() {
  value={editForm.email}
  onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
  required
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  <div className="space-y-1">
@@ -368,7 +368,7 @@ export default function AdminSettingsPage() {
  onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
  placeholder="Dejar vacío para no cambiar"
  minLength={8}
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  <div className="flex items-center gap-3">

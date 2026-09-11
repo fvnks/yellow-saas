@@ -158,7 +158,7 @@ export default function VeterinaryClientsPage() {
  <tr key={client.id} className="hover:bg-slate-50/80 transition-colors">
  <td className="px-6 py-4">
  <div className="flex items-center gap-3">
- <div className="w-9 h-9 rounded-xl bg-slate-900 text-white font-bold flex items-center justify-center text-sm shadow-xs shrink-0">
+ <div className="w-9 h-9 rounded-xl bg-cloud text-white font-bold flex items-center justify-center text-sm shadow-xs shrink-0">
  {(client.fullName || '').charAt(0)}
  </div>
  <div>
@@ -319,7 +319,7 @@ export default function VeterinaryClientsPage() {
  </button>
  <button
  type="submit"
- className="bg-monday-violet hover:bg-slate-800 text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm"
+ className="bg-monday-violet hover:bg-cloud text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm"
  >
  Guardar Tutor
  </button>

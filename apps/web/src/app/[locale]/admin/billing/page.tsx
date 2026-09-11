@@ -226,7 +226,7 @@ export default function AdminBillingPage() {
  value={planForm.name}
  onChange={(e) => setPlanForm({ ...planForm, name: e.target.value })}
  placeholder="ej: premium"
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  )}
@@ -237,7 +237,7 @@ export default function AdminBillingPage() {
  value={planForm.label}
  onChange={(e) => setPlanForm({ ...planForm, label: e.target.value })}
  placeholder="ej: Premium"
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  <div className="space-y-1">
@@ -246,7 +246,7 @@ export default function AdminBillingPage() {
  type="number"
  value={planForm.max_users}
  onChange={(e) => setPlanForm({ ...planForm, max_users: parseInt(e.target.value) || -1 })}
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  <div className="space-y-1">
@@ -255,7 +255,7 @@ export default function AdminBillingPage() {
  type="number"
  value={planForm.price_monthly}
  onChange={(e) => setPlanForm({ ...planForm, price_monthly: parseInt(e.target.value) || 0 })}
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  <div className="space-y-1">
@@ -264,7 +264,7 @@ export default function AdminBillingPage() {
  type="number"
  value={planForm.price_yearly}
  onChange={(e) => setPlanForm({ ...planForm, price_yearly: parseInt(e.target.value) || 0 })}
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  <div className="flex items-end gap-2">
@@ -290,7 +290,7 @@ export default function AdminBillingPage() {
  value={planForm.features}
  onChange={(e) => setPlanForm({ ...planForm, features: e.target.value })}
  placeholder="Inventario completo, CRM, Soporte 24/7"
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  </div>
@@ -298,7 +298,7 @@ export default function AdminBillingPage() {
 
  <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
  {plans.map((plan) => (
- <div key={plan.id} className="bg-slate-800/80 border border-slate-700 rounded-xl p-5 relative group">
+ <div key={plan.id} className="bg-cloud/80 border border-slate-700 rounded-xl p-5 relative group">
  <div className="flex items-center justify-between mb-3">
  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${getPlanColor(plan.name)}`}>
  {plan.label}
@@ -383,7 +383,7 @@ export default function AdminBillingPage() {
  <select
  value={editForm.plan}
  onChange={(e) => setEditForm({ ...editForm, plan: e.target.value })}
- className="bg-slate-800/80 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="bg-cloud/80 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  >
  {plans.map((p) => <option key={p.id} value={p.name}>{p.label}</option>)}
  </select>
@@ -398,7 +398,7 @@ export default function AdminBillingPage() {
  <select
  value={editForm.status}
  onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
- className="bg-slate-800/80 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="bg-cloud/80 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  >
  <option value="active">Activo</option>
  <option value="trial">Prueba</option>
@@ -423,7 +423,7 @@ export default function AdminBillingPage() {
  type="date"
  value={editForm.trial_ends_at ? editForm.trial_ends_at.split('T')[0] : ''}
  onChange={(e) => setEditForm({ ...editForm, trial_ends_at: e.target.value })}
- className="bg-slate-800/80 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="bg-cloud/80 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  ) : (
  <span className="text-xs text-muted-foreground">

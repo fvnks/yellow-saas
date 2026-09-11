@@ -248,7 +248,7 @@ export default function VeterinaryVaccinationsPage() {
  <div className="lg:col-span-2 space-y-6">
  {/* Card Carnet Oficial */}
  <div className="bg-white border-2 border-slate-900 rounded-2xl p-6 shadow-sm space-y-6 relative overflow-hidden">
- <div className="bg-slate-900 text-white p-4 -m-6 mb-4 flex items-center justify-between">
+ <div className="bg-cloud text-white p-4 -m-6 mb-4 flex items-center justify-between">
  <div className="flex items-center gap-3">
  <ShieldCheck className="w-6 h-6 text-monday-violet" />
  <div>

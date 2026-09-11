@@ -175,7 +175,7 @@ export default function FinancialStatementsPage() {
  </div>
  </div>
 
- <div className="flex items-center justify-between py-4 bg-slate-900 text-white px-6 -mx-6 rounded-b-2xl mt-4">
+ <div className="flex items-center justify-between py-4 bg-cloud text-white px-6 -mx-6 rounded-b-2xl mt-4">
  <span className="text-sm font-black">Resultado Operacional del Período</span>
  <span className={`text-lg font-black font-mono ${incomeStatement.operating_income >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
  {clp(incomeStatement.operating_income)}

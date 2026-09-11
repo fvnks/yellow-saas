@@ -81,7 +81,7 @@ export default function KioskPage() {
  <select
  value={selectedTableId}
  onChange={e => setSelectedTableId(Number(e.target.value))}
- className="bg-slate-900 border border-slate-700 text-white rounded px-2 py-1 text-xs"
+ className="bg-cloud border border-slate-700 text-white rounded px-2 py-1 text-xs"
  >
  {tables.map(t => (
  <option key={t.tableId} value={t.tableId}>
@@ -97,7 +97,7 @@ export default function KioskPage() {
  value={pinInput}
  onChange={e => setPinInput(e.target.value)}
  placeholder="PIN mesa (ej. 7492)"
- className="w-full bg-slate-900 border border-slate-700 text-xs text-white px-3 py-1.5 rounded-lg placeholder:text-slate-500 font-mono"
+ className="w-full bg-cloud border border-slate-700 text-xs text-white px-3 py-1.5 rounded-lg placeholder:text-slate-500 font-mono"
  />
  <button
  type="submit"
@@ -197,7 +197,7 @@ export default function KioskPage() {
  {/* Right: Cart Summary (4 Cols) */}
  <div className="lg:col-span-4 space-y-4">
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden sticky top-20">
- <div className="px-5 py-4 border-b border-slate-200/80 flex items-center justify-between bg-slate-900 text-white">
+ <div className="px-5 py-4 border-b border-slate-200/80 flex items-center justify-between bg-cloud text-white">
  <h3 className="text-sm font-bold flex items-center gap-2">
  <ShoppingBag className="w-4 h-4 text-monday-violet" />
  Mi Comanda QR

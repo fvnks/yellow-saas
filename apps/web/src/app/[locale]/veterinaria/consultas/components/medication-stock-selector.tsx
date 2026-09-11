@@ -104,7 +104,7 @@ export default function MedicationStockSelector({ onSelectMedication }: Props) {
  <button
  type="button"
  onClick={handleAdd}
- className="bg-monday-violet hover:bg-slate-800 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-all flex items-center gap-1"
+ className="bg-monday-violet hover:bg-cloud text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-all flex items-center gap-1"
  >
  <ArrowDown className="w-3.5 h-3.5 text-emerald-400" />
  Descontar

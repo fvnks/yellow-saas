@@ -37,7 +37,7 @@ export default function PatientRecordPdf({
 
  <button
  onClick={handlePrint}
- className="bg-monday-violet hover:bg-slate-800 text-white font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-xs flex items-center gap-1.5 print:hidden"
+ className="bg-monday-violet hover:bg-cloud text-white font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-xs flex items-center gap-1.5 print:hidden"
  >
  <Printer className="w-3.5 h-3.5 text-emerald-400" />
  Imprimir / Guardar PDF

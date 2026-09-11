@@ -217,7 +217,7 @@ export default function GastosComunesPage() {
  onClick={() => setActivePeriodId(p.id)}
  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
  activePeriodId === p.id
- ? 'bg-slate-900 text-white shadow-xs'
+ ? 'bg-cloud text-white shadow-xs'
  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
  }`}
  >
@@ -384,7 +384,7 @@ export default function GastosComunesPage() {
 
  {/* Modal Add Expense Item */}
  {showAddItemModal && (
- <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+ <div className="fixed inset-0 bg-cloud/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
  <form onSubmit={handleAddItem} className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-md w-full p-6 space-y-4">
  <div className="flex items-center justify-between border-b pb-3">
  <h3 className="text-base font-black text-slate-900">Agregar Gasto Operativo</h3>
@@ -465,7 +465,7 @@ export default function GastosComunesPage() {
 
  {/* Modal Add Period */}
  {showAddPeriodModal && (
- <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+ <div className="fixed inset-0 bg-cloud/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
  <form onSubmit={handleCreatePeriod} className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-md w-full p-6 space-y-4">
  <div className="flex items-center justify-between border-b pb-3">
  <h3 className="text-base font-black text-slate-900">Crear Nuevo Período de Cobro</h3>
@@ -541,7 +541,7 @@ export default function GastosComunesPage() {
 
  {/* Modal Simulador Extraordinario */}
  {showSimuladorModal && (
- <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+ <div className="fixed inset-0 bg-cloud/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
  <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 space-y-4">
  <div className="flex items-center justify-between border-b pb-3">
  <div className="flex items-center gap-2">
@@ -591,7 +591,7 @@ export default function GastosComunesPage() {
  <button
  type="button"
  onClick={() => setShowSimuladorModal(false)}
- className="bg-slate-900 text-white font-bold px-4 py-2 rounded-xl text-xs"
+ className="bg-cloud text-white font-bold px-4 py-2 rounded-xl text-xs"
  >
  Cerrar Simulador
  </button>

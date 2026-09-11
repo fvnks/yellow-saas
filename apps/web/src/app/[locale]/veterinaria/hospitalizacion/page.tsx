@@ -385,7 +385,7 @@ export default function VeterinaryHospitalizationPage() {
  <button
  type="submit"
  disabled={submitting}
- className="bg-monday-violet hover:bg-slate-800 text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm flex items-center gap-2 disabled:opacity-50"
+ className="bg-monday-violet hover:bg-cloud text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm flex items-center gap-2 disabled:opacity-50"
  >
  {submitting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Stethoscope className="w-3 h-3" />}
  Guardar Control

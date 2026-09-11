@@ -98,7 +98,7 @@ export default function WaitingRoomPage() {
  </div>
  <div className="flex items-center gap-2 self-end md:self-center">
  {next && (
- <button onClick={() => handleStatusChange(apt.id, next)} className="bg-monday-violet hover:bg-slate-800 text-white text-xs font-bold px-3 py-2 rounded-xl transition-all">
+ <button onClick={() => handleStatusChange(apt.id, next)} className="bg-monday-violet hover:bg-cloud text-white text-xs font-bold px-3 py-2 rounded-xl transition-all">
  → {STATUS_CONFIG[next]?.label || next}
  </button>
  )}

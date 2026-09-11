@@ -205,7 +205,7 @@ export default function VeterinaryPaymentsPage() {
  </div>
  <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
  <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800">Cancelar</button>
- <button type="submit" disabled={saving} className="bg-monday-violet hover:bg-slate-800 text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm disabled:opacity-50 flex items-center gap-2">
+ <button type="submit" disabled={saving} className="bg-monday-violet hover:bg-cloud text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm disabled:opacity-50 flex items-center gap-2">
  {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
  Registrar Pago
  </button>

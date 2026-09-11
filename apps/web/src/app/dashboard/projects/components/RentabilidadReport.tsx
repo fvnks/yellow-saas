@@ -179,7 +179,7 @@ export default function RentabilidadReport({ project, costs, expenses, timesheet
  </div>
  <div className="w-full h-4 bg-muted rounded-full overflow-hidden">
  <div
- className={`h-full rounded-full transition-all duration-500 ${data.marginPercent >= 20 ? 'bg-emerald-500' : data.marginPercent >= 0 ? 'bg-amber-500' : 'bg-red-500'}`}
+ className={`h-full rounded-full transition-all duration-500 ${data.marginPercent >= 20 ? 'bg-emerald-500' : data.marginPercent >= 0 ? 'bg-monday-violet' : 'bg-red-500'}`}
  style={{ width: `${Math.min(Math.max(data.marginPercent, 0), 100)}%` }}
  />
  </div>

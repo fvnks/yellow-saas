@@ -234,7 +234,7 @@ export default function MultasSegurosPage() {
 
  {/* Add Violation Modal */}
  {showAddViolationModal && (
- <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+ <div className="fixed inset-0 bg-cloud/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
  <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-xl space-y-4">
  <h3 className="text-base font-bold text-slate-900">Registrar Infracción o Multa</h3>
  <form onSubmit={handleAddViolation} className="space-y-4">
@@ -298,7 +298,7 @@ export default function MultasSegurosPage() {
 
  {/* Add Policy Modal */}
  {showAddPolicyModal && (
- <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+ <div className="fixed inset-0 bg-cloud/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
  <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-xl space-y-4">
  <h3 className="text-base font-bold text-slate-900">Registrar Póliza de Seguro Edificio</h3>
  <form onSubmit={handleAddPolicy} className="space-y-4">

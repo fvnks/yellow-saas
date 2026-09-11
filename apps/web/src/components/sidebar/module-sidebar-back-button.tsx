@@ -6,25 +6,25 @@ import { MODULE_SIDEBAR_THEMES, ModuleType } from '@/lib/sidebar-theme';
 import { useTranslations } from 'next-intl';
 
 interface Props {
-  moduleKey: ModuleType;
-  label?: string;
-  href?: string;
+ moduleKey: ModuleType;
+ label?: string;
+ href?: string;
 }
 
 export default function ModuleSidebarBackButton({ moduleKey, label, href = '/select' }: Props) {
-  const t = useTranslations('common');
-  const theme = MODULE_SIDEBAR_THEMES[moduleKey];
-  const defaultLabel = t('volverAModulos');
+ const t = useTranslations('common');
+ const theme = MODULE_SIDEBAR_THEMES[moduleKey];
+ const defaultLabel = t('volverAModulos');
 
-  return (
-    <div className="px-2 mb-2">
-      <Link
-        href={href}
-        className="flex items-center gap-2.5 px-3 py-2.5 text-xs font-medium text-iron hover:text-ink rounded-xl hover:bg-cloud transition-colors group-data-[collapsible=icon]:justify-center"
-      >
-        <ArrowLeft className={`w-4 h-4 shrink-0 ${theme.backIconColorClass}`} />
-        <span className="group-data-[collapsible=icon]:hidden text-xs font-medium">{label || defaultLabel}</span>
-      </Link>
-    </div>
-  );
+ return (
+ <div className="px-2 mb-2">
+ <Link
+ href={href}
+ className="flex items-center gap-2.5 px-3 py-2.5 text-xs font-medium text-iron hover:text-ink rounded-xl hover:bg-cloud transition-colors group-data-[collapsible=icon]:justify-center"
+ >
+ <ArrowLeft className={`w-4 h-4 shrink-0 ${theme.backIconColorClass}`} />
+ <span className="group-data-[collapsible=icon]:hidden text-xs font-medium">{label || defaultLabel}</span>
+ </Link>
+ </div>
+ );
 }
