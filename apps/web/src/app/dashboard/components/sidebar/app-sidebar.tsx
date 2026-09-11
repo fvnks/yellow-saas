@@ -56,21 +56,17 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
  .filter((m: any) => m.status === 'active')
  .map((m: any) => m.module_name)
  );
- setActivatedModules(active);
+ if (active.size > 0) setActivatedModules(active);
  })
- .catch(() => setActivatedModules(new Set()));
- } else {
- setActivatedModules(new Set());
+ .catch(() => {});
  }
- } catch {
- setActivatedModules(new Set());
- }
+ } catch {}
  }, []);
 
  const translatedItems = useTranslatedSidebar(sidebarItems);
 
  const filteredSidebarItems = useMemo(() => {
- if (activatedModules === null) return translatedItems;
+ if (activatedModules === null || activatedModules.size === 0) return translatedItems;
  return translatedItems.filter(group => {
  if (!group.requiredModule) return true;
  return activatedModules.has(group.requiredModule);
