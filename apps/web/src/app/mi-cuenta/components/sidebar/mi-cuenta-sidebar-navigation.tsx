@@ -65,7 +65,7 @@ export default function MiCuentaSidebarNavigation({ sidebarItems }: MiCuentaSide
 
  const renderIcon = (iconName: keyof typeof MI_CUENTA_ICON_MAP | undefined) => {
  const Icon = resolveMiCuentaIcon(iconName);
- return <Icon className="h-4 w-4 text-amber-400 shrink-0" />;
+ return <Icon className="h-4 w-4 text-monday-violet shrink-0" />;
  };
 
  const isActive = (itemPath: string, subItems?: MiCuentaNavMainItem["subItems"]) => {
@@ -150,7 +150,7 @@ export default function MiCuentaSidebarNavigation({ sidebarItems }: MiCuentaSide
  "text-[10px] font-bold uppercase tracking-widest",
  "transition-all duration-150 cursor-pointer",
  groupActive
- ? "text-amber-400"
+ ? "text-monday-violet"
  : "text-slate-500 hover:text-ink",
  "hover:bg-cloud/40"
  )}>
@@ -227,7 +227,7 @@ export default function MiCuentaSidebarNavigation({ sidebarItems }: MiCuentaSide
  className={cn(
  "rounded-lg text-xs transition-all",
  subActive
- ? "bg-cloud/90 text-amber-400 font-bold"
+ ? "bg-cloud/90 text-monday-violet font-bold"
  : "text-slate-400 hover:text-ink hover:bg-cloud/40"
  )}
  >
