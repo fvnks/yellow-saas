@@ -26,8 +26,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   const user = admin ? null : await getUserFromRequest(request);
 
   if (!admin && !user) return errorResponse('No autorizado', 401);
-  if (user && user.company_id !== params.id) return errorResponse('Acceso denegado', 403);
-  if (user && !['owner', 'admin'].includes(user.role)) return errorResponse('Solo owner o admin pueden listar módulos', 403);
+ if (user && user.company_id !== params.id) return errorResponse('Acceso denegado', 403);
 
   try {
     const companyId = params.id;

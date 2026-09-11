@@ -8,7 +8,7 @@ import SidebarBrandHeader from "./sidebar-header";
 import SidebarNavigation from "./sidebar-navigation";
 import ModuleSidebarBackButton from '@/components/sidebar/module-sidebar-back-button';
 import ModuleSidebarFooter from '@/components/sidebar/module-sidebar-footer';
-import { getApiClient } from '@/lib/api-client';
+import { getCompanyIdFromToken } from '@/lib/api-client';
 import { useTranslatedSidebar } from '@/hooks/use-translated-sidebar';
 
 function getUserFromCookie(getText: (key: string) => string) {
@@ -38,8 +38,8 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
  useEffect(() => {
  setUser(getUserFromCookie(t));
 
- const api = getApiClient();
- const companyId = api['companyId'];
+ try {
+ const companyId = getCompanyIdFromToken();
  const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
  if (companyId && token) {
  fetch(`/api/companies/${companyId}/modules`, {
@@ -55,6 +55,9 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
  setActivatedModules(active);
  })
  .catch(() => {});
+ }
+ } catch {
+ // Silent fail — sidebar will show only base sections
  }
  }, []);
 
