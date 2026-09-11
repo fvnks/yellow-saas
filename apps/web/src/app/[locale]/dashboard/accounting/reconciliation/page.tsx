@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from "react";
 import { getApiClient } from "@/lib/api-client";
@@ -231,7 +231,7 @@ export default function ReconciliationPage() {
  <button
  onClick={syncFintoc}
  disabled={syncingFintoc || !selectedAccount}
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
  >
  {syncingFintoc ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
  Sincronizar Fintoc Bank
@@ -248,7 +248,7 @@ export default function ReconciliationPage() {
  <button
  onClick={createSession}
  disabled={!selectedAccount || refreshing}
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
  >
  <Plus className="w-4 h-4" />
  Nueva Sesión
@@ -349,7 +349,7 @@ export default function ReconciliationPage() {
  </div>
  ) : (
  <div className="flex flex-col items-center gap-2">
- <AlertCircle className="w-8 h-8 text-slate-300" />
+ <AlertCircle className="w-8 h-8 text-iron" />
  <p className="text-sm">No hay líneas para mostrar</p>
  <p className="text-xs text-slate-400">Selecciona una cuenta y período, luego carga el estado</p>
  </div>
@@ -430,7 +430,7 @@ export default function ReconciliationPage() {
  <tr>
  <td colSpan={5} className="px-6 py-12 text-center text-slate-500">
  <div className="flex flex-col items-center gap-2">
- <AlertCircle className="w-8 h-8 text-slate-300" />
+ <AlertCircle className="w-8 h-8 text-iron" />
  <p className="text-sm">No hay sesiones de conciliación</p>
  <p className="text-xs text-slate-400">Crea una nueva sesión para comenzar</p>
  </div>

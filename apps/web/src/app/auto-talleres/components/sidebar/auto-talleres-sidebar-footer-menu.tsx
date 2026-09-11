@@ -30,7 +30,7 @@ export function AutoTalleresSidebarFooterMenu() {
  </DropdownMenuTrigger>
  <DropdownMenuContent
  side="top"
- className="w-[--radix-popper-anchor-width] bg-[#1E293B] border-slate-700 text-ink"
+ className="w-[--radix-popper-anchor-width] bg-[#1E293B] border-mist text-ink"
  >
  <DropdownMenuItem asChild>
  <Link href="/dashboard" className="cursor-pointer">

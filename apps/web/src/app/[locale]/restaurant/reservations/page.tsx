@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { INITIAL_RESERVATIONS, INITIAL_TABLES, Reservation } from '../lib/restaurant-store';
@@ -171,7 +171,7 @@ export default function ReservationsPage() {
 
  <button
  type="submit"
- className="w-full bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-xs mt-2"
+ className="w-full bg-monday-violet hover:bg-monday-violet-hover text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-xs mt-2"
  >
  <Mail className="w-4 h-4" /> Confirmar & Enviar Código por Email
  </button>

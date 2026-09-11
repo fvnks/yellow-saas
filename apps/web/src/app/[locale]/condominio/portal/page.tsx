@@ -239,7 +239,7 @@ export default function PortalResidentePage() {
  )}
  <tr className="bg-cloud text-white font-black">
  <td className="p-3 text-sm">TOTAL A PAGAR FECHA VENCIMIENTO ({activePeriod.dueDate})</td>
- <td className="p-3 text-center text-xs font-medium text-slate-300">CLP sin centavos</td>
+ <td className="p-3 text-center text-xs font-medium text-iron">CLP sin centavos</td>
  <td className="p-3 text-right text-base text-monday-violet">{formatCLP(calc.totalToPayCLP)}</td>
  </tr>
  </tbody>

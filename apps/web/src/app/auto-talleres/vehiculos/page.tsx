@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -120,12 +120,12 @@ export default function VehiculosPage() {
  {/* Header */}
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
- <h1 className="text-2xl font-black text-[#0F172A]">Vehículos</h1>
+ <h1 className="text-2xl font-black text-ink">Vehículos</h1>
  <p className="text-sm text-slate-500 mt-1">{vehicles.length} vehículos registrados</p>
  </div>
  <button
  onClick={() => useAutoTalleresStore.setState({ showNewVehicleModal: true })}
- className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Plus className="w-4 h-4" />
  Registrar Vehículo
@@ -159,7 +159,7 @@ export default function VehiculosPage() {
  <Car className="w-6 h-6 text-orange-500" />
  </div>
  <div>
- <p className="text-lg font-black text-[#0F172A]">{vehicle.patente}</p>
+ <p className="text-lg font-black text-ink">{vehicle.patente}</p>
  <p className="text-xs text-slate-500">{vehicle.marca} {vehicle.modelo}</p>
  </div>
  </div>

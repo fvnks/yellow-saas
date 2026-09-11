@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -74,10 +74,10 @@ export default function InspeccionesPage() {
  {/* Header */}
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
- <h1 className="text-2xl font-black text-[#0F172A]">Inspecciones</h1>
+ <h1 className="text-2xl font-black text-ink">Inspecciones</h1>
  <p className="text-sm text-slate-500 mt-1">Registro visual y estado de vehículos</p>
  </div>
- <button className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]">
+ <button className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]">
  <Plus className="w-4 h-4" />
  Nueva Inspección
  </button>
@@ -92,7 +92,7 @@ export default function InspeccionesPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total</p>
- <p className="text-2xl font-black text-[#0F172A]">{inspections.length}</p>
+ <p className="text-2xl font-black text-ink">{inspections.length}</p>
  </div>
  </div>
  </div>
@@ -103,7 +103,7 @@ export default function InspeccionesPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Finalizadas</p>
- <p className="text-2xl font-black text-[#0F172A]">{inspections.filter(i => i.status === 'finalized').length}</p>
+ <p className="text-2xl font-black text-ink">{inspections.filter(i => i.status === 'finalized').length}</p>
  </div>
  </div>
  </div>
@@ -114,7 +114,7 @@ export default function InspeccionesPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Con Daños</p>
- <p className="text-2xl font-black text-[#0F172A]">{inspections.filter(i => i.damage_notes).length}</p>
+ <p className="text-2xl font-black text-ink">{inspections.filter(i => i.damage_notes).length}</p>
  </div>
  </div>
  </div>
@@ -125,7 +125,7 @@ export default function InspeccionesPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Alertas</p>
- <p className="text-2xl font-black text-[#0F172A]">{inspections.filter(i => i.dashboard_warnings).length}</p>
+ <p className="text-2xl font-black text-ink">{inspections.filter(i => i.dashboard_warnings).length}</p>
  </div>
  </div>
  </div>
@@ -159,7 +159,7 @@ export default function InspeccionesPage() {
  </div>
  <div>
  <div className="flex items-center gap-2">
- <p className="text-lg font-black text-[#0F172A]">{insp.id}</p>
+ <p className="text-lg font-black text-ink">{insp.id}</p>
  <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${getStatusBadgeClass(insp.status)}`}>
  {insp.status === 'finalized' ? 'Finalizada' : 'Borrador'}
  </span>

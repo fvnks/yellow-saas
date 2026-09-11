@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { CreditCard, Plus, ShieldCheck, AlertTriangle, CheckCircle2 } from 'lucide-react';
@@ -71,7 +71,7 @@ export default function TransbankPage() {
  </div>
  <button
  onClick={() => setShowModal(true)}
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
  >
  <Plus className="w-4 h-4" />
  Iniciar Pago Webpay
@@ -164,7 +164,7 @@ export default function TransbankPage() {
  </div>
  <div className="pt-2 flex justify-end gap-2">
  <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl text-xs">Cancelar</button>
- <button type="submit" className="px-4 py-2 bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-semibold rounded-xl text-xs shadow-xs">Generar Token Webpay</button>
+ <button type="submit" className="px-4 py-2 bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold rounded-xl text-xs shadow-xs">Generar Token Webpay</button>
  </div>
  </form>
  </div>

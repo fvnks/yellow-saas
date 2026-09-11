@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { Bell, Send, Building2, CheckCircle, AlertTriangle, Info, AlertCircle, Plus, X, Eye, EyeOff, Trash2 } from 'lucide-react';
@@ -146,7 +146,7 @@ export default function AdminNotificationsPage() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-white">Notificaciones</h1>
+ <h1 className="text-2xl font-bold text-ink">Notificaciones</h1>
  <p className="text-sm text-muted-foreground mt-1">
  Envía notificaciones a empresas de la plataforma
  {unreadCount > 0 && <span className="ml-2 text-violet-400">({unreadCount} sin leer)</span>}
@@ -156,7 +156,7 @@ export default function AdminNotificationsPage() {
  {unreadCount > 0 && (
  <button
  onClick={handleMarkAllAsRead}
- className="flex items-center gap-2 px-4 py-2 bg-card hover:bg-slate-700 rounded-lg text-sm font-medium text-foreground hover:text-white transition-colors"
+ className="flex items-center gap-2 px-4 py-2 bg-card hover:bg-mist rounded-lg text-sm font-medium text-foreground hover:text-ink transition-colors"
  >
  <Eye className="w-4 h-4" />
  Marcar todo como leído
@@ -164,7 +164,7 @@ export default function AdminNotificationsPage() {
  )}
  <button
  onClick={() => { setShowCreate(!showCreate); setMessage({ type: '', text: '' }); }}
- className="flex items-center gap-2 px-4 py-2 bg-cloud hover:bg-slate-700 rounded-lg text-sm font-medium text-white transition-colors"
+ className="flex items-center gap-2 px-4 py-2 bg-cloud hover:bg-mist rounded-lg text-sm font-medium text-ink transition-colors"
  >
  <Plus className="w-4 h-4" />
  {showCreate ? 'Cancelar' : 'Nueva Notificación'}
@@ -174,7 +174,7 @@ export default function AdminNotificationsPage() {
 
  {showCreate && (
  <div className="bg-cloud border border-border rounded-xl p-6">
- <h3 className="text-sm font-semibold text-white mb-4">Enviar Notificación</h3>
+ <h3 className="text-sm font-semibold text-ink mb-4">Enviar Notificación</h3>
  {message.text && (
  <div className={`mb-4 flex items-center gap-2 p-3 rounded-lg text-sm ${
  message.type === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
@@ -190,7 +190,7 @@ export default function AdminNotificationsPage() {
  <select
  value={form.company_id}
  onChange={(e) => setForm({ ...form, company_id: e.target.value })}
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  >
  <option value="">Todas las empresas</option>
  {companies.map((c) => (
@@ -203,7 +203,7 @@ export default function AdminNotificationsPage() {
  <select
  value={form.type}
  onChange={(e) => setForm({ ...form, type: e.target.value })}
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  >
  <option value="info">Info</option>
  <option value="warning">Advertencia</option>
@@ -220,7 +220,7 @@ export default function AdminNotificationsPage() {
  onChange={(e) => setForm({ ...form, title: e.target.value })}
  placeholder="Título de la notificación"
  required
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink placeholder:text-iron focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  <div className="space-y-1">
@@ -231,14 +231,14 @@ export default function AdminNotificationsPage() {
  placeholder="Contenido de la notificación..."
  required
  rows={3}
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30 resize-none"
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink placeholder:text-iron focus:outline-none focus:ring-1 focus:ring-violet-500/30 resize-none"
  />
  </div>
  <div className="flex justify-end">
  <button
  type="submit"
  disabled={saving}
- className="flex items-center gap-2 px-4 py-2 bg-cloud hover:bg-slate-700 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50"
+ className="flex items-center gap-2 px-4 py-2 bg-cloud hover:bg-mist rounded-lg text-sm font-medium text-ink transition-colors disabled:opacity-50"
  >
  <Send className="w-4 h-4" />
  {saving ? 'Enviando...' : 'Enviar'}
@@ -261,8 +261,8 @@ export default function AdminNotificationsPage() {
  onClick={() => setFilter(opt.value as any)}
  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
  filter === opt.value
- ? 'bg-cloud text-white'
- : 'bg-card text-muted-foreground hover:text-white hover:bg-slate-700'
+ ? 'bg-cloud text-ink'
+ : 'bg-card text-muted-foreground hover:text-ink hover:bg-mist'
  }`}
  >
  {opt.label}
@@ -304,7 +304,7 @@ export default function AdminNotificationsPage() {
  filtered.map((n) => {
  const Icon = typeIcons[n.type] || Info;
  return (
- <tr key={n.id} className={`border-b border-slate-700/50 hover:bg-cloud/60 transition-colors ${!n.is_read ? 'bg-violet-500/5' : ''}`}>
+ <tr key={n.id} className={`border-b border-mist/50 hover:bg-cloud/60 transition-colors ${!n.is_read ? 'bg-violet-500/5' : ''}`}>
  <td className="px-6 py-4">
  <button
  onClick={() => handleMarkAsRead(n.id, !n.is_read)}
@@ -325,7 +325,7 @@ export default function AdminNotificationsPage() {
  {n.type}
  </span>
  </td>
- <td className={`px-6 py-4 text-sm font-medium ${n.is_read ? 'text-muted-foreground' : 'text-white'}`}>{n.title}</td>
+ <td className={`px-6 py-4 text-sm font-medium ${n.is_read ? 'text-muted-foreground' : 'text-ink'}`}>{n.title}</td>
  <td className="px-6 py-4">
  <div className="flex items-center gap-1.5 text-xs text-foreground">
  <Building2 className="w-3 h-3 text-muted-foreground" />

@@ -138,7 +138,7 @@ function VeterinarySidebarNavigationContent({ sidebarItems = veterinarySidebarIt
  "rounded-xl transition-all duration-150 py-2.5 px-3 text-xs font-semibold flex items-center gap-2.5 w-full",
  itemActive
  ? `bg-cloud text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-xs`
- : "text-slate-300 hover:text-ink hover:bg-cloud"
+ : "text-iron hover:text-ink hover:bg-cloud"
  )}
  >
  <Icon className={cn("h-4 w-4 shrink-0", itemActive ? theme.iconActiveColorClass : "text-iron")} />

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useEffect } from 'react';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 export default function LocaleError({ error, reset }: { error: Error & { digest?: string }; reset: () => void; }) {
@@ -11,7 +11,7 @@ export default function LocaleError({ error, reset }: { error: Error & { digest?
  </div>
  <h2 className="text-lg font-bold text-slate-900 mb-2">Algo sali mal</h2>
  <p className="text-sm text-slate-500 mb-6">Ha ocurrido un error inesperado. Inténtalo de nuevo.</p>
- <button onClick={reset} className="inline-flex items-center gap-2 bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-semibold px-5 py-2.5 rounded-xl text-sm transition-all active:scale-[0.98]">
+ <button onClick={reset} className="inline-flex items-center gap-2 bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all active:scale-[0.98]">
  <RefreshCw className="w-4 h-4" /> Reintentar
  </button>
  </div>

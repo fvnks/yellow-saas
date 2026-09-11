@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Wallet, Plus, Search, Edit, Trash2, X, Filter, TrendingUp, Calendar, Tag } from 'lucide-react';
@@ -172,7 +172,7 @@ export default function ExpensesPage() {
  </div>
  <button
  onClick={() => { setShowForm(true); setEditingExpense(null); resetForm(); }}
- className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all active:scale-[0.98] shadow-sm"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all active:scale-[0.98] shadow-sm"
  >
  <Plus className="w-4 h-4" /> Nuevo Gasto
  </button>
@@ -289,7 +289,7 @@ export default function ExpensesPage() {
  <div className="p-12 text-center text-sm text-slate-500">Cargando...</div>
  ) : expenses.length === 0 ? (
  <div className="p-12 text-center">
- <Wallet className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+ <Wallet className="w-12 h-12 text-iron mx-auto mb-3" />
  <p className="text-sm text-slate-500">No hay gastos registrados</p>
  <p className="text-xs text-slate-400 mt-1">Registra tu primer gasto para comenzar el control operativo</p>
  </div>
@@ -482,7 +482,7 @@ export default function ExpensesPage() {
  Cancelar
  </button>
  <button onClick={handleSave} disabled={saving || !form.amount}
- className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all disabled:opacity-50">
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all disabled:opacity-50">
  {saving ? 'Guardando...' : editingExpense ? 'Actualizar' : 'Crear Gasto'}
  </button>
  </div>

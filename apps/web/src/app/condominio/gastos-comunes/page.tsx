@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import {
@@ -197,7 +197,7 @@ export default function GastosComunesPage() {
 
  <button
  onClick={() => setShowAddPeriodModal(true)}
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-150 shadow-xs flex items-center gap-2 active:scale-[0.98]"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-xs font-bold transition-all duration-150 shadow-xs flex items-center gap-2 active:scale-[0.98]"
  >
  <Plus className="w-4 h-4" />
  Crear Nuevo Período
@@ -530,7 +530,7 @@ export default function GastosComunesPage() {
  </button>
  <button
  type="submit"
- className="px-4 py-2 bg-monday-violet text-slate-950 font-bold rounded-xl text-xs hover:bg-[#EAB308]"
+ className="px-4 py-2 bg-monday-violet text-white font-bold rounded-xl text-xs hover:bg-monday-violet-hover"
  >
  Crear Período
  </button>

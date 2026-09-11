@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Wallet, Check, AlertTriangle, Banknote, CreditCard, Smartphone, TrendingUp } from 'lucide-react';
@@ -147,7 +147,7 @@ export default function RestaurantCashierPage() {
  <button
  type="submit"
  disabled={done}
- className="w-full bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2.5 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
+ className="w-full bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
  >
  <TrendingUp className="w-4 h-4" /> {done ? 'Cierre Registrado' : 'Cerrar Caja & Emitir Arqueo'}
  </button>

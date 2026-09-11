@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { ReactNode, useEffect, useRef, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
@@ -122,11 +122,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
  return (
  <NextIntlClientProvider locale="es" messages={esMessages}>
- <div className="flex min-h-screen bg-cloud text-slate-100 select-none">
+  <div className="flex min-h-screen bg-cloud text-ink select-none">
  <Toaster position="top-right" richColors closeButton />
 
  {/* Sidebar */}
- <aside className={`fixed left-0 top-0 h-screen border-r border-mist z-50 transition-all duration-300 shadow-xl flex flex-col ${sidebarOpen ? 'w-64' : 'w-16'}`} style={{ background: 'linear-gradient(180deg, #0B0F1A 0%, #0F172A 100%)' }}>
+  <aside className={`fixed left-0 top-0 h-screen bg-snow border-r border-mist z-50 transition-all duration-300 shadow-xl flex flex-col ${sidebarOpen ? 'w-64' : 'w-16'}`}>
  {/* Brand Header */}
  <div className="p-3 border-b border-mist/80 bg-cloud/40">
  <ModuleSidebarHeader moduleKey="admin" icon={Shield} />
@@ -143,14 +143,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar en Admin..."
- className="w-full bg-cloud/80 border border-mist text-xs text-slate-200 placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-violet-600/60 focus:ring-1 focus:ring-violet-600/40 transition-all"
+ className="w-full bg-cloud/80 border border-mist text-xs text-ink placeholder:text-iron rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-violet-600/60 focus:ring-1 focus:ring-violet-600/40 transition-all"
  />
  {searchQuery ? (
- <button onClick={() => setSearchQuery("")} className="absolute right-2 text-slate-400 hover:text-slate-200">
+ <button onClick={() => setSearchQuery("")} className="absolute right-2 text-slate-400 hover:text-ink">
  <X className="w-3.5 h-3.5" />
  </button>
  ) : (
- <span className="absolute right-2 text-[9px] font-mono font-bold text-slate-500 bg-cloud/80 px-1.5 py-0.5 rounded border border-slate-700">⌘K</span>
+ <span className="absolute right-2 text-[9px] font-mono font-bold text-slate-500 bg-cloud/80 px-1.5 py-0.5 rounded border border-mist">⌘K</span>
  )}
  </div>
  </div>
@@ -175,8 +175,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
  href={item.path}
  className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
  active
- ? 'bg-cloud text-white font-bold border-l-4 border-violet-500/70 shadow-sm shadow-violet-500/5'
- : 'text-slate-300 hover:text-slate-100 hover:bg-cloud/60'
+ ? 'bg-cloud text-ink font-bold border-l-4 border-violet-500/70 shadow-sm shadow-violet-500/5'
+ : 'text-iron hover:text-ink hover:bg-cloud/60'
  }`}
  >
  <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-violet-400' : 'text-slate-400'}`} />
@@ -213,19 +213,19 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
  <div className="flex items-center gap-4">
  <button
  onClick={() => setSidebarOpen(!sidebarOpen)}
- className="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-cloud"
+ className="text-slate-400 hover:text-ink transition-colors p-1 rounded-lg hover:bg-cloud"
  >
  {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
  </button>
- <div className="flex items-center gap-2 px-3 py-1 bg-cloud/80 border border-slate-700/80 rounded-xl">
+ <div className="flex items-center gap-2 px-3 py-1 bg-cloud border border-mist rounded-xl">
  <Shield className="w-3.5 h-3.5 text-violet-400" />
- <span className="text-[10px] font-black text-slate-200 uppercase tracking-wider">Super Admin Console</span>
+ <span className="text-[10px] font-black text-ink uppercase tracking-wider">Super Admin Console</span>
  </div>
  </div>
  <div className="flex items-center gap-3">
  <Link
  href="/dashboard"
- className="text-xs font-semibold text-slate-300 hover:text-white transition-all px-3.5 py-1.5 rounded-xl bg-cloud hover:bg-slate-700 border border-slate-700 shadow-sm"
+ className="text-xs font-semibold text-iron hover:text-ink transition-all px-3.5 py-1.5 rounded-xl bg-cloud hover:bg-mist border border-mist shadow-sm"
  >
  Ir al ERP
  </Link>

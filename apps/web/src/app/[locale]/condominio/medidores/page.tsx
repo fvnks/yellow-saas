@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Gauge, Plus, Flame, Droplet, Zap, Search, CheckCircle2, AlertCircle } from 'lucide-react';
@@ -102,7 +102,7 @@ export default function MedidoresPage() {
 
  <button
  onClick={() => setShowAddReadingModal(true)}
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 self-start sm:self-auto"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 self-start sm:self-auto"
  >
  <Plus className="w-4 h-4" />
  Nueva Lectura
@@ -241,7 +241,7 @@ export default function MedidoresPage() {
  </button>
  <button
  type="submit"
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-xs"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2 rounded-xl text-xs"
  >
  Guardar Lectura
  </button>

@@ -115,7 +115,7 @@ export default function AutoTalleresSidebar() {
  <item.icon className="w-5 h-5 flex-shrink-0" />
  <span className="flex-1 text-left">{item.label}</span>
  {item.badge && (
- <span className="bg-orange-500 text-slate-950 text-xs font-bold px-2 py-0.5 rounded-full">
+ <span className="bg-orange-500 text-ink text-xs font-bold px-2 py-0.5 rounded-full">
  {item.badge}
  </span>
  )}
@@ -125,7 +125,7 @@ export default function AutoTalleresSidebar() {
  </button>
  
  {item.children && itemExpanded && (
- <div className="ml-4 mt-1 space-y-1 border-l border-slate-700 pl-4">
+ <div className="ml-4 mt-1 space-y-1 border-l border-mist pl-4">
  {item.children.map((child) => (
  <Link
  key={child.id}

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import {
@@ -116,7 +116,7 @@ export default function VeterinaryProfessionalsPage() {
 
  <button
  onClick={openCreate}
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
  >
  <Plus className="w-4 h-4" />
  Registrar Profesional

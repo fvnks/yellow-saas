@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Vote, Plus, Users, ShieldCheck, CheckCircle2, AlertCircle, FileText, BarChart3, Scale } from 'lucide-react';
@@ -141,7 +141,7 @@ export default function AsambleasPage() {
 
  <button
  onClick={() => setShowAddAssemblyModal(true)}
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 self-start sm:self-auto"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 self-start sm:self-auto"
  >
  <Plus className="w-4 h-4" />
  Nueva Asamblea
@@ -151,7 +151,7 @@ export default function AsambleasPage() {
  {/* Assembly List */}
  {assemblies.length === 0 ? (
  <div className="bg-white border border-slate-200/80 rounded-2xl p-12 text-center">
- <Vote className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+ <Vote className="w-12 h-12 text-iron mx-auto mb-3" />
  <h3 className="text-sm font-bold text-slate-900">No hay asambleas registradas</h3>
  <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
  Crea la primera asamblea para convocar a copropietarios y someter a votación proyectos o aprobación de cuentas.
@@ -206,7 +206,7 @@ export default function AsambleasPage() {
  setSelectedTopic(topic);
  setShowVoteModal(true);
  }}
- className="bg-monday-violet hover:bg-[#1E293B] text-white font-medium px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 self-start sm:self-center shrink-0"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 self-start sm:self-center shrink-0"
  >
  <Scale className="w-3.5 h-3.5 text-yellow-400" />
  Emitir Voto
@@ -273,7 +273,7 @@ export default function AsambleasPage() {
  </button>
  <button
  type="submit"
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-xs"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2 rounded-xl text-xs"
  >
  Crear Asamblea
  </button>
@@ -329,7 +329,7 @@ export default function AsambleasPage() {
  </button>
  <button
  type="submit"
- className="bg-monday-violet hover:bg-[#1E293B] text-white font-medium px-4 py-2 rounded-xl text-xs"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-4 py-2 rounded-xl text-xs"
  >
  Registrar Voto Ponderado
  </button>

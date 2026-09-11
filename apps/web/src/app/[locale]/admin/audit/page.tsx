@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { ScrollText, Search, Shield, Building2, ChevronLeft, ChevronRight, Filter, X } from 'lucide-react';
@@ -116,13 +116,13 @@ export default function AdminAuditPage() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-white">Audit Log</h1>
+ <h1 className="text-2xl font-bold text-ink">Audit Log</h1>
  <p className="text-sm text-muted-foreground mt-1">Registro de acciones de super admins en la plataforma</p>
  </div>
  <button
  onClick={() => setShowFilters(!showFilters)}
  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
- showFilters || activeFilters > 0 ? 'bg-cloud text-white' : 'bg-card text-muted-foreground hover:text-white'
+ showFilters || activeFilters > 0 ? 'bg-cloud text-ink' : 'bg-card text-muted-foreground hover:text-ink'
  }`}
  >
  <Filter className="w-4 h-4" />
@@ -139,7 +139,7 @@ export default function AdminAuditPage() {
  <select
  value={filters.action}
  onChange={(e) => { setFilters({ ...filters, action: e.target.value }); setPage(0); }}
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  >
  <option value="">Todas</option>
  <option value="login">Login</option>
@@ -153,7 +153,7 @@ export default function AdminAuditPage() {
  <select
  value={filters.super_admin_id}
  onChange={(e) => { setFilters({ ...filters, super_admin_id: e.target.value }); setPage(0); }}
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  >
  <option value="">Todos</option>
  {superAdmins.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
@@ -164,7 +164,7 @@ export default function AdminAuditPage() {
  <select
  value={filters.company_id}
  onChange={(e) => { setFilters({ ...filters, company_id: e.target.value }); setPage(0); }}
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  >
  <option value="">Todas</option>
  {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -176,7 +176,7 @@ export default function AdminAuditPage() {
  type="date"
  value={filters.date_from}
  onChange={(e) => { setFilters({ ...filters, date_from: e.target.value }); setPage(0); }}
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  <div className="space-y-1">
@@ -185,13 +185,13 @@ export default function AdminAuditPage() {
  type="date"
  value={filters.date_to}
  onChange={(e) => { setFilters({ ...filters, date_to: e.target.value }); setPage(0); }}
- className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  </div>
  {activeFilters > 0 && (
  <div className="mt-3 flex justify-end">
- <button onClick={clearFilters} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-white transition-colors">
+ <button onClick={clearFilters} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-ink transition-colors">
  <X className="w-3 h-3" /> Limpiar filtros
  </button>
  </div>
@@ -228,7 +228,7 @@ export default function AdminAuditPage() {
  </tr>
  ) : (
  entries.map((entry) => (
- <tr key={entry.id} className="border-b border-border/50 hover:bg-slate-700/30 transition-colors">
+ <tr key={entry.id} className="border-b border-border/50 hover:bg-mist/30 transition-colors">
  <td className="px-6 py-4 text-xs text-muted-foreground">
  {new Date(entry.created_at).toLocaleString('es-CL')}
  </td>
@@ -238,7 +238,7 @@ export default function AdminAuditPage() {
  <Shield className="w-3.5 h-3.5 text-violet-400" />
  </div>
  <div>
- <p className="text-xs font-medium text-white">{entry.super_admin_name}</p>
+ <p className="text-xs font-medium text-ink">{entry.super_admin_name}</p>
  <p className="text-[10px] text-muted-foreground">{entry.super_admin_email}</p>
  </div>
  </div>
@@ -271,7 +271,7 @@ export default function AdminAuditPage() {
  <button
  onClick={() => setPage(p => Math.max(0, p - 1))}
  disabled={page === 0}
- className="p-1.5 rounded-lg bg-card text-muted-foreground hover:text-white disabled:opacity-30 transition-colors"
+ className="p-1.5 rounded-lg bg-card text-muted-foreground hover:text-ink disabled:opacity-30 transition-colors"
  >
  <ChevronLeft className="w-4 h-4" />
  </button>
@@ -279,7 +279,7 @@ export default function AdminAuditPage() {
  <button
  onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
  disabled={page >= totalPages - 1}
- className="p-1.5 rounded-lg bg-card text-muted-foreground hover:text-white disabled:opacity-30 transition-colors"
+ className="p-1.5 rounded-lg bg-card text-muted-foreground hover:text-ink disabled:opacity-30 transition-colors"
  >
  <ChevronRight className="w-4 h-4" />
  </button>

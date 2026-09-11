@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import {
@@ -385,7 +385,7 @@ export default function VisitorParkingLayout() {
  onClick={() => setEditMode(!editMode)}
  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs ${
  editMode
- ? 'bg-monday-violet text-slate-950 hover:bg-peach'
+ ? 'bg-monday-violet text-white hover:bg-peach'
  : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
  }`}
  >
@@ -440,7 +440,7 @@ export default function VisitorParkingLayout() {
  <span>{sec.name}</span>
  <span
  className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
- isSelected ? 'bg-cyan-400 text-slate-950' : 'bg-slate-200 text-slate-700'
+ isSelected ? 'bg-cyan-400 text-white' : 'bg-slate-200 text-slate-700'
  }`}
  >
  {secOccupied}/{secSpots.length}
@@ -646,7 +646,7 @@ export default function VisitorParkingLayout() {
  <div className="my-2">
  {isOccupied && spot.parkedVisitor ? (
  <div className="space-y-1">
- <div className="bg-cloud text-[#c64d00]/60 font-black text-center text-xs py-1 px-2 rounded-lg tracking-widest border border-slate-700 shadow-xs">
+ <div className="bg-cloud text-[#c64d00]/60 font-black text-center text-xs py-1 px-2 rounded-lg tracking-widest border border-mist shadow-xs">
  {spot.parkedVisitor.vehiclePlate}
  </div>
  <p className="text-[11px] font-bold text-slate-900 truncate mt-1">
@@ -790,7 +790,7 @@ export default function VisitorParkingLayout() {
  </button>
  <button
  type="submit"
- className="px-4 py-2 rounded-xl text-xs font-bold bg-monday-violet text-slate-950 hover:bg-[#EAB308] transition-all shadow-xs"
+ className="px-4 py-2 rounded-xl text-xs font-bold bg-monday-violet text-white hover:bg-monday-violet-hover transition-all shadow-xs"
  >
  Confirmar e Iniciar Estacionamiento
  </button>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -22,14 +22,14 @@ export function Navbar() {
  <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
  {/* Logo */}
  <Link href="/" className="flex items-center gap-2.5 group">
- <div className="w-9 h-9 rounded-xl bg-monday-violet flex items-center justify-center shadow-md shadow-[#0F172A]/20 group-hover:scale-105 transition-transform duration-150">
+ <div className="w-9 h-9 rounded-xl bg-monday-violet flex items-center justify-center shadow-md shadow-ink/20 group-hover:scale-105 transition-transform duration-150">
  <span className="text-[#c64d00]/70 font-bold text-base tracking-wider">Y</span>
  </div>
  <div className="flex flex-col">
- <span className="text-lg font-bold text-[#0F172A] leading-none">
+ <span className="text-lg font-bold text-ink leading-none">
  Yellow <span className="text-[#c64d00]/70">ERP</span>
  </span>
- <span className="text-[10px] text-[#64748B] font-medium tracking-wide">SaaS para Chile</span>
+ <span className="text-[10px] text-slate-text font-medium tracking-wide">SaaS para Chile</span>
  </div>
  </Link>
 
@@ -39,7 +39,7 @@ export function Navbar() {
  <a
  key={link.label}
  href={link.href}
- className="text-sm font-medium text-[#64748B] hover:text-[#0F172A] :text-white transition-colors duration-150"
+ className="text-sm font-medium text-slate-text hover:text-ink  transition-colors duration-150"
  >
  {link.label}
  </a>
@@ -50,20 +50,20 @@ export function Navbar() {
  <div className="hidden md:flex items-center gap-3">
  <button
  onClick={toggle}
- className="p-2 rounded-lg hover:bg-[#F1F5F9] transition-colors"
+ className="p-2 rounded-lg hover:bg-cloud transition-colors"
  aria-label="Cambiar tema"
  >
- {theme === 'dark' ? <Sun className="w-4 h-4 text-[#c64d00]/70" /> : <Moon className="w-4 h-4 text-[#64748B]" />}
+ {theme === 'dark' ? <Sun className="w-4 h-4 text-[#c64d00]/70" /> : <Moon className="w-4 h-4 text-slate-text" />}
  </button>
  <Link
  href="/login"
- className="text-sm font-medium text-[#0F172A] hover:text-[#0F172A]/70 :text-white/70 transition-colors duration-150 px-4 py-2"
+ className="text-sm font-medium text-ink hover:text-ink/70  transition-colors duration-150 px-4 py-2"
  >
  Iniciar Sesión
  </Link>
  <Link
  href="/register"
- className="rounded-xl bg-monday-violet hover:bg-[#1E293B] :bg-peach text-white px-5 py-2.5 text-sm font-medium shadow-sm shadow-[#0F172A]/25 transition-all duration-150 active:scale-[0.98] flex items-center gap-1.5"
+ className="rounded-xl bg-monday-violet hover:bg-monday-violet-hover  text-white px-5 py-2.5 text-sm font-medium shadow-sm shadow-ink/25 transition-all duration-150 active:scale-[0.98] flex items-center gap-1.5"
  >
  <span>Empezar Gratis</span>
  <ChevronRight className="w-4 h-4" />
@@ -75,7 +75,7 @@ export function Navbar() {
  onClick={() => setMobileOpen(!mobileOpen)}
  aria-label={mobileOpen ? 'Cerrar menú' : 'Abrir menú'}
  aria-expanded={mobileOpen}
- className="md:hidden p-2 text-[#0F172A] hover:text-[#0F172A]/70 rounded-lg hover:bg-[#F1F5F9] transition-colors"
+ className="md:hidden p-2 text-ink hover:text-ink/70 rounded-lg hover:bg-cloud transition-colors"
  >
  {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
  </button>
@@ -84,7 +84,7 @@ export function Navbar() {
  {/* Mobile menu */}
  <div
  className={cn(
- 'md:hidden overflow-hidden transition-all duration-300 border-b border-[#E2E8F0] bg-white ',
+ 'md:hidden overflow-hidden transition-all duration-300 border-b border-mist bg-white ',
  mobileOpen ? 'max-h-72' : 'max-h-0'
  )}
  >
@@ -93,30 +93,30 @@ export function Navbar() {
  <a
  key={link.label}
  href={link.href}
- className="block text-sm font-medium text-[#0F172A] hover:text-[#0F172A]/70 :text-white/70 py-1"
+ className="block text-sm font-medium text-ink hover:text-ink/70  py-1"
  onClick={() => setMobileOpen(false)}
  >
  {link.label}
  </a>
  ))}
- <div className="pt-3 border-t border-[#E2E8F0] space-y-2">
+ <div className="pt-3 border-t border-mist space-y-2">
  <button
  onClick={toggle}
- className="flex items-center gap-2 w-full text-sm font-medium text-[#64748B] py-2"
+ className="flex items-center gap-2 w-full text-sm font-medium text-slate-text py-2"
  >
  {theme === 'dark' ? <Sun className="w-4 h-4 text-[#c64d00]/70" /> : <Moon className="w-4 h-4" />}
  {theme === 'dark' ? 'Modo Claro' : 'Modo Oscuro'}
  </button>
  <Link
  href="/login"
- className="block text-sm font-medium text-[#0F172A] py-2 text-center rounded-xl border border-[#E2E8F0] "
+ className="block text-sm font-medium text-ink py-2 text-center rounded-xl border border-mist "
  onClick={() => setMobileOpen(false)}
  >
  Iniciar Sesión
  </Link>
  <Link
  href="/register"
- className="block rounded-xl bg-monday-violet hover:bg-[#1E293B] :bg-peach px-4 py-2.5 text-sm font-medium text-white text-center shadow-sm"
+ className="block rounded-xl bg-monday-violet hover:bg-monday-violet-hover  px-4 py-2.5 text-sm font-medium text-white text-center shadow-sm"
  onClick={() => setMobileOpen(false)}
  >
  Empezar Gratis

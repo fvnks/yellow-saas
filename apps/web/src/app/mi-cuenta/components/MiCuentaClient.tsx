@@ -32,7 +32,7 @@ function Content() {
  <div className="flex items-center justify-between">
  <div>
  <div className="flex items-center gap-2">
- <h1 className="text-xl font-bold text-[#0F172A]">Mi Cuenta</h1>
+ <h1 className="text-xl font-bold text-ink">Mi Cuenta</h1>
  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
  Suscripción ERP
  </span>
@@ -41,7 +41,7 @@ function Content() {
  </div>
  </div>
 
- <div className="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+ <div className="bg-white border border-mist rounded-2xl shadow-sm overflow-hidden">
  <ContinuousTabs
  tabs={tabs}
  defaultActiveId={activeTab}

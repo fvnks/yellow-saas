@@ -242,7 +242,7 @@ export default function VeterinaryEstimatesPage() {
  </div>
  <button
  onClick={() => setShowModal(true)}
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
  >
  <Plus className="w-4 h-4" />
  Nueva Estimación
@@ -612,7 +612,7 @@ export default function VeterinaryEstimatesPage() {
  </button>
  <button
  type="submit"
- className="bg-monday-violet hover:bg-[#1E293B] text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-sm flex items-center gap-2"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-sm flex items-center gap-2"
  >
  <FileText className="w-4 h-4" />
  Guardar Presupuesto (Pendiente Aprobación)

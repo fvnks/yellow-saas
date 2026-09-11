@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
@@ -104,7 +104,7 @@ export default function VehicleDetailPage() {
  </Link>
  <div>
  <div className="flex items-center gap-3">
- <h1 className="text-2xl font-black text-[#0F172A]">{vehicle.plate}</h1>
+ <h1 className="text-2xl font-black text-ink">{vehicle.plate}</h1>
  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
  {vehicle.plate_type}
  </span>
@@ -128,7 +128,7 @@ export default function VehicleDetailPage() {
  </Link>
  <button
  onClick={() => setShowOrderModal(true)}
- className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Plus className="w-4 h-4" />
  Nueva Orden
@@ -243,7 +243,7 @@ export default function VehicleDetailPage() {
  <Wrench className="w-5 h-5 text-orange-500" />
  </div>
  <div>
- <p className="text-2xl font-black text-[#0F172A]">{vehicle.total_orders || 0}</p>
+ <p className="text-2xl font-black text-ink">{vehicle.total_orders || 0}</p>
  <p className="text-xs text-slate-500">Órdenes realizadas</p>
  </div>
  </div>
@@ -252,7 +252,7 @@ export default function VehicleDetailPage() {
  <Calendar className="w-5 h-5 text-blue-500" />
  </div>
  <div>
- <p className="text-2xl font-black text-[#0F172A]">
+ <p className="text-2xl font-black text-ink">
  {vehicle.last_visit ? new Date(vehicle.last_visit).toLocaleDateString('es-CL', { day: 'numeric', month: 'short' }) : 'N/A'}
  </p>
  <p className="text-xs text-slate-500">Última visita</p>

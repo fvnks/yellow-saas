@@ -33,18 +33,18 @@ export function AppCondominioSidebar(props: React.ComponentProps<typeof Sidebar>
  }, []);
 
  return (
- <Sidebar className="border-r border-mist bg-monday-violet text-ink select-none shadow-xl" collapsible="icon" {...props}>
- <SidebarHeader className="bg-monday-violet pt-3">
+ <Sidebar className="border-r border-mist bg-snow text-ink select-none shadow-xl" collapsible="icon" {...props}>
+ <SidebarHeader className="bg-snow pt-3">
  <CondominioSidebarHeader />
  <SidebarSeparator className="mx-3 bg-cloud/80 my-2" />
  </SidebarHeader>
 
- <SidebarContent className="bg-monday-violet">
+ <SidebarContent className="bg-snow">
  <ModuleSidebarBackButton moduleKey="condominio" />
  <CondominioSidebarNavigation />
  </SidebarContent>
 
- <SidebarFooter className="bg-monday-violet p-3 border-t border-mist/80">
+ <SidebarFooter className="bg-snow p-3 border-t border-mist/80">
  <ModuleSidebarFooter moduleKey="condominio" user={user} />
  </SidebarFooter>
 

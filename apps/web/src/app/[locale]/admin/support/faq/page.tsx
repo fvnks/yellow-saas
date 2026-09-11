@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { BookOpen, Plus, Search, Pencil, Trash2, Check, X, Save } from 'lucide-react';
@@ -137,7 +137,7 @@ export default function AdminFaqPage() {
  setForm(emptyForm);
  setShowForm(!showForm);
  }}
- className="bg-cloud hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+ className="bg-cloud hover:bg-mist text-ink px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
  >
  <Plus className="w-4 h-4" />
  {showForm ? 'Cancelar' : 'Nueva FAQ'}
@@ -145,7 +145,7 @@ export default function AdminFaqPage() {
  </div>
 
  {showForm && (
- <div className="bg-cloud border border-slate-700 rounded-xl shadow-sm p-6">
+ <div className="bg-cloud border border-mist rounded-xl shadow-sm p-6">
  <h3 className="text-sm font-semibold text-foreground mb-4">{editing ? 'Editar FAQ' : 'Nueva FAQ'}</h3>
  <form onSubmit={handleSubmit} className="space-y-4">
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -204,14 +204,14 @@ export default function AdminFaqPage() {
  <button
  type="button"
  onClick={() => { setShowForm(false); setEditing(null); setForm(emptyForm); }}
- className="bg-cloud border border-slate-700 hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+ className="bg-cloud border border-mist hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
  >
  Cancelar
  </button>
  <button
  type="submit"
  disabled={saving}
- className="bg-cloud hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"
+ className="bg-cloud hover:bg-mist text-ink px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"
  >
  <Save className="w-4 h-4" />
  {saving ? 'Guardando...' : editing ? 'Actualizar' : 'Crear FAQ'}
@@ -221,7 +221,7 @@ export default function AdminFaqPage() {
  </div>
  )}
 
- <div className="bg-cloud border border-slate-700 rounded-xl shadow-sm p-4">
+ <div className="bg-cloud border border-mist rounded-xl shadow-sm p-4">
  <div className="relative">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <input
@@ -234,7 +234,7 @@ export default function AdminFaqPage() {
  </div>
  </div>
 
- <div className="bg-cloud border border-slate-700 rounded-xl shadow-sm overflow-hidden">
+ <div className="bg-cloud border border-mist rounded-xl shadow-sm overflow-hidden">
  <table className="w-full">
  <thead>
  <tr className="border-b border-border">

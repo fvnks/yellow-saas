@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { FileText, Send, CheckCircle2, XCircle, Clock, AlertTriangle, RefreshCw, Download } from 'lucide-react';
@@ -209,7 +209,7 @@ export default function DTEPage() {
  <button
  onClick={() => sendDTE(inv.id)}
  disabled={sending === inv.id}
- className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition-all flex items-center gap-1.5"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-all flex items-center gap-1.5"
  >
  {sending === inv.id ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
  Enviar

@@ -5,7 +5,7 @@ export default function AutoTalleresSidebarBreadcrumbs() {
  <div className="flex items-center gap-2 text-sm text-[#64748B] ">
  <LayoutDashboard className="w-4 h-4" />
  <span>/</span>
- <span className="text-[#0F172A] font-semibold">Talleres Automotrices</span>
+ <span className="text-ink font-semibold">Talleres Automotrices</span>
  </div>
  );
 }

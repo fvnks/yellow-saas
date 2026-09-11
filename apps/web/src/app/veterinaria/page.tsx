@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
@@ -83,7 +83,7 @@ export default function VeterinaryDashboardPage() {
  return (
  <div className="space-y-6">
  {/* Header Banner */}
- <div className="bg-gradient-to-r from-[#0F172A] via-slate-900 to-emerald-950 rounded-2xl p-6 text-white shadow-md relative overflow-hidden border border-mist">
+ <div className="bg-gradient-to-r from-monday-violet via-monday-violet-hover to-mint rounded-2xl p-6 text-white shadow-md relative overflow-hidden border border-mist">
  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
  <div className="flex items-center gap-2 mb-2">
@@ -97,7 +97,7 @@ export default function VeterinaryDashboardPage() {
  <h1 className="text-2xl font-black text-white tracking-tight">
  Consola Operativa Clínica Veterinaria
  </h1>
- <p className="text-slate-300 text-sm mt-1 max-w-2xl">
+ <p className="text-iron text-sm mt-1 max-w-2xl">
  Gestión integral de pacientes multiespecie, fichas clínicas 360°, agenda de boxes, hospitalización y emisión de recetas.
  </p>
  </div>
@@ -105,7 +105,7 @@ export default function VeterinaryDashboardPage() {
  <div className="flex flex-wrap items-center gap-3">
  <Link
  href="/veterinaria/consultas"
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Stethoscope className="w-4 h-4" />
  Nueva Consulta

@@ -230,7 +230,7 @@ export default function VeterinaryLabPage() {
  </div>
  <button
  onClick={() => setShowModal(true)}
- className="bg-monday-violet hover:bg-[#EAB308] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
+ className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
  >
  <Plus className="w-4 h-4" />
  Nueva Orden de Examen
@@ -492,7 +492,7 @@ export default function VeterinaryLabPage() {
  <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100">
  Cancelar
  </button>
- <button type="submit" className="bg-monday-violet hover:bg-[#1E293B] text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-sm flex items-center gap-2">
+ <button type="submit" className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-sm flex items-center gap-2">
  <TestTube className="w-4 h-4" />
  Registrar Orden
  </button>
@@ -621,7 +621,7 @@ export default function VeterinaryLabPage() {
  </div>
  ) : (
  <div className="text-center py-10">
- <Stethoscope className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+ <Stethoscope className="w-12 h-12 text-iron mx-auto mb-3" />
  <p className="text-sm text-slate-500 mb-4">La muestra {sampleTypeLabels[selectedOrder.sampleType].toLowerCase()} está {selectedOrder.status === 'en_proceso' ? 'en análisis' : 'pendiente de tomar'}.</p>
  {selectedOrder.status === 'en_proceso' && (
  <button
