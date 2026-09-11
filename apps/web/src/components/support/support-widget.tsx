@@ -289,12 +289,12 @@ export function SupportWidget() {
  onClick={() => { setView('create'); }}
  className="w-full flex items-center gap-3 p-4 rounded-xl border border-border hover:bg-muted transition-colors text-left"
  >
- <div className="w-10 h-10 bg-blue-50 dark:bg-blue-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+ <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
  <Plus className="w-5 h-5 text-blue-600" />
  </div>
  <div>
  <p className="text-sm font-semibold text-foreground ">Nuevo ticket</p>
- <p className="text-xs text-muted-foreground dark:text-muted-foreground">Crea una solicitud de soporte</p>
+ <p className="text-xs text-muted-foreground ">Crea una solicitud de soporte</p>
  </div>
  </button>
  <button
@@ -306,7 +306,7 @@ export function SupportWidget() {
  </div>
  <div className="flex-1">
  <p className="text-sm font-semibold text-foreground ">Mis tickets</p>
- <p className="text-xs text-muted-foreground dark:text-muted-foreground">Conversa con nuestro equipo</p>
+ <p className="text-xs text-muted-foreground ">Conversa con nuestro equipo</p>
  </div>
  {unread > 0 && (
  <span className="min-w-5 h-5 px-1.5 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center">
@@ -318,12 +318,12 @@ export function SupportWidget() {
  onClick={() => router.push('/ayuda')}
  className="w-full flex items-center gap-3 p-4 rounded-xl border border-border hover:bg-muted transition-colors text-left"
  >
- <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+ <div className="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center flex-shrink-0">
  <BookOpen className="w-5 h-5 text-emerald-600" />
  </div>
  <div>
  <p className="text-sm font-semibold text-foreground ">Centro de Ayuda</p>
- <p className="text-xs text-muted-foreground dark:text-muted-foreground">Preguntas frecuentes y guías</p>
+ <p className="text-xs text-muted-foreground ">Preguntas frecuentes y guías</p>
  </div>
  </button>
  </div>
@@ -333,7 +333,7 @@ export function SupportWidget() {
  <div className="p-4">
  <button
  onClick={() => setView('menu')}
- className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground dark:text-muted-foreground dark:hover:text-foreground mb-3 transition-colors"
+ className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground :text-foreground mb-3 transition-colors"
  >
  <ChevronLeft className="w-3.5 h-3.5" />
  Volver
@@ -387,7 +387,7 @@ export function SupportWidget() {
  <div className="p-4">
  <button
  onClick={() => setView('menu')}
- className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground dark:text-muted-foreground dark:hover:text-foreground mb-3 transition-colors"
+ className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground :text-foreground mb-3 transition-colors"
  >
  <ChevronLeft className="w-3.5 h-3.5" />
  Volver
@@ -399,7 +399,7 @@ export function SupportWidget() {
  ) : tickets.length === 0 ? (
  <div className="text-center py-8">
  <MessageSquare className="w-10 h-10 text-foreground mx-auto mb-3" />
- <p className="text-sm text-muted-foreground dark:text-muted-foreground">No tienes tickets de soporte</p>
+ <p className="text-sm text-muted-foreground ">No tienes tickets de soporte</p>
  <button
  onClick={() => setView('create')}
  className="mt-3 inline-flex items-center gap-1.5 text-sm text-blue-600 hover:underline font-medium"
@@ -476,7 +476,7 @@ export function SupportWidget() {
  </div>
  </div>
 
- <div ref={chatBottomRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-muted dark:bg-background/40">
+ <div ref={chatBottomRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-muted ">
  {loadingChat ? (
  <div className="space-y-2">
  {[1, 2].map(i => <div key={i} className="h-12 bg-muted rounded-lg animate-pulse" />)}
@@ -514,7 +514,7 @@ export function SupportWidget() {
  rel="noopener noreferrer"
  className={`flex items-center gap-2 px-2 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
  isSupport
- ? 'bg-muted dark:bg-muted/50 border-border text-foreground hover:bg-muted dark:hover:bg-muted'
+ ? 'bg-muted /50 border-border text-foreground hover:bg-muted :bg-muted'
  : 'bg-blue-700/30 border-blue-400/40 text-white hover:bg-blue-700/40'
  }`}
  >
@@ -535,7 +535,7 @@ export function SupportWidget() {
 
  {ticket && (ticket.status === 'resolved' || ticket.status === 'closed') ? (
  <div className="px-4 py-3 border-t border-border ">
- <p className="text-xs text-muted-foreground dark:text-muted-foreground text-center">
+ <p className="text-xs text-muted-foreground text-center">
  Este ticket está {ticket.status === 'closed' ? 'cerrado' : 'resuelto'}
  </p>
  </div>

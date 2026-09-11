@@ -68,7 +68,7 @@ export function StatsCounter({ value, decimals = 0, prefix = '', suffix = '', la
  <p className="text-3xl sm:text-4xl font-bold text-foreground tabular-nums">
  {prefix}{formatted}{suffix}
  </p>
- <p className="mt-2 text-sm text-muted-foreground dark:text-muted-foreground">{label}</p>
+ <p className="mt-2 text-sm text-muted-foreground ">{label}</p>
  </div>
  );
 }

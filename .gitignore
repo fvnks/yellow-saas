@@ -44,3 +44,5 @@ skills-lock.json
 
 # local dev logs
 *.log
+
+build-output.txt
