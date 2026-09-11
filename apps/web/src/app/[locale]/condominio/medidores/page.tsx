@@ -165,7 +165,7 @@ export default function MedidoresPage() {
 
  {/* Modal Add Reading */}
  {showAddReadingModal && (
- <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+ <div className="fixed inset-0 bg-cloud/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
  <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-xl space-y-4">
  <h3 className="text-base font-bold text-slate-900">Registrar Lectura de Medidor</h3>
  <form onSubmit={handleAddReading} className="space-y-4">

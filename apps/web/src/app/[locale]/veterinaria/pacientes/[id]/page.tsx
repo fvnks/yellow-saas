@@ -169,7 +169,7 @@ export default function VeterinaryPatientDetailPage() {
  <div className="space-y-1">
  <div className="flex flex-wrap items-center gap-2">
  <h1 className="text-2xl font-black text-slate-900">{patient.name}</h1>
- <span className="bg-slate-900 text-white text-xs font-bold px-2.5 py-0.5 rounded-md capitalize">
+ <span className="bg-cloud text-white text-xs font-bold px-2.5 py-0.5 rounded-md capitalize">
  {patient.species} • {patient.breed}
  </span>
  {patient.isSterilized && (
@@ -212,7 +212,7 @@ export default function VeterinaryPatientDetailPage() {
  </Link>
  <Link
  href="/veterinaria/agenda"
- className="bg-monday-violet hover:bg-slate-800 text-white font-medium px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2"
+ className="bg-monday-violet hover:bg-cloud text-white font-medium px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2"
  >
  <Calendar className="w-4 h-4" />
  Agendar Cita
@@ -380,7 +380,7 @@ export default function VeterinaryPatientDetailPage() {
  <h3 className="text-base font-bold text-slate-900">Historial de Consultas Médicas</h3>
  <Link
  href="/veterinaria/consultas"
- className="bg-monday-violet text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-slate-800 transition-all"
+ className="bg-monday-violet text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all"
  >
  + Nueva Consulta
  </Link>
@@ -429,7 +429,7 @@ export default function VeterinaryPatientDetailPage() {
  <h3 className="text-base font-bold text-slate-900">Evolución Clínica & Notas SOAP</h3>
  <Link
  href="/veterinaria/evoluciones"
- className="bg-monday-violet text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-slate-800 transition-all"
+ className="bg-monday-violet text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all"
  >
  + Nueva Nota SOAP
  </Link>

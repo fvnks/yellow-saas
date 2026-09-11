@@ -113,7 +113,7 @@ export default function AutoTalleresDashboardPage() {
  return (
  <div className="space-y-6 animate-fade-in-up">
  {/* Header Banner */}
- <div className="bg-gradient-to-r from-monday-violet via-slate-900 to-orange-950 rounded-2xl p-6 text-white shadow-md relative overflow-hidden border border-slate-800">
+ <div className="bg-gradient-to-r from-monday-violet via-slate-900 to-orange-950 rounded-2xl p-6 text-white shadow-md relative overflow-hidden border border-mist">
  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
  <div className="flex items-center gap-2 mb-2">
@@ -273,7 +273,7 @@ export default function AutoTalleresDashboardPage() {
  order.status === 'approved' ? 'bg-purple-500' :
  order.status === 'quality_check' ? 'bg-orange-500' :
  order.status === 'ready' ? 'bg-emerald-500' :
- order.status === 'checkin' ? 'bg-slate-400' :
+ order.status === 'checkin' ? 'bg-cloud0' :
  'bg-slate-300'
  }`} />
  <div className="flex-1 min-w-0">

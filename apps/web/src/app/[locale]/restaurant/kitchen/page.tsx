@@ -36,7 +36,7 @@ export default function KDSKitchenPage() {
  return (
  <div className="space-y-6">
  {/* Title Banner */}
- <div className="bg-slate-900 text-white rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+ <div className="bg-cloud text-white rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <div className="flex items-center gap-2">
  <span className="p-2 rounded-xl bg-monday-violet/20 text-monday-violet border border-monday-violet/30">
@@ -77,7 +77,7 @@ export default function KDSKitchenPage() {
  }`}
  >
  {/* Order Header */}
- <div className="px-4 py-3 border-b border-slate-200/80 bg-slate-900 text-white flex items-center justify-between">
+ <div className="px-4 py-3 border-b border-slate-200/80 bg-cloud text-white flex items-center justify-between">
  <div>
  <h3 className="text-sm font-bold">{order.tableName}</h3>
  <p className="text-[11px] text-slate-400">PIN: {order.pinCode} • Hora: {order.createdAt}</p>

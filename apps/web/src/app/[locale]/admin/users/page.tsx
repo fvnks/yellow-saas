@@ -16,7 +16,7 @@ interface User {
 
 const roleColors: Record<string, string> = {
  owner: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
- admin: 'bg-slate-800 text-violet-400 border-violet-500/20',
+ admin: 'bg-cloud text-violet-400 border-violet-500/20',
  manager: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
  member: 'bg-slate-500/10 text-muted-foreground border-border/20',
  viewer: 'bg-slate-500/10 text-muted-foreground border-border/20',
@@ -119,7 +119,7 @@ export default function AdminUsersPage() {
  placeholder="Buscar por nombre, email o empresa..."
  value={search}
  onChange={(e) => setSearch(e.target.value)}
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-500/50"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-500/50"
  />
  </div>
  </div>
@@ -226,7 +226,7 @@ export default function AdminUsersPage() {
  <select
  value={editForm.role}
  onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  >
  <option value="owner">Owner</option>
  <option value="admin">Admin</option>
@@ -240,7 +240,7 @@ export default function AdminUsersPage() {
  <select
  value={editForm.status}
  onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  >
  <option value="active">Activo</option>
  <option value="invited">Invitado</option>

@@ -31,7 +31,7 @@ export default function InformedConsentModal({
  if (!isOpen) return null;
 
  return (
- <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4">
+ <div className="fixed inset-0 z-50 bg-cloud/70 backdrop-blur-xs flex items-center justify-center p-4">
  <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-2xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
  <div className="flex items-center gap-2">

@@ -190,7 +190,7 @@ export default function AdminNotificationsPage() {
  <select
  value={form.company_id}
  onChange={(e) => setForm({ ...form, company_id: e.target.value })}
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  >
  <option value="">Todas las empresas</option>
  {companies.map((c) => (
@@ -203,7 +203,7 @@ export default function AdminNotificationsPage() {
  <select
  value={form.type}
  onChange={(e) => setForm({ ...form, type: e.target.value })}
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  >
  <option value="info">Info</option>
  <option value="warning">Advertencia</option>
@@ -220,7 +220,7 @@ export default function AdminNotificationsPage() {
  onChange={(e) => setForm({ ...form, title: e.target.value })}
  placeholder="Título de la notificación"
  required
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  <div className="space-y-1">
@@ -231,7 +231,7 @@ export default function AdminNotificationsPage() {
  placeholder="Contenido de la notificación..."
  required
  rows={3}
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30 resize-none"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30 resize-none"
  />
  </div>
  <div className="flex justify-end">
@@ -304,7 +304,7 @@ export default function AdminNotificationsPage() {
  filtered.map((n) => {
  const Icon = typeIcons[n.type] || Info;
  return (
- <tr key={n.id} className={`border-b border-slate-700/50 hover:bg-slate-800/60 transition-colors ${!n.is_read ? 'bg-violet-500/5' : ''}`}>
+ <tr key={n.id} className={`border-b border-slate-700/50 hover:bg-cloud/60 transition-colors ${!n.is_read ? 'bg-violet-500/5' : ''}`}>
  <td className="px-6 py-4">
  <button
  onClick={() => handleMarkAsRead(n.id, !n.is_read)}

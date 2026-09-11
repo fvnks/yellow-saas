@@ -254,7 +254,7 @@ export default function VeterinaryPatientsPage() {
  <td className="px-6 py-4 text-right">
  <Link
  href={`/veterinaria/pacientes/${patient.id}`}
- className="bg-monday-violet hover:bg-slate-800 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-xs inline-flex items-center gap-1.5"
+ className="bg-monday-violet hover:bg-cloud text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-xs inline-flex items-center gap-1.5"
  >
  <Stethoscope className="w-3.5 h-3.5 text-emerald-400" />
  Ficha 360°
@@ -367,7 +367,7 @@ export default function VeterinaryPatientsPage() {
  <button
  type="submit"
  disabled={saving}
- className="bg-monday-violet hover:bg-slate-800 text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm disabled:opacity-50"
+ className="bg-monday-violet hover:bg-cloud text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm disabled:opacity-50"
  >
  {saving ? 'Guardando...' : 'Guardar Mascota'}
  </button>

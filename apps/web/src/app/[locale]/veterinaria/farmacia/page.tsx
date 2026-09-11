@@ -529,7 +529,7 @@ export default function VeterinaryPharmacyPage() {
  <button
  type="button"
  onClick={handleAddToCart}
- className="bg-monday-violet hover:bg-slate-800 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1"
+ className="bg-monday-violet hover:bg-cloud text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1"
  >
  <Plus className="w-3.5 h-3.5" /> Agregar
  </button>

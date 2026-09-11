@@ -198,7 +198,7 @@ export default function VetReportsPage() {
  };
  return (
  <div key={status} className="flex items-center gap-3">
- <span className={`w-3 h-3 rounded-full ${colors[status] || 'bg-slate-400'}`} />
+ <span className={`w-3 h-3 rounded-full ${colors[status] || 'bg-cloud0'}`} />
  <span className="text-xs font-bold text-slate-700 capitalize flex-1">{status.replace('_', ' ')}</span>
  <span className="text-xs font-black text-slate-900">{count}</span>
  </div>

@@ -64,7 +64,7 @@ export default function AdminDashboard() {
  {cards.map((card) => {
  const Icon = card.icon;
  return (
- <div key={card.label} className="bg-cloud border border-slate-800 rounded-xl p-6 hover:border-violet-500/30 transition-colors">
+ <div key={card.label} className="bg-cloud border border-mist rounded-xl p-6 hover:border-violet-500/30 transition-colors">
  <div className="flex items-center justify-between">
  <div>
  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{card.label}</p>
@@ -87,25 +87,25 @@ export default function AdminDashboard() {
 
  {/* Quick Actions */}
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
- <div className="bg-cloud border border-slate-800 rounded-xl p-6">
+ <div className="bg-cloud border border-mist rounded-xl p-6">
  <h3 className="text-sm font-semibold text-white mb-4">Acciones Rápidas</h3>
  <div className="space-y-3">
- <a href="/admin/companies" className="flex items-center gap-3 p-3 bg-slate-800/60 rounded-lg hover:bg-slate-700/50 border border-slate-800 hover:border-slate-600 transition-colors">
+ <a href="/admin/companies" className="flex items-center gap-3 p-3 bg-cloud/60 rounded-lg hover:bg-slate-700/50 border border-mist hover:border-slate-600 transition-colors">
  <Building2 className="w-4 h-4 text-violet-400" />
  <span className="text-sm text-slate-200">Gestionar Empresas</span>
  </a>
- <a href="/admin/users" className="flex items-center gap-3 p-3 bg-slate-800/60 rounded-lg hover:bg-slate-700/50 border border-slate-800 hover:border-slate-600 transition-colors">
+ <a href="/admin/users" className="flex items-center gap-3 p-3 bg-cloud/60 rounded-lg hover:bg-slate-700/50 border border-mist hover:border-slate-600 transition-colors">
  <Users className="w-4 h-4 text-emerald-400" />
  <span className="text-sm text-slate-200">Gestionar Usuarios</span>
  </a>
- <a href="/admin/grants" className="flex items-center gap-3 p-3 bg-slate-800/60 rounded-lg hover:bg-slate-700/50 border border-slate-800 hover:border-slate-600 transition-colors">
+ <a href="/admin/grants" className="flex items-center gap-3 p-3 bg-cloud/60 rounded-lg hover:bg-slate-700/50 border border-mist hover:border-slate-600 transition-colors">
  <Shield className="w-4 h-4 text-slate-400" />
  <span className="text-sm text-slate-200">Solicitudes de Acceso</span>
  </a>
  </div>
  </div>
 
- <div className="bg-cloud border border-slate-800 rounded-xl p-6">
+ <div className="bg-cloud border border-mist rounded-xl p-6">
  <h3 className="text-sm font-semibold text-white mb-4">Estado del Sistema</h3>
  <div className="space-y-4">
  <div className="flex items-center justify-between">
@@ -118,7 +118,7 @@ export default function AdminDashboard() {
  : 'bg-violet-500/10 text-violet-400 border-violet-500/20'
  }`}>
  <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${
- metrics.dbStatus === 'connected' ? 'bg-emerald-400' : metrics.dbStatus === 'error' ? 'bg-rose-400' : 'bg-slate-400'
+ metrics.dbStatus === 'connected' ? 'bg-emerald-400' : metrics.dbStatus === 'error' ? 'bg-rose-400' : 'bg-cloud0'
  }`} />
  {metrics.dbStatus === 'connected' ? 'Conectada' : metrics.dbStatus === 'error' ? 'Error' : 'Verificando...'}
  {metrics.dbStatus === 'connected' && metrics.dbLatency > 0 && (

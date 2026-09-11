@@ -50,7 +50,7 @@ export function RestaurantSidebar(props: React.ComponentProps<typeof Sidebar>) {
  <select
  value={currentUser?.id || ''}
  onChange={(e) => switchUser(e.target.value)}
- className="mt-1 w-full bg-slate-900 border border-mist text-xs text-slate-200 rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-monday-violet transition-all cursor-pointer"
+ className="mt-1 w-full bg-cloud border border-mist text-xs text-slate-200 rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-monday-violet transition-all cursor-pointer"
  >
  {users.map((u) => (
  <option key={u.id} value={u.id}>

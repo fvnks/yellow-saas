@@ -11,7 +11,7 @@ const PERIOD_OPTIONS = [
 ];
 
 const PROJECT_COLORS = [
- 'bg-primary', 'bg-emerald-500', 'bg-amber-500', 'bg-blue-500',
+ 'bg-primary', 'bg-emerald-500', 'bg-monday-violet', 'bg-blue-500',
  'bg-rose-500', 'bg-blue-600', 'bg-teal-500', 'bg-orange-500',
  'bg-teal-500', 'bg-rose-500',
 ];

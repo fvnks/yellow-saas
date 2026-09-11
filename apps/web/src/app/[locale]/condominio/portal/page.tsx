@@ -111,7 +111,7 @@ export default function PortalResidentePage() {
 
  <button
  onClick={handlePrintSlip}
- className="bg-monday-violet hover:bg-slate-800 text-white font-bold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-xs"
+ className="bg-monday-violet hover:bg-cloud text-white font-bold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-xs"
  >
  <Printer className="w-4 h-4 text-cyan-400" />
  Imprimir Aviso (PDF)
@@ -237,7 +237,7 @@ export default function PortalResidentePage() {
  <td className="p-3 text-right font-bold text-rose-600">{formatCLP(calc.previousBalanceCLP)}</td>
  </tr>
  )}
- <tr className="bg-slate-900 text-white font-black">
+ <tr className="bg-cloud text-white font-black">
  <td className="p-3 text-sm">TOTAL A PAGAR FECHA VENCIMIENTO ({activePeriod.dueDate})</td>
  <td className="p-3 text-center text-xs font-medium text-slate-300">CLP sin centavos</td>
  <td className="p-3 text-right text-base text-monday-violet">{formatCLP(calc.totalToPayCLP)}</td>

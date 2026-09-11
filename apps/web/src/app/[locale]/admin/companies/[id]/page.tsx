@@ -205,7 +205,7 @@ export default function AdminCompanyDetailPage() {
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
  <div className="bg-cloud border border-border rounded-xl p-6">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 bg-slate-800 border border-violet-500/20 rounded-xl flex items-center justify-center">
+ <div className="w-10 h-10 bg-cloud border border-violet-500/20 rounded-xl flex items-center justify-center">
  <Building2 className="w-5 h-5 text-violet-400" />
  </div>
  <div>
@@ -334,7 +334,7 @@ export default function AdminCompanyDetailPage() {
  <td className="px-6 py-4">
  <button
  onClick={() => handleLoginAs(user.id)}
- className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700/20 border border-violet-500/20 rounded-lg text-xs font-medium text-violet-400 transition-colors"
+ className="flex items-center gap-1.5 px-3 py-1.5 bg-cloud hover:bg-slate-700/20 border border-violet-500/20 rounded-lg text-xs font-medium text-violet-400 transition-colors"
  >
  <LogIn className="w-3.5 h-3.5" />
  Ingresar
@@ -376,7 +376,7 @@ export default function AdminCompanyDetailPage() {
  </div>
  </td>
  <td className="px-6 py-4">
- <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-slate-800 text-violet-400 border border-violet-500/20">
+ <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-cloud text-violet-400 border border-violet-500/20">
  {grant.access_level}
  </span>
  </td>

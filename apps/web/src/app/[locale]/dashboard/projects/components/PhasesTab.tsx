@@ -179,7 +179,7 @@ export default function PhasesTab({ projectId, phases, onRefresh }: PhasesTabPro
  {phase.start_date && <span>{phase.start_date} - {phase.end_date || '...'}</span>}
  </div>
  <div className="w-full bg-muted rounded-full h-1.5 mt-2">
- <div className={`h-1.5 rounded-full transition-all ${usage > 90 ? 'bg-red-500' : usage > 70 ? 'bg-amber-500' : 'bg-primary'}`}
+ <div className={`h-1.5 rounded-full transition-all ${usage > 90 ? 'bg-red-500' : usage > 70 ? 'bg-monday-violet' : 'bg-primary'}`}
  style={{ width: `${Math.min(usage, 100)}%` }} />
  </div>
  </div>

@@ -297,7 +297,7 @@ export default function WaiterPOSPage() {
  {/* Center Column: Comanda de la Mesa Seleccionada (4 Cols) */}
  <div className="lg:col-span-4 space-y-4">
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
- <div className="px-5 py-4 border-b border-slate-200/80 flex items-center justify-between bg-slate-900 text-white">
+ <div className="px-5 py-4 border-b border-slate-200/80 flex items-center justify-between bg-cloud text-white">
  <div>
  <h3 className="text-sm font-bold flex items-center gap-2">
  <span>{selectedTable?.tableName || 'Seleccione Mesa'}</span>
@@ -325,7 +325,7 @@ export default function WaiterPOSPage() {
  <p className="text-[11px] text-slate-500">Selecciona platos o bebidas de la carta para agregar al pedido.</p>
  <button
  onClick={handleStartOrderForTable}
- className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-xs"
+ className="bg-cloud hover:bg-cloud text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-xs"
  >
  + Abrir Comanda en {selectedTable.tableName}
  </button>
@@ -400,7 +400,7 @@ export default function WaiterPOSPage() {
  <button
  onClick={handleEmitBoleta}
  disabled={!activeOrder || activeOrder.items.length === 0}
- className="bg-monday-violet hover:bg-slate-800 disabled:opacity-50 text-white font-semibold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs"
+ className="bg-monday-violet hover:bg-cloud disabled:opacity-50 text-white font-semibold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs"
  >
  <Receipt className="w-3.5 h-3.5 text-monday-violet" /> Boleta SII
  </button>
@@ -480,7 +480,7 @@ export default function WaiterPOSPage() {
 
  {/* Modal Nueva Mesa */}
  {isNewTableModalOpen && (
- <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
+ <div className="fixed inset-0 bg-cloud/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
  <div className="bg-white border border-slate-200 rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
  <div className="bg-monday-violet text-white px-5 py-4 flex items-center justify-between">
  <h3 className="font-bold text-sm flex items-center gap-2">

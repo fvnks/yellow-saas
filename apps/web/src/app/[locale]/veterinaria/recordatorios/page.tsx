@@ -298,7 +298,7 @@ export default function VeterinaryRemindersPage() {
  </button>
  <button
  type="submit"
- className="bg-monday-violet hover:bg-slate-800 text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm"
+ className="bg-monday-violet hover:bg-cloud text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm"
  >
  Guardar Recordatorio
  </button>

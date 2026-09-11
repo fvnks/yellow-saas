@@ -40,7 +40,7 @@ export default function ResourceAllocation({ projectId }: ResourceAllocationProp
 
  const getWorkloadLevel = (r: EmployeeResource) => {
  if (r.in_progress_tasks >= 5 || r.pending_hours >= 40) return { level: 'overloaded', color: 'bg-red-500', label: 'Sobrecargado', textColor: 'text-red-700', bgColor: 'bg-red-50', borderColor: 'border-red-200' };
- if (r.in_progress_tasks >= 3 || r.pending_hours >= 20) return { level: 'high', color: 'bg-amber-500', label: 'Alta carga', textColor: 'text-amber-700', bgColor: 'bg-amber-50', borderColor: 'border-amber-200' };
+ if (r.in_progress_tasks >= 3 || r.pending_hours >= 20) return { level: 'high', color: 'bg-monday-violet', label: 'Alta carga', textColor: 'text-amber-700', bgColor: 'bg-amber-50', borderColor: 'border-amber-200' };
  if (r.active_tasks > 0) return { level: 'normal', color: 'bg-emerald-500', label: 'Normal', textColor: 'text-emerald-700', bgColor: 'bg-emerald-50', borderColor: 'border-emerald-200' };
  return { level: 'available', color: 'bg-muted', label: 'Disponible', textColor: 'text-muted-foreground', bgColor: 'bg-muted', borderColor: 'border-border' };
  };
@@ -63,7 +63,7 @@ export default function ResourceAllocation({ projectId }: ResourceAllocationProp
  <h3 className="text-sm font-semibold text-foreground">Asignacion de Recursos</h3>
  <div className="flex items-center gap-3 text-[10px]">
  <span className="flex items-center gap-1"><span className="w-2 h-2 bg-red-500 rounded-full" />{overloaded} sobrecargados</span>
- <span className="flex items-center gap-1"><span className="w-2 h-2 bg-amber-500 rounded-full" />{highWorkload} alta carga</span>
+ <span className="flex items-center gap-1"><span className="w-2 h-2 bg-monday-violet rounded-full" />{highWorkload} alta carga</span>
  <span className="flex items-center gap-1"><span className="w-2 h-2 bg-muted rounded-full" />{available} disponibles</span>
  </div>
  </div>

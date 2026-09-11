@@ -165,7 +165,7 @@ export default function RestaurantDashboardPage() {
  <div className="flex-1 min-w-0">
  <p className="text-xs font-semibold text-slate-800 truncate">{m.name}</p>
  <div className="mt-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
- <div className="h-full bg-slate-900 rounded-full" style={{ width: `${100 - i * 15}%` }} />
+ <div className="h-full bg-cloud rounded-full" style={{ width: `${100 - i * 15}%` }} />
  </div>
  </div>
  <span className="text-xs font-bold text-slate-900">{formatCLP(m.priceCLP)}</span>
@@ -187,7 +187,7 @@ export default function RestaurantDashboardPage() {
  {reservations.map((r) => (
  <div key={r.id} className="px-5 py-3 flex items-center justify-between">
  <div className="flex items-center gap-3">
- <div className="w-9 h-9 rounded-full bg-slate-900 text-monday-violet flex items-center justify-center text-xs font-black">
+ <div className="w-9 h-9 rounded-full bg-cloud text-monday-violet flex items-center justify-center text-xs font-black">
  {r.customerName.slice(0, 2).toUpperCase()}
  </div>
  <div>

@@ -83,10 +83,10 @@ export function PaymentCheckoutModal({
  };
 
  return (
- <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+ <div className="fixed inset-0 z-50 bg-cloud/60 backdrop-blur-xs flex items-center justify-center p-4">
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
  {/* Header */}
- <div className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between border-b border-slate-800">
+ <div className="bg-cloud text-white px-6 py-4 flex items-center justify-between border-b border-mist">
  <div>
  <h2 className="text-base font-bold flex items-center gap-2">
  <Receipt className="w-5 h-5 text-monday-violet" />
@@ -96,7 +96,7 @@ export function PaymentCheckoutModal({
  </div>
  <button
  onClick={onClose}
- className="p-1 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all"
+ className="p-1 rounded-xl text-slate-400 hover:text-white hover:bg-cloud transition-all"
  >
  <X className="w-5 h-5" />
  </button>
@@ -265,7 +265,7 @@ export function PaymentCheckoutModal({
  onClick={() => setPaymentMethod(m.id as any)}
  className={`p-2.5 rounded-xl border text-left transition-all flex items-center gap-2 ${
  isSelected
- ? 'border-slate-900 bg-slate-900 text-white font-bold shadow-xs'
+ ? 'border-slate-900 bg-cloud text-white font-bold shadow-xs'
  : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
  }`}
  >

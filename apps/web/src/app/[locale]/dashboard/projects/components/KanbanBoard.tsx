@@ -27,7 +27,7 @@ interface KanbanBoardProps {
 const columns = [
  { id: 'todo', label: 'Por Hacer', color: 'bg-muted0', bgColor: 'bg-muted', borderColor: 'border-border' },
  { id: 'in_progress', label: 'En Progreso', color: 'bg-blue-500', bgColor: 'bg-blue-50', borderColor: 'border-blue-200' },
- { id: 'review', label: 'En Revision', color: 'bg-amber-500', bgColor: 'bg-amber-50', borderColor: 'border-amber-200' },
+ { id: 'review', label: 'En Revision', color: 'bg-monday-violet', bgColor: 'bg-amber-50', borderColor: 'border-amber-200' },
  { id: 'done', label: 'Completada', color: 'bg-emerald-500', bgColor: 'bg-emerald-50', borderColor: 'border-emerald-200' },
 ];
 

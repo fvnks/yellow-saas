@@ -155,7 +155,7 @@ export default function Guia52Page() {
  </div>
 
  {showModal && (
- <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+ <div className="fixed inset-0 bg-cloud/50 backdrop-blur-xs flex items-center justify-center z-50 p-4">
  <div className="bg-white border border-slate-200/80 rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
  <h3 className="text-lg font-black text-slate-900">Emitir Guía DTE 52</h3>
  <form onSubmit={handleIssue} className="space-y-3">

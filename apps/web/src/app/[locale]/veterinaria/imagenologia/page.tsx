@@ -101,7 +101,7 @@ export default function ImagingPage() {
  return (
  <div className="space-y-6">
  {/* Header */}
- <div className="bg-gradient-to-r from-monday-violet via-slate-900 to-blue-950 rounded-2xl p-6 text-white shadow-md relative overflow-hidden border border-slate-800">
+ <div className="bg-gradient-to-r from-monday-violet via-slate-900 to-blue-950 rounded-2xl p-6 text-white shadow-md relative overflow-hidden border border-mist">
  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
  <div className="flex items-center gap-2 mb-2">
@@ -271,7 +271,7 @@ export default function ImagingPage() {
  <div className="flex justify-end gap-3 pt-2">
  <button onClick={() => setShowForm(false)} className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl">Cancelar</button>
  <button onClick={handleCreate} disabled={!form.patient_id || !form.client_id}
- className="bg-monday-violet hover:bg-slate-800 text-white font-medium px-5 py-2 rounded-xl text-sm transition-all disabled:opacity-50">
+ className="bg-monday-violet hover:bg-cloud text-white font-medium px-5 py-2 rounded-xl text-sm transition-all disabled:opacity-50">
  Crear Estudio
  </button>
  </div>

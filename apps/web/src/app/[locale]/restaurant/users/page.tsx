@@ -168,7 +168,7 @@ export default function RestaurantUsersPage() {
  <tr key={user.id} className="hover:bg-slate-50/80 transition-colors">
  <td className="px-5 py-3">
  <div className="flex items-center gap-3">
- <div className="w-8 h-8 rounded-full bg-slate-900 text-monday-violet flex items-center justify-center text-xs font-black">
+ <div className="w-8 h-8 rounded-full bg-cloud text-monday-violet flex items-center justify-center text-xs font-black">
  {user.name.slice(0, 2).toUpperCase()}
  </div>
  <div>

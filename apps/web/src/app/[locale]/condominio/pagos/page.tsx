@@ -275,7 +275,7 @@ export default function PagosConciliacionPage() {
 
  {/* Modal Add Payment */}
  {showAddPaymentModal && (
- <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+ <div className="fixed inset-0 bg-cloud/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
  <form onSubmit={handleRegisterPayment} className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-md w-full p-6 space-y-4">
  <div className="flex items-center justify-between border-b pb-3">
  <h3 className="text-base font-black text-slate-900">Registrar Pago de Copropietario</h3>

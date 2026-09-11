@@ -152,7 +152,7 @@ export default function RestaurantReportsPage() {
  <span className="font-semibold text-slate-900">{formatCLP(amount)}</span>
  </div>
  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
- <div className="h-full bg-slate-900 rounded-full" style={{ width: `${pct}%` }} />
+ <div className="h-full bg-cloud rounded-full" style={{ width: `${pct}%` }} />
  </div>
  </div>
  );

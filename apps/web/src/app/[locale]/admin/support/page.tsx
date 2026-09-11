@@ -290,7 +290,7 @@ export default function AdminSupportPage() {
  <select
  value={selectedTicket.assigned_to || ''}
  onChange={(e) => handleAssign(selectedTicket.id, e.target.value)}
- className="bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="bg-cloud/80 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  >
  <option value="">Sin asignar</option>
  {superAdmins.map((admin) => (
@@ -311,7 +311,7 @@ export default function AdminSupportPage() {
  selectedTicket.messages.map((msg) => (
  <div key={msg.id} className={`flex ${msg.sender_type === 'super_admin' ? 'justify-end' : 'justify-start'}`}>
  <div className={`max-w-[70%] rounded-xl px-4 py-3 ${
- msg.sender_type === 'super_admin' ? 'bg-violet-500/10 border border-violet-500/20' : 'bg-slate-800 border border-slate-700'
+ msg.sender_type === 'super_admin' ? 'bg-violet-500/10 border border-violet-500/20' : 'bg-cloud border border-slate-700'
  }`}>
  <p className="text-[10px] font-bold text-muted-foreground mb-1">{msg.sender_name} — {new Date(msg.created_at).toLocaleString('es-CL')}</p>
  <p className="text-sm text-white">{msg.message}</p>
@@ -381,7 +381,7 @@ export default function AdminSupportPage() {
  {pendingFiles.length > 0 && (
  <div className="flex flex-wrap gap-2 mb-3">
  {pendingFiles.map((f, i) => (
- <div key={i} className="flex items-center gap-1.5 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1">
+ <div key={i} className="flex items-center gap-1.5 bg-cloud border border-slate-700 rounded-lg px-2 py-1">
  {f.type.startsWith('image/')
  ? <ImageIcon className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
  : <FileText className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />}
@@ -415,7 +415,7 @@ export default function AdminSupportPage() {
  onChange={(e) => setReplyText(e.target.value)}
  placeholder="Escribe tu respuesta..."
  onKeyDown={(e) => e.key === 'Enter' && handleSendReply()}
- className="flex-1 bg-slate-800/80 border border-slate-700 rounded-lg px-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="flex-1 bg-cloud/80 border border-slate-700 rounded-lg px-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  <button
  onClick={handleSendReply}
@@ -465,7 +465,7 @@ export default function AdminSupportPage() {
  value={form.company_id}
  onChange={(e) => setForm({ ...form, company_id: e.target.value })}
  required
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  >
  <option value="">Seleccionar...</option>
  {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -479,7 +479,7 @@ export default function AdminSupportPage() {
  onChange={(e) => setForm({ ...form, subject: e.target.value })}
  placeholder="Asunto del ticket"
  required
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  <div className="space-y-1">
@@ -487,7 +487,7 @@ export default function AdminSupportPage() {
  <select
  value={form.priority}
  onChange={(e) => setForm({ ...form, priority: e.target.value })}
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  >
  <option value="low">Baja</option>
  <option value="medium">Media</option>
@@ -503,7 +503,7 @@ export default function AdminSupportPage() {
  onChange={(e) => setForm({ ...form, message: e.target.value })}
  placeholder="Descripción del problema..."
  rows={3}
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30 resize-none"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30 resize-none"
  />
  </div>
  <div className="flex justify-end">
@@ -523,7 +523,7 @@ export default function AdminSupportPage() {
  placeholder="Buscar tickets..."
  value={search}
  onChange={(e) => setSearch(e.target.value)}
- className="w-full bg-slate-800/80 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
+ className="w-full bg-cloud/80 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-violet-500/30"
  />
  </div>
  <div className="flex items-center gap-2">

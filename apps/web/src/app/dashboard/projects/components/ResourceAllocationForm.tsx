@@ -185,7 +185,7 @@ export default function ResourceAllocationForm({ projectId, employees, onRefresh
  </div>
  <div className="mt-2">
  <div className="w-full bg-muted rounded-full h-1.5">
- <div className={`h-1.5 rounded-full transition-all ${alloc.allocation_percent > 100 ? 'bg-red-500' : alloc.allocation_percent > 80 ? 'bg-amber-500' : 'bg-primary'}`}
+ <div className={`h-1.5 rounded-full transition-all ${alloc.allocation_percent > 100 ? 'bg-red-500' : alloc.allocation_percent > 80 ? 'bg-monday-violet' : 'bg-primary'}`}
  style={{ width: `${Math.min(alloc.allocation_percent, 100)}%` }} />
  </div>
  </div>

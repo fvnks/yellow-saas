@@ -114,7 +114,7 @@ export default function BudgetAlerts({ projectId, budget, costs, expenses }: Bud
  <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
  <div 
  className={`h-full rounded-full transition-all ${
- percentUsed > 90 ? 'bg-red-500' : percentUsed > 75 ? 'bg-orange-500' : percentUsed > 50 ? 'bg-amber-500' : 'bg-emerald-500'
+ percentUsed > 90 ? 'bg-red-500' : percentUsed > 75 ? 'bg-orange-500' : percentUsed > 50 ? 'bg-monday-violet' : 'bg-emerald-500'
  }`}
  style={{ width: `${Math.min(percentUsed, 100)}%` }}
  />
