@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; border: string; icon: any }> = {
  agendada: { label: 'Agendada', color: 'text-blue-700', bg: 'bg-blue-50', border: 'border-blue-200', icon: Clock },
- confirmada: { label: 'Confirmada', color: 'text-amber-700', bg: 'bg-amber-50', border: 'border-amber-200', icon: CheckCircle2 },
+ confirmada: { label: 'Confirmada', color: 'text-[#c64d00]', bg: 'bg-peach/30', border: 'border-peach', icon: CheckCircle2 },
  en_espera: { label: 'En Sala de Espera', color: 'text-purple-700', bg: 'bg-purple-50', border: 'border-purple-200', icon: Users },
  en_atencion: { label: 'En Atención', color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200', icon: Stethoscope },
 };
@@ -90,7 +90,7 @@ export default function WaitingRoomPage() {
  <p className="text-xs text-slate-600"><strong>Tutor:</strong> {apt.client_name} • <strong>Servicio:</strong> {apt.service_name}</p>
  <p className="text-xs text-slate-500"><strong>Médico:</strong> Dr(a). {apt.professional_name} {apt.room_name && `• Box: ${apt.room_name}`}</p>
  {apt.wait_minutes > 0 && apt.status === 'en_espera' && (
- <p className="text-xs text-amber-600 font-bold flex items-center gap-1">
+ <p className="text-xs text-[#c64d00] font-bold flex items-center gap-1">
  <Clock className="w-3 h-3" /> Esperando {Math.round(apt.wait_minutes)} min
  </p>
  )}

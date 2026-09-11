@@ -120,7 +120,7 @@ export default function AutoTalleresDashboardPage() {
  <span className="bg-orange-500/20 text-orange-300 text-xs font-bold px-2.5 py-0.5 rounded-full border border-orange-500/30 uppercase tracking-wider">
  Módulo Talleres Automotrices
  </span>
- <span className="bg-amber-400/20 text-amber-300 text-xs font-bold px-2.5 py-0.5 rounded-full border border-monday-violet/30">
+ <span className="bg-peach/20 text-[#c64d00]/60 text-xs font-bold px-2.5 py-0.5 rounded-full border border-monday-violet/30">
  DTE SII & CLP
  </span>
  </div>
@@ -281,7 +281,7 @@ export default function AutoTalleresDashboardPage() {
  <span className="text-xs font-mono text-slate-500">{order.order_number}</span>
  <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
  order.priority === 'urgente' ? 'bg-rose-100 text-rose-700' :
- order.priority === 'alta' ? 'bg-amber-100 text-amber-700' :
+ order.priority === 'alta' ? 'bg-peach/50 text-[#c64d00]' :
  'bg-slate-100 text-slate-600'
  }`}>
  {order.priority.toUpperCase()}
@@ -346,7 +346,7 @@ export default function AutoTalleresDashboardPage() {
  </div>
  <span className={`text-xs font-medium px-2 py-1 rounded-full ${
  bay.isOccupied
- ? 'bg-amber-100 text-amber-700'
+ ? 'bg-peach/50 text-[#c64d00]'
  : 'bg-emerald-100 text-emerald-700'
  }`}>
  {bay.isOccupied ? 'Ocupado' : 'Libre'}

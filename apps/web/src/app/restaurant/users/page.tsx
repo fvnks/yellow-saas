@@ -80,7 +80,7 @@ export default function RestaurantUsersPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
- <Users className="w-5 h-5 text-amber-500" />
+ <Users className="w-5 h-5 text-[#c64d00]" />
  Usuarios & Control de Roles
  </h1>
  <p className="text-xs text-slate-500 mt-1">
@@ -99,7 +99,7 @@ export default function RestaurantUsersPage() {
  {showAdd && (
  <form onSubmit={handleCreate} className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5 space-y-4">
  <div className="flex items-center gap-2">
- <UserPlus className="w-4 h-4 text-amber-500" />
+ <UserPlus className="w-4 h-4 text-[#c64d00]" />
  <h3 className="text-sm font-bold text-slate-900">Registrar Personal</h3>
  </div>
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -166,7 +166,7 @@ export default function RestaurantUsersPage() {
  <tr key={user.id} className="hover:bg-slate-50/80 transition-colors">
  <td className="px-5 py-3">
  <div className="flex items-center gap-3">
- <div className="w-8 h-8 rounded-full bg-cloud text-amber-400 flex items-center justify-center text-xs font-black">
+ <div className="w-8 h-8 rounded-full bg-cloud text-[#c64d00]/70 flex items-center justify-center text-xs font-black">
  {user.name.slice(0, 2).toUpperCase()}
  </div>
  <div>
@@ -221,7 +221,7 @@ export default function RestaurantUsersPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
  <div className="px-5 py-4 border-b border-slate-200/80">
  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
- <Shield className="w-4 h-4 text-amber-500" /> Matriz de Permisos por Rol
+ <Shield className="w-4 h-4 text-[#c64d00]" /> Matriz de Permisos por Rol
  </h3>
  <p className="text-xs text-slate-500 mt-1">Qué sección ve cada rol del restaurante.</p>
  </div>

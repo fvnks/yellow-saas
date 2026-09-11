@@ -89,7 +89,7 @@ export default function ContactPage() {
 
  <div className="bg-primary rounded-xl p-6 text-white">
  <div className="flex items-center gap-2 mb-3">
- <MessageSquare className="w-4 h-4 text-amber-400" />
+ <MessageSquare className="w-4 h-4 text-[#c64d00]/70" />
  <h2 className="text-sm font-semibold">Ventas</h2>
  </div>
  <p className="text-xs text-muted-foreground leading-relaxed">

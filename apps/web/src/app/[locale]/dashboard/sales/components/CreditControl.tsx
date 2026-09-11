@@ -42,7 +42,7 @@ interface AgingSummary {
 
 const bucketConfig: Record<string, { label: string; color: string; bg: string }> = {
  current: { label: 'Corriente', color: 'text-emerald-700', bg: 'bg-emerald-50' },
- '1-30': { label: '1-30 días', color: 'text-amber-700', bg: 'bg-amber-50' },
+ '1-30': { label: '1-30 días', color: 'text-[#c64d00]', bg: 'bg-peach/30' },
  '31-60': { label: '31-60 días', color: 'text-orange-700', bg: 'bg-orange-50' },
  '61-90': { label: '61-90 días', color: 'text-red-700', bg: 'bg-red-50' },
  '90+': { label: '90+ días', color: 'text-red-900', bg: 'bg-red-100' },
@@ -135,7 +135,7 @@ export default function CreditControl() {
  <span className="px-1.5 py-0.5 bg-red-100 text-red-700 text-[8px] font-semibold rounded">LÍMITE EXCEDIDO</span>
  )}
  {c.overdue_count > 0 && (
- <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[8px] font-semibold rounded">{c.overdue_count} VENCIDAS</span>
+ <span className="px-1.5 py-0.5 bg-peach/50 text-[#c64d00] text-[8px] font-semibold rounded">{c.overdue_count} VENCIDAS</span>
  )}
  </div>
  <p className="text-[9px] text-muted-foreground">{c.tax_id}</p>

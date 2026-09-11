@@ -35,7 +35,7 @@ export function RestaurantSidebar(props: React.ComponentProps<typeof Sidebar>) {
 
  <SidebarFooter className="bg-monday-violet p-3 border-t border-mist/80 space-y-2">
  <div className="flex items-center gap-2.5 px-2 py-1.5 rounded-xl bg-cloud/60 border border-mist group-data-[collapsible=icon]:hidden group-data-[collapsible=icon]:justify-center">
- <div className="w-7 h-7 rounded-full flex items-center justify-center font-black text-xs shrink-0 bg-amber-400 text-slate-900 border border-amber-500/60">
+ <div className="w-7 h-7 rounded-full flex items-center justify-center font-black text-xs shrink-0 bg-peach text-slate-900 border border-[#c64d00]/60">
  {user.name.slice(0, 2).toUpperCase()}
  </div>
  <div className="flex-1 min-w-0">
@@ -50,7 +50,7 @@ export function RestaurantSidebar(props: React.ComponentProps<typeof Sidebar>) {
  <select
  value={currentUser?.id || ''}
  onChange={(e) => switchUser(e.target.value)}
- className="mt-1 w-full bg-cloud border border-mist text-xs text-ink rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-amber-500 transition-all cursor-pointer"
+ className="mt-1 w-full bg-cloud border border-mist text-xs text-ink rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-[#c64d00] transition-all cursor-pointer"
  >
  {users.map((u) => (
  <option key={u.id} value={u.id}>

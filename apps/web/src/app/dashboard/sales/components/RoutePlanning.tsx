@@ -23,7 +23,7 @@ interface Route {
 }
 
 const statusConfig: Record<string, { label: string; color: string; bg: string; icon: any }> = {
- pending: { label: 'Pendiente', color: 'text-amber-700', bg: 'bg-amber-50', icon: Circle },
+ pending: { label: 'Pendiente', color: 'text-[#c64d00]', bg: 'bg-peach/30', icon: Circle },
  in_progress: { label: 'En Curso', color: 'text-blue-700', bg: 'bg-blue-50', icon: Truck },
  completed: { label: 'Completada', color: 'text-emerald-700', bg: 'bg-emerald-50', icon: CheckCircle },
 };

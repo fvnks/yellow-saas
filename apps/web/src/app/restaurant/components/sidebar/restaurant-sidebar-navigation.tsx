@@ -118,7 +118,7 @@ function RestaurantSidebarNavigationContent({ sidebarItems }: RestaurantSidebarN
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar en Restaurante..."
- className="w-full bg-cloud/80 border border-mist text-xs text-ink placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
+ className="w-full bg-cloud/80 border border-mist text-xs text-ink placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-[#c64d00] focus:ring-1 focus:ring-amber-500 transition-all"
  />
  {searchQuery ? (
  <button onClick={() => setSearchQuery("")} className="absolute right-2 text-slate-400 hover:text-ink">
@@ -164,7 +164,7 @@ function RestaurantSidebarNavigationContent({ sidebarItems }: RestaurantSidebarN
  )} />
  <span className="truncate">{navGroup.label}</span>
  {groupActive && !groupOpen && (
- <div className="ml-auto w-2 h-2 rounded-full bg-amber-400 animate-pulse flex-shrink-0 shadow-sm shadow-amber-400/50" />
+ <div className="ml-auto w-2 h-2 rounded-full bg-peach animate-pulse flex-shrink-0 shadow-sm shadow-amber-400/50" />
  )}
  </button>
  </CollapsibleTrigger>

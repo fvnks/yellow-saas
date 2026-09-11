@@ -141,7 +141,7 @@ export default function ChangeOrdersTab({ projectId, changeOrders, onRefresh }: 
  </span>
  )}
  {co.timeline_impact_days !== 0 && (
- <span className="flex items-center gap-0.5 text-amber-500">
+ <span className="flex items-center gap-0.5 text-[#c64d00]">
  <Clock className="w-2.5 h-2.5" />
  {co.timeline_impact_days > 0 ? '+' : ''}{co.timeline_impact_days}d
  </span>

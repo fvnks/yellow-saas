@@ -93,7 +93,7 @@ export default function DeadStockReport() {
  <p className="text-2xl font-bold text-foreground">{report.count}</p>
  <p className="text-xs text-red-600 mt-1">sin movimiento en {days} dias</p>
  </div>
- <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+ <div className="bg-peach/30 border border-peach rounded-xl p-4">
  <div className="flex items-center justify-between mb-2">
  <span className="text-[9px] font-semibold text-monday-violet uppercase">Valor Total</span>
  <DollarSign className="w-5 h-5 text-monday-violet" />

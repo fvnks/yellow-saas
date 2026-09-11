@@ -9,7 +9,7 @@ const statusColors: Record<string, string> = {
  active: 'bg-emerald-100 text-emerald-700',
  inactive: 'bg-muted text-foreground',
  in_stock: 'bg-blue-100 text-blue-700',
- sold: 'bg-amber-100 text-amber-700',
+ sold: 'bg-peach/50 text-[#c64d00]',
  returned: 'bg-red-100 text-red-700',
 };
 

@@ -145,7 +145,7 @@ export default function MedidoresPage() {
  <td className="px-6 py-3.5">
  <span className="inline-flex items-center gap-1 font-semibold text-slate-700">
  {m.meterType === 'agua_caliente' && <Droplet className="w-3.5 h-3.5 text-blue-500" />}
- {m.meterType === 'gas' && <Flame className="w-3.5 h-3.5 text-amber-500" />}
+ {m.meterType === 'gas' && <Flame className="w-3.5 h-3.5 text-[#c64d00]" />}
  {m.meterType === 'calefaccion' && <Zap className="w-3.5 h-3.5 text-rose-500" />}
  {m.meterType.replace('_', ' ').toUpperCase()}
  </span>

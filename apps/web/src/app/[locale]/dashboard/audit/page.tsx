@@ -20,7 +20,7 @@ const moduleColors: Record<string, string> = {
  'Ventas': 'bg-emerald-50 text-emerald-700 border-emerald-200',
  'Inventario': 'bg-blue-50 text-blue-700 border-blue-200',
  'Clientes': 'bg-blue-50 text-primary border-primary/20',
- 'Compras': 'bg-amber-50 text-amber-700 border-amber-200',
+ 'Compras': 'bg-peach/30 text-[#c64d00] border-peach',
  'Facturación': 'bg-blue-50 text-blue-700 border-blue-200',
  'Configuración': 'bg-muted text-foreground border-border',
  'Reportes': 'bg-teal-50 text-teal-700 border-teal-200',

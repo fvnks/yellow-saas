@@ -90,7 +90,7 @@ export default function VeterinaryDashboardPage() {
  <span className="bg-emerald-500/20 text-emerald-300 text-xs font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/30 uppercase tracking-wider">
  Módulo Veterinaria & Clínica
  </span>
- <span className="bg-amber-400/20 text-amber-300 text-xs font-bold px-2.5 py-0.5 rounded-full border border-amber-400/30">
+ <span className="bg-peach/20 text-[#c64d00]/60 text-xs font-bold px-2.5 py-0.5 rounded-full border border-peach/30">
  Norma Ley 21.020 & DTE SII
  </span>
  </div>
@@ -145,7 +145,7 @@ export default function VeterinaryDashboardPage() {
  {patients.filter((p) => p.isSterilized).length} esterilizados con chip
  </p>
  </div>
- <div className="w-12 h-12 bg-amber-50 rounded-2xl border border-amber-100 flex items-center justify-center text-amber-600">
+ <div className="w-12 h-12 bg-peach/30 rounded-2xl border border-peach/50 flex items-center justify-center text-[#c64d00]">
  <Dog className="w-6 h-6" />
  </div>
  </div>
@@ -168,7 +168,7 @@ export default function VeterinaryDashboardPage() {
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Alertas Preventivas</p>
  <h3 className="text-2xl font-black text-slate-900 mt-1">{reminders.length}</h3>
- <p className="text-xs text-amber-600 font-medium mt-1">
+ <p className="text-xs text-[#c64d00] font-medium mt-1">
  Vacunas y desparasitación
  </p>
  </div>
@@ -207,7 +207,7 @@ export default function VeterinaryDashboardPage() {
  {apt.species}
  </span>
  {apt.status === 'en_espera' && (
- <span className="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase border border-amber-200">
+ <span className="bg-peach/50 text-[#c64d00] text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase border border-peach">
  En Sala de Espera
  </span>
  )}
@@ -258,8 +258,8 @@ export default function VeterinaryDashboardPage() {
  <p className="text-xs text-slate-500 mt-1">Acceder por nombre, RUT o microchip</p>
  </Link>
 
- <Link href="/veterinaria/consultas" className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs hover:border-amber-300 transition-all group">
- <div className="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+ <Link href="/veterinaria/consultas" className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs hover:border-peach transition-all group">
+ <div className="w-10 h-10 bg-peach/30 text-[#c64d00] rounded-xl flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
  <Stethoscope className="w-5 h-5" />
  </div>
  <h4 className="text-sm font-bold text-slate-900">Registro Clínico</h4>
@@ -337,7 +337,7 @@ export default function VeterinaryDashboardPage() {
  Paciente: <span className="font-semibold">{rem.patientName}</span> ({rem.clientName})
  </p>
  </div>
- <span className="text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded">
+ <span className="text-[10px] font-bold bg-peach/30 text-[#c64d00] border border-peach px-1.5 py-0.5 rounded">
  {rem.dueDate}
  </span>
  </div>

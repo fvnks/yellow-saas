@@ -31,14 +31,14 @@ function getTypeLabel(type: string) {
 const roomTypeBadges: Record<string, string> = {
  box: 'bg-blue-100 text-blue-800 border-blue-200',
  quirofano: 'bg-rose-100 text-rose-800 border-rose-200',
- hospitalizacion: 'bg-amber-100 text-amber-800 border-amber-200',
+ hospitalizacion: 'bg-peach/50 text-[#c64d00] border-peach',
  laboratorio: 'bg-emerald-100 text-emerald-800 border-emerald-200',
  peluqueria: 'bg-purple-100 text-purple-800 border-purple-200',
 };
 
 const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
  active: { label: 'Disponible', color: 'text-emerald-600', icon: <CheckCircle2 className="w-3 h-3" /> },
- maintenance: { label: 'Mantenimiento', color: 'text-amber-600', icon: <Wrench className="w-3 h-3" /> },
+ maintenance: { label: 'Mantenimiento', color: 'text-[#c64d00]', icon: <Wrench className="w-3 h-3" /> },
  inactive: { label: 'Inactivo', color: 'text-slate-400', icon: <XCircle className="w-3 h-3" /> },
 };
 
@@ -155,7 +155,7 @@ export default function RoomsPage() {
  </div>
  </div>
  <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center">
+ <div className="w-10 h-10 rounded-xl bg-peach/30 border border-peach text-[#c64d00] flex items-center justify-center">
  <Wrench className="w-5 h-5" />
  </div>
  <div>

@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: "class",
+  darkMode: false,
   content: [
     './src/**/*.{js,ts,jsx,tsx,mdx}',
     '../../packages/ui/src/**/*.{js,ts,jsx,tsx,mdx}',
@@ -42,6 +42,7 @@ module.exports = {
         'forest': '#2a5c4e',
         'peony': '#fcd0f8',
         'periwinkle-wash': '#dbdbff',
+        'peach': '#ffe8d6',
         /* shadcn/ui compat */
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

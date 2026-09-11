@@ -21,7 +21,7 @@ interface StockAlert {
 }
 
 const alertTypeConfig: Record<string, { label: string; icon: typeof AlertTriangle; color: string }> = {
- min_stock: { label: 'Stock Minimo', icon: TrendingDown, color: 'text-monday-violet bg-amber-50' },
+ min_stock: { label: 'Stock Minimo', icon: TrendingDown, color: 'text-monday-violet bg-peach/30' },
  max_stock: { label: 'Stock Maximo', icon: TrendingUp, color: 'text-blue-600 bg-blue-50' },
  out_of_stock: { label: 'Sin Stock', icon: XCircle, color: 'text-red-600 bg-red-50' },
  expiring: { label: 'Por Vencer', icon: AlertTriangle, color: 'text-orange-600 bg-orange-50' },

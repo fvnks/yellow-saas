@@ -121,7 +121,7 @@ export default function TimesheetsTab({ projectId, timesheets, tasks, employees,
  <h3 className="text-sm font-semibold text-foreground">Control de Horas</h3>
  <p className="text-xs text-muted-foreground mt-0.5">
  {totalHours.toFixed(1)}h total · {billableHours.toFixed(1)}h facturables
- {pendingCount > 0 && <span className="ml-2 text-amber-600">· {pendingCount} pendientes</span>}
+ {pendingCount > 0 && <span className="ml-2 text-[#c64d00]">· {pendingCount} pendientes</span>}
  </p>
  </div>
  <div className="flex items-center gap-2">

@@ -22,7 +22,7 @@ interface DeliveryGuide {
 }
 
 const STATUS_CFG: Record<string, { label: string; color: string; bg: string; border: string }> = {
- pending: { label: 'Pendiente', color: 'text-amber-700', bg: 'bg-amber-50', border: 'border-amber-200' },
+ pending: { label: 'Pendiente', color: 'text-[#c64d00]', bg: 'bg-peach/30', border: 'border-peach' },
  in_transit: { label: 'En Tránsito', color: 'text-blue-700', bg: 'bg-blue-50', border: 'border-blue-200' },
  delivered: { label: 'Entregado', color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200' },
  cancelled: { label: 'Cancelado', color: 'text-rose-700', bg: 'bg-rose-50', border: 'border-rose-200' },

@@ -307,7 +307,7 @@ export default function PortalResidentePage() {
 
  <div className="border border-slate-200/80 rounded-xl p-4 bg-slate-50/50 flex flex-col justify-between space-y-3">
  <div>
- <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+ <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-peach/30 text-[#c64d00] border border-peach">
  Seguros
  </span>
  <h3 className="text-xs font-bold text-slate-900 mt-2">Póliza Colectiva Espacios Comunes</h3>
@@ -315,7 +315,7 @@ export default function PortalResidentePage() {
  </div>
  <button
  onClick={() => alert('Descargando Póliza Colectiva de Seguro...')}
- className="text-xs font-bold text-amber-700 hover:text-amber-900 flex items-center gap-1"
+ className="text-xs font-bold text-[#c64d00] hover:text-[#c64d00] flex items-center gap-1"
  >
  <Download className="w-3.5 h-3.5" /> Descargar PDF
  </button>

@@ -38,7 +38,7 @@ interface QuotationDetail {
 
 const STATUS_MAP: Record<string, { label: string; class: string }> = {
  draft: { label: 'Borrador', class: 'bg-muted text-foreground border border-border' },
- pending: { label: 'Pendiente', class: 'bg-amber-50 text-amber-700 border border-amber-200' },
+ pending: { label: 'Pendiente', class: 'bg-peach/30 text-[#c64d00] border border-peach' },
  sent: { label: 'Enviada', class: 'bg-blue-50 text-blue-700 border border-blue-200' },
  accepted: { label: 'Aceptada', class: 'bg-emerald-50 text-emerald-700 border border-emerald-200' },
  rejected: { label: 'Rechazada', class: 'bg-rose-50 text-rose-700 border border-rose-200' },
@@ -276,7 +276,7 @@ export default function SalesQuotationDetailPage({ params }: { params: { id: str
  {company?.logo_url ? (
  <img src={company.logo_url} alt="Logo" className="h-16 w-auto mb-3" />
  ) : (
- <div className="w-16 h-16 bg-amber-400 rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-3">
+ <div className="w-16 h-16 bg-peach rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-3">
  {(company?.name || 'E')[0]}
  </div>
  )}
@@ -370,8 +370,8 @@ export default function SalesQuotationDetailPage({ params }: { params: { id: str
 
  {/* Validity notice */}
  {quotation.valid_until && (
- <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg print:bg-white print:border-border">
- <p className="text-xs text-amber-700 print:text-foreground">
+ <div className="mt-6 p-4 bg-peach/30 border border-peach rounded-lg print:bg-white print:border-border">
+ <p className="text-xs text-[#c64d00] print:text-foreground">
  <span className="font-semibold">Válida hasta:</span> {quotation.valid_until}. Esta cotización tiene una vigencia de 30 días desde la fecha de emisión.
  </p>
  </div>

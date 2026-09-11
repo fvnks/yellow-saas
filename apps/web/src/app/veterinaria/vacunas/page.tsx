@@ -250,7 +250,7 @@ export default function VeterinaryVaccinationsPage() {
  <div className="bg-white border-2 border-slate-900 rounded-2xl p-6 shadow-sm space-y-6 relative overflow-hidden">
  <div className="bg-cloud text-white p-4 -m-6 mb-4 flex items-center justify-between">
  <div className="flex items-center gap-3">
- <ShieldCheck className="w-6 h-6 text-amber-400" />
+ <ShieldCheck className="w-6 h-6 text-[#c64d00]/70" />
  <div>
  <h2 className="text-base font-black uppercase tracking-wider">Carnet Sanitario Veterinario</h2>
  <p className="text-[10px] text-slate-300">Cumplimiento Oficial Ley 21.020 • Tenencia Responsable</p>

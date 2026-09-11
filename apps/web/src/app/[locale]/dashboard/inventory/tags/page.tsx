@@ -11,7 +11,7 @@ interface ProductTag { id: string; name: string; color: string; is_active: boole
 const COLORS = [
  { name: 'indigo', value: '#6366f1', bg: 'bg-blue-50', text: 'text-primary', border: 'border-primary/20' },
  { name: 'emerald', value: '#10b981', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
- { name: 'amber', value: '#f59e0b', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
+ { name: 'amber', value: '#f59e0b', bg: 'bg-peach/30', text: 'text-[#c64d00]', border: 'border-peach' },
  { name: 'rose', value: '#f43f5e', bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200' },
  { name: 'blue', value: '#3b82f6', bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
  { name: 'slate', value: '#64748b', bg: 'bg-muted', text: 'text-foreground', border: 'border-border' },

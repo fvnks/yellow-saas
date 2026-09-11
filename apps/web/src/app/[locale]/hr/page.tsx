@@ -75,7 +75,7 @@ function HRPageInner() {
  <div className="animate-fade-in-up stagger-3 bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm hover:border-rose-300 hover:shadow-md transition-all duration-200 ease-out hover:-translate-y-0.5">
  <div className="flex items-center justify-between mb-2">
  <p className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Evaluaciones Pendientes</p>
- <div className="w-10 h-10 bg-amber-50 rounded-full flex items-center justify-center">
+ <div className="w-10 h-10 bg-peach/30 rounded-full flex items-center justify-center">
  <Award className="w-5 h-5 text-monday-violet" />
  </div>
  </div>

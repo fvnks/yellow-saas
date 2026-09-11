@@ -177,7 +177,7 @@ export default function PWAOfflineQueuePage() {
  </TableHeader>
  <TableBody>
  {items.map(item => (
- <TableRow key={item.id} className={`border-b border-border hover:bg-muted transition-colors ${item.status === 'failed' ? 'bg-rose-50/50' : item.status === 'conflict' ? 'bg-amber-50/50' : ''}`}>
+ <TableRow key={item.id} className={`border-b border-border hover:bg-muted transition-colors ${item.status === 'failed' ? 'bg-rose-50/50' : item.status === 'conflict' ? 'bg-peach/30/50' : ''}`}>
  <TableCell className="font-mono text-xs text-foreground">{item.id.slice(0,8)}...</TableCell>
  <TableCell className="text-xs">
  {item.user ? (
@@ -233,9 +233,9 @@ export default function PWAOfflineQueuePage() {
  <p className="text-[9px] font-semibold text-emerald-700 uppercase tracking-wider">Sincronizados</p>
  <p className="text-2xl font-bold text-emerald-700 mt-1">{items.filter(i => i.status === 'synced').length}</p>
  </div>
- <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
- <p className="text-[9px] font-semibold text-amber-700 uppercase tracking-wider">Pendientes</p>
- <p className="text-2xl font-bold text-amber-700 mt-1">{items.filter(i => i.status === 'pending').length}</p>
+ <div className="bg-peach/30 rounded-xl p-4 border border-peach">
+ <p className="text-[9px] font-semibold text-[#c64d00] uppercase tracking-wider">Pendientes</p>
+ <p className="text-2xl font-bold text-[#c64d00] mt-1">{items.filter(i => i.status === 'pending').length}</p>
  </div>
  <div className="bg-rose-50 rounded-xl p-4 border border-rose-200">
  <p className="text-[9px] font-semibold text-rose-700 uppercase tracking-wider">Fallidos</p>

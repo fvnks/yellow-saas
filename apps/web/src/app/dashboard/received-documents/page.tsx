@@ -22,7 +22,7 @@ const DTE_TYPES: Record<string, string> = {
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: typeof CheckCircle }> = {
  valid: { label: 'Válido', color: 'bg-emerald-50 text-emerald-700 border border-emerald-200', icon: CheckCircle },
- warning: { label: 'Con advertencias', color: 'bg-amber-50 text-amber-700 border border-amber-200', icon: AlertTriangle },
+ warning: { label: 'Con advertencias', color: 'bg-peach/30 text-[#c64d00] border border-peach', icon: AlertTriangle },
  rejected: { label: 'Rechazado', color: 'bg-rose-50 text-rose-700 border border-rose-200', icon: XCircle },
  duplicate: { label: 'Duplicado', color: 'bg-slate-50 text-slate-600 border border-slate-200', icon: Copy },
  received: { label: 'Recibido', color: 'bg-blue-50 text-blue-700 border border-blue-200', icon: Clock },

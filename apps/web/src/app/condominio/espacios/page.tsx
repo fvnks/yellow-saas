@@ -291,7 +291,7 @@ export default function EspaciosConsergeriaPage() {
  <td className="p-3 text-slate-600 font-semibold">{v.parkingSpot}</td>
  <td className="p-3 text-center">
  {v.status === 'activo' ? (
- <span className="px-2 py-0.5 rounded-full text-[10px] bg-amber-100 text-amber-800 font-bold border border-amber-200">
+ <span className="px-2 py-0.5 rounded-full text-[10px] bg-peach/50 text-[#c64d00] font-bold border border-peach">
  ● Dentro del Condominio
  </span>
  ) : (

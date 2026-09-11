@@ -174,7 +174,7 @@ export function PaymentCheckoutModal({
  onChange={e => setSplitGuests(Number(e.target.value))}
  className="w-full accent-amber-500"
  />
- <span className="font-bold text-monday-violet bg-amber-50 border border-amber-200 px-2 py-1 rounded-lg text-xs shrink-0">
+ <span className="font-bold text-monday-violet bg-peach/30 border border-peach px-2 py-1 rounded-lg text-xs shrink-0">
  {formatCLP(perGuestCLP)} / pers.
  </span>
  </div>
@@ -191,7 +191,7 @@ export function PaymentCheckoutModal({
  onClick={() => setDocType('boleta')}
  className={`p-3 rounded-xl border text-left font-bold transition-all flex items-center gap-3 ${
  docType === 'boleta'
- ? 'border-monday-violet bg-amber-50/60 ring-2 ring-monday-violet/20 text-slate-900'
+ ? 'border-monday-violet bg-peach/30/60 ring-2 ring-monday-violet/20 text-slate-900'
  : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
  }`}
  >

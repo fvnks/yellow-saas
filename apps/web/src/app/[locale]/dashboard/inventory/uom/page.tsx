@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 interface UOM { id: string; code: string; name: string; type: string; base_unit: string | null; conversion_factor: number; is_active: boolean; }
 
 const typeLabels: Record<string, string> = { weight: 'Peso', volume: 'Volumen', length: 'Longitud', area: 'Area', piece: 'Pieza', time: 'Tiempo' };
-const typeColors: Record<string, string> = { weight: 'bg-blue-50 text-blue-700 border-blue-200', volume: 'bg-teal-50 text-teal-700 border-teal-200', length: 'bg-amber-50 text-amber-700 border-amber-200', area: 'bg-blue-50 text-blue-700 border-blue-200', piece: 'bg-emerald-50 text-emerald-700 border-emerald-200', time: 'bg-rose-50 text-rose-700 border-rose-200' };
+const typeColors: Record<string, string> = { weight: 'bg-blue-50 text-blue-700 border-blue-200', volume: 'bg-teal-50 text-teal-700 border-teal-200', length: 'bg-peach/30 text-[#c64d00] border-peach', area: 'bg-blue-50 text-blue-700 border-blue-200', piece: 'bg-emerald-50 text-emerald-700 border-emerald-200', time: 'bg-rose-50 text-rose-700 border-rose-200' };
 
 export default function UOMPage() {
  const router = useRouter();

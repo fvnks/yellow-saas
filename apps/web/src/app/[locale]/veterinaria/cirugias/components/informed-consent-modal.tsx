@@ -72,11 +72,11 @@ export default function InformedConsentModal({
  </div>
 
  {/* Digital Signature Confirmation */}
- <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
+ <div className="bg-peach/30 border border-peach rounded-xl p-4 flex items-start gap-3">
  <AlertTriangle className="w-5 h-5 text-monday-violet shrink-0 mt-0.5" />
  <div className="text-xs space-y-1">
- <h5 className="font-bold text-amber-900 uppercase">Firma Digital Registrada</h5>
- <p className="text-amber-800 font-medium">
+ <h5 className="font-bold text-[#c64d00] uppercase">Firma Digital Registrada</h5>
+ <p className="text-[#c64d00] font-medium">
  Al hacer clic en aceptar, se estampará la firma y huella digital con sello de tiempo del tutor y profesional.
  </p>
  </div>

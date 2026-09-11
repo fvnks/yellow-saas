@@ -223,7 +223,7 @@ export default function GastosComunesPage() {
  >
  <span>{p.periodName}</span>
  <span className={`px-1.5 py-0.2 rounded text-[9px] font-extrabold uppercase ${
- p.status === 'emitido' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-monday-violet/20 text-amber-300'
+ p.status === 'emitido' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-monday-violet/20 text-[#c64d00]/60'
  }`}>
  {p.status}
  </span>
@@ -255,7 +255,7 @@ export default function GastosComunesPage() {
 
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
  <span className="text-slate-500 text-xs font-semibold">Fecha Vencimiento</span>
- <p className="text-xl font-black text-amber-600 mt-2">{activePeriod.dueDate}</p>
+ <p className="text-xl font-black text-[#c64d00] mt-2">{activePeriod.dueDate}</p>
  <p className="text-[11px] text-slate-500 mt-1">Interés por mora: {activePeriod.lateInterestRate}% / mes</p>
  </div>
  </div>
@@ -363,7 +363,7 @@ export default function GastosComunesPage() {
  <td className="p-3 text-center font-bold text-cyan-600">{unit.alicuotaPercentage}%</td>
  <td className="p-3 text-right">{formatCLP(calc.baseAmountCLP)}</td>
  <td className="p-3 text-right text-slate-600">{formatCLP(calc.reserveFundCLP)}</td>
- <td className="p-3 text-right text-amber-600 font-bold">
+ <td className="p-3 text-right text-[#c64d00] font-bold">
  {calc.lateInterestCLP > 0 ? formatCLP(calc.lateInterestCLP) : '$0'}
  </td>
  <td className="p-3 text-right text-rose-600 font-bold">

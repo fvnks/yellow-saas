@@ -31,7 +31,7 @@ const formatCLP = (val: number) =>
 
 const statusBadges: Record<string, string> = {
  borrador: 'bg-slate-100 text-slate-700 border-slate-200',
- pendiente_aprobacion: 'bg-amber-100 text-amber-800 border-amber-200',
+ pendiente_aprobacion: 'bg-peach/50 text-[#c64d00] border-peach',
  aprobado: 'bg-emerald-100 text-emerald-800 border-emerald-200',
  rechazado: 'bg-rose-100 text-rose-800 border-rose-200',
  expirado: 'bg-slate-200 text-slate-500 border-slate-300',
@@ -253,7 +253,7 @@ export default function VeterinaryEstimatesPage() {
 
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
  <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center"><Clock className="w-5 h-5" /></div>
+ <div className="w-10 h-10 rounded-xl bg-peach/30 border border-peach text-[#c64d00] flex items-center justify-center"><Clock className="w-5 h-5" /></div>
  <div>
  <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Pendientes Aprobación</div>
  <div className="text-xl font-black text-slate-900">{pendingCount}</div>
@@ -395,7 +395,7 @@ export default function VeterinaryEstimatesPage() {
  </button>
  <button
  onClick={() => handlePDF(e)}
- className="bg-amber-50 hover:bg-amber-100 text-amber-700 text-[11px] font-bold px-2 py-1.5 rounded-xl border border-amber-200 flex items-center gap-1"
+ className="bg-peach/30 hover:bg-peach/50 text-[#c64d00] text-[11px] font-bold px-2 py-1.5 rounded-xl border border-peach flex items-center gap-1"
  title="Descargar PDF"
  >
  <Download className="w-3 h-3" />
@@ -444,7 +444,7 @@ export default function VeterinaryEstimatesPage() {
  </table>
  </div>
  {e.note && (
- <p className="mt-2 text-[11px] text-slate-500 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+ <p className="mt-2 text-[11px] text-slate-500 bg-peach/30 border border-peach rounded-xl px-3 py-2">
  <strong>Nota:</strong> {e.note}
  </p>
  )}

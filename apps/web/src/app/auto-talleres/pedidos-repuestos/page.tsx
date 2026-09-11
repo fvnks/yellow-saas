@@ -83,8 +83,8 @@ export default function PedidosRepuestosPage() {
  <div className="grid gap-4 grid-cols-1 sm:grid-cols-4">
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
  <div className="flex items-center gap-3">
- <div className="h-10 w-10 rounded-xl bg-monday-violet/10 flex items-center justify-center border border-amber-500/20">
- <Package className="w-5 h-5 text-amber-500" />
+ <div className="h-10 w-10 rounded-xl bg-monday-violet/10 flex items-center justify-center border border-[#c64d00]/20">
+ <Package className="w-5 h-5 text-[#c64d00]" />
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Pendientes</p>

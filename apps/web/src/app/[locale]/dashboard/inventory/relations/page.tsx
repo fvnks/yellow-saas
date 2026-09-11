@@ -10,7 +10,7 @@ interface ProductRelation { id: string; relation_type: string; product: { id: st
 const TYPE_MAP: Record<string, { label: string; className: string }> = {
  cross_sell: { label: 'Cross-sell', className: 'bg-blue-50 text-primary border border-primary/20' },
  up_sell: { label: 'Up-sell', className: 'bg-emerald-50 text-emerald-700 border border-emerald-200' },
- substitute: { label: 'Sustituto', className: 'bg-amber-50 text-amber-700 border border-amber-200' },
+ substitute: { label: 'Sustituto', className: 'bg-peach/30 text-[#c64d00] border border-peach' },
  component: { label: 'Componente', className: 'bg-blue-50 text-blue-700 border border-blue-200' },
 };
 

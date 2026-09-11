@@ -36,7 +36,7 @@ interface GoodsReceiptDetail {
 }
 
 const statusConfig: Record<string, { label: string; color: string; icon: typeof CheckCircle }> = {
- pending: { label: 'Pendiente', color: 'bg-amber-50 text-amber-700 border border-amber-200', icon: Clock },
+ pending: { label: 'Pendiente', color: 'bg-peach/30 text-[#c64d00] border border-peach', icon: Clock },
  received: { label: 'Recibido', color: 'bg-blue-50 text-blue-700 border border-blue-200', icon: CheckCircle },
  completed: { label: 'Completado', color: 'bg-emerald-50 text-emerald-700 border border-emerald-200', icon: CheckCircle },
  cancelled: { label: 'Cancelado', color: 'bg-rose-50 text-rose-700 border border-rose-200', icon: Trash2 },

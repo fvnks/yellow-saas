@@ -224,7 +224,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Precio Costo</p>
  <p className="text-2xl font-bold text-foreground mt-1">${(product.cost_price || 0).toLocaleString('es-CL')}</p>
  </div>
- <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
+ <div className="w-12 h-12 bg-peach/30 rounded-xl flex items-center justify-center">
  <BarChart3 className="w-6 h-6 text-monday-violet" />
  </div>
  </div>
@@ -527,7 +527,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
  <td className="px-4 py-3 text-xs text-muted-foreground">{r.expires_at ? new Date(r.expires_at).toLocaleDateString('es-CL') : '—'}</td>
  <td className="px-4 py-3 text-center">
  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
- r.status === 'active' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+ r.status === 'active' ? 'bg-peach/30 text-[#c64d00] border border-peach' :
  r.status === 'fulfilled' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
  'bg-muted text-foreground border border-border'
  }`}>

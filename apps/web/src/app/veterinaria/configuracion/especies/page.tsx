@@ -135,7 +135,7 @@ export default function VeterinarySpeciesPage() {
  const getCategoryBadge = (category: VeterinarySpecies['category']) => {
  switch (category) {
  case 'pequeños_animales':
- return <span className="bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold px-2 py-0.5 rounded-lg">Pequeños Animales</span>;
+ return <span className="bg-peach/50 text-[#c64d00] border border-peach text-xs font-bold px-2 py-0.5 rounded-lg">Pequeños Animales</span>;
  case 'exoticos':
  return <span className="bg-purple-100 text-purple-900 border border-purple-300 text-xs font-bold px-2 py-0.5 rounded-lg">Exóticos & Aves</span>;
  case 'mayores_ganado':
@@ -170,7 +170,7 @@ export default function VeterinarySpeciesPage() {
  {/* KPI Stats Grid */}
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
  <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center font-bold">
+ <div className="w-10 h-10 rounded-xl bg-peach/30 border border-peach text-[#c64d00] flex items-center justify-center font-bold">
  <Dog className="w-5 h-5" />
  </div>
  <div>

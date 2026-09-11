@@ -83,7 +83,7 @@ export default function RestaurantAdminPage() {
  <p className="text-xs font-semibold text-slate-500">Ventas del Día (CLP)</p>
  <p className="text-xl font-bold text-slate-900 mt-1">{formatCLP(38500)}</p>
  </div>
- <span className="p-3 bg-amber-50 rounded-2xl text-monday-violet border border-amber-200">
+ <span className="p-3 bg-peach/30 rounded-2xl text-monday-violet border border-peach">
  <DollarSign className="w-5 h-5" />
  </span>
  </div>
@@ -248,7 +248,7 @@ export default function RestaurantAdminPage() {
  <div className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
  <span className="font-bold text-slate-900 text-sm">Rol Admin Restaurante</span>
  <p className="text-slate-500">Acceso total a la consola de administración, reportes, precios y configuración.</p>
- <span className="inline-block bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded text-[10px]">Permiso Total</span>
+ <span className="inline-block bg-peach/50 text-[#c64d00] font-bold px-2 py-0.5 rounded text-[10px]">Permiso Total</span>
  </div>
  <div className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
  <span className="font-bold text-slate-900 text-sm">Rol Garzón (POS)</span>

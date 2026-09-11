@@ -78,7 +78,7 @@ export default function FixedAssetsPage() {
  </div>
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-xs p-4">
  <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Gasto Depreciación /Mes</p>
- <p className="text-lg font-black text-amber-700 mt-1">{clp(summary.monthly_depreciation_expense)}</p>
+ <p className="text-lg font-black text-[#c64d00] mt-1">{clp(summary.monthly_depreciation_expense)}</p>
  </div>
  </div>
  )}
@@ -126,7 +126,7 @@ export default function FixedAssetsPage() {
  <div className="text-[10px] text-slate-500 mt-0.5">{pct}% depreciado</div>
  </td>
  <td className="px-6 py-4 font-mono font-extrabold text-emerald-700">{clp(a.book_value)}</td>
- <td className="px-6 py-4 font-mono font-bold text-amber-700">{clp(a.monthly_depreciation)}</td>
+ <td className="px-6 py-4 font-mono font-bold text-[#c64d00]">{clp(a.monthly_depreciation)}</td>
  </tr>
  );
  })}

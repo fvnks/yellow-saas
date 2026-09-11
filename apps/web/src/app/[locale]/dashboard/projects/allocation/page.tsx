@@ -93,8 +93,8 @@ export default function AllocationPage() {
  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Proyectos Activos</p>
  <p className="text-2xl font-bold text-foreground mt-1">{projects.length}</p>
  </div>
- <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
- <Layers className="w-6 h-6 text-amber-600" />
+ <div className="w-12 h-12 bg-peach/30 rounded-xl flex items-center justify-center">
+ <Layers className="w-6 h-6 text-[#c64d00]" />
  </div>
  </div>
  </div>

@@ -191,7 +191,7 @@ export default function PurchasesPage() {
  <Link href="/dashboard/purchases/receipts/new">
  <div className="bg-card border border-border rounded-xl shadow-sm p-4 bg-primary border-border bg-primary border-border hover:bg-muted transition-colors cursor-pointer">
  <div className="flex flex-col items-center gap-2">
- <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center"><Package className="w-5 h-5 text-monday-violet" /></div>
+ <div className="w-10 h-10 bg-peach/30 rounded-xl flex items-center justify-center"><Package className="w-5 h-5 text-monday-violet" /></div>
  <span className="text-sm font-medium text-foreground text-center">Recepci�n</span>
  </div>
  </div>
@@ -254,7 +254,7 @@ export default function PurchasesPage() {
  <td className="px-4 py-3 text-xs text-foreground">{order.date}</td>
  <td className="px-4 py-3 text-xs text-foreground">{order.expectedDate}</td>
  <td className="px-4 py-3 text-xs text-right font-medium text-foreground">${order.total.toLocaleString('es-CL')}</td>
- <td className="px-4 py-3 text-center"><span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${cfg.variant === 'success' ? 'bg-emerald-50 text-emerald-700' : cfg.variant === 'warning' ? 'bg-amber-50 text-amber-700' : cfg.variant === 'danger' ? 'bg-red-50 text-red-700' : cfg.variant === 'info' ? 'bg-blue-50 text-blue-700' : 'bg-muted text-foreground'}`}>{cfg.label}</span></td>
+ <td className="px-4 py-3 text-center"><span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${cfg.variant === 'success' ? 'bg-emerald-50 text-emerald-700' : cfg.variant === 'warning' ? 'bg-peach/30 text-[#c64d00]' : cfg.variant === 'danger' ? 'bg-red-50 text-red-700' : cfg.variant === 'info' ? 'bg-blue-50 text-blue-700' : 'bg-muted text-foreground'}`}>{cfg.label}</span></td>
  <td className="px-4 py-3 text-center">
  <Link href={`/dashboard/purchases/${order.id}`} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors inline-flex"><Eye className="w-4 h-4" /></Link>
  </td>

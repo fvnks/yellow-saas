@@ -206,7 +206,7 @@ export default function PagosConciliacionPage() {
  ✓ Conciliado
  </span>
  ) : (
- <span className="px-2 py-0.5 rounded-full text-[10px] bg-amber-100 text-amber-800 font-bold border border-amber-200">
+ <span className="px-2 py-0.5 rounded-full text-[10px] bg-peach/50 text-[#c64d00] font-bold border border-peach">
  Pendiente
  </span>
  )}

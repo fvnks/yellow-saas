@@ -97,9 +97,9 @@ export default function AttendanceTab() {
  <p className="text-2xl font-bold text-red-700">{summary.absent}</p>
  <p className="text-xs text-red-600">Ausentes</p>
  </div>
- <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center">
- <p className="text-2xl font-bold text-amber-700">{summary.late}</p>
- <p className="text-xs text-amber-600">Tardanzas</p>
+ <div className="bg-peach/30 border border-peach rounded-xl p-4 text-center">
+ <p className="text-2xl font-bold text-[#c64d00]">{summary.late}</p>
+ <p className="text-xs text-[#c64d00]">Tardanzas</p>
  </div>
  <div className="bg-muted border border-border rounded-xl p-4 text-center">
  <p className="text-2xl font-bold text-foreground">{summary.total}</p>

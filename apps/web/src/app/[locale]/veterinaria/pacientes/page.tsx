@@ -25,7 +25,7 @@ import { Species } from '@/app/veterinaria/lib/veterinary-store';
 function getSpeciesBadge(species: string) {
  const spKey = species.toLowerCase();
  if (spKey.includes('perro') || spKey.includes('canino')) {
- return <span className="bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1"><Dog className="w-3.5 h-3.5" /> Canino</span>;
+ return <span className="bg-peach/50 text-[#c64d00] border border-peach text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1"><Dog className="w-3.5 h-3.5" /> Canino</span>;
  }
  if (spKey.includes('gato') || spKey.includes('felino')) {
  return <span className="bg-purple-100 text-purple-900 border border-purple-300 text-xs font-bold px-2 py-0.5 rounded-lg flex items-center gap-1"><Cat className="w-3.5 h-3.5" /> Felino</span>;
@@ -234,7 +234,7 @@ export default function VeterinaryPatientsPage() {
  Esterilizado/a
  </span>
  ) : (
- <span className="text-[10px] text-amber-700 font-bold bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded mt-0.5 inline-block">
+ <span className="text-[10px] text-[#c64d00] font-bold bg-peach/30 border border-peach px-1.5 py-0.5 rounded mt-0.5 inline-block">
  Entero/a
  </span>
  )}

@@ -19,7 +19,7 @@ interface SerialNumber {
 const statusConfig: Record<string, { label: string; icon: typeof CheckCircle; color: string; bg: string }> = {
  in_stock: { label: 'En Stock', icon: Package, color: 'text-emerald-700', bg: 'bg-emerald-50 border-emerald-200' },
  sold: { label: 'Vendido', icon: CheckCircle, color: 'text-blue-700', bg: 'bg-blue-50 border-blue-200' },
- returned: { label: 'Devuelto', icon: AlertTriangle, color: 'text-amber-700', bg: 'bg-amber-50 border-amber-200' },
+ returned: { label: 'Devuelto', icon: AlertTriangle, color: 'text-[#c64d00]', bg: 'bg-peach/30 border-peach' },
  defective: { label: 'Defectuoso', icon: XCircle, color: 'text-red-700', bg: 'bg-red-50 border-red-200' },
  reserved: { label: 'Reservado', icon: Package, color: 'text-blue-700', bg: 'bg-blue-50 border-blue-200' },
 };

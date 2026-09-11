@@ -99,7 +99,7 @@ export default function KioskPage() {
  />
  <button
  type="submit"
- className="bg-monday-violet hover:bg-amber-400 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition-all shrink-0"
+ className="bg-monday-violet hover:bg-peach text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition-all shrink-0"
  >
  Unirse
  </button>
@@ -120,11 +120,11 @@ export default function KioskPage() {
  {/* Left: Menu & Suggestions (8 Cols) */}
  <div className="lg:col-span-8 space-y-6">
  {/* Smart Suggestion Banner */}
- <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
- <Sparkles className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+ <div className="bg-peach/30 border border-peach rounded-2xl p-4 flex items-start gap-3">
+ <Sparkles className="w-5 h-5 text-[#c64d00] shrink-0 mt-0.5" />
  <div>
- <h3 className="text-xs font-bold text-amber-900">Sugerencia Inteligente del Chef</h3>
- <p className="text-xs text-amber-700 mt-0.5">
+ <h3 className="text-xs font-bold text-[#c64d00]">Sugerencia Inteligente del Chef</h3>
+ <p className="text-xs text-[#c64d00] mt-0.5">
  Pide un <strong>Lomo a lo Pobre Tradicional</strong> y acompáñalo con nuestro <strong>Pisco Sour Catedrático</strong> para el maridaje perfecto.
  </p>
  </div>
@@ -149,7 +149,7 @@ export default function KioskPage() {
  <div>
  <div className="flex items-start justify-between gap-2">
  <span className="text-3xl">{item.image}</span>
- <span className="text-xs font-mono font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200">
+ <span className="text-xs font-mono font-bold text-[#c64d00] bg-peach/30 px-2 py-0.5 rounded-lg border border-peach">
  {formatCLP(item.priceCLP)}
  </span>
  </div>
@@ -157,7 +157,7 @@ export default function KioskPage() {
  <p className="text-xs text-slate-500 mt-1 line-clamp-2">{item.description}</p>
  {item.suggestion && (
  <p className="text-[11px] font-semibold text-slate-600 bg-slate-100 p-2 rounded-xl mt-3 flex items-center gap-1.5">
- <Sparkles className="w-3 h-3 text-amber-500 shrink-0" />
+ <Sparkles className="w-3 h-3 text-[#c64d00] shrink-0" />
  <span>{item.suggestion}</span>
  </p>
  )}
@@ -179,7 +179,7 @@ export default function KioskPage() {
  onClick={() => addToCart(item)}
  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
  item.inStock
- ? 'bg-monday-violet hover:bg-amber-400 text-slate-950 shadow-xs'
+ ? 'bg-monday-violet hover:bg-peach text-slate-950 shadow-xs'
  : 'bg-slate-200 text-slate-400 cursor-not-allowed'
  }`}
  >
@@ -197,7 +197,7 @@ export default function KioskPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden sticky top-20">
  <div className="px-5 py-4 border-b border-slate-200/80 flex items-center justify-between bg-cloud text-white">
  <h3 className="text-sm font-bold flex items-center gap-2">
- <ShoppingBag className="w-4 h-4 text-amber-400" />
+ <ShoppingBag className="w-4 h-4 text-[#c64d00]/70" />
  Mi Comanda QR
  </h3>
  <span className="text-xs text-slate-400 font-medium">{selectedTable?.tableName}</span>
@@ -228,7 +228,7 @@ export default function KioskPage() {
  <div className="p-4 border-t border-slate-200/80 bg-slate-50/80 space-y-3">
  <div className="flex justify-between text-sm font-bold text-slate-900">
  <span>Total Pedido CLP</span>
- <span className="text-amber-600">{formatCLP(cartTotal)}</span>
+ <span className="text-[#c64d00]">{formatCLP(cartTotal)}</span>
  </div>
 
  <button

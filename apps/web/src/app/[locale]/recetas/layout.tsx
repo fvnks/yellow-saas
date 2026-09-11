@@ -105,7 +105,7 @@ export default function RecetasLayout({ children }: { children: ReactNode }) {
  <div className="ml-64">
  <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between border-b border-mist bg-snow backdrop-blur-xl px-6">
  <div className="flex items-center gap-2">
- <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+ <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-peach/30 text-[#c64d00] border border-peach">
  <FlaskConical className="w-3.5 h-3.5 text-monday-violet" /> Recetas / BOM
  </span>
  <span className="text-xs text-slate-500">Formulación y Órdenes de Producción</span>

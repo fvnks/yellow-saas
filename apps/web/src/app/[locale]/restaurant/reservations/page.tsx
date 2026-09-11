@@ -202,7 +202,7 @@ export default function ReservationsPage() {
  >
  <div className="space-y-1">
  <div className="flex items-center gap-2">
- <span className="font-mono font-bold text-monday-violet bg-amber-50 px-2 py-0.5 rounded border border-amber-200 text-[11px]">
+ <span className="font-mono font-bold text-monday-violet bg-peach/30 px-2 py-0.5 rounded border border-peach text-[11px]">
  {res.reservationCode}
  </span>
  <span className="font-bold text-slate-900 text-sm">{res.customerName}</span>

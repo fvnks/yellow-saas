@@ -110,7 +110,7 @@ export default function PedidosReportsPage() {
  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Pendientes</p>
  <p className="text-2xl font-bold text-monday-violet mt-1">{stats.pending + stats.approved}</p>
  </div>
- <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center"><Clock className="w-6 h-6 text-monday-violet" /></div>
+ <div className="w-12 h-12 bg-peach/30 rounded-xl flex items-center justify-center"><Clock className="w-6 h-6 text-monday-violet" /></div>
  </div>
  </div>
  <div className="bg-card border border-border rounded-xl p-5">
@@ -130,7 +130,7 @@ export default function PedidosReportsPage() {
  <div className="grid grid-cols-6 gap-3">
  {[
  { label: 'Borrador', count: stats.draft, color: 'bg-muted text-foreground' },
- { label: 'Pendiente', count: stats.pending, color: 'bg-amber-50 text-monday-violet' },
+ { label: 'Pendiente', count: stats.pending, color: 'bg-peach/30 text-monday-violet' },
  { label: 'Aprobado', count: stats.approved, color: 'bg-blue-50 text-blue-600' },
  { label: 'Despacho', count: stats.picking, color: 'bg-blue-50 text-primary' },
  { label: 'Completado', count: stats.completed, color: 'bg-emerald-50 text-emerald-600' },

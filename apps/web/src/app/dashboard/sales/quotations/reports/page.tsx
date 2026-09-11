@@ -157,7 +157,7 @@ export default function SalesQuotationsReportsPage() {
  { label: 'Enviadas', count: stats.sent, color: 'bg-blue-50 text-blue-600', icon: Clock },
  { label: 'Aceptadas', count: stats.accepted, color: 'bg-emerald-50 text-emerald-600', icon: CheckCircle2 },
  { label: 'Rechazadas', count: stats.rejected, color: 'bg-rose-50 text-rose-600', icon: XCircle },
- { label: 'Vencidas', count: stats.expired, color: 'bg-amber-50 text-monday-violet', icon: Clock },
+ { label: 'Vencidas', count: stats.expired, color: 'bg-peach/30 text-monday-violet', icon: Clock },
  ].map(item => (
  <div key={item.label} className={`${item.color} rounded-xl p-4 text-center`}>
  <item.icon className="w-5 h-5 mx-auto mb-2" />

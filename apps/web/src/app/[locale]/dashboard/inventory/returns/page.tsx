@@ -11,7 +11,7 @@ interface CustomerReturn { id: string; return_number: string; status: string; re
 interface ReturnItem { id: string; quantity: number; unit_price: number; condition: string; restock: boolean; product: { id: string; name: string; sku: string }; }
 
 const STATUS_MAP: Record<string, { label: string; className: string }> = {
- pending: { label: 'Pendiente', className: 'bg-amber-50 text-amber-700 border border-amber-200' },
+ pending: { label: 'Pendiente', className: 'bg-peach/30 text-[#c64d00] border border-peach' },
  completed: { label: 'Completada', className: 'bg-emerald-50 text-emerald-700 border border-emerald-200' },
  cancelled: { label: 'Cancelada', className: 'bg-rose-50 text-rose-700 border border-rose-200' },
 };

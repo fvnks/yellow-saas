@@ -305,8 +305,8 @@ export default function CondominioDashboardPage() {
  statusBadge = 'bg-rose-100 text-rose-800 border-rose-300';
  statusText = 'Moroso';
  } else if (isPendiente) {
- statusBg = 'border-amber-200 bg-amber-50/50 hover:border-monday-violet';
- statusBadge = 'bg-amber-100 text-amber-800 border-amber-300';
+ statusBg = 'border-peach bg-peach/30/50 hover:border-monday-violet';
+ statusBadge = 'bg-peach/50 text-[#c64d00] border-peach';
  statusText = 'Pendiente';
  }
 

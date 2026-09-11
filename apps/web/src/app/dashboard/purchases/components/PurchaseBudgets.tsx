@@ -68,7 +68,7 @@ export default function PurchaseBudgets() {
  <td className="px-4 py-3 text-xs text-right text-foreground">{fmt(b.budget_amount)}</td>
  <td className="px-4 py-3 text-xs text-right font-bold text-foreground">{fmt(b.actual_amount)}</td>
  <td className="px-4 py-3 text-xs text-right"><span className={`font-bold ${b.variance >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{b.variance >= 0 ? '+' : ''}{fmt(b.variance)}</span></td>
- <td className="px-4 py-3 text-center"><span className={`inline-flex px-2 py-0.5 rounded-full text-[9px] font-semibold ${pct > 100 ? 'bg-red-50 text-red-700' : pct > 80 ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>{pct.toFixed(0)}%</span></td>
+ <td className="px-4 py-3 text-center"><span className={`inline-flex px-2 py-0.5 rounded-full text-[9px] font-semibold ${pct > 100 ? 'bg-red-50 text-red-700' : pct > 80 ? 'bg-peach/30 text-[#c64d00]' : 'bg-emerald-50 text-emerald-700'}`}>{pct.toFixed(0)}%</span></td>
  </tr>
  );
  })}

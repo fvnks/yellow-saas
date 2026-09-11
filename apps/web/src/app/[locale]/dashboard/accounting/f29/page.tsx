@@ -39,7 +39,7 @@ export default function F29AssistantPage() {
  <h1 className="text-xl font-black text-slate-900 tracking-tight">
  Asistente Formulario 29 SII (Declaración Mensual de Impuestos)
  </h1>
- <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-50 text-amber-700 border border-amber-200">
+ <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-peach/30 text-[#c64d00] border border-peach">
  SII Chile
  </span>
  </div>
@@ -87,9 +87,9 @@ export default function F29AssistantPage() {
  </div>
 
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs bg-monday-violet/10 border-monday-violet/30">
- <p className="text-xs text-amber-800 font-extrabold uppercase">TOTAL F29 A PAGAR</p>
+ <p className="text-xs text-[#c64d00] font-extrabold uppercase">TOTAL F29 A PAGAR</p>
  <p className="text-2xl font-black text-slate-950 mt-1">{clp(data.summary.totalF29Payable)}</p>
- <p className="text-[11px] text-amber-700 font-bold mt-0.5">Vencimiento: 12 al 20 del mes subsiguiente</p>
+ <p className="text-[11px] text-[#c64d00] font-bold mt-0.5">Vencimiento: 12 al 20 del mes subsiguiente</p>
  </div>
  </div>
  )}
@@ -116,7 +116,7 @@ export default function F29AssistantPage() {
  </thead>
  <tbody className="divide-y divide-slate-100">
  {data?.linesSII?.map((line: any) => (
- <tr key={line.code} className={line.code === '091' ? 'bg-amber-50 font-black text-slate-900' : 'hover:bg-slate-50/80'}>
+ <tr key={line.code} className={line.code === '091' ? 'bg-peach/30 font-black text-slate-900' : 'hover:bg-slate-50/80'}>
  <td className="px-6 py-4 font-mono font-extrabold text-blue-600">[{line.code}]</td>
  <td className="px-6 py-4 font-bold text-slate-800">{line.description}</td>
  <td className="px-6 py-4 text-right font-mono font-bold text-slate-900">{clp(Number(line.amount))}</td>

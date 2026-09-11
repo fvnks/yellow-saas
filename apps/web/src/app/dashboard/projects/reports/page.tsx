@@ -73,8 +73,8 @@ export default function ProjectReportsPage() {
  <p className="text-2xl font-bold text-foreground mt-1">{summary.utilization_rate}%</p>
  <p className="text-[10px] text-muted-foreground">{summary.avg_hours_per_employee}h/empleado</p>
  </div>
- <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
- <Target className="w-6 h-6 text-amber-600" />
+ <div className="w-12 h-12 bg-peach/30 rounded-xl flex items-center justify-center">
+ <Target className="w-6 h-6 text-[#c64d00]" />
  </div>
  </div>
  </div>
@@ -172,13 +172,13 @@ export default function ProjectReportsPage() {
  <div className="flex h-2 rounded-full overflow-hidden bg-muted">
  <div className="bg-muted" style={{ width: `${(parseInt(ts.todo_count) / total) * 100}%` }} />
  <div className="bg-blue-400" style={{ width: `${(parseInt(ts.in_progress_count) / total) * 100}%` }} />
- <div className="bg-amber-400" style={{ width: `${(parseInt(ts.review_count) / total) * 100}%` }} />
+ <div className="bg-peach" style={{ width: `${(parseInt(ts.review_count) / total) * 100}%` }} />
  <div className="bg-emerald-400" style={{ width: `${(parseInt(ts.done_count) / total) * 100}%` }} />
  </div>
  <div className="flex items-center gap-3 mt-1 text-[9px] text-muted-foreground">
  <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 bg-muted rounded-full" />{ts.todo_count} por hacer</span>
  <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 bg-blue-400 rounded-full" />{ts.in_progress_count} en progreso</span>
- <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 bg-amber-400 rounded-full" />{ts.review_count} revision</span>
+ <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 bg-peach rounded-full" />{ts.review_count} revision</span>
  <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />{ts.done_count} hecho</span>
  </div>
  </div>

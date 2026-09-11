@@ -12,7 +12,7 @@ export default function PosStandaloneLayout({ children }: { children: ReactNode 
  <Toaster position="top-right" richColors closeButton />
  <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-mist bg-snow backdrop-blur-xl px-6">
  <div className="flex items-center gap-3">
- <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+ <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-peach/30 text-[#c64d00] border border-peach">
  <Monitor className="w-3.5 h-3.5 text-monday-violet" /> Módulo POS Ventas
  </span>
  </div>

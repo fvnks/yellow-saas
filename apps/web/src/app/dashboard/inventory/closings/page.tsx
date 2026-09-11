@@ -104,7 +104,7 @@ export default function ClosingsPage() {
  const st = isClosed ? statusConfig.closed : isOpen ? statusConfig.open : { label: 'Sin Datos', variant: 'neutral' as const, icon: Clock };
 
  return (
- <div key={i} className={`border rounded-xl p-4 transition-colors ${isClosed ? 'bg-emerald-50 border-emerald-200' : isOpen ? 'bg-amber-50 border-amber-200' : 'bg-muted border-border'}`}>
+ <div key={i} className={`border rounded-xl p-4 transition-colors ${isClosed ? 'bg-emerald-50 border-emerald-200' : isOpen ? 'bg-peach/30 border-peach' : 'bg-muted border-border'}`}>
  <div className="flex items-center justify-between mb-2">
  <p className="text-sm font-semibold text-foreground">{month}</p>
  <Badge variant={st.variant}>{st.label}</Badge>

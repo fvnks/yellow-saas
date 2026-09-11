@@ -101,7 +101,7 @@ export default function ResourceAllocationForm({ projectId, employees, onRefresh
  <div className="flex items-center gap-2">
  <h3 className="text-sm font-semibold text-foreground">Asignación de Recursos</h3>
  {totalAllocation > 100 && (
- <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+ <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-peach/30 text-[#c64d00] border border-peach">
  <AlertTriangle className="w-3 h-3" /> {totalAllocation}% total
  </span>
  )}

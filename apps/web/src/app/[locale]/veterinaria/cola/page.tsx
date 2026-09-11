@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; border: string; icon: any }> = {
  agendada: { label: 'Agendada', color: 'text-blue-700', bg: 'bg-blue-50', border: 'border-blue-200', icon: Clock },
- confirmada: { label: 'Confirmada', color: 'text-amber-700', bg: 'bg-amber-50', border: 'border-amber-200', icon: CheckCircle2 },
+ confirmada: { label: 'Confirmada', color: 'text-[#c64d00]', bg: 'bg-peach/30', border: 'border-peach', icon: CheckCircle2 },
  en_espera: { label: 'En Sala de Espera', color: 'text-purple-700', bg: 'bg-purple-50', border: 'border-purple-200', icon: Users },
  en_atencion: { label: 'En Atención', color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200', icon: Stethoscope },
 };

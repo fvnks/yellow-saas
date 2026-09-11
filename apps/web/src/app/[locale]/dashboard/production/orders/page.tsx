@@ -100,7 +100,7 @@ export default function ProductionOrdersPage() {
  <CheckCircle2 className="w-3 h-3" /> Completada
  </span>
  ) : (
- <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-50 text-amber-700 border border-amber-200 flex items-center gap-1 w-max">
+ <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-peach/30 text-[#c64d00] border border-peach flex items-center gap-1 w-max">
  <Clock className="w-3 h-3" /> En Proceso
  </span>
  )}

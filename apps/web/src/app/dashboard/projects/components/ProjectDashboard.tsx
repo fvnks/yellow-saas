@@ -87,11 +87,11 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
  <div className="flex items-center justify-between">
  <div>
  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Presupuesto</p>
- <p className={`text-2xl font-bold mt-1 ${stats.budgetPercent > 90 ? 'text-red-600' : stats.budgetPercent > 70 ? 'text-amber-600' : 'text-foreground'}`}>{stats.budgetPercent}%</p>
+ <p className={`text-2xl font-bold mt-1 ${stats.budgetPercent > 90 ? 'text-red-600' : stats.budgetPercent > 70 ? 'text-[#c64d00]' : 'text-foreground'}`}>{stats.budgetPercent}%</p>
  <p className="text-[10px] text-muted-foreground">${(stats.totalSpent / 1000000).toFixed(1)}M / ${(stats.budget / 1000000).toFixed(1)}M</p>
  </div>
- <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${stats.budgetPercent > 90 ? 'bg-red-50' : stats.budgetPercent > 70 ? 'bg-amber-50' : 'bg-emerald-50'}`}>
- <DollarSign className={`w-5 h-5 ${stats.budgetPercent > 90 ? 'text-red-600' : stats.budgetPercent > 70 ? 'text-amber-600' : 'text-emerald-600'}`} />
+ <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${stats.budgetPercent > 90 ? 'bg-red-50' : stats.budgetPercent > 70 ? 'bg-peach/30' : 'bg-emerald-50'}`}>
+ <DollarSign className={`w-5 h-5 ${stats.budgetPercent > 90 ? 'text-red-600' : stats.budgetPercent > 70 ? 'text-[#c64d00]' : 'text-emerald-600'}`} />
  </div>
  </div>
  </div>
@@ -103,8 +103,8 @@ export default function ProjectDashboard({ project, tasks, milestones, expenses,
  <p className="text-2xl font-bold text-foreground mt-1">{stats.totalActual.toFixed(0)}</p>
  <p className="text-[10px] text-muted-foreground">est: {stats.totalEstimated.toFixed(0)}h</p>
  </div>
- <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
- <Clock className="w-5 h-5 text-amber-600" />
+ <div className="w-10 h-10 bg-peach/30 rounded-xl flex items-center justify-center">
+ <Clock className="w-5 h-5 text-[#c64d00]" />
  </div>
  </div>
  </div>

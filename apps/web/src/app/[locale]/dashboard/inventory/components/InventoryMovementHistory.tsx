@@ -23,7 +23,7 @@ const typeConfig: Record<string, { label: string; icon: typeof ArrowUpCircle; co
  in: { label: 'Entrada', icon: ArrowDownCircle, color: 'text-emerald-700', bg: 'bg-emerald-50 border-emerald-200' },
  out: { label: 'Salida', icon: ArrowUpCircle, color: 'text-red-700', bg: 'bg-red-50 border-red-200' },
  transfer_in: { label: 'Transferencia Entrante', icon: ArrowRightLeft, color: 'text-blue-700', bg: 'bg-blue-50 border-blue-200' },
- transfer_out: { label: 'Transferencia Saliente', icon: ArrowRightLeft, color: 'text-amber-700', bg: 'bg-amber-50 border-amber-200' },
+ transfer_out: { label: 'Transferencia Saliente', icon: ArrowRightLeft, color: 'text-[#c64d00]', bg: 'bg-peach/30 border-peach' },
  adjustment: { label: 'Ajuste', icon: Settings, color: 'text-blue-700', bg: 'bg-blue-50 border-blue-200' },
  initial: { label: 'Inicial', icon: Package, color: 'text-foreground', bg: 'bg-muted border-border' },
 };

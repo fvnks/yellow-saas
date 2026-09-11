@@ -37,7 +37,7 @@ interface UnifiedDocument {
 const DOC_TYPE_CONFIG = {
  invoice: { label: 'Factura', color: 'bg-blue-50 text-blue-700 border border-blue-200' },
  credit_note: { label: 'Nota Crédito', color: 'bg-emerald-50 text-emerald-700 border border-emerald-200' },
- debit_note: { label: 'Nota Débito', color: 'bg-amber-50 text-amber-700 border border-amber-200' },
+ debit_note: { label: 'Nota Débito', color: 'bg-peach/30 text-[#c64d00] border border-peach' },
  delivery_guide: { label: 'Guía Despacho', color: 'bg-blue-50 text-blue-700 border border-blue-200' },
 };
 

@@ -87,7 +87,7 @@ export function PaymentCheckoutModal({
  <div className="bg-cloud text-white px-6 py-4 flex items-center justify-between border-b border-mist">
  <div>
  <h2 className="text-base font-bold flex items-center gap-2">
- <Receipt className="w-5 h-5 text-amber-400" />
+ <Receipt className="w-5 h-5 text-[#c64d00]/70" />
  Caja POS & Cobranza de Mesa — {order.tableName}
  </h2>
  <p className="text-xs text-slate-400">PIN Kiosco: {order.pinCode} • Comanda {order.id}</p>
@@ -127,7 +127,7 @@ export function PaymentCheckoutModal({
  </div>
  <div className="flex justify-between text-sm font-extrabold text-slate-900 pt-1 border-t-2 border-slate-900">
  <span>Total a Cobrar</span>
- <span className="text-amber-600">{formatCLP(grandTotalCLP)}</span>
+ <span className="text-[#c64d00]">{formatCLP(grandTotalCLP)}</span>
  </div>
  </div>
 
@@ -172,7 +172,7 @@ export function PaymentCheckoutModal({
  onChange={e => setSplitGuests(Number(e.target.value))}
  className="w-full accent-amber-500"
  />
- <span className="font-bold text-amber-600 bg-amber-50 border border-amber-200 px-2 py-1 rounded-lg text-xs shrink-0">
+ <span className="font-bold text-[#c64d00] bg-peach/30 border border-peach px-2 py-1 rounded-lg text-xs shrink-0">
  {formatCLP(perGuestCLP)} / pers.
  </span>
  </div>
@@ -189,11 +189,11 @@ export function PaymentCheckoutModal({
  onClick={() => setDocType('boleta')}
  className={`p-3 rounded-xl border text-left font-bold transition-all flex items-center gap-3 ${
  docType === 'boleta'
- ? 'border-amber-500 bg-amber-50/60 ring-2 ring-amber-500/20 text-slate-900'
+ ? 'border-[#c64d00] bg-peach/30/60 ring-2 ring-amber-500/20 text-slate-900'
  : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
  }`}
  >
- <Receipt className="w-5 h-5 text-amber-500" />
+ <Receipt className="w-5 h-5 text-[#c64d00]" />
  <div>
  <p className="text-xs font-bold">Boleta Electrónica SII</p>
  <p className="text-[10px] text-slate-500 font-normal">Público general (Afecta IVA)</p>
@@ -252,7 +252,7 @@ export function PaymentCheckoutModal({
  { id: 'transbank_cr', name: 'Transbank Crédito', icon: CreditCard, color: 'text-purple-600' },
  { id: 'cash', name: 'Efectivo CLP', icon: DollarSign, color: 'text-emerald-600' },
  { id: 'mercadopago_qr', name: 'MercadoPago QR', icon: QrCode, color: 'text-cyan-600' },
- { id: 'transfer', name: 'Transferencia', icon: Building, color: 'text-amber-600' },
+ { id: 'transfer', name: 'Transferencia', icon: Building, color: 'text-[#c64d00]' },
  ].map(m => {
  const IconComponent = m.icon;
  const isSelected = paymentMethod === m.id;
@@ -267,7 +267,7 @@ export function PaymentCheckoutModal({
  : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
  }`}
  >
- <IconComponent className={`w-4 h-4 ${isSelected ? 'text-amber-400' : m.color}`} />
+ <IconComponent className={`w-4 h-4 ${isSelected ? 'text-[#c64d00]/70' : m.color}`} />
  <span className="text-xs">{m.name}</span>
  </button>
  );

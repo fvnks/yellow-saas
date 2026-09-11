@@ -123,7 +123,7 @@ export default function VetReportsPage() {
  <div className="text-[11px] text-slate-500 font-bold">Pacientes Activos</div>
  </div>
  <div className="bg-white border border-slate-200/80 rounded-2xl p-4">
- <DollarSign className="w-5 h-5 text-amber-500 mb-1" />
+ <DollarSign className="w-5 h-5 text-[#c64d00] mb-1" />
  <div className="text-2xl font-black text-slate-900">{formatCLP(data?.totalRevenue || 0)}</div>
  <div className="text-[11px] text-slate-500 font-bold">Ingresos Totales</div>
  </div>

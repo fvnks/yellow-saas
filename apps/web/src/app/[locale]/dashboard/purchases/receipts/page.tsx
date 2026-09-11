@@ -24,7 +24,7 @@ interface GoodsReceipt {
 }
 
 const statusConfig: Record<string, { label: string; color: string }> = {
- pending: { label: 'Pendiente', color: 'bg-amber-50 text-amber-700 border border-amber-200' },
+ pending: { label: 'Pendiente', color: 'bg-peach/30 text-[#c64d00] border border-peach' },
  received: { label: 'Recibido', color: 'bg-blue-50 text-blue-700 border border-blue-200' },
  completed: { label: 'Completado', color: 'bg-emerald-50 text-emerald-700 border border-emerald-200' },
  cancelled: { label: 'Cancelado', color: 'bg-rose-50 text-rose-700 border border-rose-200' },
@@ -124,7 +124,7 @@ export default function GoodsReceiptsPage() {
  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Pendientes</p>
  <p className="text-2xl font-bold text-foreground mt-1">{kpis.pending}</p>
  </div>
- <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
+ <div className="w-12 h-12 bg-peach/30 rounded-xl flex items-center justify-center">
  <PackageCheck className="w-6 h-6 text-monday-violet" />
  </div>
  </div>

@@ -85,7 +85,7 @@ export default function SalesDashboard() {
  <div className="bg-card border border-border rounded-xl shadow-sm p-5 bg-primary border-border">
  <div className="flex items-center justify-between mb-3">
  <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Despachos Pendientes</span>
- <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+ <div className="w-10 h-10 bg-peach/30 rounded-xl flex items-center justify-center">
  <Truck className="w-5 h-5 text-monday-violet" />
  </div>
  </div>

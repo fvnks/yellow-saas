@@ -58,7 +58,7 @@ export default function ThemeToggle() {
  {theme === 'light' ? (
  <Moon className="w-4 h-4 text-foreground" />
  ) : (
- <Sun className="w-4 h-4 text-amber-400" />
+ <Sun className="w-4 h-4 text-[#c64d00]/70" />
  )}
  </button>
  );

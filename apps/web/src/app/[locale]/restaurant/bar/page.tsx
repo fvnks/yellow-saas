@@ -104,7 +104,7 @@ export default function KDSBarPage() {
  item.status === 'ready'
  ? 'bg-purple-100 text-purple-800'
  : item.status === 'preparing'
- ? 'bg-amber-100 text-amber-800'
+ ? 'bg-peach/50 text-[#c64d00]'
  : 'bg-slate-200 text-slate-700'
  }`}
  >

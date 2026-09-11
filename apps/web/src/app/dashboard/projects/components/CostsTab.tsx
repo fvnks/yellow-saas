@@ -20,7 +20,7 @@ interface CostsTabProps {
 
 const sourceConfig: Record<string, { label: string; icon: any; color: string }> = {
  purchase: { label: 'Compras', icon: ShoppingCart, color: 'text-blue-600 bg-blue-50' },
- inventory: { label: 'Inventario', icon: Package, color: 'text-amber-600 bg-amber-50' },
+ inventory: { label: 'Inventario', icon: Package, color: 'text-[#c64d00] bg-peach/30' },
  payroll: { label: 'Nómina', icon: Wallet, color: 'text-emerald-600 bg-emerald-50' },
  expense: { label: 'Gastos', icon: Receipt, color: 'text-rose-600 bg-rose-50' },
  manual: { label: 'Manual', icon: DollarSign, color: 'text-foreground bg-muted' },
@@ -54,8 +54,8 @@ export default function CostsTab({ costs, budget }: CostsTabProps) {
  <p className="text-2xl font-bold text-foreground mt-1">{formatCurrency(summary.total)}</p>
  <p className="text-xs text-muted-foreground mt-0.5">de {formatCurrency(budgetNum)} presupuestado</p>
  </div>
- <div className={`w-16 h-16 rounded-xl flex items-center justify-center ${percentUsed > 100 ? 'bg-red-50' : percentUsed > 80 ? 'bg-amber-50' : 'bg-emerald-50'}`}>
- <TrendingUp className={`w-8 h-8 ${percentUsed > 100 ? 'text-red-600' : percentUsed > 80 ? 'text-amber-600' : 'text-emerald-600'}`} />
+ <div className={`w-16 h-16 rounded-xl flex items-center justify-center ${percentUsed > 100 ? 'bg-red-50' : percentUsed > 80 ? 'bg-peach/30' : 'bg-emerald-50'}`}>
+ <TrendingUp className={`w-8 h-8 ${percentUsed > 100 ? 'text-red-600' : percentUsed > 80 ? 'text-[#c64d00]' : 'text-emerald-600'}`} />
  </div>
  </div>
 

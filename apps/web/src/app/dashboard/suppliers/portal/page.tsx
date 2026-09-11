@@ -40,7 +40,7 @@ export default function SupplierPortalPage() {
  <h1 className="text-xl font-black text-slate-900 tracking-tight">
  Portal de Autogestión de Proveedores
  </h1>
- <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-50 text-amber-700 border border-amber-200">
+ <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-peach/30 text-[#c64d00] border border-peach">
  Autogestión Proveedores
  </span>
  </div>
@@ -115,7 +115,7 @@ export default function SupplierPortalPage() {
  Aprobada
  </span>
  ) : (
- <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-50 text-amber-700 border border-amber-200">
+ <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-peach/30 text-[#c64d00] border border-peach">
  En Proceso
  </span>
  )}

@@ -57,7 +57,7 @@ interface CostCenter {
 const DOC_TYPE_LABELS: Record<string, string> = { '30': 'Factura de Compra', '34': 'Factura Exenta' };
 const STATUS_CFG: Record<string, { label: string; color: string; bg: string; border: string }> = {
  accepted: { label: 'Aceptado', color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200' },
- pending: { label: 'Pendiente', color: 'text-amber-700', bg: 'bg-amber-50', border: 'border-amber-200' },
+ pending: { label: 'Pendiente', color: 'text-[#c64d00]', bg: 'bg-peach/30', border: 'border-peach' },
 };
 
 function generateInvoiceXml(inv: Invoice): string {
@@ -231,8 +231,8 @@ export default function PurchaseInvoices() {
  {/* Sub-tabs: Ingresadas / Pendientes */}
  <div className="flex items-center gap-4 border-b border-border pb-0">
  <button onClick={() => setSubTab('pending')}
- className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${subTab === 'pending' ? 'border-monday-violet text-amber-700' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
- Pendientes <span className="ml-1.5 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700">{pendingCount}</span>
+ className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${subTab === 'pending' ? 'border-monday-violet text-[#c64d00]' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
+ Pendientes <span className="ml-1.5 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-peach/50 text-[#c64d00]">{pendingCount}</span>
  </button>
  <button onClick={() => setSubTab('integrated')}
  className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${subTab === 'integrated' ? 'border-emerald-500 text-emerald-700' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
@@ -245,7 +245,7 @@ export default function PurchaseInvoices() {
  <div className="flex items-center gap-2">
  <FileText className="w-4 h-4 text-primary" />
  <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Facturas de Compra</span>
- <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+ <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-peach/30 text-[#c64d00] border border-peach">
  <Zap className="w-2.5 h-2.5" /> SII
  </span>
  </div>

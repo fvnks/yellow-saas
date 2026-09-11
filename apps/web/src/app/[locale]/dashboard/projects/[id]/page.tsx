@@ -418,9 +418,9 @@ export default function ProjectDetailPage() {
  return (
  <div className="space-y-6">
  {project.archived && (
- <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center gap-3">
- <Archive className="w-4 h-4 text-amber-600" />
- <span className="text-sm text-amber-700 font-medium">Este proyecto esta archivado. Haz clic en &quot;Restaurar&quot; para volver a mostrarlo.</span>
+ <div className="bg-peach/30 border border-peach rounded-xl p-3 flex items-center gap-3">
+ <Archive className="w-4 h-4 text-[#c64d00]" />
+ <span className="text-sm text-[#c64d00] font-medium">Este proyecto esta archivado. Haz clic en &quot;Restaurar&quot; para volver a mostrarlo.</span>
  </div>
  )}
  <div className="flex items-center gap-4">
@@ -493,7 +493,7 @@ export default function ProjectDetailPage() {
  <div className="bg-card border border-border rounded-xl shadow-sm p-4 ">
  <div className="flex items-center justify-between">
  <div><p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Gastado</p><p className="text-lg font-bold text-foreground mt-1">{budgetUsed}%</p><p className="text-[10px] text-muted-foreground">${((totalCosts + totalExpenses) / 1000000).toFixed(1)}M</p></div>
- <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${budgetUsed > 90 ? 'bg-red-50' : budgetUsed > 70 ? 'bg-amber-50' : 'bg-emerald-50'}`}><DollarSign className={`w-5 h-5 ${budgetUsed > 90 ? 'text-red-600' : budgetUsed > 70 ? 'text-amber-600' : 'text-emerald-600'}`} /></div>
+ <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${budgetUsed > 90 ? 'bg-red-50' : budgetUsed > 70 ? 'bg-peach/30' : 'bg-emerald-50'}`}><DollarSign className={`w-5 h-5 ${budgetUsed > 90 ? 'text-red-600' : budgetUsed > 70 ? 'text-[#c64d00]' : 'text-emerald-600'}`} /></div>
  </div>
  </div>
  <div className="bg-card border border-border rounded-xl shadow-sm p-4 ">
@@ -505,7 +505,7 @@ export default function ProjectDetailPage() {
  <div className="bg-card border border-border rounded-xl shadow-sm p-4 ">
  <div className="flex items-center justify-between">
  <div><p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Horas</p><p className="text-lg font-bold text-foreground mt-1">{totalActual.toFixed(1)}/{totalEstimated.toFixed(1)}</p></div>
- <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center"><Clock className="w-5 h-5 text-amber-600" /></div>
+ <div className="w-10 h-10 bg-peach/30 rounded-xl flex items-center justify-center"><Clock className="w-5 h-5 text-[#c64d00]" /></div>
  </div>
  </div>
  <div className="bg-card border border-border rounded-xl shadow-sm p-4 ">

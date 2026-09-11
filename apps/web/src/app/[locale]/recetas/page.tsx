@@ -57,7 +57,7 @@ export default function RecetasPage() {
  <div>
  <div className="flex items-center gap-2">
  <h1 className="text-xl font-bold text-monday-violet">Recetas y Fórmulas</h1>
- <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+ <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-peach/30 text-[#c64d00] border border-peach">
  Producción & BOM
  </span>
  </div>
@@ -125,7 +125,7 @@ export default function RecetasPage() {
  <tr key={f.id} className="border-b border-[#E2E8F0] hover:bg-[#F1F5F9] transition-colors duration-100">
  <td className="px-4 py-3">
  <div className="flex items-center gap-3">
- <div className="w-9 h-9 bg-amber-50 rounded-xl flex items-center justify-center border border-amber-100">
+ <div className="w-9 h-9 bg-peach/30 rounded-xl flex items-center justify-center border border-peach/50">
  <FlaskConical className="w-4 h-4 text-monday-violet" />
  </div>
  <div>
@@ -136,7 +136,7 @@ export default function RecetasPage() {
  </td>
  <td className="px-4 py-3 text-xs font-medium text-monday-violet">{f.output_product?.name || '—'}</td>
  <td className="px-4 py-3 text-center">
- <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+ <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-peach/30 text-[#c64d00] border border-peach">
  <Package className="w-2.5 h-2.5" /> {f.ingredient_count || 0}
  </span>
  </td>

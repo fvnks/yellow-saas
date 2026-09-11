@@ -46,13 +46,13 @@ export default function PortalPage() {
  const statusConfig: Record<string, { label: string; color: string }> = {
  planning: { label: 'Planificacion', color: 'bg-muted text-foreground' },
  active: { label: 'Activo', color: 'bg-emerald-100 text-emerald-700' },
- on_hold: { label: 'En Pausa', color: 'bg-amber-100 text-amber-700' },
+ on_hold: { label: 'En Pausa', color: 'bg-peach/50 text-[#c64d00]' },
  completed: { label: 'Completado', color: 'bg-blue-100 text-blue-700' },
  cancelled: { label: 'Cancelado', color: 'bg-red-100 text-red-700' },
  };
 
  const coStatusColors: Record<string, string> = {
- pending: 'bg-amber-100 text-amber-700',
+ pending: 'bg-peach/50 text-[#c64d00]',
  approved: 'bg-emerald-100 text-emerald-700',
  rejected: 'bg-red-100 text-red-700',
  implemented: 'bg-blue-100 text-blue-700',

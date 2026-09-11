@@ -86,7 +86,7 @@ export default function RecetasSettingsPage() {
  <span className="inline-flex items-center gap-1.5 text-emerald-700">
  <span className="w-2 h-2 rounded-full bg-emerald-500" /> OK — por encima del mínimo
  </span>
- <span className="inline-flex items-center gap-1.5 text-amber-700">
+ <span className="inline-flex items-center gap-1.5 text-[#c64d00]">
  <span className="w-2 h-2 rounded-full bg-monday-violet" /> Bajo — entre 50% y 100% del mínimo
  </span>
  <span className="inline-flex items-center gap-1.5 text-rose-700">

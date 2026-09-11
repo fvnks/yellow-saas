@@ -337,7 +337,7 @@ function UsersTab() {
  <td className="px-4 py-3">
  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
  user.role === 'owner' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
- user.role === 'admin' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+ user.role === 'admin' ? 'bg-peach/30 text-[#c64d00] border border-peach' :
  'bg-muted text-foreground border border-border'
  }`}>
  {roleLabels[user.role] || user.role}
@@ -346,7 +346,7 @@ function UsersTab() {
  <td className="px-4 py-3">
  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
  user.status === 'active' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
- user.status === 'invited' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+ user.status === 'invited' ? 'bg-peach/30 text-[#c64d00] border border-peach' :
  'bg-rose-50 text-rose-700 border border-rose-200'
  }`}>
  {user.status === 'active' ? 'Activo' : user.status === 'invited' ? 'Invitado' : 'Suspendido'}
@@ -454,7 +454,7 @@ function BillingTab({ plan, status }: { plan: string; status: string }) {
  </div>
  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
  status === 'active' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
- status === 'trial' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+ status === 'trial' ? 'bg-peach/30 text-[#c64d00] border border-peach' :
  'bg-rose-50 text-rose-700 border border-rose-200'
  }`}>
  {status === 'active' ? 'Activo' : status === 'trial' ? 'Prueba' : status === 'suspended' ? 'Suspendido' : status}

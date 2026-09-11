@@ -186,7 +186,7 @@ export default function SoapEditor({
  onChange={(v) => updateSoap('objective', v)}
  />
  <SectionEditor
- color="bg-amber-50 border-amber-200"
+ color="bg-peach/30 border-peach"
  badge="bg-monday-violet"
  label="A - Evaluación (Assessment)"
  hint="Diagnóstico diferencial, problemas identificados y análisis."

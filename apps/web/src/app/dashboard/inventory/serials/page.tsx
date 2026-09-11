@@ -12,7 +12,7 @@ const STATUS_MAP: Record<string, { label: string; className: string }> = {
  in_stock: { label: 'En Stock', className: 'bg-emerald-50 text-emerald-700 border border-emerald-200' },
  sold: { label: 'Vendido', className: 'bg-blue-50 text-blue-700 border border-blue-200' },
  damaged: { label: 'Danado', className: 'bg-rose-50 text-rose-700 border border-rose-200' },
- returned: { label: 'Devuelto', className: 'bg-amber-50 text-amber-700 border border-amber-200' },
+ returned: { label: 'Devuelto', className: 'bg-peach/30 text-[#c64d00] border border-peach' },
 };
 
 export default function SerialsPage() {

@@ -210,7 +210,7 @@ export default function CondominioDashboardPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
  <div className="flex items-center justify-between text-slate-500 text-xs font-semibold">
  <span>Deuda Total Acumulada</span>
- <DollarSign className="w-4 h-4 text-amber-600" />
+ <DollarSign className="w-4 h-4 text-[#c64d00]" />
  </div>
  <p className="text-xl font-black text-slate-900 mt-2">{formatCLP(totalBalanceDebtCLP)}</p>
  <p className="text-[11px] text-slate-500 mt-1 font-medium">
@@ -305,8 +305,8 @@ export default function CondominioDashboardPage() {
  statusBadge = 'bg-rose-100 text-rose-800 border-rose-300';
  statusText = 'Moroso';
  } else if (isPendiente) {
- statusBg = 'border-amber-200 bg-amber-50/50 hover:border-amber-400';
- statusBadge = 'bg-amber-100 text-amber-800 border-amber-300';
+ statusBg = 'border-peach bg-peach/30/50 hover:border-peach';
+ statusBadge = 'bg-peach/50 text-[#c64d00] border-peach';
  statusText = 'Pendiente';
  }
 

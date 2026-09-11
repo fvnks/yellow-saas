@@ -32,7 +32,7 @@ export default function SummaryTab({ project, tasks, members, expenses, costs }:
  const statusCfg = PROJECT_STATUS_CONFIG[project.status] || { label: project.status, variant: 'neutral' };
  const variantColors: Record<string, string> = {
  success: 'bg-emerald-50 text-emerald-700 border-emerald-200',
- warning: 'bg-amber-50 text-amber-700 border-amber-200',
+ warning: 'bg-peach/30 text-[#c64d00] border-peach',
  danger: 'bg-rose-50 text-rose-700 border-rose-200',
  info: 'bg-blue-50 text-blue-700 border-blue-200',
  neutral: 'bg-muted text-foreground border-border',

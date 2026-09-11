@@ -220,9 +220,9 @@ export default function InspeccionesPage() {
  </div>
 
  {insp.damage_notes && (
- <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-xl">
- <p className="text-xs font-semibold text-amber-700 mb-1">Notas de Daños</p>
- <p className="text-sm text-amber-800">{insp.damage_notes}</p>
+ <div className="mt-3 p-3 bg-peach/30 border border-peach rounded-xl">
+ <p className="text-xs font-semibold text-[#c64d00] mb-1">Notas de Daños</p>
+ <p className="text-sm text-[#c64d00]">{insp.damage_notes}</p>
  </div>
  )}
  </div>

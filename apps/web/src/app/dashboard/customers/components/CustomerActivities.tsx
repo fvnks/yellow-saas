@@ -192,7 +192,7 @@ export default function CustomerActivities({ customerId }: Props) {
  <div key={activity.id} className="relative flex gap-4">
  <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 z-10 ${
  config.variant === 'info' ? 'bg-blue-100 text-blue-600' :
- config.variant === 'warning' ? 'bg-amber-100 text-monday-violet' :
+ config.variant === 'warning' ? 'bg-peach/50 text-monday-violet' :
  config.variant === 'success' ? 'bg-emerald-100 text-emerald-600' :
  config.variant === 'danger' ? 'bg-rose-100 text-rose-600' :
  'bg-muted text-foreground'
@@ -205,7 +205,7 @@ export default function CustomerActivities({ customerId }: Props) {
  <div className="flex items-center gap-2">
  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
  config.variant === 'info' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
- config.variant === 'warning' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+ config.variant === 'warning' ? 'bg-peach/30 text-[#c64d00] border border-peach' :
  config.variant === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
  config.variant === 'danger' ? 'bg-rose-50 text-rose-700 border border-rose-200' :
  'bg-muted text-foreground border border-border'

@@ -86,7 +86,7 @@ export default function ProjectTimePage() {
  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Registros</p>
  <p className="text-2xl font-bold text-foreground mt-1">{timers.length}</p>
  </div>
- <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
+ <div className="w-12 h-12 bg-peach/30 rounded-xl flex items-center justify-center">
  <Pause className="w-6 h-6 text-monday-violet" />
  </div>
  </div>

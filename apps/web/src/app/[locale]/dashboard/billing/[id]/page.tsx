@@ -15,7 +15,7 @@ const statusConfig: Record<string, { label: string; color: string; icon: any }> 
  sent: { label: 'Enviada', color: 'bg-blue-100 text-blue-700', icon: Send },
  paid: { label: 'Pagada', color: 'bg-emerald-100 text-emerald-700', icon: CheckCircle2 },
  overdue: { label: 'Vencida', color: 'bg-red-100 text-red-700', icon: AlertCircle },
- partial: { label: 'Pago Parcial', color: 'bg-amber-100 text-amber-700', icon: Clock },
+ partial: { label: 'Pago Parcial', color: 'bg-peach/50 text-[#c64d00]', icon: Clock },
 };
 
 export default function InvoiceDetailPage() {

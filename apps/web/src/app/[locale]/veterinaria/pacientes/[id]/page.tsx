@@ -264,8 +264,8 @@ export default function VeterinaryPatientDetailPage() {
  </h3>
 
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
- <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
- <span className="text-xs font-extrabold text-amber-800 uppercase tracking-wider block mb-1">
+ <div className="bg-peach/30 border border-peach rounded-xl p-4">
+ <span className="text-xs font-extrabold text-[#c64d00] uppercase tracking-wider block mb-1">
  Alergias Conocidas
  </span>
  <p className="text-sm font-bold text-slate-900">
@@ -461,7 +461,7 @@ export default function VeterinaryPatientDetailPage() {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
  <SoapMini label="Subjetivo" color="border-blue-200 bg-blue-50" letter="S" text={evo.soap.subjective} />
  <SoapMini label="Objetivo" color="border-emerald-200 bg-emerald-50" letter="O" text={evo.soap.objective} />
- <SoapMini label="Evaluación" color="border-amber-200 bg-amber-50" letter="A" text={evo.soap.assessment} />
+ <SoapMini label="Evaluación" color="border-peach bg-peach/30" letter="A" text={evo.soap.assessment} />
  <SoapMini label="Plan" color="border-rose-200 bg-rose-50" letter="P" text={evo.soap.plan} />
  </div>
  </div>
@@ -499,7 +499,7 @@ export default function VeterinaryPatientDetailPage() {
  <span className={`text-[10px] font-black px-2 py-0.5 rounded-lg border ${
  lo.status === 'resultados_listos' ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
  : lo.status === 'ordenada' ? 'bg-blue-50 text-blue-700 border-blue-200'
- : lo.status === 'en_proceso' ? 'bg-amber-50 text-amber-700 border-amber-200'
+ : lo.status === 'en_proceso' ? 'bg-peach/30 text-[#c64d00] border-peach'
  : 'bg-slate-100 text-slate-600 border-slate-200'
  }`}>
  {lo.status === 'resultados_listos' ? 'Resultados Listos' : lo.status === 'ordenada' ? 'Ordenada' : lo.status === 'en_proceso' ? 'En Proceso' : lo.status}
@@ -513,7 +513,7 @@ export default function VeterinaryPatientDetailPage() {
  <div className="flex flex-wrap gap-1.5">
  {lo.results.filter((r: any) => r.flag !== 'normal').map((r: any) => (
  <span key={r.id} className={`text-[10px] font-black px-2 py-0.5 rounded-lg border ${
- r.flag === 'alto' ? 'bg-amber-50 text-amber-700 border-amber-200'
+ r.flag === 'alto' ? 'bg-peach/30 text-[#c64d00] border-peach'
  : r.flag === 'bajo' ? 'bg-blue-50 text-blue-700 border-blue-200'
  : 'bg-rose-50 text-rose-700 border-rose-200'
  }`}>

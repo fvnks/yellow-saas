@@ -42,7 +42,7 @@ interface InvoiceDetail {
 }
 
 const STATUS_MAP: Record<string, { label: string; class: string }> = {
- pending: { label: 'Pendiente', class: 'bg-amber-50 text-amber-700 border border-amber-200' },
+ pending: { label: 'Pendiente', class: 'bg-peach/30 text-[#c64d00] border border-peach' },
  paid: { label: 'Pagada', class: 'bg-emerald-50 text-emerald-700 border border-emerald-200' },
  issued: { label: 'Emitida', class: 'bg-blue-50 text-blue-700 border border-blue-200' },
  cancelled: { label: 'Anulada', class: 'bg-rose-50 text-rose-700 border border-rose-200' },
@@ -216,7 +216,7 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
  {company?.logo_url ? (
  <img src={company.logo_url} alt="Logo" className="h-16 w-auto mb-3" />
  ) : (
- <div className="w-16 h-16 bg-amber-400 rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-3">
+ <div className="w-16 h-16 bg-peach rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-3">
  {(company?.name || 'E')[0]}
  </div>
  )}

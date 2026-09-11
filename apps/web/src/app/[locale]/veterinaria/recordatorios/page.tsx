@@ -149,7 +149,7 @@ export default function VeterinaryRemindersPage() {
  <div className="space-y-1">
  <div className="flex items-center gap-2">
  <h3 className="text-sm font-bold text-slate-900">{rem.title}</h3>
- <span className="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-0.5 rounded border border-amber-200 uppercase">
+ <span className="bg-peach/50 text-[#c64d00] text-xs font-bold px-2 py-0.5 rounded border border-peach uppercase">
  {rem.type}
  </span>
  {rem.status === 'completed' && (

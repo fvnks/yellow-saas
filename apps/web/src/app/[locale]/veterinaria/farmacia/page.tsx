@@ -35,7 +35,7 @@ const categoryLabels: Record<string, string> = {
 
 const categoryBadges: Record<string, string> = {
  antibiotico: 'bg-rose-50 text-rose-700 border-rose-200',
- antiinflamatorio: 'bg-amber-50 text-amber-700 border-amber-200',
+ antiinflamatorio: 'bg-peach/30 text-[#c64d00] border-peach',
  analgesico: 'bg-orange-50 text-orange-700 border-orange-200',
  antiparasitario: 'bg-emerald-50 text-emerald-700 border-emerald-200',
  vacuna: 'bg-blue-50 text-blue-700 border-blue-200',
@@ -45,7 +45,7 @@ const categoryBadges: Record<string, string> = {
 };
 
 const statusBadges: Record<string, string> = {
- pendiente: 'bg-amber-50 text-amber-700 border-amber-200',
+ pendiente: 'bg-peach/30 text-[#c64d00] border-peach',
  despachado: 'bg-blue-50 text-blue-700 border-blue-200',
  entregado: 'bg-emerald-50 text-emerald-700 border-emerald-200',
  anulado: 'bg-rose-50 text-rose-700 border-rose-200',
@@ -226,7 +226,7 @@ export default function VeterinaryPharmacyPage() {
  </div>
  </div>
  <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center"><AlertTriangle className="w-5 h-5" /></div>
+ <div className="w-10 h-10 rounded-xl bg-peach/30 border border-peach text-[#c64d00] flex items-center justify-center"><AlertTriangle className="w-5 h-5" /></div>
  <div>
  <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Stock Bajo</div>
  <div className="text-xl font-black text-slate-900">{lowStock.length}</div>

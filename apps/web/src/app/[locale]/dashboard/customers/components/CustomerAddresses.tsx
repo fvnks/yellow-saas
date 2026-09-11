@@ -224,7 +224,7 @@ export default function CustomerAddresses({ customerId, onUpdate }: Props) {
  <td className="px-4 py-3">
  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
  typeCfg.variant === 'info' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
- typeCfg.variant === 'warning' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+ typeCfg.variant === 'warning' ? 'bg-peach/30 text-[#c64d00] border border-peach' :
  'bg-muted text-foreground border border-border'
  }`}>
  {typeCfg.label}

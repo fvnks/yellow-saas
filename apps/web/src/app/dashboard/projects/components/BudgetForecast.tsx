@@ -69,9 +69,9 @@ export default function BudgetForecast({ projectId }: BudgetForecastProps) {
  <p className="text-lg font-bold text-emerald-600 mt-1">${data.remaining.toLocaleString()}</p>
  <p className="text-[10px] text-muted-foreground">{100 - data.usage_percent}% del presupuesto</p>
  </div>
- <div className={`bg-card border rounded-xl shadow-sm p-4 ${data.days_until_exhaust !== null && data.days_until_exhaust < 30 ? 'border-amber-200' : 'border-border'}`}>
+ <div className={`bg-card border rounded-xl shadow-sm p-4 ${data.days_until_exhaust !== null && data.days_until_exhaust < 30 ? 'border-peach' : 'border-border'}`}>
  <p className="text-[9px] font-semibold text-muted-foreground uppercase">Dias Hasta Agotar</p>
- <p className={`text-lg font-bold mt-1 ${data.days_until_exhaust !== null && data.days_until_exhaust < 30 ? 'text-amber-600' : 'text-foreground'}`}>
+ <p className={`text-lg font-bold mt-1 ${data.days_until_exhaust !== null && data.days_until_exhaust < 30 ? 'text-[#c64d00]' : 'text-foreground'}`}>
  {data.days_until_exhaust !== null ? data.days_until_exhaust : '—'}
  </p>
  <p className="text-[10px] text-muted-foreground">proyeccion actual</p>
@@ -86,11 +86,11 @@ export default function BudgetForecast({ projectId }: BudgetForecastProps) {
  </div>
 
  {data.usage_percent >= 80 && (
- <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center gap-3">
- <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0" />
+ <div className="bg-peach/30 border border-peach rounded-xl p-4 flex items-center gap-3">
+ <AlertTriangle className="w-5 h-5 text-[#c64d00] flex-shrink-0" />
  <div>
- <p className="text-xs font-semibold text-amber-800">Alerta de presupuesto</p>
- <p className="text-[10px] text-amber-600">
+ <p className="text-xs font-semibold text-[#c64d00]">Alerta de presupuesto</p>
+ <p className="text-[10px] text-[#c64d00]">
  Has usado el {data.usage_percent}% del presupuesto.
  {data.days_until_exhaust !== null && data.days_until_exhaust < 30 && ` Quedan approx. ${data.days_until_exhaust} dias.`}
  </p>

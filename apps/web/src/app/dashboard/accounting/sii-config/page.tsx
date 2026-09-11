@@ -138,11 +138,11 @@ export default function SIIConfigPage() {
  />
  </div>
 
- <div className="flex items-center gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+ <div className="flex items-center gap-3 p-4 bg-peach/30 border border-peach rounded-xl">
  <AlertCircle className="w-5 h-5 text-monday-violet flex-shrink-0" />
  <div>
- <p className="text-xs font-bold text-amber-800">Modo Prueba Activo</p>
- <p className="text-xs text-amber-700 mt-0.5">Los DTEs se generarán pero no se enviarán realmente al SII</p>
+ <p className="text-xs font-bold text-[#c64d00]">Modo Prueba Activo</p>
+ <p className="text-xs text-[#c64d00] mt-0.5">Los DTEs se generarán pero no se enviarán realmente al SII</p>
  </div>
  <label className="ml-auto flex items-center gap-2">
  <input

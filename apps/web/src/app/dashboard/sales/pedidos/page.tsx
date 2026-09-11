@@ -30,7 +30,7 @@ const statusConfig: Record<string, { label: string; variant: 'success' | 'warnin
 const priorityConfig: Record<string, { label: string; color: string }> = {
  low: { label: 'Baja', color: 'bg-muted text-foreground' },
  normal: { label: 'Normal', color: 'bg-blue-100 text-blue-600' },
- high: { label: 'Alta', color: 'bg-amber-100 text-monday-violet' },
+ high: { label: 'Alta', color: 'bg-peach/50 text-monday-violet' },
  urgent: { label: 'Urgente', color: 'bg-rose-100 text-rose-600' },
 };
 
