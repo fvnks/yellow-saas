@@ -72,7 +72,7 @@ export async function POST(
           [companyId, item.product_id, transfer.source_warehouse_id, qty]
         );
 
-        checkAndCreateLowStockNotification(companyId, item.product_id, transfer.source_warehouse_id);
+        await checkAndCreateLowStockNotification(companyId, item.product_id, transfer.source_warehouse_id);
 
         // Update destination stock (create if not exists)
         const destStock = await query(
