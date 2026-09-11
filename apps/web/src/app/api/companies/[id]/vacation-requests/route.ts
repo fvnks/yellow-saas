@@ -69,6 +69,12 @@ export async function POST(request: NextRequest) {
       return errorResponse('employee_id, start_date and end_date are required', 400);
     }
 
+    const employeeCheck = await query(
+      'SELECT id FROM employees WHERE id = $1 AND company_id = $2',
+      [employee_id, companyId]
+    );
+    if (employeeCheck.rows.length === 0) return errorResponse('Employee not found', 404);
+
     // Calculate days (excluding weekends)
     const start = new Date(start_date);
     const end = new Date(end_date);

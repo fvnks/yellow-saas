@@ -27,6 +27,12 @@ export async function POST(req: NextRequest, { params }: { params: { id: string;
 
     if (!text) return errorResponse('text is required', 400);
 
+    const taskCheck = await query(
+      'SELECT id FROM project_tasks WHERE id = $1 AND company_id = $2',
+      [params.taskId, companyId]
+    );
+    if (taskCheck.rows.length === 0) return errorResponse('Task not found', 404);
+
     const { rows } = await query(
       `INSERT INTO project_task_checklists (company_id, task_id, text, sort_order)
        VALUES ($1, $2, $3, $4) RETURNING *`,

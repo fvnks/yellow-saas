@@ -33,6 +33,12 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     if (!warehouse_id || !name) return errorResponse('warehouse_id and name required', 400);
 
+    const warehouseCheck = await query(
+      'SELECT id FROM warehouses WHERE id = $1 AND company_id = $2',
+      [warehouse_id, companyId]
+    );
+    if (warehouseCheck.rows.length === 0) return errorResponse('Warehouse not found', 404);
+
     const { rows } = await query(
       `INSERT INTO physical_counts (company_id, warehouse_id, name, notes)
        VALUES ($1, $2, $3, $4) RETURNING *`,

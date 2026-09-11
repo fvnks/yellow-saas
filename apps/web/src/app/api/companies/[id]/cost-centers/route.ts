@@ -30,6 +30,14 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     if (!code || !name) return errorResponse('code y name son requeridos', 400);
 
+    if (parent_id) {
+      const parentCheck = await query(
+        'SELECT id FROM cost_centers WHERE id = $1 AND company_id = $2',
+        [parent_id, companyId]
+      );
+      if (parentCheck.rows.length === 0) return errorResponse('Parent cost center not found', 404);
+    }
+
     const { rows } = await query(
       `INSERT INTO cost_centers (company_id, code, name, description, parent_id)
        VALUES ($1, $2, $3, $4, $5)

@@ -1,4 +1,4 @@
-import { query } from '@/api/lib/db';
+import { query, transaction } from '@/api/lib/db';
 import {
   getCompanyId,
   successResponse,
@@ -108,66 +108,70 @@ export async function POST(request: NextRequest) {
       return errorResponse('Customer is required for facturas', 400);
     }
 
-    const { rows: countRows } = await query(
-      `SELECT COUNT(*) as count FROM invoices WHERE company_id = $1 AND document_type = $2`,
-      [companyId, docType]
-    );
-    const prefix = docType === 'boleta' ? 'BF' : 'FE';
-    const invoiceNumber = `${prefix}-${String((parseInt(countRows[0]?.count || '0') + 1)).padStart(6, '0')}`;
+    const result = await transaction(async (client) => {
+      const { rows: countRows } = await client.query(
+        `SELECT COUNT(*) as count FROM invoices WHERE company_id = $1 AND document_type = $2`,
+        [companyId, docType]
+      );
+      const prefix = docType === 'boleta' ? 'BF' : 'FE';
+      const invoiceNumber = `${prefix}-${String((parseInt(countRows[0]?.count || '0') + 1)).padStart(6, '0')}`;
 
-    let subtotal = 0;
-    let taxAmount = 0;
-    for (const item of items) {
-      const discountPct = Number(item.discount_percent || item.discount || 0);
-      const lineSubtotal = item.quantity * item.unit_price;
-      const discountAmount = lineSubtotal * (discountPct / 100);
-      const lineTax = (lineSubtotal - discountAmount) * ((item.tax_rate ?? 0.19) / 100);
-      subtotal += lineSubtotal - discountAmount;
-      taxAmount += lineTax;
-    }
+      let subtotal = 0;
+      let taxAmount = 0;
+      for (const item of items) {
+        const discountPct = Number(item.discount_percent || item.discount || 0);
+        const lineSubtotal = item.quantity * item.unit_price;
+        const discountAmount = lineSubtotal * (discountPct / 100);
+        const lineTax = (lineSubtotal - discountAmount) * ((item.tax_rate ?? 0.19) / 100);
+        subtotal += lineSubtotal - discountAmount;
+        taxAmount += lineTax;
+      }
 
-    const { rows: invoiceRows } = await query(
-      `INSERT INTO invoices (company_id, customer_id, order_id, invoice_number, document_type, status, invoice_date, due_date, payment_terms, subtotal, tax_amount, total_amount, notes, payment_method, card_transaction_number)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
-       RETURNING *`,
-      [
-        companyId, customer_id || null, order_id || null, invoiceNumber, docType,
-        requestedStatus || 'pending',
-        invoice_date || new Date().toISOString(), due_date || null,
-        payment_terms || 0, subtotal, taxAmount, subtotal + taxAmount, notes || null,
-        payment_method || null, card_transaction_number || null,
-      ]
-    );
+      const { rows: invoiceRows } = await client.query(
+        `INSERT INTO invoices (company_id, customer_id, order_id, invoice_number, document_type, status, invoice_date, due_date, payment_terms, subtotal, tax_amount, total_amount, notes, payment_method, card_transaction_number)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+         RETURNING *`,
+        [
+          companyId, customer_id || null, order_id || null, invoiceNumber, docType,
+          requestedStatus || 'pending',
+          invoice_date || new Date().toISOString(), due_date || null,
+          payment_terms || 0, subtotal, taxAmount, subtotal + taxAmount, notes || null,
+          payment_method || null, card_transaction_number || null,
+        ]
+      );
 
-    const invoice = invoiceRows[0];
+      const invoice = invoiceRows[0];
 
-    const invoiceItems = items.map((item: Record<string, unknown>) => {
-      const taxRate = Number(item.tax_rate ?? 0.19);
-      const quantity = Number(item.quantity) || 0;
-      const unitPrice = Number(item.unit_price) || 0;
-      const discountPct = Number(item.discount_percent || item.discount || 0);
-      return {
-        invoice_id: invoice.id,
-        company_id: companyId,
-        product_id: item.product_id,
-        description: item.description || '',
-        quantity,
-        unit_price: unitPrice,
-        discount_percent: discountPct,
-        tax_rate: taxRate,
-      };
+      const invoiceItems = items.map((item: Record<string, unknown>) => {
+        const taxRate = Number(item.tax_rate ?? 0.19);
+        const quantity = Number(item.quantity) || 0;
+        const unitPrice = Number(item.unit_price) || 0;
+        const discountPct = Number(item.discount_percent || item.discount || 0);
+        return {
+          invoice_id: invoice.id,
+          company_id: companyId,
+          product_id: item.product_id,
+          description: item.description || '',
+          quantity,
+          unit_price: unitPrice,
+          discount_percent: discountPct,
+          tax_rate: taxRate,
+        };
+      });
+
+      for (const ii of invoiceItems) {
+        await client.query(
+          `INSERT INTO invoice_items (invoice_id, company_id, product_id, description, quantity, unit_price, discount_percent, tax_rate)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+          [ii.invoice_id, ii.company_id, ii.product_id, ii.description, ii.quantity, ii.unit_price,
+           ii.discount_percent, ii.tax_rate]
+        );
+      }
+
+      return { ...invoice, items: invoiceItems };
     });
 
-    for (const ii of invoiceItems) {
-      await query(
-        `INSERT INTO invoice_items (invoice_id, company_id, product_id, description, quantity, unit_price, discount_percent, tax_rate)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-        [ii.invoice_id, ii.company_id, ii.product_id, ii.description, ii.quantity, ii.unit_price,
-         ii.discount_percent, ii.tax_rate]
-      );
-    }
-
-    return successResponse({ ...invoice, items: invoiceItems }, 201);
+    return successResponse(result, 201);
   } catch {
     return errorResponse('Internal server error', 500);
   }

@@ -1,4 +1,4 @@
-import { query } from '@/api/lib/db';
+import { query, transaction } from '@/api/lib/db';
 import {
   getCompanyId,
   successResponse,
@@ -77,78 +77,79 @@ export async function POST(request: NextRequest) {
       return errorResponse('Warehouse and items are required', 400);
     }
 
-    const { rows: countRows } = await query(
-      `SELECT COUNT(*) as count FROM delivery_guides WHERE company_id = $1`,
-      [companyId]
-    );
-    const guideNumber = `GD-${String((parseInt(countRows[0]?.count || '0') + 1)).padStart(6, '0')}`;
-
-    // Check stock for each item
-    for (const item of items) {
-      const { rows: stockRows } = await query(
-        `SELECT quantity FROM stock_levels WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`,
-        [companyId, item.product_id, warehouse_id]
+    const result = await transaction(async (client) => {
+      const { rows: countRows } = await client.query(
+        `SELECT COUNT(*) as count FROM delivery_guides WHERE company_id = $1`,
+        [companyId]
       );
+      const guideNumber = `GD-${String((parseInt(countRows[0]?.count || '0') + 1)).padStart(6, '0')}`;
 
-      if (!stockRows[0] || stockRows[0].quantity < item.quantity) {
-        return errorResponse(
-          `Stock insuficiente para ${item.product_name || item.product_id}. Disponible: ${stockRows[0]?.quantity || 0}`,
-          400
+      for (const item of items) {
+        const { rows: stockRows } = await client.query(
+          `SELECT quantity FROM stock_levels WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3 FOR UPDATE`,
+          [companyId, item.product_id, warehouse_id]
         );
+
+        if (!stockRows[0] || stockRows[0].quantity < item.quantity) {
+          throw new Error(
+            `Stock insuficiente para ${item.product_name || item.product_id}. Disponible: ${stockRows[0]?.quantity || 0}`
+          );
+        }
       }
-    }
 
-    const { rows: guideRows } = await query(
-      `INSERT INTO delivery_guides (company_id, warehouse_id, order_id, guide_number, status, shipping_date, transport, vehicle_plate, driver_name, shipping_address)
-       VALUES ($1, $2, $3, $4, 'pending', $5, $6, $7, $8, $9)
-       RETURNING *`,
-      [
-        companyId, warehouse_id, order_id || null, guideNumber,
-        shipping_date || new Date().toISOString(), transport || null, vehicle_plate || null,
-        driver_name || null, shipping_address || null,
-      ]
-    );
-
-    const guide = guideRows[0];
-
-    const guideItems = items.map((item: Record<string, unknown>) => ({
-      guide_id: guide.id,
-      company_id: companyId,
-      product_id: item.product_id,
-      quantity: item.quantity,
-      observation: item.observation || null,
-    }));
-
-    for (const gi of guideItems) {
-      await query(
-        `INSERT INTO delivery_guide_items (guide_id, company_id, product_id, quantity, observation)
-         VALUES ($1, $2, $3, $4, $5)`,
-        [gi.guide_id, gi.company_id, gi.product_id, gi.quantity, gi.observation]
-      );
-    }
-
-    // Update stock levels
-    for (const item of items) {
-      const { rows: stockRows } = await query(
-        `SELECT id, quantity FROM stock_levels WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`,
-        [companyId, item.product_id, warehouse_id]
+      const { rows: guideRows } = await client.query(
+        `INSERT INTO delivery_guides (company_id, warehouse_id, order_id, guide_number, status, shipping_date, transport, vehicle_plate, driver_name, shipping_address)
+         VALUES ($1, $2, $3, $4, 'pending', $5, $6, $7, $8, $9)
+         RETURNING *`,
+        [
+          companyId, warehouse_id, order_id || null, guideNumber,
+          shipping_date || new Date().toISOString(), transport || null, vehicle_plate || null,
+          driver_name || null, shipping_address || null,
+        ]
       );
 
-      if (stockRows[0]) {
-        await query(
-          `UPDATE stock_levels SET quantity = $1, last_movement_at = NOW() WHERE id = $2`,
-          [stockRows[0].quantity - item.quantity, stockRows[0].id]
+      const guide = guideRows[0];
+
+      const guideItems = items.map((item: Record<string, unknown>) => ({
+        guide_id: guide.id,
+        company_id: companyId,
+        product_id: item.product_id,
+        quantity: item.quantity,
+        observation: item.observation || null,
+      }));
+
+      for (const gi of guideItems) {
+        await client.query(
+          `INSERT INTO delivery_guide_items (guide_id, company_id, product_id, quantity, observation)
+           VALUES ($1, $2, $3, $4, $5)`,
+          [gi.guide_id, gi.company_id, gi.product_id, gi.quantity, gi.observation]
         );
       }
 
-      await query(
-        `INSERT INTO stock_movements (company_id, product_id, warehouse_id, type, quantity, reference_type, reference_id, notes)
-         VALUES ($1, $2, $3, 'out', $4, 'delivery_guide', $5, $6)`,
-        [companyId, item.product_id, warehouse_id, -item.quantity, guide.id, `Despacho según ${guideNumber}`]
-      );
-    }
+      for (const item of items) {
+        const { rows: stockRows } = await client.query(
+          `SELECT id, quantity FROM stock_levels WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`,
+          [companyId, item.product_id, warehouse_id]
+        );
 
-    return successResponse({ ...guide, items: guideItems }, 201);
+        if (stockRows[0]) {
+          await client.query(
+            `UPDATE stock_levels SET quantity = $1, last_movement_at = NOW() WHERE id = $2`,
+            [stockRows[0].quantity - item.quantity, stockRows[0].id]
+          );
+        }
+
+        await client.query(
+          `INSERT INTO stock_movements (company_id, product_id, warehouse_id, type, quantity, reference_type, reference_id, notes)
+           VALUES ($1, $2, $3, 'out', $4, 'delivery_guide', $5, $6)`,
+          [companyId, item.product_id, warehouse_id, -item.quantity, guide.id, `Despacho según ${guideNumber}`]
+        );
+      }
+
+      return { ...guide, items: guideItems };
+    });
+
+    return successResponse(result, 201);
   } catch {
     return errorResponse('Internal server error', 500);
   }
