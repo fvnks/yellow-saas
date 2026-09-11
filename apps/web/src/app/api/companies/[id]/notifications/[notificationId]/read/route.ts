@@ -18,7 +18,8 @@ export async function POST(
     if (result.rows.length === 0) return errorResponse('Notification not found', 404);
 
     return successResponse({ message: 'Marked as read' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

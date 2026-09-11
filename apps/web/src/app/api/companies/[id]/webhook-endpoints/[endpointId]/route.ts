@@ -38,7 +38,8 @@ export async function PUT(
     if (url) {
       try {
         new URL(url);
-      } catch {
+      } catch (err) {
+        console.error('Route error:', err);
         return errorResponse('Invalid URL format', 400);
       }
     }

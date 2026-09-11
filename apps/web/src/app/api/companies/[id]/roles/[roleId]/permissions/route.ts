@@ -41,7 +41,8 @@ export async function PUT(
     }
 
     return successResponse({ updated: true });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

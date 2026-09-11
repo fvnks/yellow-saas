@@ -51,7 +51,8 @@ export async function POST(request: NextRequest) {
       phone: client_phone,
       char_count: message.length,
     });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

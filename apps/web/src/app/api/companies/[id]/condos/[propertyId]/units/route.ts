@@ -22,8 +22,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       [...params_, limit, offset],
     );
     return paginatedResponse(dataResult.rows, parseInt(countResult.rows[0].count), page, limit);
-  } catch {
-    return errorResponse("Internal server error", 500);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
   }
 }
 
@@ -47,7 +48,8 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       );
     }
     return successResponse(newUnit, 201);
-  } catch {
-    return errorResponse("Internal server error", 500);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
   }
 }

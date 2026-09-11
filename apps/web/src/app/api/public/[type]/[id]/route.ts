@@ -159,7 +159,8 @@ export async function GET(
     };
 
     return NextResponse.json(doc);
-  } catch {
+  } catch (err) {
+    console.error('Public document route error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

@@ -20,7 +20,7 @@ export async function POST(
          AND t.assignee_id IS NOT NULL
          AND NOT EXISTS (
            SELECT 1 FROM project_notifications n
-           WHERE n.entity_id = t.id AND n.type = 'task_overdue' AND n.user_id = t.assignee_id
+           WHERE n.entity_id = t.id AND n.type = '\'$1\'' AND n.user_id = t.assignee_id
          )`,
       [companyId]
     );
@@ -46,7 +46,7 @@ export async function POST(
          AND t.assignee_id IS NOT NULL
          AND NOT EXISTS (
            SELECT 1 FROM project_notifications n
-           WHERE n.entity_id = t.id AND n.type = 'task_due_soon' AND n.user_id = t.assignee_id
+           WHERE n.entity_id = t.id AND n.type = '\'$1\'' AND n.user_id = t.assignee_id
              AND n.created_at > CURRENT_DATE - INTERVAL '1 day'
          )`,
       [companyId]
@@ -105,7 +105,8 @@ export async function POST(
     }
 
     return successResponse({ message: `${created} notifications created` });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

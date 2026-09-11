@@ -77,7 +77,8 @@ export async function GET(request: NextRequest) {
         { code: '999', description: 'TOTAL A PAGAR', amount: totalPayable },
       ],
     });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

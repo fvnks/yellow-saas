@@ -29,7 +29,8 @@ export async function GET(
     if (!rows[0]) return errorResponse('Purchase order not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch purchase order', 500);
   }
 }
@@ -87,7 +88,8 @@ export async function PUT(
     }
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update purchase order', 500);
   }
 }
@@ -115,7 +117,8 @@ export async function DELETE(
     await query(`DELETE FROM purchase_orders WHERE id = $1 AND company_id = $2`, [params.orderId, companyId]);
 
     return successResponse({ message: 'Purchase order deleted successfully' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete purchase order', 500);
   }
 }

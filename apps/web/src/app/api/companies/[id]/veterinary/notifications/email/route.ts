@@ -159,7 +159,8 @@ export async function POST(request: NextRequest) {
       html_body,
       to: email,
     });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

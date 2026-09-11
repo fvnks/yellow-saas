@@ -44,7 +44,8 @@ export async function POST(
       ...result.rows[0],
       portal_url: portalUrl,
     });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

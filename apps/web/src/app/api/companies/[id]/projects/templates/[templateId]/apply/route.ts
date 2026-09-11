@@ -51,7 +51,8 @@ export async function POST(
     }
 
     return successResponse({ message: 'Template applied', tasks_created: tasksResult.rows.length, milestones_created: milestonesResult.rows.length });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

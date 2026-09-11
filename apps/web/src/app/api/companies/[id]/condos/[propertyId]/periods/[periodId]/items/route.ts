@@ -12,8 +12,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       [companyId, pParams.periodId],
     );
     return successResponse(result.rows);
-  } catch {
-    return errorResponse("Internal server error", 500);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
   }
 }
 
@@ -31,8 +32,9 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       [companyId, pParams.propertyId, pParams.periodId, name, category || "common", description || null, amt, Math.round(amt)],
     );
     return successResponse(result.rows[0], 201);
-  } catch {
-    return errorResponse("Internal server error", 500);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
   }
 }
 
@@ -50,8 +52,9 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     );
     if (result.rows.length === 0) return errorResponse("Item not found", 404);
     return successResponse(result.rows[0]);
-  } catch {
-    return errorResponse("Internal server error", 500);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
   }
 }
 
@@ -65,7 +68,8 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     const result = await query(`DELETE FROM condos_expense_items WHERE id = $1 AND company_id = $2 RETURNING id`, [itemId, companyId]);
     if (result.rows.length === 0) return errorResponse("Item not found", 404);
     return successResponse({ deleted: true });
-  } catch {
-    return errorResponse("Internal server error", 500);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
   }
 }

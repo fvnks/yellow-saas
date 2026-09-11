@@ -24,7 +24,8 @@ export async function GET(
     if (!rows[0]) return errorResponse('Warehouse not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch warehouse', 500);
   }
 }
@@ -63,7 +64,8 @@ export async function PUT(
     if (!rows[0]) return errorResponse('Warehouse not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update warehouse', 500);
   }
 }
@@ -91,7 +93,8 @@ export async function DELETE(
     );
 
     return successResponse({ message: 'Warehouse deleted successfully' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete warehouse', 500);
   }
 }

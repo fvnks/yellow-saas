@@ -20,7 +20,8 @@ export async function POST(
     if (result.rows.length === 0) return errorResponse('Transfer not found or cannot be cancelled', 404);
 
     return successResponse({ message: 'Transfer cancelled successfully' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to cancel transfer', 500);
   }
 }

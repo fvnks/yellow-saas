@@ -44,7 +44,8 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }));
 
     return successResponse({ zones: layout });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -119,7 +120,8 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     return successResponse({ saved: true });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

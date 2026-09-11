@@ -18,7 +18,8 @@ export async function DELETE(
     if (result.rows.length === 0) return errorResponse('Phase not found', 404);
 
     return successResponse({ message: 'Phase deleted' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

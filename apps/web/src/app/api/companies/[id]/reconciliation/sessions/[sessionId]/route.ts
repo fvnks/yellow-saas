@@ -58,7 +58,8 @@ export async function GET(
     if (!rows[0]) return errorResponse('Session not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch session', 500);
   }
 }
@@ -99,7 +100,8 @@ export async function PATCH(
     if (!rows[0]) return errorResponse('Session not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update session', 500);
   }
 }

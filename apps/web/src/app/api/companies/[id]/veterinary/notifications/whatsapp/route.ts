@@ -97,7 +97,8 @@ export async function POST(request: NextRequest) {
       whatsapp_url,
       phone: client_phone,
     });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

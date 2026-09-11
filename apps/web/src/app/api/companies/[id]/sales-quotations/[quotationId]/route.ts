@@ -27,7 +27,8 @@ export async function GET(
     if (!rows[0]) return errorResponse('Sales quotation not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch sales quotation', 500);
   }
 }
@@ -77,7 +78,8 @@ export async function PUT(
     }
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update sales quotation', 500);
   }
 }
@@ -105,7 +107,8 @@ export async function DELETE(
     await query(`DELETE FROM sales_quotations WHERE id = $1 AND company_id = $2`, [params.quotationId, companyId]);
 
     return successResponse({ message: 'Sales quotation deleted successfully' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete sales quotation', 500);
   }
 }

@@ -19,8 +19,8 @@ export async function POST(request: NextRequest) {
        AND pt.due_date IS NOT NULL
        AND NOT EXISTS (
          SELECT 1 FROM notifications n
-         WHERE n.entity_type = 'task' AND n.entity_id = pt.id
-         AND n.type = 'deadline_warning' AND n.created_at > NOW() - INTERVAL '1 day'
+         WHERE n.entity_type = '\'$1\'' AND n.entity_id = pt.id
+         AND n.type = '\'$1\'' AND n.created_at > NOW() - INTERVAL '1 day'
        )`,
       [companyId]
     );
@@ -50,8 +50,8 @@ export async function POST(request: NextRequest) {
        AND pm.due_date IS NOT NULL
        AND NOT EXISTS (
          SELECT 1 FROM notifications n
-         WHERE n.entity_type = 'milestone' AND n.entity_id = pm.id
-         AND n.type = 'deadline_warning' AND n.created_at > NOW() - INTERVAL '1 day'
+         WHERE n.entity_type = '\'$1\'' AND n.entity_id = pm.id
+         AND n.type = '\'$1\'' AND n.created_at > NOW() - INTERVAL '1 day'
        )`,
       [companyId]
     );
@@ -80,8 +80,8 @@ export async function POST(request: NextRequest) {
        AND end_date IS NOT NULL
        AND NOT EXISTS (
          SELECT 1 FROM notifications n
-         WHERE n.entity_type = 'project' AND n.entity_id = projects.id
-         AND n.type = 'deadline_warning' AND n.created_at > NOW() - INTERVAL '2 days'
+         WHERE n.entity_type = '\'$1\'' AND n.entity_id = projects.id
+         AND n.type = '\'$1\'' AND n.created_at > NOW() - INTERVAL '2 days'
        )`,
       [companyId]
     );

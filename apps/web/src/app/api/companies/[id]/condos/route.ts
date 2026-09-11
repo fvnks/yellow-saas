@@ -21,8 +21,9 @@ export async function GET(request: NextRequest) {
       [...params, limit, offset],
     );
     return paginatedResponse(dataResult.rows, parseInt(countResult.rows[0].count), page, limit);
-  } catch {
-    return errorResponse("Internal server error", 500);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
   }
 }
 
@@ -38,7 +39,8 @@ export async function POST(request: NextRequest) {
       [companyId, name, rut || null, address || null, commune || null, city || null, total_units || 0, reserve_fund_pct || 5.00, late_interest_pct || 1.50, due_day || 10],
     );
     return successResponse(result.rows[0], 201);
-  } catch {
-    return errorResponse("Internal server error", 500);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
   }
 }

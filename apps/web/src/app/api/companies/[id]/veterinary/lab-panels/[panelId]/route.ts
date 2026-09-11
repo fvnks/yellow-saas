@@ -27,7 +27,8 @@ export async function GET(
     if (!rows[0]) return errorResponse('Lab panel not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch lab panel', 500);
   }
 }
@@ -135,7 +136,8 @@ export async function DELETE(
     );
 
     return successResponse({ message: 'Lab panel deleted successfully' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete lab panel', 500);
   }
 }

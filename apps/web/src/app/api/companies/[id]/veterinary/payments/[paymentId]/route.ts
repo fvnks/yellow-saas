@@ -24,7 +24,8 @@ export async function GET(
     if (!rows[0]) return errorResponse('Payment not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch payment', 500);
   }
 }
@@ -71,7 +72,8 @@ export async function PUT(
     if (!rows[0]) return errorResponse('Payment not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update payment', 500);
   }
 }
@@ -101,7 +103,8 @@ export async function DELETE(
     );
 
     return successResponse({ message: 'Payment deleted successfully' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete payment', 500);
   }
 }

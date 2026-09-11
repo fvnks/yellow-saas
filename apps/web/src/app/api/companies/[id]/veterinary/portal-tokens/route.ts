@@ -14,7 +14,8 @@ async function getUserId(req: NextRequest): Promise<string | null> {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
     return payload.id as string;
-  } catch {
+  } catch (err) {
+    console.error('Silenced error:', err);
     return null;
   }
 }

@@ -33,7 +33,8 @@ export async function GET(
 
     const result = await query(sql, args);
     return successResponse(result.rows);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -66,7 +67,8 @@ export async function PUT(
     }
 
     return errorResponse('Invalid request', 400);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

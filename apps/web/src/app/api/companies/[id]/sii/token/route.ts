@@ -37,7 +37,8 @@ export async function POST(request: NextRequest) {
       test_mode: credentials.sii_test_mode,
       expires_in: 3600,
     });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -83,7 +84,8 @@ export async function GET(request: NextRequest) {
       test_mode: config.sii_test_mode,
       username: config.sii_username ? `${config.sii_username.substring(0, 3)}***` : null,
     });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

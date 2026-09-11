@@ -23,7 +23,8 @@ export async function GET(
     if (!rows[0]) return errorResponse('Evolution not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch evolution', 500);
   }
 }
@@ -86,7 +87,8 @@ export async function PUT(
     if (!rows[0]) return errorResponse('Evolution not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update evolution', 500);
   }
 }
@@ -107,7 +109,8 @@ export async function DELETE(
     if (!rows[0]) return errorResponse('Evolution not found', 404);
 
     return successResponse({ message: 'Evolution deleted successfully' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete evolution', 500);
   }
 }

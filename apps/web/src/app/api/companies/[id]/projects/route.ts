@@ -52,7 +52,8 @@ export async function GET(request: NextRequest) {
     );
 
     return paginatedResponse(dataResult.rows, parseInt(countResult.rows[0].count), page, limit);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -89,7 +90,7 @@ export async function POST(request: NextRequest) {
          VALUES ($1, $2, $3, 'created', 'project', $4, $5, $6)`,
         [companyId, project.id, body.actor_name || null, project.id, project.name, JSON.stringify({ name, code, status })]
       );
-    } catch {}
+    } catch (err) { console.error('Silenced error:', err); }
 
     return successResponse(project, 201);
   } catch (err: any) {

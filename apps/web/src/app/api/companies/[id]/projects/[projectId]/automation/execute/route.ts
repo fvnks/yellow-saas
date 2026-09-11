@@ -75,7 +75,8 @@ export async function POST(
     }
 
     return successResponse({ message: `${executed} rules executed`, executed });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

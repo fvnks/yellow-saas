@@ -98,7 +98,8 @@ export async function GET(request: NextRequest) {
       folio: dteData.folio,
       total: dteData.total,
     });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }
@@ -128,7 +129,8 @@ export async function POST(request: NextRequest) {
       message: 'DTE XML saved successfully',
       document_id,
     });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

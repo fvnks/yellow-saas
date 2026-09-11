@@ -21,7 +21,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
                 COALESCE(
                   (SELECT SUM(sm.quantity * sm.unit_cost) / NULLIF(SUM(sm.quantity), 0)
                    FROM stock_movements sm
-                   WHERE sm.product_id = p.id AND sm.company_id = p.company_id AND sm.type = 'in' AND sm.unit_cost > 0),
+                   WHERE sm.product_id = p.id AND sm.company_id = p.company_id AND sm.type = '\'$1\'' AND sm.unit_cost > 0),
                   p.cost_price
                 )
               ELSE p.cost_price
@@ -34,7 +34,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
             COALESCE(
               (SELECT SUM(sm.quantity * sm.unit_cost) / NULLIF(SUM(sm.quantity), 0)
                FROM stock_movements sm
-               WHERE sm.product_id = p.id AND sm.company_id = p.company_id AND sm.type = 'in' AND sm.unit_cost > 0),
+               WHERE sm.product_id = p.id AND sm.company_id = p.company_id AND sm.type = '\'$1\'' AND sm.unit_cost > 0),
               p.cost_price
             )
           ELSE p.cost_price

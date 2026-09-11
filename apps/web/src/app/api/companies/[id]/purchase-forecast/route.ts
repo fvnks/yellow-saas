@@ -10,7 +10,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const { rows: monthlyData } = await query(
       `SELECT EXTRACT(YEAR FROM created_at) as year, EXTRACT(MONTH FROM created_at) as month,
         SUM(total_amount) as total, COUNT(*) as order_count
-       FROM purchase_orders WHERE company_id = $1 AND status != 'cancelled' AND created_at >= NOW() - INTERVAL '24 months'
+       FROM purchase_orders WHERE company_id = $1 AND status != '\'$1\'' AND created_at >= NOW() - INTERVAL '24 months'
        GROUP BY EXTRACT(YEAR FROM created_at), EXTRACT(MONTH FROM created_at) ORDER BY year, month`, [companyId]);
 
     const monthly = monthlyData.map(m => ({ year: parseInt(m.year), month: parseInt(m.month), total: parseFloat(m.total), order_count: parseInt(m.order_count) }));

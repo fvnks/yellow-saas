@@ -14,7 +14,8 @@ async function getUserFromRequest(request: NextRequest): Promise<{ id: string; c
     const { payload } = await jwtVerify(token, JWT_SECRET);
     if (!payload.company_id || !payload.id) return null;
     return { id: payload.id as string, company_id: payload.company_id as string };
-  } catch {
+  } catch (err) {
+    console.error('Silenced error:', err);
     return null;
   }
 }
@@ -50,7 +51,8 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         'Content-Length': buffer.length.toString(),
       },
     });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return NextResponse.json({ success: false, error: { message: 'Internal server error' } }, { status: 500 });
   }
 }

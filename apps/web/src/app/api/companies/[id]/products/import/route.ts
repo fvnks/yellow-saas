@@ -111,7 +111,8 @@ export async function POST(request: NextRequest) {
       skipped,
       errors: errors.length > 0 ? errors : undefined,
     });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
   }
 }

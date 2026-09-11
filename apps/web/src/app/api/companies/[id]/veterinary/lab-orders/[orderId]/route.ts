@@ -34,7 +34,8 @@ export async function GET(
     if (!rows[0]) return errorResponse('Lab order not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to fetch lab order', 500);
   }
 }
@@ -88,7 +89,8 @@ export async function PUT(
     if (!rows[0]) return errorResponse('Lab order not found', 404);
 
     return successResponse(rows[0]);
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to update lab order', 500);
   }
 }
@@ -123,7 +125,8 @@ export async function DELETE(
     );
 
     return successResponse({ message: 'Lab order deleted successfully' });
-  } catch {
+  } catch (err) {
+    console.error('Route error:', err);
     return errorResponse('Failed to delete lab order', 500);
   }
 }

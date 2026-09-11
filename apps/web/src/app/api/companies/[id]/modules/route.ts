@@ -15,7 +15,8 @@ async function getUserFromRequest(request: NextRequest): Promise<{ id: string; c
     const { payload } = await jwtVerify(token, JWT_SECRET);
     if (!payload.company_id) return null;
     return { id: payload.id as string, company_id: payload.company_id as string, role: payload.role as string };
-  } catch {
+  } catch (err) {
+    console.error('Silenced error:', err);
     return null;
   }
 }

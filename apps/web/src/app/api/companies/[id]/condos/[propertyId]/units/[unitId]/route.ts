@@ -13,8 +13,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     );
     if (result.rows.length === 0) return errorResponse("Unit not found", 404);
     return successResponse(result.rows[0]);
-  } catch {
-    return errorResponse("Internal server error", 500);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
   }
 }
 
@@ -31,8 +32,9 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     );
     if (result.rows.length === 0) return errorResponse("Unit not found", 404);
     return successResponse(result.rows[0]);
-  } catch {
-    return errorResponse("Internal server error", 500);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
   }
 }
 
@@ -44,7 +46,8 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     const result = await query(`DELETE FROM condos_units WHERE id = $1 AND company_id = $2 RETURNING id`, [pParams.unitId, companyId]);
     if (result.rows.length === 0) return errorResponse("Unit not found", 404);
     return successResponse({ deleted: true });
-  } catch {
-    return errorResponse("Internal server error", 500);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
   }
 }
