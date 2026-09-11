@@ -25,9 +25,7 @@ import { useClients } from '../hooks/use-clients';
 import { useProfessionals } from '../hooks/use-professionals';
 import { getApiClient } from '@/lib/api-client';
 import { VeterinaryEstimate, EstimateItem, PaymentRecord } from '../lib/veterinary-store';
-
-const formatCLP = (val: number) =>
-  new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(Math.round(val));
+import { formatCLP } from '@/lib/format';
 
 const statusBadges: Record<string, string> = {
   borrador: 'bg-slate-100 text-slate-700 border-slate-200',

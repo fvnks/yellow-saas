@@ -7,6 +7,7 @@ import { usePatients } from '../hooks/use-patients';
 import { useClients } from '../hooks/use-clients';
 import { useEstimates } from '../hooks/use-estimates';
 import { getApiClient } from '@/lib/api-client';
+import { formatCLP } from '@/lib/format';
 import { toast } from 'sonner';
 
 const PAYMENT_METHODS = [
@@ -81,8 +82,6 @@ export default function VeterinaryPaymentsPage() {
       setSaving(false);
     }
   };
-
-  const formatCLP = (val: number) => new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(val);
 
   return (
     <div className="space-y-6">

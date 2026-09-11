@@ -13,6 +13,7 @@ import {
   ROLE_BADGES,
 } from '../lib/restaurant-store';
 import { useRestaurantRole } from '../lib/role-context';
+import { formatCLP } from '@/lib/format';
 
 export default function RestaurantUsersPage() {
   const { users, addUser, updateUser, removeUser, canAccess } = useRestaurantRole();
@@ -28,9 +29,6 @@ export default function RestaurantUsersPage() {
   if (!canAccess('users')) {
     return <RoleProtected section="users"><div /></RoleProtected>;
   }
-
-  const formatCLP = (val: number) =>
-    new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(val);
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();

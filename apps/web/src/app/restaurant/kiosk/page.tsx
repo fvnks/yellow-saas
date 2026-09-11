@@ -6,6 +6,7 @@ import { QrCode, ShoppingBag, Sparkles, AlertCircle, Check, Users, ArrowRight, U
 import { toast } from 'sonner';
 import { useRestaurantRole } from '../lib/role-context';
 import RoleProtected from '../components/role-protected';
+import { formatCLP } from '@/lib/format';
 
 export default function KioskPage() {
   const [menu] = useState<MenuItem[]>(INITIAL_MENU_ITEMS);
@@ -15,9 +16,6 @@ export default function KioskPage() {
   const [pinInput, setPinInput] = useState('');
   const [sessionJoined, setSessionJoined] = useState(false);
   const [cart, setCart] = useState<{ item: MenuItem; qty: number }[]>([]);
-
-  const formatCLP = (val: number) =>
-    new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(val);
 
   const selectedTable = tables.find(t => t.tableId === selectedTableId);
 

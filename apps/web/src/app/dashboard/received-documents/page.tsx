@@ -5,6 +5,7 @@ import { Card, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, 
 import { FileDown, Search, Upload, Eye, Trash2, RefreshCw, Download, Filter, X, Calendar, Hash, Building2, FileText, CheckCircle, AlertTriangle, XCircle, Copy, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { formatCLP } from '@/lib/format';
 import { toast } from 'sonner';
 
 const DTE_TYPES: Record<string, string> = {
@@ -34,10 +35,6 @@ const SOURCE_LABELS: Record<string, string> = {
   provider: 'Proveedor',
   sii_certification: 'Certificación SII',
 };
-
-function formatCLP(amount: number): string {
-  return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(amount);
-}
 
 export default function ReceivedDocumentsPage() {
   const [documents, setDocuments] = useState<any[]>([]);

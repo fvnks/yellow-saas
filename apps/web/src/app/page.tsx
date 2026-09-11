@@ -15,6 +15,7 @@ import { PricingToggle } from '@/components/landing/PricingToggle';
 import { StatsCounter } from '@/components/landing/StatsCounter';
 import { Navbar } from './components/navbar';
 import { Footer } from './components/footer';
+import { formatCLP } from '@/lib/format';
 
 const modules = [
   { icon: Package, title: 'Inventario', description: 'Control completo de stock, trazabilidad por lote y serie, alertas de reorden automáticas.', iconBg: 'bg-blue-50 text-[#0F172A]' },
@@ -88,10 +89,8 @@ const pricingPlans = [
   },
 ];
 
-const clpFormatter = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 });
-
 function formatPrice(price: number) {
-  return clpFormatter.format(price);
+  return formatCLP(price);
 }
 
 export default function HomePage() {

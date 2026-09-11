@@ -6,13 +6,11 @@ import { toast } from 'sonner';
 import RoleProtected from '../components/role-protected';
 import { INITIAL_BOLETAS_DTE, DteBoleta } from '../lib/restaurant-store';
 import { useRestaurantRole } from '../lib/role-context';
+import { formatCLP } from '@/lib/format';
 
 export default function RestaurantReportsPage() {
   const { canAccess } = useRestaurantRole();
   const [range, setRange] = useState<'hoy' | 'semana' | 'mes'>('hoy');
-
-  const formatCLP = (val: number) =>
-    new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(val);
 
   if (!canAccess('reports')) {
     return <RoleProtected section="reports"><div /></RoleProtected>;

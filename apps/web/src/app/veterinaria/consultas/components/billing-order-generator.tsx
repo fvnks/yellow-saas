@@ -4,6 +4,7 @@ import React from 'react';
 import { IVA_RATE } from '@/lib/erp-config';
 import { Receipt, DollarSign, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { InventoryMedication } from './medication-stock-selector';
+import { formatCLP } from '@/lib/format';
 
 interface ChargeItem {
   description: string;
@@ -28,14 +29,6 @@ export default function BillingOrderGenerator({
   dispensedMeds,
   onSendToPOS,
 }: Props) {
-  const formatCLP = (val: number) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP',
-      maximumFractionDigits: 0,
-    }).format(Math.round(val));
-  };
-
   const charges: ChargeItem[] = [
     { description: 'Consulta & Evaluación Clínica Veterinaria', quantity: 1, unitPriceCLP: consultationFeeCLP },
     ...dispensedMeds.map((item) => ({

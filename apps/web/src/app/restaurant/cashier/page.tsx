@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import RoleProtected from '../components/role-protected';
 import { INITIAL_CASH_CLOSURE, INITIAL_BOLETAS_DTE } from '../lib/restaurant-store';
 import { useRestaurantRole } from '../lib/role-context';
+import { formatCLP } from '@/lib/format';
 
 export default function RestaurantCashierPage() {
   const { canAccess } = useRestaurantRole();
@@ -13,9 +14,6 @@ export default function RestaurantCashierPage() {
   const [closure] = useState(INITIAL_CASH_CLOSURE);
   const [declaredEfectivo, setDeclaredEfectivo] = useState<string>(String(closure.declaredCashCLP));
   const [done, setDone] = useState(false);
-
-  const formatCLP = (val: number) =>
-    new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(val);
 
   if (!canAccess('cashier')) {
     return <RoleProtected section="cashier"><div /></RoleProtected>;

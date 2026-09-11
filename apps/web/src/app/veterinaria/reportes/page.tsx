@@ -3,9 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart3, TrendingUp, Calendar, Dog, Stethoscope, DollarSign, Users, Activity, Loader2 } from 'lucide-react';
 import { getApiClient } from '@/lib/api-client';
-
-const clpFormatter = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 });
-const formatCLP = (val: number) => clpFormatter.format(val);
+import { formatCLP } from '@/lib/format';
 
 export default function VetReportsPage() {
   const [data, setData] = useState<any>(null);

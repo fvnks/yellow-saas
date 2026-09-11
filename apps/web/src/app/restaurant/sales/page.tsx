@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { INITIAL_BOLETAS_DTE, INITIAL_ORDERS } from '../lib/restaurant-store';
 import { useRestaurantRole } from '../lib/role-context';
 import RoleProtected from '../components/role-protected';
+import { formatCLP } from '@/lib/format';
 
 interface DteBoleta {
   id: string;
@@ -29,9 +30,6 @@ export default function RestaurantSalesPage() {
   const [selectedBoleta, setSelectedBoleta] = useState<DteBoleta | null>(null);
   const { canAccess } = useRestaurantRole();
   if (!canAccess('sales')) return <RoleProtected section="sales"><div /></RoleProtected>;
-
-  const formatCLP = (val: number) =>
-    new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(val);
 
   const filtered = boletas.filter(
     b =>

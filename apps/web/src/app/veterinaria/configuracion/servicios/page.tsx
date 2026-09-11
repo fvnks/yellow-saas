@@ -18,6 +18,7 @@ import { useServices } from '../../hooks/use-services';
 import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
 import { ServiceCategory } from '../../lib/veterinary-store';
+import { formatCLP } from '@/lib/format';
 
 export default function VeterinaryServicesPage() {
   const { data: services, loading, refresh } = useServices();
@@ -45,14 +46,6 @@ export default function VeterinaryServicesPage() {
       requiresConsent: false,
     });
     setEditingId(null);
-  };
-
-  const formatCLP = (val: number) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP',
-      maximumFractionDigits: 0,
-    }).format(Math.round(val));
   };
 
   const filteredServices = services.filter(

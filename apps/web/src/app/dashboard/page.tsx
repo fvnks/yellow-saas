@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
+import { formatCLP } from '@/lib/format';
 import {
   ThemedLineChart, ThemedBarChart
 } from '@/components/ui/chart';
@@ -23,16 +24,10 @@ const statusLabels: Record<string, string> = {
   paid: 'Pagado', pending: 'Pendiente SII',
 };
 
-const clpFormatter = new Intl.NumberFormat('es-CL', {
-  style: 'currency',
-  currency: 'CLP',
-  maximumFractionDigits: 0,
-});
-
 function formatCurrency(amount: number): string {
   if (amount >= 1000000) return `$${(amount / 1000000).toFixed(1)}M CLP`;
   if (amount >= 1000) return `$${(amount / 1000).toFixed(0)}K CLP`;
-  return clpFormatter.format(amount);
+  return formatCLP(amount);
 }
 
 function ChangeIndicator({ value }: { value: number }) {

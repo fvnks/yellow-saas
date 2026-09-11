@@ -5,6 +5,7 @@ import { IVA_RATE } from '@/lib/erp-config';
 import { Order } from '../../lib/restaurant-store';
 import { X, CheckCircle, CreditCard, DollarSign, QrCode, Building, Receipt, Printer, ArrowRight, ShieldCheck, Users, Percent, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
+import { formatCLP } from '@/lib/format';
 
 interface PaymentCheckoutModalProps {
   order: Order;
@@ -37,9 +38,6 @@ export function PaymentCheckoutModal({
   const [cashReceivedCLP, setCashReceivedCLP] = useState<number>(grandTotalCLP);
 
   if (!isOpen || !order) return null;
-
-  const formatCLP = (val: number) =>
-    new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(Math.round(val));
 
   const subtotalNeto = Math.round(order.totalCLP / (1 + IVA_RATE));
   const ivaCLP = Math.round(order.totalCLP - subtotalNeto);

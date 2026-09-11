@@ -6,6 +6,7 @@ import { LayoutDashboard, Utensils, DollarSign, TrendingUp, Users, Plus, Check, 
 import { toast } from 'sonner';
 import { useRestaurantRole } from '../lib/role-context';
 import RoleProtected from '../components/role-protected';
+import { formatCLP } from '@/lib/format';
 
 export default function RestaurantAdminPage() {
   const [menu, setMenu] = useState<MenuItem[]>(INITIAL_MENU_ITEMS);
@@ -21,9 +22,6 @@ export default function RestaurantAdminPage() {
     station: 'kitchen' as 'kitchen' | 'bar',
     image: '🍽️',
   });
-
-  const formatCLP = (val: number) =>
-    new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(val);
 
   const toggleStock = (id: string) => {
     setMenu(prev =>

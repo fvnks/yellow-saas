@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { formatCLP } from '@/lib/format';
 import {
   Stethoscope,
   Dog,
@@ -47,14 +48,6 @@ export default function VeterinaryDashboardPage() {
   }, []);
 
   useEffect(() => { fetchDashboard(); }, [fetchDashboard]);
-
-  const formatCLP = (amount: number) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP',
-      maximumFractionDigits: 0,
-    }).format(Math.round(amount));
-  };
 
   const handleUpdateStatus = async (id: string, newStatus: VeterinaryAppointment['status']) => {
     try {
