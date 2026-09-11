@@ -26,7 +26,7 @@ export function Modal({ isOpen, onClose, title, children, footer, size = 'md', c
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
       <div
         className={cn(
-          'bg-white rounded-2xl shadow-xl w-full animate-slide-up dark:bg-slate-900',
+          'bg-snow rounded-3xl shadow-xl w-full animate-slide-up',
           sizes[size],
           className
         )}
@@ -34,13 +34,13 @@ export function Modal({ isOpen, onClose, title, children, footer, size = 'md', c
         aria-modal="true"
         aria-labelledby="modal-title"
       >
-        <div className="px-6 py-4 border-b border-[#E2E8F0] flex items-center justify-between">
-          <h2 id="modal-title" className="text-lg font-semibold text-[#0F172A] dark:text-white">
+        <div className="px-6 py-4 border-b border-mist flex items-center justify-between">
+          <h2 id="modal-title" className="text-lg font-semibold text-ink">
             {title}
           </h2>
           <button
             onClick={onClose}
-            className="text-muted-foreground hover:text-foreground transition-colors"
+            className="text-iron hover:text-ink transition-colors rounded-md p-1"
             aria-label="Cerrar modal"
           >
             <X className="w-5 h-5" />
@@ -48,7 +48,7 @@ export function Modal({ isOpen, onClose, title, children, footer, size = 'md', c
         </div>
         <div className="p-6">{children}</div>
         {footer && (
-          <div className="px-6 py-4 border-t border-[#E2E8F0] flex justify-end gap-3">
+          <div className="px-6 py-4 border-t border-mist flex justify-end gap-3">
             {footer}
           </div>
         )}

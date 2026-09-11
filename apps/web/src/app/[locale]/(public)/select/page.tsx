@@ -49,9 +49,9 @@ const modules: ModuleOption[] = [
     subtitle: 'Módulo Principal',
     description: ['Inventario y Bodegas', 'Ventas y DTE SII', 'Compras & Proveedores', 'CRM & Contabilidad'],
     icon: Package,
-    iconBg: 'bg-blue-50 border-blue-200/80',
-    iconColor: 'text-blue-600',
-    accentBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+    iconBg: 'bg-sky-accent/30 border-sky-accent/50',
+    iconColor: 'text-[#006680]',
+    accentBadge: 'bg-sky-accent/30 text-[#006680] border-sky-accent/50',
     href: '/dashboard',
     requiredModules: [],
     moduleName: 'erp',
@@ -62,9 +62,9 @@ const modules: ModuleOption[] = [
     subtitle: 'Nómina y Asistencia',
     description: ['Contratos', 'Asistencia Previred', 'Evaluaciones', 'Liquidaciones'],
     icon: UsersRound,
-    iconBg: 'bg-rose-50 border-rose-200/80',
-    iconColor: 'text-rose-600',
-    accentBadge: 'bg-rose-50 text-rose-700 border-rose-200',
+    iconBg: 'bg-[#e24444]/10 border-[#e24444]/20',
+    iconColor: 'text-[#e24444]',
+    accentBadge: 'bg-[#e24444]/10 text-[#e24444] border-[#e24444]/20',
     href: '/hr',
     requiredModules: [],
     moduleName: 'hr_premium',
@@ -75,9 +75,9 @@ const modules: ModuleOption[] = [
     subtitle: 'Seguimiento y Horas',
     description: ['Cronogramas Gantt', 'Tableros Kanban', 'Control Presupuesto', 'Avance de Obra'],
     icon: FolderKanban,
-    iconBg: 'bg-purple-50 border-purple-200/80',
-    iconColor: 'text-purple-600',
-    accentBadge: 'bg-purple-50 text-purple-700 border-purple-200',
+    iconBg: 'bg-lavender border-lavender',
+    iconColor: 'text-[#7c3aed]',
+    accentBadge: 'bg-lavender text-[#7c3aed] border-lavender',
     href: '/projects',
     requiredModules: [],
     moduleName: 'projects_pro',
@@ -88,9 +88,9 @@ const modules: ModuleOption[] = [
     subtitle: 'Cálculo de Ingredientes BOM',
     description: ['Fórmulas BOM', 'Lotes de Producción', 'Stock Decimal', 'Costos Insumos'],
     icon: FlaskConical,
-    iconBg: 'bg-amber-50 border-amber-200/80',
-    iconColor: 'text-amber-600',
-    accentBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+    iconBg: 'bg-apricot/15 border-apricot/30',
+    iconColor: 'text-[#cc5500]',
+    accentBadge: 'bg-apricot/15 text-[#cc5500] border-apricot/30',
     href: '/recetas',
     requiredModules: [],
     moduleName: 'recetas',
@@ -101,9 +101,9 @@ const modules: ModuleOption[] = [
     subtitle: 'Gastos Comunes y Copropiedad',
     description: ['Layout de Unidades', 'Prorrateo y Fondo Reserva', 'Avisos y Cobranza PDF', 'Portal Copropietario'],
     icon: Building,
-    iconBg: 'bg-cyan-50 border-cyan-200/80',
-    iconColor: 'text-cyan-600',
-    accentBadge: 'bg-cyan-50 text-cyan-700 border-cyan-200',
+    iconBg: 'bg-aqua/30 border-aqua/50',
+    iconColor: 'text-[#006680]',
+    accentBadge: 'bg-aqua/30 text-[#006680] border-aqua/50',
     href: '/condominio',
     requiredModules: [],
     moduleName: 'condominiums',
@@ -114,9 +114,9 @@ const modules: ModuleOption[] = [
     subtitle: 'Comandas, KDS y Mesas',
     description: ['POS Garzón & Mesas', 'Kiosco Autoservicio QR', 'Pantallas KDS Cocina/Bar', 'Boleta Electrónica SII'],
     icon: UtensilsCrossed,
-    iconBg: 'bg-amber-50 border-amber-200/80',
-    iconColor: 'text-amber-600',
-    accentBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+    iconBg: 'bg-apricot/15 border-apricot/30',
+    iconColor: 'text-[#cc5500]',
+    accentBadge: 'bg-apricot/15 text-[#cc5500] border-apricot/30',
     href: '/restaurant',
     requiredModules: [],
     moduleName: 'restaurant',
@@ -127,9 +127,9 @@ const modules: ModuleOption[] = [
     subtitle: 'Fichas, Agenda y Consultas',
     description: ['Ficha Clínica Multiespecie', 'Agenda & Box de Atención', 'Hospitalización & Quirófano', 'Recetas & Vacunación'],
     icon: Stethoscope,
-    iconBg: 'bg-emerald-50 border-emerald-200/80',
-    iconColor: 'text-emerald-600',
-    accentBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    iconBg: 'bg-mint/30 border-mint/50',
+    iconColor: 'text-forest',
+    accentBadge: 'bg-mint/30 text-forest border-mint/50',
     href: '/veterinaria',
     requiredModules: [],
     moduleName: 'veterinaria',
@@ -140,9 +140,9 @@ const modules: ModuleOption[] = [
     subtitle: 'Órdenes y Vehículos',
     description: ['Órdenes de Trabajo', 'Vehículos y Patentes', 'Estimados y Repuestos', 'Técnicos y Agenda'],
     icon: Car,
-    iconBg: 'bg-orange-50 border-orange-200/80',
-    iconColor: 'text-orange-600',
-    accentBadge: 'bg-orange-50 text-orange-700 border-orange-200',
+    iconBg: 'bg-apricot/15 border-apricot/30',
+    iconColor: 'text-[#cc5500]',
+    accentBadge: 'bg-apricot/15 text-[#cc5500] border-apricot/30',
     href: '/auto-talleres',
     requiredModules: [],
     moduleName: 'auto-talleres',
@@ -153,9 +153,9 @@ const modules: ModuleOption[] = [
     subtitle: 'Planes y Facturación',
     description: ['Mi Plan SaaS', 'Facturación ERP', 'Módulos Activos', 'Suscripción'],
     icon: CreditCard,
-    iconBg: 'bg-blue-50 border-blue-200/80',
-    iconColor: 'text-blue-700',
-    accentBadge: 'bg-blue-50 text-blue-800 border-blue-200',
+    iconBg: 'bg-periwinkle border-periwinkle',
+    iconColor: 'text-monday-violet',
+    accentBadge: 'bg-periwinkle text-monday-violet border-periwinkle',
     href: '/mi-cuenta',
     requiredModules: [],
     moduleName: 'mi-cuenta',
@@ -166,9 +166,9 @@ const modules: ModuleOption[] = [
     subtitle: 'Centro de Asistencia',
     description: ['Preguntas Frecuentes', 'Tickets de Soporte', 'Manuales SII'],
     icon: LifeBuoy,
-    iconBg: 'bg-emerald-50 border-emerald-200/80',
-    iconColor: 'text-emerald-600',
-    accentBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    iconBg: 'bg-mint/30 border-mint/50',
+    iconColor: 'text-forest',
+    accentBadge: 'bg-mint/30 text-forest border-mint/50',
     href: '/ayuda',
     requiredModules: [],
     moduleName: 'ayuda',
@@ -368,66 +368,68 @@ export default function SelectPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
+      <div className="min-h-screen bg-cloud flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-3 border-amber-500 border-t-slate-900 rounded-full animate-spin" />
-          <p className="text-xs text-slate-500 font-semibold">Cargando módulos de Yellow ERP...</p>
+          <div className="w-10 h-10 border-3 border-monday-violet border-t-cloud rounded-full animate-spin" />
+          <p className="text-xs text-slate-text font-semibold">Cargando módulos de Yellow ERP...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans select-none text-slate-900">
-      {/* Sun-Slate Header */}
-      <header className="bg-white/90 border-b border-slate-200/80 px-6 h-16 sticky top-0 z-30 backdrop-blur-xl flex items-center justify-between">
-        <div className="max-w-6xl mx-auto w-full flex items-center justify-between">
+    <div className="min-h-screen bg-cloud flex flex-col font-sans select-none text-ink">
+      {/* Header */}
+      <header className="bg-snow/90 border-b border-mist px-6 h-16 sticky top-0 z-30 backdrop-blur-xl flex items-center justify-between">
+        <div className="max-w-[1200px] mx-auto w-full flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-amber-500 p-1.5 shadow-md shadow-amber-500/10 flex items-center justify-center shrink-0">
-              <Image src="/logo/yellow-cube.svg" alt="Yellow ERP" width={28} height={28} className="drop-shadow-sm" />
+            <div className="h-9 w-9 rounded-full p-0.5 shadow-sm flex items-center justify-center shrink-0" style={{ background: 'conic-gradient(from 270deg, #8181ff 15%, #33dbdb 40%, #33d58e 55%, #ffd633 65%, #fc527d 85%, #8181ff 100%)' }}>
+              <div className="h-8 w-8 bg-snow rounded-full flex items-center justify-center">
+                <span className="text-monday-violet font-bold text-xs">Y</span>
+              </div>
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-slate-900">{company?.name || 'Yellow ERP'}</span>
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  <ShieldCheck className="w-3 h-3 text-emerald-600" /> Empresa Activa
+                <span className="text-sm font-bold text-ink">{company?.name || 'Yellow ERP'}</span>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-bold bg-mint/30 text-forest border border-mint/50">
+                  <ShieldCheck className="w-3 h-3 text-forest" /> Empresa Activa
                 </span>
               </div>
-              <p className="text-[10px] text-slate-500 font-medium">Plataforma Empresarial PYME · Chile</p>
+              <p className="text-[10px] text-slate-text font-medium">Plataforma Empresarial PYME · Chile</p>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full text-xs font-semibold text-slate-800">
-              <TrendingUp className="w-3.5 h-3.5 text-amber-600" />
+            <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-monday-violet/5 border border-monday-violet/15 rounded-md text-xs font-semibold text-ink">
+              <TrendingUp className="w-3.5 h-3.5 text-monday-violet" />
               <span>UF: ${indicators ? indicators.uf.toLocaleString('es-CL') : '38.500'}</span>
               <span className="opacity-40">|</span>
-              <DollarSign className="w-3.5 h-3.5 text-blue-600 -mr-1" />
+              <DollarSign className="w-3.5 h-3.5 text-monday-violet -mr-1" />
               <span>USD: ${indicators ? indicators.dolar.toLocaleString('es-CL') : '950'}</span>
             </div>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-slate-200/80 bg-white hover:bg-slate-50 transition-all duration-150 shadow-xs">
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-amber-500 to-amber-500 flex items-center justify-center shrink-0 font-black text-xs text-slate-950 shadow-inner">
+                <button className="flex items-center gap-2.5 px-3 py-1.5 rounded-md border border-mist bg-snow hover:bg-cloud transition-all duration-150 shadow-xs">
+                  <div className="w-7 h-7 rounded-full bg-monday-violet/10 flex items-center justify-center shrink-0 font-black text-xs text-monday-violet">
                     {user?.name?.slice(0, 2).toUpperCase() || 'US'}
                   </div>
                   <div className="text-left hidden sm:block">
-                    <p className="text-xs font-bold text-slate-900 leading-none">{user?.name}</p>
-                    <p className="text-[9px] text-slate-500 mt-0.5 font-semibold uppercase tracking-wider">{user?.role}</p>
+                    <p className="text-xs font-bold text-ink leading-none">{user?.name}</p>
+                    <p className="text-[9px] text-slate-text mt-0.5 font-semibold uppercase tracking-wider">{user?.role}</p>
                   </div>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                  <ChevronDown className="w-3.5 h-3.5 text-iron" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent side="bottom" align="end" className="w-60 bg-white border border-slate-200/80 rounded-2xl shadow-xl p-1.5">
-                <div className="px-3 py-2 border-b border-slate-100">
+              <DropdownMenuContent side="bottom" align="end" className="w-60 bg-snow border border-mist rounded-2xl shadow-xl p-1.5">
+                <div className="px-3 py-2 border-b border-mist">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center shrink-0 font-black text-xs text-slate-950">
+                    <div className="w-8 h-8 rounded-full bg-monday-violet/10 flex items-center justify-center shrink-0 font-black text-xs text-monday-violet">
                       {user?.name?.slice(0, 2).toUpperCase() || 'US'}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-bold text-slate-900 truncate">{user?.name}</p>
-                      <p className="text-[10px] text-slate-500 truncate">{user?.email}</p>
+                      <p className="text-xs font-bold text-ink truncate">{user?.name}</p>
+                      <p className="text-[10px] text-slate-text truncate">{user?.email}</p>
                     </div>
                   </div>
                 </div>
@@ -435,7 +437,7 @@ export default function SelectPage() {
                 {!companiesLoading && companies.length > 1 && (
                   <>
                     <div className="px-3 py-1.5">
-                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                      <p className="text-[9px] font-bold text-iron uppercase tracking-widest">
                         Empresas Disponibles
                       </p>
                     </div>
@@ -443,31 +445,31 @@ export default function SelectPage() {
                       <DropdownMenuItem
                         key={c.id}
                         onClick={() => handleCompanySwitch(c.id)}
-                        className="cursor-pointer flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
+                        className="cursor-pointer flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-cloud transition-colors"
                         disabled={c.id === company?.id}
                       >
-                        <div className="w-7 h-7 bg-slate-900 rounded-lg flex items-center justify-center shrink-0">
-                          <Building2 className="w-3.5 h-3.5 text-amber-400" />
+                        <div className="w-7 h-7 bg-ink rounded-lg flex items-center justify-center shrink-0">
+                          <Building2 className="w-3.5 h-3.5 text-monday-violet" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold text-slate-900 truncate">{c.name}</p>
-                          <p className="text-[10px] text-slate-500 capitalize">{c.role}</p>
+                          <p className="text-xs font-semibold text-ink truncate">{c.name}</p>
+                          <p className="text-[10px] text-slate-text capitalize">{c.role}</p>
                         </div>
                         {c.id === company?.id && (
-                          <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                          <span className="w-2 h-2 rounded-full bg-forest shrink-0" />
                         )}
                       </DropdownMenuItem>
                     ))}
-                    <DropdownMenuSeparator className="bg-slate-100" />
+                    <DropdownMenuSeparator className="bg-mist" />
                   </>
                 )}
 
                 {user?.role_type === 'super_admin' && (
                   <>
-                    <DropdownMenuSeparator className="bg-slate-100" />
+                    <DropdownMenuSeparator className="bg-mist" />
                     <DropdownMenuItem
                       onClick={() => router.push('/admin')}
-                      className="flex items-center gap-2.5 px-3 py-2 text-amber-400 hover:bg-amber-50 rounded-xl cursor-pointer transition-colors font-semibold"
+                      className="flex items-center gap-2.5 px-3 py-2 text-monday-violet hover:bg-monday-violet/5 rounded-xl cursor-pointer transition-colors font-semibold"
                     >
                       <Shield className="w-4 h-4" />
                       <span className="text-xs">Consola SaaS Admin</span>
@@ -477,7 +479,7 @@ export default function SelectPage() {
 
                 <DropdownMenuItem
                   onClick={logout}
-                  className="flex items-center gap-2 px-3 py-2 text-rose-600 hover:bg-rose-50 rounded-xl cursor-pointer transition-colors font-semibold"
+                  className="flex items-center gap-2 px-3 py-2 text-[#e24444] hover:bg-[#e24444]/5 rounded-xl cursor-pointer transition-colors font-semibold"
                 >
                   <LogOut className="w-4 h-4" />
                   <span className="text-xs">Cerrar sesión</span>
@@ -497,14 +499,14 @@ export default function SelectPage() {
             transition={{ duration: 0.25 }}
             className="text-center mb-10"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200/80 text-xs font-bold text-slate-600 shadow-xs mb-3">
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-snow border border-mist text-xs font-bold text-slate-text shadow-xs mb-3">
+              <Sparkles className="w-3.5 h-3.5 text-monday-violet" />
               <span>Yellow ERP Hub · Módulos SaaS</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-black text-ink tracking-tight">
               Bienvenido de nuevo, {user?.name || 'Usuario'}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1.5">
+            <p className="text-xs sm:text-sm text-slate-text font-medium mt-1.5">
               Selecciona el área de trabajo o módulo operativo que deseas gestionar hoy
             </p>
           </motion.div>
@@ -520,7 +522,7 @@ export default function SelectPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.2, delay: 0.04 * i }}
                   onClick={() => handleModuleClick(mod)}
-                  className="group bg-white border border-slate-200/80 rounded-2xl p-6 text-left transition-all duration-200 hover:shadow-md hover:border-slate-300 active:scale-[0.99] flex flex-col justify-between"
+                  className="group bg-snow border border-mist rounded-3xl p-6 text-left transition-all duration-200 hover:shadow-card-hover hover:border-fog active:scale-[0.99] flex flex-col justify-between"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-4">
@@ -528,19 +530,19 @@ export default function SelectPage() {
                         <Icon className={`w-6 h-6 ${mod.iconColor}`} />
                       </div>
                       {activated ? (
-                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-[#0F172A] group-hover:text-amber-400 transition-colors duration-200">
-                          <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-amber-400 transition-colors" />
+                        <div className="w-8 h-8 rounded-full bg-cloud flex items-center justify-center group-hover:bg-monday-violet group-hover:text-white transition-colors duration-200">
+                          <ArrowRight className="w-4 h-4 text-iron group-hover:text-white transition-colors" />
                         </div>
                       ) : (
-                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
-                          <Lock className="w-4 h-4 text-slate-400" />
+                        <div className="w-8 h-8 rounded-full bg-cloud flex items-center justify-center">
+                          <Lock className="w-4 h-4 text-iron" />
                         </div>
                       )}
                     </div>
                     
                     <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-base font-black text-slate-900">{mod.title}</h3>
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${mod.accentBadge}`}>
+                      <h3 className="text-base font-black text-ink">{mod.title}</h3>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[9px] font-bold border ${mod.accentBadge}`}>
                         {mod.subtitle}
                       </span>
                     </div>
@@ -549,7 +551,7 @@ export default function SelectPage() {
                       {mod.description.map((item, j) => (
                         <span
                           key={j}
-                          className="inline-flex items-center px-2.5 py-1 bg-slate-50 text-slate-700 text-[10px] font-semibold rounded-lg border border-slate-200/60"
+                          className="inline-flex items-center px-2.5 py-1 bg-cloud text-slate-text text-[10px] font-semibold rounded-md border border-mist/60"
                         >
                           {item}
                         </span>
@@ -557,11 +559,11 @@ export default function SelectPage() {
                     </div>
                   </div>
 
-                  <div className="mt-6 pt-3 border-t border-slate-100 flex items-center justify-between text-[10px]">
-                    <span className={activated ? 'text-emerald-700 font-bold' : 'text-slate-400 font-medium'}>
+                  <div className="mt-6 pt-3 border-t border-mist/50 flex items-center justify-between text-[10px]">
+                    <span className={activated ? 'text-forest font-bold' : 'text-iron font-medium'}>
                       {activated ? '● Módulo Activo' : '🔒 Requiere Activación'}
                     </span>
-                    <span className="text-slate-900 font-bold group-hover:text-[#EAB308] transition-colors">
+                    <span className="text-ink font-bold group-hover:text-monday-violet transition-colors">
                       Ingresar &rarr;
                     </span>
                   </div>
@@ -574,7 +576,7 @@ export default function SelectPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.25, delay: 0.2 }}
-            className="text-center text-xs text-slate-500 mt-10 font-medium"
+            className="text-center text-xs text-slate-text mt-10 font-medium"
           >
             ¿Necesitas cambiar de empresa o gestionar tu suscripción? Puedes hacerlo en cualquier momento desde el selector de perfil.
           </motion.p>
@@ -588,7 +590,7 @@ export default function SelectPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-ink/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
             onClick={() => setModalOpen(false)}
           >
             <motion.div
@@ -597,34 +599,34 @@ export default function SelectPage() {
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ duration: 0.15 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-2xl border border-slate-200/80 shadow-2xl w-full max-w-sm overflow-hidden"
+              className="bg-snow rounded-3xl border border-mist shadow-xl w-full max-w-sm overflow-hidden"
             >
               <div className="p-6 text-center">
-                <div className="w-14 h-14 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-200">
-                  <Lock className="w-6 h-6 text-amber-600" />
+                <div className="w-14 h-14 bg-monday-violet/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-monday-violet/15">
+                  <Lock className="w-6 h-6 text-monday-violet" />
                 </div>
-                <h2 className="text-lg font-black text-slate-900">Activar Módulo</h2>
-                <p className="text-xs text-slate-500 mt-2 leading-relaxed font-medium">
-                  El módulo <span className="font-bold text-slate-900">{selectedModule.title}</span> requiere ser activado para tu empresa.
+                <h2 className="text-lg font-black text-ink">Activar Módulo</h2>
+                <p className="text-xs text-slate-text mt-2 leading-relaxed font-medium">
+                  El módulo <span className="font-bold text-ink">{selectedModule.title}</span> requiere ser activado para tu empresa.
                 </p>
               </div>
               <div className="px-6 pb-6 flex gap-3">
                 <button
                   onClick={() => setModalOpen(false)}
-                  className="flex-1 bg-white border border-slate-200/80 hover:bg-slate-50 text-slate-700 px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-150"
+                  className="flex-1 bg-snow border border-mist hover:bg-cloud text-slate-text px-4 py-2.5 rounded-[160px] text-xs font-bold transition-all duration-150"
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={handleActivate}
                   disabled={activating}
-                  className="flex-1 bg-amber-500 hover:bg-[#EAB308] text-slate-950 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all duration-150 active:scale-[0.98] disabled:opacity-50"
+                  className="flex-1 bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2.5 rounded-[160px] text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all duration-150 active:scale-[0.98] disabled:opacity-50"
                 >
                   {activating ? (
-                    <div className="w-4 h-4 border-2 border-slate-950/30 border-t-slate-950 rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
                     <>
-                      <Zap className="w-4 h-4 fill-slate-950" />
+                      <Zap className="w-4 h-4 fill-white" />
                       Activar Ahora
                     </>
                   )}
@@ -637,7 +639,7 @@ export default function SelectPage() {
 
       {/* Footer Access Log */}
       {lastAccess && (
-        <div className="fixed bottom-4 right-5 text-[10px] text-slate-500 select-none bg-white border border-slate-200/80 px-3 py-1 rounded-full shadow-xs font-semibold">
+        <div className="fixed bottom-4 right-5 text-[10px] text-slate-text select-none bg-snow border border-mist px-3 py-1 rounded-md shadow-xs font-semibold">
           Último acceso: {lastAccess}
         </div>
       )}

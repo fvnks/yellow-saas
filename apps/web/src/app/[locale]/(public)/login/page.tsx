@@ -74,7 +74,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-card font-sans text-foreground antialiased selection:bg-primary/10 lg:flex-row">
+    <div className="flex min-h-screen w-full bg-cloud font-sans text-ink antialiased selection:bg-monday-violet/10 lg:flex-row">
       {/* Left Image Panel */}
       <AuthPanel />
 
@@ -82,10 +82,12 @@ function LoginForm() {
       <div className="flex w-full flex-col items-center justify-center p-6 sm:p-12 lg:w-1/2">
         {/* Mobile logo */}
         <div className="lg:hidden mb-8 flex items-center gap-3">
-          <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
-            <Building2 className="w-5 h-5 text-white" />
+          <div className="w-9 h-9 rounded-full flex items-center justify-center shadow-sm" style={{ background: 'conic-gradient(from 270deg, #8181ff 15%, #33dbdb 40%, #33d58e 55%, #ffd633 65%, #fc527d 85%, #8181ff 100%)' }}>
+            <div className="w-7 h-7 bg-snow rounded-full flex items-center justify-center">
+              <Building2 className="w-4 h-4 text-monday-violet" />
+            </div>
           </div>
-          <span className="text-lg font-semibold text-foreground">Yellow ERP</span>
+          <span className="text-lg font-bold text-ink">Yellow ERP</span>
         </div>
 
         <motion.div
@@ -96,10 +98,10 @@ function LoginForm() {
         >
           {/* Title */}
           <motion.div variants={itemVariants} className="mb-10">
-            <h1 className="mb-4 text-[40px] font-bold leading-[1.05] tracking-tight text-foreground sm:text-[48px]">
+            <h1 className="mb-4 text-[40px] font-bold leading-[1.05] tracking-tight text-ink sm:text-[48px]">
               {t('welcomeBack')}
             </h1>
-            <p className="text-[15px] text-muted-foreground text-balance">
+            <p className="text-[15px] text-slate-text text-balance">
               {t('loginSubtitle')}
             </p>
           </motion.div>
@@ -109,7 +111,7 @@ function LoginForm() {
             <motion.div
               variants={itemVariants}
               role="alert"
-              className="mb-4 flex items-center gap-2 p-3 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-sm"
+              className="mb-4 flex items-center gap-2 p-3 bg-[#e24444]/5 border border-[#e24444]/20 rounded-md text-[#e24444] text-sm"
             >
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               {error}
@@ -119,11 +121,11 @@ function LoginForm() {
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             {/* Email */}
             <motion.div variants={itemVariants} className="flex flex-col gap-2">
-              <label htmlFor="email" className="text-[14px] font-medium text-foreground">
+              <label htmlFor="email" className="text-[14px] font-medium text-ink">
                 {t('email')}
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-iron" />
                 <input
                   id="email"
                   type="email"
@@ -132,18 +134,18 @@ function LoginForm() {
                   placeholder="admin@yellow-erp.cl"
                   autoComplete="email"
                   required
-                  className="w-full rounded-lg border border-border bg-card pl-10 pr-4 py-3 text-[14px] text-foreground placeholder:text-muted-foreground focus:border-[#0F172A] focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition-colors"
+                  className="w-full rounded-md border border-mist bg-snow pl-10 pr-4 py-3 text-[14px] text-ink placeholder:text-iron focus:border-monday-violet focus:outline-none focus:ring-2 focus:ring-monday-violet/20 transition-colors"
                 />
               </div>
             </motion.div>
 
             {/* Password */}
             <motion.div variants={itemVariants} className="flex flex-col gap-2">
-              <label htmlFor="password" className="text-[14px] font-medium text-foreground">
+              <label htmlFor="password" className="text-[14px] font-medium text-ink">
                 {t('password')}
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-iron" />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
@@ -152,13 +154,13 @@ function LoginForm() {
                   placeholder="••••••••"
                   autoComplete="current-password"
                   required
-                  className="w-full rounded-lg border border-border bg-card pl-10 pr-12 py-3 text-[14px] font-mono text-foreground placeholder:text-muted-foreground focus:border-[#0F172A] focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition-colors"
+                  className="w-full rounded-md border border-mist bg-snow pl-10 pr-12 py-3 text-[14px] font-mono text-ink placeholder:text-iron focus:border-monday-violet focus:outline-none focus:ring-2 focus:ring-monday-violet/20 transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? t('hidePassword') : t('showPassword')}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground transition-colors"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-iron hover:text-ink transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -173,15 +175,15 @@ function LoginForm() {
                   type="checkbox"
                   checked={remember}
                   onChange={(e) => setRemember(e.target.checked)}
-                  className="size-[18px] rounded border-border text-foreground focus:ring-amber-500 focus:ring-2 transition-colors"
+                  className="size-[18px] rounded border-mist text-monday-violet focus:ring-monday-violet focus:ring-2 transition-colors"
                 />
-                <label htmlFor="remember" className="text-[14px] text-foreground cursor-pointer">
+                <label htmlFor="remember" className="text-[14px] text-ink cursor-pointer">
                   {t('rememberMe')}
                 </label>
               </div>
               <Link
                 href="/forgot-password"
-                className="text-[14px] font-medium text-foreground hover:text-foreground transition-colors"
+                className="text-[14px] font-medium text-ink hover:text-monday-violet transition-colors"
               >
                 {t('forgotPassword')}
               </Link>
@@ -192,7 +194,7 @@ function LoginForm() {
               <button
                 type="submit"
                 disabled={loading}
-                  className="w-full rounded-lg bg-[#0F172A] hover:bg-[#1E293B] text-white py-3 text-[14px] font-medium transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm shadow-[#0F172A]/20"
+                className="w-full rounded-[160px] bg-monday-violet hover:bg-monday-violet-hover text-white py-3 text-[14px] font-medium transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
               >
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 {loading ? t('signingIn') : t('signIn')}
@@ -202,15 +204,15 @@ function LoginForm() {
 
           {/* Divider */}
           <motion.div variants={itemVariants} className="flex items-center gap-4 mt-6">
-            <div className="flex-1 h-px bg-muted" />
-            <span className="text-xs text-muted-foreground">o</span>
-            <div className="flex-1 h-px bg-muted" />
+            <div className="flex-1 h-px bg-mist" />
+            <span className="text-xs text-iron">o</span>
+            <div className="flex-1 h-px bg-mist" />
           </motion.div>
 
           {/* Footer */}
-          <motion.div variants={itemVariants} className="mt-8 text-center text-[14px] text-muted-foreground">
+          <motion.div variants={itemVariants} className="mt-8 text-center text-[14px] text-slate-text">
             {t('noAccount')}{' '}
-            <Link href="/register" className="font-semibold text-foreground hover:text-foreground transition-colors">
+            <Link href="/register" className="font-semibold text-ink hover:text-monday-violet transition-colors">
               {t('signUp')}
             </Link>
           </motion.div>
@@ -223,7 +225,7 @@ function LoginForm() {
 export default function LoginPage() {
   const t = useTranslations('common');
   return (
-    <Suspense fallback={<div className="min-h-screen bg-muted flex items-center justify-center"><p className="text-muted-foreground">{t('loading')}</p></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-cloud flex items-center justify-center"><p className="text-slate-text">{t('loading')}</p></div>}>
       <LoginForm />
     </Suspense>
   );

@@ -13,33 +13,33 @@ export interface KPICardProps {
   className?: string;
 }
 
-export function KPICard({ label, value, change, changeType, trend, trendUp, icon: Icon, iconColor = 'blue', className }: KPICardProps) {
+export function KPICard({ label, value, change, changeType, trend, trendUp, icon: Icon, iconColor = 'violet', className }: KPICardProps) {
   const resolvedChangeType = changeType ?? (trendUp === true ? 'positive' : trendUp === false ? 'negative' : 'neutral');
   const resolvedChange = change ?? trend;
 
   const iconColors = {
-    blue: 'bg-blue-50 text-blue-600',
-    teal: 'bg-teal-50 text-teal-600',
-    amber: 'bg-amber-50 text-amber-600',
-    rose: 'bg-rose-50 text-rose-600',
-    purple: 'bg-purple-50 text-purple-600',
-    emerald: 'bg-emerald-50 text-emerald-600',
+    violet: 'bg-monday-violet/10 text-monday-violet',
+    mint: 'bg-mint/30 text-forest',
+    sky: 'bg-sky-accent/30 text-[#006680]',
+    apricot: 'bg-apricot/15 text-[#cc5500]',
+    lavender: 'bg-lavender text-[#7c3aed]',
+    aqua: 'bg-aqua/30 text-[#006680]',
   };
 
   const changeColors = {
-    positive: 'text-emerald-600',
-    negative: 'text-rose-600',
-    neutral: 'text-muted-foreground',
+    positive: 'text-forest',
+    negative: 'text-[#e24444]',
+    neutral: 'text-iron',
   };
 
   return (
-    <div className={cn('bg-white border border-[#E2E8F0] rounded-2xl shadow-sm p-6 dark:bg-slate-900 dark:border-slate-800', className)}>
+    <div className={cn('bg-snow border border-mist rounded-3xl shadow-card p-6', className)}>
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
+          <p className="text-[9px] font-semibold text-iron uppercase tracking-wider">
             {label}
           </p>
-          <p className="text-2xl font-bold text-foreground dark:text-white mt-1">
+          <p className="text-2xl font-bold text-ink mt-1">
             {value}
           </p>
           {resolvedChange && (
@@ -48,7 +48,7 @@ export function KPICard({ label, value, change, changeType, trend, trendUp, icon
             </p>
           )}
         </div>
-        <div className={cn('w-12 h-12 rounded-full flex items-center justify-center', iconColors[iconColor as keyof typeof iconColors])}>
+        <div className={cn('w-12 h-12 rounded-full flex items-center justify-center', iconColors[iconColor as keyof typeof iconColors] || iconColors.violet)}>
           <Icon className="w-5 h-5" />
         </div>
       </div>

@@ -4,7 +4,7 @@
 
 Yellow ERP is a multi-tenant SaaS ERP tailored specifically for Chilean SMEs (PYMEs). This document defines the **custom visual identity, layout standards, and Chilean localization rules** that ALL modules must implement.
 
-**Design Aesthetic:** Yellow ERP Sun-Slate Modern (Deep Slate Navy `#0F172A` + Sun Yellow Accent `#FACC15` + Warm Neutral Canvas `#F8FAFC`).
+**Design Aesthetic:** monday.com-Inspired Modern (Primary Violet `#6161FF` + Ink `#323338` + Cloud Canvas `#F7F8FA`).
 
 ---
 
@@ -14,36 +14,55 @@ Yellow ERP is a multi-tenant SaaS ERP tailored specifically for Chilean SMEs (PY
 ┌────────────────────────────────────────────────────────┐
 │ HEADER (h-16) with UF/UTM Live Badge & Business Selector│
 ├──────────┬─────────────────────────────────────────────┤
-│ SIDEBAR  │ CONTENT (scrollable, p-6 bg-[#F8FAFC])      │
+│ SIDEBAR  │ CONTENT (scrollable, p-6 bg-cloud)          │
 │ (w-64)   │                                             │
-│ bg-slate │ Cards with Chilean ERP Widgets & Tables     │
+│ bg-snow  │ Cards with Chilean ERP Widgets & Tables     │
 └──────────┴─────────────────────────────────────────────┘
 ```
 
-- **Sidebar**: `w-64 bg-[#0F172A] text-slate-300 h-screen fixed left-0 top-0 border-r border-slate-800 z-20` (Deep obsidian slate with yellow highlights)
-- **Header**: `h-16 bg-white border-b border-slate-200/80 fixed top-0 right-0 left-64 z-10 px-6 flex items-center justify-between`
-- **Content Canvas**: `ml-64 pt-16 p-6 bg-[#F8FAFC] min-h-screen`
+- **Sidebar**: `w-64 bg-snow text-ink h-screen fixed left-0 top-0 border-r border-mist z-20` (White sidebar with violet active state)
+- **Header**: `h-16 bg-snow border-b border-mist fixed top-0 right-0 left-64 z-10 px-6 flex items-center justify-between`
+- **Content Canvas**: `ml-64 pt-16 p-6 bg-cloud min-h-screen`
 
 ---
 
 ## Brand Colors & Tokens
 
-### Light Mode (Default Canvas)
+### Light Mode (Default Canvas — no dark mode)
 
-| Token | Value | Purpose |
-|-------|-------|---------|
-| background | `bg-[#F8FAFC]` | Canvas background |
-| card | `bg-white border border-slate-200/80 shadow-sm rounded-2xl` | Standard card container |
-| primary | `bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-semibold` | Signature Yellow Button |
-| primary-dark | `bg-[#0F172A] hover:bg-[#1E293B] text-white` | Deep Navy Action Button |
-| success | `bg-emerald-50 text-emerald-700 border-emerald-200` | DTE Aceptado / Stock OK |
-| warning | `bg-amber-50 text-amber-700 border-amber-200` | DTE Pendiente / Alerta Stock |
-| danger | `bg-rose-50 text-rose-700 border-rose-200` | DTE Rechazado / Mermas |
-| info | `bg-blue-50 text-blue-700 border-blue-200` | SII Guía / Info |
-| text-primary | `text-slate-900` | Primary Headings & Labels |
-| text-secondary | `text-slate-500` | Subtitles & Descriptions |
-| border | `border-slate-200/80` | Card & Table Borders |
-| hover-row | `hover:bg-slate-50/80` | Table row hover |
+| Token | Tailwind | Hex | Purpose |
+|-------|----------|-----|---------|
+| primary | `monday-violet` | `#6161FF` | Primary CTA, active states, links |
+| primary-hover | `monday-violet-hover` | `#5353e0` | Hover state for primary |
+| ink | `ink` | `#323338` | Headings, primary text |
+| slate-text | `slate-text` | `#676879` | Secondary text, descriptions |
+| iron | `iron` | `#9d9eb5` | Labels, muted text |
+| fog | `fog` | `#c3c6d4` | Borders, dividers |
+| mist | `mist` | `#e6e7ef` | Card borders, input borders |
+| cloud | `cloud` | `#f7f8fa` | Canvas background |
+| snow | `snow` | `#ffffff` | Card background, sidebar |
+| card | — | — | `bg-snow border border-mist rounded-3xl shadow-card` |
+| card-hover | — | — | `bg-snow border border-fog rounded-3xl shadow-card-hover` |
+| success | `mint/30 text-forest` | `#dff5e3` | DTE Aceptado / Stock OK |
+| warning | `peach/30 text-[#c64d00]` | `#ffe8d6` | DTE Pendiente / Alerta Stock |
+| danger | `peach/30 text-[#c64d00]` | `#ffe8d6` | DTE Rechazado / Mermas |
+| info | `sky-accent/30 text-[#006680]` | `#d0ecf5` | SII Guía / Info |
+| border | `mist` | `#e6e7ef` | Card & Table Borders |
+| hover-row | `hover:bg-cloud` | — | Table row hover |
+
+### Accent Colors (Pastel tints — badges, icons, chart fills)
+
+| Name | Hex | Usage |
+|------|-----|-------|
+| `periwinkle` | `#ccccff` | Ventas, charts |
+| `lavender` | `#b8b8ff` | CRM |
+| `sky-accent` | `#d0ecf5` | Inventario, Costos |
+| `mint` | `#dff5e3` | Success states, feature cards |
+| `apricot` | `#ffd6c2` | Compras |
+| `peach` | `#ffe8d6` | Warning states |
+| `cotton-candy` | `#ffccff` | Proyectos |
+| `peony` | `#ffccdd` | Nómina |
+| `aqua` | `#ccffff` | Costos |
 
 ---
 
@@ -53,15 +72,15 @@ Each module maintains the shared structural skeleton while highlighting its spec
 
 | Module | Primary Accent | Accent Token | Highlight Focus |
 |--------|----------------|--------------|-----------------|
-| **Dashboard ERP** | Sun Yellow | `#FACC15` / `amber-500` | SII DTE Resumen, Flujo Caja CLP/UF |
-| **Inventario** | Emerald Teal | `#10B981` / `emerald-600` | Bodegas, SKU Barcodes, ABC Valorización |
-| **Ventas & DTE** | Electric Blue | `#3B82F6` / `blue-600` | Facturación Electrónica SII, Guías |
-| **Compras** | Warm Amber | `#F59E0B` / `amber-600` | Recepción Proveedores, Órdenes de Compra |
-| **RRHH & Sueldos** | Rose Crimson | `#F43F5E` / `rose-600` | Liquidaciones, Previred, Asistencia |
-| **Proyectos** | Royal Purple | `#8B5CF6` / `purple-600` | Presupuestos, Hitos, Avance de Obra |
-| **Recetas / BOM** | Burnt Gold | `#F97316` / `orange-600` | Fórmulas, Lotes de Producción, Rendimiento |
-| **Mi Cuenta** | Cobalt Blue | `#2563EB` / `blue-700` | Suscripción SaaS, Módulos Activos |
-| **Centro Ayuda** | Mint Green | `#059669` / `emerald-600` | Base Conocimientos, Support Tickets |
+| **Dashboard ERP** | Violet | `monday-violet` / `#6161FF` | SII DTE Resumen, Flujo Caja CLP/UF |
+| **Inventario** | Sky Accent | `sky-accent` / `#d0ecf5` | Bodegas, SKU Barcodes, ABC Valorización |
+| **Ventas & DTE** | Periwinkle | `periwinkle` / `#ccccff` | Facturación Electrónica SII, Guías |
+| **Compras** | Apricot | `apricot` / `#ffd6c2` | Recepción Proveedores, Órdenes de Compra |
+| **RRHH & Sueldos** | Peony | `peony` / `#ffccdd` | Liquidaciones, Previred, Asistencia |
+| **Proyectos** | Cotton Candy | `cotton-candy` / `#ffccff` | Presupuestos, Hitos, Avance de Obra |
+| **Recetas / BOM** | Peach | `peach` / `#ffe8d6` | Fórmulas, Lotes de Producción, Rendimiento |
+| **Mi Cuenta** | Lavender | `lavender` / `#b8b8ff` | Suscripción SaaS, Módulos Activos |
+| **Centro Ayuda** | Mint | `mint` / `#dff5e3` | Base Conocimientos, Support Tickets |
 
 ---
 
@@ -77,37 +96,57 @@ Each module maintains the shared structural skeleton while highlighting its spec
 3. **RUT Chileno**:
    - Formato estándar `XX.XXX.XXX-X`
 4. **DTE SII Status Badges**:
-   - `DTE Aceptado SII` (Emerald)
-   - `Pendiente Envío SII` (Amber)
-   - `Rechazado SII` (Rose)
+   - `DTE Aceptado SII` (Mint/Forest)
+   - `Pendiente Envío SII` (Peach/Orange)
+   - `Rechazado SII` (Peach/Orange)
+
+---
+
+## Typography
+
+- **Font Family**: Poppins (Google Fonts) — `'Poppins', system-ui, sans-serif`
+- **Weights**: Light (300) for headings, Regular (400) for body, Semi-Bold (600) for buttons/labels, Bold (700) for strong emphasis
+- **Headings**: `font-light tracking-[-0.02em]` — clean, modern, airy
+- **Body**: `font-normal leading-relaxed` — comfortable reading
+
+---
+
+## Spacing & Radius
+
+- **Cards**: `rounded-3xl` (24px)
+- **Buttons**: `rounded-[160px]` (pill shape)
+- **Inputs**: `rounded-md` (6px)
+- **Badges**: `rounded-md` (6px)
+- **Shadows**: `shadow-card` (0 2px 8px rgba(50,51,56,0.08)), `shadow-card-hover` (0 8px 24px rgba(50,51,56,0.12))
+- **Focus ring**: `focus:ring-2 focus:ring-monday-violet/20`
 
 ---
 
 ## Components
 
-### Signature Yellow ERP Primary Button
+### Primary CTA Button (Violet Pill)
 
 ```tsx
-<button className="bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2">
+<button className="bg-monday-violet hover:bg-monday-violet-hover text-white px-6 py-3 rounded-[160px] text-sm font-medium shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center gap-2">
   <Plus className="w-4 h-4" />
   Nuevo Registro
 </button>
 ```
 
-### Signature Dark Action Button
+### Secondary Button (Ghost/Outline)
 
 ```tsx
-<button className="bg-[#0F172A] hover:bg-[#1E293B] text-white font-medium px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2">
-  Acción Principal
+<button className="bg-snow border border-mist hover:bg-cloud text-ink px-6 py-3 rounded-[160px] text-sm font-medium transition-all duration-150">
+  Acción Secundaria
 </button>
 ```
 
 ### Standard Module Card
 
 ```tsx
-<div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
-  <div className="px-6 py-4 border-b border-slate-200/80 flex items-center justify-between">
-    <h3 className="text-sm font-bold text-slate-900">Título del Módulo</h3>
+<div className="bg-snow border border-mist rounded-3xl shadow-card overflow-hidden">
+  <div className="px-6 py-4 border-b border-mist flex items-center justify-between">
+    <h3 className="text-sm font-semibold text-ink">Título del Módulo</h3>
   </div>
   <div className="p-6">
     {/* Content */}
@@ -115,12 +154,22 @@ Each module maintains the shared structural skeleton while highlighting its spec
 </div>
 ```
 
+### Badge (Pastel Tinted)
+
+```tsx
+<span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-mint/30 text-forest border border-mint/50">
+  DTE Aceptado
+</span>
+```
+
 ---
 
 ## Rules
 
 1. **ALWAYS** display values in CLP format with Chilean locale support.
-2. **ALWAYS** use `rounded-2xl` for main cards and `rounded-xl` for buttons/inputs.
+2. **ALWAYS** use `rounded-3xl` for main cards and `rounded-[160px]` for buttons.
 3. **ALWAYS** include `company_id` scope in API requests & Supabase RLS.
 4. **ALWAYS** maintain full responsiveness for desktop and mobile devices.
 5. **ALWAYS** preserve zero TypeScript compilation errors.
+6. **NEVER** use dark mode classes — the design is light-only.
+7. **NEVER** use yellow/amber as primary — the accent is `#6161FF` violet.

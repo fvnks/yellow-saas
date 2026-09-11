@@ -14,9 +14,9 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     const selectId = id || label?.toLowerCase().replace(/\s+/g, '-');
 
     return (
-      <div className="space-y-1">
+      <div className="space-y-1.5">
         {label && (
-          <label htmlFor={selectId} className="block text-xs font-medium text-[#0F172A] dark:text-slate-300">
+          <label htmlFor={selectId} className="block text-xs font-medium text-ink">
             {label}
           </label>
         )}
@@ -24,10 +24,9 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           ref={ref}
           id={selectId}
           className={cn(
-            'w-full bg-white border border-[#E2E8F0] rounded-xl px-3 py-2 text-sm text-[#0F172A]',
-            'focus:outline-none focus:ring-2 focus:ring-[#0F172A]/20 focus:border-[#0F172A] transition-colors',
-            'dark:bg-slate-800 dark:border-slate-700 dark:text-white',
-            error && 'border-rose-300 focus:ring-rose-500 focus:border-rose-500',
+            'w-full bg-snow border border-mist rounded-md px-3 py-2.5 text-sm text-ink',
+            'focus:outline-none focus:ring-2 focus:ring-monday-violet/20 focus:border-monday-violet transition-colors',
+            error && 'border-[#e24444] focus:ring-[#e24444]/20 focus:border-[#e24444]',
             className
           )}
           aria-invalid={error ? 'true' : 'false'}
@@ -46,12 +45,12 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           ))}
         </select>
         {error && (
-          <p id={`${selectId}-error`} className="text-xs text-rose-600" role="alert">
+          <p id={`${selectId}-error`} className="text-xs text-[#e24444]" role="alert">
             {error}
           </p>
         )}
         {helperText && !error && (
-          <p id={`${selectId}-helper`} className="text-xs text-[#64748B]">
+          <p id={`${selectId}-helper`} className="text-xs text-iron">
             {helperText}
           </p>
         )}

@@ -1,8 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Smooth anchor scroll */
 html {
   scroll-behavior: smooth;
 }
@@ -22,100 +23,90 @@ html {
 }
 
 /* ============================================
-   DESIGN TOKENS - Yellow ERP Sun-Slate
+   DESIGN TOKENS — monday.com Inspired
    ============================================ */
 
 @layer base {
   :root {
-    /* Background - Soft Warm Neutral (#F8FAFC) */
-    --background: 210 20% 98%;
-    --foreground: 222 47% 11%;
+    /* Brand */
+    --color-monday-violet: #6161ff;
+    --color-monday-violet-hover: #5252e6;
 
-    /* Cards - White (#FFFFFF) */
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    /* Text */
+    --color-ink: #333333;
+    --color-slate: #535768;
+    --color-iron: #808080;
 
-    /* Popovers */
+    /* Borders */
+    --color-fog: #cacbcd;
+    --color-mist: #d0d4e4;
+    --color-pebble: #dddfeb;
+
+    /* Surfaces */
+    --color-cloud: #f5f6f8;
+    --color-snow: #ffffff;
+    --color-shadow-dust: #e6e7ea;
+
+    /* Accents — Pastel */
+    --color-mint: #bcfe90;
+    --color-sky: #abf0ff;
+    --color-apricot: #ff8940;
+    --color-lavender: #eddff7;
+    --color-periwinkle: #e7ecff;
+    --color-cornflower: #93beff;
+    --color-aqua: #d1faff;
+    --color-cotton-candy: #e98dfe;
+    --color-ultra-violet: #9450fd;
+    --color-electric-cyan: #3ac9ff;
+    --color-forest: #2a5c4e;
+    --color-peony: #fcd0f8;
+    --color-periwinkle-wash: #dbdbff;
+
+    /* Status */
+    --color-success: #2a5c4e;
+    --color-warning: #ff8940;
+    --color-danger: #e24444;
+    --color-info: #3ac9ff;
+
+    /* shadcn/ui compat — Light only */
+    --background: 226 33% 97%;      /* #f5f6f8 cloud */
+    --foreground: 222 20% 20%;      /* #333333 ink */
+
+    --card: 0 0% 100%;              /* #ffffff snow */
+    --card-foreground: 222 20% 20%;
+
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 222 20% 20%;
 
-    /* Primary - Sun Yellow */
-    --primary: 47 96% 53%;
-    --primary-foreground: 222 47% 11%;
+    --primary: 240 100% 69%;        /* #6161ff violet */
+    --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Warm Slate (#E2E8F0) */
-    --secondary: 215 27% 91%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 226 33% 97%;       /* #f5f6f8 cloud */
+    --secondary-foreground: 222 20% 20%;
 
-    /* Muted - Soft Gray (#F1F5F9) */
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 226 20% 95%;
+    --muted-foreground: 222 10% 50%;
 
-    /* Accent - Deep Slate Navy (#0F172A) */
-    --accent: 222 47% 11%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 222 20% 20%;
+    --accent-foreground: 0 0% 100%;
 
-    /* Destructive - Soft Rose */
-    --destructive: 0 84% 60%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Border - Subtle Slate (#E2E8F0) */
-    --border: 215 27% 91%;
-    --input: 215 27% 91%;
-    --ring: 47 96% 53%;
-    --radius: 0.75rem;
+    --border: 228 12% 83%;          /* #d0d4e4 mist */
+    --input: 228 12% 83%;
+    --ring: 240 100% 69%;
+    --radius: 0.375rem;
 
-    /* Sidebar - Deep Navy (#0F172A) */
-    --sidebar-background: 222 47% 11%;
+    /* Sidebar */
+    --sidebar-background: 222 20% 20%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 47 96% 53%;
-    --sidebar-primary-foreground: 222 47% 11%;
-    --sidebar-accent: 217 33% 17%;
+    --sidebar-primary: 240 100% 69%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 15% 25%;
     --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 33% 17%;
-    --sidebar-ring: 47 96% 53%;
-
-    /* Brand - Yellow ERP Colors */
-    --brand-yellow: 45 93% 47%;
-  }
-
-  .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
-
-    --card: 222 47% 11%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 47 96% 53%;
-    --primary-foreground: 222 47% 11%;
-
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-
-    --accent: 217 33% 17%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 47 96% 53%;
-
-    --sidebar-background: 222 47% 11%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 47 96% 53%;
-    --sidebar-primary-foreground: 222 47% 11%;
-    --sidebar-accent: 217 33% 17%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 33% 17%;
-    --sidebar-ring: 47 96% 53%;
+    --sidebar-border: 222 15% 25%;
+    --sidebar-ring: 240 100% 69%;
   }
 }
 
@@ -125,85 +116,31 @@ html {
   }
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: 'Poppins', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
   select {
-    @apply rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-colors duration-150;
+    @apply rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-colors duration-150;
   }
   textarea {
-    @apply rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-colors duration-150;
+    @apply rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-colors duration-150;
   }
 }
 
 /* ============================================
-   GLOBAL UI OVERRIDES - Yellow ERP Sun-Slate
+   GLOBAL UI — monday.com Style
    ============================================ */
 
-/* --- Cards --- */
+/* Cards */
 .bg-white.border.border-border.rounded-xl.shadow-sm {
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.03);
-  transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  box-shadow: rgba(205, 208, 223, 0.4) 0px 2px 48px 0px;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
 }
 .bg-white.border.border-border.rounded-xl.shadow-sm:hover {
-  box-shadow: 0 4px 12px -2px rgb(0 0 0 / 0.06);
-  border-color: rgb(30 41 59 / 0.12);
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 45px 0px;
+  border-color: #d0d4e4;
 }
 
-/* --- Primary Buttons - Sun Yellow --- */
-.bg-primary.hover\:bg-black.text-white {
-  background-color: hsl(47 96% 53%);
-  color: hsl(222 47% 11%);
-  transition: all 0.15s ease;
-}
-.bg-primary.hover\:bg-black.text-white:hover {
-  background-color: hsl(47 96% 45%);
-  box-shadow: 0 2px 8px -2px rgb(250 204 21 / 0.3);
-}
-.bg-primary.hover\:bg-black.text-white:active {
-  transform: scale(0.98);
-}
-
-/* --- Secondary Buttons --- */
-.bg-white.border.border-border.hover\:bg-muted.text-foreground {
-  transition: all 0.15s ease;
-}
-.bg-white.border.border-border.hover\:bg-muted.text-foreground:hover {
-  border-color: rgb(30 41 59 / 0.2);
-}
-.bg-white.border.border-border.hover\:bg-muted.text-foreground:active {
-  transform: scale(0.98);
-}
-
-/* --- Success Buttons - Emerald (default) --- */
-.bg-emerald-600.hover\:bg-emerald-700.text-white {
-  transition: all 0.15s ease;
-}
-.bg-emerald-600.hover\:bg-emerald-700.text-white:hover {
-  box-shadow: 0 2px 8px -2px rgb(16 185 129 / 0.3);
-}
-.bg-emerald-600.hover\:bg-emerald-700.text-white:active {
-  transform: scale(0.98);
-}
-
-/* --- Danger Buttons - Rose (default) --- */
-.bg-rose-600.hover\:bg-rose-700.text-white {
-  transition: all 0.15s ease;
-}
-.bg-rose-600.hover\:bg-rose-700.text-white:hover {
-  box-shadow: 0 2px 8px -2px rgb(244 63 94 / 0.3);
-}
-.bg-rose-600.hover\:bg-rose-700.text-white:active {
-  transform: scale(0.98);
-}
-
-/* --- Table Rows --- */
-tr.border-b.border-slate-100.hover\:bg-muted {
-  transition: background-color 0.1s ease;
-}
-tr.border-b.border-slate-100.hover\:bg-muted:hover {
-  background-color: rgb(245 247 250);
-}
-
-/* --- Inputs Focus --- */
+/* Inputs Focus */
 input.w-full.bg-muted.border.border-border,
 select.w-full.bg-muted.border.border-border,
 textarea.w-full.bg-muted.border.border-border {
@@ -212,51 +149,27 @@ textarea.w-full.bg-muted.border.border-border {
 input.w-full.bg-muted.border.border-border:focus,
 select.w-full.bg-muted.border.border-border:focus,
 textarea.w-full.bg-muted.border.border-border:focus {
-  border-color: hsl(222 47% 11%);
-  box-shadow: 0 0 0 3px rgb(15 23 42 / 0.1);
+  border-color: #6161ff;
+  box-shadow: 0 0 0 3px rgba(97, 97, 255, 0.15);
 }
 
-/* --- Badges --- */
-span.inline-flex.items-center.px-2.py-0\.5.rounded-full {
-  letter-spacing: 0.01em;
-}
-
-/* --- Modal Backdrop --- */
+/* Modal Backdrop */
 .fixed.inset-0.bg-black\/50 {
   backdrop-filter: blur(4px);
 }
 
-/* --- Section Headers --- */
+/* Section Headers */
 h1.text-xl.font-bold.text-foreground {
   letter-spacing: -0.02em;
 }
 
-/* --- KPI Cards Hover --- */
+/* KPI Cards Hover */
 .bg-white.border.border-border.rounded-xl.shadow-sm.p-6 {
   transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
 .bg-white.border.border-border.rounded-xl.shadow-sm.p-6:hover {
-  box-shadow: 0 4px 12px -4px rgb(0 0 0 / 0.08);
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 45px 0px;
   transform: translateY(-1px);
-}
-
-/* --- Yellow ERP Sidebar Navigation --- */
-.nav-item-active {
-  background-color: hsl(220 60% 95%);
-  color: hsl(47 96% 53%);
-  border-left: 3px solid hsl(47 96% 53%);
-  padding-left: calc(0.75rem - 3px);
-}
-
-.nav-item-inactive {
-  color: hsl(220 17% 62%);
-  border-left: 3px solid transparent;
-  padding-left: calc(0.75rem - 3px);
-}
-
-.nav-item-inactive:hover {
-  background-color: hsl(220 14% 96%);
-  color: hsl(222 47% 11%);
 }
 
 @layer utilities {
@@ -264,19 +177,13 @@ h1.text-xl.font-bold.text-foreground {
     text-wrap: balance;
   }
   .text-gradient {
-    @apply text-[#0F172A];
-  }
-  .text-gradient-dark {
-    @apply text-[#F8FAFC];
+    background: linear-gradient(90deg, #fe81e4, #fda900);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   .bg-glass {
     @apply bg-white/80 backdrop-blur-xl;
-  }
-  .dark .bg-glass {
-    @apply bg-primary/80 backdrop-blur-xl;
-  }
-  .bg-glass-dark {
-    @apply bg-white/5 backdrop-blur-xl;
   }
   .bg-grid {
     background-image:
@@ -308,16 +215,8 @@ h1.text-xl.font-bold.text-foreground {
   background: #9ca3af;
 }
 
-.dark ::-webkit-scrollbar-thumb {
-  background: #4b5563;
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #6b7280;
-}
-
 /* ============================================
-   ANIMATIONS & MOTION SYSTEM (Yellow ERP)
+   ANIMATIONS & MOTION
    ============================================ */
 
 :root {
@@ -367,7 +266,6 @@ h1.text-xl.font-bold.text-foreground {
   animation: scaleIn 0.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
-/* Stagger animation utilities for dashboard cards & list items */
 .stagger-1 { animation-delay: 40ms; }
 .stagger-2 { animation-delay: 80ms; }
 .stagger-3 { animation-delay: 120ms; }
@@ -398,7 +296,7 @@ h1.text-xl.font-bold.text-foreground {
    ============================================ */
 
 .landing-page :focus-visible {
-  outline: 2px solid hsl(47 96% 53%);
+  outline: 2px solid #6161ff;
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -457,26 +355,10 @@ h1.text-xl.font-bold.text-foreground {
     border-radius: 0 !important;
     background: white !important;
   }
-  .bg-white, .bg-muted, .bg-primary {
-    background: white !important;
-    color: #1a1a1a !important;
-  }
-  .text-foreground, .text-white, .text-foreground, .text-muted-foreground, .text-muted-foreground {
-    color: #374151 !important;
-  }
   table {
     page-break-inside: avoid;
   }
   tr {
     page-break-inside: avoid;
-  }
-  .dark\:bg-primary, .dark\:bg-slate-800 {
-    background: white !important;
-  }
-  .dark\:text-white, .dark\:text-slate-300 {
-    color: #1a1a1a !important;
-  }
-  .dark\:border-slate-800, .dark\:border-slate-700 {
-    border-color: #e5e7eb !important;
   }
 }
