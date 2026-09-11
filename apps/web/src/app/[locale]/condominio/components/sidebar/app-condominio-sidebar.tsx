@@ -8,47 +8,47 @@ import ModuleSidebarBackButton from '@/components/sidebar/module-sidebar-back-bu
 import ModuleSidebarFooter from '@/components/sidebar/module-sidebar-footer';
 
 function getUserFromCookie() {
-  if (typeof window === 'undefined') return { name: 'Administrador', email: '', role: 'Admin Condominio' };
-  const cookies = document.cookie.split(';');
-  const authCookie = cookies.find(c => c.trim().startsWith('auth-token='));
-  if (!authCookie) return { name: 'Administrador', email: '', role: 'Admin Condominio' };
-  try {
-    const token = authCookie.split('=')[1];
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return {
-      name: payload.name || 'Administrador',
-      email: payload.email || '',
-      role: 'Admin Condominio',
-    };
-  } catch {
-    return { name: 'Administrador', email: '', role: 'Admin Condominio' };
-  }
+ if (typeof window === 'undefined') return { name: 'Administrador', email: '', role: 'Admin Condominio' };
+ const cookies = document.cookie.split(';');
+ const authCookie = cookies.find(c => c.trim().startsWith('auth-token='));
+ if (!authCookie) return { name: 'Administrador', email: '', role: 'Admin Condominio' };
+ try {
+ const token = authCookie.split('=')[1];
+ const payload = JSON.parse(atob(token.split('.')[1]));
+ return {
+ name: payload.name || 'Administrador',
+ email: payload.email || '',
+ role: 'Admin Condominio',
+ };
+ } catch {
+ return { name: 'Administrador', email: '', role: 'Admin Condominio' };
+ }
 }
 
 export function AppCondominioSidebar(props: React.ComponentProps<typeof Sidebar>) {
-  const [user, setUser] = useState({ name: 'Administrador', email: '', role: 'Admin Condominio' });
+ const [user, setUser] = useState({ name: 'Administrador', email: '', role: 'Admin Condominio' });
 
-  useEffect(() => {
-    setUser(getUserFromCookie());
-  }, []);
+ useEffect(() => {
+ setUser(getUserFromCookie());
+ }, []);
 
-  return (
-    <Sidebar className="border-r border-slate-800 bg-[#0F172A] text-slate-300 select-none shadow-xl" collapsible="icon" {...props}>
-      <SidebarHeader className="bg-[#0F172A] pt-3">
-        <CondominioSidebarHeader />
-        <SidebarSeparator className="mx-3 bg-slate-800/80 my-2" />
-      </SidebarHeader>
+ return (
+ <Sidebar className="border-r border-mist bg-snow text-ink select-none shadow-card" collapsible="icon" {...props}>
+ <SidebarHeader className="bg-snow pt-3">
+ <CondominioSidebarHeader />
+ <SidebarSeparator className="mx-3 bg-mist my-2" />
+ </SidebarHeader>
 
-      <SidebarContent className="bg-[#0F172A]">
-        <ModuleSidebarBackButton moduleKey="condominio" />
-        <CondominioSidebarNavigation />
-      </SidebarContent>
+ <SidebarContent className="bg-monday-violet">
+ <ModuleSidebarBackButton moduleKey="condominio" />
+ <CondominioSidebarNavigation />
+ </SidebarContent>
 
-      <SidebarFooter className="bg-[#0F172A] p-3 border-t border-slate-800/80">
-        <ModuleSidebarFooter moduleKey="condominio" user={user} />
-      </SidebarFooter>
+ <SidebarFooter className="bg-snow p-3 border-t border-mist">
+ <ModuleSidebarFooter moduleKey="condominio" user={user} />
+ </SidebarFooter>
 
-      <SidebarRail />
-    </Sidebar>
-  );
+ <SidebarRail />
+ </Sidebar>
+ );
 }

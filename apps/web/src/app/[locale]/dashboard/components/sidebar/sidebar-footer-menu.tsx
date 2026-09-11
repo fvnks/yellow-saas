@@ -16,8 +16,8 @@ import {
 import { useTranslations } from 'next-intl';
 
 const ROLE_CONFIG: Record<string, { label: string; classes: string }> = {
-  owner: { label: 'Propietario', classes: 'bg-monday-violet/10 text-monday-violet border border-monday-violet/20 font-black' },
-  admin: { label: 'Administrador', classes: 'bg-monday-violet/10 text-monday-violet border border-monday-violet/20 font-black' },
+  owner: { label: 'Propietario', classes: 'bg-snow/10 text-monday-violet border border-monday-violet/20 font-black' },
+  admin: { label: 'Administrador', classes: 'bg-snow/10 text-monday-violet border border-monday-violet/20 font-black' },
   manager: { label: 'Gerente', classes: 'bg-sky-accent/30 text-[#006680] border border-sky-accent/50 font-bold' },
   member: { label: 'Miembro', classes: 'bg-cloud text-slate-text border border-mist font-medium' },
   viewer: { label: 'Observador', classes: 'bg-cloud/50 text-iron border border-mist font-normal' },
@@ -43,7 +43,7 @@ export default function SidebarFooterMenu({ user }: SidebarFooterMenuProps) {
           <DropdownMenuTrigger asChild>
             <button className="flex w-full items-center gap-3 rounded-xl p-2 text-left text-sm hover:bg-cloud border border-transparent hover:border-mist transition-all duration-200 group/user">
               <Avatar className="h-9 w-9 ring-2 ring-monday-violet/30 group-hover/user:ring-monday-violet transition-all shrink-0">
-                <AvatarFallback className="bg-monday-violet text-white text-xs font-black shadow-inner">
+                <AvatarFallback className="bg-snow text-white text-xs font-black shadow-inner">
                   {user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)}
                 </AvatarFallback>
               </Avatar>
