@@ -17,10 +17,10 @@ function PasswordStrength({ password }: { password: string }) {
     if (/\d/.test(pw)) score++;
     if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pw)) score++;
 
-    if (score <= 1) return { score, label: 'Débil', color: 'bg-rose-500' };
-    if (score <= 2) return { score, label: 'Regular', color: 'bg-amber-500' };
-    if (score <= 3) return { score, label: 'Buena', color: 'bg-blue-500' };
-    return { score, label: 'Fuerte', color: 'bg-emerald-500' };
+    if (score <= 1) return { score, label: 'Débil', color: 'bg-[#e24444]' };
+    if (score <= 2) return { score, label: 'Regular', color: 'bg-apricot' };
+    if (score <= 3) return { score, label: 'Buena', color: 'bg-cornflower' };
+    return { score, label: 'Fuerte', color: 'bg-forest' };
   };
 
   if (!password) return null;
@@ -34,12 +34,12 @@ function PasswordStrength({ password }: { password: string }) {
           <div
             key={i}
             className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-              i <= score ? color : 'bg-muted'
+              i <= score ? color : 'bg-mist'
             }`}
           />
         ))}
       </div>
-      <p className="text-[11px] text-muted-foreground">{label}</p>
+      <p className="text-[11px] text-iron">{label}</p>
     </div>
   );
 }
@@ -121,18 +121,14 @@ function RegisterForm() {
     e.preventDefault();
     setError('');
 
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     setLoading(true);
 
     try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
@@ -159,7 +155,7 @@ function RegisterForm() {
 
   if (registered) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0F172A] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-cloud flex items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -170,18 +166,18 @@ function RegisterForm() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
-            className="w-16 h-16 bg-emerald-100 dark:bg-emerald-500/15 rounded-2xl flex items-center justify-center mx-auto mb-6"
+            className="w-16 h-16 bg-mint/30 rounded-2xl flex items-center justify-center mx-auto mb-6"
           >
-            <CheckCircle2 className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
+            <CheckCircle2 className="w-8 h-8 text-forest" />
           </motion.div>
-          <h1 className="text-2xl font-bold text-[#0F172A] dark:text-white">¡Cuenta creada!</h1>
-          <p className="text-[#64748B] dark:text-slate-400 mt-3 text-sm">
+          <h1 className="text-2xl font-bold text-ink">¡Cuenta creada!</h1>
+          <p className="text-slate-text mt-3 text-sm">
             Tu cuenta fue creada exitosamente. Ahora puedes iniciar sesión con tu correo y contraseña.
           </p>
           <motion.button
             whileTap={{ scale: 0.98 }}
             onClick={() => router.push('/login')}
-            className="mt-8 w-full rounded-xl bg-[#0F172A] hover:bg-[#1E293B] text-white px-4 py-3 text-sm font-medium transition-all shadow-sm shadow-[#0F172A]/20 flex items-center justify-center gap-2"
+            className="mt-8 w-full rounded-[160px] bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-3 text-sm font-medium transition-all shadow-sm flex items-center justify-center gap-2"
           >
             <ShieldCheck className="w-4 h-4" />
             Ir a Iniciar Sesión
@@ -192,7 +188,7 @@ function RegisterForm() {
   }
 
   return (
-    <div className="flex min-h-screen w-full bg-[#F8FAFC] dark:bg-[#0F172A] font-sans text-[#0F172A] dark:text-white antialiased selection:bg-amber-500/20 lg:flex-row">
+    <div className="flex min-h-screen w-full bg-cloud font-sans text-ink antialiased selection:bg-monday-violet/10 lg:flex-row">
       {/* Left Image Panel */}
       <AuthPanel />
 
@@ -200,10 +196,12 @@ function RegisterForm() {
       <div className="flex w-full flex-col items-center justify-center p-6 sm:p-12 lg:w-1/2">
         {/* Mobile logo */}
         <div className="lg:hidden mb-8 flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#0F172A] dark:bg-white rounded-xl flex items-center justify-center">
-            <Building2 className="w-6 h-6 text-white dark:text-[#0F172A]" />
+          <div className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm" style={{ background: 'conic-gradient(from 270deg, #8181ff 15%, #33dbdb 40%, #33d58e 55%, #ffd633 65%, #fc527d 85%, #8181ff 100%)' }}>
+            <div className="w-8 h-8 bg-snow rounded-full flex items-center justify-center">
+              <Building2 className="w-5 h-5 text-monday-violet" />
+            </div>
           </div>
-          <span className="text-xl font-bold text-[#0F172A] dark:text-white">Yellow ERP</span>
+          <span className="text-xl font-bold text-ink">Yellow ERP</span>
         </div>
 
         <motion.div
@@ -214,10 +212,10 @@ function RegisterForm() {
         >
           {/* Title */}
           <motion.div variants={itemVariants} className="mb-8">
-            <h1 className="mb-3 text-[36px] font-bold leading-[1.05] tracking-tight text-[#0F172A] dark:text-white">
+            <h1 className="mb-3 text-[36px] font-bold leading-[1.05] tracking-tight text-ink">
               Crea tu cuenta
             </h1>
-            <p className="text-[15px] text-[#64748B] dark:text-slate-400 text-balance">
+            <p className="text-[15px] text-slate-text text-balance">
               Comienza tu prueba gratuita de 14 días. Sin tarjeta de crédito.
             </p>
           </motion.div>
@@ -226,7 +224,7 @@ function RegisterForm() {
             <motion.div
               variants={itemVariants}
               role="alert"
-              className="mb-5 flex items-center gap-2 p-3 bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 rounded-xl text-rose-700 dark:text-rose-400 text-sm"
+              className="mb-5 flex items-center gap-2 p-3 bg-[#e24444]/5 border border-[#e24444]/20 rounded-md text-[#e24444] text-sm"
             >
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               {error}
@@ -294,7 +292,7 @@ function RegisterForm() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-[38px] text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-white transition-colors"
+                  className="absolute right-3 top-[38px] text-iron hover:text-ink transition-colors"
                   aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -315,7 +313,7 @@ function RegisterForm() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-[38px] text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-white transition-colors"
+                  className="absolute right-3 top-[38px] text-iron hover:text-ink transition-colors"
                   aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 >
                   {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -323,23 +321,23 @@ function RegisterForm() {
               </motion.div>
             </div>
 
-            <motion.div variants={itemVariants} className="bg-[#F1F5F9] dark:bg-[#1E293B] p-4 rounded-xl border border-[#E2E8F0] dark:border-slate-700">
-              <p className="text-sm text-[#0F172A] dark:text-white font-medium mb-2">La contraseña debe incluir:</p>
-              <ul className="text-xs text-[#64748B] dark:text-slate-400 space-y-1">
+            <motion.div variants={itemVariants} className="bg-cloud p-4 rounded-md border border-mist">
+              <p className="text-sm text-ink font-medium mb-2">La contraseña debe incluir:</p>
+              <ul className="text-xs text-slate-text space-y-1">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-500 flex-shrink-0" />
+                  <CheckCircle2 className="w-3 h-3 text-forest flex-shrink-0" />
                   <span>Al menos 8 caracteres</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-500 flex-shrink-0" />
+                  <CheckCircle2 className="w-3 h-3 text-forest flex-shrink-0" />
                   <span>Una letra mayúscula y una minúscula</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-500 flex-shrink-0" />
+                  <CheckCircle2 className="w-3 h-3 text-forest flex-shrink-0" />
                   <span>Al menos un número</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-500 flex-shrink-0" />
+                  <CheckCircle2 className="w-3 h-3 text-forest flex-shrink-0" />
                   <span>Al menos un carácter especial (@$!%*?&)</span>
                 </li>
               </ul>
@@ -349,32 +347,32 @@ function RegisterForm() {
               <input
                 type="checkbox"
                 id="terms"
-                className="w-4 h-4 text-amber-500 border-[#E2E8F0] dark:border-slate-600 rounded focus:ring-amber-500 focus:ring-2 mt-0.5"
+                className="w-4 h-4 text-monday-violet border-mist rounded focus:ring-monday-violet focus:ring-2 mt-0.5"
                 required
               />
-              <label htmlFor="terms" className="ml-2 text-sm text-[#0F172A] dark:text-white">
+              <label htmlFor="terms" className="ml-2 text-sm text-ink">
                 Acepto los{' '}
-                <a href="/terms" className="text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-medium underline underline-offset-2">
+                <a href="/terms" className="text-monday-violet hover:text-monday-violet-hover font-medium underline underline-offset-2">
                   Términos de Servicio
                 </a>
                 {' '}y la{' '}
-                <a href="/privacy" className="text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-medium underline underline-offset-2">
+                <a href="/privacy" className="text-monday-violet hover:text-monday-violet-hover font-medium underline underline-offset-2">
                   Política de Privacidad
                 </a>
               </label>
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <Button type="submit" className="w-full bg-[#0F172A] hover:bg-[#1E293B] text-white shadow-sm shadow-[#0F172A]/20" loading={loading}>
+              <Button type="submit" className="w-full shadow-sm" loading={loading}>
                 Crear Cuenta Gratuita
               </Button>
             </motion.div>
           </form>
 
           {/* Footer */}
-          <motion.div variants={itemVariants} className="mt-8 text-center text-[14px] text-[#64748B] dark:text-slate-400">
+          <motion.div variants={itemVariants} className="mt-8 text-center text-[14px] text-slate-text">
             ¿Ya tienes una cuenta?{' '}
-            <Link href="/login" className="font-semibold text-[#0F172A] dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors underline underline-offset-2">
+            <Link href="/login" className="font-semibold text-ink hover:text-monday-violet transition-colors underline underline-offset-2">
               Iniciar Sesión
             </Link>
           </motion.div>
@@ -386,7 +384,7 @@ function RegisterForm() {
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0F172A] flex items-center justify-center"><p className="text-[#64748B] dark:text-slate-400">Cargando...</p></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-cloud flex items-center justify-center"><p className="text-slate-text">Cargando...</p></div>}>
       <RegisterForm />
     </Suspense>
   );
