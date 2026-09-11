@@ -48,7 +48,7 @@ export default function ShortcutsHelp({ shortcuts }: { shortcuts: { keys: string
  <button onClick={() => setOpen(true)}
  className="p-2 hover:bg-muted rounded-lg transition-colors"
  title="Atajos de teclado">
- <Keyboard className="w-4 h-4 text-foreground dark:text-muted-foreground" />
+ <Keyboard className="w-4 h-4 text-foreground " />
  </button>
 
  {open && (
@@ -67,7 +67,7 @@ export default function ShortcutsHelp({ shortcuts }: { shortcuts: { keys: string
  <div className="flex items-center gap-1">
  {s.keys.map((key, j) => (
  <span key={j}>
- <kbd className="px-2 py-0.5 bg-muted dark:bg-muted border border-border rounded text-[10px] font-mono text-foreground ">
+ <kbd className="px-2 py-0.5 bg-muted border border-border rounded text-[10px] font-mono text-foreground ">
  {key}
  </kbd>
  {j < s.keys.length - 1 && <span className="text-muted-foreground mx-0.5">+</span>}

@@ -29,7 +29,7 @@ export function PricingToggle({ monthlyLabel = 'Mensual', yearlyLabel = 'Anual',
  aria-pressed={isYearly}
  className={cn(
  'relative w-12 h-6 rounded-full cursor-pointer transition-colors duration-300',
- isYearly ? 'bg-monday-violet' : 'bg-muted dark:bg-muted'
+ isYearly ? 'bg-monday-violet' : 'bg-muted '
  )}
  >
  <div
@@ -41,7 +41,7 @@ export function PricingToggle({ monthlyLabel = 'Mensual', yearlyLabel = 'Anual',
  </button>
  <span className={cn('text-sm font-medium transition-colors', isYearly ? 'text-foreground ' : 'text-muted-foreground')}>
  {yearlyLabel}
- <span className="ml-1.5 inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-500/10 ">
+ <span className="ml-1.5 inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 ">
  -20%
  </span>
  </span>

@@ -10,11 +10,11 @@ interface StatusBadgeProps {
 }
 
 const variantStyles: Record<StatusVariant, string> = {
- success: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/20',
- warning: 'bg-peach/30 text-[#c64d00] border-peach dark:bg-monday-violet/10 dark:border-[#c64d00]/20',
- danger: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20',
- info: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20',
- neutral: 'bg-muted text-foreground border-border dark:bg-muted0/10 dark:text-muted-foreground /20',
+ success: 'bg-emerald-50 text-emerald-700 border-emerald-200 ',
+ warning: 'bg-peach/30 text-[#c64d00] border-peach /10',
+ danger: 'bg-rose-50 text-rose-700 border-rose-200 ',
+ info: 'bg-blue-50 text-blue-700 border-blue-200 ',
+ neutral: 'bg-muted text-foreground border-border 0/10 /20',
 };
 
 const dotColors: Record<StatusVariant, string> = {
