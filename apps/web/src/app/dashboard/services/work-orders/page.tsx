@@ -66,12 +66,12 @@ export default function WorkOrdersPage() {
  const statusBadge = (s: string) => {
  if (s === 'facturada') return { cls: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: CheckCircle2, label: 'Facturada' };
  if (s === 'en_curso') return { cls: 'bg-blue-50 text-blue-700 border-blue-200', icon: Clock, label: 'En Curso' };
- return { cls: 'bg-amber-50 text-amber-700 border-amber-200', icon: Clock, label: 'Programada' };
+ return { cls: 'bg-peach/30 text-[#c64d00] border-peach', icon: Clock, label: 'Programada' };
  };
 
  const priorityBadge = (p: string) => {
  if (p === 'urgente') return 'bg-rose-50 text-rose-700 border-rose-200';
- if (p === 'alta') return 'bg-amber-50 text-amber-700 border-amber-200';
+ if (p === 'alta') return 'bg-peach/30 text-[#c64d00] border-peach';
  return 'bg-slate-50 text-slate-600 border-slate-200';
  };
 

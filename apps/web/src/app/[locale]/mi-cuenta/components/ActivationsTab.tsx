@@ -48,7 +48,7 @@ export default function ActivationsTab() {
  case 'inactive':
  return { label: 'Inactivo', icon: XCircle, color: 'text-muted-foreground', bgColor: 'bg-muted text-foreground border border-border' };
  case 'expired':
- return { label: 'Expirado', icon: Clock, color: 'text-monday-violet', bgColor: 'bg-amber-50 text-amber-700 border border-amber-200' };
+ return { label: 'Expirado', icon: Clock, color: 'text-monday-violet', bgColor: 'bg-peach/30 text-[#c64d00] border border-peach' };
  case 'cancelled':
  return { label: 'Cancelado', icon: XCircle, color: 'text-rose-500', bgColor: 'bg-rose-50 text-rose-700 border border-rose-200' };
  default:

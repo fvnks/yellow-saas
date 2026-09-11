@@ -53,8 +53,8 @@ export default function QuickCreateProduct({ open, onClose, onCreated }: QuickCr
  <div className="bg-card rounded-xl shadow-xl w-full max-w-md" onClick={e => e.stopPropagation()}>
  <div className="px-6 py-4 border-b border-border flex items-center justify-between">
  <div className="flex items-center gap-2">
- <div className="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center">
- <Package className="w-4 h-4 text-amber-600" />
+ <div className="w-8 h-8 bg-peach/30 rounded-lg flex items-center justify-center">
+ <Package className="w-4 h-4 text-[#c64d00]" />
  </div>
  <h2 className="text-lg font-semibold text-foreground">Nuevo Ingrediente</h2>
  </div>

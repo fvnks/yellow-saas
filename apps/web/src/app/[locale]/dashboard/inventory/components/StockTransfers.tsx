@@ -23,7 +23,7 @@ interface StockTransfer {
 }
 
 const statusConfig: Record<string, { label: string; icon: typeof Clock; color: string; bg: string }> = {
- pending: { label: 'Pendiente', icon: Clock, color: 'text-amber-700', bg: 'bg-amber-50 border-amber-200' },
+ pending: { label: 'Pendiente', icon: Clock, color: 'text-[#c64d00]', bg: 'bg-peach/30 border-peach' },
  in_transit: { label: 'En Transito', icon: Truck, color: 'text-blue-700', bg: 'bg-blue-50 border-blue-200' },
  completed: { label: 'Completada', icon: CheckCircle, color: 'text-emerald-700', bg: 'bg-emerald-50 border-emerald-200' },
  cancelled: { label: 'Cancelada', icon: XCircle, color: 'text-red-700', bg: 'bg-red-50 border-red-200' },

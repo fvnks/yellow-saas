@@ -223,7 +223,7 @@ export default function GastosComunesPage() {
  >
  <span>{p.periodName}</span>
  <span className={`px-1.5 py-0.2 rounded text-[9px] font-extrabold uppercase ${
- p.status === 'emitido' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-monday-violet/20 text-amber-300'
+ p.status === 'emitido' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-monday-violet/20 text-[#c64d00]/60'
  }`}>
  {p.status}
  </span>

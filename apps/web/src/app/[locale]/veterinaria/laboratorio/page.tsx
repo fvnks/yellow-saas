@@ -25,7 +25,7 @@ import { LabOrder, LabPanel } from '@/app/veterinaria/lib/veterinary-store';
 const statusBadges: Record<string, string> = {
  ordenada: 'bg-blue-100 text-blue-800 border-blue-200',
  muestra_tomada: 'bg-indigo-100 text-indigo-800 border-indigo-200',
- en_proceso: 'bg-amber-100 text-amber-800 border-amber-200',
+ en_proceso: 'bg-peach/50 text-[#c64d00] border-peach',
  resultados_listos: 'bg-emerald-100 text-emerald-800 border-emerald-200',
  entregado: 'bg-slate-100 text-slate-700 border-slate-200',
  cancelada: 'bg-rose-100 text-rose-800 border-rose-200',
@@ -43,7 +43,7 @@ const statusLabels: Record<string, string> = {
 const flagBadges: Record<string, string> = {
  bajo: 'bg-blue-50 text-blue-700 border-blue-200',
  normal: 'bg-emerald-50 text-emerald-700 border-emerald-200',
- alto: 'bg-amber-50 text-amber-700 border-amber-200',
+ alto: 'bg-peach/30 text-[#c64d00] border-peach',
  critico: 'bg-rose-50 text-rose-700 border-rose-200',
 };
 
@@ -246,7 +246,7 @@ export default function VeterinaryLabPage() {
  </div>
  </div>
  <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center"><Clock className="w-5 h-5" /></div>
+ <div className="w-10 h-10 rounded-xl bg-peach/30 border border-peach text-[#c64d00] flex items-center justify-center"><Clock className="w-5 h-5" /></div>
  <div>
  <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">En Proceso</div>
  <div className="text-xl font-black text-slate-900">{inProcess}</div>
@@ -371,7 +371,7 @@ export default function VeterinaryLabPage() {
  </button>
  )}
  {o.status === 'muestra_tomada' && (
- <button onClick={() => handleAdvance(o.id, 'en_proceso')} className="text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1.5 rounded-xl hover:bg-amber-100">
+ <button onClick={() => handleAdvance(o.id, 'en_proceso')} className="text-[11px] font-bold bg-peach/30 text-[#c64d00] border border-peach px-3 py-1.5 rounded-xl hover:bg-peach/50">
  Analizar
  </button>
  )}
@@ -635,7 +635,7 @@ export default function VeterinaryLabPage() {
  )}
 
  {selectedOrder.notes && (
- <p className="text-[11px] text-slate-500 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+ <p className="text-[11px] text-slate-500 bg-peach/30 border border-peach rounded-xl px-3 py-2">
  <strong>Nota del profesional:</strong> {selectedOrder.notes}
  </p>
  )}

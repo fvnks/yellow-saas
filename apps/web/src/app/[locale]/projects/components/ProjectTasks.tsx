@@ -28,14 +28,14 @@ interface ProjectTasksProps {
 const STATUS_OPTIONS = [
  { value: 'todo', label: 'Por Hacer', icon: AlertCircle, color: 'text-muted-foreground', bg: 'bg-muted' },
  { value: 'in_progress', label: 'En Progreso', icon: Clock, color: 'text-blue-500', bg: 'bg-blue-100' },
- { value: 'review', label: 'Revisión', icon: Eye, color: 'text-monday-violet', bg: 'bg-amber-100' },
+ { value: 'review', label: 'Revisión', icon: Eye, color: 'text-monday-violet', bg: 'bg-peach/50' },
  { value: 'done', label: 'Completada', icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-100' },
 ];
 
 const PRIORITY_OPTIONS = [
  { value: 'low', label: 'Baja', color: 'bg-muted text-foreground border-border' },
  { value: 'medium', label: 'Media', color: 'bg-blue-50 text-blue-700 border-blue-200' },
- { value: 'high', label: 'Alta', color: 'bg-amber-50 text-amber-700 border-amber-200' },
+ { value: 'high', label: 'Alta', color: 'bg-peach/30 text-[#c64d00] border-peach' },
  { value: 'urgent', label: 'Urgente', color: 'bg-rose-50 text-rose-700 border-rose-200' },
 ];
 

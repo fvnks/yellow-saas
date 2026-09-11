@@ -65,7 +65,7 @@ export default function RestaurantAdminPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
- <LayoutDashboard className="w-5 h-5 text-amber-500" />
+ <LayoutDashboard className="w-5 h-5 text-[#c64d00]" />
  Consola Admin Restaurante & Analítica
  </h1>
  <p className="text-xs text-slate-500 mt-1">
@@ -81,7 +81,7 @@ export default function RestaurantAdminPage() {
  <p className="text-xs font-semibold text-slate-500">Ventas del Día (CLP)</p>
  <p className="text-xl font-bold text-slate-900 mt-1">{formatCLP(38500)}</p>
  </div>
- <span className="p-3 bg-amber-50 rounded-2xl text-amber-600 border border-amber-200">
+ <span className="p-3 bg-peach/30 rounded-2xl text-[#c64d00] border border-peach">
  <DollarSign className="w-5 h-5" />
  </span>
  </div>
@@ -125,7 +125,7 @@ export default function RestaurantAdminPage() {
  onClick={() => setActiveTab(tab)}
  className={`pb-3 capitalize transition-all border-b-2 ${
  activeTab === tab
- ? 'border-amber-500 text-slate-900 font-extrabold'
+ ? 'border-[#c64d00] text-slate-900 font-extrabold'
  : 'border-transparent text-slate-500 hover:text-slate-700'
  }`}
  >
@@ -175,7 +175,7 @@ export default function RestaurantAdminPage() {
  {/* Add New Item Form (5 Cols) */}
  <div className="lg:col-span-5 bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5 space-y-4">
  <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
- <Plus className="w-4 h-4 text-amber-500" /> Nuevo Producto en Carta
+ <Plus className="w-4 h-4 text-[#c64d00]" /> Nuevo Producto en Carta
  </h2>
  <form onSubmit={handleAddMenuItem} className="space-y-3 text-xs">
  <div>
@@ -186,7 +186,7 @@ export default function RestaurantAdminPage() {
  value={newItem.name}
  onChange={e => setNewItem({ ...newItem, name: e.target.value })}
  placeholder="Ej. Pastel de Choclo"
- className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-amber-500"
+ className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-[#c64d00]"
  />
  </div>
 
@@ -198,7 +198,7 @@ export default function RestaurantAdminPage() {
  required
  value={newItem.priceCLP}
  onChange={e => setNewItem({ ...newItem, priceCLP: Number(e.target.value) })}
- className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-amber-500"
+ className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-[#c64d00]"
  />
  </div>
  <div>
@@ -206,7 +206,7 @@ export default function RestaurantAdminPage() {
  <select
  value={newItem.station}
  onChange={e => setNewItem({ ...newItem, station: e.target.value as any })}
- className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-amber-500"
+ className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-[#c64d00]"
  >
  <option value="kitchen">Cocina (Comida)</option>
  <option value="bar">Bar (Bebidas)</option>
@@ -221,7 +221,7 @@ export default function RestaurantAdminPage() {
  value={newItem.description}
  onChange={e => setNewItem({ ...newItem, description: e.target.value })}
  placeholder="Ingredientes principales..."
- className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-amber-500"
+ className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-[#c64d00]"
  />
  </div>
 
@@ -240,13 +240,13 @@ export default function RestaurantAdminPage() {
  {activeTab === 'users' && (
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5 space-y-4">
  <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
- <Shield className="w-4 h-4 text-amber-500" /> Personal & Permisos del Restaurante
+ <Shield className="w-4 h-4 text-[#c64d00]" /> Personal & Permisos del Restaurante
  </h2>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
  <div className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
  <span className="font-bold text-slate-900 text-sm">Rol Admin Restaurante</span>
  <p className="text-slate-500">Acceso total a la consola de administración, reportes, precios y configuración.</p>
- <span className="inline-block bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded text-[10px]">Permiso Total</span>
+ <span className="inline-block bg-peach/50 text-[#c64d00] font-bold px-2 py-0.5 rounded text-[10px]">Permiso Total</span>
  </div>
  <div className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
  <span className="font-bold text-slate-900 text-sm">Rol Garzón (POS)</span>
@@ -287,7 +287,7 @@ export default function RestaurantAdminPage() {
  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
  <div className="flex justify-between font-bold text-slate-900">
  <span>Total Ventas brutas (con IVA 19%)</span>
- <span className="text-amber-600">{formatCLP(38500)}</span>
+ <span className="text-[#c64d00]">{formatCLP(38500)}</span>
  </div>
  <div className="flex justify-between text-slate-600">
  <span>Boletas Electrónicas Emitidas SII</span>

@@ -20,7 +20,7 @@ interface ProjectMembersProps {
 }
 
 const ROLE_OPTIONS = [
- { value: 'owner', label: 'Propietario', color: 'bg-amber-50 text-amber-700 border-amber-200' },
+ { value: 'owner', label: 'Propietario', color: 'bg-peach/30 text-[#c64d00] border-peach' },
  { value: 'admin', label: 'Administrador', color: 'bg-blue-50 text-primary border-primary/20' },
  { value: 'member', label: 'Miembro', color: 'bg-blue-50 text-blue-700 border-blue-200' },
  { value: 'viewer', label: 'Observador', color: 'bg-muted text-foreground border-border' },

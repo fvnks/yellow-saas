@@ -23,11 +23,11 @@ export function Navbar() {
  {/* Logo */}
  <Link href="/" className="flex items-center gap-2.5 group">
  <div className="w-9 h-9 rounded-xl bg-monday-violet dark:bg-monday-violet flex items-center justify-center shadow-md shadow-[#0F172A]/20 dark:shadow-amber-500/20 group-hover:scale-105 transition-transform duration-150">
- <span className="text-amber-400 dark:text-[#0F172A] font-bold text-base tracking-wider">Y</span>
+ <span className="text-[#c64d00]/70 dark:text-[#0F172A] font-bold text-base tracking-wider">Y</span>
  </div>
  <div className="flex flex-col">
  <span className="text-lg font-bold text-[#0F172A] leading-none">
- Yellow <span className="text-amber-400">ERP</span>
+ Yellow <span className="text-[#c64d00]/70">ERP</span>
  </span>
  <span className="text-[10px] text-[#64748B] font-medium tracking-wide">SaaS para Chile</span>
  </div>
@@ -53,7 +53,7 @@ export function Navbar() {
  className="p-2 rounded-lg hover:bg-[#F1F5F9] transition-colors"
  aria-label="Cambiar tema"
  >
- {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-[#64748B]" />}
+ {theme === 'dark' ? <Sun className="w-4 h-4 text-[#c64d00]/70" /> : <Moon className="w-4 h-4 text-[#64748B]" />}
  </button>
  <Link
  href="/login"
@@ -63,7 +63,7 @@ export function Navbar() {
  </Link>
  <Link
  href="/register"
- className="rounded-xl bg-monday-violet dark:bg-monday-violet hover:bg-[#1E293B] dark:hover:bg-amber-400 text-white px-5 py-2.5 text-sm font-medium shadow-sm shadow-[#0F172A]/25 dark:shadow-amber-500/25 transition-all duration-150 active:scale-[0.98] flex items-center gap-1.5"
+ className="rounded-xl bg-monday-violet dark:bg-monday-violet hover:bg-[#1E293B] dark:hover:bg-peach text-white px-5 py-2.5 text-sm font-medium shadow-sm shadow-[#0F172A]/25 dark:shadow-amber-500/25 transition-all duration-150 active:scale-[0.98] flex items-center gap-1.5"
  >
  <span>Empezar Gratis</span>
  <ChevronRight className="w-4 h-4" />
@@ -104,7 +104,7 @@ export function Navbar() {
  onClick={toggle}
  className="flex items-center gap-2 w-full text-sm font-medium text-[#64748B] py-2"
  >
- {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
+ {theme === 'dark' ? <Sun className="w-4 h-4 text-[#c64d00]/70" /> : <Moon className="w-4 h-4" />}
  {theme === 'dark' ? 'Modo Claro' : 'Modo Oscuro'}
  </button>
  <Link
@@ -116,7 +116,7 @@ export function Navbar() {
  </Link>
  <Link
  href="/register"
- className="block rounded-xl bg-monday-violet dark:bg-monday-violet hover:bg-[#1E293B] dark:hover:bg-amber-400 px-4 py-2.5 text-sm font-medium text-white text-center shadow-sm"
+ className="block rounded-xl bg-monday-violet dark:bg-monday-violet hover:bg-[#1E293B] dark:hover:bg-peach px-4 py-2.5 text-sm font-medium text-white text-center shadow-sm"
  onClick={() => setMobileOpen(false)}
  >
  Empezar Gratis

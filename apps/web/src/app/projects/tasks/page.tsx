@@ -56,7 +56,7 @@ export default function ProjectTasksPage() {
  const getStatusIcon = (status: string) => {
  switch (status) {
  case 'completed': return <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />;
- case 'in_progress': return <Clock className="w-3.5 h-3.5 text-amber-500" />;
+ case 'in_progress': return <Clock className="w-3.5 h-3.5 text-[#c64d00]" />;
  default: return <AlertCircle className="w-3.5 h-3.5 text-muted-foreground" />;
  }
  };
@@ -131,12 +131,12 @@ export default function ProjectTasksPage() {
  </td>
  <td className="px-4 py-3 text-xs text-foreground">{task.project_name}</td>
  <td className="px-4 py-3">
- <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${task.status === 'completed' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : task.status === 'in_progress' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-muted text-foreground border border-border'}`}>
+ <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${task.status === 'completed' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : task.status === 'in_progress' ? 'bg-peach/30 text-[#c64d00] border border-peach' : 'bg-muted text-foreground border border-border'}`}>
  {task.status === 'completed' ? 'Completada' : task.status === 'in_progress' ? 'En Progreso' : 'Pendiente'}
  </span>
  </td>
  <td className="px-4 py-3">
- <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${task.priority === 'high' ? 'bg-red-50 text-red-700 border border-red-200' : task.priority === 'medium' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-muted text-foreground border border-border'}`}>
+ <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${task.priority === 'high' ? 'bg-red-50 text-red-700 border border-red-200' : task.priority === 'medium' ? 'bg-peach/30 text-[#c64d00] border border-peach' : 'bg-muted text-foreground border border-border'}`}>
  {task.priority === 'high' ? 'Alta' : task.priority === 'medium' ? 'Media' : 'Baja'}
  </span>
  </td>

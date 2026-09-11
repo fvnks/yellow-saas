@@ -283,7 +283,7 @@ export default function WebhooksPage() {
  )}
 
  {viewingDeliveries && (
- <Card className="border-amber-200">
+ <Card className="border-peach">
  <CardHeader className="flex flex-row items-center justify-between">
  <CardTitle>Entregas Recientes</CardTitle>
  <Button variant="ghost" size="sm" onClick={closeDeliveries}><X className="w-4 h-4" /></Button>

@@ -340,7 +340,7 @@ export default function VacationTab() {
  </button>
  <button
  onClick={() => handleCancel(r.id)}
- className="p-1.5 text-muted-foreground hover:text-monday-violet hover:bg-amber-50 rounded-lg transition-colors"
+ className="p-1.5 text-muted-foreground hover:text-monday-violet hover:bg-peach/30 rounded-lg transition-colors"
  title="Cancelar"
  >
  <AlertTriangle className="w-3.5 h-3.5" />

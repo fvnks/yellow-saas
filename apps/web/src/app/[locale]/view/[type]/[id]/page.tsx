@@ -118,7 +118,7 @@ export default function PublicDocumentPage({ params }: { params: { type: string;
  {/* Top bar - hidden on print */}
  <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between print:hidden">
  <div className="flex items-center gap-3">
- <div className="w-8 h-8 bg-amber-400 rounded-lg flex items-center justify-center text-white font-bold text-sm">Y</div>
+ <div className="w-8 h-8 bg-peach rounded-lg flex items-center justify-center text-white font-bold text-sm">Y</div>
  <span className="text-sm font-semibold text-foreground">Yellow ERP</span>
  </div>
  <div className="flex items-center gap-2">

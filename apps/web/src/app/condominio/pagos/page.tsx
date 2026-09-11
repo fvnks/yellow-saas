@@ -150,7 +150,7 @@ export default function PagosConciliacionPage() {
 
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
  <span className="text-slate-500 text-xs font-semibold">Movimientos Pendientes Cartola</span>
- <p className="text-2xl font-black text-amber-600 mt-2">
+ <p className="text-2xl font-black text-[#c64d00] mt-2">
  {bankMovements.filter((m) => m.status === 'pendiente').length}
  </p>
  <p className="text-[11px] text-slate-500 mt-1">Sugerencias de conciliación</p>
@@ -206,7 +206,7 @@ export default function PagosConciliacionPage() {
  ✓ Conciliado
  </span>
  ) : (
- <span className="px-2 py-0.5 rounded-full text-[10px] bg-amber-100 text-amber-800 font-bold border border-amber-200">
+ <span className="px-2 py-0.5 rounded-full text-[10px] bg-peach/50 text-[#c64d00] font-bold border border-peach">
  Pendiente
  </span>
  )}
@@ -263,7 +263,7 @@ export default function PagosConciliacionPage() {
  {p.bankReconciled ? (
  <span className="text-emerald-600 font-bold text-[10px]">✓ Verificado</span>
  ) : (
- <span className="text-amber-600 font-bold text-[10px]">Manual</span>
+ <span className="text-[#c64d00] font-bold text-[10px]">Manual</span>
  )}
  </td>
  </tr>

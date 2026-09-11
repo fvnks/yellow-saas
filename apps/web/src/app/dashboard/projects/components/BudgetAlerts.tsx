@@ -21,7 +21,7 @@ interface BudgetAlertsProps {
 }
 
 const alertStyles: Record<string, { bg: string; border: string; text: string; icon: string }> = {
- warning: { bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-700', icon: 'text-amber-500' },
+ warning: { bg: 'bg-peach/30', border: 'border-peach', text: 'text-[#c64d00]', icon: 'text-[#c64d00]' },
  danger: { bg: 'bg-orange-50', border: 'border-orange-200', text: 'text-orange-700', icon: 'text-orange-500' },
  critical: { bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-700', icon: 'text-red-500' },
 };
@@ -106,7 +106,7 @@ export default function BudgetAlerts({ projectId, budget, costs, expenses }: Bud
  </span>
  <button onClick={() => setShowConfig(!showConfig)}
  className="p-1.5 hover:bg-muted rounded-lg transition-colors">
- <Bell className={`w-3.5 h-3.5 ${hasUnread ? 'text-amber-500' : 'text-muted-foreground'}`} />
+ <Bell className={`w-3.5 h-3.5 ${hasUnread ? 'text-[#c64d00]' : 'text-muted-foreground'}`} />
  </button>
  </div>
  </div>

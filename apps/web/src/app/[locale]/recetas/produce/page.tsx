@@ -103,11 +103,11 @@ export default function ProducePage() {
  <button key={f.id} onClick={() => loadFormulaDetail(f.id)}
  className={`p-4 rounded-xl border-2 text-left transition-colors ${
  selectedFormula?.id === f.id
- ? 'border-monday-violet bg-amber-50'
+ ? 'border-monday-violet bg-peach/30'
  : 'border-border hover:border-border'
  }`}>
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center">
+ <div className="w-10 h-10 bg-peach/30 rounded-lg flex items-center justify-center">
  <FlaskConical className="w-5 h-5 text-monday-violet" />
  </div>
  <div>

@@ -31,7 +31,7 @@ interface ReturnItem {
 }
 
 const statusConfig: Record<string, { label: string; bg: string; text: string; border: string }> = {
- pending: { label: 'Pendiente', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
+ pending: { label: 'Pendiente', bg: 'bg-peach/30', text: 'text-[#c64d00]', border: 'border-peach' },
  completed: { label: 'Completada', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
  cancelled: { label: 'Cancelada', bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200' },
 };

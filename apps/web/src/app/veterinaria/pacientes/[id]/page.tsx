@@ -229,7 +229,7 @@ export default function VeterinaryPatientDetailPage() {
  if (patientError || !patient) {
  return (
  <div className="bg-white border border-slate-200/80 rounded-2xl p-10 shadow-sm flex flex-col items-center justify-center text-center">
- <AlertTriangle className="w-12 h-12 text-amber-400 mb-4" />
+ <AlertTriangle className="w-12 h-12 text-[#c64d00]/70 mb-4" />
  <h1 className="text-xl font-black text-slate-900">Paciente no encontrado</h1>
  <p className="text-sm text-slate-500 mt-1 max-w-md">
  No existe un paciente registrado con este identificador.
@@ -340,8 +340,8 @@ export default function VeterinaryPatientDetailPage() {
  Estado de Salud
  </h3>
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
- <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
- <span className="text-xs font-extrabold text-amber-800 uppercase tracking-wider block mb-1">Alergias</span>
+ <div className="bg-peach/30 border border-peach rounded-xl p-4">
+ <span className="text-xs font-extrabold text-[#c64d00] uppercase tracking-wider block mb-1">Alergias</span>
  <p className="text-sm font-bold text-slate-900">{patient.allergies || 'Ninguna registrada'}</p>
  </div>
  <div className="bg-rose-50 border border-rose-200 rounded-xl p-4">
@@ -480,7 +480,7 @@ export default function VeterinaryPatientDetailPage() {
  {v.professionalName && <span className="text-xs text-slate-500 ml-2">Dr(a). {v.professionalName}</span>}
  </div>
  {v.nextDueDate && (
- <span className="text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded w-fit">
+ <span className="text-xs font-bold text-[#c64d00] bg-peach/30 border border-peach px-2 py-0.5 rounded w-fit">
  Próxima: {v.nextDueDate}
  </span>
  )}
@@ -552,7 +552,7 @@ export default function VeterinaryPatientDetailPage() {
  {h.cageNumber ? `Jaula ${h.cageNumber}` : 'Internación'}
  </span>
  <span className={`text-xs font-bold px-2 py-0.5 rounded ${
- h.status === 'active' ? 'bg-amber-100 text-amber-700' :
+ h.status === 'active' ? 'bg-peach/50 text-[#c64d00]' :
  h.status === 'discharged' ? 'bg-emerald-100 text-emerald-700' :
  'bg-slate-100 text-slate-600'
  }`}>
@@ -608,7 +608,7 @@ export default function VeterinaryPatientDetailPage() {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
  <SoapMini label="Subjetivo" color="border-blue-200 bg-blue-50" letter="S" text={evo.soap?.subjective || evo.subjective} />
  <SoapMini label="Objetivo" color="border-emerald-200 bg-emerald-50" letter="O" text={evo.soap?.objective || evo.objective} />
- <SoapMini label="Evaluación" color="border-amber-200 bg-amber-50" letter="A" text={evo.soap?.assessment || evo.assessment} />
+ <SoapMini label="Evaluación" color="border-peach bg-peach/30" letter="A" text={evo.soap?.assessment || evo.assessment} />
  <SoapMini label="Plan" color="border-rose-200 bg-rose-50" letter="P" text={evo.soap?.plan || evo.plan} />
  </div>
  </div>
@@ -690,7 +690,7 @@ export default function VeterinaryPatientDetailPage() {
  <span className={`text-[10px] font-black px-2 py-0.5 rounded-lg border ${
  lo.status === 'resultados_listos' ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
  : lo.status === 'ordenada' ? 'bg-blue-50 text-blue-700 border-blue-200'
- : lo.status === 'en_proceso' ? 'bg-amber-50 text-amber-700 border-amber-200'
+ : lo.status === 'en_proceso' ? 'bg-peach/30 text-[#c64d00] border-peach'
  : 'bg-slate-100 text-slate-600 border-slate-200'
  }`}>
  {lo.status === 'resultados_listos' ? 'Resultados Listos' : lo.status === 'ordenada' ? 'Ordenada' : lo.status === 'en_proceso' ? 'En Proceso' : lo.status}
@@ -703,7 +703,7 @@ export default function VeterinaryPatientDetailPage() {
  <div className="flex flex-wrap gap-1.5">
  {lo.results.filter((r: any) => r.flag !== 'normal').map((r: any) => (
  <span key={r.id} className={`text-[10px] font-black px-2 py-0.5 rounded-lg border ${
- r.flag === 'alto' ? 'bg-amber-50 text-amber-700 border-amber-200'
+ r.flag === 'alto' ? 'bg-peach/30 text-[#c64d00] border-peach'
  : r.flag === 'bajo' ? 'bg-blue-50 text-blue-700 border-blue-200'
  : 'bg-rose-50 text-rose-700 border-rose-200'
  }`}>
@@ -780,7 +780,7 @@ export default function VeterinaryPatientDetailPage() {
  </span>
  <span className={`text-xs font-bold px-2 py-0.5 rounded ${
  pay.status === 'completado' ? 'bg-emerald-100 text-emerald-700' :
- pay.status === 'pendiente' ? 'bg-amber-100 text-amber-700' :
+ pay.status === 'pendiente' ? 'bg-peach/50 text-[#c64d00]' :
  'bg-rose-100 text-rose-700'
  }`}>{pay.status}</span>
  </div>

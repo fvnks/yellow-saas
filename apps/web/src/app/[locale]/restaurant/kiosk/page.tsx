@@ -101,7 +101,7 @@ export default function KioskPage() {
  />
  <button
  type="submit"
- className="bg-monday-violet hover:bg-amber-400 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition-all shrink-0"
+ className="bg-monday-violet hover:bg-peach text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition-all shrink-0"
  >
  Unirse
  </button>
@@ -122,11 +122,11 @@ export default function KioskPage() {
  {/* Left: Menu & Suggestions (8 Cols) */}
  <div className="lg:col-span-8 space-y-6">
  {/* Smart Suggestion Banner */}
- <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
+ <div className="bg-peach/30 border border-peach rounded-2xl p-4 flex items-start gap-3">
  <Sparkles className="w-5 h-5 text-monday-violet shrink-0 mt-0.5" />
  <div>
- <h3 className="text-xs font-bold text-amber-900">Sugerencia Inteligente del Chef</h3>
- <p className="text-xs text-amber-700 mt-0.5">
+ <h3 className="text-xs font-bold text-[#c64d00]">Sugerencia Inteligente del Chef</h3>
+ <p className="text-xs text-[#c64d00] mt-0.5">
  Pide un <strong>Lomo a lo Pobre Tradicional</strong> y acompáñalo con nuestro <strong>Pisco Sour Catedrático</strong> para el maridaje perfecto.
  </p>
  </div>
@@ -151,7 +151,7 @@ export default function KioskPage() {
  <div>
  <div className="flex items-start justify-between gap-2">
  <span className="text-3xl">{item.image}</span>
- <span className="text-xs font-mono font-bold text-monday-violet bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200">
+ <span className="text-xs font-mono font-bold text-monday-violet bg-peach/30 px-2 py-0.5 rounded-lg border border-peach">
  {formatCLP(item.priceCLP)}
  </span>
  </div>
@@ -181,7 +181,7 @@ export default function KioskPage() {
  onClick={() => addToCart(item)}
  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
  item.inStock
- ? 'bg-monday-violet hover:bg-amber-400 text-slate-950 shadow-xs'
+ ? 'bg-monday-violet hover:bg-peach text-slate-950 shadow-xs'
  : 'bg-slate-200 text-slate-400 cursor-not-allowed'
  }`}
  >

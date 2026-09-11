@@ -42,7 +42,7 @@ interface Feedback {
 
 const statusConfig: Record<string, { label: string; classes: string; icon: any }> = {
  open: { label: 'Abierto', classes: 'bg-blue-50 text-blue-700 border-blue-200', icon: Inbox },
- in_progress: { label: 'En progreso', classes: 'bg-amber-50 text-amber-700 border-amber-200', icon: Loader2 },
+ in_progress: { label: 'En progreso', classes: 'bg-peach/30 text-[#c64d00] border-peach', icon: Loader2 },
  resolved: { label: 'Resuelto', classes: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: CheckCircle2 },
  closed: { label: 'Cerrado', classes: 'bg-muted text-foreground border-border', icon: XCircle },
 };
@@ -50,7 +50,7 @@ const statusConfig: Record<string, { label: string; classes: string; icon: any }
 const priorityConfig: Record<string, { label: string; classes: string }> = {
  low: { label: 'Baja', classes: 'bg-muted text-foreground border-border' },
  medium: { label: 'Media', classes: 'bg-blue-50 text-blue-700 border-blue-200' },
- high: { label: 'Alta', classes: 'bg-amber-50 text-amber-700 border-amber-200' },
+ high: { label: 'Alta', classes: 'bg-peach/30 text-[#c64d00] border-peach' },
  urgent: { label: 'Urgente', classes: 'bg-rose-50 text-rose-700 border-rose-200' },
 };
 
@@ -333,7 +333,7 @@ export default function TicketDetailPage() {
  <p className="text-sm font-semibold text-foreground mb-2">¡Gracias por tu valoración!</p>
  <div className="flex items-center justify-center gap-1 mb-2">
  {[1, 2, 3, 4, 5].map(i => (
- <Star key={i} className={`w-5 h-5 ${i <= feedback.rating ? 'text-amber-400 fill-amber-400' : 'text-foreground'}`} />
+ <Star key={i} className={`w-5 h-5 ${i <= feedback.rating ? 'text-[#c64d00]/70 fill-amber-400' : 'text-foreground'}`} />
  ))}
  </div>
  {feedback.comment && <p className="text-sm text-muted-foreground">{feedback.comment}</p>}
@@ -347,7 +347,7 @@ export default function TicketDetailPage() {
  <button
  key={i}
  onClick={() => setRating(i)}
- className={`p-1.5 rounded-lg transition-colors ${rating >= i ? 'text-amber-400' : 'text-foreground hover:text-muted-foreground'}`}
+ className={`p-1.5 rounded-lg transition-colors ${rating >= i ? 'text-[#c64d00]/70' : 'text-foreground hover:text-muted-foreground'}`}
  >
  <Star className={`w-7 h-7 ${rating >= i ? 'fill-amber-400' : ''}`} />
  </button>

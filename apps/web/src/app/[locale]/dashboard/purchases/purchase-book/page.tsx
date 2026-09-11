@@ -24,21 +24,21 @@ const SII_DOC_TYPES = [
  { code: '30', label: 'Factura de Compra', color: 'bg-blue-50 text-primary border-primary/20' },
  { code: '34', label: 'Factura Exenta', color: 'bg-blue-50 text-blue-700 border-blue-200' },
  { code: '45', label: 'Nota de Crédito', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
- { code: '55', label: 'Nota de Débito', color: 'bg-amber-50 text-amber-700 border-amber-200' },
+ { code: '55', label: 'Nota de Débito', color: 'bg-peach/30 text-[#c64d00] border-peach' },
  { code: '61', label: 'Factura de Compra (Exenta)', color: 'bg-blue-50 text-blue-700 border-blue-200' },
 ];
 
 const SII_STATUSES = [
  { key: 'draft', label: 'Borrador', icon: FileText, color: 'text-muted-foreground', bg: 'bg-muted' },
  { key: 'generated', label: 'XML Generado', icon: Eye, color: 'text-blue-500', bg: 'bg-blue-100' },
- { key: 'submitted', label: 'Enviado al SII', icon: Send, color: 'text-monday-violet', bg: 'bg-amber-100' },
+ { key: 'submitted', label: 'Enviado al SII', icon: Send, color: 'text-monday-violet', bg: 'bg-peach/50' },
  { key: 'accepted', label: 'Aceptado', icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-100' },
  { key: 'rejected', label: 'Rechazado', icon: XCircle, color: 'text-rose-500', bg: 'bg-rose-100' },
 ];
 
 const statusLabels: Record<string, { label: string; color: string }> = {
  pagada: { label: 'Pagada', color: 'bg-emerald-50 text-emerald-700 border border-emerald-200' },
- no_pagada: { label: 'No Pagada', color: 'bg-amber-50 text-amber-700 border border-amber-200' },
+ no_pagada: { label: 'No Pagada', color: 'bg-peach/30 text-[#c64d00] border border-peach' },
 };
 
 export default function PurchaseBookPage() {

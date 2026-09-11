@@ -120,7 +120,7 @@ export default function MiCuentaSidebarNavigation({ sidebarItems }: MiCuentaSide
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar en Configuración..."
- className="w-full bg-cloud/80 border border-mist text-xs text-ink placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
+ className="w-full bg-cloud/80 border border-mist text-xs text-ink placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-[#c64d00] focus:ring-1 focus:ring-amber-500 transition-all"
  />
  {searchQuery ? (
  <button onClick={() => setSearchQuery("")} className="absolute right-3 text-slate-400 hover:text-ink">
@@ -185,7 +185,7 @@ export default function MiCuentaSidebarNavigation({ sidebarItems }: MiCuentaSide
  className={cn(
  "whitespace-nowrap rounded-xl transition-all duration-150 text-xs",
  itemActive
- ? "bg-cloud text-white font-bold border-l-4 border-amber-500 shadow-sm shadow-amber-500/10"
+ ? "bg-cloud text-white font-bold border-l-4 border-[#c64d00] shadow-sm shadow-amber-500/10"
  : "text-ink hover:text-ink hover:bg-cloud/60"
  )}
  >
@@ -204,7 +204,7 @@ export default function MiCuentaSidebarNavigation({ sidebarItems }: MiCuentaSide
  className={cn(
  "whitespace-nowrap rounded-xl transition-all duration-150 text-xs w-full",
  itemActive
- ? "bg-cloud text-white font-bold border-l-4 border-amber-500 shadow-sm shadow-amber-500/10"
+ ? "bg-cloud text-white font-bold border-l-4 border-[#c64d00] shadow-sm shadow-amber-500/10"
  : "text-ink hover:text-ink hover:bg-cloud/60"
  )}
  >

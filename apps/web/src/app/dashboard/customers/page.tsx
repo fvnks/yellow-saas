@@ -137,7 +137,7 @@ export default function CustomersPage() {
  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Exentos IVA</p>
  <p className="text-2xl font-bold text-foreground mt-1">{customers.filter(c => c.tax_exempt).length}</p>
  </div>
- <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+ <div className="w-10 h-10 bg-peach/30 rounded-xl flex items-center justify-center">
  <CreditCard className="w-5 h-5 text-monday-violet" />
  </div>
  </div>
@@ -296,7 +296,7 @@ export default function CustomersPage() {
  </td>
  <td className="px-4 py-3 text-center">
  {customer.rubro_id ? (
- <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+ <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-peach/30 text-[#c64d00] border border-peach">
  {rubros.find((r: any) => r.id === customer.rubro_id)?.name || '—'}
  </span>
  ) : (

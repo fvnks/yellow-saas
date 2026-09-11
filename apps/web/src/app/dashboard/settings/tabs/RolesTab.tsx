@@ -26,7 +26,7 @@ const MODULE_CONFIG: Record<string, { label: string; icon: any; color: string }>
  compras: { label: 'Compras', icon: ShoppingBag, color: 'text-orange-600 bg-orange-50' },
  finanzas: { label: 'Finanzas', icon: Calculator, color: 'text-green-600 bg-green-50' },
  herramientas: { label: 'Herramientas', icon: Wrench, color: 'text-blue-700 bg-blue-50' },
- recetas: { label: 'Recetas', icon: FlaskConical, color: 'text-monday-violet bg-amber-50' },
+ recetas: { label: 'Recetas', icon: FlaskConical, color: 'text-monday-violet bg-peach/30' },
  costos: { label: 'Costos', icon: CircleDollarSign, color: 'text-rose-600 bg-rose-50' },
  rrhh: { label: 'RRHH', icon: Users, color: 'text-rose-600 bg-rose-50' },
  sistema: { label: 'Sistema', icon: Settings, color: 'text-muted-foreground bg-muted' },
@@ -35,7 +35,7 @@ const MODULE_CONFIG: Record<string, { label: string; icon: any; color: string }>
 const ACTION_CONFIG: Record<string, { label: string; color: string; activeColor: string }> = {
  create: { label: 'Crear', color: 'border-emerald-200 text-emerald-700', activeColor: 'bg-emerald-500 text-white' },
  read: { label: 'Ver', color: 'border-blue-200 text-blue-700', activeColor: 'bg-blue-500 text-white' },
- update: { label: 'Editar', color: 'border-amber-200 text-amber-700', activeColor: 'bg-monday-violet text-white' },
+ update: { label: 'Editar', color: 'border-peach text-[#c64d00]', activeColor: 'bg-monday-violet text-white' },
  delete: { label: 'Eliminar', color: 'border-rose-200 text-rose-700', activeColor: 'bg-rose-500 text-white' },
 };
 

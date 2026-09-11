@@ -38,7 +38,7 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 const ROLE_COLORS: Record<string, string> = {
- owner: 'bg-amber-50 text-amber-700 border border-amber-200',
+ owner: 'bg-peach/30 text-[#c64d00] border border-peach',
  admin: 'bg-blue-50 text-primary border border-primary/20',
  manager: 'bg-blue-50 text-blue-700 border border-blue-200',
  member: 'bg-muted text-foreground border border-border',

@@ -25,7 +25,7 @@ export function FaqAccordion({ items, className }: FaqAccordionProps) {
  className={cn(
  'rounded-xl border transition-all duration-300',
  openIndex === index
- ? 'border-amber-200 bg-amber-50/50 dark:border-amber-500/30 dark:bg-monday-violet/5'
+ ? 'border-peach bg-peach/30/50 dark:border-[#c64d00]/30 dark:bg-monday-violet/5'
  : 'border-border bg-card /50'
  )}
  >
@@ -38,7 +38,7 @@ export function FaqAccordion({ items, className }: FaqAccordionProps) {
  <div className="flex items-center gap-3">
  <HelpCircle className={cn(
  'w-5 h-5 flex-shrink-0 transition-colors',
- openIndex === index ? 'text-amber-600 ' : 'text-muted-foreground'
+ openIndex === index ? 'text-[#c64d00] ' : 'text-muted-foreground'
  )} />
  <span className="text-sm font-semibold text-foreground ">
  {item.question}

@@ -54,7 +54,7 @@ function RecetasSidebar() {
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar en Recetas..."
- className="w-full bg-cloud/80 border border-mist text-xs text-slate-200 placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
+ className="w-full bg-cloud/80 border border-mist text-xs text-slate-200 placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-[#c64d00] focus:ring-1 focus:ring-amber-500 transition-all"
  />
  {searchQuery ? (
  <button onClick={() => setSearchQuery("")} className="absolute right-2 text-slate-400 hover:text-slate-200">
@@ -105,8 +105,8 @@ export default function RecetasLayout({ children }: { children: ReactNode }) {
  <div className="ml-64">
  <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between border-b border-slate-200/80 bg-white/90 backdrop-blur-xl px-6">
  <div className="flex items-center gap-2">
- <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
- <FlaskConical className="w-3.5 h-3.5 text-amber-600" /> Recetas / BOM
+ <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-peach/30 text-[#c64d00] border border-peach">
+ <FlaskConical className="w-3.5 h-3.5 text-[#c64d00]" /> Recetas / BOM
  </span>
  <span className="text-xs text-slate-500">Formulación y Órdenes de Producción</span>
  </div>

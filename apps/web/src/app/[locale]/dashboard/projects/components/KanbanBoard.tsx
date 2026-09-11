@@ -27,14 +27,14 @@ interface KanbanBoardProps {
 const columns = [
  { id: 'todo', label: 'Por Hacer', color: 'bg-muted0', bgColor: 'bg-muted', borderColor: 'border-border' },
  { id: 'in_progress', label: 'En Progreso', color: 'bg-blue-500', bgColor: 'bg-blue-50', borderColor: 'border-blue-200' },
- { id: 'review', label: 'En Revision', color: 'bg-monday-violet', bgColor: 'bg-amber-50', borderColor: 'border-amber-200' },
+ { id: 'review', label: 'En Revision', color: 'bg-monday-violet', bgColor: 'bg-peach/30', borderColor: 'border-peach' },
  { id: 'done', label: 'Completada', color: 'bg-emerald-500', bgColor: 'bg-emerald-50', borderColor: 'border-emerald-200' },
 ];
 
 const priorityConfig: Record<string, { label: string; color: string }> = {
  low: { label: 'Baja', color: 'bg-muted text-foreground' },
  medium: { label: 'Media', color: 'bg-blue-100 text-blue-700' },
- high: { label: 'Alta', color: 'bg-amber-100 text-amber-700' },
+ high: { label: 'Alta', color: 'bg-peach/50 text-[#c64d00]' },
  urgent: { label: 'Urgente', color: 'bg-red-100 text-red-700' },
 };
 

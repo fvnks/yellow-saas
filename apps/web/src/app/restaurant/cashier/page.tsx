@@ -43,7 +43,7 @@ export default function RestaurantCashierPage() {
  {/* Title Banner */}
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm">
  <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
- <TrendingUp className="w-5 h-5 text-amber-500" />
+ <TrendingUp className="w-5 h-5 text-[#c64d00]" />
  Cierre de Caja & Arqueo
  </h1>
  <p className="text-xs text-slate-500 mt-1">
@@ -64,7 +64,7 @@ export default function RestaurantCashierPage() {
  </div>
  <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
  <p className="text-xs font-semibold text-slate-500">Estado</p>
- <span className={`inline-flex items-center gap-1.5 mt-1 px-2.5 py-1 rounded-lg text-xs font-bold border ${closure.status === 'cerrada' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
+ <span className={`inline-flex items-center gap-1.5 mt-1 px-2.5 py-1 rounded-lg text-xs font-bold border ${closure.status === 'cerrada' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-peach/30 text-[#c64d00] border-peach'}`}>
  {closure.status === 'cerrada' ? 'Cerrada' : 'Abierta'}
  </span>
  </div>
@@ -89,9 +89,9 @@ export default function RestaurantCashierPage() {
  <span className="text-sm font-bold text-slate-900">Total Esperado</span>
  <span className="font-bold text-slate-900">{formatCLP(closure.expectedTotalCLP)}</span>
  </div>
- <div className="px-5 py-3 flex items-center justify-between bg-amber-50/60">
- <span className="text-sm font-semibold text-amber-700 flex items-center gap-2"><Wallet className="w-4 h-4" /> Propinas del Turno</span>
- <span className="font-semibold text-amber-700">{formatCLP(closure.tipsCLP)}</span>
+ <div className="px-5 py-3 flex items-center justify-between bg-peach/30/60">
+ <span className="text-sm font-semibold text-[#c64d00] flex items-center gap-2"><Wallet className="w-4 h-4" /> Propinas del Turno</span>
+ <span className="font-semibold text-[#c64d00]">{formatCLP(closure.tipsCLP)}</span>
  </div>
 
  <div className="px-5 py-3 flex items-center justify-between bg-emerald-50/60">
@@ -105,7 +105,7 @@ export default function RestaurantCashierPage() {
  <form onSubmit={handleClose} className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
  <div className="px-5 py-4 border-b border-slate-200/80">
  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
- <Wallet className="w-4 h-4 text-amber-500" /> Arqueo de Efectivo
+ <Wallet className="w-4 h-4 text-[#c64d00]" /> Arqueo de Efectivo
  </h3>
  </div>
  <div className="p-5 space-y-4">
@@ -133,7 +133,7 @@ export default function RestaurantCashierPage() {
  </div>
  ) : (
  <div className="flex items-center gap-2 p-3 rounded-xl text-sm font-medium border
- ${discrepancy === 0 ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-amber-50 border-amber-200 text-amber-700'}">
+ ${discrepancy === 0 ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-peach/30 border-peach text-[#c64d00]'}">
  {discrepancy === 0 ? (
  <><Check className="w-4 h-4" /> Caja esta exacta. Diferencia $0.</>
  ) : (

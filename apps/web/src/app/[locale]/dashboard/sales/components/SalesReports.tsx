@@ -40,7 +40,7 @@ export default function SalesReports() {
  const statusColors: Record<string, string> = {
  delivered: 'bg-emerald-50 text-emerald-700',
  shipped: 'bg-blue-50 text-blue-700',
- processing: 'bg-amber-50 text-amber-700',
+ processing: 'bg-peach/30 text-[#c64d00]',
  confirmed: 'bg-muted text-foreground',
  draft: 'bg-muted text-muted-foreground',
  cancelled: 'bg-red-50 text-red-700',

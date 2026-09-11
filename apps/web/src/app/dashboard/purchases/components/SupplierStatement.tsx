@@ -77,7 +77,7 @@ export default function SupplierStatement() {
  <div className="grid grid-cols-4 gap-3">
  <div className="bg-blue-50 rounded-lg p-3"><p className="text-[9px] font-semibold text-blue-700 uppercase">Facturado</p><p className="text-sm font-bold text-foreground">{fmt(statement.summary.totalInvoiced)}</p></div>
  <div className="bg-emerald-50 rounded-lg p-3"><p className="text-[9px] font-semibold text-emerald-700 uppercase">Pagado</p><p className="text-sm font-bold text-foreground">{fmt(statement.summary.totalPaid)}</p></div>
- <div className="bg-amber-50 rounded-lg p-3"><p className="text-[9px] font-semibold text-amber-700 uppercase">NC</p><p className="text-sm font-bold text-foreground">{fmt(statement.summary.totalCreditNotes)}</p></div>
+ <div className="bg-peach/30 rounded-lg p-3"><p className="text-[9px] font-semibold text-[#c64d00] uppercase">NC</p><p className="text-sm font-bold text-foreground">{fmt(statement.summary.totalCreditNotes)}</p></div>
  <div className="bg-red-50 rounded-lg p-3"><p className="text-[9px] font-semibold text-red-700 uppercase">ND</p><p className="text-sm font-bold text-foreground">{fmt(statement.summary.totalDebitNotes)}</p></div>
  </div>
  </div>

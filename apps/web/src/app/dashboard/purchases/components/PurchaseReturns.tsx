@@ -42,7 +42,7 @@ export default function PurchaseReturns() {
 
  const fmt = (v: number) => `$${v.toLocaleString('en-US', { minimumFractionDigits: 0 })}`;
  const statusCfg: Record<string, { label: string; color: string; bg: string }> = {
- pending: { label: 'Pendiente', color: 'text-amber-700', bg: 'bg-amber-50' },
+ pending: { label: 'Pendiente', color: 'text-[#c64d00]', bg: 'bg-peach/30' },
  approved: { label: 'Aprobada', color: 'text-blue-700', bg: 'bg-blue-50' },
  shipped: { label: 'Enviada', color: 'text-primary', bg: 'bg-blue-50' },
  received: { label: 'Recibida', color: 'text-emerald-700', bg: 'bg-emerald-50' },

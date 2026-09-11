@@ -98,7 +98,7 @@ export default function RestaurantDashboardPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
  <div className="px-5 py-4 border-b border-slate-200/80 flex items-center justify-between">
  <h3 className="text-sm font-bold text-slate-900">Ocupación de Mesas</h3>
- <Link href="/restaurant/waiter" className="text-xs font-semibold text-monday-violet hover:text-amber-700">Ver POS →</Link>
+ <Link href="/restaurant/waiter" className="text-xs font-semibold text-monday-violet hover:text-[#c64d00]">Ver POS →</Link>
  </div>
  <div className="p-5">
  <div className="flex items-end gap-2">
@@ -109,8 +109,8 @@ export default function RestaurantDashboardPage() {
  <div className="h-full bg-monday-violet rounded-full" style={{ width: `${busyPct}%` }} />
  </div>
  <div className="mt-3 grid grid-cols-3 gap-2 text-center">
- <div className="rounded-xl bg-amber-50 border border-amber-100 py-2">
- <p className="text-sm font-bold text-amber-700">{occupied}</p>
+ <div className="rounded-xl bg-peach/30 border border-peach/50 py-2">
+ <p className="text-sm font-bold text-[#c64d00]">{occupied}</p>
  <p className="text-[10px] text-monday-violet font-semibold uppercase">Ocupadas</p>
  </div>
  <div className="rounded-xl bg-emerald-50 border border-emerald-100 py-2">
@@ -181,7 +181,7 @@ export default function RestaurantDashboardPage() {
  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
  <CalendarCheck className="w-4 h-4 text-monday-violet" /> Próximas Reservas
  </h3>
- <Link href="/restaurant/reservations" className="text-xs font-semibold text-monday-violet hover:text-amber-700">Gestionar →</Link>
+ <Link href="/restaurant/reservations" className="text-xs font-semibold text-monday-violet hover:text-[#c64d00]">Gestionar →</Link>
  </div>
  <div className="divide-y divide-slate-100">
  {reservations.map((r) => (

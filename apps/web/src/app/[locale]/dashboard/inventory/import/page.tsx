@@ -246,10 +246,10 @@ export default function ImportProductsPage() {
  )}
  </div>
  {result.errors && result.errors.length > 0 && (
- <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 max-h-40 overflow-y-auto">
- <p className="text-xs font-medium text-amber-800 mb-1">Detalles:</p>
+ <div className="bg-peach/30 border border-peach rounded-lg p-3 max-h-40 overflow-y-auto">
+ <p className="text-xs font-medium text-[#c64d00] mb-1">Detalles:</p>
  {result.errors.map((err, i) => (
- <p key={i} className="text-xs text-amber-700">{err}</p>
+ <p key={i} className="text-xs text-[#c64d00]">{err}</p>
  ))}
  </div>
  )}

@@ -57,7 +57,7 @@ export default function RecetasPage() {
  <div>
  <div className="flex items-center gap-2">
  <h1 className="text-xl font-bold text-[#0F172A]">Recetas y Fórmulas</h1>
- <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+ <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-peach/30 text-[#c64d00] border border-peach">
  Producción & BOM
  </span>
  </div>
@@ -76,7 +76,7 @@ export default function RecetasPage() {
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748B]" />
  <input type="search" value={search} onChange={e => setSearch(e.target.value)}
  onKeyDown={e => e.key === 'Enter' && handleSearch()}
- className="w-full pl-9 pr-4 py-2 bg-white border border-[#E2E8F0] rounded-xl text-sm text-[#0F172A] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition-colors"
+ className="w-full pl-9 pr-4 py-2 bg-white border border-[#E2E8F0] rounded-xl text-sm text-[#0F172A] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-[#c64d00] transition-colors"
  placeholder="Buscar por nombre de receta o ingrediente..." />
  </div>
  <div className="flex gap-1.5 w-full sm:w-auto">
@@ -125,8 +125,8 @@ export default function RecetasPage() {
  <tr key={f.id} className="border-b border-[#E2E8F0] hover:bg-[#F1F5F9] transition-colors duration-100">
  <td className="px-4 py-3">
  <div className="flex items-center gap-3">
- <div className="w-9 h-9 bg-amber-50 rounded-xl flex items-center justify-center border border-amber-100">
- <FlaskConical className="w-4 h-4 text-amber-600" />
+ <div className="w-9 h-9 bg-peach/30 rounded-xl flex items-center justify-center border border-peach/50">
+ <FlaskConical className="w-4 h-4 text-[#c64d00]" />
  </div>
  <div>
  <p className="text-xs font-semibold text-[#0F172A]">{f.name}</p>
@@ -136,7 +136,7 @@ export default function RecetasPage() {
  </td>
  <td className="px-4 py-3 text-xs font-medium text-[#0F172A]">{f.output_product?.name || '—'}</td>
  <td className="px-4 py-3 text-center">
- <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+ <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-peach/30 text-[#c64d00] border border-peach">
  <Package className="w-2.5 h-2.5" /> {f.ingredient_count || 0}
  </span>
  </td>

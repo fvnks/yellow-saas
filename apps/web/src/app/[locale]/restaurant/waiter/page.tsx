@@ -201,7 +201,7 @@ export default function WaiterPOSPage() {
  case 'free':
  return <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold px-2 py-0.5 rounded-full">Libre</span>;
  case 'occupied':
- return <span className="bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold px-2 py-0.5 rounded-full">Ocupada</span>;
+ return <span className="bg-peach/30 text-[#c64d00] border border-peach text-[10px] font-bold px-2 py-0.5 rounded-full">Ocupada</span>;
  case 'reserved':
  return <span className="bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-bold px-2 py-0.5 rounded-full">Reservada</span>;
  case 'bill_requested':
@@ -249,7 +249,7 @@ export default function WaiterPOSPage() {
  <h2 className="text-sm font-bold text-slate-900">Mapa de Mesas</h2>
  <button
  onClick={() => setIsNewTableModalOpen(true)}
- className="text-[11px] font-bold text-monday-violet hover:text-amber-700 bg-amber-50 px-2 py-1 rounded-lg flex items-center gap-1"
+ className="text-[11px] font-bold text-monday-violet hover:text-[#c64d00] bg-peach/30 px-2 py-1 rounded-lg flex items-center gap-1"
  >
  <Plus className="w-3 h-3" /> Crear
  </button>
@@ -361,7 +361,7 @@ export default function WaiterPOSPage() {
  </button>
  <button
  onClick={() => handleAddItemToOrder(item.menuItemId)}
- className="bg-amber-400 hover:bg-monday-violet text-slate-950 font-bold w-6 h-6 rounded-lg flex items-center justify-center text-xs"
+ className="bg-peach hover:bg-monday-violet text-slate-950 font-bold w-6 h-6 rounded-lg flex items-center justify-center text-xs"
  title="Aumentar"
  >
  +
@@ -519,7 +519,7 @@ export default function WaiterPOSPage() {
  />
  </div>
 
- <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-[11px] text-amber-800 space-y-1">
+ <div className="bg-peach/30 border border-peach rounded-xl p-3 text-[11px] text-[#c64d00] space-y-1">
  <p className="font-bold flex items-center gap-1">
  <ShieldCheck className="w-3.5 h-3.5" /> PIN Kiosco Autogenerado
  </p>

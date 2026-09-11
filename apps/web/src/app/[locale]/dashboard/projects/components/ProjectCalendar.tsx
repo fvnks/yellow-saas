@@ -14,7 +14,7 @@ const MONTHS = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 
 const priorityColors: Record<string, string> = {
  low: 'bg-muted text-foreground',
  medium: 'bg-blue-50 text-blue-700',
- high: 'bg-amber-50 text-amber-700',
+ high: 'bg-peach/30 text-[#c64d00]',
  urgent: 'bg-red-50 text-red-700',
 };
 

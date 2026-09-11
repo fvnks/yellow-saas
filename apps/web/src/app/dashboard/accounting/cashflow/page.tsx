@@ -87,7 +87,7 @@ export default function CashflowPage() {
  <td className="px-6 py-4 font-mono font-bold text-rose-600">-{clp(row.expected_outflows)}</td>
  <td className="px-6 py-4 font-mono font-bold text-blue-600">+{clp(row.net_cashflow)}</td>
  <td className="px-6 py-4 font-mono font-extrabold text-slate-900 bg-slate-50">{clp(row.final_balance)}</td>
- <td className="px-6 py-4 font-mono font-bold text-amber-700">{row.uf_equivalent} UF</td>
+ <td className="px-6 py-4 font-mono font-bold text-[#c64d00]">{row.uf_equivalent} UF</td>
  </tr>
  ))}
  </tbody>

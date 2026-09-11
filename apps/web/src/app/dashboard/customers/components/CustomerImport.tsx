@@ -203,7 +203,7 @@ export default function CustomerImport({ open, onClose, onComplete }: Props) {
  {result.imported} registros importados correctamente
  </p>
  {result.errors > 0 && (
- <p className="text-xs text-amber-700 mt-1">
+ <p className="text-xs text-[#c64d00] mt-1">
  {result.errors} registros con errores
  </p>
  )}
@@ -212,11 +212,11 @@ export default function CustomerImport({ open, onClose, onComplete }: Props) {
  </div>
 
  {result.errorMessages.length > 0 && (
- <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
- <h4 className="text-xs font-semibold text-amber-900 mb-2">Errores:</h4>
+ <div className="bg-peach/30 border border-peach rounded-xl p-4">
+ <h4 className="text-xs font-semibold text-[#c64d00] mb-2">Errores:</h4>
  <ul className="space-y-1">
  {result.errorMessages.map((msg, i) => (
- <li key={i} className="text-xs text-amber-700 flex items-start gap-2">
+ <li key={i} className="text-xs text-[#c64d00] flex items-start gap-2">
  <AlertCircle className="w-3 h-3 mt-0.5 flex-shrink-0" />
  {msg}
  </li>

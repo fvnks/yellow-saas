@@ -211,7 +211,7 @@ export default function ReconciliationPage() {
  </div>
  <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
  <div className="flex items-center gap-3">
- <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${variance === 0 ? "bg-emerald-50" : "bg-amber-50"}`}>
+ <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${variance === 0 ? "bg-emerald-50" : "bg-peach/30"}`}>
  <AlertCircle className={`w-5 h-5 ${variance === 0 ? "text-emerald-600" : "text-monday-violet"}`} />
  </div>
  <div>
@@ -309,10 +309,10 @@ export default function ReconciliationPage() {
  </div>
  </div>
  {activeSession && (
- <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+ <div className="mt-4 p-4 bg-peach/30 border border-peach rounded-xl">
  <div className="flex items-center gap-2">
  <AlertCircle className="w-5 h-5 text-monday-violet" />
- <span className="text-sm font-medium text-amber-800">Sesión activa: {activeSession.statementPeriod}</span>
+ <span className="text-sm font-medium text-[#c64d00]">Sesión activa: {activeSession.statementPeriod}</span>
  <span className="text-xs text-monday-violet ml-auto">{matchedCount}/{statementLines.length} conciliados</span>
  </div>
  </div>
@@ -368,7 +368,7 @@ export default function ReconciliationPage() {
  Conciliado
  </span>
  ) : (
- <span className="inline-flex items-center gap-1 px-2 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-lg text-xs font-medium">
+ <span className="inline-flex items-center gap-1 px-2 py-1 bg-peach/30 text-[#c64d00] border border-peach rounded-lg text-xs font-medium">
  <AlertCircle className="w-3 h-3" />
  Pendiente
  </span>
@@ -445,7 +445,7 @@ export default function ReconciliationPage() {
  <td className="px-6 py-4 text-center">
  <span className={`inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium ${
  session.status === "reconciled" ? "bg-emerald-50 text-emerald-700 border border-emerald-200" :
- session.status === "in_progress" ? "bg-amber-50 text-amber-700 border border-amber-200" :
+ session.status === "in_progress" ? "bg-peach/30 text-[#c64d00] border border-peach" :
  "bg-rose-50 text-rose-700 border border-rose-200"
  }`}>
  {session.status === "reconciled" ? "Conciliada" :

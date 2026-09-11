@@ -19,11 +19,11 @@ const variantStyles = {
  descriptionColor: 'text-emerald-700/60',
  },
  warning: {
- container: 'bg-gradient-to-b from-amber-50 to-transparent to-50% border-amber-200',
+ container: 'bg-gradient-to-b from-amber-50 to-transparent to-50% border-peach',
  icon: AlertTriangle,
- iconColor: 'text-amber-600',
- titleColor: 'text-amber-900',
- descriptionColor: 'text-amber-700/60',
+ iconColor: 'text-[#c64d00]',
+ titleColor: 'text-[#c64d00]',
+ descriptionColor: 'text-[#c64d00]/60',
  },
  error: {
  container: 'bg-gradient-to-b from-rose-50 to-transparent to-50% border-rose-200',

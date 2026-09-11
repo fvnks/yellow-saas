@@ -174,7 +174,7 @@ export default function SalesHistoryPage() {
  <td className="px-4 py-3 text-xs text-foreground">{formatDate(sale.invoice_date || sale.created_at)}</td>
  <td className="px-4 py-3">
  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
- sale.document_type === 'boleta' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-blue-50 text-primary border border-primary/20'
+ sale.document_type === 'boleta' ? 'bg-peach/30 text-[#c64d00] border border-peach' : 'bg-blue-50 text-primary border border-primary/20'
  }`}>
  {sale.document_type === 'boleta' ? 'Boleta' : 'Factura'}
  </span>

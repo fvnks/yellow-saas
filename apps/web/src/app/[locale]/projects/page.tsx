@@ -102,13 +102,13 @@ function ProjectDashboardInner() {
  className="bg-card border border-border rounded-xl shadow-sm p-4 w-full text-left hover:shadow-md transition-shadow">
  <div className="flex items-center justify-between">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center"><Bell className="w-5 h-5 text-monday-violet" /></div>
+ <div className="w-10 h-10 bg-peach/30 rounded-xl flex items-center justify-center"><Bell className="w-5 h-5 text-monday-violet" /></div>
  <div>
  <p className="text-sm font-semibold text-foreground">{notifications.length} notificaciones de proyectos</p>
  <p className="text-xs text-muted-foreground">Tareas atrasadas, hitos vencidos, presupuesto al límite</p>
  </div>
  </div>
- <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+ <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-peach/30 text-[#c64d00] border border-peach">
  {notifications.length}
  </span>
  </div>
@@ -146,7 +146,7 @@ function ProjectDashboardInner() {
  <div className="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm p-5 hover:border-purple-200 transition-all duration-150">
  <div className="flex items-center justify-between mb-2">
  <p className="text-[9px] font-semibold text-[#64748B] uppercase tracking-wider">En Ejecución</p>
- <div className="w-10 h-10 bg-amber-50 rounded-full flex items-center justify-center">
+ <div className="w-10 h-10 bg-peach/30 rounded-full flex items-center justify-center">
  <Clock className="w-5 h-5 text-monday-violet" />
  </div>
  </div>
@@ -215,16 +215,16 @@ function ProjectDashboardInner() {
  ) : (
  <div className="space-y-4">
  {filteredByTab.map(project => (
- <div key={project.id} className={`bg-card border rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow ${project.archived ? 'border-amber-200 bg-amber-50/30 opacity-75' : 'border-border'}`}>
+ <div key={project.id} className={`bg-card border rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow ${project.archived ? 'border-peach bg-peach/30/30 opacity-75' : 'border-border'}`}>
  <div className="flex items-start justify-between mb-4">
  <div>
  <div className="flex items-center gap-3">
  <h3 className="text-base font-semibold text-foreground">{project.name}</h3>
- <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${statusConfig[project.status]?.variant === 'success' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : statusConfig[project.status]?.variant === 'warning' ? 'bg-amber-50 text-amber-700 border-amber-200' : statusConfig[project.status]?.variant === 'danger' ? 'bg-rose-50 text-rose-700 border-rose-200' : statusConfig[project.status]?.variant === 'info' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-muted text-foreground border-border'} border`}>
+ <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${statusConfig[project.status]?.variant === 'success' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : statusConfig[project.status]?.variant === 'warning' ? 'bg-peach/30 text-[#c64d00] border-peach' : statusConfig[project.status]?.variant === 'danger' ? 'bg-rose-50 text-rose-700 border-rose-200' : statusConfig[project.status]?.variant === 'info' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-muted text-foreground border-border'} border`}>
  {statusConfig[project.status]?.label || project.status}
  </span>
  {project.archived && (
- <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-100 text-amber-700 border border-amber-200">
+ <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-peach/50 text-[#c64d00] border border-peach">
  <Archive className="w-2.5 h-2.5" /> Archivado
  </span>
  )}

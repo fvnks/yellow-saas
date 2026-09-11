@@ -25,7 +25,7 @@ const actionConfig: Record<string, { icon: any; color: string; label: string }> 
  create: { icon: Plus, color: 'text-emerald-500', label: 'Creó' },
  update: { icon: Edit, color: 'text-blue-500', label: 'Actualizó' },
  delete: { icon: Trash2, color: 'text-red-500', label: 'Eliminó' },
- status_change: { icon: ArrowRight, color: 'text-amber-500', label: 'Cambió estado' },
+ status_change: { icon: ArrowRight, color: 'text-[#c64d00]', label: 'Cambió estado' },
  comment: { icon: MessageCircle, color: 'text-primary', label: 'Comentó' },
  assign: { icon: UserPlus, color: 'text-blue-600', label: 'Asignó' },
  tag_add: { icon: Tag, color: 'text-teal-600', label: 'Agregó tag' },

@@ -141,7 +141,7 @@ export default function VeterinaryHospitalizationPage() {
  const priorityBadge: Record<string, string> = {
  baja: 'bg-slate-100 text-slate-700 border-slate-200',
  media: 'bg-blue-100 text-blue-800 border-blue-200',
- alta: 'bg-amber-100 text-amber-800 border-amber-200',
+ alta: 'bg-peach/50 text-[#c64d00] border-peach',
  critica: 'bg-rose-100 text-rose-800 border-rose-200',
  };
  const badgeClass = priorityBadge[hosp.priority] || priorityBadge.media;

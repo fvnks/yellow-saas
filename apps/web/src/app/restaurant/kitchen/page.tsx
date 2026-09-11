@@ -39,7 +39,7 @@ export default function KDSKitchenPage() {
  <div className="bg-cloud text-white rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <div className="flex items-center gap-2">
- <span className="p-2 rounded-xl bg-monday-violet/20 text-amber-400 border border-amber-500/30">
+ <span className="p-2 rounded-xl bg-monday-violet/20 text-[#c64d00]/70 border border-[#c64d00]/30">
  <ChefHat className="w-5 h-5" />
  </span>
  <div>
@@ -51,7 +51,7 @@ export default function KDSKitchenPage() {
  </div>
  </div>
  <div className="flex items-center gap-3 text-xs">
- <span className="bg-monday-violet/10 text-amber-400 border border-amber-500/20 px-3 py-1.5 rounded-xl font-bold">
+ <span className="bg-monday-violet/10 text-[#c64d00]/70 border border-[#c64d00]/20 px-3 py-1.5 rounded-xl font-bold">
  {kitchenOrders.flatMap(o => o.items).filter(i => i.status !== 'ready').length} Platos Pendientes
  </span>
  </div>
@@ -104,7 +104,7 @@ export default function KDSKitchenPage() {
  item.status === 'ready'
  ? 'bg-emerald-100 text-emerald-800'
  : item.status === 'preparing'
- ? 'bg-amber-100 text-amber-800'
+ ? 'bg-peach/50 text-[#c64d00]'
  : 'bg-slate-200 text-slate-700'
  }`}
  >
@@ -122,7 +122,7 @@ export default function KDSKitchenPage() {
  {item.status === 'pending' && (
  <button
  onClick={() => handleUpdateItemStatus(order.id, item.id, 'preparing')}
- className="bg-monday-violet hover:bg-amber-600 text-slate-950 font-bold px-2.5 py-1 rounded-lg text-[11px] flex items-center gap-1 transition-all"
+ className="bg-monday-violet hover:bg-[#c64d00] text-slate-950 font-bold px-2.5 py-1 rounded-lg text-[11px] flex items-center gap-1 transition-all"
  >
  <Flame className="w-3.5 h-3.5" /> Preparar
  </button>

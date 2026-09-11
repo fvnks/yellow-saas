@@ -92,7 +92,7 @@ export default function VetPortalPage({ params }: { params: { token: string } })
  <div className="text-sm font-black text-slate-900 capitalize">{patient.gender}</div>
  </div>
  <div className="bg-white border border-slate-200/80 rounded-2xl p-3 text-center">
- <Dog className="w-5 h-5 text-amber-500 mx-auto mb-1" />
+ <Dog className="w-5 h-5 text-[#c64d00] mx-auto mb-1" />
  <div className="text-[11px] text-slate-500">Color</div>
  <div className="text-sm font-black text-slate-900">{patient.color || '—'}</div>
  </div>
@@ -104,9 +104,9 @@ export default function VetPortalPage({ params }: { params: { token: string } })
  </div>
 
  {patient.allergies && (
- <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4">
- <p className="text-xs font-bold text-amber-800 uppercase mb-1">⚠ Alergias conocidas</p>
- <p className="text-sm text-amber-900">{patient.allergies}</p>
+ <div className="bg-peach/30 border border-peach rounded-2xl p-4">
+ <p className="text-xs font-bold text-[#c64d00] uppercase mb-1">⚠ Alergias conocidas</p>
+ <p className="text-sm text-[#c64d00]">{patient.allergies}</p>
  </div>
  )}
 
@@ -173,16 +173,16 @@ export default function VetPortalPage({ params }: { params: { token: string } })
  )}
 
  {hospitalizations.length > 0 && (
- <section className="bg-amber-50 border border-amber-200 rounded-2xl overflow-hidden">
- <div className="px-5 py-3 border-b border-amber-200">
- <h2 className="text-sm font-bold text-amber-900 flex items-center gap-2">🏥 Hospitalización Activa</h2>
+ <section className="bg-peach/30 border border-peach rounded-2xl overflow-hidden">
+ <div className="px-5 py-3 border-b border-peach">
+ <h2 className="text-sm font-bold text-[#c64d00] flex items-center gap-2">🏥 Hospitalización Activa</h2>
  </div>
  <div className="p-5">
  {hospitalizations.map((h: any) => (
  <div key={h.id}>
- <p className="text-xs font-bold text-amber-900">{h.reason}</p>
- <p className="text-[11px] text-amber-800">Ingreso: {new Date(h.admission_date).toLocaleDateString('es-CL')}</p>
- {h.notes && <p className="text-[11px] text-amber-800 mt-1">{h.notes}</p>}
+ <p className="text-xs font-bold text-[#c64d00]">{h.reason}</p>
+ <p className="text-[11px] text-[#c64d00]">Ingreso: {new Date(h.admission_date).toLocaleDateString('es-CL')}</p>
+ {h.notes && <p className="text-[11px] text-[#c64d00] mt-1">{h.notes}</p>}
  </div>
  ))}
  </div>
@@ -192,7 +192,7 @@ export default function VetPortalPage({ params }: { params: { token: string } })
  {reminders.length > 0 && (
  <section className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden">
  <div className="px-5 py-3 border-b border-slate-200/80 bg-slate-50/80">
- <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2"><Clock className="w-4 h-4 text-amber-500" /> Recordatorios Pendientes</h2>
+ <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2"><Clock className="w-4 h-4 text-[#c64d00]" /> Recordatorios Pendientes</h2>
  </div>
  <div className="divide-y divide-slate-100">
  {reminders.map((r: any) => (

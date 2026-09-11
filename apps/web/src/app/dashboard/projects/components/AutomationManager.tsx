@@ -117,7 +117,7 @@ export default function AutomationManager({ projectId }: AutomationManagerProps)
  <div className="space-y-4">
  <div className="flex items-center justify-between">
  <div className="flex items-center gap-2">
- <Zap className="w-4 h-4 text-amber-500" />
+ <Zap className="w-4 h-4 text-[#c64d00]" />
  <h3 className="text-sm font-semibold text-foreground">Automatización</h3>
  <span className="text-[10px] text-muted-foreground">{rules.length} reglas</span>
  </div>
@@ -185,8 +185,8 @@ export default function AutomationManager({ projectId }: AutomationManagerProps)
  <div key={rule.id} className={`bg-card border rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow ${rule.is_active ? 'border-border' : 'border-border opacity-60'}`}>
  <div className="flex items-center justify-between">
  <div className="flex items-center gap-3">
- <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${rule.is_active ? 'bg-amber-50' : 'bg-muted'}`}>
- {rule.is_active ? <Zap className="w-4 h-4 text-amber-500" /> : <ZapOff className="w-4 h-4 text-muted-foreground" />}
+ <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${rule.is_active ? 'bg-peach/30' : 'bg-muted'}`}>
+ {rule.is_active ? <Zap className="w-4 h-4 text-[#c64d00]" /> : <ZapOff className="w-4 h-4 text-muted-foreground" />}
  </div>
  <div>
  <h4 className="text-sm font-semibold text-foreground">{rule.name}</h4>
@@ -198,8 +198,8 @@ export default function AutomationManager({ projectId }: AutomationManagerProps)
  <div className="flex items-center gap-2">
  <span className="text-[10px] text-muted-foreground">{rule.trigger_count}x ejecutado</span>
  <button onClick={() => handleToggle(rule)}
- className={`p-1.5 rounded-lg transition-colors ${rule.is_active ? 'hover:bg-amber-50' : 'hover:bg-muted'}`}>
- {rule.is_active ? <Zap className="w-3.5 h-3.5 text-amber-500" /> : <ZapOff className="w-3.5 h-3.5 text-muted-foreground" />}
+ className={`p-1.5 rounded-lg transition-colors ${rule.is_active ? 'hover:bg-peach/30' : 'hover:bg-muted'}`}>
+ {rule.is_active ? <Zap className="w-3.5 h-3.5 text-[#c64d00]" /> : <ZapOff className="w-3.5 h-3.5 text-muted-foreground" />}
  </button>
  <button onClick={() => handleDelete(rule.id)} className="p-1.5 hover:bg-red-50 rounded-lg transition-colors">
  <Trash2 className="w-3.5 h-3.5 text-red-500" />

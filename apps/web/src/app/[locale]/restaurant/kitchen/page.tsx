@@ -104,7 +104,7 @@ export default function KDSKitchenPage() {
  item.status === 'ready'
  ? 'bg-emerald-100 text-emerald-800'
  : item.status === 'preparing'
- ? 'bg-amber-100 text-amber-800'
+ ? 'bg-peach/50 text-[#c64d00]'
  : 'bg-slate-200 text-slate-700'
  }`}
  >
@@ -122,7 +122,7 @@ export default function KDSKitchenPage() {
  {item.status === 'pending' && (
  <button
  onClick={() => handleUpdateItemStatus(order.id, item.id, 'preparing')}
- className="bg-monday-violet hover:bg-amber-600 text-slate-950 font-bold px-2.5 py-1 rounded-lg text-[11px] flex items-center gap-1 transition-all"
+ className="bg-monday-violet hover:bg-[#c64d00] text-slate-950 font-bold px-2.5 py-1 rounded-lg text-[11px] flex items-center gap-1 transition-all"
  >
  <Flame className="w-3.5 h-3.5" /> Preparar
  </button>

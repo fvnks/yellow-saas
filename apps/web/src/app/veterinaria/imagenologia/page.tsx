@@ -33,7 +33,7 @@ const STUDY_TYPES: Record<string, string> = {
 };
 
 const STATUS_COLORS: Record<string, string> = {
- en_proceso: 'bg-amber-50 text-amber-700 border-amber-200',
+ en_proceso: 'bg-peach/30 text-[#c64d00] border-peach',
  informado: 'bg-emerald-50 text-emerald-700 border-emerald-200',
  disponible: 'bg-blue-50 text-blue-700 border-blue-200',
 };

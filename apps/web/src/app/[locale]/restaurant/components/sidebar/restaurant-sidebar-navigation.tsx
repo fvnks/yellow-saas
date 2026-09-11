@@ -164,7 +164,7 @@ function RestaurantSidebarNavigationContent({ sidebarItems }: RestaurantSidebarN
  )} />
  <span className="truncate">{navGroup.label}</span>
  {groupActive && !groupOpen && (
- <div className="ml-auto w-2 h-2 rounded-full bg-amber-400 animate-pulse flex-shrink-0 shadow-sm shadow-amber-400/50" />
+ <div className="ml-auto w-2 h-2 rounded-full bg-peach animate-pulse flex-shrink-0 shadow-sm shadow-amber-400/50" />
  )}
  </button>
  </CollapsibleTrigger>

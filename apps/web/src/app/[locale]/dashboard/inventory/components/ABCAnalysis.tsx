@@ -31,7 +31,7 @@ interface ABCSummary {
 
 const classConfig: Record<string, { color: string; bg: string; border: string }> = {
  A: { color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200' },
- B: { color: 'text-amber-700', bg: 'bg-amber-50', border: 'border-amber-200' },
+ B: { color: 'text-[#c64d00]', bg: 'bg-peach/30', border: 'border-peach' },
  C: { color: 'text-foreground', bg: 'bg-muted', border: 'border-border' },
 };
 

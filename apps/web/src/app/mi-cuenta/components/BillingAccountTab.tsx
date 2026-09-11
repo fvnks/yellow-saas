@@ -179,7 +179,7 @@ export default function BillingAccountTab() {
  <td className="px-4 py-3 text-xs font-medium text-foreground">{payment.description || payment.plan_name}</td>
  <td className="px-4 py-3 text-xs font-medium text-foreground">{formatAmount(payment.amount)}</td>
  <td className="px-4 py-3">
- <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${payment.status === 'completed' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : payment.status === 'pending' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}`}>
+ <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${payment.status === 'completed' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : payment.status === 'pending' ? 'bg-peach/30 text-[#c64d00] border border-peach' : 'bg-rose-50 text-rose-700 border border-rose-200'}`}>
  {payment.status === 'completed' ? 'Completado' : payment.status === 'pending' ? 'Pendiente' : 'Fallido'}
  </span>
  </td>
@@ -215,7 +215,7 @@ export default function BillingAccountTab() {
  <td className="px-4 py-3 text-xs text-foreground">{new Date(invoice.created_at).toLocaleDateString('es-CL')}</td>
  <td className="px-4 py-3 text-xs font-medium text-foreground">{formatAmount(invoice.total_amount)}</td>
  <td className="px-4 py-3">
- <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${invoice.status === 'paid' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : invoice.status === 'pending' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-muted text-foreground border border-border'}`}>
+ <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${invoice.status === 'paid' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : invoice.status === 'pending' ? 'bg-peach/30 text-[#c64d00] border border-peach' : 'bg-muted text-foreground border border-border'}`}>
  {invoice.status === 'paid' ? 'Pagada' : invoice.status === 'pending' ? 'Pendiente' : 'Anulada'}
  </span>
  </td>

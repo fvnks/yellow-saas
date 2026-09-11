@@ -27,7 +27,7 @@ const statusVariants: Record<string, string> = { open: 'warning', mitigating: 'i
 const getRiskLevel = (prob: string, imp: string) => {
  const score = (prob === 'high' ? 3 : prob === 'medium' ? 2 : 1) * (imp === 'high' ? 3 : imp === 'medium' ? 2 : 1);
  if (score >= 6) return { label: 'Alto', color: 'text-red-600 bg-red-50 border-red-200' };
- if (score >= 3) return { label: 'Medio', color: 'text-amber-600 bg-amber-50 border-amber-200' };
+ if (score >= 3) return { label: 'Medio', color: 'text-[#c64d00] bg-peach/30 border-peach' };
  return { label: 'Bajo', color: 'text-emerald-600 bg-emerald-50 border-emerald-200' };
 };
 

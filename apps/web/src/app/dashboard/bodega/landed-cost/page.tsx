@@ -8,7 +8,7 @@ import { getApiClient } from '@/lib/api-client';
 const costTypeConfig: Record<string, { label: string; color: string }> = {
  freight: { label: 'Flete', color: 'bg-blue-100 text-blue-700' },
  insurance: { label: 'Seguro', color: 'bg-blue-50 text-primary' },
- customs_duty: { label: 'Arancel', color: 'bg-amber-100 text-amber-700' },
+ customs_duty: { label: 'Arancel', color: 'bg-peach/50 text-[#c64d00]' },
  handling: { label: 'Manipuleo', color: 'bg-blue-50 text-blue-700' },
  other: { label: 'Otro', color: 'bg-muted text-foreground' },
 };

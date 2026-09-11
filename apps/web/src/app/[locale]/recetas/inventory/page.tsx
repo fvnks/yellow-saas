@@ -12,7 +12,7 @@ function getStockStatus(stock: number, minStock: number) {
  if (minStock <= 0) return { color: 'text-muted-foreground bg-muted border-border', label: 'Sin config', dot: 'bg-muted' };
  if (stock <= 0) return { color: 'text-rose-700 bg-rose-50 border-rose-200', label: 'Sin stock', dot: 'bg-rose-500' };
  if (stock <= minStock * 0.5) return { color: 'text-rose-700 bg-rose-50 border-rose-200', label: 'Crítico', dot: 'bg-rose-500' };
- if (stock <= minStock) return { color: 'text-amber-700 bg-amber-50 border-amber-200', label: 'Bajo', dot: 'bg-monday-violet' };
+ if (stock <= minStock) return { color: 'text-[#c64d00] bg-peach/30 border-peach', label: 'Bajo', dot: 'bg-monday-violet' };
  return { color: 'text-emerald-700 bg-emerald-50 border-emerald-200', label: 'OK', dot: 'bg-emerald-500' };
 }
 
@@ -255,7 +255,7 @@ export default function RecipeInventoryPage() {
  <div className="flex items-center gap-1 bg-card border border-border rounded-xl p-1 shadow-sm w-fit">
  <button onClick={() => setActiveTab('ingredients')}
  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
- activeTab === 'ingredients' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'text-muted-foreground hover:text-foreground'
+ activeTab === 'ingredients' ? 'bg-peach/30 text-[#c64d00] border border-peach' : 'text-muted-foreground hover:text-foreground'
  }`}>
  <span className="flex items-center gap-2">
  <Package className="w-4 h-4" />

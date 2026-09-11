@@ -126,7 +126,7 @@ export default function CustomerPriceHistory() {
  <p className="text-xs font-bold text-foreground">{pp.totalQty}</p>
  </div>
  {priceVariationPct > 10 && (
- <span className="px-1.5 py-0.5 bg-amber-50 text-amber-700 text-[8px] font-semibold rounded">
+ <span className="px-1.5 py-0.5 bg-peach/30 text-[#c64d00] text-[8px] font-semibold rounded">
  ±{priceVariationPct.toFixed(0)}%
  </span>
  )}

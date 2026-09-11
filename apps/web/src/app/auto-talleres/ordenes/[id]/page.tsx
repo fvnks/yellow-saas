@@ -168,7 +168,7 @@ export default function OrdenDetallePage() {
  </span>
  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
  order.priority === 'urgente' ? 'bg-rose-100 text-rose-700' :
- order.priority === 'alta' ? 'bg-amber-100 text-amber-700' :
+ order.priority === 'alta' ? 'bg-peach/50 text-[#c64d00]' :
  'bg-slate-100 text-slate-600'
  }`}>
  {order.priority.toUpperCase()}
@@ -274,7 +274,7 @@ export default function OrdenDetallePage() {
  {order.notes && (
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Notas Internas</p>
- <p className="text-sm text-slate-700 bg-amber-50 border border-amber-200 p-3 rounded-xl">{order.notes}</p>
+ <p className="text-sm text-slate-700 bg-peach/30 border border-peach p-3 rounded-xl">{order.notes}</p>
  </div>
  )}
  </div>

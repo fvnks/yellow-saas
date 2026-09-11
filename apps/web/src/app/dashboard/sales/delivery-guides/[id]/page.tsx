@@ -33,7 +33,7 @@ interface DeliveryGuideDetail {
 }
 
 const STATUS_MAP: Record<string, { label: string; class: string }> = {
- pending: { label: 'Pendiente', class: 'bg-amber-50 text-amber-700 border border-amber-200' },
+ pending: { label: 'Pendiente', class: 'bg-peach/30 text-[#c64d00] border border-peach' },
  in_transit: { label: 'En Tránsito', class: 'bg-blue-50 text-blue-700 border border-blue-200' },
  delivered: { label: 'Entregado', class: 'bg-emerald-50 text-emerald-700 border border-emerald-200' },
  cancelled: { label: 'Cancelado', class: 'bg-rose-50 text-rose-700 border border-rose-200' },
@@ -197,7 +197,7 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
  {company?.logo_url ? (
  <img src={company.logo_url} alt="Logo" className="h-16 w-auto mb-3" />
  ) : (
- <div className="w-16 h-16 bg-amber-400 rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-3">
+ <div className="w-16 h-16 bg-peach rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-3">
  {(company?.name || 'E')[0]}
  </div>
  )}
@@ -259,7 +259,7 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
  </div>
  </div>
  <div className="flex items-center gap-3">
- <div className="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center">
+ <div className="w-8 h-8 bg-peach/30 rounded-lg flex items-center justify-center">
  <Truck className="w-4 h-4 text-monday-violet" />
  </div>
  <div>

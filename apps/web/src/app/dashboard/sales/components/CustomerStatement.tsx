@@ -44,7 +44,7 @@ const txTypeConfig: Record<string, { label: string; color: string; bg: string }>
 const statusConfig: Record<string, { label: string; color: string; bg: string }> = {
  paid: { label: 'Pagada', color: 'text-emerald-700', bg: 'bg-emerald-50' },
  Pagada: { label: 'Pagada', color: 'text-emerald-700', bg: 'bg-emerald-50' },
- 'Pago Parcial': { label: 'Parcial', color: 'text-amber-700', bg: 'bg-amber-50' },
+ 'Pago Parcial': { label: 'Parcial', color: 'text-[#c64d00]', bg: 'bg-peach/30' },
  Pendiente: { label: 'Pendiente', color: 'text-blue-700', bg: 'bg-blue-50' },
  Vencida: { label: 'Vencida', color: 'text-red-700', bg: 'bg-red-50' },
 };
@@ -149,8 +149,8 @@ export default function CustomerStatement() {
  <p className="text-[9px] font-semibold text-emerald-700 uppercase">Pagado</p>
  <p className="text-sm font-bold text-foreground">{formatMoney(statement.summary.totalPaid)}</p>
  </div>
- <div className="bg-amber-50 rounded-lg p-3">
- <p className="text-[9px] font-semibold text-amber-700 uppercase">N. Crédito</p>
+ <div className="bg-peach/30 rounded-lg p-3">
+ <p className="text-[9px] font-semibold text-[#c64d00] uppercase">N. Crédito</p>
  <p className="text-sm font-bold text-foreground">{formatMoney(statement.summary.totalCreditNotes)}</p>
  </div>
  <div className="bg-orange-50 rounded-lg p-3">

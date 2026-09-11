@@ -102,7 +102,7 @@ export default function SupportAccessTab({ companyId, userRole }: SupportAccessT
  <Card>
  <CardContent className="p-4">
  <div className="flex items-start gap-3">
- <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center flex-shrink-0">
+ <div className="w-10 h-10 bg-peach/30 rounded-xl flex items-center justify-center flex-shrink-0">
  <AlertTriangle className="w-5 h-5 text-monday-violet" />
  </div>
  <div>
@@ -157,7 +157,7 @@ export default function SupportAccessTab({ companyId, userRole }: SupportAccessT
  <div className="text-right">
  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
  grant.access_level === 'full' 
- ? 'bg-amber-50 text-amber-700 border border-amber-200' 
+ ? 'bg-peach/30 text-[#c64d00] border border-peach' 
  : 'bg-blue-50 text-blue-700 border border-blue-200'
  }`}>
  {grant.access_level === 'full' ? 'Lectura + Escritura' : 'Solo Lectura'}

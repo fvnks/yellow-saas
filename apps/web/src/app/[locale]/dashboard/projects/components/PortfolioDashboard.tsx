@@ -127,8 +127,8 @@ export default function PortfolioDashboard() {
  <p className="text-2xl font-bold text-foreground mt-1">{budgetUsage}%</p>
  <p className="text-xs text-muted-foreground mt-1">${data.total_spent.toLocaleString()} / ${data.total_budget.toLocaleString()}</p>
  </div>
- <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
- <DollarSign className="w-6 h-6 text-amber-600" />
+ <div className="w-12 h-12 bg-peach/30 rounded-xl flex items-center justify-center">
+ <DollarSign className="w-6 h-6 text-[#c64d00]" />
  </div>
  </div>
  </div>
@@ -175,7 +175,7 @@ export default function PortfolioDashboard() {
  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
  project.status === 'active' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
  project.status === 'completed' ? 'bg-muted text-foreground border border-border' :
- project.status === 'on_hold' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+ project.status === 'on_hold' ? 'bg-peach/30 text-[#c64d00] border border-peach' :
  'bg-muted text-foreground border border-border'
  }`}>
  {project.status}

@@ -384,7 +384,7 @@ export default function VeterinaryConsultationsPage() {
  letter="A"
  label="Evaluación (Assessment)"
  hint="Diagnóstico(s), problemas activos, evaluación del estado actual."
- color="border-amber-200 bg-amber-50/40"
+ color="border-peach bg-peach/30/40"
  badge="bg-monday-violet"
  value={soap.assessment}
  onChange={(v) => updateSoap('assessment', v)}

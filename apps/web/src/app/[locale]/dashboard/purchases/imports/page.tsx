@@ -39,7 +39,7 @@ export default function ImportsPage() {
  <h1 className="text-xl font-black text-slate-900 tracking-tight">
  Gestión de Importaciones & Costo en Destino (Landed Cost)
  </h1>
- <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-50 text-amber-700 border border-amber-200 flex items-center gap-1">
+ <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-peach/30 text-[#c64d00] border border-peach flex items-center gap-1">
  <Globe className="w-3.5 h-3.5" /> DIN Aduanas Chile
  </span>
  </div>
@@ -95,7 +95,7 @@ export default function ImportsPage() {
  </td>
  <td className="px-6 py-4 font-mono text-slate-800">{clp(imp.ad_valorem_clp)}</td>
  <td className="px-6 py-4 font-mono font-bold text-emerald-700">{clp(imp.total_landed_cost_clp)}</td>
- <td className="px-6 py-4 font-bold text-amber-700 bg-amber-50 rounded-xl px-3 py-1 w-max">
+ <td className="px-6 py-4 font-bold text-[#c64d00] bg-peach/30 rounded-xl px-3 py-1 w-max">
  +{((imp.landed_cost_factor - 1) * 100).toFixed(1)}% (x{imp.landed_cost_factor})
  </td>
  </tr>

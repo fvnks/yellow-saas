@@ -33,7 +33,7 @@ const typeLabels: Record<string, string> = {
 const typeBadges: Record<string, string> = {
  consulta: 'bg-blue-100 text-blue-800 border-blue-200',
  control: 'bg-emerald-100 text-emerald-800 border-emerald-200',
- procedimiento: 'bg-amber-100 text-amber-800 border-amber-200',
+ procedimiento: 'bg-peach/50 text-[#c64d00] border-peach',
  post_operatorio: 'bg-rose-100 text-rose-800 border-rose-200',
  hospitalizacion: 'bg-purple-100 text-purple-800 border-purple-200',
  examen: 'bg-cyan-100 text-cyan-800 border-cyan-200',
@@ -197,7 +197,7 @@ export default function VeterinaryEvolutionsPage() {
  </div>
  </div>
  <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center"><Calendar className="w-5 h-5" /></div>
+ <div className="w-10 h-10 rounded-xl bg-peach/30 border border-peach text-[#c64d00] flex items-center justify-center"><Calendar className="w-5 h-5" /></div>
  <div>
  <div className="text-xs text-slate-500 font-semibold uppercase">Última Actualización</div>
  <div className="text-xl font-black text-slate-900">{filtered[0] ? filtered[0].evolutionDate : '—'}</div>
@@ -258,7 +258,7 @@ export default function VeterinaryEvolutionsPage() {
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
  <SoapBlock color="border-blue-200 bg-blue-50/40" badge="bg-blue-600" letter="S" label="Subjetivo" text={evo.soap.subjective} />
  <SoapBlock color="border-emerald-200 bg-emerald-50/40" badge="bg-emerald-600" letter="O" label="Objetivo" text={evo.soap.objective} />
- <SoapBlock color="border-amber-200 bg-amber-50/40" badge="bg-monday-violet" letter="A" label="Evaluación" text={evo.soap.assessment} />
+ <SoapBlock color="border-peach bg-peach/30/40" badge="bg-monday-violet" letter="A" label="Evaluación" text={evo.soap.assessment} />
  <SoapBlock color="border-rose-200 bg-rose-50/40" badge="bg-rose-600" letter="P" label="Plan" text={evo.soap.plan} />
  </div>
  </div>

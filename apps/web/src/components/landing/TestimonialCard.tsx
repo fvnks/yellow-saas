@@ -16,7 +16,7 @@ export function TestimonialCard({ quote, author, role, company, rating = 5, clas
  return (
  <div
  className={cn(
- 'flex-shrink-0 w-[380px] rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:border-amber-500/30 /50 dark:hover:border-amber-500/40',
+ 'flex-shrink-0 w-[380px] rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:border-[#c64d00]/30 /50 dark:hover:border-[#c64d00]/40',
  className
  )}
  >

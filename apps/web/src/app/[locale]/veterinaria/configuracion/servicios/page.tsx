@@ -196,7 +196,7 @@ export default function VeterinaryServicesPage() {
 
  <td className="px-6 py-4">
  {srv.requiresConsent ? (
- <span className="bg-amber-100 text-amber-800 text-[11px] font-bold px-2 py-0.5 rounded-md border border-amber-200">
+ <span className="bg-peach/50 text-[#c64d00] text-[11px] font-bold px-2 py-0.5 rounded-md border border-peach">
  Requerido
  </span>
  ) : (

@@ -99,7 +99,7 @@ export default function ProjectsPage() {
  className="bg-card border border-border rounded-xl shadow-sm p-4 w-full text-left hover:shadow-md transition-shadow">
  <div className="flex items-center justify-between">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center"><Bell className="w-5 h-5 text-amber-600" /></div>
+ <div className="w-10 h-10 bg-peach/30 rounded-xl flex items-center justify-center"><Bell className="w-5 h-5 text-[#c64d00]" /></div>
  <div>
  <p className="text-sm font-semibold text-foreground">{notifications.length} notificaciones de proyectos</p>
  <p className="text-xs text-muted-foreground">Tareas atrasadas, hitos vencidos, presupuesto al l�mite</p>
@@ -113,7 +113,7 @@ export default function ProjectsPage() {
  {notifications.slice(0, 8).map((n, i) => (
  <Link key={i} href={`/dashboard/projects/${n.project_id}`} className="block px-4 py-3 hover:bg-muted border-b border-border last:border-0 transition-colors">
  <div className="flex items-start gap-3">
- {n.severity === 'danger' ? <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" /> : <Calendar className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />}
+ {n.severity === 'danger' ? <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" /> : <Calendar className="w-4 h-4 text-[#c64d00] mt-0.5 shrink-0" />}
  <div>
  <p className="text-xs font-semibold text-foreground">{n.title}</p>
  <p className="text-[10px] text-muted-foreground mt-0.5">{n.description}</p>
@@ -173,14 +173,14 @@ export default function ProjectsPage() {
  ) : (
  <div className="space-y-4">
  {filteredByTab.map(project => (
- <div key={project.id} className={`bg-card border rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow ${project.archived ? 'border-amber-200 bg-amber-50/30 opacity-75' : 'border-border'}`}>
+ <div key={project.id} className={`bg-card border rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow ${project.archived ? 'border-peach bg-peach/30/30 opacity-75' : 'border-border'}`}>
  <div className="flex items-start justify-between mb-4">
  <div>
  <div className="flex items-center gap-3">
  <h3 className="text-base font-semibold text-foreground">{project.name}</h3>
  <Badge variant={statusConfig[project.status]?.variant || 'neutral'}>{statusConfig[project.status]?.label || project.status}</Badge>
  {project.archived && (
- <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-100 text-amber-700 border border-amber-200">
+ <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-peach/50 text-[#c64d00] border border-peach">
  <Archive className="w-2.5 h-2.5" /> Archivado
  </span>
  )}

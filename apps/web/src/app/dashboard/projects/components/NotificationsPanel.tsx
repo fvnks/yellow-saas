@@ -24,7 +24,7 @@ interface NotificationsPanelProps {
 
 const typeConfig: Record<string, { icon: any; color: string }> = {
  task_assigned: { icon: Check, color: 'text-blue-500' },
- task_due_soon: { icon: Clock, color: 'text-amber-500' },
+ task_due_soon: { icon: Clock, color: 'text-[#c64d00]' },
  task_overdue: { icon: AlertTriangle, color: 'text-red-500' },
  milestone_due_soon: { icon: Clock, color: 'text-blue-600' },
  milestone_overdue: { icon: AlertTriangle, color: 'text-red-500' },

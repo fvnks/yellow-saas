@@ -233,7 +233,7 @@ export default function StockEntryPage() {
  <td className="px-4 py-3 relative">
  {line.product_id ? (
  <div className="flex items-center gap-2">
- <Package className="w-4 h-4 text-amber-500 shrink-0" />
+ <Package className="w-4 h-4 text-[#c64d00] shrink-0" />
  <div>
  <p className="text-sm font-medium text-foreground">{line.product_name}</p>
  <p className="text-[10px] text-muted-foreground font-mono">{line.product_sku}</p>
@@ -261,7 +261,7 @@ export default function StockEntryPage() {
  <button key={p.id} onClick={() => selectProduct(line.id, p)}
  className="w-full text-left px-3 py-2 hover:bg-muted flex items-center justify-between border-b border-border last:border-0">
  <div className="flex items-center gap-2">
- <Package className="w-3.5 h-3.5 text-amber-500" />
+ <Package className="w-3.5 h-3.5 text-[#c64d00]" />
  <div>
  <p className="text-xs font-medium text-foreground">{p.name}</p>
  <p className="text-[9px] text-muted-foreground font-mono">{p.sku}</p>

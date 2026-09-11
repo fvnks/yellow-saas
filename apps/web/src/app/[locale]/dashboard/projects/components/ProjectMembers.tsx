@@ -24,7 +24,7 @@ const roleConfig: Record<string, { label: string; color: string }> = {
  owner: { label: 'Propietario', color: 'bg-blue-50 text-primary border-primary/20' },
  admin: { label: 'Admin', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
  member: { label: 'Miembro', color: 'bg-muted text-foreground border-border' },
- viewer: { label: 'Visor', color: 'bg-amber-50 text-amber-700 border-amber-200' },
+ viewer: { label: 'Visor', color: 'bg-peach/30 text-[#c64d00] border-peach' },
 };
 
 export default function ProjectMembers({ projectId, users }: ProjectMembersProps) {

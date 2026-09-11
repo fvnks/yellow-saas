@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { useRecetasRefresh } from '@/components/recetas/RefreshContext';
 
 const EXPENSE_CATEGORIES = [
- { value: 'luz', label: 'Luz', icon: Zap, color: 'text-monday-violet bg-amber-50 border-amber-200' },
+ { value: 'luz', label: 'Luz', icon: Zap, color: 'text-monday-violet bg-peach/30 border-peach' },
  { value: 'agua', label: 'Agua', icon: Droplets, color: 'text-blue-600 bg-blue-50 border-blue-200' },
  { value: 'gas', label: 'Gas', icon: Flame, color: 'text-orange-600 bg-orange-50 border-orange-200' },
  { value: 'arriendo', label: 'Arriendo', icon: Home, color: 'text-blue-700 bg-blue-50 border-blue-200' },

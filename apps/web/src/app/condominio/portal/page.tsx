@@ -144,7 +144,7 @@ export default function PortalResidentePage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
  <span className="text-slate-500 text-xs font-semibold">Total a Pagar este Mes</span>
  <p className="text-2xl font-black text-slate-900 mt-2">{formatCLP(calc.totalToPayCLP)}</p>
- <p className="text-[11px] text-amber-600 mt-1 font-bold">Vence: {activePeriod.dueDate}</p>
+ <p className="text-[11px] text-[#c64d00] mt-1 font-bold">Vence: {activePeriod.dueDate}</p>
  </div>
  </div>
 
@@ -240,7 +240,7 @@ export default function PortalResidentePage() {
  <tr className="bg-cloud text-white font-black">
  <td className="p-3 text-sm">TOTAL A PAGAR FECHA VENCIMIENTO ({activePeriod.dueDate})</td>
  <td className="p-3 text-center text-xs font-medium text-slate-300">CLP sin centavos</td>
- <td className="p-3 text-right text-base text-amber-400">{formatCLP(calc.totalToPayCLP)}</td>
+ <td className="p-3 text-right text-base text-[#c64d00]/70">{formatCLP(calc.totalToPayCLP)}</td>
  </tr>
  </tbody>
  </table>
@@ -307,7 +307,7 @@ export default function PortalResidentePage() {
 
  <div className="border border-slate-200/80 rounded-xl p-4 bg-slate-50/50 flex flex-col justify-between space-y-3">
  <div>
- <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+ <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-peach/30 text-[#c64d00] border border-peach">
  Seguros
  </span>
  <h3 className="text-xs font-bold text-slate-900 mt-2">Póliza Colectiva Espacios Comunes</h3>
@@ -315,7 +315,7 @@ export default function PortalResidentePage() {
  </div>
  <button
  onClick={() => alert('Descargando Póliza Colectiva de Seguro...')}
- className="text-xs font-bold text-amber-700 hover:text-amber-900 flex items-center gap-1"
+ className="text-xs font-bold text-[#c64d00] hover:text-[#c64d00] flex items-center gap-1"
  >
  <Download className="w-3.5 h-3.5" /> Descargar PDF
  </button>

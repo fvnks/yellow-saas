@@ -18,7 +18,7 @@ const PAYMENT_METHODS = [
 
 const STATUS_BADGES: Record<string, string> = {
  completado: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
- pendiente: 'bg-amber-50 text-amber-700 border border-amber-200',
+ pendiente: 'bg-peach/30 text-[#c64d00] border border-peach',
  reverso: 'bg-rose-50 text-rose-700 border border-rose-200',
 };
 

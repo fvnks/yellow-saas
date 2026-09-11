@@ -435,7 +435,7 @@ export default function ValuationPage() {
  <td className="px-6 py-3 text-center">
  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
  r.status === 'completed' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
- r.status === 'running' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+ r.status === 'running' ? 'bg-peach/30 text-[#c64d00] border border-peach' :
  'bg-rose-50 text-rose-700 border border-rose-200'
  }`}>
  {r.status === 'completed' ? 'Completado' : r.status === 'running' ? 'Ejecutando' : 'Fallido'}
@@ -484,7 +484,7 @@ export default function ValuationPage() {
  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Productos</p>
  <p className="text-2xl font-bold text-foreground mt-1">{productCount}</p>
  </div>
- <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
+ <div className="w-12 h-12 bg-peach/30 rounded-xl flex items-center justify-center">
  <CheckCircle className="w-6 h-6 text-monday-violet" />
  </div>
  </div>

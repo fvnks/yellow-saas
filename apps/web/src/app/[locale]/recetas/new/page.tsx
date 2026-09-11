@@ -191,7 +191,7 @@ export default function NewRecetaPage() {
  {ingredientProducts.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
  </select>
  <button type="button" onClick={() => { setCreateProductForIndex(i); setShowCreateProduct(true); }}
- className="px-2 bg-amber-50 border border-amber-200 hover:bg-amber-100 text-amber-700 rounded-lg text-xs font-medium transition-colors shrink-0"
+ className="px-2 bg-peach/30 border border-peach hover:bg-peach/50 text-[#c64d00] rounded-lg text-xs font-medium transition-colors shrink-0"
  title="Crear nuevo ingrediente">
  <Plus className="w-3.5 h-3.5" />
  </button>

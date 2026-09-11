@@ -109,8 +109,8 @@ export default function InspeccionesPage() {
  </div>
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
  <div className="flex items-center gap-3">
- <div className="h-10 w-10 rounded-xl bg-monday-violet/10 flex items-center justify-center border border-amber-500/20">
- <AlertTriangle className="w-5 h-5 text-amber-500" />
+ <div className="h-10 w-10 rounded-xl bg-monday-violet/10 flex items-center justify-center border border-[#c64d00]/20">
+ <AlertTriangle className="w-5 h-5 text-[#c64d00]" />
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Con Daños</p>
@@ -212,7 +212,7 @@ export default function InspeccionesPage() {
  Dashboard
  </span>
  {insp.damage_notes && (
- <span className="text-amber-600 flex items-center gap-1">
+ <span className="text-[#c64d00] flex items-center gap-1">
  <AlertTriangle className="w-3 h-3" />
  Daños registrados
  </span>
@@ -220,9 +220,9 @@ export default function InspeccionesPage() {
  </div>
 
  {insp.damage_notes && (
- <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-xl">
- <p className="text-xs font-semibold text-amber-700 mb-1">Notas de Daños</p>
- <p className="text-sm text-amber-800">{insp.damage_notes}</p>
+ <div className="mt-3 p-3 bg-peach/30 border border-peach rounded-xl">
+ <p className="text-xs font-semibold text-[#c64d00] mb-1">Notas de Daños</p>
+ <p className="text-sm text-[#c64d00]">{insp.damage_notes}</p>
  </div>
  )}
  </div>

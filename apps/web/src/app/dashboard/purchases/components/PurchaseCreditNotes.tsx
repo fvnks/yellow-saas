@@ -21,7 +21,7 @@ interface CreditNote {
 
 const STATUS_CFG: Record<string, { label: string; color: string; bg: string; border: string }> = {
  accepted: { label: 'Aceptado', color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200' },
- pending: { label: 'Pendiente', color: 'text-amber-700', bg: 'bg-amber-50', border: 'border-amber-200' },
+ pending: { label: 'Pendiente', color: 'text-[#c64d00]', bg: 'bg-peach/30', border: 'border-peach' },
 };
 
 function generateNcXml(n: CreditNote): string {
