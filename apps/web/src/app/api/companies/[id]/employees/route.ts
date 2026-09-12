@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
       [
         companyId, first_name, last_name, employee_code || null, email || null, phone || null,
         address || null, birth_date || null, position || null, department || null,
-        hire_date || new Date().toISOString().split('T')[0], contract_type || 'indefinite',
+        hire_date || new Date().toISOString().split('T')[0], contract_type || 'indefinido',
         base_salary || 0, salary_frequency || 'monthly', bank_name || null, bank_account || null,
         tax_id || null, afp_id || null, health_id || null, notes || null,
       ]
