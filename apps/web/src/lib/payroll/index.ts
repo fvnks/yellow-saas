@@ -65,15 +65,16 @@ export const AFC_EMPLOYEE_FIXED = 3.0;
 // ── Caja de Compensación ──
 export const CAJA_COMPENSACION_RATE = 0.6;
 
-// ── Impuesto Único de Segunda Categoría (2024, monthly UF) ──
+// ── Impuesto Único de Segunda Categoría (2025, monthly UF) ──
+// Table indexed by UTM-derived UF thresholds; update annually
 export const TAX_BRACKETS = [
-  { min: 0, max: 921.1, rate: 0, deduction: 0 },
-  { min: 921.1, max: 2062.5, rate: 4, deduction: 36.84 },
-  { min: 2062.5, max: 3437.5, rate: 8, deduction: 119.34 },
-  { min: 3437.5, max: 4812.5, rate: 13.75, deduction: 316.09 },
-  { min: 4812.5, max: 6187.5, rate: 20, deduction: 622.34 },
-  { min: 6187.5, max: 8662.5, rate: 27, deduction: 1054.84 },
-  { min: 8662.5, max: Infinity, rate: 35, deduction: 1750.09 },
+  { min: 0, max: 950.0, rate: 0, deduction: 0 },
+  { min: 950.0, max: 2125.0, rate: 4, deduction: 38.0 },
+  { min: 2125.0, max: 3542.0, rate: 8, deduction: 123.0 },
+  { min: 3542.0, max: 4958.0, rate: 13.75, deduction: 326.0 },
+  { min: 4958.0, max: 6375.0, rate: 20, deduction: 642.0 },
+  { min: 6375.0, max: 8917.0, rate: 27, deduction: 1087.0 },
+  { min: 8917.0, max: Infinity, rate: 35, deduction: 1805.0 },
 ];
 
 // ── Gratificación (Art. 47) ──
@@ -147,11 +148,14 @@ function applyImponibleCap(imponible: number): number {
  * Calculate Impuesto Único de Segunda Categoría
  * In Chile: applied to monthly taxable remuneration (imponible + taxable additions)
  * BEFORE deducting AFP/FONASA. The tax is on gross imponible.
+ * @param monthlyImponibleCLP - Monthly imponible in CLP
+ * @param ufValue - Current UF value in CLP for converting thresholds
  */
-function calculateImpuestoUnico(monthlyImponibleUF: number): number {
+function calculateImpuestoUnico(monthlyImponibleCLP: number, ufValue: number): number {
+  const monthlyImponibleUF = monthlyImponibleCLP / ufValue;
   for (const bracket of TAX_BRACKETS) {
     if (monthlyImponibleUF > bracket.min && monthlyImponibleUF <= bracket.max) {
-      return Math.max(0, (monthlyImponibleUF * bracket.rate / 100) - bracket.deduction);
+      return Math.max(0, (monthlyImponibleUF * bracket.rate / 100) - bracket.deduction) * ufValue;
     }
   }
   return 0;
@@ -233,6 +237,21 @@ export function calculateEmployeePayroll(
 ): PayrollResult {
   const items: PayrollItem[] = [];
   const periodDays = Math.ceil((periodEnd.getTime() - periodStart.getTime()) / (1000 * 60 * 60 * 24));
+
+  // ── Safe defaults for Employee fields (M2 fix) ──
+  const safeEmployee = {
+    ...employee,
+    afp_fund: employee.afp_fund || 'AFP Habitat',
+    afp_rate: employee.afp_rate || 10.58,
+    afp_commission: employee.afp_commission || 0.60,
+    health_type: employee.health_type || 'FONASA',
+    health_amount: employee.health_amount || 0,
+    mutual_type: employee.mutual_type || 'achs',
+    mutual_rate: employee.mutual_rate || 0.93,
+    apv_amount: employee.apv_amount || 0,
+    base_salary: employee.base_salary || 0,
+  };
+  employee = safeEmployee;
   const daysWorked = calculateDaysWorked(employee.hire_date, periodStart, periodEnd);
 
   // ── Base salary (proportional if started mid-month) ──
@@ -259,7 +278,9 @@ export function calculateEmployeePayroll(
   // Horas extras
   const overtimeHours = extras?.overtime_hours || 0;
   if (overtimeHours > 0) {
-    const hourlyRate = monthlySalary / 30 / 8; // daily hours = 8
+    // Legal jornada: 44h/semana → 6.2857h/día promedio (44/7)
+    const CHILEAN_DAILY_HOURS = 44 / 7;
+    const hourlyRate = monthlySalary / 30 / CHILEAN_DAILY_HOURS;
     const first2 = Math.min(overtimeHours, 2);
     const beyond = Math.max(0, overtimeHours - 2);
     const overtimeRate = extras?.overtime_rate || OVERTIME_FIRST_2_HOURS_RATE;
@@ -455,8 +476,7 @@ export function calculateEmployeePayroll(
 
   // Impuesto Único de Segunda Categoría
   // In Chile: calculated on gross imponible (before AFP/FONASA deductions)
-  const impuestoUnicoUF = calculateImpuestoUnico(imponibleSalary / _ufValue);
-  const impuestoUnico = impuestoUnicoUF * _ufValue;
+  const impuestoUnico = calculateImpuestoUnico(imponibleSalary, _ufValue);
 
   if (impuestoUnico > 0) {
     items.push({

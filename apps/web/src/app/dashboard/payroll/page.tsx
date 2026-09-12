@@ -57,24 +57,24 @@ function PayrollPage() {
  const [payingRun, setPayingRun] = useState<string | null>(null);
  const [deletingRun, setDeletingRun] = useState<string | null>(null);
  const [deletingEmployee, setDeletingEmployee] = useState<string | null>(null);
- const [showUFModal, setShowUFModal] = useState(false);
- const [ufValue, setUFValue] = useState(38500);
- const [ufInput, setUFInput] = useState('');
+  const [showUFModal, setShowUFModal] = useState(false);
+  const [ufValue, setUFValue] = useState(0);
+  const [ufInput, setUFInput] = useState('');
 
- const loadData = useCallback(async () => {
- const api = getApiClient();
- try {
- const [empRes, runRes, ufRes] = await Promise.all([
- api.getEmployees({ limit: '200' }),
- api.getPayrollRuns({ limit: '50' }),
- api.getUFValue().catch(() => ({ data: { uf_value: 38500 } })),
- ]);
- setEmployees(empRes.data || []);
- setRuns(runRes.data || []);
- if (ufRes.data?.uf_value) {
- setUFValue(ufRes.data.uf_value);
- setUFInput(ufRes.data.uf_value.toLocaleString('es-CL'));
- }
+  const loadData = useCallback(async () => {
+  const api = getApiClient();
+  try {
+  const [empRes, runRes, ufRes] = await Promise.all([
+  api.getEmployees({ limit: '200' }),
+  api.getPayrollRuns({ limit: '50' }),
+  api.getUFValue().catch(() => ({ data: { uf_value: null } })),
+  ]);
+  setEmployees(empRes.data || []);
+  setRuns(runRes.data || []);
+  if (ufRes.data?.uf_value) {
+  setUFValue(ufRes.data.uf_value);
+  setUFInput(ufRes.data.uf_value.toLocaleString('es-CL'));
+  }
  } catch {
  toast('Error al cargar datos', 'error');
  }
@@ -534,10 +534,10 @@ function PayrollPage() {
  <input
  type="text"
  value={ufInput}
- onChange={e => setUFInput(e.target.value)}
- className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
- placeholder="38500"
- />
+  onChange={e => setUFInput(e.target.value)}
+  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
+  placeholder="Ej: 38500"
+  />
  </div>
  </div>
  <div className="px-6 py-4 border-t border-border flex justify-end gap-3">

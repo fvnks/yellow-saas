@@ -295,7 +295,8 @@ describe('cálculos de nómina chilena', () => {
       const heItem = result.items.find(i => i.code === 'HE');
       expect(heItem).toBeDefined();
 
-      const hourlyRate = emp.base_salary / 30 / 8;
+      const CHILEAN_DAILY_HOURS = 44 / 7;
+      const hourlyRate = emp.base_salary / 30 / CHILEAN_DAILY_HOURS;
       const expected = 2 * hourlyRate * 1.5;
       expect(heItem!.amount).toBeCloseTo(expected, -2);
     });
@@ -305,7 +306,8 @@ describe('cálculos de nómina chilena', () => {
       const result = calculateEmployeePayroll(emp, PERIOD_START, PERIOD_END, { overtime_hours: 4 });
 
       const heItem = result.items.find(i => i.code === 'HE');
-      const hourlyRate = emp.base_salary / 30 / 8;
+      const CHILEAN_DAILY_HOURS = 44 / 7;
+      const hourlyRate = emp.base_salary / 30 / CHILEAN_DAILY_HOURS;
       const expected = (2 * hourlyRate * 1.5) + (2 * hourlyRate * 2);
       expect(heItem!.amount).toBeCloseTo(expected, -2);
     });
