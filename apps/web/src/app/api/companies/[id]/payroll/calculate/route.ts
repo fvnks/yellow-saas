@@ -5,6 +5,7 @@ import {
   calculateEmployeePayroll,
   getPayrollSummary,
   setUFValue,
+  loadIndicators,
   Employee,
   PayrollItem,
 } from '@/lib/payroll';
@@ -41,7 +42,11 @@ export async function POST(
       return errorResponse('Solo se puede calcular nomina en estado borrador', 400);
     }
 
-    // Fetch UF value from company settings
+    // Load dynamic UF/IMM values from indicators API
+    const indicators = await loadIndicators();
+    setUFValue(indicators.uf);
+
+    // Also check company_settings for custom UF override
     try {
       const { rows: ufRows } = await query(
         `SELECT setting_value FROM company_settings
@@ -52,7 +57,7 @@ export async function POST(
         setUFValue(parseFloat(ufRows[0].setting_value));
       }
     } catch {
-      // company_settings may not exist yet, use default
+      // company_settings may not exist yet, use indicators value
     }
 
     const periodStart = new Date(run.period_start);

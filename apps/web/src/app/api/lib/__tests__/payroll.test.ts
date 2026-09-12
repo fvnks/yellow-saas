@@ -5,6 +5,7 @@ import {
   getPayrollSummary,
   setUFValue,
   getUFValue,
+  getImmValue,
   AFP_FUNDS,
   FONASA_RATE,
   SIS_RATE,
@@ -12,7 +13,8 @@ import {
   AFC_EMPLOYEE_FIXED,
   AFC_EMPLOYER_INDEFINITE,
   AFC_EMPLOYER_FIXED,
-  GRATIFICATION_MONTHLY_UF_CAP,
+  GRATIFICATION_RATE,
+  GRATIFICATION_MONTHLY_IMM_CAP,
   AGUINALDO_RATE,
   AGUINALDO_UF_CAP,
   TAX_BRACKETS,
@@ -144,25 +146,23 @@ describe('cálculos de nómina chilena', () => {
       expect(gratItem!.amount).toBeGreaterThan(0);
     });
 
-    it('gratificación es 25% de ganancias anuales, tope 4.75 UF mensual', () => {
+    it('gratificación es 25% de ganancias anuales, tope 4.75 IMM', () => {
       const emp = makeEmployee({ base_salary: 1_000_000 });
       const result = calculateEmployeePayroll(emp, PERIOD_START, PERIOD_END);
 
       const gratItem = result.items.find(i => i.code === 'GRAT');
-      const annualSalary = emp.base_salary * 12;
-      const expectedGrat = (annualSalary * 0.25) / 12;
-      const capUf = GRATIFICATION_MONTHLY_UF_CAP * getUFValue();
-      const expectedCapped = Math.min(expectedGrat, capUf);
+      const expectedGrat = emp.base_salary * GRATIFICATION_RATE; // monthly = 25%
+      const capMonthly = GRATIFICATION_MONTHLY_IMM_CAP * getImmValue(); // 4.75 × IMM
 
-      expect(gratItem!.amount).toBeCloseTo(expectedCapped, -2);
+      expect(gratItem!.amount).toBeCloseTo(Math.min(expectedGrat, capMonthly), -2);
     });
 
-    it('gratificación se topea a 4.75 UF para salaries altos', () => {
+    it('gratificación se topea a 4.75 IMM para salaries altos', () => {
       const emp = makeEmployee({ base_salary: 10_000_000 });
       const result = calculateEmployeePayroll(emp, PERIOD_START, PERIOD_END);
 
       const gratItem = result.items.find(i => i.code === 'GRAT');
-      const capMonthly = GRATIFICATION_MONTHLY_UF_CAP * getUFValue();
+      const capMonthly = GRATIFICATION_MONTHLY_IMM_CAP * getImmValue();
 
       expect(gratItem!.amount).toBeLessThanOrEqual(capMonthly + 1);
     });
@@ -271,8 +271,8 @@ describe('cálculos de nómina chilena', () => {
 
   describe('tope imponible (80 UF)', () => {
     it('salary bajo el tope no se ve afectado', () => {
-      // 2.5M + gratificación (~184K) = ~2.68M < 3.08M (80 UF)
-      const emp = makeEmployee({ base_salary: 2_500_000 });
+      // 1M + gratificación (250K) = 1.25M < 3.08M (80 UF)
+      const emp = makeEmployee({ base_salary: 1_000_000 });
       const result = calculateEmployeePayroll(emp, PERIOD_START, PERIOD_END);
 
       expect(result.taxable_salary).toBe(result.imponible_salary);
