@@ -9,8 +9,10 @@ export default defineConfig({
     coverage: { provider: 'v8' },
   },
   resolve: {
-    alias: {
-      '@': path.resolve(__dirname, 'src'),
-    },
+    alias: [
+      { find: /^@\/api\/(.*)$/, replacement: path.resolve(__dirname, 'src/app/api/$1') },
+      { find: /^@\/lib\/(.*)$/, replacement: path.resolve(__dirname, 'src/lib/$1') },
+      { find: /^@\/(.*)$/, replacement: path.resolve(__dirname, 'src/$1') },
+    ],
   },
 });
