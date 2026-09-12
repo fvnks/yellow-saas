@@ -7,6 +7,7 @@ import {
   paginatedResponse,
 } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
+import { countWorkingDays } from '@/lib/payroll/holidays';
 
 export async function GET(request: NextRequest) {
   try {
@@ -76,25 +77,15 @@ export async function POST(request: NextRequest) {
     );
     if (employeeCheck.rows.length === 0) return errorResponse('Employee not found', 404);
 
-    // Calculate days (excluding weekends)
-    const start = new Date(start_date);
-    const end = new Date(end_date);
-    let days = 0;
-    const current = new Date(start);
-    while (current <= end) {
-      const dayOfWeek = current.getDay();
-      if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-        days++;
-      }
-      current.setDate(current.getDate() + 1);
-    }
+    // Calculate working days (excluding weekends and Chilean holidays)
+    const days = countWorkingDays(start_date, end_date);
 
     if (days <= 0) {
       return errorResponse('El rango de fechas no incluye días hábiles', 400);
     }
 
     // Check available balance
-    const year = start.getFullYear();
+    const year = new Date(start_date).getFullYear();
     const { rows: balanceRows } = await query(
       `SELECT * FROM vacation_balances
        WHERE company_id = $1 AND employee_id = $2 AND year = $3`,
