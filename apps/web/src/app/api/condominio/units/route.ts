@@ -1,13 +1,15 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { query, transaction } from '@/api/lib/db';
+import { getCompanyId } from '@/api/lib/helpers';
 
 // POST: Add new unit
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { company_id, property_id, unit_number, type, resident_name, resident_email, resident_phone, alicuota_percentage } = body;
+    const { property_id, unit_number, type, resident_name, resident_email, resident_phone, alicuota_percentage } = body;
 
-    const companyId = company_id || '00000000-0000-0000-0000-000000000001';
+    const companyId = await getCompanyId(request);
+    if (!companyId) return NextResponse.json({ success: false, error: 'Company ID not found' }, { status: 400 });
 
     if (!unit_number) {
       return NextResponse.json({ success: false, error: 'El número de unidad es requerido' }, { status: 400 });
@@ -53,10 +55,13 @@ export async function POST(request: Request) {
 }
 
 // PUT: Update existing unit or alícuota
-export async function PUT(request: Request) {
+export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
     const { id, unit_number, type, resident_name, resident_email, resident_phone, alicuota_percentage } = body;
+
+    const companyId = await getCompanyId(request);
+    if (!companyId) return NextResponse.json({ success: false, error: 'Company ID not found' }, { status: 400 });
 
     if (!id) {
       return NextResponse.json({ success: false, error: 'ID de unidad requerido' }, { status: 400 });

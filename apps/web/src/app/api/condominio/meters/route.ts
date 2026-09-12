@@ -1,11 +1,12 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { query, transaction } from '@/api/lib/db';
+import { getCompanyId } from '@/api/lib/helpers';
 
 // GET: Fetch utility meters & period readings
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const companyId = searchParams.get('company_id') || '00000000-0000-0000-0000-000000000001';
+    const companyId = await getCompanyId(request);
+    if (!companyId) return NextResponse.json({ success: false, error: 'Company ID not found' }, { status: 400 });
 
     const propRes = await query('SELECT id FROM condos_properties WHERE company_id = $1 LIMIT 1', [companyId]);
     if (propRes.rows.length === 0) return NextResponse.json({ success: true, data: [] });
@@ -36,11 +37,12 @@ export async function GET(request: Request) {
 }
 
 // POST: Register meter reading
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { company_id, unit_id, meter_type, meter_number, previous_reading, current_reading, unit_rate_clp } = body;
-    const companyId = company_id || '00000000-0000-0000-0000-000000000001';
+    const { unit_id, meter_type, meter_number, previous_reading, current_reading, unit_rate_clp } = body;
+    const companyId = await getCompanyId(request);
+    if (!companyId) return NextResponse.json({ success: false, error: 'Company ID not found' }, { status: 400 });
 
     if (!unit_id || !meter_type || current_reading === undefined) {
       return NextResponse.json({ success: false, error: 'Unidad, tipo de medidor y lectura actual requeridos' }, { status: 400 });

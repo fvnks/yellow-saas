@@ -1,12 +1,14 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { query, transaction } from '@/api/lib/db';
+import { getCompanyId } from '@/api/lib/helpers';
 
 // POST: Add expense item to period
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { company_id, period_id, category, description, amount_clp, supplier_id, purchase_invoice_id, amount_uf } = body;
-    const companyId = company_id || '00000000-0000-0000-0000-000000000001';
+    const { period_id, category, description, amount_clp, supplier_id, purchase_invoice_id, amount_uf } = body;
+    const companyId = await getCompanyId(request);
+    if (!companyId) return NextResponse.json({ success: false, error: 'Company ID not found' }, { status: 400 });
 
     if (!period_id || !category || !amount_clp) {
       return NextResponse.json({ success: false, error: 'Faltan parámetros requeridos (period_id, category, amount_clp)' }, { status: 400 });
@@ -48,8 +50,11 @@ export async function POST(request: Request) {
 }
 
 // DELETE: Remove expense item
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
   try {
+    const companyId = await getCompanyId(request);
+    if (!companyId) return NextResponse.json({ success: false, error: 'Company ID not found' }, { status: 400 });
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 

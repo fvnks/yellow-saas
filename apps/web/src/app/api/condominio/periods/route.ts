@@ -1,12 +1,14 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { query, transaction } from '@/api/lib/db';
+import { getCompanyId } from '@/api/lib/helpers';
 
 // POST: Create or Calculate period statements
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { action, company_id, property_id, period_name, period_date, due_date, reserve_fund_pct, late_interest_pct, period_id } = body;
-    const companyId = company_id || '00000000-0000-0000-0000-000000000001';
+    const { action, property_id, period_name, period_date, due_date, reserve_fund_pct, late_interest_pct, period_id } = body;
+    const companyId = await getCompanyId(request);
+    if (!companyId) return NextResponse.json({ success: false, error: 'Company ID not found' }, { status: 400 });
 
     if (action === 'calculate') {
       if (!period_id) {

@@ -1,12 +1,14 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { query, transaction } from '@/api/lib/db';
+import { getCompanyId } from '@/api/lib/helpers';
 
 // POST: Record payment
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { company_id, unit_id, period_id, amount_clp, payment_method, reference_number, notes } = body;
-    const companyId = company_id || '00000000-0000-0000-0000-000000000001';
+    const { unit_id, period_id, amount_clp, payment_method, reference_number, notes } = body;
+    const companyId = await getCompanyId(request);
+    if (!companyId) return NextResponse.json({ success: false, error: 'Company ID not found' }, { status: 400 });
 
     if (!unit_id || !amount_clp) {
       return NextResponse.json({ success: false, error: 'Unidad y monto son requeridos' }, { status: 400 });

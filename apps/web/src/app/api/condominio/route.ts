@@ -1,10 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/api/lib/db';
+import { getCompanyId } from '@/api/lib/helpers';
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const companyId = searchParams.get('company_id') || '00000000-0000-0000-0000-000000000001';
+    const companyId = await getCompanyId(request);
+    if (!companyId) return NextResponse.json({ success: false, error: 'Company ID not found' }, { status: 400 });
 
     // 1. Ensure condo property exists
     let condoRes = await query(
