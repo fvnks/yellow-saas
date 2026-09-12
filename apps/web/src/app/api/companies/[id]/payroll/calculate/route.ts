@@ -17,6 +17,27 @@ interface EmployeeExtras {
   deductions?: { concept: string; amount: number }[];
 }
 
+function toEmployee(row: Record<string, unknown>): Employee {
+  return {
+    id: String(row.id),
+    first_name: String(row.first_name ?? ''),
+    last_name: String(row.last_name ?? ''),
+    rut: String(row.rut ?? ''),
+    base_salary: Number(row.base_salary ?? 0),
+    contract_type: String(row.contract_type ?? 'indefinido'),
+    afp_fund: String(row.afp_fund ?? ''),
+    afp_rate: Number(row.afp_rate ?? 0),
+    afp_commission: Number(row.afp_commission ?? 0),
+    health_type: String(row.health_type ?? 'fonasa'),
+    health_amount: Number(row.health_amount ?? 0),
+    mutual_type: String(row.mutual_type ?? ''),
+    mutual_rate: Number(row.mutual_rate ?? 0),
+    apv_amount: Number(row.apv_amount ?? 0),
+    hire_date: String(row.hire_date ?? ''),
+    status: String(row.status ?? 'active'),
+  };
+}
+
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -82,9 +103,10 @@ export async function POST(
     }
 
     // Calculate payroll for each employee with extras
-    const results = employeeRows.map((emp: Employee) => {
-      const empExtras = extrasMap.get(emp.id);
-      return calculateEmployeePayroll(emp, periodStart, periodEnd, empExtras ? {
+    const results = employeeRows.map((emp: Record<string, unknown>) => {
+      const mapped = toEmployee(emp);
+      const empExtras = extrasMap.get(mapped.id);
+      return calculateEmployeePayroll(mapped, periodStart, periodEnd, empExtras ? {
         overtime_hours: empExtras.overtime_hours,
         bonuses: empExtras.bonuses,
         deductions: empExtras.deductions,
