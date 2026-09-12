@@ -35,18 +35,18 @@ export function HRSidebar(props: React.ComponentProps<typeof Sidebar>) {
  }, []);
 
  return (
- <Sidebar className="border-r border-mist bg-snow text-ink select-none shadow-card" collapsible="icon" {...props}>
+ <Sidebar className="border-r border-mist bg-snow text-ink select-none shadow-xl" collapsible="icon" {...props}>
  <SidebarHeader className="bg-snow pt-3">
  <HRSidebarBrandHeader />
- <SidebarSeparator className="mx-3 bg-mist my-2" />
+ <SidebarSeparator className="mx-3 bg-cloud/80 my-2" />
  </SidebarHeader>
 
- <SidebarContent className="bg-snow">
+ <SidebarContent className="bg-snow scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
  <ModuleSidebarBackButton moduleKey="hr" />
  <HRSidebarNavigation sidebarItems={hrSidebarItems} />
  </SidebarContent>
 
- <SidebarFooter className="bg-snow p-3 border-t border-mist">
+ <SidebarFooter className="bg-snow p-3 border-t border-mist/80">
  <ModuleSidebarFooter moduleKey="hr" user={user} />
  </SidebarFooter>
 

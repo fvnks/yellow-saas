@@ -95,7 +95,7 @@ function HRSidebarNavigationContent({ sidebarItems }: HRSidebarNavigationProps) 
 
  const renderIcon = (iconName: keyof typeof HR_ICON_MAP | undefined, itemActive?: boolean): React.ReactNode => {
  const Icon = resolveHRIcon(iconName);
- return <Icon className={cn("h-4 w-4 shrink-0", itemActive ? theme.iconActiveColorClass : "text-iron")} />;
+ return <Icon className={cn("h-4 w-4 shrink-0", itemActive ? theme.iconActiveColorClass : "text-slate-400")} />;
  };
 
  return (
@@ -103,23 +103,23 @@ function HRSidebarNavigationContent({ sidebarItems }: HRSidebarNavigationProps) 
  {/* Quick Search Filter Bar inside Sidebar */}
  <div className="px-1 group-data-[collapsible=icon]:hidden">
  <div className="relative flex items-center">
- <Search className="absolute left-2.5 w-3.5 h-3.5 text-iron pointer-events-none" />
+ <Search className="absolute left-2.5 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
  <input
  type="text"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar en RRHH..."
- className="w-full bg-cloud border border-mist text-xs text-ink placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all"
+ className="w-full bg-cloud/80 border border-mist text-xs text-ink placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all"
  />
  {searchQuery ? (
  <button
  onClick={() => setSearchQuery("")}
- className="absolute right-2 text-iron hover:text-ink"
+ className="absolute right-2 text-slate-400 hover:text-ink"
  >
  <X className="w-3.5 h-3.5" />
  </button>
  ) : (
- <span className="absolute right-2 text-[9px] font-mono font-bold text-slate-500 bg-cloud px-1.5 py-0.5 rounded">
+ <span className="absolute right-2 text-[9px] font-mono font-bold text-slate-500 bg-cloud/80 px-1.5 py-0.5 rounded">
  ⌘K
  </span>
  )}
@@ -144,7 +144,7 @@ function HRSidebarNavigationContent({ sidebarItems }: HRSidebarNavigationProps) 
  >
  <div className={cn(
  "rounded-xl transition-all duration-150",
- groupOpen && "bg-cloud"
+ groupOpen && "bg-cloud/40"
  )}>
  {navGroup.label && (
  <CollapsibleTrigger asChild>
@@ -154,11 +154,11 @@ function HRSidebarNavigationContent({ sidebarItems }: HRSidebarNavigationProps) 
  "transition-all duration-150 cursor-pointer",
  groupActive
  ? theme.groupActiveText
- : "text-iron hover:text-ink",
- "hover:bg-cloud"
+ : "text-slate-400 hover:text-ink",
+ "hover:bg-cloud/50"
  )}>
  <ChevronDown className={cn(
- "h-3 w-3 flex-shrink-0 transition-transform duration-200 text-iron",
+ "h-3 w-3 flex-shrink-0 transition-transform duration-200 text-slate-400",
  !groupOpen && "-rotate-90"
  )} />
  <span className="truncate">{navGroup.label}</span>
@@ -192,13 +192,13 @@ function HRSidebarNavigationContent({ sidebarItems }: HRSidebarNavigationProps) 
  "whitespace-nowrap rounded-xl transition-all duration-150 py-2.5 px-3 text-xs font-semibold",
  itemActive
  ? `bg-cloud text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-xs`
- : "text-iron hover:text-ink hover:bg-cloud"
+ : "text-ink hover:text-ink hover:bg-cloud/60"
  )}
  >
  {renderIcon(item.icon, itemActive)}
  <span className="text-xs">{item.title}</span>
  <ChevronRight className={cn(
- "ml-auto h-3.5 w-3.5 transition-transform duration-200 text-iron",
+ "ml-auto h-3.5 w-3.5 transition-transform duration-200 text-slate-400",
  "group-data-[state=open]/collapsible:rotate-90"
  )} />
  </SidebarMenuButton>
@@ -211,7 +211,7 @@ function HRSidebarNavigationContent({ sidebarItems }: HRSidebarNavigationProps) 
  "rounded-xl transition-all duration-150 py-2.5 px-3 text-xs font-semibold",
  itemActive
  ? `bg-cloud text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-xs`
- : "text-iron hover:text-ink hover:bg-cloud"
+ : "text-ink hover:text-ink hover:bg-cloud/60"
  )}
  >
  {renderIcon(item.icon, itemActive)}
@@ -235,7 +235,7 @@ function HRSidebarNavigationContent({ sidebarItems }: HRSidebarNavigationProps) 
  "rounded-xl text-xs py-1.5 px-2.5 transition-colors font-medium",
  subActive
  ? `bg-cloud/90 ${theme.activeSubItemText} font-bold`
- : "text-iron hover:text-ink hover:bg-cloud/40"
+ : "text-slate-400 hover:text-ink hover:bg-cloud/40"
  )}
  >
  <a href={subItem.path}>
@@ -259,7 +259,7 @@ function HRSidebarNavigationContent({ sidebarItems }: HRSidebarNavigationProps) 
  </div>
 
  {groupIndex < filteredItems.length - 1 && (
- <div className="my-1 mx-3 h-px bg-cloud" />
+ <div className="my-1 mx-3 h-px bg-cloud/60" />
  )}
  </Collapsible>
  );

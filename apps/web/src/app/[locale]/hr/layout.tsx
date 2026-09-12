@@ -2,7 +2,7 @@
 
 import { ReactNode } from "react";
 import { Toaster } from "sonner";
-import { HRSidebar } from "@/app/hr/components/sidebar/app-hr-sidebar";
+import { HRSidebar } from "@/app/[locale]/hr/components/sidebar/app-hr-sidebar";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import HRSidebarBreadcrumbs from "./components/sidebar/hr-sidebar-breadcrumbs";
