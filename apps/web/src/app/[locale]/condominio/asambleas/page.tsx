@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Vote, Plus, Users, ShieldCheck, CheckCircle2, AlertCircle, FileText, BarChart3, Scale } from 'lucide-react';
+import { useAuthToken } from '@/hooks/use-auth-token';
 
 interface AssemblyTopicResult {
  option: string;
@@ -28,6 +29,11 @@ interface Assembly {
 }
 
 export default function AsambleasPage() {
+ const session = useAuthToken();
+ const companyId = session?.company_id;
+
+ const [properties, setProperties] = useState<any[]>([]);
+ const [selectedPropertyId, setSelectedPropertyId] = useState<string>('');
  const [assemblies, setAssemblies] = useState<Assembly[]>([]);
  const [loading, setLoading] = useState(true);
  const [showAddAssemblyModal, setShowAddAssemblyModal] = useState(false);
@@ -44,19 +50,39 @@ export default function AsambleasPage() {
  const [voteOption, setVoteOption] = useState('A favor');
  const [units, setUnits] = useState<any[]>([]);
 
+ useEffect(() => {
+   if (!companyId) return;
+   fetch(`/api/companies/${companyId}/condos`)
+     .then(r => r.json())
+     .then(json => {
+       if (json.success && json.data) {
+         setProperties(json.data.properties || json.data || []);
+       }
+     })
+     .catch(() => {});
+ }, [companyId]);
+
+ useEffect(() => {
+   if (properties.length > 0 && !selectedPropertyId) {
+     setSelectedPropertyId(properties[0].id);
+   }
+ }, [properties, selectedPropertyId]);
+
  const fetchAssemblies = async () => {
+ if (!companyId || !selectedPropertyId) return;
  try {
  setLoading(true);
- const res = await fetch('/api/condominio/assemblies');
+ const base = `/api/companies/${companyId}/condos/${selectedPropertyId}`;
+ const res = await fetch(`${base}/assemblies`);
  const json = await res.json();
  if (json.success) {
  setAssemblies(json.data || []);
  }
- const uRes = await fetch('/api/condominio');
+ const uRes = await fetch(`${base}/units`);
  const uJson = await uRes.json();
- if (uJson.success && uJson.data.units) {
- setUnits(uJson.data.units);
- if (uJson.data.units.length > 0) setUnitId(uJson.data.units[0].id);
+ if (uJson.success && uJson.data) {
+ setUnits(uJson.data);
+ if (uJson.data.length > 0) setUnitId(uJson.data[0].id);
  }
  } catch (err) {
  console.error('Error fetching assemblies:', err);
@@ -67,12 +93,13 @@ export default function AsambleasPage() {
 
  useEffect(() => {
  fetchAssemblies();
- }, []);
+ }, [selectedPropertyId]);
 
  const handleCreateAssembly = async (e: React.FormEvent) => {
  e.preventDefault();
+ if (!companyId || !selectedPropertyId) return;
  try {
- const res = await fetch('/api/condominio/assemblies', {
+ const res = await fetch(`/api/companies/${companyId}/condos/${selectedPropertyId}/assemblies`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
@@ -96,10 +123,10 @@ export default function AsambleasPage() {
 
  const handleVote = async (e: React.FormEvent) => {
  e.preventDefault();
- if (!selectedTopic || !unitId) return;
+ if (!selectedTopic || !unitId || !companyId || !selectedPropertyId) return;
 
  try {
- const res = await fetch('/api/condominio/assemblies', {
+ const res = await fetch(`/api/companies/${companyId}/condos/${selectedPropertyId}/assemblies`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
@@ -123,6 +150,21 @@ export default function AsambleasPage() {
 
  return (
  <div className="space-y-6">
+ {/* Property Selector */}
+ <div className="bg-white border border-slate-200/80 p-4 rounded-2xl shadow-xs flex items-center gap-4">
+   <label className="text-xs font-bold text-slate-600">Propiedad:</label>
+   <select
+     value={selectedPropertyId}
+     onChange={(e) => setSelectedPropertyId(e.target.value)}
+     className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none"
+   >
+     {properties.map((p: any) => (
+       <option key={p.id} value={p.id}>{p.name || p.address || `Propiedad ${p.id}`}</option>
+     ))}
+     {properties.length === 0 && <option value="">Cargando propiedades...</option>}
+   </select>
+ </div>
+
  {/* Top Banner */}
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-slate-200/80 p-6 rounded-2xl shadow-xs">
  <div>

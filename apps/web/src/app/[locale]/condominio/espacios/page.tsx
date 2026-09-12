@@ -6,6 +6,7 @@ import {
  Users, DollarSign, Sparkles, Building, AlertTriangle, Trash2, MapPin
 } from 'lucide-react';
 import { formatCLP } from '@/lib/condominio-client';
+import { useAuthToken } from '@/hooks/use-auth-token';
 import VisitorParkingLayout from './components/visitor-parking-layout';
 
 interface CommonArea {
@@ -48,6 +49,11 @@ interface CondoUnit {
 }
 
 export default function EspaciosConsergeriaPage() {
+ const session = useAuthToken();
+ const companyId = session?.company_id;
+
+ const [properties, setProperties] = useState<any[]>([]);
+ const [selectedPropertyId, setSelectedPropertyId] = useState<string>('');
  const [activeTab, setActiveTab] = useState<'parking_map' | 'reservations' | 'consergeria_log'>('parking_map');
  const [reservations, setReservations] = useState<Reservation[]>([]);
  const [visitors, setVisitors] = useState<VisitorEntry[]>([]);
@@ -72,34 +78,54 @@ export default function EspaciosConsergeriaPage() {
  const [visUnitNumber, setVisUnitNumber] = useState('');
  const [visSpot, setVisSpot] = useState('');
 
- const fetchData = async () => {
-   try {
-     setLoading(true);
-     const [condoRes, areasRes, reservationsRes, visitorsRes] = await Promise.all([
-       fetch('/api/condominio').then(r => r.json()).catch(() => ({ data: {} })),
-       fetch('/api/condominio/common-areas').then(r => r.json()).catch(() => ({ data: [] })),
-       fetch('/api/condominio/reservations').then(r => r.json()).catch(() => ({ data: [] })),
-       fetch('/api/condominio/visitors').then(r => r.json()).catch(() => ({ data: [] })),
-     ]);
+ useEffect(() => {
+   if (!companyId) return;
+   fetch(`/api/companies/${companyId}/condos`)
+     .then(r => r.json())
+     .then(json => {
+       if (json.success && json.data) {
+         setProperties(json.data.properties || json.data || []);
+       }
+     })
+     .catch(() => {});
+ }, [companyId]);
 
-     if (condoRes.data?.units) {
-       setUnits(condoRes.data.units.map((u: any) => ({
-         id: u.id,
-         number: u.number,
-         ownerName: u.ownerName || 'Sin Asignar',
-       })));
-     }
-     setCommonAreas(areasRes.data || []);
-     setReservations(reservationsRes.data || []);
-     setVisitors(visitorsRes.data || []);
-   } catch (err) {
-     console.error('Error fetching espacios data:', err);
-   } finally {
-     setLoading(false);
+ useEffect(() => {
+   if (properties.length > 0 && !selectedPropertyId) {
+     setSelectedPropertyId(properties[0].id);
    }
+ }, [properties, selectedPropertyId]);
+
+ const fetchData = async () => {
+    if (!companyId || !selectedPropertyId) return;
+    try {
+      setLoading(true);
+      const base = `/api/companies/${companyId}/condos/${selectedPropertyId}`;
+      const [areasRes, reservationsRes, visitorsRes] = await Promise.all([
+        fetch(`${base}/common-areas`).then(r => r.json()).catch(() => ({ data: [] })),
+        fetch(`${base}/reservations`).then(r => r.json()).catch(() => ({ data: [] })),
+        fetch(`${base}/visitors`).then(r => r.json()).catch(() => ({ data: [] })),
+      ]);
+
+      const unitsRes = await fetch(`${base}/units`).then(r => r.json()).catch(() => ({ data: [] }));
+      if (unitsRes.data) {
+        setUnits(unitsRes.data.map((u: any) => ({
+          id: u.id,
+          number: u.number,
+          ownerName: u.ownerName || u.resident_name || 'Sin Asignar',
+        })));
+      }
+      setCommonAreas(areasRes.data || []);
+      setReservations(reservationsRes.data || []);
+      setVisitors(visitorsRes.data || []);
+    } catch (err) {
+      console.error('Error fetching espacios data:', err);
+    } finally {
+      setLoading(false);
+    }
  };
 
- useEffect(() => { fetchData(); }, []);
+ useEffect(() => { fetchData(); }, [selectedPropertyId]);
 
  useEffect(() => {
    if (units.length > 0 && !resUnitId) setResUnitId(units[0].id);
@@ -113,10 +139,10 @@ export default function EspaciosConsergeriaPage() {
  const handleCreateReservation = async (e: React.FormEvent) => {
    e.preventDefault();
    const area = commonAreas.find(a => a.id === selectedAreaId);
-   if (!area) return;
+   if (!area || !companyId || !selectedPropertyId) return;
 
    try {
-     const res = await fetch('/api/condominio/reservations', {
+     const res = await fetch(`/api/companies/${companyId}/condos/${selectedPropertyId}/reservations`, {
        method: 'POST',
        headers: { 'Content-Type': 'application/json' },
        body: JSON.stringify({
@@ -140,10 +166,10 @@ export default function EspaciosConsergeriaPage() {
 
  const handleCreateVisitor = async (e: React.FormEvent) => {
    e.preventDefault();
-   if (!visName) return;
+   if (!visName || !companyId || !selectedPropertyId) return;
 
    try {
-     const res = await fetch('/api/condominio/visitors', {
+     const res = await fetch(`/api/companies/${companyId}/condos/${selectedPropertyId}/visitors`, {
        method: 'POST',
        headers: { 'Content-Type': 'application/json' },
        body: JSON.stringify({
@@ -169,8 +195,9 @@ export default function EspaciosConsergeriaPage() {
  };
 
  const handleMarkVisitorDeparture = async (visId: string) => {
+   if (!companyId || !selectedPropertyId) return;
    try {
-     const res = await fetch('/api/condominio/visitors', {
+     const res = await fetch(`/api/companies/${companyId}/condos/${selectedPropertyId}/visitors`, {
        method: 'PATCH',
        headers: { 'Content-Type': 'application/json' },
        body: JSON.stringify({ id: visId }),
@@ -196,6 +223,21 @@ export default function EspaciosConsergeriaPage() {
 
  return (
  <div className="space-y-6">
+ {/* Property Selector */}
+ <div className="bg-white border border-slate-200/80 p-4 rounded-2xl shadow-xs flex items-center gap-4">
+   <label className="text-xs font-bold text-slate-600">Propiedad:</label>
+   <select
+     value={selectedPropertyId}
+     onChange={(e) => setSelectedPropertyId(e.target.value)}
+     className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none"
+   >
+     {properties.map((p: any) => (
+       <option key={p.id} value={p.id}>{p.name || p.address || `Propiedad ${p.id}`}</option>
+     ))}
+     {properties.length === 0 && <option value="">Cargando propiedades...</option>}
+   </select>
+ </div>
+
  {/* Top Banner */}
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-slate-200/80 p-6 rounded-2xl shadow-xs">
  <div>

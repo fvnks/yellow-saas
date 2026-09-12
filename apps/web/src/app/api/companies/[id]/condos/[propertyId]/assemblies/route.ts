@@ -1,18 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { query, transaction } from '@/api/lib/db';
-import { getCompanyId } from '@/api/lib/helpers';
+import { query, transaction } from "@/api/lib/db";
+import { getCompanyId, successResponse, errorResponse } from "@/api/lib/helpers";
+import { NextRequest } from "next/server";
 
-// GET: Fetch assemblies, topics & vote stats
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string; propertyId: string }> }) {
   try {
+    const pParams = await params;
     const companyId = await getCompanyId(request);
-    if (!companyId) return NextResponse.json({ success: false, error: 'Company ID not found' }, { status: 400 });
-
-    const propRes = await query('SELECT id FROM condos_properties WHERE company_id = $1 LIMIT 1', [companyId]);
-    if (propRes.rows.length === 0) {
-      return NextResponse.json({ success: true, data: [] });
-    }
-    const propertyId = propRes.rows[0].id;
+    if (!companyId) return errorResponse("Company ID not found", 400);
 
     const assembliesRes = await query(
       `SELECT a.id, a.title, a.assembly_date as "assemblyDate", a.assembly_type as "assemblyType",
@@ -20,7 +14,7 @@ export async function GET(request: NextRequest) {
        FROM condos_assemblies a
        WHERE a.company_id = $1 AND a.property_id = $2
        ORDER BY a.assembly_date DESC`,
-      [companyId, propertyId]
+      [companyId, pParams.propertyId],
     );
 
     const assemblies = [];
@@ -29,7 +23,7 @@ export async function GET(request: NextRequest) {
         `SELECT t.id, t.title, t.description, t.is_voting as "isVoting", t.status
          FROM condos_assembly_topics t
          WHERE t.assembly_id = $1`,
-        [a.id]
+        [a.id],
       );
 
       const topics = [];
@@ -39,52 +33,49 @@ export async function GET(request: NextRequest) {
            FROM condos_assembly_votes
            WHERE topic_id = $1
            GROUP BY vote_option`,
-          [t.id]
+          [t.id],
         );
         topics.push({
           ...t,
-          results: votesRes.rows.map(r => ({
+          results: votesRes.rows.map((r: any) => ({
             option: r.vote_option,
             alicuotaPct: Number(r.total_alicuota) || 0,
-            count: Number(r.vote_count) || 0
-          }))
+            count: Number(r.vote_count) || 0,
+          })),
         });
       }
 
       assemblies.push({
         ...a,
-        topics
+        topics,
       });
     }
 
-    return NextResponse.json({ success: true, data: assemblies });
-  } catch (error: any) {
-    console.error('Error in GET /api/condominio/assemblies:', error);
-    return NextResponse.json({ success: false, error: error.message || 'Error al obtener asambleas' }, { status: 500 });
+    return successResponse(assemblies);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
   }
 }
 
-// POST: Create assembly, topic or register weighted vote
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string; propertyId: string }> }) {
   try {
+    const pParams = await params;
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse("Company ID not found", 400);
     const body = await request.json();
     const { action, title, assembly_date, assembly_type, quorum_required_pct, assembly_id, topic_title, description, topic_id, unit_id, vote_option } = body;
-    const companyId = await getCompanyId(request);
-    if (!companyId) return NextResponse.json({ success: false, error: 'Company ID not found' }, { status: 400 });
 
     if (action === 'vote') {
-      if (!topic_id || !unit_id || !vote_option) {
-        return NextResponse.json({ success: false, error: 'Faltan datos de votación' }, { status: 400 });
-      }
+      if (!topic_id || !unit_id || !vote_option) return errorResponse("topic_id, unit_id and vote_option are required", 400);
 
       const result = await transaction(async (client) => {
-        // Fetch unit alícuota
         const uRes = await client.query(
           `SELECT COALESCE(c.coefficient_pct, c.percentage, 0) as alicuota
            FROM condos_units u
            LEFT JOIN condos_coefficients c ON c.unit_id = u.id AND c.category = 'general'
-           WHERE u.id = $1`,
-          [unit_id]
+           WHERE u.id = $1 AND u.company_id = $2`,
+          [unit_id, companyId],
         );
         const alicuotaPct = Number(uRes.rows[0]?.alicuota || 0);
 
@@ -94,42 +85,36 @@ export async function POST(request: NextRequest) {
            ON CONFLICT (topic_id, unit_id)
            DO UPDATE SET vote_option = EXCLUDED.vote_option, alicuota_pct = EXCLUDED.alicuota_pct
            RETURNING *`,
-          [companyId, topic_id, unit_id, vote_option, alicuotaPct]
+          [companyId, topic_id, unit_id, vote_option, alicuotaPct],
         );
         return vRes.rows[0];
       });
 
-      return NextResponse.json({ success: true, data: result });
+      return successResponse(result);
     }
 
     if (action === 'add_topic') {
-      if (!assembly_id || !topic_title) {
-        return NextResponse.json({ success: false, error: 'Título de tema requerido' }, { status: 400 });
-      }
+      if (!assembly_id || !topic_title) return errorResponse("assembly_id and topic_title are required", 400);
       const tRes = await query(
         `INSERT INTO condos_assembly_topics (company_id, assembly_id, title, description, is_voting)
          VALUES ($1, $2, $3, $4, true)
          RETURNING *`,
-        [companyId, assembly_id, topic_title, description || '']
+        [companyId, assembly_id, topic_title, description || ''],
       );
-      return NextResponse.json({ success: true, data: tRes.rows[0] });
+      return successResponse(tRes.rows[0], 201);
     }
 
     // Default: Create assembly
-    const propRes = await query('SELECT id FROM condos_properties WHERE company_id = $1 LIMIT 1', [companyId]);
-    if (propRes.rows.length === 0) throw new Error('Propiedad no configurada');
-    const propertyId = propRes.rows[0].id;
-
     const aRes = await query(
       `INSERT INTO condos_assemblies (company_id, property_id, title, assembly_date, assembly_type, quorum_required_pct, status)
        VALUES ($1, $2, $3, $4, $5, $6, 'scheduled')
        RETURNING *`,
-      [companyId, propertyId, title || 'Asamblea Ordinaria', assembly_date || new Date().toISOString(), assembly_type || 'ordinary', Number(quorum_required_pct) || 50.0]
+      [companyId, pParams.propertyId, title || 'Asamblea Ordinaria', assembly_date || new Date().toISOString(), assembly_type || 'ordinary', Number(quorum_required_pct) || 50.0],
     );
 
-    return NextResponse.json({ success: true, data: aRes.rows[0] });
-  } catch (error: any) {
-    console.error('Error in POST /api/condominio/assemblies:', error);
-    return NextResponse.json({ success: false, error: error.message || 'Error en asambleas' }, { status: 500 });
+    return successResponse(aRes.rows[0], 201);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
   }
 }

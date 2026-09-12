@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { ShieldAlert, ShieldCheck, Plus, AlertCircle, FileText, CheckCircle2 } from 'lucide-react';
 import { formatCLP } from '@/lib/condominio-client';
+import { useAuthToken } from '@/hooks/use-auth-token';
 
 interface Violation {
  id: string;
@@ -25,6 +26,11 @@ interface InsurancePolicy {
 }
 
 export default function MultasSegurosPage() {
+ const session = useAuthToken();
+ const companyId = session?.company_id;
+
+ const [properties, setProperties] = useState<any[]>([]);
+ const [selectedPropertyId, setSelectedPropertyId] = useState<string>('');
  const [violations, setViolations] = useState<Violation[]>([]);
  const [policies, setPolicies] = useState<InsurancePolicy[]>([]);
  const [units, setUnits] = useState<any[]>([]);
@@ -43,21 +49,41 @@ export default function MultasSegurosPage() {
  const [fireCoverageCLP, setFireCoverageCLP] = useState('1500000000');
  const [premiumAmountCLP, setPremiumAmountCLP] = useState('450000');
 
+ useEffect(() => {
+   if (!companyId) return;
+   fetch(`/api/companies/${companyId}/condos`)
+     .then(r => r.json())
+     .then(json => {
+       if (json.success && json.data) {
+         setProperties(json.data.properties || json.data || []);
+       }
+     })
+     .catch(() => {});
+ }, [companyId]);
+
+ useEffect(() => {
+   if (properties.length > 0 && !selectedPropertyId) {
+     setSelectedPropertyId(properties[0].id);
+   }
+ }, [properties, selectedPropertyId]);
+
  const fetchData = async () => {
+ if (!companyId || !selectedPropertyId) return;
  try {
  setLoading(true);
- const res = await fetch('/api/condominio/violations');
+ const base = `/api/companies/${companyId}/condos/${selectedPropertyId}`;
+ const res = await fetch(`${base}/violations`);
  const json = await res.json();
  if (json.success && json.data) {
- setViolations(json.data.violations || []);
+ setViolations(json.data.violations || json.data || []);
  setPolicies(json.data.policies || []);
  }
 
- const uRes = await fetch('/api/condominio');
+ const uRes = await fetch(`${base}/units`);
  const uJson = await uRes.json();
- if (uJson.success && uJson.data.units) {
- setUnits(uJson.data.units);
- if (uJson.data.units.length > 0 && !selectedUnitId) setSelectedUnitId(uJson.data.units[0].id);
+ if (uJson.success && uJson.data) {
+ setUnits(uJson.data);
+ if (uJson.data.length > 0 && !selectedUnitId) setSelectedUnitId(uJson.data[0].id);
  }
  } catch (err) {
  console.error('Error fetching multas y seguros:', err);
@@ -68,14 +94,14 @@ export default function MultasSegurosPage() {
 
  useEffect(() => {
  fetchData();
- }, []);
+ }, [selectedPropertyId]);
 
  const handleAddViolation = async (e: React.FormEvent) => {
  e.preventDefault();
- if (!selectedUnitId || !description) return;
+ if (!selectedUnitId || !description || !companyId || !selectedPropertyId) return;
 
  try {
- const res = await fetch('/api/condominio/violations', {
+ const res = await fetch(`/api/companies/${companyId}/condos/${selectedPropertyId}/violations`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
@@ -99,8 +125,9 @@ export default function MultasSegurosPage() {
 
  const handleAddPolicy = async (e: React.FormEvent) => {
  e.preventDefault();
+ if (!companyId || !selectedPropertyId) return;
  try {
- const res = await fetch('/api/condominio/violations', {
+ const res = await fetch(`/api/companies/${companyId}/condos/${selectedPropertyId}/violations`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
@@ -125,6 +152,21 @@ export default function MultasSegurosPage() {
 
  return (
  <div className="space-y-6">
+ {/* Property Selector */}
+ <div className="bg-white border border-slate-200/80 p-4 rounded-2xl shadow-xs flex items-center gap-4">
+   <label className="text-xs font-bold text-slate-600">Propiedad:</label>
+   <select
+     value={selectedPropertyId}
+     onChange={(e) => setSelectedPropertyId(e.target.value)}
+     className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none"
+   >
+     {properties.map((p: any) => (
+       <option key={p.id} value={p.id}>{p.name || p.address || `Propiedad ${p.id}`}</option>
+     ))}
+     {properties.length === 0 && <option value="">Cargando propiedades...</option>}
+   </select>
+ </div>
+
  {/* Top Banner */}
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-slate-200/80 p-6 rounded-2xl shadow-xs">
  <div>

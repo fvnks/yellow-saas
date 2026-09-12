@@ -12,36 +12,61 @@ import {
  calculateUnitExpense,
  formatCLP
 } from '@/lib/condominio-client';
+import { useAuthToken } from '@/hooks/use-auth-token';
 
 export default function PortalResidentePage() {
+ const session = useAuthToken();
+ const companyId = session?.company_id;
+
+ const [properties, setProperties] = useState<any[]>([]);
+ const [selectedPropertyId, setSelectedPropertyId] = useState<string>('');
  const [units, setUnits] = useState<CondoUnit[]>(INITIAL_UNITS);
  const [periods, setPeriods] = useState<any[]>(INITIAL_PERIODS);
  const [selectedUnitId, setSelectedUnitId] = useState<string>('');
  const [loading, setLoading] = useState(true);
 
  useEffect(() => {
- async function fetchData() {
- try {
- setLoading(true);
- const res = await fetch('/api/condominio');
- const json = await res.json();
- if (json.success && json.data) {
- if (json.data.units && json.data.units.length > 0) {
- setUnits(json.data.units);
- if (!selectedUnitId) setSelectedUnitId(json.data.units[0].id);
- }
- if (json.data.periods && json.data.periods.length > 0) {
- setPeriods(json.data.periods);
- }
- }
- } catch (err) {
- console.error('Error fetching portal data:', err);
- } finally {
- setLoading(false);
- }
- }
- fetchData();
- }, []);
+   if (!companyId) return;
+   fetch(`/api/companies/${companyId}/condos`)
+     .then(r => r.json())
+     .then(json => {
+       if (json.success && json.data) {
+         setProperties(json.data.properties || json.data || []);
+       }
+     })
+     .catch(() => {});
+ }, [companyId]);
+
+ useEffect(() => {
+   if (properties.length > 0 && !selectedPropertyId) {
+     setSelectedPropertyId(properties[0].id);
+   }
+ }, [properties, selectedPropertyId]);
+
+ useEffect(() => {
+   if (!companyId || !selectedPropertyId) return;
+   async function fetchData() {
+   try {
+   setLoading(true);
+   const res = await fetch(`/api/companies/${companyId}/condos/${selectedPropertyId}/dashboard`);
+   const json = await res.json();
+   if (json.success && json.data) {
+   if (json.data.units && json.data.units.length > 0) {
+   setUnits(json.data.units);
+   if (!selectedUnitId) setSelectedUnitId(json.data.units[0].id);
+   }
+   if (json.data.periods && json.data.periods.length > 0) {
+   setPeriods(json.data.periods);
+   }
+   }
+   } catch (err) {
+   console.error('Error fetching portal data:', err);
+   } finally {
+   setLoading(false);
+   }
+   }
+   fetchData();
+ }, [selectedPropertyId]);
 
  const activeUnit = units.find((u) => u.id === selectedUnitId) || units[0] || {
  id: 'u-102',
@@ -75,6 +100,21 @@ export default function PortalResidentePage() {
 
  return (
  <div className="space-y-6">
+ {/* Property Selector */}
+ <div className="bg-white border border-slate-200/80 p-4 rounded-2xl shadow-xs flex items-center gap-4">
+   <label className="text-xs font-bold text-slate-600">Propiedad:</label>
+   <select
+     value={selectedPropertyId}
+     onChange={(e) => setSelectedPropertyId(e.target.value)}
+     className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none"
+   >
+     {properties.map((p: any) => (
+       <option key={p.id} value={p.id}>{p.name || p.address || `Propiedad ${p.id}`}</option>
+     ))}
+     {properties.length === 0 && <option value="">Cargando propiedades...</option>}
+   </select>
+ </div>
+
  {/* Top Banner & Selector */}
  <div className="bg-white border border-slate-200/80 p-6 rounded-2xl shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
@@ -140,7 +180,7 @@ export default function PortalResidentePage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
  <span className="text-slate-500 text-xs font-semibold">Total a Pagar este Mes</span>
  <p className="text-2xl font-black text-slate-900 mt-2">{formatCLP(calc.totalToPayCLP)}</p>
- <p className="text-[11px] text-monday-violet mt-1 font-bold">Vence: {activePeriod.dueDate}</p>
+ <p className="text-[11px] text-[#c64d00] mt-1 font-bold">Vence: {activePeriod.dueDate}</p>
  </div>
  </div>
 
@@ -234,7 +274,7 @@ export default function PortalResidentePage() {
  <tr className="bg-cloud text-white font-black">
  <td className="p-3 text-sm">TOTAL A PAGAR FECHA VENCIMIENTO ({activePeriod.dueDate})</td>
  <td className="p-3 text-center text-xs font-medium text-iron">CLP sin centavos</td>
- <td className="p-3 text-right text-base text-monday-violet">{formatCLP(calc.totalToPayCLP)}</td>
+ <td className="p-3 text-right text-base text-[#c64d00]/70">{formatCLP(calc.totalToPayCLP)}</td>
  </tr>
  </tbody>
  </table>

@@ -521,7 +521,7 @@ export default function VisitorParkingLayout() {
  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">En Mantención</span>
  <p className="text-lg font-black text-slate-700">{maintenanceCount} No disp.</p>
  </div>
- <AlertTriangle className="w-6 h-6 text-monday-violet" />
+ <AlertTriangle className="w-6 h-6 text-[#c64d00]" />
  </div>
  </div>
  </div>
@@ -825,7 +825,7 @@ export default function VisitorParkingLayout() {
 
  <div className="bg-cloud text-white rounded-xl p-4 text-center space-y-1">
  <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Patente Registrada</span>
- <p className="text-2xl font-black text-monday-violet tracking-widest">{detailsModalSpot.parkedVisitor.vehiclePlate}</p>
+ <p className="text-2xl font-black text-[#c64d00]/70 tracking-widest">{detailsModalSpot.parkedVisitor.vehiclePlate}</p>
  </div>
 
  <div className="space-y-2 text-xs">

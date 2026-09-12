@@ -12,6 +12,7 @@ import {
  CondoUnit,
  formatCLP
 } from '@/lib/condominio-client';
+import { useAuthToken } from '@/hooks/use-auth-token';
 
 // Bank feed synthetic data
 interface BankMovement {
@@ -28,6 +29,11 @@ interface BankMovement {
 const INITIAL_BANK_MOVEMENTS: BankMovement[] = [];
 
 export default function PagosConciliacionPage() {
+ const session = useAuthToken();
+ const companyId = session?.company_id;
+
+ const [properties, setProperties] = useState<any[]>([]);
+ const [selectedPropertyId, setSelectedPropertyId] = useState<string>('');
  const [payments, setPayments] = useState<PaymentReceipt[]>(INITIAL_PAYMENTS);
  const [units, setUnits] = useState<CondoUnit[]>(INITIAL_UNITS);
  const [bankMovements, setBankMovements] = useState<BankMovement[]>(INITIAL_BANK_MOVEMENTS);
@@ -41,10 +47,29 @@ export default function PagosConciliacionPage() {
  const [paymentReference, setPaymentReference] = useState('');
  const [paymentDate, setPaymentDate] = useState(new Date().toISOString().substring(0, 10));
 
+ useEffect(() => {
+   if (!companyId) return;
+   fetch(`/api/companies/${companyId}/condos`)
+     .then(r => r.json())
+     .then(json => {
+       if (json.success && json.data) {
+         setProperties(json.data.properties || json.data || []);
+       }
+     })
+     .catch(() => {});
+ }, [companyId]);
+
+ useEffect(() => {
+   if (properties.length > 0 && !selectedPropertyId) {
+     setSelectedPropertyId(properties[0].id);
+   }
+ }, [properties, selectedPropertyId]);
+
  const fetchCondoData = async () => {
+ if (!companyId || !selectedPropertyId) return;
  try {
  setLoading(true);
- const res = await fetch('/api/condominio');
+ const res = await fetch(`/api/companies/${companyId}/condos/${selectedPropertyId}/dashboard`);
  const json = await res.json();
  if (json.success && json.data) {
  if (json.data.payments && json.data.payments.length > 0) {
@@ -64,17 +89,17 @@ export default function PagosConciliacionPage() {
 
  useEffect(() => {
  fetchCondoData();
- }, []);
+ }, [selectedPropertyId]);
 
  const totalCollectedCLP = payments.reduce((acc, p) => acc + p.amountCLP, 0);
 
  const handleRegisterPayment = async (e: React.FormEvent) => {
  e.preventDefault();
  const unitObj = units.find((u) => u.id === selectedUnitId);
- if (!unitObj || !paymentAmount) return;
+ if (!unitObj || !paymentAmount || !companyId || !selectedPropertyId) return;
 
  try {
- const res = await fetch('/api/condominio/payments', {
+ const res = await fetch(`/api/companies/${companyId}/condos/${selectedPropertyId}/payments`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
@@ -107,6 +132,21 @@ export default function PagosConciliacionPage() {
 
  return (
  <div className="space-y-6">
+ {/* Property Selector */}
+ <div className="bg-white border border-slate-200/80 p-4 rounded-2xl shadow-xs flex items-center gap-4">
+   <label className="text-xs font-bold text-slate-600">Propiedad:</label>
+   <select
+     value={selectedPropertyId}
+     onChange={(e) => setSelectedPropertyId(e.target.value)}
+     className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none"
+   >
+     {properties.map((p: any) => (
+       <option key={p.id} value={p.id}>{p.name || p.address || `Propiedad ${p.id}`}</option>
+     ))}
+     {properties.length === 0 && <option value="">Cargando propiedades...</option>}
+   </select>
+ </div>
+
  {/* Top Banner */}
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-slate-200/80 p-6 rounded-2xl shadow-xs">
  <div>
@@ -150,7 +190,7 @@ export default function PagosConciliacionPage() {
 
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
  <span className="text-slate-500 text-xs font-semibold">Movimientos Pendientes Cartola</span>
- <p className="text-2xl font-black text-monday-violet mt-2">
+ <p className="text-2xl font-black text-[#c64d00] mt-2">
  {bankMovements.filter((m) => m.status === 'pendiente').length}
  </p>
  <p className="text-[11px] text-slate-500 mt-1">Sugerencias de conciliación</p>

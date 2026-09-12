@@ -13,17 +13,42 @@ import {
  calculateUnitExpense,
  formatCLP
 } from '@/lib/condominio-client';
+import { useAuthToken } from '@/hooks/use-auth-token';
 
 export default function GastosComunesPage() {
+ const session = useAuthToken();
+ const companyId = session?.company_id;
+
+ const [properties, setProperties] = useState<any[]>([]);
+ const [selectedPropertyId, setSelectedPropertyId] = useState<string>('');
  const [periods, setPeriods] = useState<CommonExpensePeriod[]>(INITIAL_PERIODS);
  const [units, setUnits] = useState(INITIAL_UNITS);
  const [activePeriodId, setActivePeriodId] = useState<string>('');
  const [loading, setLoading] = useState<boolean>(true);
 
+ useEffect(() => {
+   if (!companyId) return;
+   fetch(`/api/companies/${companyId}/condos`)
+     .then(r => r.json())
+     .then(json => {
+       if (json.success && json.data) {
+         setProperties(json.data.properties || json.data || []);
+       }
+     })
+     .catch(() => {});
+ }, [companyId]);
+
+ useEffect(() => {
+   if (properties.length > 0 && !selectedPropertyId) {
+     setSelectedPropertyId(properties[0].id);
+   }
+ }, [properties, selectedPropertyId]);
+
  const fetchCondoData = async () => {
+ if (!companyId || !selectedPropertyId) return;
  try {
  setLoading(true);
- const res = await fetch('/api/condominio');
+ const res = await fetch(`/api/companies/${companyId}/condos/${selectedPropertyId}/dashboard`);
  const json = await res.json();
  if (json.success && json.data) {
  if (json.data.periods && json.data.periods.length > 0) {
@@ -45,7 +70,7 @@ export default function GastosComunesPage() {
 
  useEffect(() => {
  fetchCondoData();
- }, []);
+ }, [selectedPropertyId]);
 
  // Active period selected
  const activePeriod = periods.find((p) => p.id === activePeriodId) || periods[0];
@@ -90,15 +115,14 @@ export default function GastosComunesPage() {
 
  const handleAddItem = async (e: React.FormEvent) => {
  e.preventDefault();
- if (!newDescription || !newAmount || !activePeriod) return;
+ if (!newDescription || !newAmount || !activePeriod || !companyId || !selectedPropertyId) return;
 
  try {
  const parsedAmount = parseInt(newAmount, 10) || 0;
- const res = await fetch('/api/condominio/expenses', {
+ const res = await fetch(`/api/companies/${companyId}/condos/${selectedPropertyId}/periods/${activePeriod.id}/items`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- period_id: activePeriod.id,
  category: newCategory,
  description: newDescription,
  amount_clp: parsedAmount,
@@ -121,9 +145,9 @@ export default function GastosComunesPage() {
 
  // Remove Item
  const handleRemoveItem = async (itemId: string) => {
- if (!activePeriod) return;
+ if (!activePeriod || !companyId || !selectedPropertyId) return;
  try {
- const res = await fetch(`/api/condominio/expenses?id=${itemId}`, { method: 'DELETE' });
+ const res = await fetch(`/api/companies/${companyId}/condos/${selectedPropertyId}/periods/${activePeriod.id}/items?id=${itemId}`, { method: 'DELETE' });
  const json = await res.json();
  if (json.success) {
  await fetchCondoData();
@@ -136,8 +160,9 @@ export default function GastosComunesPage() {
  // Create New Period
  const handleCreatePeriod = async (e: React.FormEvent) => {
  e.preventDefault();
+ if (!companyId || !selectedPropertyId) return;
  try {
- const res = await fetch('/api/condominio/periods', {
+ const res = await fetch(`/api/companies/${companyId}/condos/${selectedPropertyId}/periods`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
@@ -162,6 +187,21 @@ export default function GastosComunesPage() {
 
  return (
  <div className="space-y-6">
+ {/* Property Selector */}
+ <div className="bg-white border border-slate-200/80 p-4 rounded-2xl shadow-xs flex items-center gap-4">
+   <label className="text-xs font-bold text-slate-600">Propiedad:</label>
+   <select
+     value={selectedPropertyId}
+     onChange={(e) => setSelectedPropertyId(e.target.value)}
+     className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none"
+   >
+     {properties.map((p: any) => (
+       <option key={p.id} value={p.id}>{p.name || p.address || `Propiedad ${p.id}`}</option>
+     ))}
+     {properties.length === 0 && <option value="">Cargando propiedades...</option>}
+   </select>
+ </div>
+
  {/* Top Banner */}
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-slate-200/80 p-6 rounded-2xl shadow-xs">
  <div>

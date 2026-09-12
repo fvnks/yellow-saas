@@ -7,12 +7,17 @@ import {
  FileSpreadsheet, Receipt, MessageSquare, Download, MapPin
 } from 'lucide-react';
 import {
- INITIAL_UNITS,
  CondoUnit,
  formatCLP
 } from '@/lib/condominio-client';
+import { useAuthToken } from '@/hooks/use-auth-token';
 
 export default function CondominioDashboardPage() {
+ const session = useAuthToken();
+ const companyId = session?.company_id;
+
+ const [properties, setProperties] = useState<any[]>([]);
+ const [selectedPropertyId, setSelectedPropertyId] = useState<string>('');
  const [units, setUnits] = useState<CondoUnit[]>([]);
  const [loading, setLoading] = useState<boolean>(true);
  const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -30,10 +35,29 @@ export default function CondominioDashboardPage() {
  const [newUnitOwnerPhone, setNewUnitOwnerPhone] = useState('');
  const [newUnitAlicuota, setNewUnitAlicuota] = useState('8.5');
 
+ useEffect(() => {
+   if (!companyId) return;
+   fetch(`/api/companies/${companyId}/condos`)
+     .then(r => r.json())
+     .then(json => {
+       if (json.success && json.data) {
+         setProperties(json.data.properties || json.data || []);
+       }
+     })
+     .catch(() => {});
+ }, [companyId]);
+
+ useEffect(() => {
+   if (properties.length > 0 && !selectedPropertyId) {
+     setSelectedPropertyId(properties[0].id);
+   }
+ }, [properties, selectedPropertyId]);
+
  const fetchCondoData = async () => {
+ if (!companyId || !selectedPropertyId) return;
  try {
  setLoading(true);
- const res = await fetch('/api/condominio');
+ const res = await fetch(`/api/companies/${companyId}/condos/${selectedPropertyId}/dashboard`);
  const json = await res.json();
  if (json.success && json.data) {
  if (json.data.units && json.data.units.length > 0) {
@@ -49,7 +73,7 @@ export default function CondominioDashboardPage() {
 
  useEffect(() => {
  fetchCondoData();
- }, []);
+ }, [selectedPropertyId]);
 
  // Calculations
  const filteredUnits = units.filter((u) => {
@@ -68,10 +92,10 @@ export default function CondominioDashboardPage() {
 
  const handleCreateUnit = async (e: React.FormEvent) => {
  e.preventDefault();
- if (!newUnitNumber || !newUnitOwnerName) return;
+ if (!newUnitNumber || !newUnitOwnerName || !companyId || !selectedPropertyId) return;
 
  try {
- const res = await fetch('/api/condominio/units', {
+ const res = await fetch(`/api/companies/${companyId}/condos/${selectedPropertyId}/units`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
@@ -101,6 +125,21 @@ export default function CondominioDashboardPage() {
 
  return (
  <div className="space-y-6">
+ {/* Property Selector */}
+ <div className="bg-white border border-slate-200/80 p-4 rounded-2xl shadow-xs flex items-center gap-4">
+   <label className="text-xs font-bold text-slate-600">Propiedad:</label>
+   <select
+     value={selectedPropertyId}
+     onChange={(e) => setSelectedPropertyId(e.target.value)}
+     className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none"
+   >
+     {properties.map((p: any) => (
+       <option key={p.id} value={p.id}>{p.name || p.address || `Propiedad ${p.id}`}</option>
+     ))}
+     {properties.length === 0 && <option value="">Cargando propiedades...</option>}
+   </select>
+ </div>
+
  {/* Top Banner & Header */}
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-slate-200/80 p-6 rounded-2xl shadow-xs">
  <div>
@@ -166,7 +205,7 @@ export default function CondominioDashboardPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
  <div className="flex items-center justify-between text-slate-500 text-xs font-semibold">
  <span>Deuda Total Acumulada</span>
- <DollarSign className="w-4 h-4 text-monday-violet" />
+ <DollarSign className="w-4 h-4 text-[#c64d00]" />
  </div>
  <p className="text-xl font-black text-slate-900 mt-2">{formatCLP(totalBalanceDebtCLP)}</p>
  <p className="text-[11px] text-slate-500 mt-1 font-medium">
@@ -235,7 +274,7 @@ export default function CondominioDashboardPage() {
  statusBadge = 'bg-rose-100 text-rose-800 border-rose-300';
  statusText = 'Moroso';
  } else if (isPendiente) {
- statusBg = 'border-peach bg-peach/30/50 hover:border-monday-violet';
+ statusBg = 'border-peach bg-peach/30/50 hover:border-peach';
  statusBadge = 'bg-peach/50 text-[#c64d00] border-peach';
  statusText = 'Pendiente';
  }
