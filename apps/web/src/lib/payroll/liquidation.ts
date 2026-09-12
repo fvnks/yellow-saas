@@ -174,7 +174,7 @@ export async function calculateTermination(
 
   if (input.termination_type === 'despido_sin_causa') {
     const maxIndemnMonths = Math.min(fullYears, 11);
-    const maxIndemnUF = 45 * getUFValue();
+    const maxIndemnUF = 90 * getUFValue(); // Art. 163: 90 UF cap for indefinite contracts
     const indemnAmount = Math.min(Math.round(monthlySalary * maxIndemnMonths), maxIndemnUF);
     if (indemnAmount > 0) {
       items.push({
@@ -208,7 +208,7 @@ export async function calculateTermination(
 
   if (input.termination_type === 'mutuo_acuerdo') {
     const maxIndemnMonths = Math.min(fullYears, 11);
-    const maxIndemnUF = 45 * getUFValue();
+    const maxIndemnUF = 90 * getUFValue(); // Art. 163: 90 UF cap for indefinite contracts
     const fullIndemn = Math.min(Math.round(monthlySalary * maxIndemnMonths), maxIndemnUF);
     const indemnAmount = Math.round(fullIndemn * 0.5);
     if (indemnAmount > 0) {
