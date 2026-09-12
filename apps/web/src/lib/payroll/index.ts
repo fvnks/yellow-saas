@@ -3,11 +3,27 @@
  * Based on 2024-2025 labor law rates
  */
 
-// ── UF Value (configurable per period) ──
-// TODO: Replace with configurable per-period UF value (e.g. from DB or API)
+import { getChileanIndicators } from '@/lib/indicators';
+
+// ── Dynamic UF & IMM values (lazy-loaded from indicators API) ──
 let _ufValue = 38500;
+let _immValue = 500000; // Ingreso Mínimo Mensual 2025 (CLP)
+
+export async function loadIndicators(): Promise<{ uf: number; imm: number }> {
+  try {
+    const indicators = await getChileanIndicators();
+    _ufValue = indicators.uf;
+    // IMM is typically fetched from a separate API or DB; fallback to 500k
+    _immValue = indicators.utm ? indicators.utm * 12 : 500000;
+    return { uf: _ufValue, imm: _immValue };
+  } catch {
+    return { uf: _ufValue, imm: _immValue };
+  }
+}
+
 export function setUFValue(value: number) { _ufValue = value; }
 export function getUFValue() { return _ufValue; }
+export function getImmValue() { return _immValue; }
 export const UF_VALUE_CLP = 38500; // legacy alias
 
 // ── Imponible Cap (80 UF) ──
@@ -60,8 +76,10 @@ export const TAX_BRACKETS = [
   { min: 8662.5, max: Infinity, rate: 35, deduction: 1750.09 },
 ];
 
-// ── Gratificación ──
-export const GRATIFICATION_MONTHLY_UF_CAP = 4.75;
+// ── Gratificación (Art. 47) ──
+// 25% of annual remuneration, capped at 4.75 IMM per month worked
+export const GRATIFICATION_RATE = 0.25;
+export const GRATIFICATION_MONTHLY_IMM_CAP = 4.75;
 
 // ── Aguinaldo (Navidad) ──
 export const AGUINALDO_RATE = 0.30;
@@ -140,8 +158,9 @@ function calculateImpuestoUnico(monthlyImponibleUF: number): number {
 }
 
 /**
- * Calculate gratificación monthly (proportional to months worked)
- * Chilean law: if hired before the 15th, that month counts
+ * Calculate gratificación monthly (Art. 47)
+ * Chilean law: 25% of annual remuneration, capped at 4.75 IMM per month worked
+ * If hired before the 15th, that month counts
  */
 function calculateGratificacion(monthlySalary: number, hireDate: string, periodEnd: Date): { amount: number; monthsWorked: number } {
   const hire = new Date(hireDate);
@@ -154,18 +173,17 @@ function calculateGratificacion(monthlySalary: number, hireDate: string, periodE
   } else if (hireYear === periodYear) {
     const hireMonth = hire.getMonth(); // 0-indexed
     const hireDay = hire.getDate();
-    // If hired before the 15th, that month counts
     monthsWorked = hireDay <= 15 ? (12 - hireMonth) : (11 - hireMonth);
     monthsWorked = Math.max(0, monthsWorked);
   } else {
     monthsWorked = 0;
   }
 
-  const annualSalary = monthlySalary * 12;
-  const gratification = (annualSalary / 12) * monthsWorked;
-  const gratificationUf = gratification / _ufValue;
-  const cappedGratificationUf = Math.min(gratificationUf, GRATIFICATION_MONTHLY_UF_CAP * monthsWorked);
-  const amount = cappedGratificationUf * _ufValue;
+  // 25% of annual remuneration (Art. 47)
+  const gratification = monthlySalary * GRATIFICATION_RATE * monthsWorked;
+  // Cap: 4.75 IMM per month worked
+  const capAmount = GRATIFICATION_MONTHLY_IMM_CAP * _immValue * monthsWorked;
+  const amount = Math.min(gratification, capAmount);
 
   return { amount, monthsWorked };
 }

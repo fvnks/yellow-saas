@@ -1,4 +1,4 @@
-import { getUFValue } from './index';
+import { getUFValue, getImmValue, GRATIFICATION_RATE, GRATIFICATION_MONTHLY_IMM_CAP } from './index';
 import { query } from '@/api/lib/db';
 
 export type TerminationType =
@@ -144,8 +144,9 @@ export async function calculateTermination(
     12,
     monthsBetween(`${currentYear}-01-01`, input.termination_date) + 1
   );
-  const proportionalGrat = Math.round(monthlySalary * 0.25 * (monthsWorkedThisYear / 12));
-    const maxGrat = Math.round(4.75 * getUFValue());
+  // Art. 47: 25% of annual remuneration, capped at 4.75 IMM per month
+  const proportionalGrat = Math.round(monthlySalary * GRATIFICATION_RATE * monthsWorkedThisYear);
+  const maxGrat = Math.round(GRATIFICATION_MONTHLY_IMM_CAP * getImmValue() * monthsWorkedThisYear);
   const gratAmount = Math.min(proportionalGrat, maxGrat);
   if (gratAmount > 0 && input.termination_type !== 'despido_con_causa') {
     items.push({
