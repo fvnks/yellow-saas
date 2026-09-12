@@ -141,11 +141,11 @@ export default function PagosConciliacionPage() {
  </div>
 
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
- <span className="text-slate-500 text-xs font-semibold">Conciliados con Banco</span>
+ <span className="text-slate-500 text-xs font-semibold">Total Pagos Registrados</span>
  <p className="text-2xl font-black text-cyan-600 mt-2">
- {payments.filter((p) => p.bankReconciled).length} de {payments.length}
+ {payments.length}
  </p>
- <p className="text-[11px] text-slate-500 mt-1">Cartola bancaria verificada</p>
+ <p className="text-[11px] text-slate-500 mt-1">Comprobantes de pago</p>
  </div>
 
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
@@ -247,7 +247,6 @@ export default function PagosConciliacionPage() {
  <th className="p-3">Método</th>
  <th className="p-3">N° Referencia</th>
  <th className="p-3 text-right">Monto CLP</th>
- <th className="p-3 text-center">Banco</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-slate-100 font-medium">
@@ -259,13 +258,6 @@ export default function PagosConciliacionPage() {
  <td className="p-3 capitalize text-slate-700 font-semibold">{p.paymentMethod}</td>
  <td className="p-3 text-slate-600">{p.referenceNumber}</td>
  <td className="p-3 text-right font-black text-slate-900">{formatCLP(p.amountCLP)}</td>
- <td className="p-3 text-center">
- {p.bankReconciled ? (
- <span className="text-emerald-600 font-bold text-[10px]">✓ Verificado</span>
- ) : (
- <span className="text-[#c64d00] font-bold text-[10px]">Manual</span>
- )}
- </td>
  </tr>
  ))}
  </tbody>

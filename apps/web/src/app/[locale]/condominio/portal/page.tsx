@@ -47,14 +47,10 @@ export default function PortalResidentePage() {
  id: 'u-102',
  number: 'Dpto 102',
  type: 'departamento',
- sectorId: 'sec-torre-a',
- sectorName: 'Torre A',
  ownerName: 'María José Fernández',
- ownerRut: '12.876.543-2',
  ownerEmail: 'mj.fernandez@email.cl',
  ownerPhone: '+56 9 7654 3210',
  alicuotaPercentage: 8.50,
- areaM2: 85,
  unpaidBalanceCLP: 0,
  status: 'al_dia',
  };
@@ -125,7 +121,7 @@ export default function PortalResidentePage() {
  <span className="text-slate-500 text-xs font-semibold">Unidad & Copropiedad</span>
  <p className="text-xl font-black text-slate-900 mt-2">{activeUnit.number}</p>
  <p className="text-[11px] text-slate-500 mt-1 font-medium">
- Alícuota: <strong className="text-cyan-600">{activeUnit.alicuotaPercentage}%</strong> ({activeUnit.areaM2} m²)
+ Alícuota: <strong className="text-cyan-600">{activeUnit.alicuotaPercentage}%</strong>
  </p>
  </div>
 
@@ -178,14 +174,12 @@ export default function PortalResidentePage() {
  <div>
  <p className="text-slate-500 font-medium">Detalle del Copropietario / Residente:</p>
  <p className="font-bold text-slate-900 text-sm mt-0.5">{activeUnit.ownerName}</p>
- <p className="text-slate-600">RUT: {activeUnit.ownerRut}</p>
  <p className="text-slate-600">Correo: {activeUnit.ownerEmail}</p>
  </div>
 
  <div className="text-right">
  <p className="text-slate-500 font-medium">Identificación de la Propiedad:</p>
  <p className="font-bold text-slate-900 text-sm mt-0.5">{activeUnit.number}</p>
- <p className="text-slate-600">Sector: {activeUnit.sectorName}</p>
  <p className="text-slate-600">Coeficiente Alícuota: <strong>{activeUnit.alicuotaPercentage}%</strong></p>
  </div>
  </div>

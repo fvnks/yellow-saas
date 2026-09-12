@@ -7,42 +7,28 @@ import {
  FileSpreadsheet, Receipt, MessageSquare, Download, MapPin
 } from 'lucide-react';
 import {
- INITIAL_SECTORS,
  INITIAL_UNITS,
- CondoSector,
  CondoUnit,
  formatCLP
 } from '@/lib/condominio-client';
 
 export default function CondominioDashboardPage() {
- const [sectors, setSectors] = useState<CondoSector[]>(INITIAL_SECTORS);
- const [units, setUnits] = useState<CondoUnit[]>(INITIAL_UNITS);
+ const [units, setUnits] = useState<CondoUnit[]>([]);
  const [loading, setLoading] = useState<boolean>(true);
- const [selectedSector, setSelectedSector] = useState<string>('all');
  const [statusFilter, setStatusFilter] = useState<string>('all');
  const [searchTerm, setSearchTerm] = useState<string>('');
 
  // Modals
  const [showAddUnitModal, setShowAddUnitModal] = useState<boolean>(false);
- const [showAddSectorModal, setShowAddSectorModal] = useState<boolean>(false);
  const [selectedUnitForDetail, setSelectedUnitForDetail] = useState<CondoUnit | null>(null);
 
  // New Unit Form State
  const [newUnitNumber, setNewUnitNumber] = useState('');
  const [newUnitType, setNewUnitType] = useState<'departamento' | 'casa' | 'parcela' | 'bodega' | 'estacionamiento'>('departamento');
- const [newUnitSectorId, setNewUnitSectorId] = useState('s1');
  const [newUnitOwnerName, setNewUnitOwnerName] = useState('');
- const [newUnitOwnerRut, setNewUnitOwnerRut] = useState('');
  const [newUnitOwnerEmail, setNewUnitOwnerEmail] = useState('');
  const [newUnitOwnerPhone, setNewUnitOwnerPhone] = useState('');
  const [newUnitAlicuota, setNewUnitAlicuota] = useState('8.5');
- const [newUnitArea, setNewUnitArea] = useState('85');
-
- // New Sector Form State
- const [newSectorName, setNewSectorName] = useState('');
- const [newSectorType, setNewSectorType] = useState<'torre' | 'sector_casas' | 'sector_parcelas' | 'etapa'>('torre');
- const [newSectorDescription, setNewSectorDescription] = useState('');
- const [newSectorColor, setNewSectorColor] = useState('#0EA5E9');
 
  const fetchCondoData = async () => {
  try {
@@ -52,9 +38,6 @@ export default function CondominioDashboardPage() {
  if (json.success && json.data) {
  if (json.data.units && json.data.units.length > 0) {
  setUnits(json.data.units);
- }
- if (json.data.sectors && json.data.sectors.length > 0) {
- setSectors(json.data.sectors);
  }
  }
  } catch (err) {
@@ -70,13 +53,11 @@ export default function CondominioDashboardPage() {
 
  // Calculations
  const filteredUnits = units.filter((u) => {
- const matchesSector = selectedSector === 'all' || u.sectorId === selectedSector;
  const matchesStatus = statusFilter === 'all' || u.status === statusFilter;
  const matchesSearch =
  u.number.toLowerCase().includes(searchTerm.toLowerCase()) ||
- u.ownerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
- u.ownerRut.toLowerCase().includes(searchTerm.toLowerCase());
- return matchesSector && matchesStatus && matchesSearch;
+ u.ownerName.toLowerCase().includes(searchTerm.toLowerCase());
+ return matchesStatus && matchesSearch;
  });
 
  const totalBalanceDebtCLP = units.reduce((acc, u) => acc + u.unpaidBalanceCLP, 0);
@@ -118,23 +99,6 @@ export default function CondominioDashboardPage() {
  }
  };
 
- const handleCreateSector = (e: React.FormEvent) => {
- e.preventDefault();
- if (!newSectorName) return;
-
- const newSec: CondoSector = {
- id: `sec-${Date.now()}`,
- name: newSectorName,
- type: newSectorType,
- description: newSectorDescription || 'Sector personalizado',
- color: newSectorColor,
- };
-
- setSectors([...sectors, newSec]);
- setShowAddSectorModal(false);
- setNewSectorName('');
- };
-
  return (
  <div className="space-y-6">
  {/* Top Banner & Header */}
@@ -154,14 +118,6 @@ export default function CondominioDashboardPage() {
  </div>
 
  <div className="flex flex-wrap items-center gap-2">
- <button
- onClick={() => setShowAddSectorModal(true)}
- className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-150 flex items-center gap-1.5 shadow-xs"
- >
- <Plus className="w-4 h-4 text-slate-500" />
- Nuevo Sector / Torre
- </button>
-
  <button
  onClick={() => setShowAddUnitModal(true)}
  className="bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-xs font-bold transition-all duration-150 shadow-xs flex items-center gap-2 active:scale-[0.98]"
@@ -219,35 +175,9 @@ export default function CondominioDashboardPage() {
  </div>
  </div>
 
- {/* Filter and Sector Bar */}
+ {/* Filter Bar */}
  <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
- {/* Sector Tabs */}
- <div className="flex flex-wrap items-center gap-1.5 w-full md:w-auto">
- <button
- onClick={() => setSelectedSector('all')}
- className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
- selectedSector === 'all'
- ? 'bg-monday-violet text-white'
- : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
- }`}
- >
- Todos los Sectores ({units.length})
- </button>
- {sectors.map((s) => (
- <button
- key={s.id}
- onClick={() => setSelectedSector(s.id)}
- className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
- selectedSector === s.id
- ? 'bg-cyan-600 text-white'
- : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
- }`}
- >
- {s.name}
- </button>
- ))}
- </div>
-
+ 
  {/* Search & Status Filters */}
  <div className="flex items-center gap-2 w-full md:w-auto">
  <div className="relative flex-1 md:w-64">
@@ -324,7 +254,6 @@ export default function CondominioDashboardPage() {
  </div>
 
  <p className="text-xs font-bold text-slate-800 truncate">{u.ownerName}</p>
- <p className="text-[10px] text-slate-500 mt-0.5">RUT: {u.ownerRut}</p>
 
  <div className="mt-3 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px] text-slate-600 font-medium">
  <span>Alícuota: <strong>{u.alicuotaPercentage}%</strong></span>
@@ -344,7 +273,6 @@ export default function CondominioDashboardPage() {
  <div className="flex items-center justify-between border-b pb-3 mb-4">
  <div>
  <h3 className="text-base font-black text-slate-900">{selectedUnitForDetail.number}</h3>
- <p className="text-xs text-slate-500 font-medium">{selectedUnitForDetail.sectorName}</p>
  </div>
  <button
  onClick={() => setSelectedUnitForDetail(null)}
@@ -358,7 +286,6 @@ export default function CondominioDashboardPage() {
  <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
  <p className="text-slate-500 font-medium">Propietario / Residente</p>
  <p className="text-sm font-bold text-slate-900 mt-0.5">{selectedUnitForDetail.ownerName}</p>
- <p className="text-slate-600 mt-0.5">RUT: {selectedUnitForDetail.ownerRut}</p>
  <p className="text-slate-600">Email: {selectedUnitForDetail.ownerEmail}</p>
  <p className="text-slate-600">Teléfono: {selectedUnitForDetail.ownerPhone}</p>
  </div>
@@ -367,10 +294,6 @@ export default function CondominioDashboardPage() {
  <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
  <p className="text-slate-500 font-medium">Alícuota %</p>
  <p className="text-base font-black text-cyan-600 mt-0.5">{selectedUnitForDetail.alicuotaPercentage}%</p>
- </div>
- <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
- <p className="text-slate-500 font-medium">Superficie</p>
- <p className="text-base font-black text-slate-800 mt-0.5">{selectedUnitForDetail.areaM2} m²</p>
  </div>
  </div>
 
@@ -415,19 +338,6 @@ export default function CondominioDashboardPage() {
  </div>
 
  <div>
- <label className="block font-bold text-slate-700 mb-1">Sector / Torre</label>
- <select
- value={newUnitSectorId}
- onChange={(e) => setNewUnitSectorId(e.target.value)}
- className="w-full p-2 border border-slate-200 rounded-xl font-bold text-slate-700"
- >
- {sectors.map((s) => (
- <option key={s.id} value={s.id}>{s.name}</option>
- ))}
- </select>
- </div>
-
- <div>
  <label className="block font-bold text-slate-700 mb-1">Tipo de Propiedad</label>
  <select
  value={newUnitType}
@@ -468,17 +378,6 @@ export default function CondominioDashboardPage() {
  </div>
 
  <div>
- <label className="block font-bold text-slate-700 mb-1">RUT Propietario</label>
- <input
- type="text"
- placeholder="12.345.678-9"
- value={newUnitOwnerRut}
- onChange={(e) => setNewUnitOwnerRut(e.target.value)}
- className="w-full p-2 border border-slate-200 rounded-xl font-medium"
- />
- </div>
-
- <div>
  <label className="block font-bold text-slate-700 mb-1">Email Notificación</label>
  <input
  type="email"
@@ -503,73 +402,6 @@ export default function CondominioDashboardPage() {
  className="px-4 py-2 bg-monday-violet text-white font-bold rounded-xl text-xs hover:bg-monday-violet-hover"
  >
  Guardar Unidad
- </button>
- </div>
- </form>
- </div>
- )}
-
- {/* Add Sector Modal */}
- {showAddSectorModal && (
- <div className="fixed inset-0 bg-cloud/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
- <form onSubmit={handleCreateSector} className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-md w-full p-6 space-y-4">
- <div className="flex items-center justify-between border-b pb-3">
- <h3 className="text-base font-black text-slate-900">Crear Nuevo Sector / Torre</h3>
- <button type="button" onClick={() => setShowAddSectorModal(false)} className="text-slate-400 font-bold">✕</button>
- </div>
-
- <div className="space-y-3 text-xs">
- <div>
- <label className="block font-bold text-slate-700 mb-1">Nombre del Sector / Torre</label>
- <input
- type="text"
- placeholder="ej. Torre C - Los Coihues"
- value={newSectorName}
- onChange={(e) => setNewSectorName(e.target.value)}
- className="w-full p-2 border border-slate-200 rounded-xl font-medium"
- required
- />
- </div>
-
- <div>
- <label className="block font-bold text-slate-700 mb-1">Tipo de Sector</label>
- <select
- value={newSectorType}
- onChange={(e) => setNewSectorType(e.target.value as any)}
- className="w-full p-2 border border-slate-200 rounded-xl font-bold text-slate-700"
- >
- <option value="torre">Torre / Edificio</option>
- <option value="sector_casas">Sector de Casas</option>
- <option value="sector_parcelas">Macrolote / Parcelas</option>
- <option value="etapa">Etapa / Condominio</option>
- </select>
- </div>
-
- <div>
- <label className="block font-bold text-slate-700 mb-1">Descripción</label>
- <input
- type="text"
- placeholder="ej. Etapa 2 de 24 departamentos"
- value={newSectorDescription}
- onChange={(e) => setNewSectorDescription(e.target.value)}
- className="w-full p-2 border border-slate-200 rounded-xl font-medium"
- />
- </div>
- </div>
-
- <div className="pt-3 border-t flex justify-end gap-2">
- <button
- type="button"
- onClick={() => setShowAddSectorModal(false)}
- className="px-4 py-2 border rounded-xl text-xs font-bold text-slate-600"
- >
- Cancelar
- </button>
- <button
- type="submit"
- className="px-4 py-2 bg-cyan-600 text-white font-bold rounded-xl text-xs hover:bg-cyan-700"
- >
- Crear Sector
  </button>
  </div>
  </form>

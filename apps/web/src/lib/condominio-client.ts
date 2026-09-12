@@ -1,36 +1,22 @@
 export interface CondoUnit {
   id: string;
   number: string;
-  type: 'departamento' | 'casa' | 'parcela' | 'bodega' | 'estacionamiento';
-  sectorId: string;
-  sectorName: string;
+  type: string;
   ownerName: string;
-  ownerRut: string;
   ownerEmail: string;
   ownerPhone: string;
-  alicuotaPercentage: number; // Coefficient, e.g. 2.5 => 2.5%
-  areaM2: number;
-  unpaidBalanceCLP: number; // Integer CLP
+  alicuotaPercentage: number;
+  unpaidBalanceCLP: number;
   status: 'al_dia' | 'pendiente' | 'moroso';
-  x?: number; // Visual grid coordinates for layout canvas
+  x?: number;
   y?: number;
-}
-
-export interface CondoSector {
-  id: string;
-  name: string;
-  type: 'torre' | 'sector_casas' | 'sector_parcelas' | 'etapa';
-  description: string;
-  color: string;
 }
 
 export interface ExpenseItem {
   id: string;
-  category: 'Mantención' | 'Conserjería' | 'Servicios Básicos' | 'Reparaciones' | 'Administración' | 'Seguros';
+  category: string;
   description: string;
   amountCLP: number;
-  supplierName?: string;
-  documentNumber?: string;
 }
 
 export interface CommonExpensePeriod {
@@ -55,15 +41,12 @@ export interface PaymentReceipt {
   periodId: string;
   amountCLP: number;
   paymentDate: string;
-  paymentMethod: 'transferencia' | 'webpay' | 'deposito' | 'efectivo' | 'cheque';
+  paymentMethod: string;
   referenceNumber: string;
-  bankReconciled: boolean;
   notes?: string;
 }
 
 // Production Initial Datasets (Used as fallback/seed data)
-export const INITIAL_SECTORS: CondoSector[] = [];
-
 export const INITIAL_UNITS: CondoUnit[] = [];
 
 export const INITIAL_PERIODS: CommonExpensePeriod[] = [];

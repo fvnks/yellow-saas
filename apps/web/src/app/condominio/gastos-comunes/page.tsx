@@ -307,7 +307,7 @@ export default function GastosComunesPage() {
  </span>
  </td>
  <td className="p-3 font-semibold text-slate-800">{item.description}</td>
- <td className="p-3 text-slate-500">{item.supplierName || 'Planta Condominio'}</td>
+ <td className="p-3 text-slate-500">-</td>
  <td className="p-3 text-right font-black text-slate-900">{formatCLP(item.amountCLP)}</td>
  <td className="p-3 text-center">
  <button
