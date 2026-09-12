@@ -75,22 +75,21 @@ export async function GET(request: NextRequest) {
       id: u.id,
       number: u.number,
       type: u.type,
-      sectorId: 's1',
-      sectorName: 'Torre Central',
       ownerName: u.ownerName || 'Sin Asignar',
-      ownerRut: '12.345.678-9',
       ownerEmail: u.ownerEmail || '',
       ownerPhone: u.ownerPhone || '',
       alicuotaPercentage: Number(u.alicuotaPercentage) || 0,
-      areaM2: 65,
       unpaidBalanceCLP: Number(u.unpaidBalanceCLP) || 0,
       status: Number(u.unpaidBalanceCLP) > 0 ? (Number(u.unpaidBalanceCLP) > 150000 ? 'moroso' : 'pendiente') : 'al_dia'
     }));
 
-    // 3. Fetch Sectors (Static / Configured)
-    const sectors = [
-      { id: 's1', name: 'Torre Central', type: 'torre', description: 'Edificio principal 5 pisos', color: 'blue' }
-    ];
+    // 3. Fetch property config for reserve fund & interest rates
+    const propConfigRes = await query(
+      `SELECT reserve_fund_pct, late_interest_pct FROM condos_properties WHERE id = $1`,
+      [propertyId]
+    );
+    const reserveFundPct = Number(propConfigRes.rows[0]?.reserve_fund_pct) || 5.0;
+    const lateInterestPct = Number(propConfigRes.rows[0]?.late_interest_pct) || 1.5;
 
     // 4. Fetch Periods & Expense Items
     const periodsRes = await query(
@@ -114,22 +113,20 @@ export async function GET(request: NextRequest) {
       periods.push({
         id: p.id,
         periodName: p.periodName || 'Período Actual',
-        periodDate: p.periodDate ? String(p.periodDate).substring(0, 7) : '2026-03',
-        dueDate: p.dueDate ? String(p.dueDate).substring(0, 10) : '2026-04-10',
+        periodDate: p.periodDate ? String(p.periodDate).substring(0, 7) : '',
+        dueDate: p.dueDate ? String(p.dueDate).substring(0, 10) : '',
         status: p.status === 'calculated' || p.status === 'issued' ? 'emitido' : p.status === 'closed' ? 'cerrado' : 'borrador',
-        reserveFundPercentage: 5.0,
-        lateInterestRate: 1.5,
+        reserveFundPercentage: reserveFundPct,
+        lateInterestRate: lateInterestPct,
         items: itemsRes.rows.map(item => ({
           id: item.id,
           category: item.category,
-          description: item.description || 'Gasto Operacional',
+          description: item.description || '',
           amountCLP: Number(item.amountCLP) || 0,
-          supplierName: 'Proveedor Servicio',
-          documentNumber: 'FAC-001'
         })),
         totalExpensesCLP: Number(p.totalExpensesCLP) || 0,
-        totalReserveFundCLP: Math.round((Number(p.totalExpensesCLP) || 0) * 0.05),
-        totalBilledCLP: Number(p.totalBilledCLP) || Math.round((Number(p.totalExpensesCLP) || 0) * 1.05)
+        totalReserveFundCLP: Math.round((Number(p.totalExpensesCLP) || 0) * (reserveFundPct / 100)),
+        totalBilledCLP: Number(p.totalBilledCLP) || Math.round((Number(p.totalExpensesCLP) || 0) * (1 + reserveFundPct / 100))
       });
     }
 
@@ -148,14 +145,13 @@ export async function GET(request: NextRequest) {
     const payments = paymentsRes.rows.map(pay => ({
       id: pay.id,
       unitId: pay.unitId,
-      unitNumber: pay.unitNumber || '101',
+      unitNumber: pay.unitNumber || '',
       ownerName: pay.ownerName || 'Copropietario',
       periodId: pay.periodId,
       amountCLP: Number(pay.amountCLP) || 0,
-      paymentDate: pay.paymentDate ? String(pay.paymentDate).substring(0, 10) : new Date().toISOString().substring(0, 10),
-      paymentMethod: pay.paymentMethod || 'transferencia',
-      referenceNumber: pay.referenceNumber || 'TR-001',
-      bankReconciled: true,
+      paymentDate: pay.paymentDate ? String(pay.paymentDate).substring(0, 10) : '',
+      paymentMethod: pay.paymentMethod || '',
+      referenceNumber: pay.referenceNumber || '',
       notes: pay.notes
     }));
 
@@ -169,7 +165,6 @@ export async function GET(request: NextRequest) {
       data: {
         propertyId,
         units: formattedUnits,
-        sectors,
         periods,
         payments,
         summary: {
