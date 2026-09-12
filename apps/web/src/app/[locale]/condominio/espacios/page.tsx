@@ -1,107 +1,198 @@
 ﻿'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
  CalendarDays, Plus, Clock, Car, ShieldCheck, CheckCircle2,
  Users, DollarSign, Sparkles, Building, AlertTriangle, Trash2, MapPin
 } from 'lucide-react';
-import { INITIAL_UNITS, formatCLP } from '@/lib/condominio-client';
+import { formatCLP } from '@/lib/condominio-client';
 import VisitorParkingLayout from './components/visitor-parking-layout';
 
-interface CommonAreaReservation {
+interface CommonArea {
  id: string;
- spaceName: 'Quincho Principal' | 'Salón de Eventos' | 'Multicancha' | 'Gimnasio';
- unitNumber: string;
- reserverName: string;
- date: string;
- timeSlot: string; // e.g. "14:00 - 20:00"
- feeCLP: number;
- depositCLP: number;
- status: 'confirmada' | 'pendiente' | 'finalizada';
+ name: string;
+ description: string;
+ capacity: number;
+ hourly_rate_clp: number;
+ deposit_clp: number;
+}
+
+interface Reservation {
+ id: string;
+ space_name: string;
+ unit_number: string;
+ reserver_name: string;
+ reservation_date: string;
+ time_slot: string;
+ fee_clp: number;
+ deposit_clp: number;
+ status: string;
 }
 
 interface VisitorEntry {
  id: string;
- visitorName: string;
- visitorRut: string;
- vehiclePlate: string;
- destinationUnitNumber: string;
- entryTime: string;
- parkingSpot: string;
- status: 'activo' | 'salio';
+ visitor_name: string;
+ visitor_rut: string;
+ vehicle_plate: string;
+ destination_unit_number: string;
+ entry_time: string;
+ parking_spot: string;
+ status: string;
+ exit_time: string | null;
 }
 
-const INITIAL_RESERVATIONS: CommonAreaReservation[] = [];
-const INITIAL_VISITORS: VisitorEntry[] = [];
+interface CondoUnit {
+ id: string;
+ number: string;
+ ownerName: string;
+}
 
 export default function EspaciosConsergeriaPage() {
  const [activeTab, setActiveTab] = useState<'parking_map' | 'reservations' | 'consergeria_log'>('parking_map');
- const [reservations, setReservations] = useState<CommonAreaReservation[]>(INITIAL_RESERVATIONS);
- const [visitors, setVisitors] = useState<VisitorEntry[]>(INITIAL_VISITORS);
+ const [reservations, setReservations] = useState<Reservation[]>([]);
+ const [visitors, setVisitors] = useState<VisitorEntry[]>([]);
+ const [commonAreas, setCommonAreas] = useState<CommonArea[]>([]);
+ const [units, setUnits] = useState<CondoUnit[]>([]);
+ const [loading, setLoading] = useState(true);
 
  // Modals
  const [showAddReservationModal, setShowAddReservationModal] = useState(false);
  const [showAddVisitorModal, setShowAddVisitorModal] = useState(false);
 
  // New Reservation Form State
- const [spaceName, setSpaceName] = useState<CommonAreaReservation['spaceName']>('Quincho Principal');
- const [resUnitId, setResUnitId] = useState(INITIAL_UNITS[0]?.id || 'u-101');
- const [resDate, setResDate] = useState('2026-04-18');
+ const [selectedAreaId, setSelectedAreaId] = useState('');
+ const [resUnitId, setResUnitId] = useState('');
+ const [resDate, setResDate] = useState(new Date().toISOString().substring(0, 10));
  const [resTimeSlot, setResTimeSlot] = useState('14:00 - 20:00');
- const [resFee, setResFee] = useState('25000');
 
  // New Visitor Form State
  const [visName, setVisName] = useState('');
  const [visRut, setVisRut] = useState('');
  const [visPlate, setVisPlate] = useState('');
- const [visUnitNumber, setVisUnitNumber] = useState(INITIAL_UNITS[0]?.number || 'Dpto 101');
- const [visSpot, setVisSpot] = useState('Visita V-01');
+ const [visUnitNumber, setVisUnitNumber] = useState('');
+ const [visSpot, setVisSpot] = useState('');
 
- const handleCreateReservation = (e: React.FormEvent) => {
- e.preventDefault();
- const unitObj = INITIAL_UNITS.find((u) => u.id === resUnitId) || INITIAL_UNITS[0] || { number: 'Dpto 101', ownerName: 'Copropietario' };
- const newRes: CommonAreaReservation = {
- id: `res-${Date.now()}`,
- spaceName: spaceName,
- unitNumber: unitObj.number,
- reserverName: unitObj.ownerName,
- date: resDate,
- timeSlot: resTimeSlot,
- feeCLP: parseInt(resFee, 10) || 0,
- depositCLP: 50000,
- status: 'confirmada',
+ const fetchData = async () => {
+   try {
+     setLoading(true);
+     const [condoRes, areasRes, reservationsRes, visitorsRes] = await Promise.all([
+       fetch('/api/condominio').then(r => r.json()).catch(() => ({ data: {} })),
+       fetch('/api/condominio/common-areas').then(r => r.json()).catch(() => ({ data: [] })),
+       fetch('/api/condominio/reservations').then(r => r.json()).catch(() => ({ data: [] })),
+       fetch('/api/condominio/visitors').then(r => r.json()).catch(() => ({ data: [] })),
+     ]);
+
+     if (condoRes.data?.units) {
+       setUnits(condoRes.data.units.map((u: any) => ({
+         id: u.id,
+         number: u.number,
+         ownerName: u.ownerName || 'Sin Asignar',
+       })));
+     }
+     setCommonAreas(areasRes.data || []);
+     setReservations(reservationsRes.data || []);
+     setVisitors(visitorsRes.data || []);
+   } catch (err) {
+     console.error('Error fetching espacios data:', err);
+   } finally {
+     setLoading(false);
+   }
  };
 
- setReservations([...reservations, newRes]);
- setShowAddReservationModal(false);
+ useEffect(() => { fetchData(); }, []);
+
+ useEffect(() => {
+   if (units.length > 0 && !resUnitId) setResUnitId(units[0].id);
+   if (units.length > 0 && !visUnitNumber) setVisUnitNumber(units[0].number);
+ }, [units]);
+
+ useEffect(() => {
+   if (commonAreas.length > 0 && !selectedAreaId) setSelectedAreaId(commonAreas[0].id);
+ }, [commonAreas]);
+
+ const handleCreateReservation = async (e: React.FormEvent) => {
+   e.preventDefault();
+   const area = commonAreas.find(a => a.id === selectedAreaId);
+   if (!area) return;
+
+   try {
+     const res = await fetch('/api/condominio/reservations', {
+       method: 'POST',
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify({
+         common_area_id: selectedAreaId,
+         unit_id: resUnitId,
+         reservation_date: resDate,
+         time_slot: resTimeSlot,
+         fee_clp: area.hourly_rate_clp,
+         deposit_clp: area.deposit_clp,
+       }),
+     });
+     const json = await res.json();
+     if (json.success) {
+       setReservations([json.data, ...reservations]);
+       setShowAddReservationModal(false);
+     }
+   } catch (err) {
+     console.error('Error creating reservation:', err);
+   }
  };
 
- const handleCreateVisitor = (e: React.FormEvent) => {
- e.preventDefault();
- if (!visName) return;
+ const handleCreateVisitor = async (e: React.FormEvent) => {
+   e.preventDefault();
+   if (!visName) return;
 
- const newVis: VisitorEntry = {
- id: `vis-${Date.now()}`,
- visitorName: visName,
- visitorRut: visRut || '15.112.334-5',
- vehiclePlate: visPlate || 'AA-00-00',
- destinationUnitNumber: visUnitNumber,
- entryTime: new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }),
- parkingSpot: visSpot,
- status: 'activo',
+   try {
+     const res = await fetch('/api/condominio/visitors', {
+       method: 'POST',
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify({
+         visitor_name: visName,
+         visitor_rut: visRut || null,
+         vehicle_plate: visPlate || null,
+         destination_unit_number: visUnitNumber,
+         parking_spot: visSpot || null,
+       }),
+     });
+     const json = await res.json();
+     if (json.success) {
+       setVisitors([json.data, ...visitors]);
+       setShowAddVisitorModal(false);
+       setVisName('');
+       setVisRut('');
+       setVisPlate('');
+       setVisSpot('');
+     }
+   } catch (err) {
+     console.error('Error creating visitor:', err);
+   }
  };
 
- setVisitors([newVis, ...visitors]);
- setShowAddVisitorModal(false);
- setVisName('');
- setVisPlate('');
+ const handleMarkVisitorDeparture = async (visId: string) => {
+   try {
+     const res = await fetch('/api/condominio/visitors', {
+       method: 'PATCH',
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify({ id: visId }),
+     });
+     const json = await res.json();
+     if (json.success) {
+       setVisitors(visitors.map(v => v.id === visId ? { ...v, status: 'exited', exit_time: json.data.exit_time } : v));
+     }
+   } catch (err) {
+     console.error('Error marking departure:', err);
+   }
  };
 
- const handleMarkVisitorDeparture = (visId: string) => {
- setVisitors(visitors.map((v) => (v.id === visId ? { ...v, status: 'salio' } : v)));
- };
+ const activeVisitorsCount = visitors.filter(v => v.status === 'active').length;
 
- const activeVisitorsCount = visitors.filter((v) => v.status === 'activo').length;
+ if (loading) {
+   return (
+     <div className="flex items-center justify-center h-64">
+       <div className="text-slate-500 text-sm font-medium">Cargando espacios...</div>
+     </div>
+   );
+ }
 
  return (
  <div className="space-y-6">
@@ -145,7 +236,7 @@ export default function EspaciosConsergeriaPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
  <span className="text-slate-500 text-xs font-semibold">Reservas Confirmadas</span>
  <p className="text-2xl font-black text-slate-900 mt-2">{reservations.length}</p>
- <p className="text-[11px] text-slate-500 mt-1 font-medium">Espacios reservados este mes</p>
+ <p className="text-[11px] text-slate-500 mt-1 font-medium">Espacios reservados</p>
  </div>
 
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
@@ -157,7 +248,7 @@ export default function EspaciosConsergeriaPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
  <span className="text-slate-500 text-xs font-semibold">Recaudación por Arriendo Espacios</span>
  <p className="text-2xl font-black text-emerald-600 mt-2">
- {formatCLP(reservations.reduce((acc, r) => acc + r.feeCLP, 0))}
+ {formatCLP(reservations.reduce((acc, r) => acc + (r.fee_clp || 0), 0))}
  </p>
  <p className="text-[11px] text-slate-500 mt-1 font-medium">Ingresos adicionales condominio</p>
  </div>
@@ -213,7 +304,7 @@ export default function EspaciosConsergeriaPage() {
  <div className="flex items-center justify-between mb-4">
  <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
  <CalendarDays className="w-4 h-4 text-cyan-600" />
- Reservas de Espacios Comunes (Quinchos, Salón de Eventos, Multicancha)
+ Reservas de Espacios Comunes
  </h2>
  </div>
 
@@ -222,11 +313,10 @@ export default function EspaciosConsergeriaPage() {
  <thead>
  <tr className="border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px] bg-slate-50">
  <th className="p-3">Espacio</th>
- <th className="p-3">Unidad Responsable</th>
+ <th className="p-3">Unidad</th>
  <th className="p-3">Copropietario</th>
  <th className="p-3">Fecha & Horario</th>
- <th className="p-3 text-right">Tarifa Reserva</th>
- <th className="p-3 text-right">Garantía</th>
+ <th className="p-3 text-right">Tarifa</th>
  <th className="p-3 text-center">Estado</th>
  </tr>
  </thead>
@@ -235,21 +325,23 @@ export default function EspaciosConsergeriaPage() {
  <tr key={r.id} className="hover:bg-slate-50/80">
  <td className="p-3 font-bold text-slate-900">
  <span className="px-2 py-0.5 rounded text-[10px] bg-cyan-50 text-cyan-800 border border-cyan-200">
- {r.spaceName}
+ {r.space_name}
  </span>
  </td>
- <td className="p-3 font-black text-slate-900">{r.unitNumber}</td>
- <td className="p-3 text-slate-800">{r.reserverName}</td>
- <td className="p-3 text-slate-600 font-semibold">{r.date} ({r.timeSlot})</td>
- <td className="p-3 text-right font-black text-slate-900">{formatCLP(r.feeCLP)}</td>
- <td className="p-3 text-right text-slate-500">{formatCLP(r.depositCLP)}</td>
+ <td className="p-3 font-black text-slate-900">{r.unit_number}</td>
+ <td className="p-3 text-slate-800">{r.reserver_name}</td>
+ <td className="p-3 text-slate-600 font-semibold">{r.reservation_date} ({r.time_slot})</td>
+ <td className="p-3 text-right font-black text-slate-900">{formatCLP(r.fee_clp)}</td>
  <td className="p-3 text-center">
  <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
- ✓ {r.status}
+ {r.status === 'confirmed' ? '✓ confirmada' : r.status}
  </span>
  </td>
  </tr>
  ))}
+ {reservations.length === 0 && (
+ <tr><td colSpan={6} className="p-6 text-center text-slate-400">No hay reservas registradas</td></tr>
+ )}
  </tbody>
  </table>
  </div>
@@ -283,14 +375,14 @@ export default function EspaciosConsergeriaPage() {
  <tbody className="divide-y divide-slate-100 font-medium">
  {visitors.map((v) => (
  <tr key={v.id} className="hover:bg-slate-50/80">
- <td className="p-3 text-slate-600 font-semibold">{v.entryTime}</td>
- <td className="p-3 font-bold text-slate-900">{v.visitorName}</td>
- <td className="p-3 text-slate-500">{v.visitorRut}</td>
- <td className="p-3 font-mono font-bold text-slate-900 uppercase">{v.vehiclePlate}</td>
- <td className="p-3 font-bold text-slate-800">{v.destinationUnitNumber}</td>
- <td className="p-3 text-slate-600 font-semibold">{v.parkingSpot}</td>
+ <td className="p-3 text-slate-600 font-semibold">{v.entry_time ? new Date(v.entry_time).toLocaleString('es-CL') : '-'}</td>
+ <td className="p-3 font-bold text-slate-900">{v.visitor_name}</td>
+ <td className="p-3 text-slate-500">{v.visitor_rut || '-'}</td>
+ <td className="p-3 font-mono font-bold text-slate-900 uppercase">{v.vehicle_plate || '-'}</td>
+ <td className="p-3 font-bold text-slate-800">{v.destination_unit_number || '-'}</td>
+ <td className="p-3 text-slate-600 font-semibold">{v.parking_spot || '-'}</td>
  <td className="p-3 text-center">
- {v.status === 'activo' ? (
+ {v.status === 'active' ? (
  <span className="px-2 py-0.5 rounded-full text-[10px] bg-peach/50 text-[#c64d00] font-bold border border-peach">
  ● Dentro del Condominio
  </span>
@@ -301,10 +393,10 @@ export default function EspaciosConsergeriaPage() {
  )}
  </td>
  <td className="p-3 text-center">
- {v.status === 'activo' && (
+ {v.status === 'active' && (
  <button
  onClick={() => handleMarkVisitorDeparture(v.id)}
- className="bg-cloud hover:bg-cloud text-white px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-xs"
+ className="bg-cloud hover:bg-slate-600 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-xs transition-colors"
  >
  Marcar Salida
  </button>
@@ -312,6 +404,9 @@ export default function EspaciosConsergeriaPage() {
  </td>
  </tr>
  ))}
+ {visitors.length === 0 && (
+ <tr><td colSpan={8} className="p-6 text-center text-slate-400">No hay visitas registradas</td></tr>
+ )}
  </tbody>
  </table>
  </div>
@@ -331,14 +426,16 @@ export default function EspaciosConsergeriaPage() {
  <div>
  <label className="block font-bold text-slate-700 mb-1">Espacio Común</label>
  <select
- value={spaceName}
- onChange={(e) => setSpaceName(e.target.value as any)}
+ value={selectedAreaId}
+ onChange={(e) => setSelectedAreaId(e.target.value)}
  className="w-full p-2 border border-slate-200 rounded-xl font-bold text-slate-900"
  >
- <option value="Quincho Principal">Quincho Principal ($25.000)</option>
- <option value="Salón de Eventos">Salón de Eventos ($45.000)</option>
- <option value="Multicancha">Multicancha ($10.000)</option>
- <option value="Gimnasio">Gimnasio ($5.000)</option>
+ {commonAreas.map(area => (
+ <option key={area.id} value={area.id}>
+ {area.name} ({formatCLP(area.hourly_rate_clp)})
+ </option>
+ ))}
+ {commonAreas.length === 0 && <option value="">No hay espacios configurados</option>}
  </select>
  </div>
 
@@ -349,7 +446,7 @@ export default function EspaciosConsergeriaPage() {
  onChange={(e) => setResUnitId(e.target.value)}
  className="w-full p-2 border border-slate-200 rounded-xl font-bold text-slate-900"
  >
- {INITIAL_UNITS.map((u) => (
+ {units.map((u) => (
  <option key={u.id} value={u.id}>
  {u.number} - {u.ownerName}
  </option>
@@ -453,12 +550,23 @@ export default function EspaciosConsergeriaPage() {
  onChange={(e) => setVisUnitNumber(e.target.value)}
  className="w-full p-2 border border-slate-200 rounded-xl font-bold text-slate-900"
  >
- {INITIAL_UNITS.map((u) => (
+ {units.map((u) => (
  <option key={u.id} value={u.number}>
  {u.number} - {u.ownerName}
  </option>
  ))}
  </select>
+ </div>
+
+ <div>
+ <label className="block font-bold text-slate-700 mb-1">Estacionamiento</label>
+ <input
+ type="text"
+ placeholder="Visita V-01"
+ value={visSpot}
+ onChange={(e) => setVisSpot(e.target.value)}
+ className="w-full p-2 border border-slate-200 rounded-xl font-medium"
+ />
  </div>
  </div>
 
