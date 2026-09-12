@@ -1,4 +1,4 @@
-import { query } from '@/api/lib/db';
+import { query, transaction } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 import {
@@ -88,66 +88,69 @@ export async function POST(
 
     const summary = getPayrollSummary(results);
 
-    // Delete existing items (recalculate)
-    await query(`DELETE FROM payroll_items WHERE run_id = $1`, [run_id]);
+    // Atomic: delete + insert items + update run in a single transaction
+    await transaction(async (client) => {
+      // Delete existing items (recalculate)
+      await client.query(`DELETE FROM payroll_items WHERE run_id = $1`, [run_id]);
 
-    // Insert all payroll items
-    for (const result of results) {
-      for (const item of result.items) {
-        await query(
-          `INSERT INTO payroll_items
-            (company_id, run_id, employee_id, type, concept, code, amount, quantity, unit_value, is_taxable, is_employer, category)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
-          [
-            companyId,
-            run_id,
-            result.employee_id,
-            item.type,
-            item.concept,
-            item.code,
-            item.amount,
-            item.quantity,
-            item.unit_value,
-            item.is_taxable,
-            item.is_employer,
-            item.category,
-          ]
+      // Insert all payroll items
+      for (const result of results) {
+        for (const item of result.items) {
+          await client.query(
+            `INSERT INTO payroll_items
+              (company_id, run_id, employee_id, type, concept, code, amount, quantity, unit_value, is_taxable, is_employer, category)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+            [
+              companyId,
+              run_id,
+              result.employee_id,
+              item.type,
+              item.concept,
+              item.code,
+              item.amount,
+              item.quantity,
+              item.unit_value,
+              item.is_taxable,
+              item.is_employer,
+              item.category,
+            ]
+          );
+        }
+      }
+
+      // Store extras JSON on the run for future reference
+      if (extras && extras.length > 0) {
+        await client.query(
+          `UPDATE payroll_runs SET notes = COALESCE(notes || E'\n', '') || $1 WHERE id = $2`,
+          [`Extras: ${JSON.stringify(extras)}`, run_id]
         );
       }
-    }
 
-    // Store extras JSON on the run for future reference
-    if (extras && extras.length > 0) {
-      await query(
-        `UPDATE payroll_runs SET notes = COALESCE(notes || E'\n', '') || $1 WHERE id = $2`,
-        [`Extras: ${JSON.stringify(extras)}`, run_id]
+      // Update the run with totals
+      await client.query(
+        `UPDATE payroll_runs SET
+          status = 'calculated',
+          employee_count = $1,
+          gross_amount = $2,
+          total_deductions = $3,
+          total_employer = $4,
+          total_tax = $5,
+          net_amount = $6,
+          total_amount = $7,
+          updated_at = NOW()
+         WHERE id = $8`,
+        [
+          summary.employee_count,
+          summary.gross_amount,
+          summary.total_deductions,
+          summary.total_employer,
+          summary.total_tax,
+          summary.net_amount,
+          summary.gross_amount + summary.total_employer,
+          run_id,
+        ]
       );
-    }
-
-    // Update the run with totals
-    await query(
-      `UPDATE payroll_runs SET
-        status = 'calculated',
-        employee_count = $1,
-        gross_amount = $2,
-        total_deductions = $3,
-        total_employer = $4,
-        total_tax = $5,
-        net_amount = $6,
-        total_amount = $7,
-        updated_at = NOW()
-       WHERE id = $8`,
-      [
-        summary.employee_count,
-        summary.gross_amount,
-        summary.total_deductions,
-        summary.total_employer,
-        summary.total_tax,
-        summary.net_amount,
-        summary.gross_amount + summary.total_employer,
-        run_id,
-      ]
-    );
+    }, companyId);
 
     return successResponse({
       run_id,

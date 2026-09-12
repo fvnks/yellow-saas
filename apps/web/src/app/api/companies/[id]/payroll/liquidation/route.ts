@@ -8,8 +8,9 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const companyId = params.id;
+    const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
+    if (companyId !== params.id) return errorResponse('Acceso denegado', 403);
 
     const body = await request.json();
     const { employee_id, termination_type, termination_date, notice_given } = body;
@@ -22,6 +23,13 @@ export async function POST(
     if (!validTypes.includes(termination_type)) {
       return errorResponse('Invalid termination_type', 400);
     }
+
+    // Validate employee belongs to this company
+    const { rows: empRows } = await query(
+      `SELECT id FROM employees WHERE id = $1 AND company_id = $2`,
+      [employee_id, companyId]
+    );
+    if (!empRows[0]) return errorResponse('Empleado no encontrado en esta empresa', 404);
 
     const result = await calculateTermination(companyId, {
       employee_id,
