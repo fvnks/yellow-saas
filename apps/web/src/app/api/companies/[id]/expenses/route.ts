@@ -67,6 +67,16 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       document_type, document_number, description, notes, cost_center_id, status
     } = body;
 
+    if (category_id) {
+      const catCheck = await query('SELECT id FROM expense_categories WHERE id = $1 AND company_id = $2', [category_id, companyId]);
+      if (catCheck.rows.length === 0) return errorResponse('Categoría de gasto no encontrada', 404);
+    }
+
+    if (cost_center_id) {
+      const ccCheck = await query('SELECT id FROM cost_centers WHERE id = $1 AND company_id = $2', [cost_center_id, companyId]);
+      if (ccCheck.rows.length === 0) return errorResponse('Centro de costo no encontrado', 404);
+    }
+
     const totalAmount = (Number(amount) || 0) + (Number(tax_amount) || 0);
     const expenseNumber = `GAS-${Date.now().toString(36).toUpperCase()}`;
 

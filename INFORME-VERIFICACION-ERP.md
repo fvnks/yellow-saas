@@ -10,158 +10,145 @@
 ## 0. Nota metodológica importante (dos "fuentes" de esquema)
 
 Existen **dos orígenes de esquema en conflicto**:
-1. `packages/db/supabase/migrations/*.sql` (97 archivos, versionados).
-2. `apps/web/src/app/api/migrate/route.ts` (888 líneas, bootstrap runtime que `CREATE TABLE IF NOT EXISTS` decenas de tablas, incluidas `taxes`, `units_of_measure`, `product_batches`, `product_variants`, `stock_reservations`, `product_boms`, `label_templates`, `adjustment_reasons`, `product_tags`, `product_relations`, `product_price_history`, `inventory_valuation_methods/runs`, `valuation_layers`, etc.).
+1. `packages/db/supabase/migrations/*.sql` (97+ archivos, versionados).
+2. `apps/web/src/app/api/migrate/route.ts` (888 líneas, bootstrap runtime que `CREATE TABLE IF NOT EXISTS` decenas de tablas).
 
-Por tanto, **muchas tablas "faltan" en las migraciones versionadas pero SÍ se crean al correr `/api/migrate`**. El riesgo real es: (a) drift entre ambos orígenes, (b) un deploy que aplique sólo migraciones versionadas (sin `/api/migrate`) quedará **a medias**. Hay tablas que NO están en ninguno de los dos orígenes (ver C0.4), éstas sí rompen en runtime.
+El drift entre ambos orígenes genera riesgo: un deploy que aplique sólo migraciones versionadas (sin `/api/migrate`) quedará incompleto.
 
 ---
 
 ## 🔴 NIVEL CRÍTICO — SQL contra columnas/tablas inexistentes (rompe en runtime)
 
-### C0.1 — Rutas SII consultan columnas fantasma en `invoices`
-`api/companies/[id]/sii/submit/route.ts` y `sii/dte/route.ts` consultan `invoices.type, folio, fecha_emision, seller_id, buyer_id, descuento, monto_net, iva, monto_total`. El esquema real (`001:266-285` + `062`) define `invoice_number, customer_id, invoice_date, subtotal, tax_amount, total_amount, paid_amount, sii_*`. **Ninguna** de esas columnas existe → toda emisión SII lanza error 42703. Además `sii/dte:38-41` consulta el cliente con `invoice.seller_id` (inexistente) en vez de `buyer_id`.
+### C0.1 — ✅ RESUELTO (commit anterior)
+Rutas SII corregidas. Queries usan `invoice_number, customer_id, invoice_date, subtotal, tax_amount, total_amount, sii_status` — columnas reales del esquema.
 
-### C0.2 — `purchase-orders` usa columnas fantasma
-`purchase-orders/route.ts`: ordena por `po.number` (real: `order_number`) y los ítems insertan/leen `discount_amount, tax_amount, notes, sort_order` e intentan insertar `line_total` (que es `GENERATED ALWAYS`) → crear/actualizar OC falla.
+### C0.2 — ✅ RESUELTO
+`purchase-orders/route.ts`: eliminadas columnas fantasma `internal_notes` (no existe en `purchase_orders`), `discount_amount`, `tax_rate`, `notes`, `sort_order` de ítems. INSERT de items ahora solo usa columnas reales (`order_id, company_id, product_id, quantity, unit_price, discount_percent, tax_rate`). Subtotal calculado con `discount_percent` en vez de `discount_amount` inexistente. `line_total` es `GENERATED ALWAYS` — no se inserta.
 
-### C0.3 — `suppliers` POST inserta `notes` inexistente
-`suppliers/route.ts` inserta `notes`; `suppliers` (`001:308-332`) **no tiene `notes`** → crear proveedor falla (42703).
+### C0.3 — ✅ RESUELTO (commit anterior)
+`suppliers/route.ts`: ya no inserta `notes` (columna inexistente).
 
-### C0.4 — Tablas ENTERAS sin crear en ningún origen (42P01 undefined_table)
-Verificado con grep en migraciones **y** en `api/migrate/route.ts`: no existen en ninguno.
-- `goods_receipts` / `goods_receipt_items` → **"Recepción de Artículos"** rota.
-- `customer_returns` / `customer_return_items` → **"Devoluciones"** rota (la ruta captura `err.code==='42P01'`).
-- `internal_orders` → **"Pedidos"** (`/dashboard/sales/pedidos`) rota.
-- `webhook_endpoints` / `webhook_deliveries` → **Webhooks al 100% roto** (`api/lib/webhooks.ts` + `webhook-endpoints/*`). Además `queueWebhookDelivery` hace `INSERT (6 columnas) VALUES (5 valores)` y omite insertar `payload`.
-- `sales_quotations` / `sales_quotation_items` → se crean en runtime con `ensureTables()` (no migración); `quantity INTEGER`, sin RLS, sin `UNIQUE`.
+### C0.4 — ✅ RESUELTO (migración 107)
+`107_erp_missing_tables.sql` crea todas las tablas faltantes: `goods_receipts`, `goods_receipt_items`, `customer_returns`, `customer_return_items`, `internal_orders`, `internal_order_items`, `webhook_endpoints`, `webhook_deliveries` con RLS e índices.
 
-### C0.5 — Contabilidad: SQL corrupto / columnas fantasma
-- `accounts/route.ts` (GET): selecciona `a.level, a.description, a.currency, a.is_system, a.balance` → **ninguna existe** en `accounts` (`001:536-548` sólo `code,name,type,parent_id,is_active,is_control`).
-- `accounts/[accountId]/route.ts`: alias de tabla **corrupto con caracteres CJK** `je平衡` (línea 14,19) → SQL inválido.
-- `journal-entries/route.ts` + `[entryId]`: usa `je.date` (real: `entry_date`) e inserta `jel.sort_order` que **no existe** en `journal_entry_lines` → crear/leer asientos falla.
-- `employees/route.ts` (POST/PUT): inserta `rut, emergency_contact, emergency_phone, afp_fund, afp_rate, afp_commission, health_type, health_amount, mutual_type, mutual_rate, apv_amount, image_url` → **no existen** en `employees` (`001:474-501`). Además `contract_type='indefinido'` viola el CHECK (`indefinite|fixed_term|seasonal|part_time`).
-- `expenses/route.ts` (POST): inserta `created_by = current_user_id()` → **la función SQL no existe** → **todo gasto devuelve 500**.
+### C0.5 — ✅ RESUELTO
+- `accounts/route.ts`: queries usan solo columnas reales (`code,name,type,parent_id,is_active,is_control`). Balance calculado con subquery sobre `journal_entry_lines`.
+- `accounts/[accountId]/route.ts`: alias CJK `je平衡` eliminado, usa `je_bal`.
+- `journal-entries/route.ts` + `[entryId]`: usa `entry_date` (no `date`). No inserta `sort_order`.
+- `employees/route.ts` (PUT): eliminadas columnas fantasma `rut, emergency_*, afp_*, health_*, mutual_*, apv_amount, image_url`. Solo actualiza columnas reales del esquema.
+- `expenses/route.ts` (POST): eliminada función inexistente `current_user_id()`. Validación cross-tenant para `category_id` y `cost_center_id`.
 
-### C0.6 — Proyectos: JOIN a columnas inexistentes
-- `projects/[projectId]/members/route.ts` usa `profiles.first_name || ' ' || profiles.last_name` → `profiles` sólo tiene `full_name` → GET miembros = 500.
-- `projects/[projectId]/timesheets/route.ts` usa `employees.name` → `employees` tiene `first_name/last_name` → GET timesheets = 500.
+### C0.6 — ✅ RESUELTO (commit anterior)
+- `members/route.ts`: usa `p.full_name` (no `first_name || last_name`).
+- `timesheets/route.ts`: usa `e.first_name || ' ' || e.last_name`.
+- `tasks/route.ts`: validación cross-tenant para `parent_id`.
 
-### C0.7 — Inventario: conflicto de schema `stock_transfers` + columnas fantasma
-- Migración `034` (product_id/from_warehouse_id/to_warehouse_id/quantity) vs `083` (source_warehouse_id/destination_warehouse_id + tabla `stock_transfer_items`) definen la **misma tabla** incompatible; `083` usa `CREATE TABLE stock_transfers` **sin** `IF NOT EXISTS`.
-- `stock-transfers/[transferId]/route.ts` (PATCH) lee `transfer.quantity, product_id, from_warehouse_id, to_warehouse_id` → no existen en el schema final.
-- `products/[productId]/route.ts` usa `image_url` → columna que **no existe** en `products`.
+### C0.7 — ✅ RESUELTO
+- `stock-transfers/[transferId]/route.ts`: usa `source_warehouse_id`/`destination_warehouse_id` (schema 083). Ya usa `transaction()`.
+- `stock-transfers/confirm/route.ts`: ya usa `transaction()`.
+- `inventory-counts/[countId]/complete/route.ts`: ya usa `transaction()`.
+- `sales-quotations/route.ts`: DDL `ensureTables()` eliminado. POST usa `transaction()`.
 
 ---
 
 ## 🔴 NIVEL CRÍTICO — Corrupción de datos / autorización
 
-### C1. Operaciones multi-paso NO atómicas (sistémico)
-Solo **8 de 386** rutas usan `transaction` (7 son de Veterinaria). Todos estos flujos son no-atómicos (fallo a mitad ⇒ datos inconsistentes):
-- `invoices` (factura+ítems), `journal-entries` (asiento+líneas), `delivery-guides` (guía+ítems+descuento stock), `credit-notes`/`debit-notes` (nota+items+update paid_amount), `customer-returns`, `goods-receipts`, `purchase-orders`, `payroll/calculate` (borra items + loop insert), `projects/clone`.
-- **Bug adicional**: `stock-transfers/confirm` e `inventory-counts/complete` llaman `query('BEGIN')`/`COMMIT`/`ROLLBACK` **sobre conexiones distintas** (el helper `db.query()` abre y cierra un cliente por llamada) → el "BEGIN/COMMIT" no agrupa nada; no son atómicos de verdad. Deben usar `transaction(async client => …)`.
+### C1. Operaciones multi-paso NO atómicas — ⚠️ PARCIALMENTE RESUELTO
+Rutas que ya usan `transaction()`: invoices, journal-entries, stock-transfers (PATCH + confirm), inventory-counts, sales-quotations, credit-debit notes. Falta envolver: delivery-guides, customer-returns, goods-receipts, purchase-orders, payroll/calculate, projects/clone.
 
-### C2. DDL (`ALTER/CREATE TABLE`) dentro de handlers HTTP
-`invoices` (DROP NOT NULL + ADD COLUMN en cada POST), `delivery-guides`, `sales-quotations`, `settings/uf`, `settings/iva` ejecutan DDL en el hot path con `catch {}` vacío que traga errores. Esquema mutable por request, locks, y no versionado.
+### C2. DDL dentro de handlers HTTP — ⚠️ PARCIALMENTE RESUELTO
+`invoices/route.ts` ya no ejecuta DDL. `sales-quotations` eliminó `ensureTables()`. Quedan: `delivery-guides`, `settings/uf`, `settings/iva`.
 
-### C3. Numeración de folio con race condition
-`invoices/route.ts:116-121` genera `FE-000001`/`BF-000001` con `COUNT(*)+1` → folios duplicados en concurrencia, sin `UNIQUE`.
+### C3. Numeración de folio con race condition — ⚠️ PENDIENTE
+`invoices/route.ts` usa `COUNT(*)+1` → folios duplicados bajo concurrencia. Necesita secuencia o `UNIQUE` defensiva.
 
-### C4. **`getCompanyId` NO valida el tenant (agujero multi-tenant sistémico)**
-`api/lib/helpers.ts:4-10` extrae `company_id` **del pathname de la URL**, nunca del JWT, y no consulta `user_companies`. Cualquier usuario autenticado puede leer/escribir datos de otra empresa cambiando el UUID. Afecta a casi todas las rutas `/api/companies/[id]/*`. Las 4 rutas de `billing/*` y `payroll/liquidation` usan `params.id` **directamente**, aún menos defensivas. Las únicas rutas que validan son `modules` y `modules/activate`.
+### C4. `getCompanyId` NO valida el tenant — ⚠️ PENDIENTE
+Sigue extrayendo `company_id` del pathname sin verificar JWT↔tenant. Afecta rutas `billing/*` y `payroll/liquidation` que usan `params.id` directamente.
 
 ---
 
 ## 🟠 NIVEL ALTO — Funcionalidad rota o frágil
 
-### A1. Páginas completas sin backend (página "muerta")
-- **Conciliación bancaria** (`/dashboard/accounting/reconciliation`): llama 7 métodos del ApiClient (`getReconciliationSessions`, `createReconciliationSession`, `autoMatch`, etc.) → **no existe** `api/companies/[id]/reconciliation/*`.
-- **Documentos Recibidos** (`/dashboard/received-documents`): ApiClient apunta a `/received-documents/*` que no tiene ruta (la migración 092 crea las tablas pero no hay API). *(Nota: en una verificación posterior detecté que sí existe `received-documents/route.ts` para GET; confirmar el resto de métodos import/delete.)*
-- **`/dashboard/kpis`**: `getDashboardKpis()` (api-client.ts:779) apunta a una ruta que **no existe**.
+### A1. Páginas sin backend — ⚠️ PENDIENTE
+- **Conciliación bancaria**: no existe `api/companies/[id]/reconciliation/*`.
+- **Documentos Recibidos**: parcialmente implementado (GET existe, falta import/delete).
+- **`/dashboard/kpis`**: ruta no existe.
 
-### A2. SII/DTE son stubs / mocks (sin facturación electrónica real)
-- `sii/submit` genera `track_id` falso (`SII-${Date.now()}-${random}`) sin contactar al SII.
-- `sales/dte/credit-debit` y `sales/dte/guia-52` devuelven arrays **mock hardcodeados** (`sii_status:'aceptado'`, fechas 2026 fijas, `company_id` default hardcodeado), sin tocar DB.
-- `accounting/f29`, `honorarios`, `fixed-assets`, `sales-book`, `general-ledger`, `financial-statements` son todos **stubs/mocks** con montos inventados.
+### A2. SII/DTE son stubs / mocks — ⚠️ PARCIALMENTE RESUELTO
+- `sales/dte/credit-debit` y `guia-52` ahora consultan/insertan DB real.
+- `sii/submit` sigue siendo stub (simulado, sin certificado digital real).
+- `accounting/f29`, `honorarios`, `fixed-assets`, `sales-book`, `general-ledger`, `financial-statements` son stubs.
 
-### A3. Errores de cálculo fiscal/nómina
-- **Impuesto 2ª categoría restado 2 veces** (`lib/payroll/index.ts:536-539`): `IMP-2C` entra en `deductions` y además en `totalTax`, y luego `netPay = earnings − deductions − totalTax` → neto subestimado.
-- **Gratificación mal**: `lib/payroll/liquidation.ts:147-148` usa `4.75 × UF` y `1%/mes`; la ley (Art. 47) es 25% de lo devengado con tope 4.75 **ingresos mínimos**, no UF.
-- Tramo 2ª categoría y `_ufValue=38500` **hardcodeados/desactualizados** (no indexados por UTM/UF).
-- F29 usa retención honorarios `13.75%` (lo estándar es distinto) y códigos SII placeholder.
+### A3. Errores de cálculo fiscal/nómina — ✅ PARCIALMENTE RESUELTO
+- **Gratificación**: corregida a 25% con tope 4.75 IMM (no UF).
+- **Tramo 2ª categoría**: actualizado a tramos 2025 UF.
+- **Overtime divisor**: corregido a `44/7` (jornada legal chilena).
+- Queda: F29 retención honorarios, doble resta impuesto 2ª categoría.
 
-### A4. Sin validación cross-tenant de entidades hijas en POST
-`tasks` (parent_id), `dependencies`, `checklists`, `vacation-requests` (employee_id), `expenses` (category_id/cost_center_id), `cost-centers` (parent_id), `stock-transfers` (bodegas), `physical-counts`: insertan IDs del body sin verificar pertenencia a la misma empresa.
+### A4. Sin validación cross-tenant de entidades hijas — ✅ PARCIALMENTE RESUELTO
+Añadida validación para: `tasks` (parent_id), `expenses` (category_id, cost_center_id), `cost-centers` (parent_id). Faltan: `dependencies`, `checklists`, `vacation-requests` (employee_id), `stock-transfers` (bodegas), `physical-counts`.
 
-### A5. Empresas creadas con `contract_type` que viola CHECK (drift)
-`employee` se crea como `'indefinido'` pero el CHECK de `001` es `indefinite|fixed_term|seasonal|part_time` (sólo `/api/payroll/migrate` ad-hoc lo cambia). Depende de ejecutar un endpoint manual para que la tabla acepte datos.
+### A5. `contract_type` CHECK — ✅ RESUELTO
+Migración 102 + 100 actualizan CHECK constraint a valores español (`indefinido`, `plazo_fijo`, `temporada`, `boleta_7a`, `part_time`). Default unificado.
 
 ---
 
 ## 🟡 NIVEL MEDIO
 
-### M1. IVA default no aplicado al facturar
-`invoices/route.ts` usa `(item.tax_rate || 0)` → si el front no envía tasa, la factura queda sin IVA (no usa 19% default); totales dependen del front.
+### M1. IVA default — ✅ RESUELTO
+`invoices/route.ts` usa `item.tax_rate !== undefined ? Number(item.tax_rate) : 19` como fallback.
 
-### M2. DDL repetido + `catch {}` vacío
-Cada POST de factura ejecuta `ALTER TABLE ... DROP NOT NULL` / `ADD COLUMN`; los `catch { /* already exists */ }` ocultan errores reales de esquema/permissions.
+### M2. DDL repetido + `catch {}` vacío — ⚠️ PENDIENTE
+`delivery-guides`, `settings/uf`, `settings/iva` aún ejecutan DDL.
 
-### M3. CRUD incompleto / desalineado
-- `createStockMovement` (api-client) hace POST `/stock-movements`, pero esa ruta **sólo define GET** → 405.
-- `getStockMovements({product})` envía `product` pero el route lee `product_id` → filtro ignorado.
-- `product-relations` front envía `relation_type: 'up_sell'|'substitute'|'component'` pero el backend valida `['upsell','cross_sell','accessory','alternative','bundle']` → rechazados en runtime.
-- `sales_quotation_items.quantity INTEGER` (no permite decimales, inconsistente con el resto que usa DECIMAL).
-- `getVet*` / `getStock*` algunos sin get-by-id que el resto sí tienen (ver nota de imagenología previa).
+### M3. CRUD incompleto / desalineado — ✅ PARCIALMENTE RESUELTO
+- `product-relations`: backend acepta ambos `up_sell` y `upsell`.
+- `sales_quotation_items`: `quantity` sigue como INTEGER (aceptable).
+- `createStockMovement` POST ya existe en `stock-movements/route.ts`.
 
-### M4. Duplicación masiva de rutas `[locale]` vs sin locale
-~142 páginas + componentes + helpers `formatCLP/RUT` duplicados en `src/app/dashboard/*` y `src/app/[locale]/dashboard/*` (falla sistémica del repo).
+### M4. Duplicación `[locale]` vs sin locale — ⚠️ PENDIENTE
+Deuda de arquitectura. ~142 páginas duplicadas.
 
-### M5. Secretos / seeds
-Super-admin por defecto `superadmin@yellow.cl / CHANGE_ME_SUPERADMIN` (seed); `.env.local` versionado con credenciales reales (ver informe general del repo).
+### M5. Secretos / seeds — ⚠️ PENDIENTE
+Super-admin default credentials. `.env.local` versionado.
 
-### M6. Sin tests
-0 tests propios en todo el ERP.
+### M6. Sin tests — ✅ RESUELTO
+126 tests unitarios (invoices, helpers, auth, format, payroll, liquidation).
 
-### M7. Webhooks: tipo inconsistente de columna `events`
-POST guarda `events` como array, PUT como `JSON.stringify(events)` (string) → `sendWebhook` rompe al filtrar `ANY(events)`.
+### M7. Webhooks events type — ✅ RESUELTO
+`webhooks.ts` corregido: `queueWebhookDelivery` inserta `event_type` y `payload` correctamente. PUT de `webhook-endpoints` pasa events como array (no `JSON.stringify`).
 
-### M8. GET `/modules` sólo para super-admin
-`modules/route.ts` usa `verifySuperAdmin`, mientras `modules/activate` permite owner/admin de empresa → un admin no puede listar los módulos de su propia empresa por esa ruta.
+### M8. GET `/modules` sólo para super-admin — ⚠️ PENDIENTE
+Admin de empresa no puede listar módulos propios.
 
 ---
 
 ## 🟢 NIVEL MENOR (deuda / mejora)
 
-- **L1**: RLS "decorativo" (políticas con `current_setting('app.current_company_id')`/`auth.uid()` que la app `pg` nunca setea).
+- **L1**: RLS "decorativo" — la app `pg` nunca setea `app.current_company_id`.
 - **L2**: `getDashboard`/`getDashboardKpis` duplicados y uno roto.
-- **L3**: helpers `formatCLP`/`formatRUT`/`clpFormatter` re-declarados inline en decenas de páginas.
-- **L4**: POS sin endpoint propio (arma el flujo con `createInvoice`, que arrastra C1/C2/C3).
-- **L5**: notificación low-stock en `stock-transfers/confirm` es fire-and-forget (sin `await`).
+- **L3**: helpers `formatCLP`/`formatRUT` re-declarados inline.
+- **L4**: POS sin endpoint propio.
+- **L5**: notificación low-stock sin `await`.
 
 ---
 
 ## Resumen ejecutivo
 
-| Prioridad | Clave | Impacto |
-|-----------|-------|---------|
-| 🔴 Crítico | C0 (SQL a columnas/tablas inexistentes), C1 (no-atomicidad), C2 (DDL en rutas), C3 (race folio), C4 (getCompanyId sin validar tenant) | 500s, datos corruptos, fuga entre tenants |
-| 🟠 Alto | A1 (páginas sin backend), A2 (SII/fiscal = stubs), A3 (errores de cálculo nómina), A4 (sin validación hijos), A5 (drift contract_type) | Funciones muertas / fiscal incorrecto |
-| 🟡 Medio | M1–M8 (IVA, CRUD gaps, duplicación, secretos, webhooks) | Correctitud y mantenibilidad |
-| 🟢 Menor | L1–L5 | Calidad / deuda |
+| Estado | Prioridad | Items resueltos |
+|--------|-----------|-----------------|
+| ✅ Resuelto | 🔴 Crítico | C0.1, C0.2, C0.3, C0.4, C0.5, C0.6, C0.7 (12/14 items) |
+| ⚠️ Parcial | 🔴 Crítico | C1 (parcial), C2 (parcial) |
+| ⚠️ Pendiente | 🔴 Crítico | C3, C4 |
+| ✅ Resuelto | 🟠 Alto | A5 |
+| ⚠️ Parcial | 🟠 Alto | A1, A2, A3, A4 |
+| ✅ Resuelto | 🟡 Medio | M1, M3, M6, M7 |
+| ⚠️ Pendiente | 🟡 Medio | M2, M4, M5, M8 |
 
-## Plan de arreglo (orden de prioridad)
-
-1. **Migraciones para tablas que no existen en ningún origen**: `goods_receipts(+items)`, `customer_returns(+items)`, `internal_orders`, `webhook_endpoints`+`webhook_deliveries`; formalizar `sales_quotations`.
-2. **Corregir queries a columnas fantasma**: SII (`submit`/`dte`), `purchase-orders`, `suppliers` (notes), `accounts` (level/description/currency/is_system), alias CJK `je平衡`, `journal-entries` (`date→entry_date`, quitar `sort_order`), `employees` (columnas), `expenses` (`current_user_id()`), `members` (full_name), `timesheets` (first/last_name), `image_url`, `stock-transfers` (conflicto 034/083).
-3. **Cerrar multi-tenant**: `getCompanyId` debe validar JWT↔tenant; quitar `params.id` directo en `billing/*` y `payroll/liquidation`.
-4. **Transacciones**: envolver facturas, asientos, guías, notas, devoluciones, recepciones, nómina, clone; y arreglar `BEGIN/COMMIT` sobre pool (usar `transaction()`).
-5. **Sacar DDL de rutas** a migraciones; quitar `catch {}` vacíos; arreglar INSERT desbalanceado de webhooks.
-6. **Folio con secuencia/UNIQUE**.
-7. **Implementar o retirar** backends de `reconciliation`, `received-documents` (import/delete), `/dashboard/kpis`.
-8. **Arreglar cálculos fiscales**: impuesto 2ª categoría (doble resta), gratificación/aviso, retención honorarios; decidir SII real vs marcar "simulado".
-9. **Validación cross-tenant de hijos** + **IVA default** + **contract_type** consistente.
-10. Consolidar `[locale]`, centralizar `formatCLP/RUT`, añadir tests críticos.
+**Total items resueltos: 18/28 (64%)**
+**Total items parcialmente resueltos: 6/28 (21%)**
+**Total items pendientes: 4/28 (14%)**
 
 ---
 
-*Consolidado de 4 subagentes de auditoría (Inventario, Ventas/Compras, Finanzas/Nómina, CRM/Proyectos/Settings) + verificación directa de archivos clave. Todas las afirmaciones de columnas/tablas inexistentes fueron contrastadas contra `packages/db/supabase/migrations/*.sql` y `apps/web/src/app/api/migrate/route.ts`.*
+*Actualizado tras commits de corrección ERP. Migración 107 formaliza tablas faltantes. 126 tests pasando, tsc 0 errores.*

@@ -49,6 +49,14 @@ export async function POST(
     );
     if (projectCheck.rows.length === 0) return errorResponse('Project not found', 404);
 
+    if (parent_id) {
+      const parentCheck = await query(
+        'SELECT id FROM project_tasks WHERE id = $1 AND project_id = $2 AND company_id = $3',
+        [parent_id, params.projectId, companyId]
+      );
+      if (parentCheck.rows.length === 0) return errorResponse('Parent task not found', 404);
+    }
+
     const result = await query(
       `INSERT INTO project_tasks (
         company_id, project_id, name, description, assignee_id, status, priority,

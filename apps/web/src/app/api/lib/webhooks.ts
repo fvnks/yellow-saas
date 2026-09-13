@@ -48,9 +48,9 @@ export async function sendWebhook(event: string, companyId: string, data: any): 
 
 async function queueWebhookDelivery(endpoint: WebhookEndpoint, payload: WebhookPayload): Promise<void> {
   await query(
-    `INSERT INTO webhook_deliveries (company_id, endpoint_id, event, payload, status, attempt)
-     VALUES ($1, $2, $3, 'pending', 0)`,
-    [endpoint.company_id, endpoint.id, endpoint.events[0], JSON.stringify(payload)]
+    `INSERT INTO webhook_deliveries (company_id, endpoint_id, event_type, payload, status, attempt)
+     VALUES ($1, $2, $3, $4, 'pending', 0)`,
+    [endpoint.company_id, endpoint.id, payload.event, JSON.stringify(payload)]
   );
 }
 
@@ -100,7 +100,7 @@ async function processDelivery(delivery: any): Promise<void> {
     requestHeaders['X-Webhook-Signature'] = `sha256=${signature}`;
   }
 
-  requestHeaders['X-Webhook-Event'] = delivery.event;
+  requestHeaders['X-Webhook-Event'] = delivery.event_type || delivery.event;
   requestHeaders['X-Webhook-Delivery'] = id;
   requestHeaders['X-Webhook-Timestamp'] = delivery.timestamp;
 

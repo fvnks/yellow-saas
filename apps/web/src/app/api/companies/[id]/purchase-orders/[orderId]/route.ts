@@ -17,10 +17,10 @@ export async function GET(
         (SELECT json_agg(json_build_object(
           'id', poi.id, 'product_id', poi.product_id, 'quantity', poi.quantity,
           'received_quantity', poi.received_quantity, 'unit_price', poi.unit_price,
-          'discount_percent', poi.discount_percent, 'discount_amount', poi.discount_amount,
-          'tax_rate', poi.tax_rate, 'tax_amount', poi.tax_amount, 'line_total', poi.line_total, 'notes', poi.notes,
+          'discount_percent', poi.discount_percent,
+          'tax_rate', poi.tax_rate, 'line_total', poi.line_total,
           'product', (SELECT json_build_object('id', p.id, 'name', p.name, 'sku', p.sku) FROM products p WHERE p.id = poi.product_id)
-        )) FROM purchase_order_items poi WHERE poi.order_id = po.id) as items
+        ) ORDER BY poi.created_at) FROM purchase_order_items poi WHERE poi.order_id = po.id) as items
        FROM purchase_orders po
        WHERE po.id = $1 AND po.company_id = $2`,
       [params.orderId, companyId]
@@ -47,19 +47,19 @@ export async function PUT(
 
     const {
       status, supplier_id, warehouse_id, order_date,
-      expected_date, payment_terms, notes, internal_notes, items, project_id,
+      expected_date, payment_terms, notes, items, project_id,
     } = body;
 
     const { rows } = await query(
       `UPDATE purchase_orders SET
         status = $1, supplier_id = $2, warehouse_id = $3, order_date = $4,
-        expected_date = $5, payment_terms = $6, notes = $7, internal_notes = $8,
-        project_id = $9, updated_at = NOW()
-       WHERE id = $10 AND company_id = $11
+        expected_date = $5, payment_terms = $6, notes = $7,
+        project_id = $8, updated_at = NOW()
+       WHERE id = $9 AND company_id = $10
        RETURNING *`,
       [
         status, supplier_id, warehouse_id, order_date,
-        expected_date, payment_terms, notes, internal_notes,
+        expected_date, payment_terms, notes,
         project_id || null, params.orderId, companyId,
       ]
     );
@@ -79,10 +79,10 @@ export async function PUT(
         const lineTotal = quantity * unitPrice - discountAmount + taxAmount;
 
         await query(
-          `INSERT INTO purchase_order_items (order_id, company_id, product_id, quantity, unit_price, discount_percent, discount_amount, tax_rate, tax_amount, line_total)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+          `INSERT INTO purchase_order_items (order_id, company_id, product_id, quantity, unit_price, discount_percent, tax_rate)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
           [params.orderId, companyId, item.product_id, quantity, unitPrice,
-           discountPercent, discountAmount, taxRate, taxAmount, lineTotal]
+           discountPercent, taxRate]
         );
       }
     }

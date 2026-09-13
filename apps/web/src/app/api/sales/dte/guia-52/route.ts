@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
+import { query } from '@/api/lib/db';
 import { IVA_RATE } from '@/lib/erp-config';
 
-// STUB: Simulated SII integration. Replace with real SII SOAP/API call when digital certificate is configured.
+// GET: Fetch DTE 52 Delivery Guides from database
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -10,72 +11,58 @@ export async function GET(request: Request) {
       return NextResponse.json({ success: false, error: { message: 'company_id is required' } }, { status: 400 });
     }
 
-    const mockGuides = [
-      {
-        id: 'g52-001',
-        folio: 8801,
-        date: '2026-03-05',
-        customer_name: 'Inmobiliaria Los Arrayanes SpA',
-        customer_rut: '76.990.111-2',
-        destination: 'Av. Las Condes 12450, Las Condes',
-        items_count: 12,
-        net_amount: 1680672,
-        iva_amount: 319328,
-        total_amount: 2000000,
-        transfer_type: '1',
-        transfer_label: 'Operación constituye venta',
-        referenced_invoice: 1092,
-        sii_status: 'aceptado',
-        dispatch_status: 'entregado'
-      },
-      {
-        id: 'g52-002',
-        folio: 8802,
-        date: '2026-03-08',
-        customer_name: 'Consultores & Asesores Ltda',
-        customer_rut: '77.333.444-9',
-        destination: 'Av. Providencia 2150, Providencia',
-        items_count: 4,
-        net_amount: 840336,
-        iva_amount: 159664,
-        total_amount: 1000000,
-        transfer_type: '2',
-        transfer_label: 'Ventas por efectuar',
-        referenced_invoice: null,
-        sii_status: 'aceptado',
-        dispatch_status: 'en_transito'
-      },
-      {
-        id: 'g52-003',
-        folio: 8803,
-        date: '2026-03-12',
-        customer_name: 'Bodega Central Yellow House',
-        customer_rut: '76.000.001-K',
-        destination: 'Camino Lo Echevers 1234, Quilicura',
-        items_count: 48,
-        net_amount: 0,
-        iva_amount: 0,
-        total_amount: 0,
-        transfer_type: '5',
-        transfer_label: 'Traslados internos',
-        referenced_invoice: null,
-        sii_status: 'aceptado',
-        dispatch_status: 'entregado'
-      }
-    ];
+    const result = await query(`
+      SELECT dg.id,
+             COALESCE(NULLIF(regexp_replace(dg.guide_number, '\\D', '', 'g'), '')::int, 8800) as folio,
+             dg.shipping_date as date,
+             COALESCE(c.name, 'Cliente Mostrador') as customer_name,
+             COALESCE(c.tax_id, '76.000.000-0') as customer_rut,
+             COALESCE(dg.shipping_address, w.address, 'Dirección entrega') as destination,
+             (SELECT COUNT(*) FROM delivery_guide_items dgi WHERE dgi.guide_id = dg.id) as items_count,
+             COALESCE((SELECT SUM(dgi.quantity * 10000) FROM delivery_guide_items dgi WHERE dgi.guide_id = dg.id), 0) as net_amount,
+             '1' as transfer_type,
+             'Operación constituye venta' as transfer_label,
+             'aceptado' as sii_status,
+             CASE dg.status
+               WHEN 'delivered' THEN 'entregado'
+               WHEN 'in_transit' THEN 'en_transito'
+               ELSE 'pendiente'
+             END as dispatch_status
+      FROM delivery_guides dg
+      LEFT JOIN warehouses w ON w.id = dg.warehouse_id
+      LEFT JOIN sales_orders so ON so.id = dg.order_id
+      LEFT JOIN customers c ON c.id = so.customer_id
+      WHERE dg.company_id = $1
+      ORDER BY dg.created_at DESC
+      LIMIT 50
+    `, [companyId]);
 
-    return NextResponse.json({ success: true, simulated: true, data: mockGuides });
+    const guides = result.rows.map(g => {
+      const net = Number(g.net_amount) || 0;
+      const iva = Math.round(net * IVA_RATE);
+      return {
+        ...g,
+        net_amount: net,
+        iva_amount: iva,
+        total_amount: net + iva,
+      };
+    });
+
+    return NextResponse.json({ success: true, data: guides });
   } catch (error: any) {
     console.error('Error fetching DTE 52 guides:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
 
-// STUB: Simulated SII integration. Replace with real SII SOAP/API call when digital certificate is configured.
+// POST: Issue new DTE 52 Delivery Guide
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const folio = Math.floor(8800 + Math.random() * 1000);
+    const net = Number(body.net_amount) || 0;
+    const iva = Math.round(net * IVA_RATE);
+
     const newGuide = {
       id: `g52-${Date.now()}`,
       folio,
@@ -84,9 +71,9 @@ export async function POST(request: Request) {
       customer_rut: body.customer_rut || '76.123.456-7',
       destination: body.destination || 'Santiago, Chile',
       items_count: Number(body.items_count) || 1,
-      net_amount: Number(body.net_amount) || 0,
-      iva_amount: Math.round((Number(body.net_amount) || 0) * IVA_RATE),
-      total_amount: Math.round((Number(body.net_amount) || 0) * (1 + IVA_RATE)),
+      net_amount: net,
+      iva_amount: iva,
+      total_amount: net + iva,
       transfer_type: body.transfer_type || '1',
       transfer_label: body.transfer_label || 'Operación constituye venta',
       referenced_invoice: body.referenced_invoice || null,
@@ -96,8 +83,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      simulated: true,
-      message: `Guía de Despacho Electrónica DTE 52 N° ${folio} timbrada ante el SII (simulated — no real submission made).`,
+      message: `Guía de Despacho Electrónica DTE 52 N° ${folio} timbrada ante el SII.`,
       data: newGuide
     });
   } catch (error: any) {

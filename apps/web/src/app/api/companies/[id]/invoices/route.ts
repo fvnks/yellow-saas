@@ -123,7 +123,8 @@ export async function POST(request: NextRequest) {
         const discountPct = Number(item.discount_percent || item.discount || 0);
         const lineSubtotal = item.quantity * item.unit_price;
         const discountAmount = lineSubtotal * (discountPct / 100);
-        const lineTax = (lineSubtotal - discountAmount) * ((item.tax_rate ?? 0.19) / 100);
+        const taxRate = item.tax_rate !== undefined ? Number(item.tax_rate) : 19;
+        const lineTax = (lineSubtotal - discountAmount) * (taxRate / 100);
         subtotal += lineSubtotal - discountAmount;
         taxAmount += lineTax;
       }
@@ -144,7 +145,7 @@ export async function POST(request: NextRequest) {
       const invoice = invoiceRows[0];
 
       const invoiceItems = items.map((item: Record<string, unknown>) => {
-        const taxRate = Number(item.tax_rate ?? 0.19);
+        const taxRate = item.tax_rate !== undefined ? Number(item.tax_rate) : 19;
         const quantity = Number(item.quantity) || 0;
         const unitPrice = Number(item.unit_price) || 0;
         const discountPct = Number(item.discount_percent || item.discount || 0);

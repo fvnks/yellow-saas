@@ -36,26 +36,18 @@ export async function PUT(
 
     const { rows } = await query(
       `UPDATE employees SET
-        first_name = $1, last_name = $2, rut = $3, email = $4, phone = $5, address = $6,
-        position = $7, department = $8, hire_date = $9, contract_type = $10, base_salary = $11,
-        bank_name = $12, bank_account = $13, emergency_contact = $14, emergency_phone = $15,
-        notes = $16, status = $17,
-        afp_fund = $18, afp_rate = $19, afp_commission = $20,
-        health_type = $21, health_amount = $22,
-        mutual_type = $23, mutual_rate = $24,
-        apv_amount = $25, image_url = $26,
+        first_name = $1, last_name = $2, email = $3, phone = $4, address = $5,
+        position = $6, department = $7, hire_date = $8, contract_type = $9, base_salary = $10,
+        bank_name = $11, bank_account = $12, tax_id = $13,
+        notes = $14, status = $15,
         updated_at = NOW()
-       WHERE id = $27 AND company_id = $28
+       WHERE id = $16 AND company_id = $17
        RETURNING *`,
       [
-        body.first_name, body.last_name, body.rut, body.email, body.phone, body.address,
+        body.first_name, body.last_name, body.email, body.phone, body.address,
         body.position, body.department, body.hire_date, body.contract_type, body.base_salary,
-        body.bank_name, body.bank_account, body.emergency_contact, body.emergency_phone,
+        body.bank_name, body.bank_account, body.tax_id,
         body.notes, body.status,
-        body.afp_fund, body.afp_rate, body.afp_commission,
-        body.health_type, body.health_amount,
-        body.mutual_type, body.mutual_rate,
-        body.apv_amount, body.image_url,
         params.employeeId, companyId,
       ]
     );

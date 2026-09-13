@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
           'discount_percent', poi.discount_percent,
           'tax_rate', poi.tax_rate, 'line_total', poi.line_total,
           'product', (SELECT json_build_object('id', p.id, 'name', p.name, 'sku', p.sku) FROM products p WHERE p.id = poi.product_id)
-        )) FROM purchase_order_items poi WHERE poi.order_id = po.id) as items
+        ) ORDER BY poi.created_at) FROM purchase_order_items poi WHERE poi.order_id = po.id) as items
        FROM purchase_orders po
        ${where}
        ORDER BY po.${sort} ${order === 'asc' ? 'ASC' : 'DESC'}
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
 
     const {
       supplier_id, warehouse_id, order_date, expected_date,
-      payment_terms, notes, internal_notes, items, project_id,
+      payment_terms, notes, items, project_id,
     } = body;
 
     if (!supplier_id || !warehouse_id || !items?.length) {
@@ -97,21 +97,26 @@ export async function POST(request: NextRequest) {
     let subtotal = 0;
     let taxAmount = 0;
     for (const item of items) {
-      const lineSubtotal = item.quantity * item.unit_price - (item.discount_amount || 0);
-      const lineTax = lineSubtotal * ((item.tax_rate || 0) / 100);
-      subtotal += lineSubtotal;
+      const quantity = Number(item.quantity) || 0;
+      const unitPrice = Number(item.unit_price) || 0;
+      const discountPct = Number(item.discount_percent) || 0;
+      const lineSubtotal = quantity * unitPrice;
+      const discountAmount = lineSubtotal * (discountPct / 100);
+      const taxRate = Number(item.tax_rate) || 19;
+      const lineTax = (lineSubtotal - discountAmount) * (taxRate / 100);
+      subtotal += lineSubtotal - discountAmount;
       taxAmount += lineTax;
     }
 
     const { rows: orderRows } = await query(
-      `INSERT INTO purchase_orders (company_id, supplier_id, warehouse_id, order_number, status, order_date, expected_date, payment_terms, subtotal, tax_amount, total, notes, internal_notes, project_id)
-       VALUES ($1, $2, $3, $4, 'draft', $5, $6, $7, $8, $9, $10, $11, $12, $13)
+      `INSERT INTO purchase_orders (company_id, supplier_id, warehouse_id, order_number, status, order_date, expected_date, payment_terms, subtotal, tax_amount, total, notes, project_id)
+       VALUES ($1, $2, $3, $4, 'draft', $5, $6, $7, $8, $9, $10, $11, $12)
        RETURNING *`,
       [
         companyId, supplier_id, warehouse_id, orderNumber,
         order_date || new Date().toISOString(), expected_date || null,
         payment_terms || 0, subtotal, taxAmount, subtotal + taxAmount,
-        notes || null, internal_notes || null, project_id || null,
+        notes || null, project_id || null,
       ]
     );
 
