@@ -86,8 +86,8 @@ export async function PUT(
 
       if (items && Array.isArray(items)) {
         await client.query(
-          'DELETE FROM veterinary_prescription_items WHERE prescription_id = $1',
-          [prescriptionId]
+          'DELETE FROM veterinary_prescription_items WHERE prescription_id = $1 AND company_id = $2',
+          [prescriptionId, companyId]
         );
 
         for (const item of items) {

@@ -146,20 +146,20 @@ export default function VeterinaryDashboardPage() {
 
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex items-center justify-between">
  <div>
- <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Pacientes Activos</p>
- <h3 className="text-2xl font-black text-slate-900 mt-1">{patients.length}</h3>
- <p className="text-xs text-slate-500 font-medium mt-1">
- {patients.filter((p) => p.isSterilized).length} esterilizados con chip
- </p>
- </div>
- <div className="w-12 h-12 bg-peach/30 rounded-2xl border border-peach/50 flex items-center justify-center text-monday-violet">
- <Dog className="w-6 h-6" />
- </div>
- </div>
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Pacientes Activos</p>
+          <h3 className="text-2xl font-black text-slate-900 mt-1">{patients.length}</h3>
+          <p className="text-xs text-slate-500 font-medium mt-1">
+            {patients.filter((p) => p.isSterilized).length} esterilizados · {patients.filter((p) => p.hasChip).length} con chip
+          </p>
+        </div>
+        <div className="w-12 h-12 bg-peach/30 rounded-2xl border border-peach/50 flex items-center justify-center text-[#c64d00]">
+          <Dog className="w-6 h-6" />
+        </div>
+      </div>
 
- <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex items-center justify-between">
- <div>
- <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Hospitalizados UCI</p>
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex items-center justify-between">
+        <div>
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Hospitalizados Activos</p>
  <h3 className="text-2xl font-black text-slate-900 mt-1">{hospitalizations.length}</h3>
  <p className="text-xs text-rose-600 font-semibold mt-1 flex items-center gap-1">
  <Activity className="w-3.5 h-3.5" />

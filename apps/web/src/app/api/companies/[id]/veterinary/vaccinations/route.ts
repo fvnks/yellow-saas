@@ -79,6 +79,22 @@ export async function POST(request: NextRequest) {
     );
     if (parentCheck.rows.length === 0) return errorResponse('Paciente no encontrado', 404);
 
+    if (professional_id) {
+      const profCheck = await query(
+        'SELECT id FROM veterinary_professionals WHERE id = $1 AND company_id = $2',
+        [professional_id, companyId]
+      );
+      if (profCheck.rows.length === 0) return errorResponse('Profesional no encontrado', 404);
+    }
+
+    if (consultation_id) {
+      const consultCheck = await query(
+        'SELECT id FROM veterinary_consultations WHERE id = $1 AND company_id = $2',
+        [consultation_id, companyId]
+      );
+      if (consultCheck.rows.length === 0) return errorResponse('Consulta no encontrada', 404);
+    }
+
     const result = await query(
       `INSERT INTO veterinary_vaccinations (
         company_id, patient_id, professional_id, consultation_id, vaccine_name,

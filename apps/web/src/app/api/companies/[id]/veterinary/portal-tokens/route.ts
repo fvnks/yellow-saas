@@ -70,13 +70,21 @@ export async function POST(req: NextRequest) {
       return errorResponse('patient_id y client_id son requeridos', 400);
     }
 
+    const [patientCheck, clientCheck] = await Promise.all([
+      query('SELECT id FROM veterinary_patients WHERE id = $1 AND company_id = $2', [patient_id, companyId]),
+      query('SELECT id FROM veterinary_clients WHERE id = $1 AND company_id = $2', [client_id, companyId]),
+    ]);
+    if (patientCheck.rows.length === 0) return errorResponse('Paciente no encontrado', 404);
+    if (clientCheck.rows.length === 0) return errorResponse('Cliente no encontrado', 404);
+
     const token = crypto.randomBytes(32).toString('hex');
+    const defaultExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
 
     const result = await query(
       `INSERT INTO veterinary_portal_tokens (company_id, patient_id, client_id, token, expires_at, created_by)
        VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
-      [companyId, patient_id, client_id, token, expires_at || null, userId]
+      [companyId, patient_id, client_id, token, expires_at || defaultExpiry, userId]
     );
 
     return successResponse(result.rows[0], 201);

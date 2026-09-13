@@ -46,6 +46,7 @@ export interface VeterinaryPatient {
   color: string;
   currentWeightKg: number;
   microchip?: string;
+  hasChip?: boolean;
   registrationNumber?: string;
   isSterilized: boolean;
   temperament?: string;
