@@ -11,7 +11,7 @@ export async function GET(
   { params }: { params: { id: string; roleId: string } }
 ) {
   try {
-    const companyId = params.id;
+    const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const { rows: roleRows } = await query(
@@ -43,7 +43,7 @@ export async function PUT(
   { params }: { params: { id: string; roleId: string } }
 ) {
   try {
-    const companyId = params.id;
+    const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const body = await request.json();
@@ -75,7 +75,7 @@ export async function DELETE(
   { params }: { params: { id: string; roleId: string } }
 ) {
   try {
-    const companyId = params.id;
+    const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
     const { rows: role } = await query(

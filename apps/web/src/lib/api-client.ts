@@ -726,6 +726,10 @@ export class ApiClient {
     return this.requestWithPagination<{ id: string; module: string; action: string; label: string }>('/permissions', {});
   }
 
+  async getMyPermissions() {
+    return this.request<{ permissions: Array<{ id: string; module: string; action: string; description: string }>; role: string; isFull: boolean }>('/permissions?mine=true');
+  }
+
   // User Roles
   async getUserRoles(params?: Record<string, string>) {
     return this.requestWithPagination<{ user_id: string; role_id: string }>('/user-roles', params || {});

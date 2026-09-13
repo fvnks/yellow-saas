@@ -108,6 +108,39 @@ export async function POST(request: NextRequest) {
         }
       }
 
+      // Create default roles for the company
+      const defaultRoles = [
+        { name: 'owner', description: 'Propietario de la empresa' },
+        { name: 'admin', description: 'Administrador' },
+        { name: 'member', description: 'Miembro' },
+        { name: 'viewer', description: 'Solo lectura' },
+      ];
+      const createdRoles: Record<string, string> = {};
+      for (const role of defaultRoles) {
+        const { rows } = await client.query(
+          `INSERT INTO roles (company_id, name, description, is_system)
+           VALUES ($1, $2, $3, true)
+           ON CONFLICT (company_id, name) DO UPDATE SET name = EXCLUDED.name
+           RETURNING id, name`,
+          [company.id, role.name, role.description]
+        );
+        if (rows[0]) createdRoles[rows[0].name] = rows[0].id;
+      }
+
+      // Assign owner role to the creating user
+      const ownerProfile = await client.query(
+        `SELECT id FROM profiles WHERE company_id = $1 AND role = 'owner' LIMIT 1`,
+        [company.id]
+      );
+      if (ownerProfile.rows[0] && createdRoles['owner']) {
+        await client.query(
+          `INSERT INTO user_roles (user_id, role_id, company_id)
+           VALUES ($1, $2, $3)
+           ON CONFLICT (user_id, role_id, company_id) DO NOTHING`,
+          [ownerProfile.rows[0].id, createdRoles['owner'], company.id]
+        );
+      }
+
       return company;
     });
 

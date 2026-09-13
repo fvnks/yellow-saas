@@ -31,6 +31,22 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { user_id, role_id } = body;
 
+    if (!user_id || !role_id) return errorResponse('user_id and role_id are required', 400);
+
+    // Cross-tenant validation: role must belong to this company
+    const roleCheck = await query(
+      `SELECT id FROM roles WHERE id = $1 AND company_id = $2`,
+      [role_id, companyId]
+    );
+    if (roleCheck.rows.length === 0) return errorResponse('Role not found in this company', 404);
+
+    // Cross-tenant validation: user must belong to this company
+    const userCheck = await query(
+      `SELECT id FROM profiles WHERE id = $1 AND company_id = $2`,
+      [user_id, companyId]
+    );
+    if (userCheck.rows.length === 0) return errorResponse('User not found in this company', 404);
+
     const { rows } = await query(
       `INSERT INTO user_roles (user_id, role_id, company_id)
        VALUES ($1, $2, $3)

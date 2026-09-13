@@ -23,8 +23,8 @@ interface PermissionsContextType {
 const PermissionsContext = createContext<PermissionsContextType>({
   permissions: [],
   loading: true,
-  hasPermission: () => true,
-  hasAnyPermission: () => true,
+  hasPermission: () => false,
+  hasAnyPermission: () => false,
   refresh: () => {},
   isOwner: false,
 });
@@ -43,9 +43,10 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
   const load = useCallback(() => {
     try {
       const api = getApiClient();
-      api.getPermissions()
-        .then((data) => {
-          setPermissions(Array.isArray(data) ? data : []);
+      api.getMyPermissions()
+        .then((data: any) => {
+          const perms = data?.permissions || (Array.isArray(data) ? data : []);
+          setPermissions(perms);
           setLoading(false);
         })
         .catch(() => setLoading(false));
@@ -60,9 +61,7 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
 
   const hasPermission = useCallback(
     (module: string, action: string) => {
-      // While loading, allow everything so server/client initial render matches
-      if (loading) return true;
-      // Owner and admin see everything
+      if (loading) return false;
       if (isOwner) return true;
       return permissions.some((p) => p.module === module && p.action === action);
     },
@@ -71,7 +70,7 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
 
   const hasAnyPermission = useCallback(
     (module: string) => {
-      if (loading) return true;
+      if (loading) return false;
       if (isOwner) return true;
       return permissions.some((p) => p.module === module);
     },
