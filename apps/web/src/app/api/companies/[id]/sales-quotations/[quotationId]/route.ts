@@ -1,4 +1,4 @@
-import { query } from '@/api/lib/db';
+import { query, transaction } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
@@ -43,41 +43,46 @@ export async function PUT(
 
     const body = await request.json();
 
-    const { rows } = await query(
-      `UPDATE sales_quotations SET
-        status = $1, customer_id = $2, valid_until = $3, notes = $4,
-        updated_at = NOW()
-       WHERE id = $5 AND company_id = $6
-       RETURNING *`,
-      [
-        body.status, body.customer_id, body.valid_until, body.notes,
-        params.quotationId, companyId,
-      ]
-    );
+    const result = await transaction(async (client) => {
+      const { rows } = await client.query(
+        `UPDATE sales_quotations SET
+          status = $1, customer_id = $2, valid_until = $3, notes = $4,
+          updated_at = NOW()
+         WHERE id = $5 AND company_id = $6
+         RETURNING *`,
+        [
+          body.status, body.customer_id, body.valid_until, body.notes,
+          params.quotationId, companyId,
+        ]
+      );
 
-    if (!rows[0]) return errorResponse('Sales quotation not found', 404);
+      if (!rows[0]) return null;
 
-    if (body.items?.length) {
-      await query(`DELETE FROM sales_quotation_items WHERE quotation_id = $1 AND company_id = $2`, [
-        params.quotationId, companyId,
-      ]);
+      if (body.items?.length) {
+        await client.query(`DELETE FROM sales_quotation_items WHERE quotation_id = $1 AND company_id = $2`, [
+          params.quotationId, companyId,
+        ]);
 
-      for (const item of body.items) {
-        const quantity = Number(item.quantity) || 0;
-        const unitPrice = Number(item.unit_price) || 0;
-        await query(
-          `INSERT INTO sales_quotation_items (quotation_id, company_id, product_id, quantity, unit_price, discount_percent, tax_rate)
-           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-          [
-            params.quotationId, companyId, item.product_id,
-            quantity, unitPrice,
-            item.discount_percent || 0, item.tax_rate || 19,
-          ]
-        );
+        for (const item of body.items) {
+          const quantity = Number(item.quantity) || 0;
+          const unitPrice = Number(item.unit_price) || 0;
+          await client.query(
+            `INSERT INTO sales_quotation_items (quotation_id, company_id, product_id, quantity, unit_price, discount_percent, tax_rate)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+            [
+              params.quotationId, companyId, item.product_id,
+              quantity, unitPrice,
+              item.discount_percent || 0, item.tax_rate || 19,
+            ]
+          );
+        }
       }
-    }
 
-    return successResponse(rows[0]);
+      return rows[0];
+    });
+
+    if (!result) return errorResponse('Sales quotation not found', 404);
+    return successResponse(result);
   } catch (err) {
     console.error('Route error:', err);
     return errorResponse('Failed to update sales quotation', 500);
@@ -92,23 +97,28 @@ export async function DELETE(
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
 
-    const { rows: quotation } = await query(
-      `SELECT status FROM sales_quotations WHERE id = $1 AND company_id = $2`,
-      [params.quotationId, companyId]
-    );
+    const result = await transaction(async (client) => {
+      const { rows: quotation } = await client.query(
+        `SELECT status FROM sales_quotations WHERE id = $1 AND company_id = $2`,
+        [params.quotationId, companyId]
+      );
 
-    if (!quotation[0]) return errorResponse('Sales quotation not found', 404);
+      if (!quotation[0]) return null;
 
-    if (quotation[0].status !== 'draft') {
-      return errorResponse('Only draft quotations can be deleted', 400);
-    }
+      if (quotation[0].status !== 'draft') {
+        throw new Error('Only draft quotations can be deleted');
+      }
 
-    await query(`DELETE FROM sales_quotation_items WHERE quotation_id = $1 AND company_id = $2`, [params.quotationId, companyId]);
-    await query(`DELETE FROM sales_quotations WHERE id = $1 AND company_id = $2`, [params.quotationId, companyId]);
+      await client.query(`DELETE FROM sales_quotation_items WHERE quotation_id = $1 AND company_id = $2`, [params.quotationId, companyId]);
+      await client.query(`DELETE FROM sales_quotations WHERE id = $1 AND company_id = $2`, [params.quotationId, companyId]);
 
+      return true;
+    });
+
+    if (!result) return errorResponse('Sales quotation not found', 404);
     return successResponse({ message: 'Sales quotation deleted successfully' });
-  } catch (err) {
+  } catch (err: any) {
     console.error('Route error:', err);
-    return errorResponse('Failed to delete sales quotation', 500);
+    return errorResponse(err.message || 'Failed to delete sales quotation', err.message?.includes('draft') ? 400 : 500);
   }
 }

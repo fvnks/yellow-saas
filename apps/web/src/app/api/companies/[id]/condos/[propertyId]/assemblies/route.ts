@@ -118,3 +118,58 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     return errorResponse('Internal server error', 500);
   }
 }
+
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string; propertyId: string }> }) {
+  try {
+    const pParams = await params;
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse("Company ID not found", 400);
+    const body = await request.json();
+    const { id, title, assembly_date, assembly_type, quorum_required_pct, status, minutes_text } = body;
+
+    if (!id) return errorResponse("id is required", 400);
+
+    const result = await query(
+      `UPDATE condos_assemblies SET
+        title = COALESCE($1, title),
+        assembly_date = COALESCE($2, assembly_date),
+        assembly_type = COALESCE($3, assembly_type),
+        quorum_required_pct = COALESCE($4, quorum_required_pct),
+        status = COALESCE($5, status),
+        minutes_text = COALESCE($6, minutes_text),
+        updated_at = NOW()
+       WHERE id = $7 AND company_id = $8 AND property_id = $9
+       RETURNING *`,
+      [title, assembly_date, assembly_type, quorum_required_pct ? Number(quorum_required_pct) : null, status, minutes_text, id, companyId, pParams.propertyId]
+    );
+
+    if (result.rows.length === 0) return errorResponse("Asamblea no encontrada", 404);
+    return successResponse(result.rows[0]);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
+  }
+}
+
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string; propertyId: string }> }) {
+  try {
+    const pParams = await params;
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse("Company ID not found", 400);
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) return errorResponse("id query param is required", 400);
+
+    const result = await query(
+      `DELETE FROM condos_assemblies WHERE id = $1 AND company_id = $2 AND property_id = $3 RETURNING id`,
+      [id, companyId, pParams.propertyId]
+    );
+
+    if (result.rows.length === 0) return errorResponse("Asamblea no encontrada", 404);
+    return successResponse({ deleted: true });
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
+  }
+}

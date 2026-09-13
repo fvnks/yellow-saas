@@ -1,4 +1,4 @@
-import { query } from '@/api/lib/db';
+import { query, transaction } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
@@ -23,11 +23,9 @@ export async function POST(
     if (count.status !== 'in_progress') return errorResponse('Count must be in progress to complete', 400);
     if (parseInt(count.uncounted) > 0) return errorResponse('All items must be counted before completing', 400);
 
-    await query('BEGIN');
-
-    try {
+    await transaction(async (client) => {
       // Create stock adjustments for items with differences
-      const items = await query(
+      const items = await client.query(
         `SELECT ici.*, p.cost_price
          FROM inventory_count_items ici
          JOIN products p ON ici.product_id = p.id
@@ -37,29 +35,28 @@ export async function POST(
 
       for (const item of items.rows) {
         const diff = Number(item.counted_quantity) - Number(item.system_quantity);
-        const qty = Math.abs(diff);
 
         // Create stock movement
-        await query(
+        await client.query(
           `INSERT INTO stock_movements (company_id, product_id, warehouse_id, type, quantity, unit_cost, notes, created_by)
            VALUES ($1, $2, $3, 'adjustment', $4, $5, $6, $7)`,
           [companyId, item.product_id, count.warehouse_id, diff, item.cost_price || 0, `Ajuste por conteo ${count.count_number}`, count.created_by]
         );
 
         // Update stock levels
-        const stockExists = await query(
+        const stockExists = await client.query(
           `SELECT id FROM stock_levels WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`,
           [companyId, item.product_id, count.warehouse_id]
         );
 
         if (stockExists.rows.length > 0) {
-          await query(
+          await client.query(
             `UPDATE stock_levels SET quantity = quantity + $4, updated_at = NOW()
              WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`,
             [companyId, item.product_id, count.warehouse_id, diff]
           );
         } else if (diff > 0) {
-          await query(
+          await client.query(
             `INSERT INTO stock_levels (company_id, product_id, warehouse_id, quantity)
              VALUES ($1, $2, $3, $4)`,
             [companyId, item.product_id, count.warehouse_id, diff]
@@ -67,25 +64,21 @@ export async function POST(
         }
 
         // Update item status
-        await query(
+        await client.query(
           `UPDATE inventory_count_items SET status = 'adjusted' WHERE id = $1`,
           [item.id]
         );
       }
 
       // Update count status
-      await query(
+      await client.query(
         `UPDATE inventory_counts SET status = 'completed', completed_at = NOW(), updated_at = NOW()
          WHERE id = $1`,
         [params.countId]
       );
+    });
 
-      await query('COMMIT');
-      return successResponse({ message: 'Count completed and adjustments posted' });
-    } catch (err) {
-      await query('ROLLBACK');
-      throw err;
-    }
+    return successResponse({ message: 'Count completed and adjustments posted' });
   } catch (err) {
     console.error('Route error:', err);
     return errorResponse('Failed to complete count', 500);

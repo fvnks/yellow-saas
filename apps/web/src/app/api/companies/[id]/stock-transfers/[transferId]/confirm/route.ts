@@ -1,4 +1,4 @@
-import { query } from '@/api/lib/db';
+import { query, transaction } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse, checkAndCreateLowStockNotification } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
@@ -30,7 +30,7 @@ export async function POST(
     }
 
     // Check stock availability for all items
-    for (const item of transfer.items) {
+    for (const item of (transfer.items || [])) {
       const stockCheck = await query(
         `SELECT quantity FROM stock_levels WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`,
         [companyId, item.product_id, transfer.source_warehouse_id]
@@ -43,51 +43,47 @@ export async function POST(
       }
     }
 
-    // Execute transfer in a transaction
-    await query('BEGIN');
-
-    try {
-      for (const item of transfer.items) {
+    // Execute transfer in an atomic transaction
+    await transaction(async (client) => {
+      for (const item of (transfer.items || [])) {
         const qty = Number(item.quantity);
         const cost = Number(item.unit_cost) || 0;
 
         // Create transfer_out movement at source
-        await query(
+        await client.query(
           `INSERT INTO stock_movements (company_id, product_id, warehouse_id, type, quantity, unit_cost, notes, created_by)
            VALUES ($1, $2, $3, 'transfer_out', $4, $5, $6, $7)`,
           [companyId, item.product_id, transfer.source_warehouse_id, -qty, cost, `Transferencia ${transfer.transfer_number}`, transfer.created_by]
         );
 
         // Create transfer_in movement at destination
-        await query(
+        await client.query(
           `INSERT INTO stock_movements (company_id, product_id, warehouse_id, type, quantity, unit_cost, notes, created_by)
            VALUES ($1, $2, $3, 'transfer_in', $4, $5, $6, $7)`,
           [companyId, item.product_id, transfer.destination_warehouse_id, qty, cost, `Transferencia ${transfer.transfer_number}`, transfer.created_by]
         );
 
         // Update source stock
-        await query(
+        await client.query(
           `UPDATE stock_levels SET quantity = quantity - $4, updated_at = NOW()
            WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`,
           [companyId, item.product_id, transfer.source_warehouse_id, qty]
         );
 
-        await checkAndCreateLowStockNotification(companyId, item.product_id, transfer.source_warehouse_id);
-
         // Update destination stock (create if not exists)
-        const destStock = await query(
+        const destStock = await client.query(
           `SELECT id FROM stock_levels WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`,
           [companyId, item.product_id, transfer.destination_warehouse_id]
         );
 
         if (destStock.rows.length > 0) {
-          await query(
+          await client.query(
             `UPDATE stock_levels SET quantity = quantity + $4, updated_at = NOW()
              WHERE company_id = $1 AND product_id = $2 AND warehouse_id = $3`,
             [companyId, item.product_id, transfer.destination_warehouse_id, qty]
           );
         } else {
-          await query(
+          await client.query(
             `INSERT INTO stock_levels (company_id, product_id, warehouse_id, quantity)
              VALUES ($1, $2, $3, $4)`,
             [companyId, item.product_id, transfer.destination_warehouse_id, qty]
@@ -96,18 +92,19 @@ export async function POST(
       }
 
       // Update transfer status
-      await query(
+      await client.query(
         `UPDATE stock_transfers SET status = 'delivered', updated_at = NOW()
          WHERE id = $1 AND company_id = $2`,
         [params.transferId, companyId]
       );
+    });
 
-      await query('COMMIT');
-      return successResponse({ message: 'Transfer confirmed successfully' });
-    } catch (err) {
-      await query('ROLLBACK');
-      throw err;
+    // Check low stock notifications after transaction
+    for (const item of (transfer.items || [])) {
+      await checkAndCreateLowStockNotification(companyId, item.product_id, transfer.source_warehouse_id);
     }
+
+    return successResponse({ message: 'Transfer confirmed successfully' });
   } catch (err) {
     console.error('Route error:', err);
     return errorResponse('Failed to confirm transfer', 500);

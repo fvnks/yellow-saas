@@ -1,4 +1,4 @@
-import { query } from '@/api/lib/db';
+import { query, transaction } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
@@ -14,52 +14,53 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       return errorResponse('Invalid status', 400);
     }
 
-    const updates: string[] = ['status = $3'];
-    const values: any[] = [params.transferId, companyId, status];
-    let idx = 4;
-
-    const { rows } = await query(
-      `UPDATE stock_transfers SET ${updates.join(', ')}
-       WHERE id = $1 AND company_id = $2
-       RETURNING *`,
-      values
-    );
-
-    if (rows.length === 0) return errorResponse('Transfer not found', 404);
-
-    if (status === 'delivered') {
-      const transfer = rows[0];
-
-      const itemsResult = await query(
-        `SELECT * FROM stock_transfer_items WHERE transfer_id = $1 AND company_id = $2`,
-        [params.transferId, companyId]
+    const result = await transaction(async (client) => {
+      const { rows } = await client.query(
+        `UPDATE stock_transfers SET status = $3, updated_at = NOW()
+         WHERE id = $1 AND company_id = $2
+         RETURNING *`,
+        [params.transferId, companyId, status]
       );
 
-      for (const item of itemsResult.rows) {
-        await query(
-          `UPDATE stock_levels SET quantity = quantity - $1
-           WHERE product_id = $2 AND warehouse_id = $3 AND company_id = $4`,
-          [item.quantity, item.product_id, transfer.source_warehouse_id, companyId]
+      if (rows.length === 0) return null;
+
+      if (status === 'delivered') {
+        const transfer = rows[0];
+
+        const itemsResult = await client.query(
+          `SELECT * FROM stock_transfer_items WHERE transfer_id = $1 AND company_id = $2`,
+          [params.transferId, companyId]
         );
 
-        await query(
-          `INSERT INTO stock_levels (company_id, product_id, warehouse_id, quantity)
-           VALUES ($1, $2, $3, $4)
-           ON CONFLICT (company_id, product_id, warehouse_id)
-           DO UPDATE SET quantity = stock_levels.quantity + $4`,
-          [companyId, item.product_id, transfer.destination_warehouse_id, item.quantity]
-        );
+        for (const item of itemsResult.rows) {
+          await client.query(
+            `UPDATE stock_levels SET quantity = quantity - $1, updated_at = NOW()
+             WHERE product_id = $2 AND warehouse_id = $3 AND company_id = $4`,
+            [item.quantity, item.product_id, transfer.source_warehouse_id, companyId]
+          );
 
-        await query(
-          `INSERT INTO stock_movements (company_id, product_id, warehouse_id, type, quantity, reference_type, reference_id, notes)
-           VALUES ($1, $2, $3, 'transfer_out', $4, 'stock_transfer', $5, 'Transferencia saliente'),
-            ($1, $2, $6, 'transfer_in', $4, 'stock_transfer', $5, 'Transferencia entrante')`,
-          [companyId, item.product_id, transfer.source_warehouse_id, item.quantity, transfer.id, transfer.destination_warehouse_id]
-        );
+          await client.query(
+            `INSERT INTO stock_levels (company_id, product_id, warehouse_id, quantity)
+             VALUES ($1, $2, $3, $4)
+             ON CONFLICT (company_id, product_id, warehouse_id)
+             DO UPDATE SET quantity = stock_levels.quantity + $4, updated_at = NOW()`,
+            [companyId, item.product_id, transfer.destination_warehouse_id, item.quantity]
+          );
+
+          await client.query(
+            `INSERT INTO stock_movements (company_id, product_id, warehouse_id, type, quantity, reference_type, reference_id, notes)
+             VALUES ($1, $2, $3, 'transfer_out', $4, 'stock_transfer', $5, 'Transferencia saliente'),
+                    ($1, $2, $6, 'transfer_in', $4, 'stock_transfer', $5, 'Transferencia entrante')`,
+            [companyId, item.product_id, transfer.source_warehouse_id, item.quantity, transfer.id, transfer.destination_warehouse_id]
+          );
+        }
       }
-    }
 
-    return successResponse(rows[0]);
+      return rows[0];
+    });
+
+    if (!result) return errorResponse('Transfer not found', 404);
+    return successResponse(result);
   } catch (e: any) {
     return errorResponse(e.message, 500);
   }

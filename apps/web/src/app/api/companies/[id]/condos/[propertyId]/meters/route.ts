@@ -101,3 +101,37 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     return errorResponse('Internal server error', 500);
   }
 }
+
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string; propertyId: string }> }) {
+  try {
+    const pParams = await params;
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse("Company ID not found", 400);
+    const { searchParams } = new URL(request.url);
+    const meterId = searchParams.get('meterId');
+    const readingId = searchParams.get('readingId');
+
+    if (readingId) {
+      const result = await query(
+        `DELETE FROM condos_meter_readings WHERE id = $1 AND company_id = $2 RETURNING id`,
+        [readingId, companyId]
+      );
+      if (result.rows.length === 0) return errorResponse("Lectura no encontrada", 404);
+      return successResponse({ deleted: true });
+    }
+
+    if (meterId) {
+      const result = await query(
+        `DELETE FROM condos_utility_meters WHERE id = $1 AND company_id = $2 AND property_id = $3 RETURNING id`,
+        [meterId, companyId, pParams.propertyId]
+      );
+      if (result.rows.length === 0) return errorResponse("Medidor no encontrado", 404);
+      return successResponse({ deleted: true });
+    }
+
+    return errorResponse("meterId or readingId query param is required", 400);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
+  }
+}

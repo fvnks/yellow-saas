@@ -11,7 +11,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const [unitsRes, periodsRes, paymentsRes, propertyRes, expensesRes] = await Promise.all([
       query(
         `SELECT u.*, COALESCE(cc.coefficient_pct, cc.percentage, 0) as coefficient_pct,
-                o.full_name as owner_name
+                COALESCE(o.full_name, u.resident_name) as owner_name
          FROM condos_units u
          LEFT JOIN condos_coefficients cc ON cc.unit_id = u.id AND cc.category = 'general'
          LEFT JOIN owners o ON o.id = u.owner_id
@@ -24,8 +24,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         [companyId, propertyId],
       ),
       query(
-        `SELECT p.*, u.unit_number FROM condos_payments p
+        `SELECT p.*, u.unit_number, COALESCE(o.full_name, u.resident_name, 'Copropietario') as owner_name
+         FROM condos_payments p
          JOIN condos_units u ON u.id = p.unit_id
+         LEFT JOIN owners o ON o.id = u.owner_id
          WHERE p.company_id = $1 AND u.property_id = $2
          ORDER BY p.payment_date DESC`,
         [companyId, propertyId],
@@ -51,7 +53,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         id: u.id,
         number: u.unit_number,
         type: u.type,
-        ownerName: u.owner_name || u.resident_name || "Sin propietario",
+        ownerName: u.owner_name || "Sin propietario",
         ownerEmail: u.resident_email || "",
         ownerPhone: u.resident_phone || "",
         alicuotaPercentage: parseFloat(u.coefficient_pct || "0"),
@@ -72,7 +74,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         id: pay.id,
         unitId: pay.unit_id,
         unitNumber: pay.unit_number || "",
-        ownerName: "Copropietario",
+        ownerName: pay.owner_name || "Copropietario",
         periodId: pay.period_id,
         amountCLP: parseFloat(pay.amount || "0"),
         paymentDate: pay.payment_date ? String(pay.payment_date).substring(0, 10) : "",

@@ -78,3 +78,56 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     return errorResponse('Internal server error', 500);
   }
 }
+
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string; propertyId: string }> }) {
+  try {
+    const pParams = await params;
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse("Company ID not found", 400);
+    const body = await request.json();
+    const { id, status, infraction_description, fine_amount_clp, fine_amount_uf } = body;
+
+    if (!id) return errorResponse("id is required", 400);
+
+    const result = await query(
+      `UPDATE condos_violations SET
+        status = COALESCE($1, status),
+        infraction_description = COALESCE($2, infraction_description),
+        fine_amount_clp = COALESCE($3, fine_amount_clp),
+        fine_amount_uf = COALESCE($4, fine_amount_uf),
+        updated_at = NOW()
+       WHERE id = $5 AND company_id = $6 AND property_id = $7
+       RETURNING *`,
+      [status, infraction_description, fine_amount_clp ? Number(fine_amount_clp) : null, fine_amount_uf ? Number(fine_amount_uf) : null, id, companyId, pParams.propertyId]
+    );
+
+    if (result.rows.length === 0) return errorResponse("Multa no encontrada", 404);
+    return successResponse(result.rows[0]);
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
+  }
+}
+
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string; propertyId: string }> }) {
+  try {
+    const pParams = await params;
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse("Company ID not found", 400);
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) return errorResponse("id query param is required", 400);
+
+    const result = await query(
+      `DELETE FROM condos_violations WHERE id = $1 AND company_id = $2 AND property_id = $3 RETURNING id`,
+      [id, companyId, pParams.propertyId]
+    );
+
+    if (result.rows.length === 0) return errorResponse("Multa no encontrada", 404);
+    return successResponse({ deleted: true });
+  } catch (err) {
+    console.error('Route error:', err);
+    return errorResponse('Internal server error', 500);
+  }
+}
