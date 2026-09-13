@@ -3,6 +3,16 @@ import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 import { verifySuperAdmin } from '@/api/super-admin/lib/auth';
 
+function getClientIp(request: NextRequest): string | null {
+  const forwarded = request.headers.get('x-forwarded-for');
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+  const realIp = request.headers.get('x-real-ip');
+  if (realIp) return realIp.trim();
+  return null;
+}
+
 export async function GET(request: NextRequest) {
   const admin = await verifySuperAdmin(request);
   if (!admin) return errorResponse('No autorizado', 401);
@@ -61,9 +71,10 @@ export async function PATCH(request: NextRequest) {
 
     await query(`UPDATE companies SET ${updates.join(', ')} WHERE id = $${idx}`, values);
 
+    const clientIp = getClientIp(request);
     await query(
-      "INSERT INTO access_audit_log (super_admin_id, company_id, action, details) VALUES ($1, $2, 'modify', $3)",
-      [admin.id, company_id, JSON.stringify({ action: 'update_plan', plan, status })]
+      "INSERT INTO access_audit_log (super_admin_id, company_id, action, details, ip_address) VALUES ($1, $2, 'modify', $3, $4)",
+      [admin.id, company_id, JSON.stringify({ action: 'update_plan', plan, status }), clientIp]
     );
 
     return successResponse({ success: true });

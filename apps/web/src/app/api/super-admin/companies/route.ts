@@ -1,4 +1,4 @@
-import { query } from '@/api/lib/db';
+import { query, transaction } from '@/api/lib/db';
 import { successResponse, errorResponse, parseSearchParams, paginatedResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 import { verifySuperAdmin } from '@/api/super-admin/lib/auth';
@@ -38,7 +38,13 @@ export async function GET(request: NextRequest) {
 
     const result = await query(
       `SELECT c.id, c.name, c.slug, c.plan, c.status, c.created_at, c.trial_ends_at,
-        (SELECT COUNT(*) FROM profiles WHERE company_id = c.id) as user_count
+        (SELECT COUNT(*) FROM profiles WHERE company_id = c.id) as user_count,
+        COALESCE(
+          (SELECT json_agg(ma.module_name)
+           FROM module_activations ma
+           WHERE ma.company_id = c.id AND ma.status = 'active'),
+          '[]'::json
+        ) as active_modules
        FROM companies c
        ${whereClause}
        ORDER BY ${sortColumn} ${order === 'asc' ? 'ASC' : 'DESC'}
@@ -67,40 +73,45 @@ export async function POST(request: NextRequest) {
     const existing = await query('SELECT id FROM companies WHERE slug = $1', [slug]);
     if (existing.rows.length > 0) return errorResponse('Ya existe una empresa con ese slug', 409);
 
-    const companyResult = await query(
-      `INSERT INTO companies (name, slug, plan, status, trial_ends_at)
-       VALUES ($1, $2, $3, 'active', NOW() + INTERVAL '14 days')
-       RETURNING *`,
-      [name, slug, plan || 'professional']
-    );
-    const company = companyResult.rows[0];
-
     const passwordHash = await bcrypt.hash(password, 12);
-    await query(
-      `INSERT INTO profiles (company_id, email, full_name, password_hash, role, role_type, status)
-       VALUES ($1, $2, $3, $4, 'owner', 'company', 'active')`,
-      [company.id, email, name, passwordHash]
-    );
 
-    if (Array.isArray(modules) && modules.length > 0) {
-      const validModules = await query('SELECT name FROM module_catalog WHERE name = ANY($1) AND is_active = true', [modules]);
-      const validNames = new Set(validModules.rows.map((r: any) => r.name));
-      
-      for (const moduleName of modules) {
-        if (!validNames.has(moduleName)) {
-          console.warn(`Module '${moduleName}' not found in catalog, skipping`);
-          continue;
+    const createdCompany = await transaction(async (client) => {
+      const companyResult = await client.query(
+        `INSERT INTO companies (name, slug, plan, status, trial_ends_at)
+         VALUES ($1, $2, $3, 'active', NOW() + INTERVAL '14 days')
+         RETURNING *`,
+        [name, slug, plan || 'professional']
+      );
+      const company = companyResult.rows[0];
+
+      await client.query(
+        `INSERT INTO profiles (company_id, email, full_name, password_hash, role, role_type, status)
+         VALUES ($1, $2, $3, $4, 'owner', 'company', 'active')`,
+        [company.id, email, name, passwordHash]
+      );
+
+      if (Array.isArray(modules) && modules.length > 0) {
+        const validModules = await client.query('SELECT name FROM module_catalog WHERE name = ANY($1) AND is_active = true', [modules]);
+        const validNames = new Set(validModules.rows.map((r: any) => r.name));
+
+        for (const moduleName of modules) {
+          if (!validNames.has(moduleName)) {
+            console.warn(`Module '${moduleName}' not found in catalog, skipping`);
+            continue;
+          }
+          await client.query(
+            `INSERT INTO module_activations (company_id, module_name, status, activated_at)
+             VALUES ($1, $2, 'active', now())
+             ON CONFLICT (company_id, module_name) DO UPDATE SET status = 'active', activated_at = now()`,
+            [company.id, moduleName]
+          );
         }
-        await query(
-          `INSERT INTO module_activations (company_id, module_name, status, activated_at)
-           VALUES ($1, $2, 'active', now())
-           ON CONFLICT (company_id, module_name) DO UPDATE SET status = 'active', activated_at = now()`,
-          [company.id, moduleName]
-        );
       }
-    }
 
-    return successResponse({ company, modules: modules || [] }, 201);
+      return company;
+    });
+
+    return successResponse({ company: createdCompany, modules: modules || [] }, 201);
   } catch (err) {
     console.error('Create company error:', err);
     return errorResponse(err instanceof Error ? err.message : 'Error al crear empresa', 500);

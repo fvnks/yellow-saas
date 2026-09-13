@@ -7,6 +7,16 @@ import { getJwtSecret } from '@/lib/env';
 
 const JWT_SECRET = getJwtSecret();
 
+function getClientIp(request: NextRequest): string | null {
+  const forwarded = request.headers.get('x-forwarded-for');
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+  const realIp = request.headers.get('x-real-ip');
+  if (realIp) return realIp.trim();
+  return null;
+}
+
 export async function POST(request: NextRequest) {
   const admin = await verifySuperAdmin(request);
   if (!admin) return errorResponse('No autorizado', 401);
@@ -25,6 +35,7 @@ export async function POST(request: NextRequest) {
     if (userResult.rows.length === 0) return errorResponse('Usuario no encontrado', 404);
 
     const user = userResult.rows[0];
+    const clientIp = getClientIp(request);
 
     const token = await new SignJWT({
       id: user.id,
@@ -41,8 +52,8 @@ export async function POST(request: NextRequest) {
       .sign(JWT_SECRET);
 
     await query(
-      "INSERT INTO access_audit_log (super_admin_id, company_id, action, details) VALUES ($1, $2, 'access', $3)",
-      [admin.id, company_id, JSON.stringify({ action: 'login_as', target_user: user.email })]
+      "INSERT INTO access_audit_log (super_admin_id, company_id, action, details, ip_address) VALUES ($1, $2, 'access', $3, $4)",
+      [admin.id, company_id, JSON.stringify({ action: 'login_as', target_user: user.email }), clientIp]
     );
 
     const response = NextResponse.json(

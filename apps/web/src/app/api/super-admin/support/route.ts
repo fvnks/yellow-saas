@@ -1,4 +1,4 @@
-import { query } from '@/api/lib/db';
+import { query, transaction } from '@/api/lib/db';
 import { successResponse, errorResponse, parseSearchParams, paginatedResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 import { verifySuperAdmin } from '@/api/super-admin/lib/auth';
@@ -82,20 +82,24 @@ export async function POST(request: NextRequest) {
   if (!company_id || !subject) return errorResponse('Empresa y asunto son requeridos', 400);
 
   try {
-    const ticketResult = await query(
-      'INSERT INTO support_tickets (company_id, subject, priority, assigned_to) VALUES ($1, $2, $3, $4) RETURNING id',
-      [company_id, subject, priority || 'medium', admin.id]
-    );
-    const ticketId = ticketResult.rows[0].id;
-
-    if (message) {
-      await query(
-        'INSERT INTO ticket_messages (ticket_id, sender_type, sender_id, message) VALUES ($1, $2, $3, $4)',
-        [ticketId, 'super_admin', admin.id, message]
+    const ticketId = await transaction(async (client) => {
+      const ticketResult = await client.query(
+        'INSERT INTO support_tickets (company_id, subject, priority, assigned_to) VALUES ($1, $2, $3, $4) RETURNING id',
+        [company_id, subject, priority || 'medium', admin.id]
       );
-    }
+      const tid = ticketResult.rows[0].id;
 
-    return successResponse({ id: ticketId });
+      if (message) {
+        await client.query(
+          'INSERT INTO ticket_messages (ticket_id, sender_type, sender_id, message) VALUES ($1, $2, $3, $4)',
+          [tid, 'super_admin', admin.id, message]
+        );
+      }
+
+      return tid;
+    });
+
+    return successResponse({ id: ticketId }, 201);
   } catch (err) {
     console.error('Support ticket create error:', err);
     return errorResponse('Error al crear ticket', 500);

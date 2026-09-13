@@ -1,4 +1,4 @@
-import { query } from '@/api/lib/db';
+import { query, transaction } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 import { verifySuperAdmin } from '@/api/super-admin/lib/auth';
@@ -41,13 +41,15 @@ export async function POST(request: NextRequest) {
         [company_id, title, message, type || 'info', admin.id]
       );
     } else {
-      const companies = await query('SELECT id FROM companies');
-      for (const comp of companies.rows) {
-        await query(
-          'INSERT INTO platform_notifications (company_id, title, message, type, created_by) VALUES ($1, $2, $3, $4, $5)',
-          [comp.id, title, message, type || 'info', admin.id]
-        );
-      }
+      await transaction(async (client) => {
+        const companies = await client.query('SELECT id FROM companies');
+        for (const comp of companies.rows) {
+          await client.query(
+            'INSERT INTO platform_notifications (company_id, title, message, type, created_by) VALUES ($1, $2, $3, $4, $5)',
+            [comp.id, title, message, type || 'info', admin.id]
+          );
+        }
+      });
     }
 
     return successResponse({ success: true });

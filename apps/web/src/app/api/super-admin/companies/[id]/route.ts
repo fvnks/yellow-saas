@@ -1,4 +1,4 @@
-import { query } from '@/api/lib/db';
+import { query, transaction } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 import { verifySuperAdmin } from '@/api/super-admin/lib/auth';
@@ -54,6 +54,68 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   } catch (err) {
     console.error('Company detail error:', err);
     return errorResponse('Error al obtener empresa', 500);
+  }
+}
+
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+  const admin = await verifySuperAdmin(request);
+  if (!admin) return errorResponse('No autorizado', 401);
+
+  const { id } = params;
+  const body = await request.json();
+  const { name, slug, plan, status } = body;
+
+  try {
+    const existing = await query('SELECT id FROM companies WHERE id = $1', [id]);
+    if (existing.rows.length === 0) return errorResponse('Empresa no encontrada', 404);
+
+    const updates: string[] = [];
+    const values: any[] = [];
+    let idx = 1;
+
+    if (name) { updates.push(`name = $${idx++}`); values.push(name); }
+    if (slug) {
+      const slugCheck = await query('SELECT id FROM companies WHERE slug = $1 AND id != $2', [slug, id]);
+      if (slugCheck.rows.length > 0) return errorResponse('Ya existe una empresa con ese slug', 409);
+      updates.push(`slug = $${idx++}`);
+      values.push(slug);
+    }
+    if (plan) { updates.push(`plan = $${idx++}`); values.push(plan); }
+    if (status) { updates.push(`status = $${idx++}`); values.push(status); }
+
+    if (updates.length === 0) return errorResponse('Sin cambios para actualizar', 400);
+
+    updates.push(`updated_at = now()`);
+    values.push(id);
+
+    const result = await query(
+      `UPDATE companies SET ${updates.join(', ')} WHERE id = $${idx} RETURNING *`,
+      values
+    );
+
+    return successResponse(result.rows[0]);
+  } catch (err) {
+    console.error('Company update error:', err);
+    return errorResponse('Error al actualizar empresa', 500);
+  }
+}
+
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  const admin = await verifySuperAdmin(request);
+  if (!admin) return errorResponse('No autorizado', 401);
+
+  const { id } = params;
+
+  try {
+    const existing = await query('SELECT id FROM companies WHERE id = $1', [id]);
+    if (existing.rows.length === 0) return errorResponse('Empresa no encontrada', 404);
+
+    await query('DELETE FROM companies WHERE id = $1', [id]);
+
+    return successResponse({ deleted: true, message: 'Empresa eliminada correctamente' });
+  } catch (err) {
+    console.error('Company delete error:', err);
+    return errorResponse('Error al eliminar empresa', 500);
   }
 }
 
