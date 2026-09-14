@@ -60,8 +60,8 @@ src/app/[locale]/…             (mismos módulos duplicados)
 - **`.env.local` versionado** contiene credenciales **reales de producción**:
   - `DATABASE_URL=postgresql://postgres:Utdjuje…@148.113.196.87:5432/postgres` (host + password reales).
   - `JWT_SECRET=dummy-jwt-secret-for-local-build-at-least-32-chars` → en producción debe usar otro, pero confirma que el secreto real **no** está en `.env.local`; sin embargo el **password de Postgres sí**.
-- `.env.example` versiona un `JWT_SECRET` de 64 hex (apariencia real) y `ADMIN_PASSWORD=CHANGE_ME_ADMIN`.
-- Seed de super-admin hardcodeado: `superadmin@yellow.cl` / `CHANGE_ME_SUPERADMIN` (en `api/migrate/route.ts` línea 278 y en `CONTEXT.md`).
+- `.env.example` versiona un `JWT_SECRET` de 64 hex (apariencia real) y `ADMIN_PASSWORD` placeholder.
+- Seed de super-admin usa `SEED_ADMIN_PASSWORD` env var (no hardcodeado).
 
 **Acción inmediata**: rotar la password de Postgres, eliminar `.env.local` del repo, añadir a `.gitignore` y verificar histórico de git (la password ya está expuesta).
 

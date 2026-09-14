@@ -54,7 +54,7 @@ yellow-house/
 - **Login unificado**: `/login` — API checks `super_admins` luego `profiles`
 - **JWT**: `jose` library (migrado de `jsonwebtoken` en 5 rutas)
 - **Hook compartido**: `useAuthToken` en `hooks/use-auth-token.ts`
-- **Super admin default**: `superadmin@yellow.cl` / `CHANGE_ME_SUPERADMIN`
+- **Super admin default**: Creado vía `SEED_ADMIN_PASSWORD` env var (no hardcodeado)
 - **Roles**: `profiles.role` enum: owner/admin/manager/member/viewer
 - **Role type**: `profiles.role_type`: company/super_admin
 

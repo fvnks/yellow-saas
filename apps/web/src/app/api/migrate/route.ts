@@ -226,7 +226,10 @@ export async function POST(request: Request) {
     }
     results.push('Seeded permissions');
 
-    const demoAdminPassword = process.env.SEED_ADMIN_PASSWORD || 'CHANGE_ME_ADMIN';
+    const demoAdminPassword = process.env.SEED_ADMIN_PASSWORD;
+    if (!demoAdminPassword) {
+      return Response.json({ error: 'SEED_ADMIN_PASSWORD env var is required for seeding' }, { status: 500 });
+    }
     const passwordHash = await bcrypt.hash(demoAdminPassword, 12);
     const companyResult = await query(
       `INSERT INTO companies (name, slug, plan, status) VALUES ('Yellow Technologies SpA', 'yellow-tech', 'professional', 'active') ON CONFLICT (slug) DO UPDATE SET name = 'Yellow Technologies SpA' RETURNING id`,
@@ -276,7 +279,10 @@ export async function POST(request: Request) {
     }
     results.push('Seeded default valuation methods');
 
-    const superAdminPassword = process.env.SEED_ADMIN_PASSWORD || 'CHANGE_ME_ON_FIRST_LOGIN';
+    const superAdminPassword = process.env.SEED_ADMIN_PASSWORD;
+    if (!superAdminPassword) {
+      return Response.json({ error: 'SEED_ADMIN_PASSWORD env var is required for super admin creation' }, { status: 500 });
+    }
     const superAdminHash = await bcrypt.hash(superAdminPassword, 12);
     const existingSuperAdmin = await query('SELECT id FROM super_admins WHERE email = $1', ['superadmin@yellow.cl']);
     if (existingSuperAdmin.rows.length === 0) {

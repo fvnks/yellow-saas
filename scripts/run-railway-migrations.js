@@ -31,7 +31,11 @@ let connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
   if (process.env.RAILWAY_SERVICE_HOST) {
-    const password = process.env.RAILWAY_SERVICE_TOKEN || process.env.RAILWAY_PASSWORD || 'default';
+    const password = process.env.RAILWAY_SERVICE_TOKEN || process.env.RAILWAY_PASSWORD;
+    if (!password) {
+      console.error('ERROR: RAILWAY_SERVICE_TOKEN or RAILWAY_PASSWORD env var is required');
+      process.exit(1);
+    }
     connectionString = `postgresql://postgres:${password}@${process.env.RAILWAY_SERVICE_HOST}:${process.env.RAILWAY_SERVICE_PORT || '5432'}/${process.env.RAILWAY_SERVICE_NAME || 'railway'}`;
     console.log('âœ“ Using Railway PostgreSQL:', process.env.RAILWAY_SERVICE_HOST);
   } else {
