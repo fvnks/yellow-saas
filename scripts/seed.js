@@ -1,6 +1,8 @@
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 
+const ADMIN_PASSWORD = process.env.SEED_ADMIN_PASSWORD || 'CHANGE_ME_ADMIN';
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false },
@@ -23,7 +25,7 @@ async function seed() {
     console.log('✓ Company created:', companyId);
 
     // 2. Create admin user
-    const passwordHash = await bcrypt.hash('CHANGE_ME_ADMIN', 12);
+    const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 12);
     const userRes = await client.query(
       `INSERT INTO profiles (id, company_id, email, password_hash, full_name, role, status)
        VALUES (gen_random_uuid(), $1, $2, $3, $4, 'owner', 'active')

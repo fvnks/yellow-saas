@@ -226,7 +226,8 @@ export async function POST(request: Request) {
     }
     results.push('Seeded permissions');
 
-    const passwordHash = await bcrypt.hash('CHANGE_ME_ADMIN', 12);
+    const demoAdminPassword = process.env.SEED_ADMIN_PASSWORD || 'CHANGE_ME_ADMIN';
+    const passwordHash = await bcrypt.hash(demoAdminPassword, 12);
     const companyResult = await query(
       `INSERT INTO companies (name, slug, plan, status) VALUES ('Yellow Technologies SpA', 'yellow-tech', 'professional', 'active') ON CONFLICT (slug) DO UPDATE SET name = 'Yellow Technologies SpA' RETURNING id`,
     );

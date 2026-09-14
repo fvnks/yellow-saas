@@ -1,7 +1,13 @@
-﻿import { query } from '@/api/lib/db';
+import { query } from '@/api/lib/db';
 import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 import { IVA_RATE } from '@/lib/erp-config';
+
+// Secreto para el seed demo: derivado de JWT_SECRET (no hardcodeado).
+const SEED_SECRET = process.env.SEED_SECRET || process.env.JWT_SECRET;
+if (!SEED_SECRET) {
+  throw new Error('La variable de entorno SEED_SECRET o JWT_SECRET es requerida.');
+}
 
 async function safeInsert(sql: string, params: unknown[]): Promise<boolean> {
   try { await query(sql, params); return true; } catch { return false; }
@@ -11,7 +17,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const { company_id, secret } = body;
 
-  if (secret !== '47a3253fc5158827fee1e881806096da0da033cd7b243da906db5f08bacb6877') {
+  if (secret !== SEED_SECRET) {
     return errorResponse('Unauthorized', 401);
   }
   if (!company_id) return errorResponse('company_id required', 400);
