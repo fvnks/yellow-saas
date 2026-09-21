@@ -4,9 +4,8 @@ import { getCompanyId, successResponse, errorResponse, parseSearchParams, pagina
 import { jwtVerify } from 'jose';
 import { getJwtSecret } from '@/lib/env';
 
-const JWT_SECRET = getJwtSecret();
-
 async function getUserId(req: NextRequest): Promise<string | null> {
+  const JWT_SECRET = getJwtSecret();
   const authHeader = req.headers.get('Authorization');
   const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : req.cookies.get('auth-token')?.value;
   if (!token) return null;
