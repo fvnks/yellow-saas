@@ -4,9 +4,8 @@ import { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 import { getJwtSecret } from '@/lib/env';
 
-const JWT_SECRET = getJwtSecret();
-
 async function getUserFromRequest(request: NextRequest): Promise<{ id: string; company_id: string; role: string } | null> {
+  const JWT_SECRET = getJwtSecret();
   const authHeader = request.headers.get('Authorization');
   const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : request.cookies.get('auth-token')?.value;
   if (!token) return null;

@@ -5,9 +5,8 @@ import bcrypt from 'bcryptjs';
 import { SignJWT } from 'jose';
 import { getJwtSecret } from '@/lib/env';
 
-const JWT_SECRET = getJwtSecret();
-
 export async function POST(request: NextRequest) {
+  const JWT_SECRET = getJwtSecret();
   try {
     const body = await request.json();
     const { email, password } = body;

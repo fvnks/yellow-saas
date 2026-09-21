@@ -4,13 +4,12 @@ import { NextRequest } from 'next/server';
 import { SignJWT } from 'jose';
 import { getJwtSecret } from '@/lib/env';
 
-const JWT_SECRET = getJwtSecret();
-
 // Tiempo de trabajo similar al de firmar un token real, para no revelar
 // por latencia si el email existe.
 const DUMMY_HASH = 'dummy-reset-target';
 
 export async function POST(request: NextRequest) {
+  const JWT_SECRET = getJwtSecret();
   try {
     const body = await request.json();
     const { email } = body;

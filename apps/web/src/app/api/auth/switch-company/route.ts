@@ -4,11 +4,10 @@ import { NextRequest } from 'next/server';
 import { jwtVerify, SignJWT } from 'jose';
 import { getJwtSecret } from '@/lib/env';
 
-const JWT_SECRET = getJwtSecret();
-
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
+  const JWT_SECRET = getJwtSecret();
   try {
     const authHeader = request.headers.get('authorization');
     const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;

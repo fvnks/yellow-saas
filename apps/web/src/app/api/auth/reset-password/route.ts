@@ -5,12 +5,11 @@ import bcrypt from 'bcryptjs';
 import { jwtVerify } from 'jose';
 import { getJwtSecret } from '@/lib/env';
 
-const JWT_SECRET = getJwtSecret();
-
 // Misma política de complejidad que el formulario de registro
 const PASSWORD_REGEX = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/;
 
 export async function POST(request: NextRequest) {
+  const JWT_SECRET = getJwtSecret();
   try {
     const body = await request.json();
     const { token, password } = body;

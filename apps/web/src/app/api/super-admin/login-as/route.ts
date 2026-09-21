@@ -5,8 +5,6 @@ import { verifySuperAdmin } from '@/api/super-admin/lib/auth';
 import { SignJWT } from 'jose';
 import { getJwtSecret } from '@/lib/env';
 
-const JWT_SECRET = getJwtSecret();
-
 function getClientIp(request: NextRequest): string | null {
   const forwarded = request.headers.get('x-forwarded-for');
   if (forwarded) {
@@ -20,6 +18,8 @@ function getClientIp(request: NextRequest): string | null {
 export async function POST(request: NextRequest) {
   const admin = await verifySuperAdmin(request);
   if (!admin) return errorResponse('No autorizado', 401);
+
+  const JWT_SECRET = getJwtSecret();
 
   const body = await request.json();
   const { company_id, user_id } = body;

@@ -4,10 +4,9 @@ import { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 import { getJwtSecret } from '@/lib/env';
 
-const JWT_SECRET = getJwtSecret();
-
 // GET: List all permission modules/actions (catalog) OR user-specific permissions
 export async function GET(request: NextRequest) {
+  const JWT_SECRET = getJwtSecret();
   try {
     const companyId = await getCompanyId(request);
     if (!companyId) return errorResponse('Company ID not found', 400);
