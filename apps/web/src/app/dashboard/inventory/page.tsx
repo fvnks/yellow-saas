@@ -79,11 +79,10 @@ export default function InventoryPage() {
         }));
 
         // Cargar datos del dashboard
-        const dashboardRes = await api.getDashboard();
-        const dashboardJson = await dashboardRes.json();
+        const dashboardData = await api.getDashboard();
 
         setProducts(mapped);
-        setDashboardData(dashboardJson.data);
+        setDashboardData(dashboardData);
         setLoading(false);
       } catch (e) {
         console.error(e);
@@ -129,6 +128,9 @@ export default function InventoryPage() {
   const stockValueTrend = charts.stockValueTrend || [];
   const stockTurnover = charts.stockTurnover || [];
   const categoryDistribution = charts.categoryDistribution || [];
+
+  type StockValueTrendItem = { month: string; value: string | number };
+  type CategoryDistributionItem = { category: string; value: string | number };
 
   return (
     <div className="space-y-6 animate-fade-in-up">
@@ -180,72 +182,54 @@ export default function InventoryPage() {
             </Link>
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-6">
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
-              <p className="text-xs font-semibold text-gray-500 uppercase">Valor Total del Inventario</p>
-              <p className="text-2xl font-bold text-gray-800 mt-1">${formatCurrency(kpis.inventoryValue || 0)}</p>
-              <p className="text-xs text-gray-500 mt-2">Según último cálculo</p>
-            </div>
-
-            <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
-              <p className="text-xs font-semibold text-gray-500 uppercase">Productos con Stock Bajo</p>
-              <p className="text-2xl font-bold text-gray-800 mt-1">{kpis.lowStockProducts || 0}</p>
-              <p className="text-xs text-gray-500 mt-2">Requieren reposición</p>
-            </div>
-
-            <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
-              <p className="text-xs font-semibold text-gray-500 uppercase">Rotación de Inventario</p>
-              <p className="text-2xl font-bold text-gray-800 mt-1">{kpis.inventoryTurnover || 0}x</p>
-              <p className="text-xs text-gray-500 mt-2">Veces al año</p>
-            </div>
-
-            <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
-              <p className="text-xs font-semibold text-gray-500 uppercase">Productos Vencidos</p>
-              <p className="text-2xl font-bold text-gray-800 mt-1">{kpis.expiredProducts || 0}</p>
-              <p className="text-xs text-gray-500 mt-2">Requieren atención inmediata</p>
-            </div>
-          </div>
-
-          <div className="mt-6 grid gap-6 lg:grid-cols-2">
-            <Card className="p-4">
-              <CardHeader>
-                <CardTitle className="text-base font-semibold text-slate-900 flex items-center justify-between">
-                  <span>Tendencia del Valor del Inventario</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ThemedLineChart
-                  data={stockValueTrend.map(item => ({
-                    date: item.month,
-                    value: parseFloat(item.value),
-                  }))}
-                  lines={[{ dataKey: 'value', color: '#3b82f6' }]}
-                  formatter={(v) => [formatCurrency(v), 'Valor']}
-                />
-              </CardContent>
-            </Card>
-
-            <Card className="p-4">
-              <CardHeader>
-                <CardTitle className="text-base font-semibold text-slate-900 flex items-center justify-between">
-                  <span>Distribución por Categoría</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ThemedBarChart
-                  data={categoryDistribution.map(item => ({
-                    name: item.category,
-                    value: parseInt(item.value),
-                  }))}
-                  bars={[{ dataKey: 'value', color: '#10b981' }]}
-                  formatter={(v) => [v, 'Productos']}
-                />
-              </CardContent>
-            </Card>
-          </div>
+        <CardContent>
+          <DashboardInventory
+            inventoryValue={kpis.inventoryValue || 0}
+            lowStockProducts={kpis.lowStockProducts || 0}
+            inventoryTurnover={kpis.inventoryTurnover || 0}
+            expiredProducts={kpis.expiredProducts || 0}
+          />
         </CardContent>
       </Card>
+
+      {/* Charts Section */}
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <Card className="p-4">
+          <CardHeader>
+            <CardTitle className="text-base font-semibold text-slate-900 flex items-center justify-between">
+              <span>Tendencia del Valor del Inventario</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ThemedLineChart
+              data={stockValueTrend.map((item: StockValueTrendItem) => ({
+                date: item.month,
+                value: parseFloat(String(item.value)),
+              }))}
+              lines={[{ dataKey: 'value', color: '#3b82f6' }]}
+              formatter={(v) => [formatCurrency(v), 'Valor']}
+            />
+          </CardContent>
+        </Card>
+
+        <Card className="p-4">
+          <CardHeader>
+            <CardTitle className="text-base font-semibold text-slate-900 flex items-center justify-between">
+              <span>Distribución por Categoría</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ThemedBarChart
+              data={categoryDistribution.map((item: CategoryDistributionItem) => ({
+                name: item.category,
+                value: parseInt(String(item.value)),
+              }))}
+              bars={[{ dataKey: 'value', color: '#10b981' }]}
+              formatter={(v) => [v, 'Productos']}
+            />
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Filters */}
       <Card>
