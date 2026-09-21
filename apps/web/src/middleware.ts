@@ -6,11 +6,11 @@ import { getJwtSecret } from '@/lib/env';
 import { checkRateLimit, AUTH_CONFIG } from '@/lib/rate-limiter';
 
 const intlMiddleware = createIntlMiddleware(routing);
-const JWT_SECRET = getJwtSecret();
 
 const isLocalDev = !process.env.DATABASE_URL || process.env.DATABASE_URL?.includes('localhost');
 
 async function verifyToken(token: string) {
+  const JWT_SECRET = getJwtSecret();
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
     return payload as Record<string, unknown>;

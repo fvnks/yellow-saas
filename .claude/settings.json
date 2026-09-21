@@ -1,0 +1,5 @@
+{
+  "enabledPlugins": {
+    "databases-on-aws@claude-plugins-official": true
+  }
+}

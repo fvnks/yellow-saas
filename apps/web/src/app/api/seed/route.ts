@@ -3,10 +3,12 @@ import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 import { IVA_RATE } from '@/lib/erp-config';
 
-// Secreto para el seed demo: derivado de JWT_SECRET (no hardcodeado).
-const SEED_SECRET = process.env.SEED_SECRET || process.env.JWT_SECRET;
-if (!SEED_SECRET) {
-  throw new Error('La variable de entorno SEED_SECRET o JWT_SECRET es requerida.');
+function getSeedSecret(): string {
+  const secret = process.env.SEED_SECRET || process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('La variable de entorno SEED_SECRET o JWT_SECRET es requerida.');
+  }
+  return secret;
 }
 
 async function safeInsert(sql: string, params: unknown[]): Promise<boolean> {
@@ -14,6 +16,7 @@ async function safeInsert(sql: string, params: unknown[]): Promise<boolean> {
 }
 
 export async function POST(request: NextRequest) {
+  const SEED_SECRET = getSeedSecret();
   const body = await request.json();
   const { company_id, secret } = body;
 

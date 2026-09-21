@@ -4,11 +4,13 @@ import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 import { createApiError, createApiResponse } from './response';
 
-const jwtSecret = process.env.JWT_SECRET;
-if (!jwtSecret) {
-  throw new Error('La variable de entorno JWT_SECRET es requerida. Configúrala antes de iniciar la aplicación.');
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('La variable de entorno JWT_SECRET es requerida. Configúrala antes de iniciar la aplicación.');
+  }
+  return secret;
 }
-const JWT_SECRET: string = jwtSecret;
 
 const registerSchema = z.object({
   companyName: z.string().min(2, 'El nombre de la empresa debe tener al menos 2 caracteres'),
@@ -59,7 +61,7 @@ export async function register(data: RegisterInput) {
 
     const token = jwt.sign(
       { id: profile.id, email: profile.email, name: profile.name, company_id: companyId, role: 'owner' },
-      JWT_SECRET,
+      getJwtSecret(),
       { expiresIn: '7d' }
     );
 

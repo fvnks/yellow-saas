@@ -2,11 +2,14 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { query } from '../../db/src/client';
 
-const jwtSecret = process.env.JWT_SECRET;
-if (!jwtSecret) {
-  throw new Error('La variable de entorno JWT_SECRET es requerida. Configúrala antes de iniciar la aplicación.');
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('La variable de entorno JWT_SECRET es requerida. Configúrala antes de iniciar la aplicación.');
+  }
+  return secret;
 }
-const JWT_SECRET: string = jwtSecret;
+
 const JWT_EXPIRES_IN = '7d';
 
 export interface User {
@@ -54,7 +57,7 @@ export async function signIn(email: string, password: string): Promise<{ token: 
         company_id: user.company_id,
         role: user.role,
       },
-      JWT_SECRET,
+      getJwtSecret(),
       { expiresIn: JWT_EXPIRES_IN }
     );
 
@@ -103,7 +106,7 @@ export async function signUp(email: string, password: string, name: string, comp
         company_id: user.company_id,
         role: user.role,
       },
-      JWT_SECRET,
+      getJwtSecret(),
       { expiresIn: JWT_EXPIRES_IN }
     );
 
@@ -124,7 +127,7 @@ export async function signUp(email: string, password: string, name: string, comp
 
 export function verifyToken(token: string): AuthUser | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as AuthUser;
+    return jwt.verify(token, getJwtSecret()) as AuthUser;
   } catch {
     return null;
   }
@@ -157,7 +160,7 @@ export async function signInSuperAdmin(email: string, password: string): Promise
         role_type: 'super_admin',
         role: 'super_admin',
       },
-      JWT_SECRET,
+      getJwtSecret(),
       { expiresIn: JWT_EXPIRES_IN }
     );
 

@@ -2,9 +2,8 @@ import { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 import { getJwtSecret } from '@/lib/env';
 
-const JWT_SECRET = getJwtSecret();
-
 export async function verifySuperAdmin(request: NextRequest): Promise<{ id: string; email: string } | null> {
+  const JWT_SECRET = getJwtSecret();
   const authHeader = request.headers.get('Authorization');
   const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
 

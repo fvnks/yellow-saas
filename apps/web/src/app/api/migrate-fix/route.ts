@@ -1,12 +1,16 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/api/lib/db';
 
-const MIGRATION_SECRET = process.env.JWT_SECRET;
-if (!MIGRATION_SECRET) {
-  throw new Error('La variable de entorno JWT_SECRET es requerida. Configúrala antes de iniciar la aplicación.');
+function getMigrationSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('La variable de entorno JWT_SECRET es requerida. Configúrala antes de iniciar la aplicación.');
+  }
+  return secret;
 }
 
 export async function POST(request: Request) {
+  const MIGRATION_SECRET = getMigrationSecret();
   try {
     const body = await request.json();
     if (body.secret !== MIGRATION_SECRET) {

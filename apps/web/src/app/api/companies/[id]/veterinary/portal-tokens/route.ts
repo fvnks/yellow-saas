@@ -6,6 +6,7 @@ import { getJwtSecret } from '@/lib/env';
 import crypto from 'crypto';
 
 async function getUserId(req: NextRequest): Promise<string | null> {
+  const JWT_SECRET = getJwtSecret();
   const authHeader = req.headers.get('Authorization');
   const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : req.cookies.get('auth-token')?.value;
   if (!token) return null;
