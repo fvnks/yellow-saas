@@ -24,6 +24,9 @@ COPY . .
 # Clean turbo and next.js cache to force fresh build
 RUN rm -rf .turbo apps/web/.next apps/web/.next-static
 
+# Add build argument for JWT_SECRET
+ARG JWT_SECRET
+ENV JWT_SECRET=${JWT_SECRET}
 # Build only the web app and its dependencies
 RUN turbo run build --filter=@yellow-erp/web...
 
