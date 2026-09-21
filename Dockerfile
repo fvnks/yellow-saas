@@ -28,7 +28,7 @@ RUN rm -rf .turbo apps/web/.next apps/web/.next-static
 ARG JWT_SECRET
 ENV JWT_SECRET=${JWT_SECRET}
 # Build only the web app and its dependencies
-RUN turbo run build --filter=@yellow-erp/web...
+RUN turbo run build --filter=@yellow-erp/web
 
 # ---- runner ----
 FROM node:20-alpine AS runner
