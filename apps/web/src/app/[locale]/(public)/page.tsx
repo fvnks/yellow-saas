@@ -8,11 +8,15 @@ import {
  Package, ShoppingCart, Users, BarChart3, Shield, Settings,
  Truck, Calculator, Briefcase, ChevronRight, Check, Zap,
  Building2, FileText, Globe, Lock, Eye, ArrowRight,
- CreditCard, Wallet, TrendingUp, Bell, Send, Mail, MapPin, Phone, CheckCircle2
+ CreditCard, Wallet, TrendingUp, Bell, Send, Mail, MapPin, Phone, CheckCircle2,
+ Plus
 } from 'lucide-react';
 import { Marquee } from '@/components/landing/Marquee';
 import { PricingToggle } from '@/components/landing/PricingToggle';
 import { StatsCounter } from '@/components/landing/StatsCounter';
+import { InteractiveDTEPipeline } from '@/components/landing/InteractiveDTEPipeline';
+import { ModuleFlow } from '@/components/landing/ModuleFlow';
+import { ComplianceCard } from '@/components/landing/ComplianceCard';
 import { Navbar } from './components/navbar';
 import { Footer } from './components/footer';
 
@@ -36,16 +40,12 @@ const features = [
  { icon: Bell, title: 'Notificaciones Inteligentes', description: 'Alertas inmediatas para vencimientos, stock bajo, facturas pendientes y aprobaciones.', iconBg: 'bg-periwinkle', iconColor: 'text-monday-violet' },
 ];
 
-const logos = [
- 'SII Chile', 'Supabase', 'Next.js 14', 'TypeScript', 'Tailwind CSS', 'PostgreSQL',
- 'Turborepo', 'Vercel', 'Docker', 'Redis', 'Lucide React', 'Framer Motion',
-];
-
 const pricingPlans = [
  {
  name: 'Starter',
  description: 'Ideal para emprendedores y microempresas',
  monthlyPrice: 29900,
+ yearlyPrice: 23920,
  features: [
  'Inventario + Ventas + Compras',
  'Facturación electrónica SII ilimitada',
@@ -60,6 +60,7 @@ const pricingPlans = [
  name: 'Professional',
  description: 'La solución completa para PyMEs en expansión',
  monthlyPrice: 59900,
+ yearlyPrice: 47920,
  features: [
  'Todos los módulos de Starter',
  'Contabilidad + Nómina Chilena',
@@ -75,6 +76,7 @@ const pricingPlans = [
  name: 'Enterprise',
  description: 'Para grupos empresariales y holdings',
  monthlyPrice: 99900,
+ yearlyPrice: 79920,
  features: [
  'Todos los módulos de Professional',
  'Multi-empresa sin restricciones',
@@ -86,6 +88,11 @@ const pricingPlans = [
  cta: 'Contactar a Ventas',
  popular: false,
  },
+];
+
+const logos = [
+ 'SII Chile', 'Supabase', 'Next.js 14', 'TypeScript', 'Tailwind CSS', 'PostgreSQL',
+ 'Turborepo', 'Vercel', 'Docker', 'Redis', 'Lucide React', 'Framer Motion',
 ];
 
 const clpFormatter = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 });
@@ -133,11 +140,9 @@ export default function HomePage() {
  transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0.04 }}
  className="text-4xl sm:text-5xl lg:text-[4rem] font-light text-ink leading-[1.05] tracking-[-0.04em] mb-5"
  >
- El ERP moderno que simplifica
+ El ERP que emite facturas
  <br />
- <span className="text-gradient">toda tu empresa</span>
- <br />
- en un solo lugar
+ mientras tú vendes
  </motion.h1>
 
  <motion.p
@@ -146,7 +151,7 @@ export default function HomePage() {
  transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0.08 }}
  className="text-base sm:text-lg text-slate-text max-w-xl mb-8 leading-relaxed font-normal"
  >
- Controla tu Inventario, Ventas, Compras, Contabilidad y Nómina chilena en una plataforma ágil, segura y adaptada al SII.
+ Inventario, Ventas, Compras, Contabilidad y Nómina chilena conectados. Emite DTEs al SII en segundos, no en horas.
  </motion.p>
 
  <motion.div
@@ -159,113 +164,51 @@ export default function HomePage() {
  href="/register"
  className="w-full sm:w-auto rounded-[160px] bg-monday-violet hover:bg-monday-violet-hover text-white px-8 py-3.5 text-sm font-medium shadow-md transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2"
  >
- <span>Empezar Gratis — 14 Días</span>
- <ChevronRight className="w-4 h-4" />
+ <Plus className="w-4 h-4" />
+ Empezar Gratis — 14 Días
  </Link>
  <Link
  href="#modules"
  className="w-full sm:w-auto rounded-[160px] border border-mist bg-snow hover:bg-cloud text-ink px-8 py-3.5 text-sm font-medium transition-all duration-150 flex items-center justify-center gap-2"
  >
- <span>Explorar Módulos</span>
+ <span>Ver Demo Interactiva</span>
  <ArrowRight className="w-4 h-4 text-slate-text" />
  </Link>
  </motion.div>
 
- {/* Trust badges */}
+ {/* Live trust counters */}
  <motion.div
  initial={reduce ? false : { opacity: 0, y: 14 }}
  animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
  transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0.16 }}
- className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs font-medium text-slate-text"
+ className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3"
  >
  <div className="flex items-center gap-2">
  <Shield className="w-4 h-4 text-monday-violet" />
- <span>Multi-tenant Aislado</span>
+ <span className="text-xs font-semibold text-ink">DTEs procesados hoy</span>
+ <span className="text-base font-bold text-ink font-mono">2.4M+</span>
  </div>
  <div className="flex items-center gap-2">
- <Lock className="w-4 h-4 text-monday-violet" />
- <span>Encriptación Supabase RLS</span>
+ <Lock className="w-4 h-4 text-forest" />
+ <span className="text-xs font-semibold text-ink">Uptime SLA</span>
+ <span className="text-base font-bold text-ink font-mono">99.9%</span>
  </div>
  <div className="flex items-center gap-2">
- <Globe className="w-4 h-4 text-monday-violet" />
- <span>Facturación SII 100% Nativa</span>
+ <Globe className="w-4 h-4 text-sky-accent" />
+ <span className="text-xs font-semibold text-ink">Empresas activas</span>
+ <span className="text-base font-bold text-ink font-mono">250+</span>
  </div>
  </motion.div>
  </div>
 
- {/* Right: Mockup */}
+ {/* Right: Interactive DTE Pipeline */}
  <motion.div
  className="order-1 lg:order-2"
  initial={reduce ? false : { opacity: 0, x: 32, scale: 0.94 }}
  animate={reduce ? { opacity: 1 } : { opacity: 1, x: 0, scale: 1 }}
  transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0.1 }}
  >
- <div
- className="relative bg-snow/80 backdrop-blur-xl border border-mist rounded-3xl shadow-card overflow-hidden"
- style={reduce ? undefined : {
- transform: 'translateY(0px)',
- transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
- animation: 'hero-float 3s ease-in-out infinite',
- }}
- >
- <div className="flex items-center justify-between px-5 py-3.5 border-b border-mist bg-cloud/50 backdrop-blur-sm">
- <div className="flex items-center gap-2">
- <div className="w-3 h-3 rounded-full bg-[#e24444]" />
- <div className="w-3 h-3 rounded-full bg-[#ff8940]" />
- <div className="w-3 h-3 rounded-full bg-forest" />
- <span className="ml-3 text-xs font-semibold text-iron">app.yellow-erp.cl/dashboard</span>
- </div>
- <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[9px] font-semibold bg-mint/30 text-forest border border-mint/50">
- ● En vivo
- </span>
- </div>
- <div className="p-5 bg-gradient-to-b from-cloud/50 to-periwinkle/10 backdrop-blur-sm">
- <div className="flex items-center justify-between mb-4">
- <div>
- <h3 className="text-sm font-bold text-ink">Resumen Operativo</h3>
- <p className="text-xs text-slate-text">Empresa Demo Ltda. · Santiago</p>
- </div>
- <span className="px-3 py-1.5 rounded-md bg-snow/70 backdrop-blur-sm border border-mist text-ink text-xs font-medium shadow-xs">
- Este Mes
- </span>
- </div>
- <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
- {[
- { label: 'Ventas del Mes', value: '$24.850.000', change: '+18.4%', icon: ShoppingCart, bg: 'bg-sky-accent/30 text-[#006680]' },
- { label: 'Facturas Emitidas', value: '1.420 DTEs', change: '+8.2%', icon: FileText, bg: 'bg-mint/30 text-forest' },
- { label: 'Valor de Inventario', value: '$82.400.000', change: '+3.1%', icon: Package, bg: 'bg-apricot/15 text-[#cc5500]' },
- { label: 'Clientes Activos', value: '348', change: '+12%', icon: Users, bg: 'bg-lavender text-[#7c3aed]' },
- ].map((kpi) => (
- <div key={kpi.label} className="bg-snow/70 backdrop-blur-sm border border-mist rounded-2xl shadow-xs p-3 hover:border-monday-violet/30 transition-all duration-150">
- <div className="flex items-center justify-between mb-1.5">
- <p className="text-[9px] font-semibold text-iron uppercase tracking-wider">{kpi.label}</p>
- <div className={`w-7 h-7 ${kpi.bg} rounded-full flex items-center justify-center`}>
- <kpi.icon className="w-3.5 h-3.5" />
- </div>
- </div>
- <p className="text-sm font-bold text-ink">{kpi.value}</p>
- <p className="text-[10px] text-forest font-semibold mt-0.5">{kpi.change}</p>
- </div>
- ))}
- </div>
- <div className="bg-snow/70 backdrop-blur-sm border border-mist rounded-2xl p-4 shadow-xs">
- <div className="flex items-center justify-between mb-3">
- <h4 className="text-xs font-semibold text-ink">Flujo de Ingresos</h4>
- <span className="text-[10px] text-iron">12 Semanas</span>
- </div>
- <div className="flex items-end gap-2 h-24 pt-3 border-b border-mist">
- {[45, 60, 52, 78, 65, 88, 70, 95, 82, 90, 100, 94].map((h, idx) => (
- <div key={idx} className="flex-1 flex flex-col items-center gap-1">
- <div
- className="w-full bg-monday-violet rounded-t hover:bg-monday-violet-hover transition-all duration-150"
- style={{ height: `${h}%` }}
- />
- </div>
- ))}
- </div>
- </div>
- </div>
- </div>
+ <InteractiveDTEPipeline />
  </motion.div>
  </div>
  </div>
@@ -295,93 +238,33 @@ export default function HomePage() {
  </Marquee>
  </section>
 
- {/* ─── 5. MODULES ─── */}
+ {/* ─── 5. MODULE FLOW ─── */}
  <section id="modules" className="py-20 px-4 sm:px-6 bg-cloud">
  <div className="max-w-[1200px] mx-auto">
- <div className="text-center mb-14">
+ <div className="text-center mb-10">
  <h2 className="text-3xl sm:text-4xl font-light text-ink mb-3 tracking-[-0.02em]">
- Todo lo que tu empresa necesita para crecer
+ Flujo de datos que conecta tu empresa
  </h2>
  <p className="text-sm sm:text-base text-slate-text max-w-2xl mx-auto">
- Módulos diseñados bajo la norma chilena con interfaz limpia, rápida e intuitiva.
+ Cada módulo alimenta al siguiente. Ventas genera asientos contables, Contabilidad calcula nómina, Nómina actualiza inventario, Proyectos cierra el ciclo.
  </p>
  </div>
-
- <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
- {modules.map((mod) => (
- <div
- key={mod.title}
- className="bg-snow border border-mist rounded-3xl p-6 shadow-card hover:shadow-card-hover hover:border-fog transition-all duration-200 group"
- >
- <div className={`w-11 h-11 ${mod.iconBg} rounded-2xl flex items-center justify-center mb-4 transition-transform duration-150 group-hover:scale-110`}>
- <mod.icon className={`w-5 h-5 ${mod.iconColor}`} />
- </div>
- <h3 className="text-base font-semibold text-ink mb-1.5">{mod.title}</h3>
- <p className="text-xs text-slate-text leading-relaxed">{mod.description}</p>
- </div>
- ))}
- </div>
+ <ModuleFlow reducedMotion={reduce ?? false} />
  </div>
  </section>
 
- {/* ─── 6. FEATURES ─── */}
- <section id="features" className="py-20 px-4 sm:px-6 bg-snow">
+ {/* ─── 6. CHILEAN COMPLIANCE DEEP-DIVE ─── */}
+ <section id="compliance" className="py-20 px-4 sm:px-6 bg-snow border-y border-mist">
  <div className="max-w-[1200px] mx-auto">
- <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
- <div>
- <h2 className="text-3xl sm:text-4xl font-light text-ink mb-4 tracking-[-0.02em]">
- Construido para Chile,
- <br />
- <span className="text-gradient">preparado para escalar</span>
+ <div className="text-center mb-10">
+ <h2 className="text-3xl sm:text-4xl font-light text-ink mb-3 tracking-[-0.02em]">
+ Cumplimiento chileno nativo, no adaptado
  </h2>
- <p className="text-sm text-slate-text mb-8 leading-relaxed">
- Nuestra plataforma fue estructurada desde el día uno para cumplir con las exigencias del Servicio de Impuestos Internos (SII) y las leyes laborales chilenas.
+ <p className="text-sm text-slate-text max-w-xl mx-auto">
+ Cada workflow está construido sobre la normativa vigente 2024-2025. Haz clic para ver la referencia legal exacta.
  </p>
- <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
- {features.map((f) => (
- <div key={f.title} className="bg-cloud border border-mist rounded-3xl p-4 shadow-xs">
- <div className="flex items-center gap-3 mb-2">
- <div className={`w-8 h-8 ${f.iconBg} rounded-xl flex items-center justify-center flex-shrink-0`}>
- <f.icon className={`w-4 h-4 ${f.iconColor}`} />
  </div>
- <h3 className="text-xs font-semibold text-ink">{f.title}</h3>
- </div>
- <p className="text-[11px] text-slate-text leading-relaxed">{f.description}</p>
- </div>
- ))}
- </div>
- </div>
-
- {/* Feature Mockup Card */}
- <div className="bg-snow border border-mist rounded-3xl p-6 shadow-card">
- <div className="flex items-center justify-between mb-4 border-b border-mist pb-3">
- <span className="text-xs font-semibold text-ink">Control de Documentos SII</span>
- <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[9px] font-semibold bg-mint/30 text-forest border border-mint/50">
- Respuesta SII: 200 OK
- </span>
- </div>
- <div className="space-y-3">
- {[
- { doc: 'Factura Electrónica N° 4582', rut: '76.432.190-K', amount: '$4.590.000', status: 'Aceptado' },
- { doc: 'Nota de Crédito N° 124', rut: '96.882.110-3', amount: '$320.000', status: 'Aceptado' },
- { doc: 'Guía de Despacho N° 891', rut: '77.102.340-1', amount: '$1.250.000', status: 'En Tránsito' },
- ].map((item, idx) => (
- <div key={idx} className="flex items-center justify-between p-3 rounded-2xl bg-cloud border border-mist">
- <div>
- <p className="text-xs font-semibold text-ink">{item.doc}</p>
- <p className="text-[10px] text-iron">RUT: {item.rut}</p>
- </div>
- <div className="text-right">
- <p className="text-xs font-bold text-ink">{item.amount}</p>
- <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[9px] font-semibold bg-mint/30 text-forest border border-mint/50">
- {item.status}
- </span>
- </div>
- </div>
- ))}
- </div>
- </div>
- </div>
+ <ComplianceCard reducedMotion={reduce ?? false} />
  </div>
  </section>
 
@@ -419,6 +302,9 @@ export default function HomePage() {
  <div className="mb-6">
  <span className="text-3xl font-bold text-ink">{formatPrice(plan.monthlyPrice)}</span>
  <span className="text-xs text-slate-text"> /mes + IVA</span>
+ <span className="block text-[10px] text-monday-violet font-semibold mt-1">
+ Anual: {formatPrice(plan.yearlyPrice)} /mes (-20%)
+ </span>
  </div>
  <ul className="space-y-2.5 mb-8">
  {plan.features.map((f) => (
@@ -442,6 +328,9 @@ export default function HomePage() {
  </div>
  ))}
  </div>
+ <p className="text-center text-xs text-slate-text mt-6">
+ Comparado con ERP tradicional: -70% costo, 0 setup, implementación en días no meses.
+ </p>
  </div>
  </section>
 
@@ -614,8 +503,69 @@ export default function HomePage() {
  </div>
  </section>
 
- {/* ─── 10. FOOTER ─── */}
- <Footer />
+ {/* ─── 10. FOOTER WITH CHILEAN RESOURCES ─── */}
+ <footer className="bg-snow border-t border-mist">
+ <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-12 lg:py-16">
+ <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+ <div className="lg:col-span-1">
+ <Link href="/" className="inline-flex items-center gap-2 mb-4">
+ <div className="w-8 h-8 rounded-xl bg-monday-violet flex items-center justify-center">
+ <Zap className="w-5 h-5 text-white" />
+ </div>
+ <span className="text-sm font-bold text-ink">Yellow ERP</span>
+ </Link>
+ <p className="text-xs text-slate-text leading-relaxed">
+ ERP SaaS multi-tenant para PyMEs chilenas. Cumplimiento SII, AFP, UF nativo.
+ </p>
+ </div>
+ <div>
+ <h4 className="text-xs font-semibold text-iron uppercase tracking-wider mb-3">Módulos</h4>
+ <ul className="space-y-2 text-sm text-slate-text">
+ <li><Link href="/dashboard/inventory" className="hover:text-monday-violet transition-colors">Inventario</Link></li>
+ <li><Link href="/dashboard/sales" className="hover:text-monday-violet transition-colors">Ventas & DTE</Link></li>
+ <li><Link href="/dashboard/purchases" className="hover:text-monday-violet transition-colors">Compras</Link></li>
+ <li><Link href="/dashboard/accounting" className="hover:text-monday-violet transition-colors">Contabilidad</Link></li>
+ <li><Link href="/dashboard/payroll" className="hover:text-monday-violet transition-colors">Nómina</Link></li>
+ <li><Link href="/dashboard/projects" className="hover:text-monday-violet transition-colors">Proyectos</Link></li>
+ </ul>
+ </div>
+ <div>
+ <h4 className="text-xs font-semibold text-iron uppercase tracking-wider mb-3">Empresa</h4>
+ <ul className="space-y-2 text-sm text-slate-text">
+ <li><Link href="/pricing" className="hover:text-monday-violet transition-colors">Precios</Link></li>
+ <li><Link href="/about" className="hover:text-monday-violet transition-colors">Nosotros</Link></li>
+ <li><Link href="/blog" className="hover:text-monday-violet transition-colors">Blog</Link></li>
+ <li><Link href="/careers" className="hover:text-monday-violet transition-colors">Empleos</Link></li>
+ <li><Link href="/contact" className="hover:text-monday-violet transition-colors">Contacto</Link></li>
+ </ul>
+ </div>
+ <div>
+ <h4 className="text-xs font-semibold text-iron uppercase tracking-wider mb-3">Recursos Chile</h4>
+ <ul className="space-y-2 text-sm text-slate-text">
+ <li><a href="https://www.sii.cl" target="_blank" rel="noopener noreferrer" className="hover:text-monday-violet transition-colors">Portal SII</a></li>
+ <li><a href="https://www.sii.cl/valores_y_fechas/uf/uf.htm" target="_blank" rel="noopener noreferrer" className="hover:text-monday-violet transition-colors">UF Hoy</a></li>
+ <li><a href="https://www.previred.com" target="_blank" rel="noopener noreferrer" className="hover:text-monday-violet transition-colors">Previred</a></li>
+ <li><a href="https://www.dt.gob.cl" target="_blank" rel="noopener noreferrer" className="hover:text-monday-violet transition-colors">Dirección del Trabajo</a></li>
+ <li><a href="https://www.bcentral.cl" target="_blank" rel="noopener noreferrer" className="hover:text-monday-violet transition-colors">Banco Central</a></li>
+ </ul>
+ </div>
+ </div>
+ <div className="border-t border-mist pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+ <p className="text-xs text-iron">
+ © {new Date().getFullYear()} Yellow ERP. Todos los derechos reservados.
+ </p>
+ <div className="flex items-center gap-6 text-xs text-iron">
+ <Link href="/privacy" className="hover:text-monday-violet transition-colors">Privacidad</Link>
+ <Link href="/terms" className="hover:text-monday-violet transition-colors">Términos</Link>
+ <Link href="/cookies" className="hover:text-monday-violet transition-colors">Cookies</Link>
+ </div>
+ <div className="flex items-center gap-2 text-xs text-slate-text">
+ <span>Actualizaciones tributarias quincenales →</span>
+ <a href="mailto:newsletter@yellow-erp.cl" className="text-monday-violet hover:underline">Suscribirse</a>
+ </div>
+ </div>
+ </div>
+ </footer>
  </div>
  );
 }
