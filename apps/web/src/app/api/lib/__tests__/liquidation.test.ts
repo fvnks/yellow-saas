@@ -205,8 +205,8 @@ describe('cálculos de liquidación laboral chilena', () => {
         termination_date: '2025-06-30',
       });
 
-      // monthsBetween + 1 = 7 months worked this year
-      expect(result.items.find(i => i.code === 'LIQ-GRAT')!.amount).toBe(1_750_000);
+      // monthsBetween + 1 = 6 months worked this year (Jan-Jun inclusive)
+      expect(result.items.find(i => i.code === 'LIQ-GRAT')!.amount).toBe(1_500_000);
     });
 
     it('se topea a 4.75 IMM', async () => {
@@ -217,8 +217,8 @@ describe('cálculos de liquidación laboral chilena', () => {
         termination_date: '2025-06-30',
       });
 
-      // 7 months × 4.75 IMM × 500K = 16_625_000
-      expect(result.items.find(i => i.code === 'LIQ-GRAT')!.amount).toBe(16_625_000);
+      // 6 months × 4.75 IMM × 500K = 14_250_000
+      expect(result.items.find(i => i.code === 'LIQ-GRAT')!.amount).toBe(14_250_000);
     });
   });
 

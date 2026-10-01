@@ -83,8 +83,8 @@ export async function DELETE(
     if (!guide[0]) return errorResponse('Delivery guide not found', 404);
 
     const { rows: movements } = await query(
-      `SELECT * FROM stock_movements WHERE reference_type = '\'$1\'' AND reference_id = $1`,
-      [params.guideId]
+      `SELECT * FROM stock_movements WHERE company_id = $1 AND reference_type = $2 AND reference_id = $3`,
+      [companyId, 'delivery_guide', params.guideId]
     );
 
     for (const m of movements) {

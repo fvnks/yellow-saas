@@ -102,12 +102,12 @@ async function getUSD(companyId: string, date?: string) {
 
     const cached = await query(
       `SELECT value as rate, currency, date, source FROM exchange_rates
-       WHERE company_id = $1 AND currency = '\'$1\'' AND date = $2`,
-      [companyId, targetDate]
+       WHERE company_id = $1 AND currency = $2 AND date = $3`,
+      [companyId, 'USD', targetDate]
     );
 
     if (cached.rows.length > 0) {
-      return successResponse(cached.rows[0]);
+      return cached.rows[0];
     }
 
     const fresh = await fetchUSDFromBC(targetDate);

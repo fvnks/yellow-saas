@@ -1,4 +1,4 @@
-import { query } from '@/api/lib/db';
+import { query, transaction } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse, parseSearchParams, paginatedResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
@@ -90,26 +90,30 @@ export async function POST(request: NextRequest) {
     );
     if (warehouseExists.rows.length === 0) return errorResponse('Warehouse not found', 404);
 
-    const lastReceipt = await query(
-      `SELECT receipt_number FROM goods_receipts WHERE company_id = $1 ORDER BY created_at DESC LIMIT 1`,
-      [companyId]
-    );
+    const result = await transaction(async (client) => {
+      // Per-company advisory lock so concurrent receptions cannot produce duplicate receipt numbers.
+      const lockHash = await client.query<{ h: bigint }>(
+        `SELECT ('x' || substr(md5($1 || ':goods_receipts:receipt_number'), 1, 16))::bit(64)::bigint AS h`,
+        [companyId],
+      );
+      await client.query(`SELECT pg_advisory_xact_lock($1)`, [lockHash.rows[0].h.toString()]);
 
-    let nextNumber = 1;
-    if (lastReceipt.rows.length > 0) {
-      const lastNum = parseInt(lastReceipt.rows[0].receipt_number.replace('GR-', ''));
-      if (!isNaN(lastNum)) nextNumber = lastNum + 1;
-    }
-    const receiptNumber = `GR-${String(nextNumber).padStart(6, '0')}`;
+      const { rows: cntRows } = await client.query(
+        `SELECT COUNT(*)::int AS c FROM goods_receipts WHERE company_id = $1`,
+        [companyId],
+      );
+      const receiptNumber = `GR-${String((cntRows[0].c ?? 0) + 1).padStart(6, '0')}`;
 
-    const result = await query(
-      `INSERT INTO goods_receipts (company_id, receipt_number, purchase_order_id, supplier_id, warehouse_id, status, received_date, notes, created_by)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-       RETURNING *`,
-      [companyId, receiptNumber, purchase_order_id, supplier_id, warehouse_id, status || 'pending', received_date || new Date().toISOString().split('T')[0], notes || null, created_by || null]
-    );
+      const { rows } = await client.query(
+        `INSERT INTO goods_receipts (company_id, receipt_number, purchase_order_id, supplier_id, warehouse_id, status, received_date, notes, created_by)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+         RETURNING *`,
+        [companyId, receiptNumber, purchase_order_id, supplier_id, warehouse_id, status || 'pending', received_date || new Date().toISOString().split('T')[0], notes || null, created_by || null],
+      );
+      return rows[0];
+    });
 
-    return successResponse(result.rows[0], 201);
+    return successResponse(result, 201);
   } catch (err) {
     console.error('Route error:', err);
     return errorResponse('Internal server error', 500);

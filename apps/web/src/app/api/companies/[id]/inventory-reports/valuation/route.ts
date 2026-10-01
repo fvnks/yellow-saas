@@ -2,7 +2,7 @@ import { query } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest) {
   try {
     const companyId = await getCompanyId(req);
     if (!companyId) return errorResponse('Company ID not found', 400);
@@ -11,6 +11,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const method = searchParams.get('method') || 'weighted_avg';
     const warehouseId = searchParams.get('warehouse_id');
 
+    // $1 = company_id, $2 = method, $3 = stock_movement type for incoming stock
     let sql = `
       SELECT p.id, p.name, p.sku, p.cost_price,
         COALESCE(SUM(sl.quantity), 0) as current_stock,
@@ -21,7 +22,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
                 COALESCE(
                   (SELECT SUM(sm.quantity * sm.unit_cost) / NULLIF(SUM(sm.quantity), 0)
                    FROM stock_movements sm
-                   WHERE sm.product_id = p.id AND sm.company_id = p.company_id AND sm.type = '\'$1\'' AND sm.unit_cost > 0),
+                   WHERE sm.product_id = p.id AND sm.company_id = p.company_id AND sm.type = $3 AND sm.unit_cost > 0),
                   p.cost_price
                 )
               ELSE p.cost_price
@@ -34,7 +35,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
             COALESCE(
               (SELECT SUM(sm.quantity * sm.unit_cost) / NULLIF(SUM(sm.quantity), 0)
                FROM stock_movements sm
-               WHERE sm.product_id = p.id AND sm.company_id = p.company_id AND sm.type = '\'$1\'' AND sm.unit_cost > 0),
+               WHERE sm.product_id = p.id AND sm.company_id = p.company_id AND sm.type = $3 AND sm.unit_cost > 0),
               p.cost_price
             )
           ELSE p.cost_price
@@ -43,8 +44,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       LEFT JOIN stock_levels sl ON sl.product_id = p.id AND sl.company_id = p.company_id
       WHERE p.company_id = $1 AND p.is_active = TRUE
     `;
-    const sqlParams: any[] = [companyId, method];
-    let idx = 3;
+    const sqlParams: any[] = [companyId, method, 'in'];
+    let idx = 4;
 
     if (warehouseId) {
       sql += ` AND sl.warehouse_id = $${idx}`;

@@ -1,10 +1,11 @@
 import { query } from '@/api/lib/db';
-import { successResponse, errorResponse } from '@/api/lib/helpers';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest) {
   try {
-    const companyId = params.id;
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('No autorizado', 401);
 
     const result = await query(
       `SELECT * FROM billing_accounts WHERE company_id = $1`,
@@ -25,9 +26,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest) {
   try {
-    const companyId = params.id;
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('No autorizado', 401);
+
     const body = await request.json();
     const { tax_id, business_name, address, city, region, country, billing_email, phone, payment_provider } = body;
 

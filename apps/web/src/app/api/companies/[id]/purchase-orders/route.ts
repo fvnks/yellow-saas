@@ -1,10 +1,11 @@
-import { query } from '@/api/lib/db';
+import { query, transaction } from '@/api/lib/db';
 import {
   getCompanyId,
   successResponse,
   errorResponse,
   parseSearchParams,
   paginatedResponse,
+  nextDocumentNumber,
 } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
@@ -88,67 +89,98 @@ export async function POST(request: NextRequest) {
       return errorResponse('Supplier, warehouse, and items are required', 400);
     }
 
-    const { rows: countRows } = await query(
-      `SELECT COUNT(*) as count FROM purchase_orders WHERE company_id = $1`,
-      [companyId]
+    // Validate foreign entities belong to the same tenant (cross-tenant guard).
+    const supplierCheck = await query(
+      `SELECT id FROM suppliers WHERE company_id = $1 AND id = $2`,
+      [companyId, supplier_id],
     );
-    const orderNumber = `OC-${String((parseInt(countRows[0]?.count || '0') + 1)).padStart(6, '0')}`;
-
-    let subtotal = 0;
-    let taxAmount = 0;
-    for (const item of items) {
-      const quantity = Number(item.quantity) || 0;
-      const unitPrice = Number(item.unit_price) || 0;
-      const discountPct = Number(item.discount_percent) || 0;
-      const lineSubtotal = quantity * unitPrice;
-      const discountAmount = lineSubtotal * (discountPct / 100);
-      const taxRate = Number(item.tax_rate) || 19;
-      const lineTax = (lineSubtotal - discountAmount) * (taxRate / 100);
-      subtotal += lineSubtotal - discountAmount;
-      taxAmount += lineTax;
+    if (supplierCheck.rows.length === 0) return errorResponse('Proveedor no encontrado', 404);
+    const warehouseCheck = await query(
+      `SELECT id FROM warehouses WHERE company_id = $1 AND id = $2`,
+      [companyId, warehouse_id],
+    );
+    if (warehouseCheck.rows.length === 0) return errorResponse('Bodega no encontrada', 404);
+    if (project_id) {
+      const projCheck = await query(
+        `SELECT id FROM projects WHERE company_id = $1 AND id = $2`,
+        [companyId, project_id],
+      );
+      if (projCheck.rows.length === 0) return errorResponse('Proyecto no encontrado', 404);
     }
 
-    const { rows: orderRows } = await query(
-      `INSERT INTO purchase_orders (company_id, supplier_id, warehouse_id, order_number, status, order_date, expected_date, payment_terms, subtotal, tax_amount, total, notes, project_id)
-       VALUES ($1, $2, $3, $4, 'draft', $5, $6, $7, $8, $9, $10, $11, $12)
-       RETURNING *`,
-      [
-        companyId, supplier_id, warehouse_id, orderNumber,
-        order_date || new Date().toISOString(), expected_date || null,
-        payment_terms || 0, subtotal, taxAmount, subtotal + taxAmount,
-        notes || null, project_id || null,
-      ]
-    );
+    const result = await transaction(async (client) => {
+      // Take a per-(company,table) advisory lock so concurrent inserts cannot
+      // observe the same COUNT(*) and produce duplicate order_numbers.
+      const lockHash = await client.query<{ h: bigint }>(
+        `SELECT ('x' || substr(md5($1 || ':purchase_orders:order_number'), 1, 16))::bit(64)::bigint AS h`,
+        [companyId],
+      );
+      await client.query(`SELECT pg_advisory_xact_lock($1)`, [lockHash.rows[0].h.toString()]);
 
-    const order = orderRows[0];
+      const { rows: globalCount } = await client.query(
+        `SELECT COUNT(*)::int AS c FROM purchase_orders WHERE company_id = $1`,
+        [companyId],
+      );
+      const ocNumber = `OC-${String((globalCount[0].c ?? 0) + 1).padStart(6, '0')}`;
 
-    const orderItems = items.map((item: Record<string, unknown>, index: number) => {
-      const taxRate = Number(item.tax_rate) || 0;
-      const quantity = Number(item.quantity) || 0;
-      const unitPrice = Number(item.unit_price) || 0;
-      return {
-        order_id: order.id,
-        company_id: companyId,
-        product_id: item.product_id,
-        quantity,
-        received_quantity: 0,
-        unit_price: unitPrice,
-        discount_percent: item.discount_percent || 0,
-        tax_rate: taxRate,
-        _index: index,
-      };
+      let subtotal = 0;
+      let taxAmount = 0;
+      for (const item of items) {
+        const quantity = Number(item.quantity) || 0;
+        const unitPrice = Number(item.unit_price) || 0;
+        const discountPct = Number(item.discount_percent) || 0;
+        const lineSubtotal = quantity * unitPrice;
+        const discountAmount = lineSubtotal * (discountPct / 100);
+        const taxRate = Number(item.tax_rate) || 19;
+        const lineTax = (lineSubtotal - discountAmount) * (taxRate / 100);
+        subtotal += lineSubtotal - discountAmount;
+        taxAmount += lineTax;
+      }
+
+      const { rows: orderRows } = await client.query(
+        `INSERT INTO purchase_orders (company_id, supplier_id, warehouse_id, order_number, status, order_date, expected_date, payment_terms, subtotal, tax_amount, total, notes, project_id)
+         VALUES ($1, $2, $3, $4, 'draft', $5, $6, $7, $8, $9, $10, $11, $12)
+         RETURNING *`,
+        [
+          companyId, supplier_id, warehouse_id, ocNumber,
+          order_date || new Date().toISOString(), expected_date || null,
+          payment_terms || 0, subtotal, taxAmount, subtotal + taxAmount,
+          notes || null, project_id || null,
+        ],
+      );
+
+      const order = orderRows[0];
+
+      const orderItems = items.map((item: Record<string, unknown>, index: number) => {
+        const taxRate = Number(item.tax_rate) || 0;
+        const quantity = Number(item.quantity) || 0;
+        const unitPrice = Number(item.unit_price) || 0;
+        return {
+          order_id: order.id,
+          company_id: companyId,
+          product_id: item.product_id,
+          quantity,
+          received_quantity: 0,
+          unit_price: unitPrice,
+          discount_percent: item.discount_percent || 0,
+          tax_rate: taxRate,
+          _index: index,
+        };
+      });
+
+      for (const oi of orderItems) {
+        await client.query(
+          `INSERT INTO purchase_order_items (order_id, company_id, product_id, quantity, received_quantity, unit_price, discount_percent, tax_rate)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+          [oi.order_id, oi.company_id, oi.product_id, oi.quantity,
+           oi.received_quantity, oi.unit_price, oi.discount_percent, oi.tax_rate],
+        );
+      }
+
+      return { ...order, items: orderItems };
     });
 
-    for (const oi of orderItems) {
-      await query(
-        `INSERT INTO purchase_order_items (order_id, company_id, product_id, quantity, received_quantity, unit_price, discount_percent, tax_rate)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-        [oi.order_id, oi.company_id, oi.product_id, oi.quantity,
-         oi.received_quantity, oi.unit_price, oi.discount_percent, oi.tax_rate]
-      );
-    }
-
-    return successResponse({ ...order, items: orderItems }, 201);
+    return successResponse(result, 201);
   } catch (err) {
     console.error('Route error:', err);
     return errorResponse('Internal server error', 500);
