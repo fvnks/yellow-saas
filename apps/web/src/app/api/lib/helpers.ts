@@ -1,7 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
+import { PoolClient } from 'pg';
 import { getJwtSecret } from '@/lib/env';
-import { query } from './db';
+import { query, transaction } from './db';
+
+export type JwtPayload = {
+  sub?: string;
+  company_id?: string;
+  role_type?: 'company' | 'super_admin';
+  role?: string;
+  email?: string;
+  full_name?: string;
+  [key: string]: unknown;
+};
+
+export async function verifyJwt(request: NextRequest): Promise<JwtPayload | null> {
+  const authHeader = request.headers.get('Authorization');
+  const token = authHeader?.startsWith('Bearer ')
+    ? authHeader.substring(7)
+    : request.cookies.get('auth-token')?.value;
+  if (!token) return null;
+  try {
+    const { payload } = await jwtVerify(token, getJwtSecret());
+    return payload as JwtPayload;
+  } catch (err) {
+    console.error('Auth verification error:', err);
+    return null;
+  }
+}
 
 export async function getCompanyId(request: NextRequest): Promise<string | null> {
   const url = new URL(request.url);
@@ -10,24 +36,72 @@ export async function getCompanyId(request: NextRequest): Promise<string | null>
   if (companiesIndex === -1 || !pathParts[companiesIndex + 1]) return null;
   const urlCompanyId = pathParts[companiesIndex + 1];
 
-  const authHeader = request.headers.get('Authorization');
-  const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : request.cookies.get('auth-token')?.value;
+  const payload = await verifyJwt(request);
+  if (!payload) return null;
 
-  if (!token) return null;
+  if (payload.role_type === 'super_admin') return urlCompanyId;
 
-  try {
-    const { payload } = await jwtVerify(token, getJwtSecret());
+  const jwtCompanyId = payload.company_id as string | undefined;
+  if (!jwtCompanyId) return null;
 
-    if (payload.role_type === 'super_admin') return urlCompanyId;
+  return jwtCompanyId === urlCompanyId ? urlCompanyId : null;
+}
 
-    const jwtCompanyId = payload.company_id as string | undefined;
-    if (!jwtCompanyId) return null;
+/**
+ * Atomically allocate the next sequential document number for a company.
+ * Uses a PostgreSQL advisory lock scoped to (company, table, prefix) so
+ * concurrent inserts cannot observe the same COUNT(*) and produce duplicates.
+ *
+ * Examples:
+ *   await nextDocumentNumber(client, companyId, 'invoices', 'factura', 'FE')
+ *   await nextDocumentNumber(client, companyId, 'invoices', 'boleta',  'BF')
+ *
+ * Returns a formatted string like "FE-000042" plus the numeric counter.
+ * Must be called inside a transaction (pass the PoolClient).
+ */
+export async function nextDocumentNumber(
+  client: PoolClient,
+  companyId: string,
+  table: string,
+  whereColumn: string,
+  whereValue: string,
+  numberColumn: string,
+  prefix: string,
+  pad = 6,
+): Promise<{ number: string; counter: number }> {
+  // Build a deterministic 64-bit key for pg_advisory_xact_lock from (company,table,discriminator)
+  const keyHash = await client.query<{ h: bigint }>(
+    `SELECT ('x' || substr(md5($1 || ':' || $2 || ':' || $3 || ':' || $4), 1, 16))::bit(64)::bigint AS h`,
+    [companyId, table, whereColumn, whereValue],
+  );
+  const lockKey = keyHash.rows[0].h;
+  await client.query(`SELECT pg_advisory_xact_lock($1)`, [lockKey.toString()]);
 
-    return jwtCompanyId === urlCompanyId ? urlCompanyId : null;
-  } catch (err) {
-    console.error('Auth verification error:', err);
-    return null;
-  }
+  const col = client.escapeIdentifier(numberColumn);
+  const tbl = client.escapeIdentifier(table);
+  const wcol = client.escapeIdentifier(whereColumn);
+  const { rows } = await client.query(
+    `SELECT COUNT(*)::int AS c FROM ${tbl} WHERE company_id = $1 AND ${wcol} = $2`,
+    [companyId, whereValue],
+  );
+  const counter = (rows[0]?.c ?? 0) + 1;
+  const number = `${prefix}-${String(counter).padStart(pad, '0')}`;
+  return { number, counter };
+}
+
+/** Backwards-compatible wrapper: runs in its own transaction. Prefer the client-based overload inside an outer transaction. */
+export async function nextDocumentNumberStandalone(
+  companyId: string,
+  table: string,
+  whereColumn: string,
+  whereValue: string,
+  numberColumn: string,
+  prefix: string,
+  pad = 6,
+): Promise<{ number: string; counter: number }> {
+  return transaction(async (client) =>
+    nextDocumentNumber(client, companyId, table, whereColumn, whereValue, numberColumn, prefix, pad),
+  );
 }
 
 export function successResponse(data: unknown, status = 200) {
@@ -93,8 +167,8 @@ export async function checkAndCreateLowStockNotification(companyId: string, prod
 
     const existing = await query(
       `SELECT id FROM notifications
-       WHERE company_id = $1 AND type = '\'$1\'' AND reference_type = '\'$1\'' AND reference_id = $2 AND read = false`,
-      [companyId, productId]
+       WHERE company_id = $1 AND type = $2 AND reference_type = $3 AND reference_id = $4 AND read = false`,
+      [companyId, 'low_stock', 'product', productId]
     );
     if (existing.rows.length > 0) return;
 

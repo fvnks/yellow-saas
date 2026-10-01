@@ -1,4 +1,4 @@
-import { query } from '@/api/lib/db';
+import { query, transaction } from '@/api/lib/db';
 import {
   getCompanyId,
   successResponse,
@@ -85,65 +85,87 @@ export async function POST(request: NextRequest) {
       return errorResponse('Supplier and items are required', 400);
     }
 
-    const { rows: countRows } = await query(
-      `SELECT COUNT(*) as count FROM quotations WHERE company_id = $1`,
-      [companyId]
+    const supplierCheck = await query(
+      `SELECT id FROM suppliers WHERE company_id = $1 AND id = $2`,
+      [companyId, supplier_id],
     );
-    const quotationNumber = `COT-${String((parseInt(countRows[0]?.count || '0') + 1)).padStart(6, '0')}`;
+    if (supplierCheck.rows.length === 0) return errorResponse('Proveedor no encontrado', 404);
 
-    let subtotal = 0;
-    let taxAmount = 0;
-    for (const item of items) {
-      const lineSubtotal = item.quantity * item.unit_price - (item.discount_amount || 0);
-      const lineTax = lineSubtotal * ((item.tax_rate || 0) / 100);
-      subtotal += lineSubtotal;
-      taxAmount += lineTax;
-    }
+    const result = await transaction(async (client) => {
+      const lockHash = await client.query<{ h: bigint }>(
+        `SELECT ('x' || substr(md5($1 || ':quotations:number'), 1, 16))::bit(64)::bigint AS h`,
+        [companyId],
+      );
+      await client.query(`SELECT pg_advisory_xact_lock($1)`, [lockHash.rows[0].h.toString()]);
 
-    const { rows: quotationRows } = await query(
-      `INSERT INTO quotations (company_id, supplier_id, number, status, quote_date, expiry_date, valid_until, subtotal, tax_amount, total_amount, payment_terms, delivery_terms, notes, internal_notes)
-       VALUES ($1, $2, $3, 'pending', $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-       RETURNING *`,
-      [
-        companyId, supplier_id, quotationNumber,
-        quote_date || new Date().toISOString(), expiry_date || null, valid_until || null,
-        subtotal, taxAmount, subtotal + taxAmount,
-        payment_terms || null, delivery_terms || null, notes || null, internal_notes || null,
-      ]
-    );
+      const { rows: countRows } = await client.query(
+        `SELECT COUNT(*)::int AS c FROM quotations WHERE company_id = $1`,
+        [companyId],
+      );
+      const quotationNumber = `COT-${String((countRows[0]?.c ?? 0) + 1).padStart(6, '0')}`;
 
-    const quotation = quotationRows[0];
+      let subtotal = 0;
+      let taxAmount = 0;
+      let totalDiscount = 0;
+      for (const item of items) {
+        const quantity = Number(item.quantity) || 0;
+        const unitPrice = Number(item.unit_price) || 0;
+        const discountAmount = Number(item.discount_amount) || 0;
+        const lineSubtotal = quantity * unitPrice - discountAmount;
+        const taxRate = Number(item.tax_rate) || 0;
+        const lineTax = lineSubtotal * (taxRate / 100);
+        subtotal += lineSubtotal;
+        taxAmount += lineTax;
+        totalDiscount += discountAmount;
+      }
 
-    const quotationItems = items.map((item: Record<string, unknown>, index: number) => {
-      const taxRate = Number(item.tax_rate) || 0;
-      const quantity = Number(item.quantity) || 0;
-      const unitPrice = Number(item.unit_price) || 0;
-      const discountAmount = Number(item.discount_amount) || 0;
-      return {
-        quotation_id: quotation.id,
-        company_id: companyId,
-        product_id: item.product_id,
-        quantity,
-        unit_price: unitPrice,
-        discount_percent: item.discount_percent || 0,
-        discount_amount: discountAmount,
-        tax_rate: taxRate,
-        tax_amount: taxRate > 0 ? (quantity * unitPrice - discountAmount) * (taxRate / 100) : 0,
-        notes: item.notes || null,
-        sort_order: index,
-      };
+      const { rows: quotationRows } = await client.query(
+        `INSERT INTO quotations (company_id, supplier_id, number, status, quote_date, expiry_date, valid_until, subtotal, discount_amount, tax_amount, total_amount, payment_terms, delivery_terms, notes, internal_notes)
+         VALUES ($1, $2, $3, 'pending', $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+         RETURNING *`,
+        [
+          companyId, supplier_id, quotationNumber,
+          quote_date || new Date().toISOString(), expiry_date || null, valid_until || null,
+          subtotal, totalDiscount, taxAmount, subtotal + taxAmount,
+          payment_terms || null, delivery_terms || null, notes || null, internal_notes || null,
+        ],
+      );
+
+      const quotation = quotationRows[0];
+
+      const quotationItems = items.map((item: Record<string, unknown>, index: number) => {
+        const taxRate = Number(item.tax_rate) || 0;
+        const quantity = Number(item.quantity) || 0;
+        const unitPrice = Number(item.unit_price) || 0;
+        const discountAmount = Number(item.discount_amount) || 0;
+        return {
+          quotation_id: quotation.id,
+          company_id: companyId,
+          product_id: item.product_id,
+          quantity,
+          unit_price: unitPrice,
+          discount_percent: item.discount_percent || 0,
+          discount_amount: discountAmount,
+          tax_rate: taxRate,
+          tax_amount: taxRate > 0 ? (quantity * unitPrice - discountAmount) * (taxRate / 100) : 0,
+          notes: item.notes || null,
+          sort_order: index,
+        };
+      });
+
+      for (const qi of quotationItems) {
+        await client.query(
+          `INSERT INTO quotation_items (quotation_id, company_id, product_id, quantity, unit_price, discount_percent, discount_amount, tax_rate, tax_amount, notes, sort_order)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+          [qi.quotation_id, qi.company_id, qi.product_id, qi.quantity, qi.unit_price,
+           qi.discount_percent, qi.discount_amount, qi.tax_rate, qi.tax_amount, qi.notes, qi.sort_order],
+        );
+      }
+
+      return { ...quotation, items: quotationItems };
     });
 
-    for (const qi of quotationItems) {
-      await query(
-        `INSERT INTO quotation_items (quotation_id, company_id, product_id, quantity, unit_price, discount_percent, discount_amount, tax_rate, tax_amount, notes, sort_order)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
-        [qi.quotation_id, qi.company_id, qi.product_id, qi.quantity, qi.unit_price,
-         qi.discount_percent, qi.discount_amount, qi.tax_rate, qi.tax_amount, qi.notes, qi.sort_order]
-      );
-    }
-
-    return successResponse({ ...quotation, items: quotationItems }, 201);
+    return successResponse(result, 201);
   } catch (err) {
     console.error('Route error:', err);
     return errorResponse('Internal server error', 500);

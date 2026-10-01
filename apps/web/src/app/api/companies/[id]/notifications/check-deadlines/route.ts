@@ -19,10 +19,10 @@ export async function POST(request: NextRequest) {
        AND pt.due_date IS NOT NULL
        AND NOT EXISTS (
          SELECT 1 FROM notifications n
-         WHERE n.entity_type = '\'$1\'' AND n.entity_id = pt.id
-         AND n.type = '\'$1\'' AND n.created_at > NOW() - INTERVAL '1 day'
+         WHERE n.company_id = $1 AND n.entity_type = $2 AND n.entity_id = pt.id
+         AND n.type = $3 AND n.created_at > NOW() - INTERVAL '1 day'
        )`,
-      [companyId]
+      [companyId, 'task', 'deadline_warning']
     );
 
     for (const task of dueTasks) {
@@ -50,10 +50,10 @@ export async function POST(request: NextRequest) {
        AND pm.due_date IS NOT NULL
        AND NOT EXISTS (
          SELECT 1 FROM notifications n
-         WHERE n.entity_type = '\'$1\'' AND n.entity_id = pm.id
-         AND n.type = '\'$1\'' AND n.created_at > NOW() - INTERVAL '1 day'
+         WHERE n.company_id = $1 AND n.entity_type = $2 AND n.entity_id = pm.id
+         AND n.type = $3 AND n.created_at > NOW() - INTERVAL '1 day'
        )`,
-      [companyId]
+      [companyId, 'milestone', 'deadline_warning']
     );
 
     for (const ms of dueMilestones) {
@@ -80,10 +80,10 @@ export async function POST(request: NextRequest) {
        AND end_date IS NOT NULL
        AND NOT EXISTS (
          SELECT 1 FROM notifications n
-         WHERE n.entity_type = '\'$1\'' AND n.entity_id = projects.id
-         AND n.type = '\'$1\'' AND n.created_at > NOW() - INTERVAL '2 days'
+         WHERE n.company_id = $1 AND n.entity_type = $2 AND n.entity_id = projects.id
+         AND n.type = $3 AND n.created_at > NOW() - INTERVAL '2 days'
        )`,
-      [companyId]
+      [companyId, 'project', 'deadline_warning']
     );
 
     for (const proj of dueProjects) {

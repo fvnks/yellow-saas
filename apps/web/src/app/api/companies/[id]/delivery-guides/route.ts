@@ -79,11 +79,18 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await transaction(async (client) => {
+      // Per-company advisory lock so concurrent dispatches cannot produce duplicate guide numbers.
+      const lockHash = await client.query<{ h: bigint }>(
+        `SELECT ('x' || substr(md5($1 || ':delivery_guides:guide_number'), 1, 16))::bit(64)::bigint AS h`,
+        [companyId],
+      );
+      await client.query(`SELECT pg_advisory_xact_lock($1)`, [lockHash.rows[0].h.toString()]);
+
       const { rows: countRows } = await client.query(
-        `SELECT COUNT(*) as count FROM delivery_guides WHERE company_id = $1`,
+        `SELECT COUNT(*)::int AS c FROM delivery_guides WHERE company_id = $1`,
         [companyId]
       );
-      const guideNumber = `GD-${String((parseInt(countRows[0]?.count || '0') + 1)).padStart(6, '0')}`;
+      const guideNumber = `GD-${String((countRows[0]?.c ?? 0) + 1).padStart(6, '0')}`;
 
       for (const item of items) {
         const { rows: stockRows } = await client.query(

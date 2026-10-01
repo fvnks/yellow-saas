@@ -78,13 +78,25 @@ export async function POST(request: NextRequest) {
       return errorResponse('Customer and items are required', 400);
     }
 
+    const custCheck = await query(
+      `SELECT id FROM customers WHERE company_id = $1 AND id = $2`,
+      [companyId, customer_id],
+    );
+    if (custCheck.rows.length === 0) return errorResponse('Cliente no encontrado', 404);
+
     const result = await transaction(async (client) => {
-      const { rows: countRows } = await client.query(
-        `SELECT COUNT(*) as count FROM sales_quotations WHERE company_id = $1`,
-        [companyId]
-      );
       const year = new Date().getFullYear();
-      const quotationNumber = `COT-${year}-${String((parseInt(countRows[0]?.count || '0') + 1)).padStart(5, '0')}`;
+      const lockHash = await client.query<{ h: bigint }>(
+        `SELECT ('x' || substr(md5($1 || ':sales_quotations:quotation_number:' || $2), 1, 16))::bit(64)::bigint AS h`,
+        [companyId, String(year)],
+      );
+      await client.query(`SELECT pg_advisory_xact_lock($1)`, [lockHash.rows[0].h.toString()]);
+
+      const { rows: countRows } = await client.query(
+        `SELECT COUNT(*)::int AS c FROM sales_quotations WHERE company_id = $1 AND quotation_number LIKE $2`,
+        [companyId, `COT-${year}-%`],
+      );
+      const quotationNumber = `COT-${year}-${String((countRows[0]?.c ?? 0) + 1).padStart(5, '0')}`;
 
       const { rows: quotationRows } = await client.query(
         `INSERT INTO sales_quotations (company_id, customer_id, quotation_number, status, valid_until, notes)

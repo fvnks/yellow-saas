@@ -12,10 +12,10 @@ export async function POST(
 
     const recurringTasks = await query(
       `SELECT * FROM project_tasks
-       WHERE company_id = $1 AND recurrence_type != '\'$1\'' AND recurrence_type IS NOT NULL
+       WHERE company_id = $1 AND recurrence_type != $2 AND recurrence_type IS NOT NULL
          AND (recurrence_end_date IS NULL OR recurrence_end_date >= CURRENT_DATE)
          AND (last_generated_at IS NULL OR last_generated_at < CURRENT_DATE)`,
-      [companyId]
+      [companyId, 'none']
     );
 
     let generated = 0;

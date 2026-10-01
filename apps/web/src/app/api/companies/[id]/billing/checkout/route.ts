@@ -1,11 +1,13 @@
 import { query } from '@/api/lib/db';
-import { successResponse, errorResponse } from '@/api/lib/helpers';
+import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 import { getPaymentProvider } from '@/lib/payments';
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest) {
   try {
-    const companyId = params.id;
+    const companyId = await getCompanyId(request);
+    if (!companyId) return errorResponse('No autorizado', 401);
+
     const body = await request.json();
     const { plan_name, billing_period = 'monthly' } = body;
 

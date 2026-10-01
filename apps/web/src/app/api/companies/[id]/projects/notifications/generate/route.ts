@@ -20,9 +20,9 @@ export async function POST(
          AND t.assignee_id IS NOT NULL
          AND NOT EXISTS (
            SELECT 1 FROM project_notifications n
-           WHERE n.entity_id = t.id AND n.type = '\'$1\'' AND n.user_id = t.assignee_id
+           WHERE n.company_id = $1 AND n.entity_id = t.id AND n.type = $2 AND n.user_id = t.assignee_id
          )`,
-      [companyId]
+      [companyId, 'task_overdue']
     );
 
     for (const task of overdueTasks.rows) {
@@ -46,10 +46,10 @@ export async function POST(
          AND t.assignee_id IS NOT NULL
          AND NOT EXISTS (
            SELECT 1 FROM project_notifications n
-           WHERE n.entity_id = t.id AND n.type = '\'$1\'' AND n.user_id = t.assignee_id
+           WHERE n.company_id = $1 AND n.entity_id = t.id AND n.type = $2 AND n.user_id = t.assignee_id
              AND n.created_at > CURRENT_DATE - INTERVAL '1 day'
          )`,
-      [companyId]
+      [companyId, 'task_due_soon']
     );
 
     for (const task of dueSoonTasks.rows) {
@@ -77,7 +77,7 @@ export async function POST(
          AND (spent.total / p.budget * 100) >= 80
          AND NOT EXISTS (
            SELECT 1 FROM project_notifications n
-           WHERE n.project_id = p.id AND n.type = 'budget_warning'
+           WHERE n.company_id = $1 AND n.project_id = p.id AND n.type = 'budget_warning'
              AND n.created_at > CURRENT_DATE - INTERVAL '7 days'
          )`,
       [companyId]

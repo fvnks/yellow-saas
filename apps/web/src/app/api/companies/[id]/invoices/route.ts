@@ -5,6 +5,7 @@ import {
   errorResponse,
   parseSearchParams,
   paginatedResponse,
+  nextDocumentNumber,
 } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
@@ -110,12 +111,12 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await transaction(async (client) => {
-      const { rows: countRows } = await client.query(
-        `SELECT COUNT(*) as count FROM invoices WHERE company_id = $1 AND document_type = $2`,
-        [companyId, docType]
+      // Atomically allocate the next folio number under an advisory lock so
+      // concurrent invoice POSTs cannot produce duplicate invoice_numbers.
+      const { number: invoiceNumber } = await nextDocumentNumber(
+        client, companyId, 'invoices', 'document_type', docType, 'invoice_number',
+        docType === 'boleta' ? 'BF' : 'FE',
       );
-      const prefix = docType === 'boleta' ? 'BF' : 'FE';
-      const invoiceNumber = `${prefix}-${String((parseInt(countRows[0]?.count || '0') + 1)).padStart(6, '0')}`;
 
       let subtotal = 0;
       let taxAmount = 0;

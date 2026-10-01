@@ -1,4 +1,4 @@
-import { query } from '@/api/lib/db';
+import { query, transaction } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse, parseSearchParams, paginatedResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
@@ -64,37 +64,51 @@ export async function POST(request: NextRequest) {
       return errorResponse('Warehouse is required', 400);
     }
 
-    const numResult = await query(
-      `SELECT COUNT(*) + 1 as next_num FROM inventory_counts WHERE company_id = $1`,
-      [companyId]
+    const whCheck = await query(
+      `SELECT id FROM warehouses WHERE company_id = $1 AND id = $2`,
+      [companyId, warehouse_id],
     );
-    const countNumber = `IC-${String(numResult.rows[0].next_num).padStart(5, '0')}`;
+    if (whCheck.rows.length === 0) return errorResponse('Bodega no encontrada', 404);
 
-    const countResult = await query(
-      `INSERT INTO inventory_counts (company_id, count_number, warehouse_id, count_type, notes, status)
-       VALUES ($1, $2, $3, $4, $5, 'draft')
-       RETURNING *`,
-      [companyId, countNumber, warehouse_id, count_type || 'full', notes || null]
-    );
-
-    const count = countResult.rows[0];
-
-    // Snapshot current stock for all products in this warehouse
-    const stockSnapshot = await query(
-      `SELECT sl.product_id, sl.quantity
-       FROM stock_levels sl
-       JOIN products p ON sl.product_id = p.id
-       WHERE sl.company_id = $1 AND sl.warehouse_id = $2 AND p.track_stock = true AND p.is_active = true`,
-      [companyId, warehouse_id]
-    );
-
-    for (const row of stockSnapshot.rows) {
-      await query(
-        `INSERT INTO inventory_count_items (company_id, count_id, product_id, system_quantity)
-         VALUES ($1, $2, $3, $4)`,
-        [companyId, count.id, row.product_id, row.quantity]
+    const count = await transaction(async (client) => {
+      const lockHash = await client.query<{ h: bigint }>(
+        `SELECT ('x' || substr(md5($1 || ':inventory_counts:count_number'), 1, 16))::bit(64)::bigint AS h`,
+        [companyId],
       );
-    }
+      await client.query(`SELECT pg_advisory_xact_lock($1)`, [lockHash.rows[0].h.toString()]);
+
+      const { rows: numRows } = await client.query(
+        `SELECT COUNT(*)::int AS c FROM inventory_counts WHERE company_id = $1`,
+        [companyId],
+      );
+      const countNumber = `IC-${String((numRows[0]?.c ?? 0) + 1).padStart(5, '0')}`;
+
+      const { rows: countRows } = await client.query(
+        `INSERT INTO inventory_counts (company_id, count_number, warehouse_id, count_type, notes, status)
+         VALUES ($1, $2, $3, $4, $5, 'draft')
+         RETURNING *`,
+        [companyId, countNumber, warehouse_id, count_type || 'full', notes || null],
+      );
+      const rec = countRows[0];
+
+      const stockSnapshot = await client.query(
+        `SELECT sl.product_id, sl.quantity
+         FROM stock_levels sl
+         JOIN products p ON sl.product_id = p.id
+         WHERE sl.company_id = $1 AND sl.warehouse_id = $2 AND p.track_stock = true AND p.is_active = true`,
+        [companyId, warehouse_id],
+      );
+
+      for (const row of stockSnapshot.rows) {
+        await client.query(
+          `INSERT INTO inventory_count_items (company_id, count_id, product_id, system_quantity)
+           VALUES ($1, $2, $3, $4)`,
+          [companyId, rec.id, row.product_id, row.quantity],
+        );
+      }
+
+      return rec;
+    });
 
     return successResponse(count, 201);
   } catch (err) {

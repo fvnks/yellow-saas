@@ -1,4 +1,4 @@
-import { query } from '@/api/lib/db';
+import { query, transaction } from '@/api/lib/db';
 import { getCompanyId, successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest } from 'next/server';
 
@@ -67,27 +67,42 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const numberResult = await query(
-      `SELECT COUNT(*) + 1 as next FROM internal_orders WHERE company_id = $1`,
-      [companyId]
+    const whCheck = await query(
+      `SELECT id FROM warehouses WHERE company_id = $1 AND id = $2`,
+      [companyId, warehouse_id],
     );
-    const orderNumber = `PED-${String(numberResult.rows[0].next).padStart(5, '0')}`;
+    if (whCheck.rows.length === 0) return errorResponse('Bodega no encontrada', 404);
 
-    const orderResult = await query(
-      `INSERT INTO internal_orders (company_id, order_number, warehouse_id, requested_by, status, priority, notes)
-       VALUES ($1, $2, $3, $4, 'pending', $5, $6) RETURNING *`,
-      [companyId, orderNumber, warehouse_id, body.requested_by || null, priority || 'normal', notes || null]
-    );
-
-    const order = orderResult.rows[0];
-
-    for (const item of items) {
-      await query(
-        `INSERT INTO internal_order_items (company_id, order_id, product_id, quantity, notes)
-         VALUES ($1, $2, $3, $4, $5)`,
-        [companyId, order.id, item.product_id, item.quantity, item.notes || null]
+    const order = await transaction(async (client) => {
+      const lockHash = await client.query<{ h: bigint }>(
+        `SELECT ('x' || substr(md5($1 || ':internal_orders:order_number'), 1, 16))::bit(64)::bigint AS h`,
+        [companyId],
       );
-    }
+      await client.query(`SELECT pg_advisory_xact_lock($1)`, [lockHash.rows[0].h.toString()]);
+
+      const { rows: nRows } = await client.query(
+        `SELECT COUNT(*)::int AS c FROM internal_orders WHERE company_id = $1`,
+        [companyId],
+      );
+      const orderNumber = `PED-${String((nRows[0]?.c ?? 0) + 1).padStart(5, '0')}`;
+
+      const { rows: orderResult } = await client.query(
+        `INSERT INTO internal_orders (company_id, order_number, warehouse_id, requested_by, status, priority, notes)
+         VALUES ($1, $2, $3, $4, 'pending', $5, $6) RETURNING *`,
+        [companyId, orderNumber, warehouse_id, body.requested_by || null, priority || 'normal', notes || null],
+      );
+      const rec = orderResult[0];
+
+      for (const item of items) {
+        await client.query(
+          `INSERT INTO internal_order_items (company_id, order_id, product_id, quantity, notes)
+           VALUES ($1, $2, $3, $4, $5)`,
+          [companyId, rec.id, item.product_id, item.quantity, item.notes || null],
+        );
+      }
+
+      return rec;
+    });
 
     return successResponse(order);
   } catch (err: any) {

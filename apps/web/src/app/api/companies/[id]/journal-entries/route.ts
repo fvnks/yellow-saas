@@ -108,11 +108,17 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await transaction(async (client) => {
+      const lockHash = await client.query<{ h: bigint }>(
+        `SELECT ('x' || substr(md5($1 || ':journal_entries:entry_number'), 1, 16))::bit(64)::bigint AS h`,
+        [companyId],
+      );
+      await client.query(`SELECT pg_advisory_xact_lock($1)`, [lockHash.rows[0].h.toString()]);
+
       const { rows: countRows } = await client.query(
-        `SELECT COUNT(*) as count FROM journal_entries WHERE company_id = $1`,
+        `SELECT COUNT(*)::int AS c FROM journal_entries WHERE company_id = $1`,
         [companyId]
       );
-      const entryNumber = `CE-${String((parseInt(countRows[0]?.count || '0') + 1)).padStart(6, '0')}`;
+      const entryNumber = `CE-${String((countRows[0]?.c ?? 0) + 1).padStart(6, '0')}`;
 
       const { rows: entryRows } = await client.query(
         `INSERT INTO journal_entries (company_id, entry_number, entry_date, description, reference_type, reference_id, total_debit, total_credit, status)

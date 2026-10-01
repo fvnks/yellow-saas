@@ -91,9 +91,9 @@ export async function POST(request: NextRequest) {
 
     const exchangeRateResult = await query(
       `SELECT id, rate FROM exchange_rates
-       WHERE company_id = $1 AND from_currency = '\'$1\'' AND to_currency = $2 AND rate_date <= $3 AND is_active = true
+       WHERE company_id = $1 AND from_currency = $2 AND to_currency = $3 AND rate_date <= $4 AND is_active = true
        ORDER BY rate_date DESC LIMIT 1`,
-      [companyId, target_currency.toUpperCase(), valuation_date]
+      [companyId, 'CLP', target_currency.toUpperCase(), valuation_date]
     );
 
     if (exchangeRateResult.rows.length === 0) {
