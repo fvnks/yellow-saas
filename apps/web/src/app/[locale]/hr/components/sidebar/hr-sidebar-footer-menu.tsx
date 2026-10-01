@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { LogOut, Settings, User, ChevronsUpDown, Building2 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -40,7 +40,7 @@ export default function HRSidebarFooterMenu({ user }: HRSidebarFooterMenuProps) 
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
  <button className="flex w-full items-center gap-3 rounded-xl p-2 text-left text-sm hover:bg-cloud/80 border border-transparent hover:border-mist transition-all duration-200 group/user">
- <Avatar className="h-9 w-9 ring-2 ring-amber-500/40 group-hover/user:ring-amber-500 transition-all shrink-0">
+ <Avatar className="h-9 w-9 ring-2 ring-sunshine-hover/40 group-hover/user:ring-sunshine-hover transition-all shrink-0">
  <AvatarFallback className="bg-gradient-to-br from-amber-500 via-amber-500 to-yellow-600 text-white text-xs font-black shadow-inner">
  {user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)}
  </AvatarFallback>

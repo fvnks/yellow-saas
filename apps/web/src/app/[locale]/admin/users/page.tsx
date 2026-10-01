@@ -1,7 +1,8 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { Users, Search, Building2, Mail, Calendar, Shield, Pencil, X, AlertCircle, CheckCircle } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 
 interface User {
  id: string;
@@ -42,7 +43,7 @@ export default function AdminUsersPage() {
  fetchUsers();
  }, []);
 
- const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1] || '';
+ const getToken = () => getAuthToken() || '';
 
  const fetchUsers = async () => {
  try {

@@ -1,7 +1,8 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { Settings, Shield, Save, AlertCircle, CheckCircle, Database, Globe, Key, Pencil, Trash2, X } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import { toast } from 'sonner';
 
 interface SuperAdmin {
@@ -32,7 +33,7 @@ export default function AdminSettingsPage() {
  fetchAdmins();
  }, []);
 
- const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1] || '';
+ const getToken = () => getAuthToken() || '';
 
  const fetchAdmins = async () => {
  try {

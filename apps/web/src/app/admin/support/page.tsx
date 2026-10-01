@@ -1,7 +1,8 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import { Headphones, Plus, Search, Building2, AlertTriangle, CheckCircle, Clock, MessageSquare, Send, X, UserCheck, Star, Paperclip, FileText, Image as ImageIcon, History, CheckCircle2 } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import { toast } from 'sonner';
 
 interface Ticket {
@@ -105,7 +106,7 @@ export default function AdminSupportPage() {
  fetchSuperAdmins();
  }, []);
 
- const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const getToken = () => getAuthToken();
 
  const fetchTickets = async () => {
  try {

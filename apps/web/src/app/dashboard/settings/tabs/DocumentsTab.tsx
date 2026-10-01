@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Upload, Eye, Save, Palette, FileText, Hash, Type, LayoutTemplate, Check, Sparkles, Zap, Minus } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import { toast } from 'sonner';
 import { useDocumentSettings } from '@/lib/use-document-settings';
 import { getCompanyIdFromToken } from '@/lib/api-client';
@@ -37,7 +38,7 @@ export function DocumentsTab() {
  const ok = await save(settings);
  if (ok) {
  const companyId = getCompanyIdFromToken();
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
  if (companyId && token) {
  fetch(`/api/companies/${companyId}/settings/iva`, {
  method: 'PUT',

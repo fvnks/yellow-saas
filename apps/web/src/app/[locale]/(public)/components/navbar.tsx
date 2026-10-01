@@ -20,7 +20,7 @@ export function Navbar() {
  <div className="max-w-[1200px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
  {/* Logo */}
  <Link href="/" className="flex items-center gap-2.5 group">
- <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#8181ff] via-[#33dbdb] via-[#33d58e] via-[#ffd633] via-[#fc527d] to-[#8181ff] flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform duration-150" style={{ background: 'conic-gradient(from 270deg, #8181ff 15%, #33dbdb 40%, #33d58e 55%, #ffd633 65%, #fc527d 85%, #8181ff 100%)' }}>
+ <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#8181ff] via-[#33dbdb] via-[#33d58e] via-[#F5C518] via-[#fc527d] to-[#8181ff] flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform duration-150" style={{ background: 'conic-gradient(from 270deg, #8181ff 15%, #33dbdb 40%, #33d58e 55%, #F5C518 65%, #fc527d 85%, #8181ff 100%)' }}>
  <div className="w-7 h-7 bg-snow rounded-full flex items-center justify-center">
  <span className="text-monday-violet font-bold text-xs">Y</span>
  </div>

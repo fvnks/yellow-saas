@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect } from 'react';
 import { BarChart3, TrendingUp, Calendar, Dog, Stethoscope, DollarSign, Users, Activity, Loader2 } from 'lucide-react';
@@ -54,7 +54,7 @@ export default function VetReportsPage() {
  const serviceDist = Object.entries(serviceMap).sort((a, b) => b[1] - a[1]).slice(0, 8);
 
  // Appointments by day of week
- const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+ const dayNames = ['Dom', 'Lun', 'Mar', 'MiÃ©', 'Jue', 'Vie', 'SÃ¡b'];
  const dayMap: Record<string, number> = {};
  aptData.forEach((a: any) => {
  const d = new Date(a.appointment_date).getDay();
@@ -102,12 +102,12 @@ export default function VetReportsPage() {
  <BarChart3 className="w-7 h-7 text-purple-600" />
  Reportes Veterinarios
  </h1>
- <p className="text-slate-500 text-sm mt-0.5">Métricas de la clínica, distribución de especies e ingresos.</p>
+ <p className="text-slate-500 text-sm mt-0.5">MÃ©tricas de la clÃ­nica, distribuciÃ³n de especies e ingresos.</p>
  </div>
  <div className="flex gap-1">
  {['week', 'month', 'year'].map((p) => (
  <button key={p} onClick={() => setPeriod(p)} className={`px-3 py-1.5 rounded-xl text-xs font-bold capitalize transition-all ${period === p ? 'bg-monday-violet text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
- {p === 'week' ? 'Semana' : p === 'month' ? 'Mes' : 'Año'}
+ {p === 'week' ? 'Semana' : p === 'month' ? 'Mes' : 'AÃ±o'}
  </button>
  ))}
  </div>
@@ -139,7 +139,7 @@ export default function VetReportsPage() {
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
  <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden">
  <div className="px-5 py-3 border-b border-slate-200/80 bg-slate-50/80">
- <h2 className="text-sm font-bold text-slate-900">Distribución por Especie</h2>
+ <h2 className="text-sm font-bold text-slate-900">DistribuciÃ³n por Especie</h2>
  </div>
  <div className="p-5 space-y-3">
  {data?.speciesDist.map(([species, count]: [string, number]) => (
@@ -156,7 +156,7 @@ export default function VetReportsPage() {
 
  <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden">
  <div className="px-5 py-3 border-b border-slate-200/80 bg-slate-50/80">
- <h2 className="text-sm font-bold text-slate-900">Servicios Más Solicitados</h2>
+ <h2 className="text-sm font-bold text-slate-900">Servicios MÃ¡s Solicitados</h2>
  </div>
  <div className="p-5 space-y-3">
  {data?.serviceDist.map(([service, count]: [string, number]) => (
@@ -173,7 +173,7 @@ export default function VetReportsPage() {
 
  <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden">
  <div className="px-5 py-3 border-b border-slate-200/80 bg-slate-50/80">
- <h2 className="text-sm font-bold text-slate-900">Citas por Día de la Semana</h2>
+ <h2 className="text-sm font-bold text-slate-900">Citas por DÃ­a de la Semana</h2>
  </div>
  <div className="p-5 flex items-end gap-2 h-48">
  {data?.dayDist.map((d: any) => (
@@ -198,7 +198,7 @@ export default function VetReportsPage() {
  };
  return (
  <div key={status} className="flex items-center gap-3">
- <span className={`w-3 h-3 rounded-full ${colors[status] || 'bg-cloud0'}`} />
+ <span className={`w-3 h-3 rounded-full ${colors[status] || 'bg-cloud'}`} />
  <span className="text-xs font-bold text-slate-700 capitalize flex-1">{status.replace('_', ' ')}</span>
  <span className="text-xs font-black text-slate-900">{count}</span>
  </div>
@@ -210,3 +210,4 @@ export default function VetReportsPage() {
  </div>
  );
 }
+

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Trash2, CheckCircle2, Clock, AlertCircle, Send, FileText, Printer } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
@@ -31,7 +32,7 @@ export default function InvoiceDetailPage() {
  useEffect(() => {
  const companyId = getCompanyIdFromToken();
  if (companyId) {
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
  if (token) {
  fetch(`/api/companies/${companyId}/settings/documents`, {
  headers: { Authorization: `Bearer ${token}` },

@@ -46,3 +46,18 @@ skills-lock.json
 *.log
 
 build-output.txt
+
+# local scratch / test artifacts
+null
+*.tmp
+ModuleFlow_*.tsx
+sites.json
+remaining-sites*.json
+unique-files.json
+apps/web/tmp/
+apps/web/*-test.txt
+apps/web/test-*.txt
+apps/web/test-output.css
+apps/web/dev_log.txt
+apps/web/colors-check.txt
+test-redirect.txt

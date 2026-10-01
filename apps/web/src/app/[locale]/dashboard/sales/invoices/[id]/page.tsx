@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { IVA_RATE } from '@/lib/erp-config';
 import { ArrowLeft, Printer, Download, CreditCard, User, Calendar, FileText } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
@@ -75,7 +76,7 @@ export default function InvoiceDetailPage({ params }: { params: { id: string } }
  try {
  const companyId = getCompanyIdFromToken();
  if (!companyId) return;
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
  if (!token) return;
  const res = await fetch(`/api/companies/${companyId}/settings/documents`, {
  headers: { Authorization: `Bearer ${token}` },

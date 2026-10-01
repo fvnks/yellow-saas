@@ -1,7 +1,8 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { CreditCard, Building2, Users, Edit3, CheckCircle, AlertTriangle, Save, Plus, Trash2, GripVertical } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import { toast } from 'sonner';
 
 interface Company {
@@ -59,7 +60,7 @@ export default function AdminBillingPage() {
  fetchData();
  }, []);
 
- const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const getToken = () => getAuthToken();
 
  const fetchData = async () => {
  try {

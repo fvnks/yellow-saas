@@ -1,7 +1,8 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { Bell, Send, Building2, CheckCircle, AlertTriangle, Info, AlertCircle, Plus, X, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import { toast } from 'sonner';
 
 interface Notification {
@@ -35,7 +36,7 @@ export default function AdminNotificationsPage() {
  fetchCompanies();
  }, []);
 
- const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const getToken = () => getAuthToken();
 
  const fetchNotifications = async () => {
  try {

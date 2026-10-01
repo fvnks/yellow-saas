@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+﻿import { cn } from "@/lib/utils";
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
@@ -29,7 +29,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "bg-white border border-gray-200 rounded-xl",
+        "bg-snow border border-mist rounded-3xl",
         paddingClasses[padding],
         shadowClasses[shadow],
         className
@@ -40,3 +40,4 @@ export function Card({
     </div>
   );
 }
+

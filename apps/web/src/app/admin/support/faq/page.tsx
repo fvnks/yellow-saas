@@ -1,7 +1,8 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { BookOpen, Plus, Search, Pencil, Trash2, Check, X, Save } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import { toast } from 'sonner';
 
 interface FaqItem {
@@ -34,7 +35,7 @@ export default function AdminFaqPage() {
  const [form, setForm] = useState<FaqForm>(emptyForm);
  const [saving, setSaving] = useState(false);
 
- const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const getToken = () => getAuthToken();
 
  const fetchItems = async () => {
  try {

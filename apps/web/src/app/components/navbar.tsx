@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
 import { useState } from 'react';
@@ -6,7 +6,7 @@ import { Menu, X, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navLinks = [
- { label: 'Módulos', href: '#modules' },
+ { label: 'M�dulos', href: '#modules' },
  { label: 'Beneficios', href: '#features' },
  { label: 'Precios', href: '#pricing' },
  { label: 'FAQ', href: '#faq' },
@@ -20,14 +20,12 @@ export function Navbar() {
  <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
  {/* Logo */}
  <Link href="/" className="flex items-center gap-2.5 group">
- <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#8181ff] via-[#33dbdb] via-[#33d58e] via-[#ffd633] via-[#fc527d] to-[#8181ff] flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform duration-150" style={{ background: 'conic-gradient(from 270deg, #8181ff 15%, #33dbdb 40%, #33d58e 55%, #ffd633 65%, #fc527d 85%, #8181ff 100%)' }}>
- <div className="w-7 h-7 bg-snow rounded-full flex items-center justify-center">
- <span className="text-monday-violet font-bold text-xs">Y</span>
- </div>
+ <div className="w-9 h-9 rounded-full bg-sunshine flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform duration-150 ring-2 ring-sunshine-dark/30">
+ <span className="text-white font-bold text-xs">Y</span>
  </div>
  <div className="flex flex-col">
  <span className="text-lg font-bold text-ink leading-none">
- Yellow <span className="text-monday-violet">ERP</span>
+ Yellow <span className="text-sunshine">ERP</span>
  </span>
  <span className="text-[10px] text-slate-text font-medium tracking-wide">SaaS para Chile</span>
  </div>
@@ -49,14 +47,14 @@ export function Navbar() {
  {/* Desktop CTA */}
  <div className="hidden md:flex items-center gap-3">
  <Link
- href="/login"
+ href="/es/login"
  className="text-sm font-medium text-slate-text hover:text-ink transition-colors duration-150 px-4 py-2"
  >
- Iniciar Sesión
+ Iniciar Sesi�n
  </Link>
  <Link
- href="/register"
- className="rounded-[160px] bg-monday-violet hover:bg-monday-violet-hover text-white px-5 py-2.5 text-sm font-medium shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center gap-1.5"
+ href="/es/register"
+ className="rounded-[160px] bg-sunshine hover:bg-sunshine-hover text-ink px-5 py-2.5 text-sm font-medium shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center gap-1.5"
  >
  <span>Empezar Gratis</span>
  <ChevronRight className="w-4 h-4" />
@@ -66,7 +64,7 @@ export function Navbar() {
  {/* Mobile toggle */}
  <button
  onClick={() => setMobileOpen(!mobileOpen)}
- aria-label={mobileOpen ? 'Cerrar menú' : 'Abrir menú'}
+ aria-label={mobileOpen ? 'Cerrar men�' : 'Abrir men�'}
  aria-expanded={mobileOpen}
  className="md:hidden p-2 text-ink hover:text-ink/70 rounded-md hover:bg-cloud transition-colors"
  >
@@ -94,15 +92,15 @@ export function Navbar() {
  ))}
  <div className="pt-3 border-t border-mist space-y-2">
  <Link
- href="/login"
+ href="/es/login"
  className="block text-sm font-medium text-ink py-2 text-center rounded-md border border-mist"
  onClick={() => setMobileOpen(false)}
  >
- Iniciar Sesión
+ Iniciar Sesi�n
  </Link>
  <Link
- href="/register"
- className="block rounded-[160px] bg-monday-violet hover:bg-monday-violet-hover px-4 py-2.5 text-sm font-medium text-white text-center shadow-sm"
+ href="/es/register"
+ className="block rounded-[160px] bg-sunshine hover:bg-sunshine-hover px-4 py-2.5 text-sm font-medium text-ink text-center shadow-sm"
  onClick={() => setMobileOpen(false)}
  >
  Empezar Gratis

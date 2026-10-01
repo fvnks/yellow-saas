@@ -40,7 +40,7 @@ export default function AuthPanel() {
  <div className="relative z-10 flex flex-col h-full p-10">
  {/* Logo */}
  <div className="flex items-center gap-3">
- <div className="w-12 h-12 bg-snow/80 backdrop-blur-sm rounded-full flex items-center justify-center border border-mist shadow-sm" style={{ background: 'conic-gradient(from 270deg, #8181ff 15%, #33dbdb 40%, #33d58e 55%, #ffd633 65%, #fc527d 85%, #8181ff 100%)' }}>
+ <div className="w-12 h-12 bg-snow/80 backdrop-blur-sm rounded-full flex items-center justify-center border border-mist shadow-sm" style={{ background: 'conic-gradient(from 270deg, #8181ff 15%, #33dbdb 40%, #33d58e 55%, #F5C518 65%, #fc527d 85%, #8181ff 100%)' }}>
  <div className="w-9 h-9 bg-snow rounded-full flex items-center justify-center">
  <Building2 className="w-5 h-5 text-monday-violet" />
  </div>
@@ -81,7 +81,7 @@ export default function AuthPanel() {
  >
  <div className="flex items-center gap-1.5 px-4 py-3 border-b border-mist">
  <div className="w-2.5 h-2.5 rounded-full bg-[#e24444]/70" />
- <div className="w-2.5 h-2.5 rounded-full bg-[#ff8940]/70" />
+ <div className="w-2.5 h-2.5 rounded-full bg-sunshine/70" />
  <div className="w-2.5 h-2.5 rounded-full bg-forest/70" />
  <div className="ml-4 flex-1 h-6 rounded-md bg-cloud flex items-center px-3">
  <span className="text-[10px] text-iron">app.yellow-erp.cl/dashboard</span>

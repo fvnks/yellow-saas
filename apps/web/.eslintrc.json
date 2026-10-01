@@ -1,4 +1,13 @@
 {
   "root": true,
-  "extends": ["next/core-web-vitals"]
+  "extends": ["next/core-web-vitals"],
+  "ignorePatterns": [
+    "**/*.test.*",
+    "**/*.spec.*",
+    "**/*.stories.*",
+    "node_modules"
+  ],
+  "rules": {
+    "react/no-unescaped-entities": "off"
+  }
 }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Printer, Download, Truck, User, Calendar, MapPin, Package } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { getCompanyIdFromToken } from '@/lib/api-client';
@@ -53,7 +54,7 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
  try {
  const companyId = getCompanyIdFromToken();
  if (!companyId) return DEFAULT_DOCUMENT_SETTINGS;
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
  if (!token) return DEFAULT_DOCUMENT_SETTINGS;
  const res = await fetch(`/api/companies/${companyId}/settings/documents`, {
  headers: { Authorization: `Bearer ${token}` },

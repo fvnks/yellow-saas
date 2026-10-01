@@ -1,7 +1,8 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { KeyRound, Search, Building2, Shield, CheckCircle, XCircle, Clock, AlertTriangle, Plus, X } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import { toast } from 'sonner';
 
 interface Grant {
@@ -39,7 +40,7 @@ export default function AdminGrantsPage() {
  fetchCompanies();
  }, []);
 
- const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const getToken = () => getAuthToken();
 
  const fetchGrants = async () => {
  try {

@@ -1,7 +1,8 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { Building2, Users, TrendingUp, DollarSign, Shield, Activity } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 
 interface Metrics {
  totalCompanies: number;
@@ -29,7 +30,7 @@ export default function AdminDashboard() {
 
  const fetchMetrics = async () => {
  try {
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
  const res = await fetch('/api/super-admin/metrics', {
  headers: { Authorization: `Bearer ${token}` },
  });
@@ -118,7 +119,7 @@ export default function AdminDashboard() {
  : 'bg-violet-500/10 text-violet-400 border-violet-500/20'
  }`}>
  <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${
- metrics.dbStatus === 'connected' ? 'bg-emerald-400' : metrics.dbStatus === 'error' ? 'bg-rose-400' : 'bg-cloud0'
+ metrics.dbStatus === 'connected' ? 'bg-emerald-400' : metrics.dbStatus === 'error' ? 'bg-rose-400' : 'bg-cloud'
  }`} />
  {metrics.dbStatus === 'connected' ? 'Conectada' : metrics.dbStatus === 'error' ? 'Error' : 'Verificando...'}
  {metrics.dbStatus === 'connected' && metrics.dbLatency > 0 && (
@@ -144,3 +145,4 @@ export default function AdminDashboard() {
  </div>
  );
 }
+

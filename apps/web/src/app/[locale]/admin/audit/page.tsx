@@ -1,7 +1,8 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { ScrollText, Search, Shield, Building2, ChevronLeft, ChevronRight, Filter, X } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 
 interface AuditEntry {
  id: string;
@@ -52,7 +53,7 @@ export default function AdminAuditPage() {
  fetchCompanies();
  }, [page, filters]);
 
- const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1] || '';
+ const getToken = () => getAuthToken() || '';
 
  const fetchEntries = async () => {
  setLoading(true);

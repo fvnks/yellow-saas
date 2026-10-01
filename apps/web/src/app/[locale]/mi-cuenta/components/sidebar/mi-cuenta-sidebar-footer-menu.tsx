@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { LogOut, Settings, User, ChevronsUpDown, Building2 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";

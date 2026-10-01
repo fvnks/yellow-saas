@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { Plus, Trash2, Save, ChevronDown, ChevronRight, Package, ShoppingCart, ShoppingBag, Users, Calculator, Wrench, FlaskConical, CircleDollarSign, Settings } from 'lucide-react';
@@ -137,7 +137,7 @@ export default function RolesTab() {
  };
 
  const handleDeleteRole = async (roleId: string) => {
- if (!confirm('Eliminar este rol? Los usuarios asignados perderán sus permisos.')) return;
+ if (!confirm('Eliminar este rol? Los usuarios asignados perderÃ¡n sus permisos.')) return;
  try {
  const api = getApiClient();
  await api.deleteRole(roleId);
@@ -213,8 +213,8 @@ export default function RolesTab() {
  <p className="text-sm font-medium text-foreground">{role.name}</p>
  <p className="text-[10px] text-muted-foreground">
  {role.permissions?.length || 0} permisos
- {role.is_system && ' · Sistema'}
- {modifiedRoles.has(role.id) && ' · Sin guardar'}
+ {role.is_system && ' Â· Sistema'}
+ {modifiedRoles.has(role.id) && ' Â· Sin guardar'}
  </p>
  </div>
  </div>
@@ -254,7 +254,7 @@ export default function RolesTab() {
  </div>
  <div className="text-left">
  <p className="text-sm font-semibold text-foreground">{config.label}</p>
- <p className="text-[10px] text-muted-foreground">{perms.length} permisos · {roles.length} roles</p>
+ <p className="text-[10px] text-muted-foreground">{perms.length} permisos Â· {roles.length} roles</p>
  </div>
  </div>
  <div className="flex items-center gap-2">
@@ -286,7 +286,7 @@ export default function RolesTab() {
 
  {/* Action rows */}
  {perms.map(perm => {
- const actionConf = ACTION_CONFIG[perm.action] || { label: perm.action, color: 'border-border', activeColor: 'bg-muted0 text-white' };
+ const actionConf = ACTION_CONFIG[perm.action] || { label: perm.action, color: 'border-border', activeColor: 'bg-muted text-white' };
  return (
  <div key={perm.id} className="grid gap-2 items-center mb-1.5"
  style={{ gridTemplateColumns: `100px repeat(${roles.length}, 1fr) auto` }}>
@@ -305,7 +305,7 @@ export default function RolesTab() {
  ? `${actionConf.activeColor} border-transparent shadow-sm`
  : 'border-border text-muted-foreground hover:border-border hover:text-muted-foreground'
  }`}>
- {isActive ? 'Activo' : '—'}
+ {isActive ? 'Activo' : 'â€”'}
  </button>
  );
  })}
@@ -360,3 +360,4 @@ export default function RolesTab() {
  </div>
  );
 }
+

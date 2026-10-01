@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { IVA_RATE } from '@/lib/erp-config';
@@ -272,7 +272,7 @@ export default function WaiterPOSPage() {
  onClick={() => setSelectedTable(table)}
  className={`p-3.5 rounded-2xl text-left border transition-all text-xs flex flex-col justify-between h-24 ${
  isSelected
- ? 'border-[#c64d00] bg-monday-violet/10 ring-2 ring-amber-500'
+ ? 'border-[#c64d00] bg-monday-violet/10 ring-2 ring-sunshine-hover'
  : 'border-slate-200/80 bg-white hover:border-slate-300 hover:bg-slate-50/80'
  }`}
  >
@@ -501,7 +501,7 @@ export default function WaiterPOSPage() {
  placeholder="Ej: Mesa 07, Terraza VIP, Bar 01..."
  value={newTableName}
  onChange={e => setNewTableName(e.target.value)}
- className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
+ className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-sunshine-hover focus:outline-hidden"
  />
  </div>
 
@@ -513,7 +513,7 @@ export default function WaiterPOSPage() {
  max="30"
  value={newTableCapacity}
  onChange={e => setNewTableCapacity(Number(e.target.value))}
- className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
+ className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-sunshine-hover focus:outline-hidden"
  />
  </div>
 

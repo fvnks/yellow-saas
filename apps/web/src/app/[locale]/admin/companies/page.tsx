@@ -1,8 +1,9 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Building2, Search, ExternalLink, Users, Calendar, Plus, X, FlaskConical, Package, FolderKanban, UsersRound, CreditCard } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 
 interface Company {
  id: string;
@@ -63,7 +64,7 @@ export default function AdminCompaniesPage() {
 
  const fetchCompanies = async () => {
  try {
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
  const res = await fetch('/api/super-admin/companies', { headers: { Authorization: `Bearer ${token}` } });
  const data = await res.json();
  if (data.success) setCompanies(data.data);
@@ -75,7 +76,7 @@ export default function AdminCompaniesPage() {
  if (!form.name || !form.slug || !form.email || !form.password) return;
  setCreating(true);
  try {
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
  const res = await fetch('/api/super-admin/companies', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, type FC } from "react";
 import { motion, LayoutGroup } from "framer-motion";
@@ -50,7 +50,7 @@ export const ContinuousTabs: FC<ContinuousTabsProps> = ({
  relative flex items-center gap-0.5 sm:gap-1 p-1 sm:p-1.5
  rounded-full
  border border-[#E5E5E9] 
- bg-linear-to-b from-[#ffffff] to-[#e9e9f2]
+ bg-gradient-to-b from-[#ffffff] to-[#e9e9f2]
  
  shadow-[inset_0_-2px_4px_rgba(0,0,0,0.08),
  inset_0_1px_0_rgba(255,255,255,0.9),

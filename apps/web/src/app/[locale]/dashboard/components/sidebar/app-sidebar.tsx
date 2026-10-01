@@ -8,6 +8,7 @@ import SidebarBrandHeader from "./sidebar-header";
 import SidebarNavigation from "./sidebar-navigation";
 import ModuleSidebarBackButton from '@/components/sidebar/module-sidebar-back-button';
 import ModuleSidebarFooter from '@/components/sidebar/module-sidebar-footer';
+import { getAuthToken } from '@/lib/auth-token';
 import { getCompanyIdFromToken } from '@/lib/api-client';
 import { useTranslatedSidebar } from '@/hooks/use-translated-sidebar';
 
@@ -40,7 +41,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
 
  try {
  const companyId = getCompanyIdFromToken();
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
  if (companyId && token) {
  fetch(`/api/companies/${companyId}/modules`, {
  headers: { Authorization: `Bearer ${token}` },

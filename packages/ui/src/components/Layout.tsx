@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { cn } from '../lib/utils';
 import { Sidebar } from './Sidebar';
@@ -17,7 +17,7 @@ export function Layout({ children, title, companyName, user, onNavigate }: Layou
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-cloud">
       <Sidebar
         companyName={companyName}
         userName={user?.name}

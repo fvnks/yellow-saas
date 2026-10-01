@@ -3,6 +3,8 @@ import { successResponse, errorResponse } from '@/api/lib/helpers';
 import { NextRequest, NextResponse } from 'next/server';
 import { verifySuperAdmin } from '@/api/super-admin/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 function convertToCSV(rows: any[]): string {
   if (!rows || rows.length === 0) return '';
   const headers = Object.keys(rows[0]);

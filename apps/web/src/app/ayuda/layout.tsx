@@ -1,10 +1,11 @@
-﻿'use client';
+'use client';
 
 import { ReactNode, useEffect, useRef, useState, useMemo } from 'react';
 import { Toaster, toast } from 'sonner';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LifeBuoy, BookOpen, Ticket, Search, X } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import ThemeToggle from '@/components/ui/theme-toggle';
 import { getCompanyIdFromToken } from '@/lib/api-client';
 import ModuleSidebarHeader from '@/components/sidebar/module-sidebar-header';
@@ -20,7 +21,7 @@ function AyudaSidebar() {
  const initializedRef = useRef(false);
  const theme = MODULE_SIDEBAR_THEMES.ayuda;
 
- const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const getToken = () => getAuthToken();
 
  const fetchSummary = async () => {
  const companyId = getCompanyIdFromToken();
@@ -90,7 +91,7 @@ function AyudaSidebar() {
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar en Ayuda..."
- className="w-full bg-cloud/80 border border-mist text-xs text-slate-200 placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-[#c64d00] focus:ring-1 focus:ring-amber-500 transition-all"
+ className="w-full bg-cloud/80 border border-mist text-xs text-slate-200 placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-[#c64d00] focus:ring-1 focus:ring-sunshine-hover transition-all"
  />
  {searchQuery ? (
  <button onClick={() => setSearchQuery("")} className="absolute right-2 text-slate-400 hover:text-slate-200">

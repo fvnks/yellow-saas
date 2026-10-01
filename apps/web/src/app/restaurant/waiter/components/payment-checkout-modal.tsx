@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { IVA_RATE } from '@/lib/erp-config';
@@ -189,7 +189,7 @@ export function PaymentCheckoutModal({
  onClick={() => setDocType('boleta')}
  className={`p-3 rounded-xl border text-left font-bold transition-all flex items-center gap-3 ${
  docType === 'boleta'
- ? 'border-[#c64d00] bg-peach/30/60 ring-2 ring-amber-500/20 text-slate-900'
+ ? 'border-[#c64d00] bg-peach/30/60 ring-2 ring-sunshine-hover/20 text-slate-900'
  : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
  }`}
  >

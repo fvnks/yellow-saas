@@ -53,7 +53,7 @@ export default function ShortcutsHelp({ shortcuts }: { shortcuts: { keys: string
 
  {open && (
  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
- <div className="bg-card rounded-xl shadow-xl w-full max-w-md mx-4">
+ <div className="bg-card rounded-3xl shadow-xl w-full max-w-md mx-4">
  <div className="px-6 py-4 border-b border-border flex items-center justify-between">
  <h2 className="text-sm font-semibold text-foreground ">Atajos de Teclado</h2>
  <button onClick={() => setOpen(false)} className="p-1 hover:bg-muted rounded">
@@ -83,3 +83,4 @@ export default function ShortcutsHelp({ shortcuts }: { shortcuts: { keys: string
  </>
  );
 }
+

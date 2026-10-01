@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { IVA_RATE } from '@/lib/erp-config';
 import { Search, Eye, Download, FileText, Filter, X, ChevronDown } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import { getApiClient } from '@/lib/api-client';
 import { getCompanyIdFromToken } from '@/lib/api-client';
 import { Badge } from '@yellow-erp/ui';
@@ -36,9 +37,9 @@ interface UnifiedDocument {
 
 const DOC_TYPE_CONFIG = {
  invoice: { label: 'Factura', color: 'bg-blue-50 text-blue-700 border border-blue-200' },
- credit_note: { label: 'Nota Crédito', color: 'bg-emerald-50 text-emerald-700 border border-emerald-200' },
- debit_note: { label: 'Nota Débito', color: 'bg-peach/30 text-[#c64d00] border border-peach' },
- delivery_guide: { label: 'Guía Despacho', color: 'bg-blue-50 text-blue-700 border border-blue-200' },
+ credit_note: { label: 'Nota CrÃ©dito', color: 'bg-emerald-50 text-emerald-700 border border-emerald-200' },
+ debit_note: { label: 'Nota DÃ©bito', color: 'bg-peach/30 text-[#c64d00] border border-peach' },
+ delivery_guide: { label: 'GuÃ­a Despacho', color: 'bg-blue-50 text-blue-700 border border-blue-200' },
 };
 
 const SII_STATUS_CONFIG: Record<string, { label: string; color: 'green' | 'red' | 'gray'; badge: string }> = {
@@ -46,7 +47,7 @@ const SII_STATUS_CONFIG: Record<string, { label: string; color: 'green' | 'red' 
  rejected: { label: 'Rechazado', color: 'red', badge: 'bg-rose-500' },
  sent: { label: 'Enviado', color: 'gray', badge: 'bg-blue-500' },
  pending: { label: 'Pendiente', color: 'gray', badge: 'bg-muted' },
- cancelled: { label: 'Anulado', color: 'gray', badge: 'bg-muted0' },
+ cancelled: { label: 'Anulado', color: 'gray', badge: 'bg-muted' },
 };
 
 const STATUS_CONFIG: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }> = {
@@ -58,7 +59,7 @@ const STATUS_CONFIG: Record<string, { label: string; variant: 'success' | 'warni
  cancelled: { label: 'Cancelada', variant: 'danger' },
  issued: { label: 'Emitida', variant: 'info' },
  applied: { label: 'Aplicada', variant: 'success' },
- in_transit: { label: 'En Tránsito', variant: 'info' },
+ in_transit: { label: 'En TrÃ¡nsito', variant: 'info' },
  delivered: { label: 'Entregado', variant: 'success' },
 };
 
@@ -132,7 +133,7 @@ function generateCreditNoteXml(doc: UnifiedDocument) {
  <NroLinRef>1</NroLinRef>
  <TpoDocRef>${doc.documentType === 'boleta' ? '39' : '33'}</TpoDocRef>
  <FolioRef>${doc.referenceInvoice || doc.number}</FolioRef>
- <RazonRef>${doc.reason || 'Devolución'}</RazonRef>
+ <RazonRef>${doc.reason || 'DevoluciÃ³n'}</RazonRef>
  </Referencia>
  <Totales>
  <MntTotal>${doc.amount}</MntTotal>
@@ -228,7 +229,7 @@ export default function SalesDocumentsPage() {
  useEffect(() => {
  const companyId = getCompanyIdFromToken();
  if (!companyId) return;
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
  if (!token) return;
  fetch(`/api/companies/${companyId}/settings/documents`, {
  headers: { Authorization: `Bearer ${token}` },
@@ -299,7 +300,7 @@ export default function SalesDocumentsPage() {
  type: 'invoice',
  typeLabel: DOC_TYPE_CONFIG.invoice.label,
  number: inv.invoice_number,
- customerName: inv.customer?.name || '—',
+ customerName: inv.customer?.name || 'â€”',
  customerRut: inv.customer?.tax_id,
  date: inv.invoice_date || inv.created_at,
  dueDate: inv.due_date,
@@ -320,7 +321,7 @@ export default function SalesDocumentsPage() {
  type: 'credit_note',
  typeLabel: DOC_TYPE_CONFIG.credit_note.label,
  number: cn.number,
- customerName: cn.customer_name || '—',
+ customerName: cn.customer_name || 'â€”',
  customerRut: cn.customer_rut,
  date: cn.credit_date || cn.created_at,
  amount: Number(cn.total_amount || 0),
@@ -340,7 +341,7 @@ export default function SalesDocumentsPage() {
  type: 'debit_note',
  typeLabel: DOC_TYPE_CONFIG.debit_note.label,
  number: dn.number,
- customerName: dn.customer_name || '—',
+ customerName: dn.customer_name || 'â€”',
  customerRut: dn.customer_rut,
  date: dn.debit_date || dn.created_at,
  amount: Number(dn.total_amount || 0),
@@ -361,7 +362,7 @@ export default function SalesDocumentsPage() {
  typeLabel: DOC_TYPE_CONFIG.delivery_guide.label,
  number: dg.guide_number,
  guideNumber: dg.guide_number,
- customerName: dg.customer?.name || dg.sales_order?.customer?.name || '—',
+ customerName: dg.customer?.name || dg.sales_order?.customer?.name || 'â€”',
  date: dg.shipping_date || dg.created_at,
  amount: 0,
  status: dg.status,
@@ -407,7 +408,7 @@ export default function SalesDocumentsPage() {
  <div className="flex items-center justify-between">
  <div>
  <h1 className="text-xl font-bold text-foreground">Documentos de Venta</h1>
- <p className="text-sm text-muted-foreground mt-1">Facturas, Notas de Crédito/Débito y Guías de Despacho</p>
+ <p className="text-sm text-muted-foreground mt-1">Facturas, Notas de CrÃ©dito/DÃ©bito y GuÃ­as de Despacho</p>
  </div>
  </div>
 
@@ -417,7 +418,7 @@ export default function SalesDocumentsPage() {
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <input
  type="text"
- placeholder="Buscar por número, cliente, RUT, factura ref, motivo..."
+ placeholder="Buscar por nÃºmero, cliente, RUT, factura ref, motivo..."
  value={search}
  onChange={e => { setSearch(e.target.value); setPage(1); }}
  className="w-full bg-muted border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-transparent"
@@ -433,9 +434,9 @@ export default function SalesDocumentsPage() {
  >
  <option value="all">Todos los tipos</option>
  <option value="invoice">Facturas</option>
- <option value="credit_note">Notas de Crédito</option>
- <option value="debit_note">Notas de Débito</option>
- <option value="delivery_guide">Guías de Despacho</option>
+ <option value="credit_note">Notas de CrÃ©dito</option>
+ <option value="debit_note">Notas de DÃ©bito</option>
+ <option value="delivery_guide">GuÃ­as de Despacho</option>
  </select>
  </div>
 
@@ -489,7 +490,7 @@ export default function SalesDocumentsPage() {
  <thead>
  <tr className="border-b border-border">
  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Tipo</th>
- <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">N° Documento</th>
+ <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">NÂ° Documento</th>
  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Cliente</th>
  <th className="text-left px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Fecha</th>
  <th className="text-right px-4 py-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Monto</th>
@@ -595,3 +596,4 @@ export default function SalesDocumentsPage() {
  </div>
  );
 }
+

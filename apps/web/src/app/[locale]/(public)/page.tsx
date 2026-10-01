@@ -5,20 +5,20 @@ import Link from 'next/link';
 import { useReducedMotion } from 'motion/react';
 import { motion } from 'motion/react';
 import {
- Package, ShoppingCart, Users, BarChart3, Shield, Settings,
+ Package, ShoppingCart, Users, BarChart3, Shield,
  Truck, Calculator, Briefcase, ChevronRight, Check, Zap,
- Building2, FileText, Globe, Lock, Eye, ArrowRight,
- CreditCard, Wallet, TrendingUp, Bell, Send, Mail, MapPin, Phone, CheckCircle2,
+ Building2, Globe, Lock, ArrowRight,
+ Wallet, Bell, Send, Mail, MapPin, Phone, CheckCircle2,
  Plus
 } from 'lucide-react';
 import { Marquee } from '@/components/landing/Marquee';
 import { PricingToggle } from '@/components/landing/PricingToggle';
 import { StatsCounter } from '@/components/landing/StatsCounter';
 import { InteractiveDTEPipeline } from '@/components/landing/InteractiveDTEPipeline';
-import { ModuleFlow } from '@/components/landing/ModuleFlow';
+import { FaqAccordion } from '@/components/landing/FaqAccordion';
+
 import { ComplianceCard } from '@/components/landing/ComplianceCard';
 import { Navbar } from './components/navbar';
-import { Footer } from './components/footer';
 
 const modules = [
  { icon: Package, title: 'Inventario', description: 'Control completo de stock, trazabilidad por lote y serie, alertas de reorden automáticas.', iconBg: 'bg-sky-accent/30', iconColor: 'text-[#006680]' },
@@ -81,7 +81,7 @@ const pricingPlans = [
  'Todos los módulos de Professional',
  'Multi-empresa sin restricciones',
  'Usuarios ilimitados',
- 'SSO Enterprise + Auditoría avanz',
+ 'SSO Enterprise + Auditoría avanzada',
  'SLA garantizado 99.9%',
  'Account Manager dedicado',
  ],
@@ -92,7 +92,34 @@ const pricingPlans = [
 
 const logos = [
  'SII Chile', 'Supabase', 'Next.js 14', 'TypeScript', 'Tailwind CSS', 'PostgreSQL',
- 'Turborepo', 'Vercel', 'Docker', 'Redis', 'Lucide React', 'Framer Motion',
+ 'Turborepo', 'Vercel', 'Docker', 'Redis', 'Lucide React', 'Motion',
+];
+
+const faqItems = [
+ {
+ question: '¿Qué es un DTE y por qué me importa?',
+ answer: 'Los Documentos Tributarios Electrónicos (facturas, boletas, notas de crédito y guías de despacho) son los documentos que el SII exige para operar en Chile. Yellow ERP los emite, valida y envía al SII automáticamente al momento de facturar, sin pasos manuales ni programas externos.',
+ },
+ {
+ question: '¿Puedo probarlo sin tarjeta de crédito?',
+ answer: 'Sí. Tienes 14 días gratis con todos los módulos del plan Professional y no pedimos tarjeta para comenzar. Al terminar, decides si contratas o simplemente dejas de usarlo.',
+ },
+ {
+ question: '¿Puedo importar mis datos desde otro sistema?',
+ answer: 'Sí. Puedes importar tu inventario, clientes, proveedores y listas de precios desde planillas CSV, y nuestro equipo te acompaña en la carga inicial de saldos y documentos abiertos.',
+ },
+ {
+ question: '¿Reemplaza a mi contador?',
+ answer: 'No, lo potencia. Yellow ERP genera los asientos automáticos, libros contables electrónicos y estados financieros; tu contador revisa, valida y firma con la información siempre ordenada y actualizada.',
+ },
+ {
+ question: '¿Cómo se facturan los precios?',
+ answer: 'Los planes se facturan en pesos chilenos más IVA, mensual o anual (con 20% de descuento si eliges anual). Sin costos de implementación ni permanencia mínima: puedes cambiar de plan o cancelar cuando quieras.',
+ },
+ {
+ question: '¿Qué pasa si el SII tiene una actualización tributaria?',
+ answer: 'Actualizamos el motor de facturación y la normativa vigente por ti, sin costo adicional y sin que tengas que instalar nada. Los cambios de formularios y leyes chilenas quedan aplicados automáticamente.',
+ },
 ];
 
 const clpFormatter = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 });
@@ -103,15 +130,31 @@ function formatPrice(price: number) {
 
 export default function HomePage() {
  const reduce = useReducedMotion();
+ const [yearly, setYearly] = useState(false);
  const [contactSent, setContactSent] = useState(false);
- const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
+ const [contactForm, setContactForm] = useState({ name: '', email: '', message: '', website: '' });
  const [contactSubmitting, setContactSubmitting] = useState(false);
+ const [contactError, setContactError] = useState<string | null>(null);
  const handleContactSubmit = async (e: React.FormEvent) => {
  e.preventDefault();
  setContactSubmitting(true);
- await new Promise(r => setTimeout(r, 900));
- setContactSubmitting(false);
+ setContactError(null);
+ try {
+ const res = await fetch('/api/contact', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ ...contactForm, source: 'landing' }),
+ });
+ const data = await res.json().catch(() => null);
+ if (!res.ok || !data?.success) {
+ throw new Error(data?.error?.message || 'No pudimos enviar tu mensaje. Escríbenos a hola@yellow-erp.cl');
+ }
  setContactSent(true);
+ } catch (err) {
+ setContactError(err instanceof Error ? err.message : 'No pudimos enviar tu mensaje. Escríbenos a hola@yellow-erp.cl');
+ } finally {
+ setContactSubmitting(false);
+ }
  };
  return (
  <div className="landing-page min-h-screen bg-cloud text-ink">
@@ -123,7 +166,7 @@ export default function HomePage() {
  <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
  {/* Left: Copy */}
- <div className="text-left order-2 lg:order-1">
+ <div className="text-left">
  <motion.div
  initial={reduce ? false : { opacity: 0, y: 14 }}
  animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
@@ -185,7 +228,7 @@ export default function HomePage() {
  >
  <div className="flex items-center gap-2">
  <Shield className="w-4 h-4 text-monday-violet" />
- <span className="text-xs font-semibold text-ink">DTEs procesados hoy</span>
+ <span className="text-xs font-semibold text-ink">DTEs emitidos al SII</span>
  <span className="text-base font-bold text-ink font-mono">2.4M+</span>
  </div>
  <div className="flex items-center gap-2">
@@ -203,7 +246,6 @@ export default function HomePage() {
 
  {/* Right: Interactive DTE Pipeline */}
  <motion.div
- className="order-1 lg:order-2"
  initial={reduce ? false : { opacity: 0, x: 32, scale: 0.94 }}
  animate={reduce ? { opacity: 1 } : { opacity: 1, x: 0, scale: 1 }}
  transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0.1 }}
@@ -220,12 +262,15 @@ export default function HomePage() {
  <StatsCounter value={250} suffix="+" label="Empresas en Chile" />
  <StatsCounter value={12} suffix="k+" label="Usuarios diarios" />
  <StatsCounter value={99.9} decimals={1} suffix="%" label="Disponibilidad SLA" />
- <StatsCounter value={2} suffix="M+" label="DTEs SII procesados" />
+ <StatsCounter value={2.4} decimals={1} suffix="M+" label="DTEs SII procesados" />
  </div>
  </section>
 
  {/* ─── 4. LOGOS / MARQUEE ─── */}
  <section className="py-10 bg-cloud border-b border-mist">
+ <p className="text-center text-[11px] font-semibold uppercase tracking-wider text-iron mb-5 px-4">
+ Construido sobre tecnología probada
+ </p>
  <Marquee speed={25} className="py-1">
  {logos.map((logo) => (
  <div
@@ -249,11 +294,52 @@ export default function HomePage() {
  Cada módulo alimenta al siguiente. Ventas genera asientos contables, Contabilidad calcula nómina, Nómina actualiza inventario, Proyectos cierra el ciclo.
  </p>
  </div>
- <ModuleFlow reducedMotion={reduce ?? false} />
+ <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+ {modules.map((mod) => (
+ <div
+ key={mod.title}
+ className="bg-snow border border-mist rounded-3xl p-5 shadow-card hover:border-fog transition-colors"
+ >
+ <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 ${mod.iconBg}`}>
+ <mod.icon className={`w-5 h-5 ${mod.iconColor}`} />
+ </div>
+ <h3 className="text-sm font-semibold text-ink mb-1.5">{mod.title}</h3>
+ <p className="text-xs text-slate-text leading-relaxed">{mod.description}</p>
+ </div>
+ ))}
+ </div>
  </div>
  </section>
 
- {/* ─── 6. CHILEAN COMPLIANCE DEEP-DIVE ─── */}
+ {/* ─── 6. BENEFITS / FEATURES ─── */}
+ <section id="features" className="py-20 px-4 sm:px-6 bg-cloud">
+ <div className="max-w-[1200px] mx-auto">
+ <div className="text-center mb-10">
+ <h2 className="text-3xl sm:text-4xl font-light text-ink mb-3 tracking-[-0.02em]">
+ Por qué las PyMEs eligen Yellow ERP
+ </h2>
+ <p className="text-sm sm:text-base text-slate-text max-w-2xl mx-auto">
+ Seguridad, cumplimiento y automatización desde el primer día, sin equipo técnico ni costos de implementación.
+ </p>
+ </div>
+ <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+ {features.map((feature) => (
+ <div
+ key={feature.title}
+ className="bg-snow border border-mist rounded-3xl p-6 shadow-card hover:border-fog transition-colors"
+ >
+ <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 ${feature.iconBg}`}>
+ <feature.icon className={`w-5 h-5 ${feature.iconColor}`} />
+ </div>
+ <h3 className="text-sm font-semibold text-ink mb-1.5">{feature.title}</h3>
+ <p className="text-xs text-slate-text leading-relaxed">{feature.description}</p>
+ </div>
+ ))}
+ </div>
+ </div>
+ </section>
+
+ {/* ─── 7. CHILEAN COMPLIANCE DEEP-DIVE ─── */}
  <section id="compliance" className="py-20 px-4 sm:px-6 bg-snow border-y border-mist">
  <div className="max-w-[1200px] mx-auto">
  <div className="text-center mb-10">
@@ -261,14 +347,14 @@ export default function HomePage() {
  Cumplimiento chileno nativo, no adaptado
  </h2>
  <p className="text-sm text-slate-text max-w-xl mx-auto">
- Cada workflow está construido sobre la normativa vigente 2024-2025. Haz clic para ver la referencia legal exacta.
+ Cada workflow está construido sobre la normativa tributaria y laboral vigente en Chile. Haz clic para ver la referencia legal exacta.
  </p>
  </div>
  <ComplianceCard reducedMotion={reduce ?? false} />
  </div>
  </section>
 
- {/* ─── 7. PRICING ─── */}
+ {/* ─── 8. PRICING ─── */}
  <section id="pricing" className="py-20 px-4 sm:px-6 bg-cloud border-t border-mist">
  <div className="max-w-[1200px] mx-auto">
  <div className="text-center mb-12">
@@ -278,7 +364,7 @@ export default function HomePage() {
  <p className="text-sm text-slate-text max-w-xl mx-auto mb-6">
  Comienza hoy con 14 días de prueba totalmente gratis. Cancela en cualquier momento.
  </p>
- <PricingToggle onToggle={() => {}} />
+ <PricingToggle onToggle={setYearly} />
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -300,10 +386,14 @@ export default function HomePage() {
  <h3 className="text-lg font-semibold text-ink">{plan.name}</h3>
  <p className="text-xs text-slate-text mt-1 mb-5">{plan.description}</p>
  <div className="mb-6">
- <span className="text-3xl font-bold text-ink">{formatPrice(plan.monthlyPrice)}</span>
- <span className="text-xs text-slate-text"> /mes + IVA</span>
+ <span className="text-3xl font-bold text-ink">
+ {formatPrice(yearly ? plan.yearlyPrice : plan.monthlyPrice)}
+ </span>
+ <span className="text-xs text-slate-text"> /mes {yearly ? 'facturado anual' : '+ IVA'}</span>
  <span className="block text-[10px] text-monday-violet font-semibold mt-1">
- Anual: {formatPrice(plan.yearlyPrice)} /mes (-20%)
+ {yearly
+ ? `Ahorras ${formatPrice(plan.monthlyPrice - plan.yearlyPrice)} /mes (-20%)`
+ : `Anual: ${formatPrice(plan.yearlyPrice)} /mes (-20%)`}
  </span>
  </div>
  <ul className="space-y-2.5 mb-8">
@@ -334,7 +424,22 @@ export default function HomePage() {
  </div>
  </section>
 
- {/* ─── 8. CTA ─── */}
+ {/* ─── 9. FAQ ─── */}
+ <section id="faq" className="py-20 px-4 sm:px-6 bg-snow border-y border-mist">
+ <div className="max-w-3xl mx-auto">
+ <div className="text-center mb-10">
+ <h2 className="text-3xl sm:text-4xl font-light text-ink mb-3 tracking-[-0.02em]">
+ Preguntas frecuentes
+ </h2>
+ <p className="text-sm text-slate-text max-w-xl mx-auto">
+ Todo lo que necesitas saber antes de empezar tu prueba de 14 días.
+ </p>
+ </div>
+ <FaqAccordion items={faqItems} />
+ </div>
+ </section>
+
+ {/* ─── 10. CTA ─── */}
  <section className="py-16 px-4 sm:px-6 bg-cloud">
  <div className="max-w-4xl mx-auto text-center">
  <div className="bg-snow border border-mist rounded-3xl p-10 sm:p-14 shadow-card">
@@ -363,7 +468,7 @@ export default function HomePage() {
  </div>
  </section>
 
- {/* ─── 9. CONTACTO ─── */}
+ {/* ─── 11. CONTACTO ─── */}
  <section id="contacto" className="py-20 px-4 sm:px-6 bg-cloud border-t border-mist">
  <div className="max-w-[1200px] mx-auto">
  <div className="text-center mb-12">
@@ -434,7 +539,7 @@ export default function HomePage() {
  <h3 className="text-xl font-bold text-ink mb-2">¡Mensaje enviado!</h3>
  <p className="text-sm text-slate-text mb-6">Te responderemos dentro de 24 horas hábiles.</p>
  <button
- onClick={() => { setContactSent(false); setContactForm({ name: '', email: '', message: '' }); }}
+ onClick={() => { setContactSent(false); setContactForm({ name: '', email: '', message: '', website: '' }); setContactError(null); }}
  className="text-sm font-semibold text-monday-violet hover:text-monday-violet-hover transition-colors underline underline-offset-2"
  >
  Enviar otro mensaje
@@ -477,6 +582,21 @@ export default function HomePage() {
  placeholder="Cuéntanos en qué podemos ayudarte..."
  />
  </div>
+ {/* Honeypot antispam: oculto para humanos, visible para bots */}
+ <input
+ type="text"
+ name="website"
+ tabIndex={-1}
+ autoComplete="off"
+ aria-hidden="true"
+ className="hidden"
+ onChange={e => setContactForm({ ...contactForm, website: e.target.value })}
+ />
+ {contactError && (
+ <p role="alert" className="text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-md px-4 py-3">
+ {contactError}
+ </p>
+ )}
  <button
  type="submit"
  disabled={contactSubmitting}
@@ -503,7 +623,7 @@ export default function HomePage() {
  </div>
  </section>
 
- {/* ─── 10. FOOTER WITH CHILEAN RESOURCES ─── */}
+ {/* ─── 12. FOOTER WITH CHILEAN RESOURCES ─── */}
  <footer className="bg-snow border-t border-mist">
  <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-12 lg:py-16">
  <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
@@ -521,22 +641,21 @@ export default function HomePage() {
  <div>
  <h4 className="text-xs font-semibold text-iron uppercase tracking-wider mb-3">Módulos</h4>
  <ul className="space-y-2 text-sm text-slate-text">
- <li><Link href="/dashboard/inventory" className="hover:text-monday-violet transition-colors">Inventario</Link></li>
- <li><Link href="/dashboard/sales" className="hover:text-monday-violet transition-colors">Ventas & DTE</Link></li>
- <li><Link href="/dashboard/purchases" className="hover:text-monday-violet transition-colors">Compras</Link></li>
- <li><Link href="/dashboard/accounting" className="hover:text-monday-violet transition-colors">Contabilidad</Link></li>
- <li><Link href="/dashboard/payroll" className="hover:text-monday-violet transition-colors">Nómina</Link></li>
- <li><Link href="/dashboard/projects" className="hover:text-monday-violet transition-colors">Proyectos</Link></li>
+ <li><Link href="/#modules" className="hover:text-monday-violet transition-colors">Inventario</Link></li>
+ <li><Link href="/#modules" className="hover:text-monday-violet transition-colors">Ventas & DTE</Link></li>
+ <li><Link href="/#modules" className="hover:text-monday-violet transition-colors">Compras</Link></li>
+ <li><Link href="/#modules" className="hover:text-monday-violet transition-colors">Contabilidad</Link></li>
+ <li><Link href="/#modules" className="hover:text-monday-violet transition-colors">Nómina</Link></li>
+ <li><Link href="/#modules" className="hover:text-monday-violet transition-colors">Proyectos</Link></li>
  </ul>
  </div>
  <div>
  <h4 className="text-xs font-semibold text-iron uppercase tracking-wider mb-3">Empresa</h4>
  <ul className="space-y-2 text-sm text-slate-text">
- <li><Link href="/pricing" className="hover:text-monday-violet transition-colors">Precios</Link></li>
- <li><Link href="/about" className="hover:text-monday-violet transition-colors">Nosotros</Link></li>
- <li><Link href="/blog" className="hover:text-monday-violet transition-colors">Blog</Link></li>
- <li><Link href="/careers" className="hover:text-monday-violet transition-colors">Empleos</Link></li>
- <li><Link href="/contact" className="hover:text-monday-violet transition-colors">Contacto</Link></li>
+ <li><Link href="/#pricing" className="hover:text-monday-violet transition-colors">Precios</Link></li>
+ <li><Link href="/contact" className="hover:text-monday-violet transition-colors">Demo personalizada</Link></li>
+ <li><Link href="/login" className="hover:text-monday-violet transition-colors">Iniciar Sesión</Link></li>
+ <li><Link href="/register" className="hover:text-monday-violet transition-colors">Crear Cuenta</Link></li>
  </ul>
  </div>
  <div>

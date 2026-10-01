@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { IVA_RATE } from '@/lib/erp-config';
 import { Card, CardHeader, CardTitle, CardContent, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button } from '@yellow-erp/ui';
 import { ArrowLeft, Printer, Calendar, Truck, MapPin, CheckCircle, Download, Send, XCircle, Pencil } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import Link from 'next/link';
 import { getApiClient } from '@/lib/api-client';
 import { getCompanyIdFromToken } from '@/lib/api-client';
@@ -75,7 +76,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
  try {
  const companyId = getCompanyIdFromToken();
  if (!companyId) return;
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
  if (!token) return;
  const res = await fetch(`/api/companies/${companyId}/settings/documents`, {
  headers: { Authorization: `Bearer ${token}` },

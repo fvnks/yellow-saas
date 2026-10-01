@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, Button, Input, Select, Badge } from '@yellow-erp/ui';
 import { Plus, Search, Eye, CheckCircle, X, RotateCcw, ArrowLeft, Download } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import { getApiClient } from '@/lib/api-client';
 import { getCompanyIdFromToken } from '@/lib/api-client';
 import { generateReturnNotePDF } from '@/lib/pdf-design';
@@ -72,7 +73,7 @@ export default function SalesReturnsPage() {
  useEffect(() => {
  const companyId = getCompanyIdFromToken();
  if (companyId) {
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
  if (token) {
  fetch(`/api/companies/${companyId}/settings/documents`, {
  headers: { Authorization: `Bearer ${token}` },

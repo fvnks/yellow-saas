@@ -6,6 +6,7 @@ import {
  LifeBuoy, X, Send, Plus, BookOpen, MessageSquare,
  Inbox, Clock, CheckCircle2, Loader2, ChevronLeft, Headphones, Paperclip, FileText, Image as ImageIcon
 } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import { getCompanyIdFromToken } from '@/lib/api-client';
 import { toast } from 'sonner';
 
@@ -47,17 +48,17 @@ interface TicketDetail {
 }
 
 const statusConfig: Record<string, { label: string; classes: string; icon: any }> = {
- open: { label: 'Abierto', classes: 'bg-blue-50 text-blue-700 border-blue-200', icon: Inbox },
+ open: { label: 'Abierto', classes: 'bg-monday-violet/5 text-monday-violet/80 border-monday-violet/20', icon: Inbox },
  in_progress: { label: 'En progreso', classes: 'bg-peach/30 text-[#c64d00] border-peach', icon: Loader2 },
- resolved: { label: 'Resuelto', classes: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: CheckCircle2 },
+ resolved: { label: 'Resuelto', classes: 'bg-mint/30 text-forest border-mint/50', icon: CheckCircle2 },
  closed: { label: 'Cerrado', classes: 'bg-muted text-foreground border-border', icon: CheckCircle2 },
 };
 
 const priorityConfig: Record<string, { label: string; classes: string }> = {
  low: { label: 'Baja', classes: 'bg-muted text-foreground border-border' },
- medium: { label: 'Media', classes: 'bg-blue-50 text-blue-700 border-blue-200' },
+ medium: { label: 'Media', classes: 'bg-monday-violet/5 text-monday-violet/80 border-monday-violet/20' },
  high: { label: 'Alta', classes: 'bg-peach/30 text-[#c64d00] border-peach' },
- urgent: { label: 'Urgente', classes: 'bg-rose-50 text-rose-700 border-rose-200' },
+ urgent: { label: 'Urgente', classes: 'bg-peach/30 text-[#c64d00] border-peach/50' },
 };
 
 export function SupportWidget() {
@@ -78,7 +79,7 @@ export function SupportWidget() {
  const [saving, setSaving] = useState(false);
  const chatBottomRef = useRef<HTMLDivElement>(null);
 
- const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const getToken = () => getAuthToken();
 
  const [companyId, setCompanyId] = useState<string | null>(null);
  useEffect(() => {
@@ -253,12 +254,12 @@ export function SupportWidget() {
  {/* Floating button */}
  <button
  onClick={() => setOpen(!open)}
- className="fixed bottom-6 right-6 z-[60] w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-xl flex items-center justify-center transition-all duration-300 active:scale-95 hover:scale-110 hover:shadow-2xl hover:shadow-blue-600/40 hover:rotate-6"
+ className="fixed bottom-6 right-6 z-[60] w-14 h-14 rounded-full bg-monday-violet hover:bg-monday-violet-hover text-white shadow-xl flex items-center justify-center transition-all duration-300 active:scale-95 hover:scale-110 hover:shadow-2xl hover:shadow-blue-600/40 hover:rotate-6"
  aria-label="Ayuda y soporte"
  >
  {open ? <X className="w-6 h-6" /> : <LifeBuoy className="w-6 h-6" />}
  {!open && unread > 0 && (
- <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1.5 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white">
+ <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1.5 rounded-full bg-peach/30 text-[#c64d00] text-white text-[10px] font-bold flex items-center justify-center border-2 border-white">
  {unread}
  </span>
  )}
@@ -268,15 +269,15 @@ export function SupportWidget() {
  {open && (
  <div className="fixed bottom-24 right-6 z-[60] w-[380px] max-w-[calc(100vw-2rem)] bg-card border border-border rounded-xl shadow-2xl flex flex-col overflow-hidden">
  {/* Header */}
- <div className="px-5 py-4 bg-blue-600 text-white flex items-center justify-between">
+ <div className="px-5 py-4 bg-monday-violet text-white flex items-center justify-between">
  <div className="flex items-center gap-2.5">
  <Headphones className="w-5 h-5" />
  <div>
  <p className="text-sm font-bold">Ayuda y Soporte</p>
- <p className="text-[10px] text-blue-100">Respuesta del equipo Yellow</p>
+ <p className="text-[10px] text-monday-violet/90">Respuesta del equipo Yellow</p>
  </div>
  </div>
- <button onClick={closeWidget} className="text-blue-100 hover:text-white transition-colors">
+ <button onClick={closeWidget} className="text-monday-violet/90 hover:text-white transition-colors">
  <X className="w-5 h-5" />
  </button>
  </div>
@@ -287,10 +288,10 @@ export function SupportWidget() {
  <div className="p-4 space-y-3">
  <button
  onClick={() => { setView('create'); }}
- className="w-full flex items-center gap-3 p-4 rounded-xl border border-border hover:bg-muted transition-colors text-left"
+ className="w-full flex items-center gap-3 p-4 rounded-xl border border-border hoverhover:bg-muted transition-colors text-left"
  >
- <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
- <Plus className="w-5 h-5 text-blue-600" />
+ <div className="w-10 h-10 bg-monday-violet/5 rounded-xl flex items-center justify-center flex-shrink-0">
+ <Plus className="w-5 h-5 text-monday-violet" />
  </div>
  <div>
  <p className="text-sm font-semibold text-foreground ">Nuevo ticket</p>
@@ -299,9 +300,9 @@ export function SupportWidget() {
  </button>
  <button
  onClick={() => { setView('list'); fetchTickets(); }}
- className="w-full flex items-center gap-3 p-4 rounded-xl border border-border hover:bg-muted transition-colors text-left"
+ className="w-full flex items-center gap-3 p-4 rounded-xl border border-border hoverhover:bg-muted transition-colors text-left"
  >
- <div className="w-10 h-10 bg-blue-50 /10 rounded-lg flex items-center justify-center flex-shrink-0">
+ <div className="w-10 h-10 bg-monday-violet/5 rounded-xl flex items-center justify-center flex-shrink-0">
  <MessageSquare className="w-5 h-5 text-primary" />
  </div>
  <div className="flex-1">
@@ -309,17 +310,17 @@ export function SupportWidget() {
  <p className="text-xs text-muted-foreground ">Conversa con nuestro equipo</p>
  </div>
  {unread > 0 && (
- <span className="min-w-5 h-5 px-1.5 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center">
+ <span className="min-w-5 h-5 px-1.5 rounded-full bg-peach/30 text-[#c64d00] text-white text-[10px] font-bold flex items-center justify-center">
  {unread}
  </span>
  )}
  </button>
  <button
  onClick={() => router.push('/ayuda')}
- className="w-full flex items-center gap-3 p-4 rounded-xl border border-border hover:bg-muted transition-colors text-left"
+ className="w-full flex items-center gap-3 p-4 rounded-xl border border-border hoverhover:bg-muted transition-colors text-left"
  >
- <div className="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center flex-shrink-0">
- <BookOpen className="w-5 h-5 text-emerald-600" />
+ <div className="w-10 h-10 bg-mint/30 rounded-xl flex items-center justify-center flex-shrink-0">
+ <BookOpen className="w-5 h-5 text-forest" />
  </div>
  <div>
  <p className="text-sm font-semibold text-foreground ">Centro de Ayuda</p>
@@ -346,7 +347,7 @@ export function SupportWidget() {
  value={form.subject}
  onChange={e => setForm({ ...form, subject: e.target.value })}
  placeholder="Describe el problema en pocas palabras"
- className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+ className="w-full bg-muted border border-border rounded-xl px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-monday-violet focus:border-transparent"
  />
  </div>
  <div className="space-y-1">
@@ -354,7 +355,7 @@ export function SupportWidget() {
  <select
  value={form.priority}
  onChange={e => setForm({ ...form, priority: e.target.value })}
- className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+ className="w-full bg-muted border border-border rounded-xl px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-monday-violet focus:border-transparent"
  >
  <option value="low">Baja</option>
  <option value="medium">Media</option>
@@ -369,13 +370,13 @@ export function SupportWidget() {
  onChange={e => setForm({ ...form, message: e.target.value })}
  placeholder="Explica qué sucede..."
  rows={3}
- className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+ className="w-full bg-muted border border-border rounded-xl px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-monday-violet focus:border-transparent resize-none"
  />
  </div>
  <button
  type="submit"
  disabled={saving}
- className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+ className="w-full bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors disabled:opacity-50"
  >
  {saving ? 'Creando...' : 'Crear ticket'}
  </button>
@@ -394,7 +395,7 @@ export function SupportWidget() {
  </button>
  {loadingTickets ? (
  <div className="space-y-2">
- {[1, 2, 3].map(i => <div key={i} className="h-16 bg-muted rounded-lg animate-pulse" />)}
+ {[1, 2, 3].map(i => <div key={i} className="h-16 bg-muted rounded-xl animate-pulse" />)}
  </div>
  ) : tickets.length === 0 ? (
  <div className="text-center py-8">
@@ -402,7 +403,7 @@ export function SupportWidget() {
  <p className="text-sm text-muted-foreground ">No tienes tickets de soporte</p>
  <button
  onClick={() => setView('create')}
- className="mt-3 inline-flex items-center gap-1.5 text-sm text-blue-600 hover:underline font-medium"
+ className="mt-3 inline-flex items-center gap-1.5 text-sm text-monday-violet hover:underline font-medium"
  >
  <Plus className="w-4 h-4" />
  Crear uno
@@ -419,7 +420,7 @@ export function SupportWidget() {
  <button
  key={t.id}
  onClick={() => openTicket(t.id)}
- className="w-full flex items-center gap-3 p-3 rounded-xl border border-border hover:bg-muted transition-colors text-left"
+ className="w-full flex items-center gap-3 p-3 rounded-xl border border-border hoverhover:bg-muted transition-colors text-left"
  >
  <div className="flex-1 min-w-0">
  <div className="flex items-center gap-2">
@@ -450,7 +451,7 @@ export function SupportWidget() {
  })}
  <button
  onClick={() => router.push('/ayuda/tickets')}
- className="w-full text-center text-xs font-medium text-blue-600 hover:underline py-2"
+ className="w-full text-center text-xs font-medium text-monday-violet hover:underline py-2"
  >
  Ver todos los tickets
  </button>
@@ -464,7 +465,7 @@ export function SupportWidget() {
  <div className="px-4 py-3 border-b border-border flex items-center gap-2">
  <button
  onClick={() => { setView('list'); setTicket(null); fetchTickets(); }}
- className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+ className="p-1.5 hoverhover:bg-muted rounded-xl transition-colors"
  >
  <ChevronLeft className="w-4 h-4 text-muted-foreground" />
  </button>
@@ -479,7 +480,7 @@ export function SupportWidget() {
  <div ref={chatBottomRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-muted ">
  {loadingChat ? (
  <div className="space-y-2">
- {[1, 2].map(i => <div key={i} className="h-12 bg-muted rounded-lg animate-pulse" />)}
+ {[1, 2].map(i => <div key={i} className="h-12 bg-muted rounded-xl animate-pulse" />)}
  </div>
  ) : ticket && ticket.messages.length === 0 ? (
  <p className="text-center text-sm text-muted-foreground py-8">Aún no hay mensajes</p>
@@ -491,10 +492,10 @@ export function SupportWidget() {
  <div className={`max-w-[80%] rounded-xl px-3.5 py-2.5 border ${
  isSupport
  ? 'bg-card border-border '
- : 'bg-blue-600 border-blue-600'
+ : 'bg-monday-violet border-blue-600'
  }`}>
  <div className="flex items-center gap-2 mb-0.5">
- <span className={`text-[10px] font-bold ${isSupport ? 'text-blue-600' : 'text-blue-100'}`}>
+ <span className={`text-[10px] font-bold ${isSupport ? 'text-monday-violet' : 'text-monday-violet/90'}`}>
  {isSupport ? (msg.sender_name || 'Soporte') : 'Tú'}
  </span>
  <span className={`text-[9px] ${isSupport ? 'text-muted-foreground' : 'text-blue-200'}`}>
@@ -512,10 +513,10 @@ export function SupportWidget() {
  href={`/api/companies/${companyId}/support/tickets/${ticket!.id}/attachments/${att.id}`}
  target="_blank"
  rel="noopener noreferrer"
- className={`flex items-center gap-2 px-2 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
+ className={`flex items-center gap-2 px-2 py-1.5 rounded-xl border text-xs font-medium transition-colors ${
  isSupport
- ? 'bg-muted /50 border-border text-foreground hover:bg-muted :bg-muted'
- : 'bg-blue-700/30 border-blue-400/40 text-white hover:bg-blue-700/40'
+ ? 'bg-muted /50 border-border text-foreground hoverhover:bg-muted hover:bg-muted'
+ : 'bg-monday-violet-hover/30 border-monday-violet/40 text-white hover:bg-monday-violet-hover/40'
  }`}
  >
  {(att.mime_type || '').startsWith('image/')
@@ -544,7 +545,7 @@ export function SupportWidget() {
  {pendingFiles.length > 0 && (
  <div className="flex flex-wrap gap-2 mb-2">
  {pendingFiles.map((f, i) => (
- <div key={i} className="flex items-center gap-1.5 bg-muted border border-border rounded-lg px-2 py-1">
+ <div key={i} className="flex items-center gap-1.5 bg-muted border border-border rounded-xl px-2 py-1">
  {f.type.startsWith('image/')
  ? <ImageIcon className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
  : <FileText className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />}
@@ -567,7 +568,7 @@ export function SupportWidget() {
  <button
  onClick={() => fileInputRef.current?.click()}
  disabled={sending || pendingFiles.length >= 5}
- className="w-9 h-9 bg-muted hover:bg-muted border border-border rounded-lg text-muted-foreground flex items-center justify-center transition-colors flex-shrink-0 disabled:opacity-50"
+ className="w-9 h-9 bg-muted hoverhover:bg-muted border border-border rounded-xl text-muted-foreground flex items-center justify-center transition-colors flex-shrink-0 disabled:opacity-50"
  title="Adjuntar archivo"
  >
  <Paperclip className="w-4 h-4" />
@@ -578,12 +579,12 @@ export function SupportWidget() {
  onChange={e => setReplyText(e.target.value)}
  onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
  placeholder="Escribe un mensaje..."
- className="flex-1 bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+ className="flex-1 bg-muted border border-border rounded-xl px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-monday-violet focus:border-transparent"
  />
  <button
  onClick={handleSend}
  disabled={sending || (!replyText.trim() && pendingFiles.length === 0)}
- className="w-9 h-9 bg-blue-600 hover:bg-blue-700 rounded-lg text-white flex items-center justify-center transition-colors disabled:opacity-50 flex-shrink-0"
+ className="w-9 h-9 bg-monday-violet hover:bg-monday-violet-hover rounded-xl text-white flex items-center justify-center transition-colors disabled:opacity-50 flex-shrink-0"
  >
  {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
  </button>
@@ -598,3 +599,5 @@ export function SupportWidget() {
  </>
  );
 }
+
+

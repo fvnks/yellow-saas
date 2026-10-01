@@ -5,32 +5,32 @@ import { X, AlertCircle, CheckCircle2, AlertTriangle, Info } from 'lucide-react'
 
 const variantStyles = {
  info: {
- container: 'bg-gradient-to-b from-blue-50 to-transparent to-50% border-blue-200',
+ container: 'bg-sky-accent/30 border-sky-accent/50',
  icon: Info,
- iconColor: 'text-blue-600',
- titleColor: 'text-blue-900',
- descriptionColor: 'text-blue-700/60',
+ iconColor: 'text-[#006680]',
+ titleColor: 'text-ink',
+ descriptionColor: 'text-[#006680]/60',
  },
  success: {
- container: 'bg-gradient-to-b from-emerald-50 to-transparent to-50% border-emerald-200',
+ container: 'bg-mint/30 border-mint/50',
  icon: CheckCircle2,
- iconColor: 'text-emerald-600',
- titleColor: 'text-emerald-900',
- descriptionColor: 'text-emerald-700/60',
+ iconColor: 'text-forest',
+ titleColor: 'text-ink',
+ descriptionColor: 'text-forest/60',
  },
  warning: {
- container: 'bg-gradient-to-b from-amber-50 to-transparent to-50% border-peach',
+ container: 'bg-peach/30 border-peach/50',
  icon: AlertTriangle,
  iconColor: 'text-[#c64d00]',
  titleColor: 'text-[#c64d00]',
  descriptionColor: 'text-[#c64d00]/60',
  },
  error: {
- container: 'bg-gradient-to-b from-rose-50 to-transparent to-50% border-rose-200',
+ container: 'bg-peach/30 border-peach/50',
  icon: AlertCircle,
- iconColor: 'text-rose-600',
- titleColor: 'text-rose-900',
- descriptionColor: 'text-rose-700/60',
+ iconColor: 'text-[#c64d00]',
+ titleColor: 'text-ink',
+ descriptionColor: 'text-[#c64d00]/60',
  },
 };
 
@@ -67,7 +67,7 @@ export function NotificationAlert({
 
  return (
  <div
- className={`flex items-start gap-3 rounded-xl border p-4 shadow-sm ${styles.container} ${className}`}
+ className={`flex items-start gap-3 rounded-3xl border p-4 shadow-sm ${styles.container} ${className}`}
  >
  {icon || <IconComponent className={`size-4 mt-0.5 ${styles.iconColor}`} />}
  <div className="flex-1 min-w-0">
@@ -79,7 +79,7 @@ export function NotificationAlert({
  {dismissible && (
  <button
  onClick={handleDismiss}
- className={`self-start p-0.5 rounded hover:bg-primary/90/5 transition-colors ${styles.iconColor}`}
+ className={`self-start p-0.5 rounded hover:bg-cloud transition-colors ${styles.iconColor}`}
  >
  <X className="size-4" />
  <span className="sr-only">Cerrar</span>
@@ -88,3 +88,5 @@ export function NotificationAlert({
  </div>
  );
 }
+
+

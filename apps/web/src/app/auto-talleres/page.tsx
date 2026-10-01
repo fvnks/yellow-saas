@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -273,7 +273,7 @@ export default function AutoTalleresDashboardPage() {
  order.status === 'approved' ? 'bg-purple-500' :
  order.status === 'quality_check' ? 'bg-orange-500' :
  order.status === 'ready' ? 'bg-emerald-500' :
- order.status === 'checkin' ? 'bg-cloud0' :
+ order.status === 'checkin' ? 'bg-cloud' :
  'bg-slate-300'
  }`} />
  <div className="flex-1 min-w-0">

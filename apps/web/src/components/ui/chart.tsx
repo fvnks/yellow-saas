@@ -132,7 +132,7 @@ interface ChartCardProps {
 
 export function ChartCard({ title, subtitle, action, children }: ChartCardProps) {
  return (
- <div className="bg-card border border-border rounded-xl shadow-sm p-6 ">
+ <div className="bg-card border border-border rounded-3xl shadow-sm p-6 ">
  <div className="flex items-center justify-between mb-4">
  <div>
  <h3 className="text-sm font-semibold text-foreground ">{title}</h3>
@@ -246,3 +246,4 @@ export function ThemedBarChart({ data, bars, markers, xKey = 'name', height = 25
 
 /* Need to import Bar from recharts */
 import { Bar as ReBarComp } from 'recharts';
+

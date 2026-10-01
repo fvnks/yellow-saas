@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Calendar, Clock, Users, GripVertical, MoreHorizontal, Edit, Trash2 } from 'lucide-react';
@@ -25,7 +25,7 @@ interface KanbanBoardProps {
 }
 
 const columns = [
- { id: 'todo', label: 'Por Hacer', color: 'bg-muted0', bgColor: 'bg-muted', borderColor: 'border-border' },
+ { id: 'todo', label: 'Por Hacer', color: 'bg-muted', bgColor: 'bg-muted', borderColor: 'border-border' },
  { id: 'in_progress', label: 'En Progreso', color: 'bg-blue-500', bgColor: 'bg-blue-50', borderColor: 'border-blue-200' },
  { id: 'review', label: 'En Revision', color: 'bg-monday-violet', bgColor: 'bg-peach/30', borderColor: 'border-peach' },
  { id: 'done', label: 'Completada', color: 'bg-emerald-500', bgColor: 'bg-emerald-50', borderColor: 'border-emerald-200' },
@@ -218,3 +218,4 @@ export default function KanbanBoard({ tasks, onStatusChange, onEdit, onDelete, o
  </div>
  );
 }
+

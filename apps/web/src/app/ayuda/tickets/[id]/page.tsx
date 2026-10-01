@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Send, Clock, Inbox, Loader2, CheckCircle2, XCircle, Headphones, RotateCcw, Star, Paperclip, FileText, Image as ImageIcon, X } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import { getCompanyIdFromToken } from '@/lib/api-client';
 import { toast } from 'sonner';
 
@@ -72,7 +73,7 @@ export default function TicketDetailPage() {
  const [feedbackComment, setFeedbackComment] = useState('');
  const [submittingFeedback, setSubmittingFeedback] = useState(false);
 
- const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const getToken = () => getAuthToken();
  const getCompanyId = () => getCompanyIdFromToken();
 
  const fetchDetail = useCallback(async () => {
@@ -333,7 +334,7 @@ export default function TicketDetailPage() {
  <p className="text-sm font-semibold text-foreground mb-2">¡Gracias por tu valoración!</p>
  <div className="flex items-center justify-center gap-1 mb-2">
  {[1, 2, 3, 4, 5].map(i => (
- <Star key={i} className={`w-5 h-5 ${i <= feedback.rating ? 'text-[#c64d00]/70 fill-amber-400' : 'text-foreground'}`} />
+ <Star key={i} className={`w-5 h-5 ${i <= feedback.rating ? 'text-[#c64d00]/70 fill-sunshine' : 'text-foreground'}`} />
  ))}
  </div>
  {feedback.comment && <p className="text-sm text-muted-foreground">{feedback.comment}</p>}
@@ -349,7 +350,7 @@ export default function TicketDetailPage() {
  onClick={() => setRating(i)}
  className={`p-1.5 rounded-lg transition-colors ${rating >= i ? 'text-[#c64d00]/70' : 'text-foreground hover:text-muted-foreground'}`}
  >
- <Star className={`w-7 h-7 ${rating >= i ? 'fill-amber-400' : ''}`} />
+ <Star className={`w-7 h-7 ${rating >= i ? 'fill-sunshine' : ''}`} />
  </button>
  ))}
  </div>

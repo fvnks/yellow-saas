@@ -1,10 +1,11 @@
-﻿'use client';
+'use client';
 
 import { ReactNode, useEffect, useRef, useState, useMemo } from 'react';
 import { Toaster, toast } from 'sonner';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LifeBuoy, BookOpen, Ticket, Search, X } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import ThemeToggle from '@/components/ui/theme-toggle';
 import { getCompanyIdFromToken } from '@/lib/api-client';
 import ModuleSidebarHeader from '@/components/sidebar/module-sidebar-header';
@@ -20,7 +21,7 @@ function AyudaSidebar() {
  const initializedRef = useRef(false);
  const theme = MODULE_SIDEBAR_THEMES.ayuda;
 
- const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const getToken = () => getAuthToken();
 
  const fetchSummary = async () => {
  const companyId = getCompanyIdFromToken();

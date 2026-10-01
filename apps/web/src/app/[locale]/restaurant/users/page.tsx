@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { Users, Shield, KeyRound, UserPlus, Power, Pencil, Trash, RotateCcw, CheckCircle2 } from 'lucide-react';
@@ -109,25 +109,25 @@ export default function RestaurantUsersPage() {
  value={form.name}
  onChange={(e) => setForm({ ...form, name: e.target.value })}
  placeholder="Nombre completo"
- className="border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+ className="border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sunshine"
  />
  <input
  value={form.email}
  onChange={(e) => setForm({ ...form, email: e.target.value })}
  placeholder="email@erp.cl"
- className="border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+ className="border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sunshine"
  />
  <input
  value={form.pin}
  onChange={(e) => setForm({ ...form, pin: e.target.value })}
  placeholder="PIN (4 dígitos)"
  maxLength={4}
- className="border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+ className="border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sunshine"
  />
  <select
  value={form.role}
  onChange={(e) => setForm({ ...form, role: e.target.value as RestaurantRole })}
- className="border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white"
+ className="border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sunshine bg-white"
  >
  {ROLE_PERMISSIONS.map((p) => (
  <option key={p.role} value={p.role}>{p.label}</option>

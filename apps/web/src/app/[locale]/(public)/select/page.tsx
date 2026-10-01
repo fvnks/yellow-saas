@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
 import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight,
 X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail, Sparkles, TrendingUp, ShieldCheck, DollarSign, Building, UtensilsCrossed, Stethoscope, Shield, Car } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import { getApiClient } from '@/lib/api-client';
 import { getChileanIndicators, ChileanIndicators } from '@/lib/indicators';
 import {
@@ -269,7 +270,7 @@ export default function SelectPage() {
  }
  }
 
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
 
  Promise.all([
  token ? fetchUserCompanies(token) : Promise.resolve([]),
@@ -294,7 +295,7 @@ export default function SelectPage() {
  try {
  const api = getApiClient();
  const companyId = api['companyId'];
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
  const res = await fetch(`/api/companies/${companyId}/modules`, {
  headers: { Authorization: `Bearer ${token}` },
  });
@@ -326,7 +327,7 @@ export default function SelectPage() {
  };
 
  const handleCompanySwitch = async (companyId: string) => {
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
  if (!token) return;
  const newToken = await switchCompany(token, companyId);
  if (newToken) {
@@ -341,7 +342,7 @@ export default function SelectPage() {
  try {
  const api = getApiClient();
  const companyId = api['companyId'];
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
 
  const modulesToActivate = selectedModule.requiredModules.length > 0
  ? selectedModule.requiredModules
@@ -383,7 +384,7 @@ export default function SelectPage() {
  <header className="bg-snow/90 border-b border-mist px-6 h-16 sticky top-0 z-30 backdrop-blur-xl flex items-center justify-between">
  <div className="max-w-[1200px] mx-auto w-full flex items-center justify-between">
  <div className="flex items-center gap-3">
- <div className="h-9 w-9 rounded-full p-0.5 shadow-sm flex items-center justify-center shrink-0" style={{ background: 'conic-gradient(from 270deg, #8181ff 15%, #33dbdb 40%, #33d58e 55%, #ffd633 65%, #fc527d 85%, #8181ff 100%)' }}>
+ <div className="h-9 w-9 rounded-full p-0.5 shadow-sm flex items-center justify-center shrink-0" style={{ background: 'conic-gradient(from 270deg, #8181ff 15%, #33dbdb 40%, #33d58e 55%, #F5C518 65%, #fc527d 85%, #8181ff 100%)' }}>
  <div className="h-8 w-8 bg-snow rounded-full flex items-center justify-center">
  <span className="text-monday-violet font-bold text-xs">Y</span>
  </div>

@@ -4,47 +4,47 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
 interface PricingToggleProps {
- monthlyLabel?: string;
- yearlyLabel?: string;
- onToggle: (isYearly: boolean) => void;
- className?: string;
+  monthlyLabel?: string;
+  yearlyLabel?: string;
+  onToggle: (isYearly: boolean) => void;
+  className?: string;
 }
 
 export function PricingToggle({ monthlyLabel = 'Mensual', yearlyLabel = 'Anual', onToggle, className }: PricingToggleProps) {
- const [isYearly, setIsYearly] = useState(false);
+  const [isYearly, setIsYearly] = useState(false);
 
- const handleToggle = () => {
- const newValue = !isYearly;
- setIsYearly(newValue);
- onToggle(newValue);
- };
+  const handleToggle = () => {
+    const newValue = !isYearly;
+    setIsYearly(newValue);
+    onToggle(newValue);
+  };
 
- return (
- <div className={cn('flex items-center justify-center gap-3', className)}>
- <span className={cn('text-sm font-medium transition-colors', !isYearly ? 'text-foreground ' : 'text-muted-foreground')}>
- {monthlyLabel}
- </span>
- <button
- onClick={handleToggle}
- aria-pressed={isYearly}
- className={cn(
- 'relative w-12 h-6 rounded-full cursor-pointer transition-colors duration-300',
- isYearly ? 'bg-monday-violet' : 'bg-muted '
- )}
- >
- <div
- className={cn(
- 'absolute top-0.5 w-5 h-5 rounded-full bg-card shadow-sm transition-transform duration-300',
- isYearly ? 'translate-x-[26px]' : 'translate-x-0.5'
- )}
- />
- </button>
- <span className={cn('text-sm font-medium transition-colors', isYearly ? 'text-foreground ' : 'text-muted-foreground')}>
- {yearlyLabel}
- <span className="ml-1.5 inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 ">
- -20%
- </span>
- </span>
- </div>
- );
+  return (
+    <div className={cn('flex items-center justify-center gap-3', className)}>
+      <span className={cn('text-sm font-medium transition-colors', !isYearly ? 'text-ink' : 'text-slate-text')}>
+        {monthlyLabel}
+      </span>
+      <button
+        onClick={handleToggle}
+        aria-pressed={isYearly}
+        className={cn(
+          'relative w-12 h-6 rounded-full cursor-pointer transition-colors duration-300',
+          isYearly ? 'bg-sunshine' : 'bg-mist'
+        )}
+      >
+        <div
+          className={cn(
+            'absolute top-0.5 w-5 h-5 rounded-full bg-snow shadow-sm transition-transform duration-300',
+            isYearly ? 'translate-x-[26px]' : 'translate-x-0.5'
+          )}
+        />
+      </button>
+      <span className={cn('text-sm font-medium transition-colors', isYearly ? 'text-ink' : 'text-slate-text')}>
+        {yearlyLabel}
+        <span className="ml-1.5 inline-flex items-center rounded-full bg-sunshine/20 border border-sunshine/50 px-2 py-0.5 text-[10px] font-semibold text-sunshine-dark ">
+          -20%
+        </span>
+      </span>
+    </div>
+  );
 }

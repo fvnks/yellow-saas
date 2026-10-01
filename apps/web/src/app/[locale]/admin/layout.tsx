@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { ReactNode, useEffect, useRef, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
@@ -9,6 +9,7 @@ import {
  Shield, Building2, Users, KeyRound, Settings,
  LayoutDashboard, Menu, X, Headphones, Bell, CreditCard, ScrollText, BookOpen, Search
 } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import { useAuthToken } from '@/hooks/use-auth-token';
 import ModuleSidebarHeader from '@/components/sidebar/module-sidebar-header';
 import ModuleSidebarBackButton from '@/components/sidebar/module-sidebar-back-button';
@@ -50,7 +51,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
  const fetchSupportSummary = async () => {
  try {
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
  if (!token) return;
  const res = await fetch('/api/super-admin/support/summary', {
  headers: { Authorization: `Bearer ${token}` },

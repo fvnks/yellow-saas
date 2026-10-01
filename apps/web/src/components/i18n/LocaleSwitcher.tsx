@@ -18,7 +18,7 @@ export default function LocaleSwitcher() {
  return (
  <button
  onClick={handleClick}
- className="px-2.5 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 :text-white hover:bg-slate-100 rounded-lg transition-colors"
+ className="px-2.5 py-1.5 text-xs font-medium text-iron hover:text-ink hover:bg-cloud rounded-lg transition-colors"
  title={t('switch')}
  aria-label={t('switch')}
  >
@@ -26,3 +26,4 @@ export default function LocaleSwitcher() {
  </button>
  );
 }
+

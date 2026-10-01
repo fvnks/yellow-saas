@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import {
@@ -551,7 +551,7 @@ export default function VisitorParkingLayout() {
  <span className="w-3 h-3 rounded-md bg-peach inline-block"></span> Reservado
  </div>
  <div className="flex items-center gap-1.5">
- <span className="w-3 h-3 rounded-md bg-cloud0 inline-block"></span> Mantención
+ <span className="w-3 h-3 rounded-md bg-cloud inline-block"></span> Mantención
  </div>
  </div>
  </div>
@@ -636,7 +636,7 @@ export default function VisitorParkingLayout() {
  ) : (
  <span
  className={`w-2.5 h-2.5 rounded-full ${
- isOccupied ? 'bg-rose-500 animate-pulse' : isAvailable ? 'bg-emerald-500' : 'bg-cloud0'
+ isOccupied ? 'bg-rose-500 animate-pulse' : isAvailable ? 'bg-emerald-500' : 'bg-cloud'
  }`}
  ></span>
  )}

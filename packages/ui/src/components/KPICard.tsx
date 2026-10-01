@@ -1,4 +1,4 @@
-import { cn } from '../lib/utils';
+﻿import { cn } from '../lib/utils';
 import { type LucideIcon } from 'lucide-react';
 
 export interface KPICardProps {
@@ -55,3 +55,4 @@ export function KPICard({ label, value, change, changeType, trend, trendUp, icon
     </div>
   );
 }
+

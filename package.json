@@ -16,6 +16,7 @@
     "db:studio": "turbo run db:studio --filter=db"
   },
   "devDependencies": {
+    "@next/swc-win32-x64-msvc": "^14.2.33",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "turbo": "^1.13.0",
     "typescript": "^5.4.0"
@@ -24,6 +25,8 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
-    "jsbarcode": "^3.12.3"
+    "framer-motion": "^12.42.2",
+    "jsbarcode": "^3.12.3",
+    "motion": "^12.42.2"
   }
 }

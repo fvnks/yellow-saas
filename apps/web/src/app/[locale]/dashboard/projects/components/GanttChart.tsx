@@ -142,7 +142,7 @@ export default function GanttChart({ tasks, dependencies = [], startDate, endDat
  if (!ganttRef.current) return;
  setExporting(true);
  try {
- const canvas = await html2canvas(ganttRef.current, { backgroundColor: '#ffffff', scale: 2 });
+ const canvas = await html2canvas(ganttRef.current, { background: '#ffffff', scale: 2 });
  const link = document.createElement('a');
  link.download = `gantt_${new Date().toISOString().split('T')[0]}.png`;
  link.href = canvas.toDataURL('image/png');

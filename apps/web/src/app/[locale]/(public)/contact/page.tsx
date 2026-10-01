@@ -8,14 +8,28 @@ export default function ContactPage() {
  const [sent, setSent] = useState(false);
  const [form, setForm] = useState({ name: '', email: '', company: '', subject: '', message: '' });
  const [submitting, setSubmitting] = useState(false);
+ const [error, setError] = useState<string | null>(null);
 
  const handleSubmit = async (e: React.FormEvent) => {
  e.preventDefault();
  setSubmitting(true);
- // Simulate send
- await new Promise(r => setTimeout(r, 1000));
+ setError(null);
+ try {
+ const res = await fetch('/api/contact', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ ...form, source: 'contact' }),
+ });
+ const data = await res.json().catch(() => null);
+ if (!res.ok || !data?.success) {
+ throw new Error(data?.error?.message || 'No pudimos enviar tu mensaje. Escríbenos a hola@yellow-erp.cl');
+ }
  setSent(true);
+ } catch (err) {
+ setError(err instanceof Error ? err.message : 'No pudimos enviar tu mensaje. Escríbenos a hola@yellow-erp.cl');
+ } finally {
  setSubmitting(false);
+ }
  };
 
  return (
@@ -117,7 +131,7 @@ export default function ContactPage() {
  <h2 className="text-lg font-semibold text-foreground">Mensaje enviado</h2>
  <p className="mt-2 text-sm text-muted-foreground">Te responderemos dentro de 24 horas habiles.</p>
  <button
- onClick={() => { setSent(false); setForm({ name: '', email: '', company: '', subject: '', message: '' }); }}
+ onClick={() => { setSent(false); setForm({ name: '', email: '', company: '', subject: '', message: '' }); setError(null); }}
  className="mt-6 text-sm text-primary hover:text-primary font-medium"
  >
  Enviar otro mensaje
@@ -190,6 +204,12 @@ export default function ContactPage() {
  placeholder="Cuentanos en que podemos ayudarte..."
  />
  </div>
+
+ {error && (
+ <p role="alert" className="text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-md px-4 py-3">
+ {error}
+ </p>
+ )}
 
  <button
  type="submit"

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Ticket, Plus, Search, MessageSquare, Inbox, Clock, CheckCircle2, XCircle, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import { getCompanyIdFromToken } from '@/lib/api-client';
 import { toast } from 'sonner';
 
@@ -44,7 +45,7 @@ export default function MisTicketsPage() {
  const [total, setTotal] = useState(0);
  const pageSize = 10;
 
- const getToken = () => document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const getToken = () => getAuthToken();
 
  const fetchTickets = async () => {
  const companyId = getCompanyIdFromToken();

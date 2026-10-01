@@ -20,10 +20,11 @@ export function GradientIcon({ icon: Icon, className, size = 'md', gradient = 'f
  <div className={cn(
  s.container,
  `bg-gradient-to-br ${gradient}`,
- 'rounded-xl flex items-center justify-center shadow-sm',
+ 'rounded-3xl flex items-center justify-center shadow-sm',
  className
  )}>
  <Icon className={cn(s.icon, 'text-white')} />
  </div>
  );
 }
+

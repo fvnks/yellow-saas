@@ -65,10 +65,10 @@ export function StatsCounter({ value, decimals = 0, prefix = '', suffix = '', la
 
  return (
  <div ref={ref} className={cn('text-center', className)}>
- <p className="text-3xl sm:text-4xl font-bold text-foreground tabular-nums">
+ <p className="text-3xl sm:text-4xl font-bold text-ink tabular-nums">
  {prefix}{formatted}{suffix}
  </p>
- <p className="mt-2 text-sm text-muted-foreground ">{label}</p>
+ <p className="mt-2 text-sm text-slate-text ">{label}</p>
  </div>
  );
 }

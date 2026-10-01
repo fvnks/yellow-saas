@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { Wallet, Check, AlertTriangle, Banknote, CreditCard, Smartphone, TrendingUp } from 'lucide-react';
@@ -122,7 +122,7 @@ export default function RestaurantCashierPage() {
  type="number"
  value={declaredEfectivo}
  onChange={(e) => setDeclaredEfectivo(e.target.value)}
- className="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-amber-400"
+ className="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-sunshine"
  />
  </div>
  </div>

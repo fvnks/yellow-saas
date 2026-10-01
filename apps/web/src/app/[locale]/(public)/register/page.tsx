@@ -196,7 +196,7 @@ function RegisterForm() {
  <div className="flex w-full flex-col items-center justify-center p-6 sm:p-12 lg:w-1/2">
  {/* Mobile logo */}
  <div className="lg:hidden mb-8 flex items-center gap-3">
- <div className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm" style={{ background: 'conic-gradient(from 270deg, #8181ff 15%, #33dbdb 40%, #33d58e 55%, #ffd633 65%, #fc527d 85%, #8181ff 100%)' }}>
+ <div className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm" style={{ background: 'conic-gradient(from 270deg, #8181ff 15%, #33dbdb 40%, #33d58e 55%, #F5C518 65%, #fc527d 85%, #8181ff 100%)' }}>
  <div className="w-8 h-8 bg-snow rounded-full flex items-center justify-center">
  <Building2 className="w-5 h-5 text-monday-violet" />
  </div>

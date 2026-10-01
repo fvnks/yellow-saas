@@ -1,9 +1,10 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Building2, Users, Calendar, Shield, AlertTriangle, CheckCircle, Clock, LogIn, Download, Package } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import { toast } from 'sonner';
 
 interface ModuleActivation {
@@ -57,7 +58,7 @@ export default function AdminCompanyDetailPage() {
 
  const fetchCompany = async () => {
  try {
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
  const res = await fetch(`/api/super-admin/companies/${id}`, {
  headers: { Authorization: `Bearer ${token}` },
  });
@@ -77,7 +78,7 @@ export default function AdminCompanyDetailPage() {
  const handleSuspend = async () => {
  if (!confirm('¿Estás seguro de suspender esta empresa?')) return;
  try {
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
  const res = await fetch(`/api/super-admin/companies/${id}/suspend`, {
  method: 'POST',
  headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -98,7 +99,7 @@ export default function AdminCompanyDetailPage() {
  const handleLoginAs = async (userId: string) => {
  if (!confirm('¿Ingresar como este usuario? Serás redirigido al dashboard de la empresa.')) return;
  try {
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
  const res = await fetch('/api/super-admin/login-as', {
  method: 'POST',
  headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -118,7 +119,7 @@ export default function AdminCompanyDetailPage() {
 
  const handleExport = async () => {
  try {
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
  const res = await fetch(`/api/super-admin/export?type=companies&company_id=${id}`, {
  headers: { Authorization: `Bearer ${token}` },
  });
@@ -152,7 +153,7 @@ export default function AdminCompanyDetailPage() {
 
  const handleToggleModule = async (moduleName: string, isActive: boolean) => {
  try {
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
  const res = await fetch(`/api/super-admin/companies/${id}`, {
  method: 'PATCH',
  headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -342,13 +343,13 @@ export default function AdminCompanyDetailPage() {
  </div>
  </td>
  <td className="px-6 py-4">
- <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-muted0/10 text-muted-foreground border border-border/20">
+ <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-muted/10 text-muted-foreground border border-border/20">
  {user.role}
  </span>
  </td>
  <td className="px-6 py-4">
  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold ${
- user.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-muted0/10 text-muted-foreground border border-border/20'
+ user.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-muted/10 text-muted-foreground border border-border/20'
  }`}>
  {user.status === 'active' ? <CheckCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
  {user.status}
@@ -409,7 +410,7 @@ export default function AdminCompanyDetailPage() {
  <td className="px-6 py-4 text-xs text-muted-foreground">{grant.reason || '—'}</td>
  <td className="px-6 py-4">
  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold ${
- grant.is_active ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-muted0/10 text-muted-foreground border border-border/20'
+ grant.is_active ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-muted/10 text-muted-foreground border border-border/20'
  }`}>
  {grant.is_active ? 'Activo' : 'Inactivo'}
  </span>
@@ -426,3 +427,4 @@ export default function AdminCompanyDetailPage() {
  </div>
  );
 }
+

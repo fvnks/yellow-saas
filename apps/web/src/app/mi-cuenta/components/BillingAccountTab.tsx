@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Save, Download, Receipt, CreditCard, Calendar, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import { getApiClient } from '@/lib/api-client';
 import { toast } from 'sonner';
 
@@ -33,9 +34,9 @@ export default function BillingAccountTab() {
  const companyId = api['companyId'];
 
  const [accountRes, invoicesRes, paymentsRes] = await Promise.all([
- fetch(`/api/companies/${companyId}/billing/account`, { headers: { Authorization: `Bearer ${document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1]}` } }).then(r => r.json()),
- fetch(`/api/companies/${companyId}/billing/invoices`, { headers: { Authorization: `Bearer ${document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1]}` } }).then(r => r.json()),
- fetch(`/api/companies/${companyId}/billing/payments`, { headers: { Authorization: `Bearer ${document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1]}` } }).then(r => r.json()),
+ fetch(`/api/companies/${companyId}/billing/account`, { headers: { Authorization: `Bearer ${getAuthToken()}` } }).then(r => r.json()),
+ fetch(`/api/companies/${companyId}/billing/invoices`, { headers: { Authorization: `Bearer ${getAuthToken()}` } }).then(r => r.json()),
+ fetch(`/api/companies/${companyId}/billing/payments`, { headers: { Authorization: `Bearer ${getAuthToken()}` } }).then(r => r.json()),
  ]);
 
  const accountData = accountRes.data?.account;
@@ -67,7 +68,7 @@ export default function BillingAccountTab() {
  try {
  const api = getApiClient();
  const companyId = api['companyId'];
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
 
  await fetch(`/api/companies/${companyId}/billing/account`, {
  method: 'PUT',

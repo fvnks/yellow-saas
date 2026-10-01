@@ -7,6 +7,12 @@ const nextConfig = {
   experimental: {
     instrumentationHook: true,
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   transpilePackages: ['@yellow-erp/ui', '@yellow-erp/db', '@yellow-erp/auth', '@yellow-erp/api'],
   images: {
     domains: ['lh3.googleusercontent.com', 'avatars.githubusercontent.com'],

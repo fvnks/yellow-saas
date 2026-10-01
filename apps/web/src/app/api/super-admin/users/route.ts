@@ -3,6 +3,8 @@ import { successResponse, errorResponse, parseSearchParams, paginatedResponse } 
 import { NextRequest } from 'next/server';
 import { verifySuperAdmin } from '@/api/super-admin/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   const admin = await verifySuperAdmin(request);
   if (!admin) return errorResponse('No autorizado', 401);

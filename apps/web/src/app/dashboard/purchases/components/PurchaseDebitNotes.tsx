@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Search, FileMinus, MoreVertical, Download, Printer } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { usePrintDocument } from '@/components/print/use-print';
 import { getCompanyIdFromToken } from '@/lib/api-client';
@@ -69,7 +70,7 @@ export default function PurchaseDebitNotes() {
  Promise.all([
  fetch(`/api/companies/${companyId}/purchase-debit-notes`).then(r => r.json()).then(d => setNotes(d.data || [])).catch(() => {}),
  fetch(`/api/companies/${companyId}/settings/documents`, {
- headers: { Authorization: `Bearer ${document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1] || ''}` },
+ headers: { Authorization: `Bearer ${getAuthToken() || ''}` },
  }).then(r => r.json()).then(d => { if (d.success) setSettings(mergeSettings(d.data)); }).catch(() => {}),
  ]);
  }, []);

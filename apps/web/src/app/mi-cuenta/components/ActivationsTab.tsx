@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { History, CheckCircle2, XCircle, Clock, Calendar } from 'lucide-react';
+import { getAuthToken } from '@/lib/auth-token';
 import { getApiClient } from '@/lib/api-client';
 
 interface Activation {
@@ -28,7 +29,7 @@ export default function ActivationsTab() {
  try {
  const api = getApiClient();
  const companyId = api['companyId'];
- const token = document.cookie.split(';').find(c => c.trim().startsWith('auth-token='))?.split('=')[1];
+ const token = getAuthToken();
 
  const res = await fetch(`/api/companies/${companyId}/modules`, {
  headers: { Authorization: `Bearer ${token}` },
