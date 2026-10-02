@@ -67,9 +67,7 @@ export default function TermsPage() {
                 El Servicio se ofrece mediante suscripciones de pago con diferentes planes.
                 Los precios están disponibles en nuestra página de precios y pueden ser modificados
                 con aviso previo de 30 días. Los pagos se realizan por adelantado y no son
-                reembolsables salvo disposición legal aplicable. El periodo de prueba gratuito
-                de 14 días no requiere tarjeta de crédito y se convierte automáticamente en
-                una suscripción de pago al finalizar, salvo que el usuario cancele antes.
+                reembolsables salvo disposición legal aplicable. Contáctanos para conocer nuestros planes y opciones de pago.
               </p>
             </section>
 

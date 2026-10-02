@@ -322,7 +322,7 @@ export default function HomePage() {
               Planes claros y sin costos ocultos
             </h2>
             <p className="text-sm text-slate-text max-w-xl mx-auto mb-6">
-              Comienza hoy con 14 días de prueba. Cancela en cualquier momento.
+              Comienza hoy. Cancela en cualquier momento.
             </p>
           </div>
 

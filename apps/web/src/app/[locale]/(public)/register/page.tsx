@@ -216,7 +216,7 @@ function RegisterForm() {
  Crea tu cuenta
  </h1>
  <p className="text-[15px] text-slate-text text-balance">
- Comienza tu prueba gratuita de 14 días. Sin tarjeta de crédito.
+ Contáctanos para comenzar. Sin tarjeta de crédito.
  </p>
  </motion.div>
 
