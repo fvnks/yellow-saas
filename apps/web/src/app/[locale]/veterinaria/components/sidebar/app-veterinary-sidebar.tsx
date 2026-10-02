@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarSeparator } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarSeparator } from '@/components/animate-ui/components/radix/sidebar';
 import { veterinarySidebarItems } from "@/navigation/sidebar/veterinary-sidebar-items";
 import VeterinarySidebarHeader from "./veterinary-sidebar-header";
 import VeterinarySidebarNavigation from "./veterinary-sidebar-navigation";

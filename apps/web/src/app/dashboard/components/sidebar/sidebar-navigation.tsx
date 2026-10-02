@@ -13,7 +13,7 @@ import {
  SidebarMenuSub,
  SidebarMenuSubButton,
  SidebarMenuSubItem,
-} from "@/components/ui/sidebar";
+} from '@/components/animate-ui/components/radix/sidebar';
 import { NavGroup, NavMainItem, resolveIcon, ICON_MAP } from "@/navigation/sidebar/sidebar-items";
 import { usePermissions } from "@/lib/permissions";
 import { MODULE_SIDEBAR_THEMES } from "@/lib/sidebar-theme";

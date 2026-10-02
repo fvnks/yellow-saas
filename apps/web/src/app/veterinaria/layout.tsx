@@ -1,4 +1,4 @@
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider } from '@/components/animate-ui/components/radix/sidebar';
 import { VeterinarySidebar } from "@/app/veterinaria/components/sidebar/app-veterinary-sidebar";
 import VeterinarySidebarBreadcrumbs from "./components/sidebar/veterinary-sidebar-breadcrumbs";
 

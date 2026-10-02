@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarSeparator } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarSeparator } from '@/components/animate-ui/components/radix/sidebar';
 import { sidebarItems } from "@/navigation/sidebar/sidebar-items";
 import { useTranslations } from 'next-intl';
 import SidebarBrandHeader from "./sidebar-header";

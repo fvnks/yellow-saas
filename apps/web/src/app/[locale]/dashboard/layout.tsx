@@ -4,7 +4,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { Toaster } from "sonner";
 import { AppSidebar } from "@/app/dashboard/components/sidebar/app-sidebar";
 import { Separator } from "@/components/ui/separator";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/animate-ui/components/radix/sidebar';
 import SidebarBreadcrumbs from "./components/sidebar/sidebar-breadcrumbs";
 import NotificationsDropdown from "./components/NotificationsDropdown";
 import LocaleSwitcher from "@/components/i18n/LocaleSwitcher";

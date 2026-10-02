@@ -10,7 +10,7 @@ import {
  SidebarMenu,
  SidebarMenuButton,
  SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from '@/components/animate-ui/components/radix/sidebar';
 import { VeterinaryNavGroup, veterinarySidebarItems } from "@/navigation/sidebar/veterinary-sidebar-items";
 import { MODULE_SIDEBAR_THEMES } from "@/lib/sidebar-theme";
 

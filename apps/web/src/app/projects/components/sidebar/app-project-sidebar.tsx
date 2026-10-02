@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarSeparator } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarSeparator } from '@/components/animate-ui/components/radix/sidebar';
 import { projectSidebarItems } from "@/navigation/sidebar/project-sidebar-items";
 import ProjectSidebarBrandHeader from "./project-sidebar-header";
 import ProjectSidebarNavigation from "./project-sidebar-navigation";

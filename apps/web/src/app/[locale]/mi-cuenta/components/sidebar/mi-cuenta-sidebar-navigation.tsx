@@ -13,7 +13,7 @@ import {
  SidebarMenuSub,
  SidebarMenuSubButton,
  SidebarMenuSubItem,
-} from "@/components/ui/sidebar";
+} from '@/components/animate-ui/components/radix/sidebar';
 import { MiCuentaNavGroup, MiCuentaNavMainItem, resolveMiCuentaIcon, MI_CUENTA_ICON_MAP } from "@/navigation/sidebar/mi-cuenta-sidebar-items";
 
 interface MiCuentaSidebarNavigationProps {

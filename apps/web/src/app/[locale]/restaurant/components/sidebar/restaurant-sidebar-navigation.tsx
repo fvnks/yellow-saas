@@ -13,7 +13,7 @@ import {
  SidebarMenuSub,
  SidebarMenuSubButton,
  SidebarMenuSubItem,
-} from "@/components/ui/sidebar";
+} from '@/components/animate-ui/components/radix/sidebar';
 import { RestaurantNavGroup, RestaurantNavMainItem, resolveRestaurantIcon, RESTAURANT_ICON_MAP } from "@/navigation/sidebar/restaurant-sidebar-items";
 import { MODULE_SIDEBAR_THEMES } from "@/lib/sidebar-theme";
 import { useRestaurantRole } from "../../lib/role-context";

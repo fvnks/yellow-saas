@@ -1,6 +1,6 @@
 'use client';
 
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarSeparator } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarSeparator } from '@/components/animate-ui/components/radix/sidebar';
 import { restaurantSidebarItems } from "@/navigation/sidebar/restaurant-sidebar-items";
 import RestaurantSidebarHeader from "./restaurant-sidebar-header";
 import RestaurantSidebarNavigation from "./restaurant-sidebar-navigation";

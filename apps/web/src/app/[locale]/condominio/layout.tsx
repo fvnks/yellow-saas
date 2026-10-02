@@ -4,7 +4,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { Toaster } from "sonner";
 import { AppCondominioSidebar } from "./components/sidebar/app-condominio-sidebar";
 import CondominioSidebarBreadcrumbs from "./components/sidebar/condominio-sidebar-breadcrumbs";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/animate-ui/components/radix/sidebar';
 import { Separator } from "@/components/ui/separator";
 import { getChileanIndicators, ChileanIndicators } from "@/lib/indicators";
 import { TrendingUp, ShieldCheck, DollarSign } from "lucide-react";

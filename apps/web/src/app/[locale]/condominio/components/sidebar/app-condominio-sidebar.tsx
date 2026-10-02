@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarSeparator } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarSeparator } from '@/components/animate-ui/components/radix/sidebar';
 import CondominioSidebarHeader from "./condominio-sidebar-header";
 import CondominioSidebarNavigation from "./condominio-sidebar-navigation";
 import ModuleSidebarBackButton from '@/components/sidebar/module-sidebar-back-button';

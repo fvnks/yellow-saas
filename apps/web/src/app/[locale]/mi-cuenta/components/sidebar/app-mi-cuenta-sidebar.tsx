@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarSeparator } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, SidebarSeparator } from '@/components/animate-ui/components/radix/sidebar';
 import { miCuentaSidebarItems } from "@/navigation/sidebar/mi-cuenta-sidebar-items";
 import MiCuentaSidebarBrandHeader from "./mi-cuenta-sidebar-header";
 import MiCuentaSidebarNavigation from "./mi-cuenta-sidebar-navigation";

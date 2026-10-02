@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { Toaster } from "sonner";
 import { HRSidebar } from "@/app/[locale]/hr/components/sidebar/app-hr-sidebar";
 import { Separator } from "@/components/ui/separator";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/animate-ui/components/radix/sidebar';
 import HRSidebarBreadcrumbs from "./components/sidebar/hr-sidebar-breadcrumbs";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import { Users } from "lucide-react";

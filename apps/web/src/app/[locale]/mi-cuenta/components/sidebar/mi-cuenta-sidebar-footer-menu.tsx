@@ -12,7 +12,7 @@ import {
 import {
  SidebarMenu,
  SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from '@/components/animate-ui/components/radix/sidebar';
 
 const ROLE_CONFIG: Record<string, { label: string; classes: string }> = {
  owner: { label: 'Propietario', classes: 'bg-snow/10 text-sunshine-ink border border-sunshine-dark/30 font-black' },

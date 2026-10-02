@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { Toaster } from "sonner";
 import { ProjectSidebar } from "@/app/projects/components/sidebar/app-project-sidebar";
 import { Separator } from "@/components/ui/separator";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/animate-ui/components/radix/sidebar';
 import ProjectSidebarBreadcrumbs from "./components/sidebar/project-sidebar-breadcrumbs";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import { FolderKanban } from "lucide-react";

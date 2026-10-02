@@ -4,7 +4,7 @@ import { Suspense, ReactNode } from "react";
 import { Toaster } from "sonner";
 import { MiCuentaSidebar } from "@/app/mi-cuenta/components/sidebar/app-mi-cuenta-sidebar";
 import { Separator } from "@/components/ui/separator";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/animate-ui/components/radix/sidebar';
 import MiCuentaSidebarBreadcrumbs from "./components/sidebar/mi-cuenta-sidebar-breadcrumbs";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import { User } from "lucide-react";

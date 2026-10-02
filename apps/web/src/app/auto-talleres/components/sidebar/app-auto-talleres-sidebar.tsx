@@ -4,7 +4,7 @@ import {
  SidebarContent,
  SidebarFooter,
  SidebarRail,
-} from "@/components/ui/sidebar";
+} from '@/components/animate-ui/components/radix/sidebar';
 import { AutoTalleresSidebarHeader } from "./auto-talleres-sidebar-header";
 import { AutoTalleresSidebarNavigation } from "./auto-talleres-sidebar-navigation";
 import { AutoTalleresSidebarFooterMenu } from "./auto-talleres-sidebar-footer-menu";

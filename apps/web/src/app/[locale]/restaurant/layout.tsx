@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { Toaster } from "sonner";
 import { RestaurantSidebar } from "@/app/restaurant/components/sidebar/app-restaurant-sidebar";
 import { Separator } from "@/components/ui/separator";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/animate-ui/components/radix/sidebar';
 import RestaurantSidebarBreadcrumbs from "./components/sidebar/restaurant-sidebar-breadcrumbs";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import { UtensilsCrossed } from "lucide-react";

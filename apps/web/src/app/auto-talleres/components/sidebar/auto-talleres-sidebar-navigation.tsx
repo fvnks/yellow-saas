@@ -9,7 +9,7 @@ import {
  SidebarMenu,
  SidebarMenuButton,
  SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from '@/components/animate-ui/components/radix/sidebar';
 import { autoTalleresSidebarItems, resolveModuleIcon } from "@/navigation/sidebar/auto-talleres-sidebar-items";
 import { cn } from "@/lib/utils";
 
