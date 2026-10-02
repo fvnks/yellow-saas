@@ -56,7 +56,7 @@ export function Navbar() {
  href="/es/register"
  className="rounded-[160px] bg-sunshine hover:bg-sunshine-hover text-ink px-5 py-2.5 text-sm font-medium shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center gap-1.5"
  >
- <span>Empezar Gratis</span>
+ <span>Comenzar Ahora</span>
  <ChevronRight className="w-4 h-4" />
  </Link>
  </div>
@@ -103,7 +103,7 @@ export function Navbar() {
  className="block rounded-[160px] bg-sunshine hover:bg-sunshine-hover px-4 py-2.5 text-sm font-medium text-ink text-center shadow-sm"
  onClick={() => setMobileOpen(false)}
  >
- Empezar Gratis
+ Comenzar Ahora
  </Link>
  </div>
  </div>

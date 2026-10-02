@@ -53,7 +53,7 @@ const pricingPlans = [
  'Multi-sucursal básica',
  'Soporte estándar por email',
  ],
- cta: 'Empezar 14 Días Gratis',
+ cta: 'Comenzar — 14 Días de Prueba',
  popular: false,
  },
  {
@@ -69,7 +69,7 @@ const pricingPlans = [
  'Acceso completo a la API REST',
  'Soporte prioritario 24/7',
  ],
- cta: 'Probar Gratis Ahora',
+ cta: 'Comenzar Ahora',
  popular: true,
  },
  {
@@ -102,7 +102,7 @@ const faqItems = [
  },
  {
  question: '¿Puedo probarlo sin tarjeta de crédito?',
- answer: 'Sí. Tienes 14 días gratis con todos los módulos del plan Professional y no pedimos tarjeta para comenzar. Al terminar, decides si contratas o simplemente dejas de usarlo.',
+ answer: 'Sí. Tienes 14 días de prueba con todos los módulos del plan Professional y no pedimos tarjeta para comenzar. Al terminar, decides si contratas o simplemente dejas de usarlo.',
  },
  {
  question: '¿Puedo importar mis datos desde otro sistema?',
@@ -208,7 +208,7 @@ export default function HomePage() {
  className="w-full sm:w-auto rounded-[160px] bg-sunshine hover:bg-sunshine-hover text-white px-8 py-3.5 text-sm font-medium shadow-md transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2"
  >
  <Plus className="w-4 h-4" />
- Empezar Gratis — 14 Días
+ Comenzar — 14 Días de Prueba
  </Link>
  <Link
  href="#modules"
@@ -400,7 +400,7 @@ export default function HomePage() {
  Planes claros y sin costos ocultos
  </h2>
  <p className="text-sm text-slate-text max-w-xl mx-auto mb-6">
- Comienza hoy con 14 días de prueba totalmente gratis. Cancela en cualquier momento.
+ Comienza hoy con 14 días de prueba de prueba. Cancela en cualquier momento.
  </p>
  <PricingToggle onToggle={setYearly} />
  </div>
@@ -492,7 +492,7 @@ export default function HomePage() {
  href="/register"
  className="w-full sm:w-auto rounded-[160px] bg-sunshine hover:bg-sunshine-hover text-white px-8 py-3.5 text-sm font-medium shadow-md transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2"
  >
- <span>Empezar Gratis</span>
+ <span>Comenzar Ahora</span>
  <ChevronRight className="w-4 h-4" />
  </Link>
  <Link

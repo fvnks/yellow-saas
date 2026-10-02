@@ -424,7 +424,7 @@ function BillingTab({ plan, status }: { plan: string; status: string }) {
  const otherPlans = plans.filter(p => p.name !== plan && p.name !== 'free');
 
  function formatPrice(cents: number): string {
- if (cents === 0) return 'Gratis';
+ if (cents === 0) return 'Sin costo';
  return `$${(cents / 100).toLocaleString('es-CL')}`;
  }
 

@@ -59,7 +59,7 @@ export default function PlanTab() {
  };
 
  const formatPrice = (cents: number) => {
- if (cents === 0) return 'Gratis';
+ if (cents === 0) return 'Sin costo';
  return `$${(cents / 100).toLocaleString('es-CL')}`;
  };
 

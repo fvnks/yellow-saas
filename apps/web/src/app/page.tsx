@@ -57,7 +57,7 @@ const pricingPlans = [
     price: 29900,
     desc: 'Para emprendedores y microempresas',
     features: ['Inventario + Ventas + Compras', 'Facturación SII ilimitada', 'Hasta 3 usuarios', 'Soporte por email'],
-    cta: 'Empezar Gratis',
+    cta: 'Comenzar Ahora',
     popular: false,
   },
   {
@@ -65,7 +65,7 @@ const pricingPlans = [
     price: 59900,
     desc: 'Para PyMEs en expansión',
     features: ['Todos los módulos de Starter', 'Contabilidad + Nómina', 'CRM + Proyectos + Costos', 'Hasta 15 usuarios', 'Soporte prioritario 24/7'],
-    cta: 'Probar Gratis',
+    cta: 'Comenzar Ahora',
     popular: true,
   },
   {
@@ -142,7 +142,7 @@ export default function HomePage() {
                 href="/es/register"
                 className="w-full sm:w-auto rounded-[160px] bg-sunshine hover:bg-sunshine-hover text-ink px-8 py-3.5 text-sm font-semibold transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2 shadow-sm"
               >
-                Empezar Gratis — 14 Días
+                Comenzar Ahora — 14 Días
                 <ChevronRight className="w-4 h-4" />
               </Link>
               <Link
@@ -322,7 +322,7 @@ export default function HomePage() {
               Planes claros y sin costos ocultos
             </h2>
             <p className="text-sm text-slate-text max-w-xl mx-auto mb-6">
-              Comienza hoy con 14 días de prueba totalmente gratis. Cancela en cualquier momento.
+              Comienza hoy con 14 días de prueba. Cancela en cualquier momento.
             </p>
           </div>
 
@@ -386,7 +386,7 @@ export default function HomePage() {
                 href="/es/register"
                 className="w-full sm:w-auto rounded-[160px] bg-sunshine hover:bg-sunshine-hover text-ink px-8 py-3.5 text-sm font-semibold transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2 shadow-sm"
               >
-                Empezar Gratis
+                Comenzar Ahora
                 <ChevronRight className="w-4 h-4" />
               </Link>
               <Link

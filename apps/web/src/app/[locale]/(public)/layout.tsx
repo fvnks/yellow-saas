@@ -4,7 +4,7 @@ const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://yellow-erp.cl';
 
 const title = 'Yellow ERP — El ERP chileno que emite facturas al SII mientras vendes';
 const description =
- 'Inventario, ventas, compras, contabilidad y nómina chilena en un solo SaaS. Emite DTEs al SII en segundos, con AFP/ISAPRE, UF y cumplimiento SII nativo. 14 días gratis, sin tarjeta.';
+ 'Inventario, ventas, compras, contabilidad y nómina chilena en un solo SaaS. Emite DTEs al SII en segundos, con AFP/ISAPRE, UF y cumplimiento SII nativo. 14 días de prueba, sin tarjeta.';
 const ogImage = '/screenshots/dashboard-wide.png';
 
 const jsonLd = {

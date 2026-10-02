@@ -315,7 +315,7 @@ export default function AdminBillingPage() {
  </div>
  </div>
  <p className="text-2xl font-bold text-ink">
- {plan.price_monthly === 0 ? 'Gratis' : `$${plan.price_monthly.toLocaleString('es-CL')}`}
+ {plan.price_monthly === 0 ? 'Sin costo' : `$${plan.price_monthly.toLocaleString('es-CL')}`}
  </p>
  {plan.price_monthly > 0 && <p className="text-xs text-muted-foreground">/mes</p>}
  <p className="text-xs text-muted-foreground mt-2">
