@@ -159,7 +159,7 @@ export default function ImagingPage() {
           </div>
           <button
             onClick={() => setShowForm(true)}
-            className="bg-monday-violet hover:bg-monday-violet-hover text-white px-6 py-3 rounded-[160px] text-sm font-medium shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center gap-2"
+            className="bg-sunshine hover:bg-sunshine-hover text-white px-6 py-3 rounded-[160px] text-sm font-medium shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
             Nuevo Estudio
@@ -177,7 +177,7 @@ export default function ImagingPage() {
               placeholder="Buscar por paciente, número o región..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-cloud border border-mist rounded-md text-sm text-ink focus:outline-none focus:ring-2 focus:ring-monday-violet/20"
+              className="w-full pl-10 pr-4 py-2 bg-cloud border border-mist rounded-md text-sm text-ink focus:outline-none focus:ring-2 focus:ring-sunshine-dark/20"
             />
           </div>
         </div>
@@ -187,7 +187,7 @@ export default function ImagingPage() {
       <div className="bg-snow border border-mist rounded-3xl shadow-card overflow-hidden">
         {loading ? (
           <div className="p-12 text-center">
-            <div className="w-8 h-8 border-4 border-monday-violet border-t-transparent rounded-full animate-spin mx-auto" />
+            <div className="w-8 h-8 border-4 border-sunshine-dark border-t-transparent rounded-full animate-spin mx-auto" />
             <p className="text-slate-text text-sm mt-3">Cargando estudios...</p>
           </div>
         ) : studies.length === 0 ? (
@@ -235,7 +235,7 @@ export default function ImagingPage() {
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => openDetail(s)}
-                          className="text-monday-violet hover:bg-cloud p-1.5 rounded-md transition-colors"
+                          className="text-sunshine-ink hover:bg-cloud p-1.5 rounded-md transition-colors"
                           title="Ver detalle"
                         >
                           <Eye className="w-4 h-4" />
@@ -270,7 +270,7 @@ export default function ImagingPage() {
                 <div>
                   <label className="text-xs font-semibold text-ink mb-1 block">Paciente *</label>
                   <select value={form.patient_id} onChange={(e) => setForm({ ...form, patient_id: e.target.value })}
-                    className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-monday-violet/20">
+                    className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-sunshine-dark/20">
                     <option value="">Seleccionar...</option>
                     {patients.map((p) => <option key={p.id} value={p.id}>{p.name} ({p.species})</option>)}
                   </select>
@@ -278,7 +278,7 @@ export default function ImagingPage() {
                 <div>
                   <label className="text-xs font-semibold text-ink mb-1 block">Cliente / Tutor *</label>
                   <select value={form.client_id} onChange={(e) => setForm({ ...form, client_id: e.target.value })}
-                    className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-monday-violet/20">
+                    className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-sunshine-dark/20">
                     <option value="">Seleccionar...</option>
                     {clients.map((c) => <option key={c.id} value={c.id}>{c.full_name}</option>)}
                   </select>
@@ -288,26 +288,26 @@ export default function ImagingPage() {
                 <div>
                   <label className="text-xs font-semibold text-ink mb-1 block">Tipo de Estudio *</label>
                   <select value={form.study_type} onChange={(e) => setForm({ ...form, study_type: e.target.value })}
-                    className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-monday-violet/20">
+                    className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-sunshine-dark/20">
                     {Object.entries(STUDY_TYPES).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-ink mb-1 block">Fecha</label>
                   <input type="date" value={form.study_date} onChange={(e) => setForm({ ...form, study_date: e.target.value })}
-                    className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-monday-violet/20" />
+                    className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-sunshine-dark/20" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-semibold text-ink mb-1 block">Región Anatómica</label>
                   <input type="text" placeholder="ej: Tórax, Abdomen, Cráneo..." value={form.region} onChange={(e) => setForm({ ...form, region: e.target.value })}
-                    className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-monday-violet/20" />
+                    className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-sunshine-dark/20" />
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-ink mb-1 block">Profesional</label>
                   <select value={form.professional_id} onChange={(e) => setForm({ ...form, professional_id: e.target.value })}
-                    className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-monday-violet/20">
+                    className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-sunshine-dark/20">
                     <option value="">Seleccionar...</option>
                     {professionals.map((p: any) => <option key={p.id} value={p.id}>{p.full_name}</option>)}
                   </select>
@@ -316,17 +316,17 @@ export default function ImagingPage() {
               <div>
                 <label className="text-xs font-semibold text-ink mb-1 block">Hallazgos</label>
                 <textarea rows={3} value={form.findings} onChange={(e) => setForm({ ...form, findings: e.target.value })}
-                  className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-monday-violet/20" placeholder="Descripción de hallazgos..." />
+                  className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-sunshine-dark/20" placeholder="Descripción de hallazgos..." />
               </div>
               <div>
                 <label className="text-xs font-semibold text-ink mb-1 block">Conclusión</label>
                 <textarea rows={2} value={form.conclusion} onChange={(e) => setForm({ ...form, conclusion: e.target.value })}
-                  className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-monday-violet/20" placeholder="Diagnóstico / conclusión..." />
+                  className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-sunshine-dark/20" placeholder="Diagnóstico / conclusión..." />
               </div>
               <div className="flex justify-end gap-3 pt-2">
                 <button onClick={() => setShowForm(false)} className="bg-snow border border-mist hover:bg-cloud text-ink px-6 py-2.5 rounded-[160px] text-sm font-medium transition-all">Cancelar</button>
                 <button onClick={handleCreate} disabled={!form.patient_id || !form.client_id}
-                  className="bg-monday-violet hover:bg-monday-violet-hover text-white px-6 py-2.5 rounded-[160px] text-sm font-medium shadow-sm transition-all disabled:opacity-50">
+                  className="bg-sunshine hover:bg-sunshine-hover text-white px-6 py-2.5 rounded-[160px] text-sm font-medium shadow-sm transition-all disabled:opacity-50">
                   Crear Estudio
                 </button>
               </div>
@@ -346,7 +346,7 @@ export default function ImagingPage() {
               </div>
               <div className="flex items-center gap-2">
                 {!isEditing && (
-                  <button onClick={() => setIsEditing(true)} className="p-1.5 rounded-md hover:bg-cloud text-monday-violet" title="Editar">
+                  <button onClick={() => setIsEditing(true)} className="p-1.5 rounded-md hover:bg-cloud text-sunshine-ink" title="Editar">
                     <Edit2 className="w-4 h-4" />
                   </button>
                 )}
@@ -385,7 +385,7 @@ export default function ImagingPage() {
                     rows={3}
                     value={editForm.findings}
                     onChange={(e) => setEditForm({ ...editForm, findings: e.target.value })}
-                    className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-monday-violet/20"
+                    className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-sunshine-dark/20"
                   />
                 ) : (
                   <p className="text-sm text-ink bg-cloud rounded-md p-3 border border-mist">{selectedStudy.findings || 'Sin hallazgos registrados'}</p>
@@ -399,7 +399,7 @@ export default function ImagingPage() {
                     rows={2}
                     value={editForm.conclusion}
                     onChange={(e) => setEditForm({ ...editForm, conclusion: e.target.value })}
-                    className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-monday-violet/20"
+                    className="w-full px-3 py-2 border border-mist rounded-md text-sm text-ink bg-snow focus:ring-2 focus:ring-sunshine-dark/20"
                   />
                 ) : (
                   <p className="text-sm text-forest bg-mint/30 rounded-md p-3 border border-mint/50">{selectedStudy.conclusion || 'Sin conclusión registrada'}</p>
@@ -409,7 +409,7 @@ export default function ImagingPage() {
               {isEditing && (
                 <div className="flex justify-end gap-3 pt-2">
                   <button onClick={() => setIsEditing(false)} className="bg-snow border border-mist hover:bg-cloud text-ink px-4 py-2 rounded-[160px] text-xs font-medium">Cancelar</button>
-                  <button onClick={handleUpdate} className="bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-[160px] text-xs font-medium flex items-center gap-1">
+                  <button onClick={handleUpdate} className="bg-sunshine hover:bg-sunshine-hover text-white px-4 py-2 rounded-[160px] text-xs font-medium flex items-center gap-1">
                     <Check className="w-3.5 h-3.5" /> Guardar Cambios
                   </button>
                 </div>

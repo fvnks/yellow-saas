@@ -140,7 +140,7 @@ export default function VeterinaryPatientsPage() {
 
  <button
  onClick={() => setShowModal(true)}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
  >
  <Plus className="w-4 h-4" />
  Registrar Mascota
@@ -167,7 +167,7 @@ export default function VeterinaryPatientsPage() {
  onClick={() => setSelectedSpecies(sp)}
  className={`px-3 py-1.5 rounded-xl text-xs font-bold capitalize transition-all shrink-0 ${
  selectedSpecies === sp
- ? 'bg-monday-violet text-white shadow-xs'
+ ? 'bg-sunshine text-white shadow-xs'
  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
  }`}
  >
@@ -254,7 +254,7 @@ export default function VeterinaryPatientsPage() {
  <td className="px-6 py-4 text-right">
  <Link
  href={`/veterinaria/pacientes/${patient.id}`}
- className="bg-monday-violet hover:bg-cloud text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-xs inline-flex items-center gap-1.5"
+ className="bg-sunshine hover:bg-cloud text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-xs inline-flex items-center gap-1.5"
  >
  <Stethoscope className="w-3.5 h-3.5 text-emerald-400" />
  Ficha 360°
@@ -367,7 +367,7 @@ export default function VeterinaryPatientsPage() {
  <button
  type="submit"
  disabled={saving}
- className="bg-monday-violet hover:bg-cloud text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm disabled:opacity-50"
+ className="bg-sunshine hover:bg-cloud text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm disabled:opacity-50"
  >
  {saving ? 'Guardando...' : 'Guardar Mascota'}
  </button>

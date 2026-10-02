@@ -118,7 +118,7 @@ function RestaurantSidebarNavigationContent({ sidebarItems }: RestaurantSidebarN
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar en Restaurante..."
- className="w-full bg-cloud border border-mist text-xs text-ink placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-monday-violet focus:ring-1 focus:ring-monday-violet transition-all"
+ className="w-full bg-cloud border border-mist text-xs text-ink placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-sunshine-dark focus:ring-1 focus:ring-sunshine-dark transition-all"
  />
  {searchQuery ? (
  <button onClick={() => setSearchQuery("")} className="absolute right-2 text-iron hover:text-ink">

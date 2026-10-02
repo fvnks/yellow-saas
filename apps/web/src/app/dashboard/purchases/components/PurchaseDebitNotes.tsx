@@ -106,12 +106,12 @@ export default function PurchaseDebitNotes() {
  <div className="space-y-4">
  <div className="flex items-center justify-between">
  <div className="flex items-center gap-2">
- <FileMinus className="w-4 h-4 text-monday-violet" />
+ <FileMinus className="w-4 h-4 text-sunshine-ink" />
  <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Notas de Débito Recibidas</span>
  </div>
  <div className="text-right">
  <p className="text-[9px] font-semibold text-muted-foreground uppercase">Total ND</p>
- <p className="text-sm font-bold text-monday-violet">${total.toLocaleString('es-CL')}</p>
+ <p className="text-sm font-bold text-sunshine-ink">${total.toLocaleString('es-CL')}</p>
  </div>
  </div>
 
@@ -145,7 +145,7 @@ export default function PurchaseDebitNotes() {
  <td className="px-4 py-3 text-xs text-muted-foreground font-mono">{n.supplier_tax_id}</td>
  <td className="px-4 py-3 text-xs text-foreground">{n.issue_date}</td>
  <td className="px-4 py-3 text-xs text-foreground max-w-xs truncate">{n.reason}</td>
- <td className="px-4 py-3 text-xs text-right font-medium text-monday-violet font-mono">${Number(n.total_amount || 0).toLocaleString('es-CL')}</td>
+ <td className="px-4 py-3 text-xs text-right font-medium text-sunshine-ink font-mono">${Number(n.total_amount || 0).toLocaleString('es-CL')}</td>
  <td className="px-4 py-3 text-center">
  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${st.bg} ${st.color} border ${st.border}`}>{st.label}</span>
  </td>

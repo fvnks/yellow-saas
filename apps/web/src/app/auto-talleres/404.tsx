@@ -12,7 +12,7 @@ export default function NotFound() {
  </p>
  <a
  href="/auto-talleres"
- className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-6 py-3 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-sunshine hover:bg-sunshine-hover text-ink font-bold px-6 py-3 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  Volver al Inicio
  </a>

@@ -91,7 +91,7 @@ function ProjectDashboardInner() {
  <p className="text-sm text-[#64748B] mt-1">Control de proyectos, ejecución presupuestaria, hitos y horas del equipo</p>
  </div>
  <Link href="/projects/new"
- className="bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm">
+ className="bg-sunshine hover:bg-sunshine-hover text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm">
  <Plus className="w-4 h-4" /> Nuevo Proyecto
  </Link>
  </div>

@@ -266,7 +266,7 @@ export default function DeliveryGuideDetailPage({ params }: { params: { id: stri
  </div>
  <div className="flex items-center gap-3">
  <div className="w-8 h-8 bg-peach/30 rounded-lg flex items-center justify-center">
- <Truck className="w-4 h-4 text-monday-violet" />
+ <Truck className="w-4 h-4 text-sunshine-ink" />
  </div>
  <div>
  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Patente</p>

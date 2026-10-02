@@ -183,7 +183,7 @@ export default function AsambleasPage() {
 
  <button
  onClick={() => setShowAddAssemblyModal(true)}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 self-start sm:self-auto"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 self-start sm:self-auto"
  >
  <Plus className="w-4 h-4" />
  Nueva Asamblea
@@ -248,7 +248,7 @@ export default function AsambleasPage() {
  setSelectedTopic(topic);
  setShowVoteModal(true);
  }}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 self-start sm:self-center shrink-0"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-medium px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 self-start sm:self-center shrink-0"
  >
  <Scale className="w-3.5 h-3.5 text-yellow-400" />
  Emitir Voto
@@ -315,7 +315,7 @@ export default function AsambleasPage() {
  </button>
  <button
  type="submit"
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2 rounded-xl text-xs"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-semibold px-4 py-2 rounded-xl text-xs"
  >
  Crear Asamblea
  </button>
@@ -371,7 +371,7 @@ export default function AsambleasPage() {
  </button>
  <button
  type="submit"
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-4 py-2 rounded-xl text-xs"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-medium px-4 py-2 rounded-xl text-xs"
  >
  Registrar Voto Ponderado
  </button>

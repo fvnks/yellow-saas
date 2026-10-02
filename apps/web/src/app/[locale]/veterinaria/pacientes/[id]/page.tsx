@@ -148,7 +148,7 @@ export default function VeterinaryPatientDetailPage() {
  </p>
  <Link
  href="/veterinaria/pacientes"
- className="mt-5 bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-5 py-2.5 rounded-xl text-sm transition-all shadow-sm"
+ className="mt-5 bg-sunshine hover:bg-sunshine-hover text-white font-medium px-5 py-2.5 rounded-xl text-sm transition-all shadow-sm"
  >
  Volver a Pacientes
  </Link>
@@ -205,14 +205,14 @@ export default function VeterinaryPatientDetailPage() {
  />
  <Link
  href="/veterinaria/consultas"
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Stethoscope className="w-4 h-4" />
  Iniciar Consulta
  </Link>
  <Link
  href="/veterinaria/agenda"
- className="bg-monday-violet hover:bg-cloud text-white font-medium px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2"
+ className="bg-sunshine hover:bg-cloud text-white font-medium px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2"
  >
  <Calendar className="w-4 h-4" />
  Agendar Cita
@@ -240,7 +240,7 @@ export default function VeterinaryPatientDetailPage() {
  onClick={() => setActiveTab(tab.id as any)}
  className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-xl transition-all whitespace-nowrap cursor-pointer ${
  isActive
- ? 'bg-monday-violet text-white shadow-xs'
+ ? 'bg-sunshine text-white shadow-xs'
  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
  }`}
  >
@@ -380,7 +380,7 @@ export default function VeterinaryPatientDetailPage() {
  <h3 className="text-base font-bold text-slate-900">Historial de Consultas Médicas</h3>
  <Link
  href="/veterinaria/consultas"
- className="bg-monday-violet text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all"
+ className="bg-sunshine text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all"
  >
  + Nueva Consulta
  </Link>
@@ -429,7 +429,7 @@ export default function VeterinaryPatientDetailPage() {
  <h3 className="text-base font-bold text-slate-900">Evolución Clínica & Notas SOAP</h3>
  <Link
  href="/veterinaria/evoluciones"
- className="bg-monday-violet text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all"
+ className="bg-sunshine text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all"
  >
  + Nueva Nota SOAP
  </Link>
@@ -445,7 +445,7 @@ export default function VeterinaryPatientDetailPage() {
  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/60 pb-2">
  <div className="flex items-center gap-2">
  <span className="text-xs font-bold text-slate-900">{evo.evolutionDate} · {evo.evolutionTime}</span>
- <span className="bg-monday-violet text-white text-[10px] font-black px-2 py-0.5 rounded capitalize">
+ <span className="bg-sunshine text-white text-[10px] font-black px-2 py-0.5 rounded capitalize">
  {evo.type.replace('_', ' ')}
  </span>
  </div>
@@ -483,7 +483,7 @@ export default function VeterinaryPatientDetailPage() {
  </h3>
  <Link
  href="/veterinaria/laboratorio"
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1 shadow-sm"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1 shadow-sm"
  >
  <Plus className="w-3 h-3" /> Nueva Orden
  </Link>

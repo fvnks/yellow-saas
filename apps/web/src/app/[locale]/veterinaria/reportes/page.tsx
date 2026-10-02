@@ -106,7 +106,7 @@ export default function VetReportsPage() {
  </div>
  <div className="flex gap-1">
  {['week', 'month', 'year'].map((p) => (
- <button key={p} onClick={() => setPeriod(p)} className={`px-3 py-1.5 rounded-xl text-xs font-bold capitalize transition-all ${period === p ? 'bg-monday-violet text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+ <button key={p} onClick={() => setPeriod(p)} className={`px-3 py-1.5 rounded-xl text-xs font-bold capitalize transition-all ${period === p ? 'bg-sunshine text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
  {p === 'week' ? 'Semana' : p === 'month' ? 'Mes' : 'AÃ±o'}
  </button>
  ))}
@@ -125,7 +125,7 @@ export default function VetReportsPage() {
  <div className="text-[11px] text-slate-500 font-bold">Pacientes Activos</div>
  </div>
  <div className="bg-white border border-slate-200/80 rounded-2xl p-4">
- <DollarSign className="w-5 h-5 text-monday-violet mb-1" />
+ <DollarSign className="w-5 h-5 text-sunshine-ink mb-1" />
  <div className="text-2xl font-black text-slate-900">{formatCLP(data?.totalRevenue || 0)}</div>
  <div className="text-[11px] text-slate-500 font-bold">Ingresos Totales</div>
  </div>
@@ -193,7 +193,7 @@ export default function VetReportsPage() {
  <div className="p-5 space-y-3">
  {Object.entries(data?.statusMap || {}).map(([status, count]: [string, any]) => {
  const colors: Record<string, string> = {
- agendada: 'bg-blue-500', confirmada: 'bg-monday-violet', en_espera: 'bg-purple-500',
+ agendada: 'bg-blue-500', confirmada: 'bg-sunshine', en_espera: 'bg-purple-500',
  en_atencion: 'bg-emerald-500', finalizada: 'bg-slate-500', cancelada: 'bg-rose-500', no_asistio: 'bg-orange-500',
  };
  return (

@@ -25,8 +25,8 @@ function ChileanIndicatorsPill() {
  }, []);
 
  return (
- <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-monday-violet/10 border border-monday-violet/20 rounded-md text-xs font-semibold text-ink">
- <TrendingUp className="w-3.5 h-3.5 text-monday-violet" />
+ <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-sunshine/10 border border-sunshine-dark/20 rounded-md text-xs font-semibold text-ink">
+ <TrendingUp className="w-3.5 h-3.5 text-sunshine-ink" />
  <span>UF: ${indicators ? indicators.uf.toLocaleString('es-CL') : '38.500'}</span>
  <span className="opacity-40">|</span>
  <DollarSign className="w-3.5 h-3.5 text-[#006680] -mr-1" />

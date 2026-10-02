@@ -220,7 +220,7 @@ export default function NewDeliveryGuidePage() {
  </td>
  <td className="px-4 py-3 text-xs text-muted-foreground">{item.sku}</td>
  <td className="px-4 py-3 text-center">
- <span className={`text-xs font-medium ${item.stock > 10 ? 'text-emerald-600' : item.stock > 0 ? 'text-monday-violet' : 'text-rose-600'}`}>
+ <span className={`text-xs font-medium ${item.stock > 10 ? 'text-emerald-600' : item.stock > 0 ? 'text-sunshine-ink' : 'text-rose-600'}`}>
  {item.stock} uds
  </span>
  </td>
@@ -263,10 +263,10 @@ export default function NewDeliveryGuidePage() {
 
  {items.some(item => item.quantity > item.stock) && (
  <div className="bg-peach/30 border border-peach rounded-xl p-4 flex items-start gap-3">
- <AlertTriangle className="w-5 h-5 text-monday-violet mt-0.5 flex-shrink-0" />
+ <AlertTriangle className="w-5 h-5 text-sunshine-ink mt-0.5 flex-shrink-0" />
  <div>
  <p className="text-sm font-medium text-[#c64d00]">Stock insuficiente</p>
- <p className="text-xs text-monday-violet mt-1">
+ <p className="text-xs text-sunshine-ink mt-1">
  Algunos items exceden el stock disponible. La cantidad será ajustada automáticamente al stock disponible.
  </p>
  </div>

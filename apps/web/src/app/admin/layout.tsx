@@ -201,7 +201,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
  {/* User footer */}
  {sidebarOpen && (
- <div className="p-3 border-t border-mist bg-monday-violet">
+ <div className="p-3 border-t border-mist bg-sunshine">
  <ModuleSidebarFooter moduleKey="admin" user={{ name: userName || 'Super Admin', email: userEmail, role: 'Super Admin' }} />
  </div>
  )}

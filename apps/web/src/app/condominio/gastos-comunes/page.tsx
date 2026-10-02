@@ -237,7 +237,7 @@ export default function GastosComunesPage() {
 
  <button
  onClick={() => setShowAddPeriodModal(true)}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-xs font-bold transition-all duration-150 shadow-xs flex items-center gap-2 active:scale-[0.98]"
+ className="bg-sunshine hover:bg-sunshine-hover text-white px-4 py-2 rounded-xl text-xs font-bold transition-all duration-150 shadow-xs flex items-center gap-2 active:scale-[0.98]"
  >
  <Plus className="w-4 h-4" />
  Crear Nuevo Período
@@ -263,7 +263,7 @@ export default function GastosComunesPage() {
  >
  <span>{p.periodName}</span>
  <span className={`px-1.5 py-0.2 rounded text-[9px] font-extrabold uppercase ${
- p.status === 'emitido' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-monday-violet/20 text-[#c64d00]/60'
+ p.status === 'emitido' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-sunshine/20 text-[#c64d00]/60'
  }`}>
  {p.status}
  </span>
@@ -570,7 +570,7 @@ export default function GastosComunesPage() {
  </button>
  <button
  type="submit"
- className="px-4 py-2 bg-monday-violet text-white font-bold rounded-xl text-xs hover:bg-monday-violet-hover"
+ className="px-4 py-2 bg-sunshine text-white font-bold rounded-xl text-xs hover:bg-sunshine-hover"
  >
  Crear Período
  </button>

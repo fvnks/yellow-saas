@@ -282,7 +282,7 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
  {item.quantity}
  </span>
  ) : (
- <span className="text-xs font-medium text-monday-violet">{item.quantity}</span>
+ <span className="text-xs font-medium text-sunshine-ink">{item.quantity}</span>
  )}
  </td>
  <td className="px-4 py-3 text-xs text-foreground font-mono">{item.batch_number || '—'}</td>
@@ -332,7 +332,7 @@ export default function GoodsReceiptDetailPage({ params }: { params: { id: strin
  <hr className="border-border" />
  <div className="flex items-center justify-between text-sm">
  <span className="text-muted-foreground">Progreso</span>
- <span className={`font-medium ${totalQty >= totalOrdered ? 'text-emerald-600' : 'text-monday-violet'}`}>
+ <span className={`font-medium ${totalQty >= totalOrdered ? 'text-emerald-600' : 'text-sunshine-ink'}`}>
  {totalOrdered > 0 ? Math.round((totalQty / totalOrdered) * 100) : 0}%
  </span>
  </div>

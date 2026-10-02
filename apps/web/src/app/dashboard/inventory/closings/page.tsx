@@ -76,7 +76,7 @@ export default function ClosingsPage() {
  </div>
  <div className="bg-card border border-border rounded-xl shadow-sm p-4">
  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Abiertos</p>
- <p className="text-2xl font-bold text-monday-violet mt-1">{closings.filter(c => c.status === 'open').length}</p>
+ <p className="text-2xl font-bold text-sunshine-ink mt-1">{closings.filter(c => c.status === 'open').length}</p>
  </div>
  <div className="bg-card border border-border rounded-xl shadow-sm p-4">
  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Último Cierre</p>

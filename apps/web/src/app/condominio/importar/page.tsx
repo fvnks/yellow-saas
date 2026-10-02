@@ -193,7 +193,7 @@ export default function ImportarPlanillasPage() {
  <button
  onClick={handleFinalImport}
  disabled={validCount === 0}
- className="w-full bg-monday-violet hover:bg-monday-violet-hover text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-xs flex items-center justify-center gap-2 disabled:opacity-50"
+ className="w-full bg-sunshine hover:bg-sunshine-hover text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-xs flex items-center justify-center gap-2 disabled:opacity-50"
  >
  <Check className="w-4 h-4" />
  Confirmar e Importar {validCount} Unidades

@@ -236,7 +236,7 @@ export default function VeterinaryPatientDetailPage() {
  </p>
  <Link
  href="/veterinaria/pacientes"
- className="mt-5 bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-5 py-2.5 rounded-xl text-sm transition-all shadow-sm"
+ className="mt-5 bg-sunshine hover:bg-sunshine-hover text-white font-medium px-5 py-2.5 rounded-xl text-sm transition-all shadow-sm"
  >
  Volver a Pacientes
  </Link>
@@ -287,14 +287,14 @@ export default function VeterinaryPatientDetailPage() {
  <div className="flex flex-wrap items-center gap-3 self-start md:self-center">
  <Link
  href="/veterinaria/consultas"
- className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-sunshine hover:bg-sunshine-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Stethoscope className="w-4 h-4" />
  Nueva Consulta
  </Link>
  <Link
  href="/veterinaria/agenda"
- className="bg-monday-violet hover:bg-cloud text-white font-medium px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2"
+ className="bg-sunshine hover:bg-cloud text-white font-medium px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2"
  >
  <Calendar className="w-4 h-4" />
  Agendar Cita
@@ -314,7 +314,7 @@ export default function VeterinaryPatientDetailPage() {
  onClick={() => setActiveTab(tab.id)}
  className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-xl transition-all whitespace-nowrap cursor-pointer ${
  isActive
- ? 'bg-monday-violet text-white shadow-xs'
+ ? 'bg-sunshine text-white shadow-xs'
  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
  }`}
  >
@@ -417,7 +417,7 @@ export default function VeterinaryPatientDetailPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
  <h3 className="text-base font-bold text-slate-900">Historial de Consultas</h3>
- <Link href="/veterinaria/consultas" className="bg-monday-violet text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all">
+ <Link href="/veterinaria/consultas" className="bg-sunshine text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all">
  + Nueva Consulta
  </Link>
  </div>
@@ -463,7 +463,7 @@ export default function VeterinaryPatientDetailPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
  <h3 className="text-base font-bold text-slate-900">Vacunación</h3>
- <Link href="/veterinaria/vacunas" className="bg-monday-violet text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all">
+ <Link href="/veterinaria/vacunas" className="bg-sunshine text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all">
  + Nueva Vacuna
  </Link>
  </div>
@@ -498,7 +498,7 @@ export default function VeterinaryPatientDetailPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
  <h3 className="text-base font-bold text-slate-900">Cirugías</h3>
- <Link href="/veterinaria/cirugias" className="bg-monday-violet text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all">
+ <Link href="/veterinaria/cirugias" className="bg-sunshine text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all">
  + Nueva Cirugía
  </Link>
  </div>
@@ -537,7 +537,7 @@ export default function VeterinaryPatientDetailPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
  <h3 className="text-base font-bold text-slate-900">Hospitalización</h3>
- <Link href="/veterinaria/hospitalizaciones" className="bg-monday-violet text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all">
+ <Link href="/veterinaria/hospitalizaciones" className="bg-sunshine text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all">
  + Nueva Internación
  </Link>
  </div>
@@ -578,7 +578,7 @@ export default function VeterinaryPatientDetailPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
  <h3 className="text-base font-bold text-slate-900">Evolución Clínica & Notas SOAP</h3>
- <Link href="/veterinaria/evoluciones" className="bg-monday-violet text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all">
+ <Link href="/veterinaria/evoluciones" className="bg-sunshine text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all">
  + Nueva Nota SOAP
  </Link>
  </div>
@@ -594,7 +594,7 @@ export default function VeterinaryPatientDetailPage() {
  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/60 pb-2">
  <div className="flex items-center gap-2">
  <span className="text-xs font-bold text-slate-900">{evo.evolutionDate} · {evo.evolutionTime}</span>
- <span className="bg-monday-violet text-white text-[10px] font-black px-2 py-0.5 rounded capitalize">
+ <span className="bg-sunshine text-white text-[10px] font-black px-2 py-0.5 rounded capitalize">
  {evo.type?.replace('_', ' ') || evo.evolution_type?.replace('_', ' ')}
  </span>
  </div>
@@ -625,7 +625,7 @@ export default function VeterinaryPatientDetailPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
  <h3 className="text-base font-bold text-slate-900">Recetas Médicas</h3>
- <Link href="/veterinaria/recetas" className="bg-monday-violet text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all">
+ <Link href="/veterinaria/recetas" className="bg-sunshine text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all">
  + Nueva Receta
  </Link>
  </div>
@@ -671,7 +671,7 @@ export default function VeterinaryPatientDetailPage() {
  <FlaskConical className="w-4 h-4 text-emerald-600" />
  Órdenes de Laboratorio ({labOrdersData.length})
  </h3>
- <Link href="/veterinaria/laboratorio" className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1 shadow-sm">
+ <Link href="/veterinaria/laboratorio" className="bg-sunshine hover:bg-sunshine-hover text-ink font-bold px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1 shadow-sm">
  <Plus className="w-3 h-3" /> Nueva Orden
  </Link>
  </div>
@@ -730,7 +730,7 @@ export default function VeterinaryPatientDetailPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
  <h3 className="text-base font-bold text-slate-900">Imagenología</h3>
- <Link href="/veterinaria/imagenologia" className="bg-monday-violet text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all">
+ <Link href="/veterinaria/imagenologia" className="bg-sunshine text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all">
  + Nuevo Estudio
  </Link>
  </div>
@@ -759,7 +759,7 @@ export default function VeterinaryPatientDetailPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
  <h3 className="text-base font-bold text-slate-900">Historial de Pagos</h3>
- <Link href="/veterinaria/pagos" className="bg-monday-violet text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all">
+ <Link href="/veterinaria/pagos" className="bg-sunshine text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-cloud transition-all">
  + Nuevo Pago
  </Link>
  </div>

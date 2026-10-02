@@ -16,7 +16,7 @@ import {
  PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip
 } from 'recharts';
 
-const PIE_COLORS = ['#6161FF', '#ccccff', '#10B981', '#F43F5E', '#d0ecf5'];
+const PIE_COLORS = ['#D4A017', '#FFE08A', '#10B981', '#F43F5E', '#d0ecf5'];
 
 const statusLabels: Record<string, string> = {
  draft: 'Borrador', confirmed: 'Confirmado SII', processing: 'En Proceso',
@@ -37,17 +37,17 @@ function ChangeIndicator({ value }: { value: number }) {
 }
 
 const salesMarkers = [
- { date: new Date(2026, 0, 1), icon: '🎯', title: 'Inicio de año', color: '#6161FF' },
- { date: new Date(2026, 5, 1), icon: '📊', title: 'Medio año', color: '#ccccff' },
+ { date: new Date(2026, 0, 1), icon: '🎯', title: 'Inicio de año', color: '#D4A017' },
+ { date: new Date(2026, 5, 1), icon: '📊', title: 'Medio año', color: '#FFE08A' },
 ];
 
 const kpiStyles = [
- { bg: 'bg-periwinkle', text: 'text-monday-violet', border: 'hover:border-monday-violet/30' },
+ { bg: 'bg-periwinkle', text: 'text-sunshine-ink', border: 'hover:border-sunshine-dark/30' },
  { bg: 'bg-sky-accent/30', text: 'text-[#006680]', border: 'hover:border-sky-accent' },
- { bg: 'bg-lavender', text: 'text-[#7c3aed]', border: 'hover:border-lavender' },
+ { bg: 'bg-lavender', text: 'text-[#8A6100]', border: 'hover:border-lavender' },
  { bg: 'bg-mint/30', text: 'text-forest', border: 'hover:border-mint' },
  { bg: 'bg-peach/30', text: 'text-[#c64d00]', border: 'hover:border-peach' },
- { bg: 'bg-cotton-candy/20', text: 'text-[#9333ea]', border: 'hover:border-cotton-candy' },
+ { bg: 'bg-cotton-candy/20', text: 'text-[#8A6100]', border: 'hover:border-cotton-candy' },
 ];
 
 export default function DashboardPage() {
@@ -107,11 +107,11 @@ export default function DashboardPage() {
  <div className="space-y-6 pt-2 animate-fade-in-up">
  {/* Signature Banner: monday.com ERP */}
  <div className="relative overflow-hidden bg-snow text-ink p-6 sm:p-8 rounded-3xl shadow-card border border-mist">
- <div className="absolute right-0 top-0 translate-x-8 -translate-y-8 w-64 h-64 bg-monday-violet/10 rounded-full blur-3xl pointer-events-none" />
+ <div className="absolute right-0 top-0 translate-x-8 -translate-y-8 w-64 h-64 bg-sunshine/10 rounded-full blur-3xl pointer-events-none" />
  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
  <div className="space-y-2">
  <div className="flex items-center gap-2.5 flex-wrap">
- <span className="px-3 py-1 rounded-md text-xs font-black bg-monday-violet text-white uppercase tracking-wider shadow-sm flex items-center gap-1.5">
+ <span className="px-3 py-1 rounded-md text-xs font-black bg-sunshine text-white uppercase tracking-wider shadow-sm flex items-center gap-1.5">
  <Zap className="w-3.5 h-3.5 fill-white" /> Yellow ERP
  </span>
  <span className="px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-mint/30 text-forest border border-mint/50 flex items-center gap-1">
@@ -127,12 +127,12 @@ export default function DashboardPage() {
  </div>
 
  <div className="flex flex-wrap items-center gap-3 shrink-0">
- <Link href="/dashboard/sales/new" className="bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-4 py-2.5 rounded-[160px] text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2">
+ <Link href="/dashboard/sales/new" className="bg-sunshine hover:bg-sunshine-hover text-white font-medium px-4 py-2.5 rounded-[160px] text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2">
  <ShoppingCart className="w-4 h-4" />
  Emitir Factura DTE
  </Link>
  <Link href="/dashboard/purchases/new" className="bg-snow border border-mist hover:bg-cloud text-ink font-medium px-4 py-2.5 rounded-[160px] text-sm transition-all duration-150 flex items-center gap-2">
- <Receipt className="w-4 h-4 text-monday-violet" />
+ <Receipt className="w-4 h-4 text-sunshine-ink" />
  Nueva Compra
  </Link>
  </div>
@@ -170,13 +170,13 @@ export default function DashboardPage() {
  <h3 className="text-base font-semibold text-ink">Flujo de Ventas (CLP)</h3>
  <p className="text-xs text-iron">{kpis.sales?.count || 0} órdenes aprobadas en el periodo</p>
  </div>
- <Link href="/dashboard/sales" className="text-xs font-semibold text-monday-violet hover:text-monday-violet-hover flex items-center gap-1">
+ <Link href="/dashboard/sales" className="text-xs font-semibold text-sunshine-ink hover:text-sunshine-ink-hover flex items-center gap-1">
  Ver DTEs <ArrowRight className="w-3.5 h-3.5" />
  </Link>
  </div>
  <ThemedLineChart
  data={salesByDay}
- lines={[{ dataKey: 'Monto', color: '#6161FF' }]}
+ lines={[{ dataKey: 'Monto', color: '#D4A017' }]}
  markers={salesMarkers}
  formatter={(v) => [formatCurrency(v), 'Monto']}
  />
@@ -194,7 +194,7 @@ export default function DashboardPage() {
  </div>
  <ThemedBarChart
  data={purchasesByDay}
- bars={[{ dataKey: 'Monto', color: '#ccccff' }]}
+ bars={[{ dataKey: 'Monto', color: '#FFE08A' }]}
  formatter={(v) => [formatCurrency(v), 'Monto']}
  />
  </div>
@@ -259,7 +259,7 @@ export default function DashboardPage() {
  {topProducts.map((p: any, i: number) => (
  <div key={p.id || p.sku || `top-prod-${i}`} className="flex items-center justify-between p-2 rounded-xl hover:bg-cloud transition-colors">
  <div className="flex items-center gap-3 min-w-0">
- <span className="w-6 h-6 rounded-lg bg-periwinkle text-monday-violet font-bold text-xs flex items-center justify-center">{i + 1}</span>
+ <span className="w-6 h-6 rounded-lg bg-periwinkle text-sunshine-ink font-bold text-xs flex items-center justify-center">{i + 1}</span>
  <div className="min-w-0">
  <p className="text-xs font-semibold text-ink truncate">{p.name}</p>
  <p className="text-[10px] text-iron font-mono">{p.sku}</p>
@@ -278,7 +278,7 @@ export default function DashboardPage() {
  <h3 className="text-sm font-semibold text-ink">Ventas DTE Recientes</h3>
  <p className="text-xs text-iron">Últimas emisiones SII</p>
  </div>
- <Link href="/dashboard/sales" className="text-xs font-medium text-monday-violet hover:text-monday-violet-hover">
+ <Link href="/dashboard/sales" className="text-xs font-medium text-sunshine-ink hover:text-sunshine-ink-hover">
  Ver todas →
  </Link>
  </div>

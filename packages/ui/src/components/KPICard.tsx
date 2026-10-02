@@ -18,11 +18,11 @@ export function KPICard({ label, value, change, changeType, trend, trendUp, icon
   const resolvedChange = change ?? trend;
 
   const iconColors = {
-    violet: 'bg-monday-violet/10 text-monday-violet',
+    violet: 'bg-sunshine/10 text-sunshine-ink',
     mint: 'bg-mint/30 text-forest',
     sky: 'bg-sky-accent/30 text-[#006680]',
     apricot: 'bg-apricot/15 text-[#cc5500]',
-    lavender: 'bg-lavender text-[#7c3aed]',
+    lavender: 'bg-lavender text-[#8A6100]',
     aqua: 'bg-aqua/30 text-[#006680]',
   };
 

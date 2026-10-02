@@ -135,7 +135,7 @@ export default function VeterinaryRemindersPage() {
  </div>
  <button
  onClick={() => setShowModal(true)}
- className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
+ className="bg-sunshine hover:bg-sunshine-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
  >
  <Plus className="w-4 h-4" />
  Nuevo Recordatorio
@@ -298,7 +298,7 @@ export default function VeterinaryRemindersPage() {
  </button>
  <button
  type="submit"
- className="bg-monday-violet hover:bg-cloud text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm"
+ className="bg-sunshine hover:bg-cloud text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm"
  >
  Guardar Recordatorio
  </button>

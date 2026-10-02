@@ -107,7 +107,7 @@ export default function PurchaseDebitNotesPage() {
  <td className="px-4 py-3 text-xs text-muted-foreground font-mono">{n.supplier_tax_id || '—'}</td>
  <td className="px-4 py-3 text-xs text-foreground font-mono">{n.note_number}</td>
  <td className="px-4 py-3 text-xs text-muted-foreground max-w-[200px] truncate">{n.reason || '—'}</td>
- <td className="px-4 py-3 text-xs font-semibold text-monday-violet text-right font-mono">${Number(n.total_amount || 0).toLocaleString('es-CL')}</td>
+ <td className="px-4 py-3 text-xs font-semibold text-sunshine-ink text-right font-mono">${Number(n.total_amount || 0).toLocaleString('es-CL')}</td>
  </tr>
  ))}
  </tbody>

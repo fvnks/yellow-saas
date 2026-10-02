@@ -11,7 +11,7 @@ import { AutoTalleresSidebarFooterMenu } from "./auto-talleres-sidebar-footer-me
 
 export function AutoTalleresSidebar() {
  return (
- <Sidebar className="border-r border-mist bg-monday-violet text-ink">
+ <Sidebar className="border-r border-mist bg-sunshine text-ink">
  <SidebarHeader>
  <AutoTalleresSidebarHeader />
  </SidebarHeader>

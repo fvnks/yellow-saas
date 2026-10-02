@@ -97,7 +97,7 @@ export default function SIIConfigPage() {
  <div className="space-y-6">
  <div className="bg-white border border-slate-200/80 p-6 rounded-2xl shadow-xs">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 bg-monday-violet rounded-xl flex items-center justify-center">
+ <div className="w-10 h-10 bg-sunshine rounded-xl flex items-center justify-center">
  <ShieldCheck className="w-5 h-5 text-[#FACC15]" />
  </div>
  <div>
@@ -139,7 +139,7 @@ export default function SIIConfigPage() {
  </div>
 
  <div className="flex items-center gap-3 p-4 bg-peach/30 border border-peach rounded-xl">
- <AlertCircle className="w-5 h-5 text-monday-violet flex-shrink-0" />
+ <AlertCircle className="w-5 h-5 text-sunshine-ink flex-shrink-0" />
  <div>
  <p className="text-xs font-bold text-[#c64d00]">Modo Prueba Activo</p>
  <p className="text-xs text-[#c64d00] mt-0.5">Los DTEs se generarán pero no se enviarán realmente al SII</p>
@@ -235,7 +235,7 @@ export default function SIIConfigPage() {
 
  <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
  <span className="text-xs font-medium text-slate-600">Modo Prueba</span>
- <span className={`text-xs font-bold ${config?.test_mode ? 'text-monday-violet' : 'text-emerald-600'}`}>
+ <span className={`text-xs font-bold ${config?.test_mode ? 'text-sunshine-ink' : 'text-emerald-600'}`}>
  {config?.test_mode ? 'Activado' : 'Desactivado'}
  </span>
  </div>
@@ -255,7 +255,7 @@ export default function SIIConfigPage() {
  <button
  onClick={saveConfig}
  disabled={saving}
- className="w-full bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2"
+ className="w-full bg-sunshine hover:bg-sunshine-hover text-white font-bold px-4 py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2"
  >
  <CheckCircle2 className="w-4 h-4" />
  {saving ? 'Guardando...' : 'Guardar Configuración'}
@@ -263,7 +263,7 @@ export default function SIIConfigPage() {
 
  <button
  onClick={testConnection}
- className="w-full bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2"
+ className="w-full bg-sunshine hover:bg-sunshine-hover text-white font-bold px-4 py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2"
  >
  <CheckCircle2 className="w-4 h-4" />
  Probar Conexión SII

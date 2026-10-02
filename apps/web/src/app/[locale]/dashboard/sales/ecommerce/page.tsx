@@ -108,14 +108,14 @@ export default function EcommerceSyncPage() {
  <button
  onClick={() => handleSyncOrders()}
  disabled={syncing}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-medium px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
  >
  <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
  Sincronizar Ventas Ahora
  </button>
  <button
  onClick={() => setShowConnectModal(true)}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
  >
  <Plus className="w-4 h-4" />
  Conectar Tienda
@@ -270,7 +270,7 @@ export default function EcommerceSyncPage() {
  </button>
  <button
  type="submit"
- className="px-4 py-2 bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold rounded-xl text-xs shadow-xs"
+ className="px-4 py-2 bg-sunshine hover:bg-sunshine-hover text-white font-semibold rounded-xl text-xs shadow-xs"
  >
  Guardar y Conectar
  </button>

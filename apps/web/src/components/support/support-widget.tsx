@@ -48,7 +48,7 @@ interface TicketDetail {
 }
 
 const statusConfig: Record<string, { label: string; classes: string; icon: any }> = {
- open: { label: 'Abierto', classes: 'bg-monday-violet/5 text-monday-violet/80 border-monday-violet/20', icon: Inbox },
+ open: { label: 'Abierto', classes: 'bg-sunshine/5 text-sunshine-ink/80 border-sunshine-dark/20', icon: Inbox },
  in_progress: { label: 'En progreso', classes: 'bg-peach/30 text-[#c64d00] border-peach', icon: Loader2 },
  resolved: { label: 'Resuelto', classes: 'bg-mint/30 text-forest border-mint/50', icon: CheckCircle2 },
  closed: { label: 'Cerrado', classes: 'bg-muted text-foreground border-border', icon: CheckCircle2 },
@@ -56,7 +56,7 @@ const statusConfig: Record<string, { label: string; classes: string; icon: any }
 
 const priorityConfig: Record<string, { label: string; classes: string }> = {
  low: { label: 'Baja', classes: 'bg-muted text-foreground border-border' },
- medium: { label: 'Media', classes: 'bg-monday-violet/5 text-monday-violet/80 border-monday-violet/20' },
+ medium: { label: 'Media', classes: 'bg-sunshine/5 text-sunshine-ink/80 border-sunshine-dark/20' },
  high: { label: 'Alta', classes: 'bg-peach/30 text-[#c64d00] border-peach' },
  urgent: { label: 'Urgente', classes: 'bg-peach/30 text-[#c64d00] border-peach/50' },
 };
@@ -254,7 +254,7 @@ export function SupportWidget() {
  {/* Floating button */}
  <button
  onClick={() => setOpen(!open)}
- className="fixed bottom-6 right-6 z-[60] w-14 h-14 rounded-full bg-monday-violet hover:bg-monday-violet-hover text-white shadow-xl flex items-center justify-center transition-all duration-300 active:scale-95 hover:scale-110 hover:shadow-2xl hover:shadow-blue-600/40 hover:rotate-6"
+ className="fixed bottom-6 right-6 z-[60] w-14 h-14 rounded-full bg-sunshine hover:bg-sunshine-hover text-white shadow-xl flex items-center justify-center transition-all duration-300 active:scale-95 hover:scale-110 hover:shadow-2xl hover:shadow-blue-600/40 hover:rotate-6"
  aria-label="Ayuda y soporte"
  >
  {open ? <X className="w-6 h-6" /> : <LifeBuoy className="w-6 h-6" />}
@@ -269,15 +269,15 @@ export function SupportWidget() {
  {open && (
  <div className="fixed bottom-24 right-6 z-[60] w-[380px] max-w-[calc(100vw-2rem)] bg-card border border-border rounded-xl shadow-2xl flex flex-col overflow-hidden">
  {/* Header */}
- <div className="px-5 py-4 bg-monday-violet text-white flex items-center justify-between">
+ <div className="px-5 py-4 bg-sunshine text-white flex items-center justify-between">
  <div className="flex items-center gap-2.5">
  <Headphones className="w-5 h-5" />
  <div>
  <p className="text-sm font-bold">Ayuda y Soporte</p>
- <p className="text-[10px] text-monday-violet/90">Respuesta del equipo Yellow</p>
+ <p className="text-[10px] text-sunshine-ink/90">Respuesta del equipo Yellow</p>
  </div>
  </div>
- <button onClick={closeWidget} className="text-monday-violet/90 hover:text-white transition-colors">
+ <button onClick={closeWidget} className="text-sunshine-ink/90 hover:text-white transition-colors">
  <X className="w-5 h-5" />
  </button>
  </div>
@@ -290,8 +290,8 @@ export function SupportWidget() {
  onClick={() => { setView('create'); }}
  className="w-full flex items-center gap-3 p-4 rounded-xl border border-border hoverhover:bg-muted transition-colors text-left"
  >
- <div className="w-10 h-10 bg-monday-violet/5 rounded-xl flex items-center justify-center flex-shrink-0">
- <Plus className="w-5 h-5 text-monday-violet" />
+ <div className="w-10 h-10 bg-sunshine/5 rounded-xl flex items-center justify-center flex-shrink-0">
+ <Plus className="w-5 h-5 text-sunshine-ink" />
  </div>
  <div>
  <p className="text-sm font-semibold text-foreground ">Nuevo ticket</p>
@@ -302,7 +302,7 @@ export function SupportWidget() {
  onClick={() => { setView('list'); fetchTickets(); }}
  className="w-full flex items-center gap-3 p-4 rounded-xl border border-border hoverhover:bg-muted transition-colors text-left"
  >
- <div className="w-10 h-10 bg-monday-violet/5 rounded-xl flex items-center justify-center flex-shrink-0">
+ <div className="w-10 h-10 bg-sunshine/5 rounded-xl flex items-center justify-center flex-shrink-0">
  <MessageSquare className="w-5 h-5 text-primary" />
  </div>
  <div className="flex-1">
@@ -347,7 +347,7 @@ export function SupportWidget() {
  value={form.subject}
  onChange={e => setForm({ ...form, subject: e.target.value })}
  placeholder="Describe el problema en pocas palabras"
- className="w-full bg-muted border border-border rounded-xl px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-monday-violet focus:border-transparent"
+ className="w-full bg-muted border border-border rounded-xl px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-sunshine-dark focus:border-transparent"
  />
  </div>
  <div className="space-y-1">
@@ -355,7 +355,7 @@ export function SupportWidget() {
  <select
  value={form.priority}
  onChange={e => setForm({ ...form, priority: e.target.value })}
- className="w-full bg-muted border border-border rounded-xl px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-monday-violet focus:border-transparent"
+ className="w-full bg-muted border border-border rounded-xl px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-sunshine-dark focus:border-transparent"
  >
  <option value="low">Baja</option>
  <option value="medium">Media</option>
@@ -370,13 +370,13 @@ export function SupportWidget() {
  onChange={e => setForm({ ...form, message: e.target.value })}
  placeholder="Explica qué sucede..."
  rows={3}
- className="w-full bg-muted border border-border rounded-xl px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-monday-violet focus:border-transparent resize-none"
+ className="w-full bg-muted border border-border rounded-xl px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-sunshine-dark focus:border-transparent resize-none"
  />
  </div>
  <button
  type="submit"
  disabled={saving}
- className="w-full bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors disabled:opacity-50"
+ className="w-full bg-sunshine hover:bg-sunshine-hover text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors disabled:opacity-50"
  >
  {saving ? 'Creando...' : 'Crear ticket'}
  </button>
@@ -403,7 +403,7 @@ export function SupportWidget() {
  <p className="text-sm text-muted-foreground ">No tienes tickets de soporte</p>
  <button
  onClick={() => setView('create')}
- className="mt-3 inline-flex items-center gap-1.5 text-sm text-monday-violet hover:underline font-medium"
+ className="mt-3 inline-flex items-center gap-1.5 text-sm text-sunshine-ink hover:underline font-medium"
  >
  <Plus className="w-4 h-4" />
  Crear uno
@@ -451,7 +451,7 @@ export function SupportWidget() {
  })}
  <button
  onClick={() => router.push('/ayuda/tickets')}
- className="w-full text-center text-xs font-medium text-monday-violet hover:underline py-2"
+ className="w-full text-center text-xs font-medium text-sunshine-ink hover:underline py-2"
  >
  Ver todos los tickets
  </button>
@@ -492,10 +492,10 @@ export function SupportWidget() {
  <div className={`max-w-[80%] rounded-xl px-3.5 py-2.5 border ${
  isSupport
  ? 'bg-card border-border '
- : 'bg-monday-violet border-blue-600'
+ : 'bg-sunshine border-blue-600'
  }`}>
  <div className="flex items-center gap-2 mb-0.5">
- <span className={`text-[10px] font-bold ${isSupport ? 'text-monday-violet' : 'text-monday-violet/90'}`}>
+ <span className={`text-[10px] font-bold ${isSupport ? 'text-sunshine-ink' : 'text-sunshine-ink/90'}`}>
  {isSupport ? (msg.sender_name || 'Soporte') : 'Tú'}
  </span>
  <span className={`text-[9px] ${isSupport ? 'text-muted-foreground' : 'text-blue-200'}`}>
@@ -516,7 +516,7 @@ export function SupportWidget() {
  className={`flex items-center gap-2 px-2 py-1.5 rounded-xl border text-xs font-medium transition-colors ${
  isSupport
  ? 'bg-muted /50 border-border text-foreground hoverhover:bg-muted hover:bg-muted'
- : 'bg-monday-violet-hover/30 border-monday-violet/40 text-white hover:bg-monday-violet-hover/40'
+ : 'bg-sunshine-hover/30 border-sunshine-dark/40 text-sunshine-ink hover:bg-sunshine-hover/40'
  }`}
  >
  {(att.mime_type || '').startsWith('image/')
@@ -579,12 +579,12 @@ export function SupportWidget() {
  onChange={e => setReplyText(e.target.value)}
  onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
  placeholder="Escribe un mensaje..."
- className="flex-1 bg-muted border border-border rounded-xl px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-monday-violet focus:border-transparent"
+ className="flex-1 bg-muted border border-border rounded-xl px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-sunshine-dark focus:border-transparent"
  />
  <button
  onClick={handleSend}
  disabled={sending || (!replyText.trim() && pendingFiles.length === 0)}
- className="w-9 h-9 bg-monday-violet hover:bg-monday-violet-hover rounded-xl text-white flex items-center justify-center transition-colors disabled:opacity-50 flex-shrink-0"
+ className="w-9 h-9 bg-sunshine hover:bg-sunshine-hover rounded-xl text-white flex items-center justify-center transition-colors disabled:opacity-50 flex-shrink-0"
  >
  {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
  </button>

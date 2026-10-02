@@ -90,21 +90,21 @@ export default function VeterinaryDashboardPage() {
  return (
  <div className="space-y-6">
  {/* Header Banner */}
- <div className="bg-gradient-to-r from-monday-violet via-slate-900 to-emerald-950 rounded-2xl p-6 text-white shadow-md relative overflow-hidden border border-mist">
+ <div className="bg-gradient-to-r from-sunshine-ink via-slate-900 to-emerald-950 rounded-2xl p-6 text-white shadow-md relative overflow-hidden border border-mist">
  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
  <div className="flex items-center gap-2 mb-2">
  <span className="bg-emerald-500/20 text-emerald-300 text-xs font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/30 uppercase tracking-wider">
  Módulo Veterinaria & Clínica
  </span>
- <span className="bg-peach/20 text-[#c64d00]/60 text-xs font-bold px-2.5 py-0.5 rounded-full border border-monday-violet/30">
+ <span className="bg-peach/20 text-[#c64d00]/60 text-xs font-bold px-2.5 py-0.5 rounded-full border border-sunshine-dark/30">
  Norma Ley 21.020 & DTE SII
  </span>
  </div>
  <h1 className="text-2xl font-black text-white tracking-tight">
  Consola Operativa Clínica Veterinaria
  </h1>
- <p className="text-iron text-sm mt-1 max-w-2xl">
+ <p className="text-white/85 text-sm mt-1 max-w-2xl">
  Gestión integral de pacientes multiespecie, fichas clínicas 360°, agenda de boxes, hospitalización y emisión de recetas.
  </p>
  </div>
@@ -112,7 +112,7 @@ export default function VeterinaryDashboardPage() {
  <div className="flex flex-wrap items-center gap-3">
  <Link
  href="/veterinaria/consultas"
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Stethoscope className="w-4 h-4" />
  Nueva Consulta
@@ -175,7 +175,7 @@ export default function VeterinaryDashboardPage() {
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Alertas Preventivas</p>
  <h3 className="text-2xl font-black text-slate-900 mt-1">{reminders.length}</h3>
- <p className="text-xs text-monday-violet font-medium mt-1">
+ <p className="text-xs text-sunshine-ink font-medium mt-1">
  Vacunas y desparasitación
  </p>
  </div>
@@ -237,7 +237,7 @@ export default function VeterinaryDashboardPage() {
  {apt.status !== 'en_atencion' && (
  <button
  onClick={() => handleUpdateStatus(apt.id, 'en_atencion')}
- className="bg-monday-violet hover:bg-cloud text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition-all shadow-xs flex items-center gap-1.5"
+ className="bg-sunshine hover:bg-cloud text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition-all shadow-xs flex items-center gap-1.5"
  >
  <Stethoscope className="w-3.5 h-3.5 text-emerald-400" />
  Llamar a Box
@@ -266,7 +266,7 @@ export default function VeterinaryDashboardPage() {
  </Link>
 
  <Link href="/veterinaria/consultas" className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs hover:border-peach transition-all group">
- <div className="w-10 h-10 bg-peach/30 text-monday-violet rounded-xl flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+ <div className="w-10 h-10 bg-peach/30 text-sunshine-ink rounded-xl flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
  <Stethoscope className="w-5 h-5" />
  </div>
  <h4 className="text-sm font-bold text-slate-900">Registro Clínico</h4>

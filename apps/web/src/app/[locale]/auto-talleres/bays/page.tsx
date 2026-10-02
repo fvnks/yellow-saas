@@ -57,10 +57,10 @@ export default function BaysPage() {
  {/* Header */}
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
- <h1 className="text-2xl font-black text-monday-violet">Bays del Taller</h1>
+ <h1 className="text-2xl font-black text-sunshine-ink">Bays del Taller</h1>
  <p className="text-sm text-slate-500 mt-1">Gestiona los puestos de trabajo</p>
  </div>
- <button className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]">
+ <button className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]">
  <Plus className="w-4 h-4" />
  Nuevo Bay
  </button>
@@ -75,18 +75,18 @@ export default function BaysPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Disponibles</p>
- <p className="text-2xl font-black text-monday-violet">{bays.filter(b => b.status === 'available').length}</p>
+ <p className="text-2xl font-black text-sunshine-ink">{bays.filter(b => b.status === 'available').length}</p>
  </div>
  </div>
  </div>
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
  <div className="flex items-center gap-3">
- <div className="h-10 w-10 rounded-xl bg-monday-violet/10 flex items-center justify-center border border-monday-violet/20">
- <AlertCircle className="w-5 h-5 text-monday-violet" />
+ <div className="h-10 w-10 rounded-xl bg-sunshine/10 flex items-center justify-center border border-sunshine-dark/20">
+ <AlertCircle className="w-5 h-5 text-sunshine-ink" />
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Ocupados</p>
- <p className="text-2xl font-black text-monday-violet">{bays.filter(b => b.status === 'occupied').length}</p>
+ <p className="text-2xl font-black text-sunshine-ink">{bays.filter(b => b.status === 'occupied').length}</p>
  </div>
  </div>
  </div>
@@ -97,7 +97,7 @@ export default function BaysPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total</p>
- <p className="text-2xl font-black text-monday-violet">{bays.length}</p>
+ <p className="text-2xl font-black text-sunshine-ink">{bays.length}</p>
  </div>
  </div>
  </div>
@@ -141,7 +141,7 @@ export default function BaysPage() {
  <Wrench className="w-6 h-6 text-orange-500" />
  </div>
  <div>
- <p className="text-lg font-black text-monday-violet">Bay {bay.number}</p>
+ <p className="text-lg font-black text-sunshine-ink">Bay {bay.number}</p>
  <p className="text-xs text-slate-500 capitalize">{bay.type}</p>
  </div>
  </div>

@@ -94,7 +94,7 @@ export default function VeterinaryPaymentsPage() {
  </h1>
  <p className="text-slate-500 text-sm mt-0.5">Registro de cobros, métodos de pago y estado de cuentas.</p>
  </div>
- <button onClick={() => setShowModal(true)} className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]">
+ <button onClick={() => setShowModal(true)} className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]">
  <Plus className="w-4 h-4" /> Registrar Pago
  </button>
  </div>
@@ -106,7 +106,7 @@ export default function VeterinaryPaymentsPage() {
  </div>
  <div className="flex gap-1">
  {['', 'completado', 'pendiente', 'reverso'].map((s) => (
- <button key={s} onClick={() => setStatusFilter(s)} className={`px-3 py-1.5 rounded-xl text-xs font-bold capitalize transition-all ${statusFilter === s ? 'bg-monday-violet text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+ <button key={s} onClick={() => setStatusFilter(s)} className={`px-3 py-1.5 rounded-xl text-xs font-bold capitalize transition-all ${statusFilter === s ? 'bg-sunshine text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
  {s || 'Todos'}
  </button>
  ))}
@@ -205,7 +205,7 @@ export default function VeterinaryPaymentsPage() {
  </div>
  <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
  <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800">Cancelar</button>
- <button type="submit" disabled={saving} className="bg-monday-violet hover:bg-cloud text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm disabled:opacity-50 flex items-center gap-2">
+ <button type="submit" disabled={saving} className="bg-sunshine hover:bg-cloud text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm disabled:opacity-50 flex items-center gap-2">
  {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
  Registrar Pago
  </button>

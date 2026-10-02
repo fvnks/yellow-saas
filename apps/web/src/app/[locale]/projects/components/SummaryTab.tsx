@@ -133,7 +133,7 @@ export default function SummaryTab({ project, tasks, members, expenses, costs }:
  {[
  { label: 'Por Hacer', count: taskStats.todo, color: 'bg-muted' },
  { label: 'En Progreso', count: taskStats.in_progress, color: 'bg-blue-500' },
- { label: 'En Revisión', count: taskStats.review, color: 'bg-monday-violet' },
+ { label: 'En Revisión', count: taskStats.review, color: 'bg-sunshine' },
  { label: 'Completadas', count: taskStats.done, color: 'bg-emerald-500' },
  ].map(item => (
  <div key={item.label} className="flex items-center gap-3">

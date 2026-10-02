@@ -136,7 +136,7 @@ export default function VeterinaryEvolutionsPage() {
  </div>
  <button
  onClick={() => setShowEditor(true)}
- className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
+ className="bg-sunshine hover:bg-sunshine-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
  >
  <Plus className="w-4 h-4" />
  Nueva Nota SOAP
@@ -171,7 +171,7 @@ export default function VeterinaryEvolutionsPage() {
  key={t.id}
  onClick={() => setTypeFilter(t.id)}
  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
- typeFilter === t.id ? 'bg-monday-violet text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+ typeFilter === t.id ? 'bg-sunshine text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
  }`}
  >
  {t.label}
@@ -217,7 +217,7 @@ export default function VeterinaryEvolutionsPage() {
  {/* Header */}
  <div className="flex flex-wrap items-center justify-between gap-2">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-monday-violet text-emerald-400 flex items-center justify-center">
+ <div className="w-10 h-10 rounded-xl bg-sunshine text-emerald-400 flex items-center justify-center">
  <User className="w-5 h-5" />
  </div>
  <div>
@@ -258,7 +258,7 @@ export default function VeterinaryEvolutionsPage() {
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
  <SoapBlock color="border-blue-200 bg-blue-50/40" badge="bg-blue-600" letter="S" label="Subjetivo" text={evo.soap.subjective} />
  <SoapBlock color="border-emerald-200 bg-emerald-50/40" badge="bg-emerald-600" letter="O" label="Objetivo" text={evo.soap.objective} />
- <SoapBlock color="border-peach bg-peach/30/40" badge="bg-monday-violet" letter="A" label="Evaluación" text={evo.soap.assessment} />
+ <SoapBlock color="border-peach bg-peach/30/40" badge="bg-sunshine" letter="A" label="Evaluación" text={evo.soap.assessment} />
  <SoapBlock color="border-rose-200 bg-rose-50/40" badge="bg-rose-600" letter="P" label="Plan" text={evo.soap.plan} />
  </div>
  </div>

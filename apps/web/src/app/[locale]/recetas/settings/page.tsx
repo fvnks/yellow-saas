@@ -87,7 +87,7 @@ export default function RecetasSettingsPage() {
  <span className="w-2 h-2 rounded-full bg-emerald-500" /> OK — por encima del mínimo
  </span>
  <span className="inline-flex items-center gap-1.5 text-[#c64d00]">
- <span className="w-2 h-2 rounded-full bg-monday-violet" /> Bajo — entre 50% y 100% del mínimo
+ <span className="w-2 h-2 rounded-full bg-sunshine" /> Bajo — entre 50% y 100% del mínimo
  </span>
  <span className="inline-flex items-center gap-1.5 text-rose-700">
  <span className="w-2 h-2 rounded-full bg-rose-500" /> Crítico — por debajo del 50% del mínimo
@@ -135,7 +135,7 @@ export default function RecetasSettingsPage() {
  <tr key={p.id} className={`border-b border-border transition-colors ${isDirty ? 'bg-blue-50/50' : 'hover:bg-muted'}`}>
  <td className="px-4 py-3">
  <div className="flex items-center gap-2">
- <Package className="w-4 h-4 text-monday-violet" />
+ <Package className="w-4 h-4 text-sunshine-ink" />
  <span className="text-xs font-medium text-foreground">{p.name}</span>
  </div>
  </td>

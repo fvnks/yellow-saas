@@ -45,14 +45,14 @@ export function Header({ title, onMenuClick, user, onNavigate }: HeaderProps) {
           <input
             type="search"
             placeholder="Buscar..."
-            className="w-64 pl-10 pr-4 py-2 bg-cloud border border-mist rounded-md text-sm text-ink placeholder-iron focus:outline-none focus:ring-2 focus:ring-monday-violet/20 focus:border-monday-violet transition-colors"
+            className="w-64 pl-10 pr-4 py-2 bg-cloud border border-mist rounded-md text-sm text-ink placeholder-iron focus:outline-none focus:ring-2 focus:ring-sunshine-dark/20 focus:border-sunshine-dark transition-colors"
             aria-label="Buscar"
           />
         </div>
 
         <button className="p-2 text-iron hover:text-ink hover:bg-cloud rounded-md transition-colors relative" aria-label="Notificaciones">
           <Bell className="w-5 h-5" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-monday-violet rounded-full" />
+          <span className="absolute top-1 right-1 w-2 h-2 bg-sunshine rounded-full" />
         </button>
 
         <div className="relative" ref={userMenuRef}>
@@ -62,11 +62,11 @@ export function Header({ title, onMenuClick, user, onNavigate }: HeaderProps) {
             aria-expanded={showUserMenu}
             aria-haspopup="true"
           >
-            <div className="w-8 h-8 bg-monday-violet/10 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-sunshine/10 rounded-full flex items-center justify-center">
               {user?.avatar ? (
                 <img src={user.avatar} alt="" className="w-8 h-8 rounded-full" />
               ) : (
-                <span className="text-sm font-medium text-monday-violet">
+                <span className="text-sm font-medium text-sunshine-ink">
                   {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                 </span>
               )}
@@ -101,7 +101,7 @@ export function Header({ title, onMenuClick, user, onNavigate }: HeaderProps) {
               <hr className="my-1 border-mist" />
               <button
                 onClick={() => onNavigate?.('/logout')}
-                className="w-full px-4 py-2 text-left text-sm text-monday-violet hover:bg-monday-violet/5 transition-colors flex items-center gap-2"
+                className="w-full px-4 py-2 text-left text-sm text-sunshine-ink hover:bg-sunshine/5 transition-colors flex items-center gap-2"
               >
                 <LogOut className="w-4 h-4" />
                 Cerrar sesión

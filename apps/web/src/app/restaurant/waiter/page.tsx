@@ -225,7 +225,7 @@ export default function WaiterPOSPage() {
  <div className="flex items-center gap-2">
  <button
  onClick={() => setIsNewTableModalOpen(true)}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold text-xs px-3.5 py-2 rounded-xl transition-all shadow-xs flex items-center gap-1.5 active:scale-95"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-bold text-xs px-3.5 py-2 rounded-xl transition-all shadow-xs flex items-center gap-1.5 active:scale-95"
  >
  <Plus className="w-4 h-4" /> Nueva Mesa
  </button>
@@ -258,7 +258,7 @@ export default function WaiterPOSPage() {
  <p className="text-xs font-bold text-slate-700">No hay mesas registradas</p>
  <button
  onClick={() => setIsNewTableModalOpen(true)}
- className="bg-monday-violet text-white font-bold text-xs px-3 py-1.5 rounded-xl"
+ className="bg-sunshine text-white font-bold text-xs px-3 py-1.5 rounded-xl"
  >
  + Abrir primera mesa
  </button>
@@ -272,7 +272,7 @@ export default function WaiterPOSPage() {
  onClick={() => setSelectedTable(table)}
  className={`p-3.5 rounded-2xl text-left border transition-all text-xs flex flex-col justify-between h-24 ${
  isSelected
- ? 'border-[#c64d00] bg-monday-violet/10 ring-2 ring-sunshine-hover'
+ ? 'border-[#c64d00] bg-sunshine/10 ring-2 ring-sunshine-hover'
  : 'border-slate-200/80 bg-white hover:border-slate-300 hover:bg-slate-50/80'
  }`}
  >
@@ -304,7 +304,7 @@ export default function WaiterPOSPage() {
  <p className="text-[11px] text-slate-400">PIN Kiosco: {selectedTable?.pinCode || '----'}</p>
  </div>
  {activeOrder && (
- <span className="text-xs font-mono font-bold bg-monday-violet text-white px-2 py-0.5 rounded-lg">
+ <span className="text-xs font-mono font-bold bg-sunshine text-white px-2 py-0.5 rounded-lg">
  {activeOrder.id}
  </span>
  )}
@@ -359,7 +359,7 @@ export default function WaiterPOSPage() {
  </button>
  <button
  onClick={() => handleAddItemToOrder(item.menuItemId)}
- className="bg-peach hover:bg-monday-violet text-white font-bold w-6 h-6 rounded-lg flex items-center justify-center text-xs"
+ className="bg-peach hover:bg-sunshine text-white font-bold w-6 h-6 rounded-lg flex items-center justify-center text-xs"
  title="Aumentar"
  >
  +
@@ -398,14 +398,14 @@ export default function WaiterPOSPage() {
  <button
  onClick={handleEmitBoleta}
  disabled={!activeOrder || activeOrder.items.length === 0}
- className="bg-monday-violet hover:bg-cloud disabled:opacity-50 text-white font-semibold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs"
+ className="bg-sunshine hover:bg-cloud disabled:opacity-50 text-white font-semibold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs"
  >
  <Receipt className="w-3.5 h-3.5 text-[#c64d00]/70" /> Boleta SII
  </button>
  <button
  onClick={handleCloseSession}
  disabled={!activeOrder || activeOrder.items.length === 0}
- className="bg-monday-violet hover:bg-monday-violet-hover disabled:opacity-50 text-white font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs"
+ className="bg-sunshine hover:bg-sunshine-hover disabled:opacity-50 text-white font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs"
  >
  <CreditCard className="w-3.5 h-3.5" /> Cobrar POS
  </button>
@@ -427,7 +427,7 @@ export default function WaiterPOSPage() {
  onClick={() => setSelectedCategory(cat)}
  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold capitalize transition-all ${
  selectedCategory === cat
- ? 'bg-monday-violet text-white'
+ ? 'bg-sunshine text-white'
  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
  }`}
  >
@@ -459,7 +459,7 @@ export default function WaiterPOSPage() {
  {item.inStock ? (
  <button
  onClick={() => handleAddItemToOrder(item.id)}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold p-2 rounded-xl transition-all active:scale-95 shadow-xs"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-bold p-2 rounded-xl transition-all active:scale-95 shadow-xs"
  title="Agregar a comanda"
  >
  <Plus className="w-4 h-4" />
@@ -480,7 +480,7 @@ export default function WaiterPOSPage() {
  {isNewTableModalOpen && (
  <div className="fixed inset-0 bg-cloud/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
  <div className="bg-white border border-slate-200 rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
- <div className="bg-monday-violet text-white px-5 py-4 flex items-center justify-between">
+ <div className="bg-sunshine text-white px-5 py-4 flex items-center justify-between">
  <h3 className="font-bold text-sm flex items-center gap-2">
  <Utensils className="w-4 h-4 text-[#c64d00]/70" />
  Crear Nueva Mesa en Salón
@@ -535,7 +535,7 @@ export default function WaiterPOSPage() {
  <button
  type="button"
  onClick={handleCreateNewTable}
- className="px-4 py-2 bg-monday-violet hover:bg-monday-violet-hover text-white font-bold rounded-xl shadow-xs"
+ className="px-4 py-2 bg-sunshine hover:bg-sunshine-hover text-white font-bold rounded-xl shadow-xs"
  >
  Crear Mesa
  </button>

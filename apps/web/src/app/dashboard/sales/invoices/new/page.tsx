@@ -380,7 +380,7 @@ export default function NewInvoicePage() {
  />
  <div className="flex items-center justify-between text-sm">
  <span className="text-muted-foreground">Saldo</span>
- <span className={`font-medium ${balance > 0 ? 'text-monday-violet' : 'text-emerald-600'}`}>
+ <span className={`font-medium ${balance > 0 ? 'text-sunshine-ink' : 'text-emerald-600'}`}>
  ${balance.toLocaleString('es-CL')}
  </span>
  </div>

@@ -131,7 +131,7 @@ function AyudaSidebar() {
  </nav>
 
  {/* Footer */}
- <div className="p-3 border-t border-mist/80 bg-monday-violet">
+ <div className="p-3 border-t border-mist/80 bg-sunshine">
  <ModuleSidebarFooter moduleKey="ayuda" user={{ name: 'Usuario Soporte', role: 'Atención al Cliente' }} />
  </div>
  </div>

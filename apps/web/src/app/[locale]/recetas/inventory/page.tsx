@@ -12,7 +12,7 @@ function getStockStatus(stock: number, minStock: number) {
  if (minStock <= 0) return { color: 'text-muted-foreground bg-muted border-border', label: 'Sin config', dot: 'bg-muted' };
  if (stock <= 0) return { color: 'text-rose-700 bg-rose-50 border-rose-200', label: 'Sin stock', dot: 'bg-rose-500' };
  if (stock <= minStock * 0.5) return { color: 'text-rose-700 bg-rose-50 border-rose-200', label: 'Crítico', dot: 'bg-rose-500' };
- if (stock <= minStock) return { color: 'text-[#c64d00] bg-peach/30 border-peach', label: 'Bajo', dot: 'bg-monday-violet' };
+ if (stock <= minStock) return { color: 'text-[#c64d00] bg-peach/30 border-peach', label: 'Bajo', dot: 'bg-sunshine' };
  return { color: 'text-emerald-700 bg-emerald-50 border-emerald-200', label: 'OK', dot: 'bg-emerald-500' };
 }
 
@@ -351,7 +351,7 @@ export default function RecipeInventoryPage() {
  <tr key={p.id} className="border-b border-border hover:bg-muted transition-colors">
  <td className="px-4 py-3">
  <div className="flex items-center gap-2">
- <Package className={`w-4 h-4 ${activeTab === 'ingredients' ? 'text-monday-violet' : 'text-primary'}`} />
+ <Package className={`w-4 h-4 ${activeTab === 'ingredients' ? 'text-sunshine-ink' : 'text-primary'}`} />
  <div>
  <span className="text-xs font-medium text-foreground">{p.name}</span>
  {p.formula && (

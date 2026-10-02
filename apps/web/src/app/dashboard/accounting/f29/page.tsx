@@ -57,7 +57,7 @@ export default function F29AssistantPage() {
  />
  <button
  onClick={() => window.print()}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-medium px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
  >
  <Download className="w-4 h-4" />
  Descargar Borrador F29
@@ -86,7 +86,7 @@ export default function F29AssistantPage() {
  <p className="text-[11px] text-slate-400 font-medium mt-0.5">Pagos Provisionales & Honorarios</p>
  </div>
 
- <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs bg-monday-violet/10 border-monday-violet/30">
+ <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs bg-sunshine/10 border-sunshine-dark/30">
  <p className="text-xs text-[#c64d00] font-extrabold uppercase">TOTAL F29 A PAGAR</p>
  <p className="text-2xl font-black text-white mt-1">{clp(data.summary.totalF29Payable)}</p>
  <p className="text-[11px] text-[#c64d00] font-bold mt-0.5">Vencimiento: 12 al 20 del mes subsiguiente</p>

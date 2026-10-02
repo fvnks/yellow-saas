@@ -70,7 +70,7 @@ export default function ForecastingPage() {
  <td className="px-4 py-3 text-xs text-foreground text-center">{currentStock}</td>
  <td className="px-4 py-3 text-xs text-foreground text-center">{avgMonthly.toFixed(0)}</td>
  <td className="px-4 py-3 text-xs text-center">
- <span className={`font-medium ${daysOfStock < 15 ? 'text-rose-600' : daysOfStock < 30 ? 'text-monday-violet' : 'text-emerald-600'}`}>
+ <span className={`font-medium ${daysOfStock < 15 ? 'text-rose-600' : daysOfStock < 30 ? 'text-sunshine-ink' : 'text-emerald-600'}`}>
  {daysOfStock} días
  </span>
  </td>

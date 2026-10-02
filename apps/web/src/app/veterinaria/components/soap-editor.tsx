@@ -187,7 +187,7 @@ export default function SoapEditor({
  />
  <SectionEditor
  color="bg-peach/30 border-peach"
- badge="bg-monday-violet"
+ badge="bg-sunshine"
  label="A - Evaluación (Assessment)"
  hint="Diagnóstico diferencial, problemas identificados y análisis."
  value={soap.assessment}
@@ -231,7 +231,7 @@ export default function SoapEditor({
  <button
  type="button"
  onClick={handleSubmit}
- className="bg-monday-violet hover:bg-cloud text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm flex items-center gap-2"
+ className="bg-sunshine hover:bg-cloud text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm flex items-center gap-2"
  >
  <Save className="w-4 h-4" />
  Guardar Evolución SOAP

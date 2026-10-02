@@ -61,7 +61,7 @@ export default function RestaurantReportsPage() {
  <button
  key={r}
  onClick={() => setRange(r)}
- className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${range === r ? 'bg-monday-violet text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+ className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${range === r ? 'bg-sunshine text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
  >
  {r === 'hoy' ? 'Hoy' : r === 'semana' ? 'Semana' : 'Mes'}
  </button>
@@ -69,7 +69,7 @@ export default function RestaurantReportsPage() {
  </div>
  <button
  onClick={() => toast.success('Reporte exportado (demo).')}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-3 py-2 rounded-xl text-xs flex items-center gap-2"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-medium px-3 py-2 rounded-xl text-xs flex items-center gap-2"
  >
  <Download className="w-3.5 h-3.5" /> Exportar
  </button>
@@ -125,7 +125,7 @@ export default function RestaurantReportsPage() {
  </div>
  </div>
  <div className="mt-2 h-2 bg-slate-100 rounded-full overflow-hidden">
- <div className="h-full bg-monday-violet rounded-full" style={{ width: `${pct}%` }} />
+ <div className="h-full bg-sunshine rounded-full" style={{ width: `${pct}%` }} />
  </div>
  </div>
  );

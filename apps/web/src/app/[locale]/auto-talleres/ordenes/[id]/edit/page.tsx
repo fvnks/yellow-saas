@@ -254,7 +254,7 @@ export default function EditarOrdenPage() {
  <ArrowLeft className="w-5 h-5 text-slate-600" />
  </Link>
  <div>
- <h1 className="text-2xl font-black text-monday-violet">Editar Orden</h1>
+ <h1 className="text-2xl font-black text-sunshine-ink">Editar Orden</h1>
  <p className="text-sm text-slate-500 mt-1">{order?.order_number} — Actualiza la orden y sus ítems</p>
  </div>
  </div>
@@ -460,7 +460,7 @@ export default function EditarOrdenPage() {
  type="button"
  onClick={handleAddItem}
  disabled={saving}
- className="mt-3 inline-flex items-center gap-2 bg-monday-violet hover:bg-monday-violet-hover disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-medium px-4 py-2 rounded-xl text-sm transition-all active:scale-[0.98]"
+ className="mt-3 inline-flex items-center gap-2 bg-sunshine hover:bg-sunshine-hover disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-medium px-4 py-2 rounded-xl text-sm transition-all active:scale-[0.98]"
  >
  <Plus className="w-4 h-4" />
  {saving ? 'Agregando...' : 'Agregar'}
@@ -504,7 +504,7 @@ export default function EditarOrdenPage() {
  <button
  type="submit"
  disabled={saving || !formData.vehicle_id}
- className="bg-monday-violet hover:bg-monday-violet-hover disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-sunshine hover:bg-sunshine-hover disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Save className="w-4 h-4" />
  {saving ? 'Guardando...' : 'Guardar Cambios'}

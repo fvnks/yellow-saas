@@ -171,7 +171,7 @@ export default function ReservationsPage() {
 
  <button
  type="submit"
- className="w-full bg-monday-violet hover:bg-monday-violet-hover text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-xs mt-2"
+ className="w-full bg-sunshine hover:bg-sunshine-hover text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-xs mt-2"
  >
  <Mail className="w-4 h-4" /> Confirmar & Enviar Código por Email
  </button>

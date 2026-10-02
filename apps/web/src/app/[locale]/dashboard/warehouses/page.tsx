@@ -121,7 +121,7 @@ export default function WarehousesPage() {
  <p className="text-2xl font-bold text-foreground mt-1">{warehouses.reduce((sum, w) => sum + w.products, 0).toLocaleString('es-CL')}</p>
  </div>
  <div className="w-10 h-10 bg-peach/30 rounded-xl flex items-center justify-center">
- <Package className="w-5 h-5 text-monday-violet" />
+ <Package className="w-5 h-5 text-sunshine-ink" />
  </div>
  </div>
  </CardContent>

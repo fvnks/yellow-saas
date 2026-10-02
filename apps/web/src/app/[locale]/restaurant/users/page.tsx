@@ -82,7 +82,7 @@ export default function RestaurantUsersPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
- <Users className="w-5 h-5 text-monday-violet" />
+ <Users className="w-5 h-5 text-sunshine-ink" />
  Usuarios & Control de Roles
  </h1>
  <p className="text-xs text-slate-500 mt-1">
@@ -92,7 +92,7 @@ export default function RestaurantUsersPage() {
  </div>
  <button
  onClick={() => setShowAdd((v) => !v)}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 self-start"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 self-start"
  >
  <UserPlus className="w-4 h-4" /> Nuevo Usuario
  </button>
@@ -101,7 +101,7 @@ export default function RestaurantUsersPage() {
  {showAdd && (
  <form onSubmit={handleCreate} className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5 space-y-4">
  <div className="flex items-center gap-2">
- <UserPlus className="w-4 h-4 text-monday-violet" />
+ <UserPlus className="w-4 h-4 text-sunshine-ink" />
  <h3 className="text-sm font-bold text-slate-900">Registrar Personal</h3>
  </div>
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -135,7 +135,7 @@ export default function RestaurantUsersPage() {
  </select>
  </div>
  <div className="flex gap-2 pt-1">
- <button type="submit" className="bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-4 py-2 rounded-xl text-sm flex items-center gap-2">
+ <button type="submit" className="bg-sunshine hover:bg-sunshine-hover text-white font-medium px-4 py-2 rounded-xl text-sm flex items-center gap-2">
  <CheckCircle2 className="w-4 h-4" /> Crear Usuario
  </button>
  <button type="button" onClick={() => setShowAdd(false)} className="text-slate-500 hover:text-slate-700 px-4 py-2 text-sm">
@@ -168,7 +168,7 @@ export default function RestaurantUsersPage() {
  <tr key={user.id} className="hover:bg-slate-50/80 transition-colors">
  <td className="px-5 py-3">
  <div className="flex items-center gap-3">
- <div className="w-8 h-8 rounded-full bg-cloud text-monday-violet flex items-center justify-center text-xs font-black">
+ <div className="w-8 h-8 rounded-full bg-cloud text-sunshine-ink flex items-center justify-center text-xs font-black">
  {user.name.slice(0, 2).toUpperCase()}
  </div>
  <div>
@@ -223,7 +223,7 @@ export default function RestaurantUsersPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
  <div className="px-5 py-4 border-b border-slate-200/80">
  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
- <Shield className="w-4 h-4 text-monday-violet" /> Matriz de Permisos por Rol
+ <Shield className="w-4 h-4 text-sunshine-ink" /> Matriz de Permisos por Rol
  </h3>
  <p className="text-xs text-slate-500 mt-1">Qué sección ve cada rol del restaurante.</p>
  </div>

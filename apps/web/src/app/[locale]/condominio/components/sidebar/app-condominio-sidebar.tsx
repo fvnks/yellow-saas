@@ -39,7 +39,7 @@ export function AppCondominioSidebar(props: React.ComponentProps<typeof Sidebar>
  <SidebarSeparator className="mx-3 bg-mist my-2" />
  </SidebarHeader>
 
- <SidebarContent className="bg-monday-violet">
+ <SidebarContent className="bg-sunshine">
  <ModuleSidebarBackButton moduleKey="condominio" />
  <CondominioSidebarNavigation />
  </SidebarContent>

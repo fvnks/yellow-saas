@@ -34,15 +34,15 @@ export default function AuthPanel() {
  {/* Grid pattern + glows */}
  <div className="absolute inset-0 bg-grid opacity-40" />
  <div className="absolute inset-0 bg-gradient-to-br from-snow via-cloud to-periwinkle/30" />
- <div className="absolute -top-32 -left-32 w-[420px] h-[420px] bg-monday-violet/10 rounded-full blur-[128px]" />
+ <div className="absolute -top-32 -left-32 w-[420px] h-[420px] bg-sunshine/10 rounded-full blur-[128px]" />
  <div className="absolute -bottom-40 -right-24 w-[380px] h-[380px] bg-mint/20 rounded-full blur-[128px]" />
 
  <div className="relative z-10 flex flex-col h-full p-10">
  {/* Logo */}
  <div className="flex items-center gap-3">
- <div className="w-12 h-12 bg-snow/80 backdrop-blur-sm rounded-full flex items-center justify-center border border-mist shadow-sm" style={{ background: 'conic-gradient(from 270deg, #8181ff 15%, #33dbdb 40%, #33d58e 55%, #F5C518 65%, #fc527d 85%, #8181ff 100%)' }}>
+ <div className="w-12 h-12 bg-snow/80 backdrop-blur-sm rounded-full flex items-center justify-center border border-mist shadow-sm" style={{ background: 'conic-gradient(from 270deg, #FFA500 15%, #33dbdb 40%, #33d58e 55%, #F5C518 65%, #fc527d 85%, #FFA500 100%)' }}>
  <div className="w-9 h-9 bg-snow rounded-full flex items-center justify-center">
- <Building2 className="w-5 h-5 text-monday-violet" />
+ <Building2 className="w-5 h-5 text-sunshine-ink" />
  </div>
  </div>
  <span className="text-2xl font-bold text-ink tracking-tight">Yellow ERP</span>
@@ -60,8 +60,8 @@ export default function AuthPanel() {
  transition={{ duration: 0.5, delay: 0.15 + i * 0.1 }}
  className="flex items-start gap-4"
  >
- <div className="w-10 h-10 bg-monday-violet/10 rounded-xl flex items-center justify-center border border-monday-violet/15 flex-shrink-0">
- <Icon className="w-5 h-5 text-monday-violet" />
+ <div className="w-10 h-10 bg-sunshine/10 rounded-xl flex items-center justify-center border border-sunshine-dark/15 flex-shrink-0">
+ <Icon className="w-5 h-5 text-sunshine-ink" />
  </div>
  <div>
  <p className="text-sm font-semibold text-ink">{item.title}</p>
@@ -101,7 +101,7 @@ export default function AuthPanel() {
  <div className="rounded-xl bg-cloud border border-mist p-3">
  <p className="text-[9px] text-iron uppercase tracking-wider">Stock</p>
  <p className="text-lg font-bold text-ink mt-1">4.312</p>
- <p className="text-[10px] text-monday-violet mt-0.5">Óptimo</p>
+ <p className="text-[10px] text-sunshine-ink mt-0.5">Óptimo</p>
  </div>
  </div>
  {/* Bar chart */}
@@ -110,7 +110,7 @@ export default function AuthPanel() {
  {[35, 55, 42, 70, 58, 85, 64, 92, 74, 100, 82, 95].map((h, i) => (
  <div
  key={i}
- className={`flex-1 rounded-t-md ${i >= 7 ? 'bg-monday-violet' : 'bg-mist'}`}
+ className={`flex-1 rounded-t-md ${i >= 7 ? 'bg-sunshine' : 'bg-mist'}`}
  style={{ height: `${h}%` }}
  />
  ))}

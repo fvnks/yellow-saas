@@ -75,7 +75,7 @@ export default function ExpenseCategoriesPage() {
  </div>
  <button
  onClick={() => { setShowForm(true); setEditingCategory(null); setForm({ name: '', color: '#6B7280', tax_deductible: false }); }}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all active:scale-[0.98] shadow-sm"
+ className="bg-sunshine hover:bg-sunshine-hover text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all active:scale-[0.98] shadow-sm"
  >
  <Plus className="w-4 h-4" /> Nueva Categoría
  </button>
@@ -190,7 +190,7 @@ export default function ExpenseCategoriesPage() {
  Cancelar
  </button>
  <button onClick={handleSave} disabled={saving || !form.name}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all disabled:opacity-50">
+ className="bg-sunshine hover:bg-sunshine-hover text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all disabled:opacity-50">
  {saving ? 'Guardando...' : editingCategory ? 'Actualizar' : 'Crear Categoría'}
  </button>
  </div>

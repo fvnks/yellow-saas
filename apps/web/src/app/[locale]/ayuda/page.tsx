@@ -45,7 +45,7 @@ export default function AyudaPage() {
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <div className="flex items-center gap-2">
- <h1 className="text-xl font-bold text-monday-violet">Centro de Ayuda</h1>
+ <h1 className="text-xl font-bold text-sunshine-ink">Centro de Ayuda</h1>
  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
  Soporte 24/7
  </span>
@@ -53,7 +53,7 @@ export default function AyudaPage() {
  <p className="text-sm text-[#64748B] mt-1">Encuentra respuestas rápidas, documentación oficial y atención directa con nuestro equipo</p>
  </div>
  <Link href="/ayuda/tickets"
- className="bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm">
+ className="bg-sunshine hover:bg-sunshine-hover text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm">
  <Ticket className="w-4 h-4" />
  Crear Ticket de Soporte
  </Link>
@@ -63,9 +63,9 @@ export default function AyudaPage() {
  <div className="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm p-6">
  <div className="flex flex-col items-center text-center mb-6">
  <div className="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center mb-3">
- <LifeBuoy className="w-7 h-7 text-monday-violet" />
+ <LifeBuoy className="w-7 h-7 text-sunshine-ink" />
  </div>
- <h2 className="text-lg font-bold text-monday-violet">¿En qué podemos ayudarte hoy?</h2>
+ <h2 className="text-lg font-bold text-sunshine-ink">¿En qué podemos ayudarte hoy?</h2>
  <p className="text-sm text-[#64748B] mt-1 max-w-lg">Explora la base de conocimiento de Yellow ERP o consulta con un especialista</p>
  <div className="relative w-full max-w-lg mt-4">
  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748B]" />
@@ -74,7 +74,7 @@ export default function AyudaPage() {
  value={search}
  onChange={e => setSearch(e.target.value)}
  placeholder="Buscar por tema, módulo, DTE, SII, facturas..."
- className="w-full bg-white border border-[#E2E8F0] rounded-xl pl-10 pr-4 py-2.5 text-sm text-monday-violet placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-monday-violet/20 focus:border-monday-violet transition-colors"
+ className="w-full bg-white border border-[#E2E8F0] rounded-xl pl-10 pr-4 py-2.5 text-sm text-sunshine-ink placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-sunshine-dark/20 focus:border-sunshine-dark transition-colors"
  />
  </div>
  </div>
@@ -86,8 +86,8 @@ export default function AyudaPage() {
  onClick={() => setCategory(cat)}
  className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-150 ${
  category === cat
- ? 'bg-monday-violet text-white shadow-sm'
- : 'bg-[#F1F5F9] text-[#64748B] hover:bg-[#E2E8F0] hover:text-monday-violet'
+ ? 'bg-sunshine text-white shadow-sm'
+ : 'bg-[#F1F5F9] text-[#64748B] hover:bg-[#E2E8F0] hover:text-sunshine-ink'
  }`}
  >
  {cat}
@@ -109,10 +109,10 @@ export default function AyudaPage() {
  ) : filtered.length === 0 ? (
  <div className="p-12 text-center">
  <BookOpen className="w-10 h-10 text-[#64748B] mx-auto mb-3" />
- <p className="text-sm font-medium text-monday-violet">No se encontraron preguntas</p>
+ <p className="text-sm font-medium text-sunshine-ink">No se encontraron preguntas</p>
  <p className="text-xs text-[#64748B] mt-1">Prueba ajustando la búsqueda o crea una solicitud a soporte</p>
  <Link href="/ayuda/tickets"
- className="inline-flex items-center gap-2 mt-4 bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150 active:scale-[0.98]">
+ className="inline-flex items-center gap-2 mt-4 bg-sunshine hover:bg-sunshine-hover text-white px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150 active:scale-[0.98]">
  <MessageSquare className="w-4 h-4" />
  Crear Ticket
  </Link>
@@ -130,18 +130,18 @@ export default function AyudaPage() {
  >
  <div className="flex items-center gap-3">
  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border transition-colors ${
- isOpen ? 'bg-monday-violet text-monday-violet border-monday-violet-hover' : 'bg-[#E2E8F0] text-[#475569] border-[#CBD5E1]'
+ isOpen ? 'bg-sunshine text-sunshine-ink border-sunshine-dark-hover' : 'bg-[#E2E8F0] text-[#475569] border-[#CBD5E1]'
  }`}>
  {item.category}
  </span>
- <span className={`text-sm font-semibold transition-colors ${isOpen ? 'text-monday-violet' : 'text-monday-violet'}`}>{item.question}</span>
+ <span className={`text-sm font-semibold transition-colors ${isOpen ? 'text-sunshine-ink' : 'text-sunshine-ink'}`}>{item.question}</span>
  </div>
  <motion.span
  animate={{ rotate: isOpen ? 180 : 0 }}
  transition={{ duration: 0.3, ease: 'easeInOut' }}
  className="flex-shrink-0"
  >
- <ChevronDown className={`w-4 h-4 ${isOpen ? 'text-monday-violet' : 'text-[#64748B]'}`} />
+ <ChevronDown className={`w-4 h-4 ${isOpen ? 'text-sunshine-ink' : 'text-[#64748B]'}`} />
  </motion.span>
  </button>
  <AnimatePresence initial={false}>
@@ -154,7 +154,7 @@ export default function AyudaPage() {
  className="overflow-hidden"
  >
  <div className="px-6 pb-4 pl-16">
- <p className="text-sm text-monday-violet leading-relaxed">{item.answer}</p>
+ <p className="text-sm text-sunshine-ink leading-relaxed">{item.answer}</p>
  </div>
  </motion.div>
  )}

@@ -90,7 +90,7 @@ export default function WaitingRoomPage() {
  <p className="text-xs text-slate-600"><strong>Tutor:</strong> {apt.client_name} • <strong>Servicio:</strong> {apt.service_name}</p>
  <p className="text-xs text-slate-500"><strong>Médico:</strong> Dr(a). {apt.professional_name} {apt.room_name && `• Box: ${apt.room_name}`}</p>
  {apt.wait_minutes > 0 && apt.status === 'en_espera' && (
- <p className="text-xs text-monday-violet font-bold flex items-center gap-1">
+ <p className="text-xs text-sunshine-ink font-bold flex items-center gap-1">
  <Clock className="w-3 h-3" /> Esperando {Math.round(apt.wait_minutes)} min
  </p>
  )}
@@ -98,7 +98,7 @@ export default function WaitingRoomPage() {
  </div>
  <div className="flex items-center gap-2 self-end md:self-center">
  {next && (
- <button onClick={() => handleStatusChange(apt.id, next)} className="bg-monday-violet hover:bg-cloud text-white text-xs font-bold px-3 py-2 rounded-xl transition-all">
+ <button onClick={() => handleStatusChange(apt.id, next)} className="bg-sunshine hover:bg-cloud text-white text-xs font-bold px-3 py-2 rounded-xl transition-all">
  → {STATUS_CONFIG[next]?.label || next}
  </button>
  )}

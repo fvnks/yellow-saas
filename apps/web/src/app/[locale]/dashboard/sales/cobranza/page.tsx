@@ -6,7 +6,7 @@ import { Badge } from '@yellow-erp/ui';
 
 const agingLabels: Record<string, { label: string; color: string }> = {
  current: { label: 'Corriente', color: 'text-emerald-600' },
- '1-30': { label: '1-30 días', color: 'text-monday-violet' },
+ '1-30': { label: '1-30 días', color: 'text-sunshine-ink' },
  '31-60': { label: '31-60 días', color: 'text-orange-600' },
  '61-90': { label: '61-90 días', color: 'text-rose-600' },
  '90+': { label: '90+ días', color: 'text-rose-800' },
@@ -66,9 +66,9 @@ export default function CobranzaPage() {
  <div className="flex items-center justify-between">
  <div>
  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">1-30 días</p>
- <p className="text-lg font-bold text-monday-violet mt-1">${(summary['1-30'] || 0).toLocaleString('es-CL')}</p>
+ <p className="text-lg font-bold text-sunshine-ink mt-1">${(summary['1-30'] || 0).toLocaleString('es-CL')}</p>
  </div>
- <AlertTriangle className="w-5 h-5 text-monday-violet" />
+ <AlertTriangle className="w-5 h-5 text-sunshine-ink" />
  </div>
  </div>
  <div className="bg-card border border-border rounded-xl shadow-sm p-4">

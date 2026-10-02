@@ -103,7 +103,7 @@ export default function SupportAccessTab({ companyId, userRole }: SupportAccessT
  <CardContent className="p-4">
  <div className="flex items-start gap-3">
  <div className="w-10 h-10 bg-peach/30 rounded-xl flex items-center justify-center flex-shrink-0">
- <AlertTriangle className="w-5 h-5 text-monday-violet" />
+ <AlertTriangle className="w-5 h-5 text-sunshine-ink" />
  </div>
  <div>
  <h4 className="text-sm font-semibold text-foreground">Acceso de Soporte</h4>

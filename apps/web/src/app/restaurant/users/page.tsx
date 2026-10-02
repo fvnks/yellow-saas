@@ -90,7 +90,7 @@ export default function RestaurantUsersPage() {
  </div>
  <button
  onClick={() => setShowAdd((v) => !v)}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 self-start"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 self-start"
  >
  <UserPlus className="w-4 h-4" /> Nuevo Usuario
  </button>
@@ -133,7 +133,7 @@ export default function RestaurantUsersPage() {
  </select>
  </div>
  <div className="flex gap-2 pt-1">
- <button type="submit" className="bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-4 py-2 rounded-xl text-sm flex items-center gap-2">
+ <button type="submit" className="bg-sunshine hover:bg-sunshine-hover text-white font-medium px-4 py-2 rounded-xl text-sm flex items-center gap-2">
  <CheckCircle2 className="w-4 h-4" /> Crear Usuario
  </button>
  <button type="button" onClick={() => setShowAdd(false)} className="text-slate-500 hover:text-slate-700 px-4 py-2 text-sm">

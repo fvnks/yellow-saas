@@ -99,7 +99,7 @@ export default function AttendanceTab() {
  </div>
  <div className="bg-peach/30 border border-peach rounded-xl p-4 text-center">
  <p className="text-2xl font-bold text-[#c64d00]">{summary.late}</p>
- <p className="text-xs text-monday-violet">Tardanzas</p>
+ <p className="text-xs text-sunshine-ink">Tardanzas</p>
  </div>
  <div className="bg-muted border border-border rounded-xl p-4 text-center">
  <p className="text-2xl font-bold text-foreground">{summary.total}</p>

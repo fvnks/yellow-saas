@@ -231,7 +231,7 @@ export default function PurchaseInvoices() {
  {/* Sub-tabs: Ingresadas / Pendientes */}
  <div className="flex items-center gap-4 border-b border-border pb-0">
  <button onClick={() => setSubTab('pending')}
- className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${subTab === 'pending' ? 'border-monday-violet text-[#c64d00]' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
+ className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${subTab === 'pending' ? 'border-sunshine-dark text-[#c64d00]' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
  Pendientes <span className="ml-1.5 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-peach/50 text-[#c64d00]">{pendingCount}</span>
  </button>
  <button onClick={() => setSubTab('integrated')}

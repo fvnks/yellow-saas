@@ -198,7 +198,7 @@ export default function PWAOfflineQueuePage() {
  <Badge variant={getStatusBadge(item.status).variant}>{getStatusBadge(item.status).label}</Badge>
  </TableCell>
  <TableCell className="text-center">
- <span className={item.retry_count > 0 ? 'text-monday-violet font-bold' : 'text-muted-foreground'}>
+ <span className={item.retry_count > 0 ? 'text-sunshine-ink font-bold' : 'text-muted-foreground'}>
  {item.retry_count}
  </span>
  </TableCell>

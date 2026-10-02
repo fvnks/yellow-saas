@@ -60,13 +60,13 @@ export default function KioskPage() {
  return (
  <div className="space-y-6">
  {/* Banner */}
- <div className="bg-gradient-to-r from-monday-violet to-slate-800 text-white rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+ <div className="bg-gradient-to-r from-sunshine-ink to-slate-800 text-white rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
- <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-monday-violet text-white mb-2">
+ <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-sunshine text-white mb-2">
  <QrCode className="w-3.5 h-3.5" /> Kiosco & Menú QR
  </span>
  <h1 className="text-2xl font-bold">Autoservicio & Pedido en Mesa</h1>
- <p className="text-xs text-iron mt-1">
+ <p className="text-xs text-white/85 mt-1">
  Escanea el código QR, ingresa con el PIN de mesa y realiza tu pedido directamente.
  </p>
  </div>
@@ -99,7 +99,7 @@ export default function KioskPage() {
  />
  <button
  type="submit"
- className="bg-monday-violet hover:bg-peach text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-all shrink-0"
+ className="bg-sunshine hover:bg-peach text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-all shrink-0"
  >
  Unirse
  </button>
@@ -179,7 +179,7 @@ export default function KioskPage() {
  onClick={() => addToCart(item)}
  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
  item.inStock
- ? 'bg-monday-violet hover:bg-peach text-white shadow-xs'
+ ? 'bg-sunshine hover:bg-peach text-white shadow-xs'
  : 'bg-slate-200 text-slate-400 cursor-not-allowed'
  }`}
  >
@@ -233,7 +233,7 @@ export default function KioskPage() {
 
  <button
  onClick={handleSendOrder}
- className="w-full bg-monday-violet hover:bg-monday-violet-hover text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-xs"
+ className="w-full bg-sunshine hover:bg-sunshine-hover text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-xs"
  >
  Confirmar & Enviar a Cocina <ArrowRight className="w-4 h-4" />
  </button>

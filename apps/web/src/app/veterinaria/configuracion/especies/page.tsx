@@ -160,7 +160,7 @@ export default function VeterinarySpeciesPage() {
 
  <button
  onClick={openCreate}
- className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
+ className="bg-sunshine hover:bg-sunshine-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
  >
  <Plus className="w-4 h-4" />
  Crear Nueva Especie
@@ -242,7 +242,7 @@ export default function VeterinarySpeciesPage() {
  onClick={() => setSelectedCategory(cat.id)}
  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
  selectedCategory === cat.id
- ? 'bg-monday-violet text-white shadow-xs'
+ ? 'bg-sunshine text-white shadow-xs'
  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
  }`}
  >
@@ -421,7 +421,7 @@ export default function VeterinarySpeciesPage() {
  <button
  type="submit"
  disabled={saving}
- className="bg-monday-violet hover:bg-cloud text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm flex items-center gap-2 disabled:opacity-50"
+ className="bg-sunshine hover:bg-cloud text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm flex items-center gap-2 disabled:opacity-50"
  >
  {saving && <Loader2 className="w-3 h-3 animate-spin" />}
  {editingId ? 'Actualizar Especie' : 'Guardar Especie'}

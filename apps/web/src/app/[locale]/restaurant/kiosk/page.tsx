@@ -62,13 +62,13 @@ export default function KioskPage() {
  return (
  <div className="space-y-6">
  {/* Banner */}
- <div className="bg-gradient-to-r from-monday-violet to-slate-800 text-white rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+ <div className="bg-gradient-to-r from-sunshine-ink to-slate-800 text-white rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
- <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-monday-violet text-white mb-2">
+ <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-sunshine text-white mb-2">
  <QrCode className="w-3.5 h-3.5" /> Kiosco & Menú QR
  </span>
  <h1 className="text-2xl font-bold">Autoservicio & Pedido en Mesa</h1>
- <p className="text-xs text-iron mt-1">
+ <p className="text-xs text-white/85 mt-1">
  Escanea el código QR, ingresa con el PIN de mesa y realiza tu pedido directamente.
  </p>
  </div>
@@ -101,7 +101,7 @@ export default function KioskPage() {
  />
  <button
  type="submit"
- className="bg-monday-violet hover:bg-peach text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-all shrink-0"
+ className="bg-sunshine hover:bg-peach text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-all shrink-0"
  >
  Unirse
  </button>
@@ -123,7 +123,7 @@ export default function KioskPage() {
  <div className="lg:col-span-8 space-y-6">
  {/* Smart Suggestion Banner */}
  <div className="bg-peach/30 border border-peach rounded-2xl p-4 flex items-start gap-3">
- <Sparkles className="w-5 h-5 text-monday-violet shrink-0 mt-0.5" />
+ <Sparkles className="w-5 h-5 text-sunshine-ink shrink-0 mt-0.5" />
  <div>
  <h3 className="text-xs font-bold text-[#c64d00]">Sugerencia Inteligente del Chef</h3>
  <p className="text-xs text-[#c64d00] mt-0.5">
@@ -151,7 +151,7 @@ export default function KioskPage() {
  <div>
  <div className="flex items-start justify-between gap-2">
  <span className="text-3xl">{item.image}</span>
- <span className="text-xs font-mono font-bold text-monday-violet bg-peach/30 px-2 py-0.5 rounded-lg border border-peach">
+ <span className="text-xs font-mono font-bold text-sunshine-ink bg-peach/30 px-2 py-0.5 rounded-lg border border-peach">
  {formatCLP(item.priceCLP)}
  </span>
  </div>
@@ -159,7 +159,7 @@ export default function KioskPage() {
  <p className="text-xs text-slate-500 mt-1 line-clamp-2">{item.description}</p>
  {item.suggestion && (
  <p className="text-[11px] font-semibold text-slate-600 bg-slate-100 p-2 rounded-xl mt-3 flex items-center gap-1.5">
- <Sparkles className="w-3 h-3 text-monday-violet shrink-0" />
+ <Sparkles className="w-3 h-3 text-sunshine-ink shrink-0" />
  <span>{item.suggestion}</span>
  </p>
  )}
@@ -181,7 +181,7 @@ export default function KioskPage() {
  onClick={() => addToCart(item)}
  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
  item.inStock
- ? 'bg-monday-violet hover:bg-peach text-white shadow-xs'
+ ? 'bg-sunshine hover:bg-peach text-white shadow-xs'
  : 'bg-slate-200 text-slate-400 cursor-not-allowed'
  }`}
  >
@@ -199,7 +199,7 @@ export default function KioskPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden sticky top-20">
  <div className="px-5 py-4 border-b border-slate-200/80 flex items-center justify-between bg-cloud text-white">
  <h3 className="text-sm font-bold flex items-center gap-2">
- <ShoppingBag className="w-4 h-4 text-monday-violet" />
+ <ShoppingBag className="w-4 h-4 text-sunshine-ink" />
  Mi Comanda QR
  </h3>
  <span className="text-xs text-slate-400 font-medium">{selectedTable?.tableName}</span>
@@ -230,12 +230,12 @@ export default function KioskPage() {
  <div className="p-4 border-t border-slate-200/80 bg-slate-50/80 space-y-3">
  <div className="flex justify-between text-sm font-bold text-slate-900">
  <span>Total Pedido CLP</span>
- <span className="text-monday-violet">{formatCLP(cartTotal)}</span>
+ <span className="text-sunshine-ink">{formatCLP(cartTotal)}</span>
  </div>
 
  <button
  onClick={handleSendOrder}
- className="w-full bg-monday-violet hover:bg-monday-violet-hover text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-xs"
+ className="w-full bg-sunshine hover:bg-sunshine-hover text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-xs"
  >
  Confirmar & Enviar a Cocina <ArrowRight className="w-4 h-4" />
  </button>

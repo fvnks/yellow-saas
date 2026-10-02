@@ -64,7 +64,7 @@ export default function VetPortalPage({ params }: { params: { token: string } })
  <header className="bg-white border-b border-slate-200/80 sticky top-0 z-10">
  <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-monday-violet text-[#FACC15] flex items-center justify-center font-bold text-sm">
+ <div className="w-10 h-10 rounded-xl bg-sunshine text-[#FACC15] flex items-center justify-center font-bold text-sm">
  {patient.species === 'perro' ? <Dog className="w-5 h-5" /> : <Cat className="w-5 h-5" />}
  </div>
  <div>

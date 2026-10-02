@@ -73,7 +73,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-cloud font-sans text-ink antialiased selection:bg-monday-violet/10 lg:flex-row">
+    <div className="flex min-h-screen w-full bg-cloud font-sans text-ink antialiased selection:bg-sunshine/10 lg:flex-row">
       {/* Left Image Panel */}
       <AuthPanel />
 
@@ -81,9 +81,9 @@ function LoginForm() {
       <div className="flex w-full flex-col items-center justify-center p-6 sm:p-12 lg:w-1/2">
         {/* Mobile logo */}
         <div className="lg:hidden mb-8 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full flex items-center justify-center shadow-sm" style={{ background: 'conic-gradient(from 270deg, #8181ff 15%, #33dbdb 40%, #33d58e 55%, #F5C518 65%, #fc527d 85%, #8181ff 100%)' }}>
+          <div className="w-9 h-9 rounded-full flex items-center justify-center shadow-sm" style={{ background: 'conic-gradient(from 270deg, #FFA500 15%, #33dbdb 40%, #33d58e 55%, #F5C518 65%, #fc527d 85%, #FFA500 100%)' }}>
             <div className="w-7 h-7 bg-snow rounded-full flex items-center justify-center">
-              <Building2 className="w-4 h-4 text-monday-violet" />
+              <Building2 className="w-4 h-4 text-sunshine-ink" />
             </div>
           </div>
           <span className="text-lg font-bold text-ink">Yellow ERP</span>
@@ -133,7 +133,7 @@ function LoginForm() {
                   placeholder="admin@yellow-erp.cl"
                   autoComplete="email"
                   required
-                  className="w-full rounded-md border border-mist bg-snow pl-10 pr-4 py-3 text-[14px] text-ink placeholder:text-iron focus:border-monday-violet focus:outline-none focus:ring-2 focus:ring-monday-violet/20 transition-colors"
+                  className="w-full rounded-md border border-mist bg-snow pl-10 pr-4 py-3 text-[14px] text-ink placeholder:text-iron focus:border-sunshine-dark focus:outline-none focus:ring-2 focus:ring-sunshine-dark/20 transition-colors"
                 />
               </div>
             </motion.div>
@@ -153,7 +153,7 @@ function LoginForm() {
                   placeholder="••••••••"
                   autoComplete="current-password"
                   required
-                  className="w-full rounded-md border border-mist bg-snow pl-10 pr-12 py-3 text-[14px] font-mono text-ink placeholder:text-iron focus:border-monday-violet focus:outline-none focus:ring-2 focus:ring-monday-violet/20 transition-colors"
+                  className="w-full rounded-md border border-mist bg-snow pl-10 pr-12 py-3 text-[14px] font-mono text-ink placeholder:text-iron focus:border-sunshine-dark focus:outline-none focus:ring-2 focus:ring-sunshine-dark/20 transition-colors"
                 />
                 <button
                   type="button"
@@ -174,7 +174,7 @@ function LoginForm() {
                   type="checkbox"
                   checked={remember}
                   onChange={(e) => setRemember(e.target.checked)}
-                  className="size-[18px] rounded border-mist text-monday-violet focus:ring-monday-violet focus:ring-2 transition-colors"
+                  className="size-[18px] rounded border-mist text-sunshine-ink focus:ring-sunshine-dark focus:ring-2 transition-colors"
                 />
                 <label htmlFor="remember" className="text-[14px] text-ink cursor-pointer">
                   {t('rememberMe')}
@@ -182,7 +182,7 @@ function LoginForm() {
               </div>
               <Link
                 href="/es/forgot-password"
-                className="text-[14px] font-medium text-ink hover:text-monday-violet transition-colors"
+                className="text-[14px] font-medium text-ink hover:text-sunshine-ink transition-colors"
               >
                 {t('forgotPassword')}
               </Link>
@@ -193,7 +193,7 @@ function LoginForm() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-[160px] bg-monday-violet hover:bg-monday-violet-hover text-white py-3 text-[14px] font-medium transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
+                className="w-full rounded-[160px] bg-sunshine hover:bg-sunshine-hover text-white py-3 text-[14px] font-medium transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
               >
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 {loading ? t('signingIn') : t('signIn')}
@@ -211,7 +211,7 @@ function LoginForm() {
           {/* Footer */}
           <motion.div variants={itemVariants} className="mt-8 text-center text-[14px] text-slate-text">
             {t('noAccount')}{' '}
-            <Link href="/es/register" className="font-semibold text-ink hover:text-monday-violet transition-colors">
+            <Link href="/es/register" className="font-semibold text-ink hover:text-sunshine-ink transition-colors">
               {t('signUp')}
             </Link>
           </motion.div>

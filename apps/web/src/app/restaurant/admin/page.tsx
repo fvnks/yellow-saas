@@ -227,7 +227,7 @@ export default function RestaurantAdminPage() {
 
  <button
  type="submit"
- className="w-full bg-monday-violet hover:bg-monday-violet-hover text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-xs mt-2"
+ className="w-full bg-sunshine hover:bg-sunshine-hover text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-xs mt-2"
  >
  Agregar a la Carta
  </button>

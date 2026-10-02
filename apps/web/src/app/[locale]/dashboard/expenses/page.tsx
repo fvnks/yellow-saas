@@ -172,7 +172,7 @@ export default function ExpensesPage() {
  </div>
  <button
  onClick={() => { setShowForm(true); setEditingExpense(null); resetForm(); }}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all active:scale-[0.98] shadow-sm"
+ className="bg-sunshine hover:bg-sunshine-hover text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all active:scale-[0.98] shadow-sm"
  >
  <Plus className="w-4 h-4" /> Nuevo Gasto
  </button>
@@ -219,8 +219,8 @@ export default function ExpensesPage() {
  {summary ? CLP.format(summary.total_tax) : '—'}
  </p>
  </div>
- <div className="w-12 h-12 bg-monday-violet/10 rounded-xl flex items-center justify-center">
- <TrendingUp className="w-6 h-6 text-monday-violet" />
+ <div className="w-12 h-12 bg-sunshine/10 rounded-xl flex items-center justify-center">
+ <TrendingUp className="w-6 h-6 text-sunshine-ink" />
  </div>
  </div>
  </div>
@@ -482,7 +482,7 @@ export default function ExpensesPage() {
  Cancelar
  </button>
  <button onClick={handleSave} disabled={saving || !form.amount}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all disabled:opacity-50">
+ className="bg-sunshine hover:bg-sunshine-hover text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all disabled:opacity-50">
  {saving ? 'Guardando...' : editingExpense ? 'Actualizar' : 'Crear Gasto'}
  </button>
  </div>

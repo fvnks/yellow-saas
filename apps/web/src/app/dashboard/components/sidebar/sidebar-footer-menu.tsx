@@ -16,8 +16,8 @@ import {
 import { useTranslations } from 'next-intl';
 
 const ROLE_CONFIG: Record<string, { label: string; classes: string }> = {
- owner: { label: 'Propietario', classes: 'bg-monday-violet/10 text-monday-violet border border-monday-violet/20 font-black' },
- admin: { label: 'Administrador', classes: 'bg-monday-violet/10 text-monday-violet border border-monday-violet/20 font-black' },
+ owner: { label: 'Propietario', classes: 'bg-sunshine/10 text-sunshine-ink border border-sunshine-dark/20 font-black' },
+ admin: { label: 'Administrador', classes: 'bg-sunshine/10 text-sunshine-ink border border-sunshine-dark/20 font-black' },
  manager: { label: 'Gerente', classes: 'bg-sky-accent/30 text-[#006680] border border-sky-accent/50 font-bold' },
  member: { label: 'Miembro', classes: 'bg-cloud text-slate-text border border-mist font-medium' },
  viewer: { label: 'Observador', classes: 'bg-cloud/50 text-iron border border-mist font-normal' },
@@ -42,8 +42,8 @@ export default function SidebarFooterMenu({ user }: SidebarFooterMenuProps) {
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
  <button className="flex w-full items-center gap-3 rounded-xl p-2 text-left text-sm hover:bg-cloud border border-transparent hover:border-mist transition-all duration-200 group/user">
- <Avatar className="h-9 w-9 ring-2 ring-monday-violet/30 group-hover/user:ring-monday-violet transition-all shrink-0">
- <AvatarFallback className="bg-monday-violet text-white text-xs font-black shadow-inner">
+ <Avatar className="h-9 w-9 ring-2 ring-sunshine-dark/30 group-hover/user:ring-sunshine-dark transition-all shrink-0">
+ <AvatarFallback className="bg-sunshine text-white text-xs font-black shadow-inner">
  {user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)}
  </AvatarFallback>
  </Avatar>
@@ -59,15 +59,15 @@ export default function SidebarFooterMenu({ user }: SidebarFooterMenuProps) {
  </DropdownMenuTrigger>
  <DropdownMenuContent side="top" align="start" className="w-56 bg-snow border border-mist text-ink shadow-card rounded-xl p-1">
  <DropdownMenuItem className="cursor-pointer text-xs focus:bg-cloud focus:text-ink rounded-lg">
- <Building2 className="mr-2 h-4 w-4 text-monday-violet" />
+ <Building2 className="mr-2 h-4 w-4 text-sunshine-ink" />
  <span>{t('miEmpresa')}</span>
  </DropdownMenuItem>
  <DropdownMenuItem className="cursor-pointer text-xs focus:bg-cloud focus:text-ink rounded-lg">
- <User className="mr-2 h-4 w-4 text-monday-violet" />
+ <User className="mr-2 h-4 w-4 text-sunshine-ink" />
  <span>{t('miCuenta')}</span>
  </DropdownMenuItem>
  <DropdownMenuItem className="cursor-pointer text-xs focus:bg-cloud focus:text-ink rounded-lg">
- <Settings className="mr-2 h-4 w-4 text-monday-violet" />
+ <Settings className="mr-2 h-4 w-4 text-sunshine-ink" />
  <span>{t('configuracion')}</span>
  </DropdownMenuItem>
  <DropdownMenuSeparator className="bg-mist" />

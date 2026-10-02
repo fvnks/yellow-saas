@@ -77,8 +77,8 @@ const modules: ModuleOption[] = [
  description: ['Cronogramas Gantt', 'Tableros Kanban', 'Control Presupuesto', 'Avance de Obra'],
  icon: FolderKanban,
  iconBg: 'bg-lavender border-lavender',
- iconColor: 'text-[#7c3aed]',
- accentBadge: 'bg-lavender text-[#7c3aed] border-lavender',
+ iconColor: 'text-[#8A6100]',
+ accentBadge: 'bg-lavender text-[#8A6100] border-lavender',
  href: '/projects',
  requiredModules: [],
  moduleName: 'projects_pro',
@@ -155,8 +155,8 @@ const modules: ModuleOption[] = [
  description: ['Mi Plan SaaS', 'Facturación ERP', 'Módulos Activos', 'Suscripción'],
  icon: CreditCard,
  iconBg: 'bg-periwinkle border-periwinkle',
- iconColor: 'text-monday-violet',
- accentBadge: 'bg-periwinkle text-monday-violet border-periwinkle',
+ iconColor: 'text-sunshine-ink',
+ accentBadge: 'bg-periwinkle text-sunshine-ink border-periwinkle',
  href: '/mi-cuenta',
  requiredModules: [],
  moduleName: 'mi-cuenta',
@@ -371,7 +371,7 @@ export default function SelectPage() {
  return (
  <div className="min-h-screen bg-cloud flex items-center justify-center">
  <div className="flex flex-col items-center gap-3">
- <div className="w-10 h-10 border-3 border-monday-violet border-t-cloud rounded-full animate-spin" />
+ <div className="w-10 h-10 border-3 border-sunshine-dark border-t-cloud rounded-full animate-spin" />
  <p className="text-xs text-slate-text font-semibold">Cargando módulos de Yellow ERP...</p>
  </div>
  </div>
@@ -384,9 +384,9 @@ export default function SelectPage() {
  <header className="bg-snow/90 border-b border-mist px-6 h-16 sticky top-0 z-30 backdrop-blur-xl flex items-center justify-between">
  <div className="max-w-[1200px] mx-auto w-full flex items-center justify-between">
  <div className="flex items-center gap-3">
- <div className="h-9 w-9 rounded-full p-0.5 shadow-sm flex items-center justify-center shrink-0" style={{ background: 'conic-gradient(from 270deg, #8181ff 15%, #33dbdb 40%, #33d58e 55%, #F5C518 65%, #fc527d 85%, #8181ff 100%)' }}>
+ <div className="h-9 w-9 rounded-full p-0.5 shadow-sm flex items-center justify-center shrink-0" style={{ background: 'conic-gradient(from 270deg, #FFA500 15%, #33dbdb 40%, #33d58e 55%, #F5C518 65%, #fc527d 85%, #FFA500 100%)' }}>
  <div className="h-8 w-8 bg-snow rounded-full flex items-center justify-center">
- <span className="text-monday-violet font-bold text-xs">Y</span>
+ <span className="text-sunshine-ink font-bold text-xs">Y</span>
  </div>
  </div>
  <div>
@@ -401,18 +401,18 @@ export default function SelectPage() {
  </div>
 
  <div className="flex items-center gap-4">
- <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-monday-violet/5 border border-monday-violet/15 rounded-md text-xs font-semibold text-ink">
- <TrendingUp className="w-3.5 h-3.5 text-monday-violet" />
+ <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-sunshine/5 border border-sunshine-dark/15 rounded-md text-xs font-semibold text-ink">
+ <TrendingUp className="w-3.5 h-3.5 text-sunshine-ink" />
  <span>UF: ${indicators ? indicators.uf.toLocaleString('es-CL') : '38.500'}</span>
  <span className="opacity-40">|</span>
- <DollarSign className="w-3.5 h-3.5 text-monday-violet -mr-1" />
+ <DollarSign className="w-3.5 h-3.5 text-sunshine-ink -mr-1" />
  <span>USD: ${indicators ? indicators.dolar.toLocaleString('es-CL') : '950'}</span>
  </div>
 
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
  <button className="flex items-center gap-2.5 px-3 py-1.5 rounded-md border border-mist bg-snow hover:bg-cloud transition-all duration-150 shadow-xs">
- <div className="w-7 h-7 rounded-full bg-monday-violet/10 flex items-center justify-center shrink-0 font-black text-xs text-monday-violet">
+ <div className="w-7 h-7 rounded-full bg-sunshine/10 flex items-center justify-center shrink-0 font-black text-xs text-sunshine-ink">
  {user?.name?.slice(0, 2).toUpperCase() || 'US'}
  </div>
  <div className="text-left hidden sm:block">
@@ -425,7 +425,7 @@ export default function SelectPage() {
  <DropdownMenuContent side="bottom" align="end" className="w-60 bg-snow border border-mist rounded-2xl shadow-xl p-1.5">
  <div className="px-3 py-2 border-b border-mist">
  <div className="flex items-center gap-2.5">
- <div className="w-8 h-8 rounded-full bg-monday-violet/10 flex items-center justify-center shrink-0 font-black text-xs text-monday-violet">
+ <div className="w-8 h-8 rounded-full bg-sunshine/10 flex items-center justify-center shrink-0 font-black text-xs text-sunshine-ink">
  {user?.name?.slice(0, 2).toUpperCase() || 'US'}
  </div>
  <div className="flex-1 min-w-0">
@@ -450,7 +450,7 @@ export default function SelectPage() {
  disabled={c.id === company?.id}
  >
  <div className="w-7 h-7 bg-ink rounded-lg flex items-center justify-center shrink-0">
- <Building2 className="w-3.5 h-3.5 text-monday-violet" />
+ <Building2 className="w-3.5 h-3.5 text-sunshine-ink" />
  </div>
  <div className="flex-1 min-w-0">
  <p className="text-xs font-semibold text-ink truncate">{c.name}</p>
@@ -470,7 +470,7 @@ export default function SelectPage() {
  <DropdownMenuSeparator className="bg-mist" />
  <DropdownMenuItem
  onClick={() => router.push('/admin')}
- className="flex items-center gap-2.5 px-3 py-2 text-monday-violet hover:bg-monday-violet/5 rounded-xl cursor-pointer transition-colors font-semibold"
+ className="flex items-center gap-2.5 px-3 py-2 text-sunshine-ink hover:bg-sunshine/5 rounded-xl cursor-pointer transition-colors font-semibold"
  >
  <Shield className="w-4 h-4" />
  <span className="text-xs">Consola SaaS Admin</span>
@@ -501,7 +501,7 @@ export default function SelectPage() {
  className="text-center mb-10"
  >
  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-snow border border-mist text-xs font-bold text-slate-text shadow-xs mb-3">
- <Sparkles className="w-3.5 h-3.5 text-monday-violet" />
+ <Sparkles className="w-3.5 h-3.5 text-sunshine-ink" />
  <span>Yellow ERP Hub · Módulos SaaS</span>
  </div>
  <h2 className="text-2xl sm:text-3xl font-black text-ink tracking-tight">
@@ -531,7 +531,7 @@ export default function SelectPage() {
  <Icon className={`w-6 h-6 ${mod.iconColor}`} />
  </div>
  {activated ? (
- <div className="w-8 h-8 rounded-full bg-cloud flex items-center justify-center group-hover:bg-monday-violet group-hover:text-white transition-colors duration-200">
+ <div className="w-8 h-8 rounded-full bg-cloud flex items-center justify-center group-hover:bg-sunshine group-hover:text-ink transition-colors duration-200">
  <ArrowRight className="w-4 h-4 text-iron group-hover:text-white transition-colors" />
  </div>
  ) : (
@@ -564,7 +564,7 @@ export default function SelectPage() {
  <span className={activated ? 'text-forest font-bold' : 'text-iron font-medium'}>
  {activated ? '● Módulo Activo' : '🔒 Requiere Activación'}
  </span>
- <span className="text-ink font-bold group-hover:text-monday-violet transition-colors">
+ <span className="text-ink font-bold group-hover:text-sunshine-ink transition-colors">
  Ingresar &rarr;
  </span>
  </div>
@@ -603,8 +603,8 @@ export default function SelectPage() {
  className="bg-snow rounded-3xl border border-mist shadow-xl w-full max-w-sm overflow-hidden"
  >
  <div className="p-6 text-center">
- <div className="w-14 h-14 bg-monday-violet/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-monday-violet/15">
- <Lock className="w-6 h-6 text-monday-violet" />
+ <div className="w-14 h-14 bg-sunshine/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-sunshine-dark/15">
+ <Lock className="w-6 h-6 text-sunshine-ink" />
  </div>
  <h2 className="text-lg font-black text-ink">Activar Módulo</h2>
  <p className="text-xs text-slate-text mt-2 leading-relaxed font-medium">
@@ -621,7 +621,7 @@ export default function SelectPage() {
  <button
  onClick={handleActivate}
  disabled={activating}
- className="flex-1 bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2.5 rounded-[160px] text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all duration-150 active:scale-[0.98] disabled:opacity-50"
+ className="flex-1 bg-sunshine hover:bg-sunshine-hover text-white px-4 py-2.5 rounded-[160px] text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all duration-150 active:scale-[0.98] disabled:opacity-50"
  >
  {activating ? (
  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

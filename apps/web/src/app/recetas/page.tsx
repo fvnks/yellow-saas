@@ -64,7 +64,7 @@ export default function RecetasPage() {
  <p className="text-sm text-slate-text mt-1">Estructura de materiales (BOM), rendimientos de producción y costos de formulación</p>
  </div>
  <Link href="/recetas/new"
- className="bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm">
+ className="bg-sunshine hover:bg-sunshine-hover text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm">
  <Plus className="w-4 h-4" /> Nueva Receta
  </Link>
  </div>
@@ -87,7 +87,7 @@ export default function RecetasPage() {
  ].map(f => (
  <button key={f.id} onClick={() => setActiveFilter(f.id)}
  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 ${
- activeFilter === f.id ? 'bg-monday-violet text-white shadow-sm' : 'text-slate-text hover:bg-[#F1F5F9] hover:text-ink'
+ activeFilter === f.id ? 'bg-sunshine text-white shadow-sm' : 'text-slate-text hover:bg-[#F1F5F9] hover:text-ink'
  }`}>
  {f.label}
  </button>
@@ -119,7 +119,7 @@ export default function RecetasPage() {
  <FlaskConical className="w-12 h-12 text-slate-text mx-auto mb-3" />
  <p className="text-sm font-medium text-ink">No hay recetas registradas</p>
  <p className="text-xs text-slate-text mt-1 mb-4">Crea una nueva estructura de materiales para iniciar la producción</p>
- <Link href="/recetas/new" className="bg-monday-violet text-white px-4 py-2 rounded-xl text-xs font-semibold hover:bg-monday-violet-hover transition-colors inline-block">Crear primera receta</Link>
+ <Link href="/recetas/new" className="bg-sunshine text-white px-4 py-2 rounded-xl text-xs font-semibold hover:bg-sunshine-hover transition-colors inline-block">Crear primera receta</Link>
  </td></tr>
  ) : formulas.map(f => (
  <tr key={f.id} className="border-b border-mist hover:bg-[#F1F5F9] transition-colors duration-100">

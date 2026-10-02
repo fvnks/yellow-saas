@@ -91,7 +91,7 @@ export default function LoyaltyProgram() {
  <p className="text-xl font-bold text-foreground mt-1">{totalPoints.toLocaleString()}</p>
  </div>
  <div className="w-10 h-10 bg-peach/30 rounded-lg flex items-center justify-center">
- <Star className="w-5 h-5 text-monday-violet" />
+ <Star className="w-5 h-5 text-sunshine-ink" />
  </div>
  </div>
  </div>

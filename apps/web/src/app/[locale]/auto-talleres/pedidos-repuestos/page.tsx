@@ -70,10 +70,10 @@ export default function PedidosRepuestosPage() {
  {/* Header */}
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
- <h1 className="text-2xl font-black text-monday-violet">Pedidos a Proveedores</h1>
+ <h1 className="text-2xl font-black text-sunshine-ink">Pedidos a Proveedores</h1>
  <p className="text-sm text-slate-500 mt-1">Gestiona compras de repuestos e insumos</p>
  </div>
- <button className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]">
+ <button className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]">
  <Plus className="w-4 h-4" />
  Nuevo Pedido
  </button>
@@ -83,12 +83,12 @@ export default function PedidosRepuestosPage() {
  <div className="grid gap-4 grid-cols-1 sm:grid-cols-4">
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
  <div className="flex items-center gap-3">
- <div className="h-10 w-10 rounded-xl bg-monday-violet/10 flex items-center justify-center border border-monday-violet/20">
- <Package className="w-5 h-5 text-monday-violet" />
+ <div className="h-10 w-10 rounded-xl bg-sunshine/10 flex items-center justify-center border border-sunshine-dark/20">
+ <Package className="w-5 h-5 text-sunshine-ink" />
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Pendientes</p>
- <p className="text-2xl font-black text-monday-violet">{orders.filter(o => o.status === 'solicitado').length}</p>
+ <p className="text-2xl font-black text-sunshine-ink">{orders.filter(o => o.status === 'solicitado').length}</p>
  </div>
  </div>
  </div>
@@ -99,7 +99,7 @@ export default function PedidosRepuestosPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">En Tránsito</p>
- <p className="text-2xl font-black text-monday-violet">{orders.filter(o => o.status === 'en_transito').length}</p>
+ <p className="text-2xl font-black text-sunshine-ink">{orders.filter(o => o.status === 'en_transito').length}</p>
  </div>
  </div>
  </div>
@@ -110,7 +110,7 @@ export default function PedidosRepuestosPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Recibidos</p>
- <p className="text-2xl font-black text-monday-violet">{orders.filter(o => o.status === 'recibido').length}</p>
+ <p className="text-2xl font-black text-sunshine-ink">{orders.filter(o => o.status === 'recibido').length}</p>
  </div>
  </div>
  </div>
@@ -121,7 +121,7 @@ export default function PedidosRepuestosPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total</p>
- <p className="text-2xl font-black text-monday-violet">{orders.length}</p>
+ <p className="text-2xl font-black text-sunshine-ink">{orders.length}</p>
  </div>
  </div>
  </div>

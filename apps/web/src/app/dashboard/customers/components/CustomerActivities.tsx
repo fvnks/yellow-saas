@@ -192,7 +192,7 @@ export default function CustomerActivities({ customerId }: Props) {
  <div key={activity.id} className="relative flex gap-4">
  <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 z-10 ${
  config.variant === 'info' ? 'bg-blue-100 text-blue-600' :
- config.variant === 'warning' ? 'bg-peach/50 text-monday-violet' :
+ config.variant === 'warning' ? 'bg-peach/50 text-sunshine-ink' :
  config.variant === 'success' ? 'bg-emerald-100 text-emerald-600' :
  config.variant === 'danger' ? 'bg-rose-100 text-rose-600' :
  'bg-muted text-foreground'

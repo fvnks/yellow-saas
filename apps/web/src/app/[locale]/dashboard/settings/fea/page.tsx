@@ -48,7 +48,7 @@ export default function FEASettingsPage() {
  <div className="flex items-center gap-2">
  <button
  onClick={() => toast.success('Importador de Certificado .PFX iniciado')}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
  >
  <Plus className="w-4 h-4" />
  Cargar Certificado Digital (.PFX)

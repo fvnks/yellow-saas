@@ -244,7 +244,7 @@ export default function VeterinaryEstimatesPage() {
  </div>
  <button
  onClick={() => setShowModal(true)}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
  >
  <Plus className="w-4 h-4" />
  Nueva Estimación
@@ -304,7 +304,7 @@ export default function VeterinaryEstimatesPage() {
  key={s.id}
  onClick={() => setStatusFilter(s.id)}
  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
- statusFilter === s.id ? 'bg-monday-violet text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+ statusFilter === s.id ? 'bg-sunshine text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
  }`}
  >
  {s.label}
@@ -614,7 +614,7 @@ export default function VeterinaryEstimatesPage() {
  </button>
  <button
  type="submit"
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-sm flex items-center gap-2"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-sm flex items-center gap-2"
  >
  <FileText className="w-4 h-4" />
  Guardar Presupuesto (Pendiente Aprobación)

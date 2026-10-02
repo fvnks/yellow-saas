@@ -28,7 +28,7 @@ interface ProjectTasksProps {
 const STATUS_OPTIONS = [
  { value: 'todo', label: 'Por Hacer', icon: AlertCircle, color: 'text-muted-foreground', bg: 'bg-muted' },
  { value: 'in_progress', label: 'En Progreso', icon: Clock, color: 'text-blue-500', bg: 'bg-blue-100' },
- { value: 'review', label: 'Revisión', icon: Eye, color: 'text-monday-violet', bg: 'bg-peach/50' },
+ { value: 'review', label: 'Revisión', icon: Eye, color: 'text-sunshine-ink', bg: 'bg-peach/50' },
  { value: 'done', label: 'Completada', icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-100' },
 ];
 

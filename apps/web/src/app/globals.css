@@ -23,17 +23,18 @@ html {
 }
 
 /* ============================================
-   DESIGN TOKENS — monday.com Inspired
+   DESIGN TOKENS — Yellow ERP (Sunshine)
    ============================================ */
 
 @layer base {
   :root {
     /* Brand */
-    --color-monday-violet: #6161ff;
-    --color-monday-violet-hover: #5252e6;
+    --color-monday-violet: #F5C518;      /* alias histórico -> sunshine */
+    --color-monday-violet-hover: #D4A017;
     --color-sunshine: #F5C518;
     --color-sunshine-hover: #D4A017;
     --color-sunshine-dark: #B8860B;
+    --color-sunshine-ink: #8A6100;       /* texto de acento (AA sobre claro) */
     --color-amber-gold: #D4A017;
 
     /* Text */
@@ -55,21 +56,21 @@ html {
     --color-mint: #bcfe90;
     --color-sky: #abf0ff;
     --color-apricot: #ff8940;
-    --color-lavender: #eddff7;
-    --color-periwinkle: #e7ecff;
-    --color-cornflower: #93beff;
+    --color-lavender: #FFE9B8;
+    --color-periwinkle: #FFF6D1;
+    --color-cornflower: #FFD633;
     --color-aqua: #d1faff;
-    --color-cotton-candy: #e98dfe;
-    --color-ultra-violet: #9450fd;
+    --color-cotton-candy: #FFB84D;
+    --color-ultra-violet: #D4A017;
     --color-electric-cyan: #3ac9ff;
     --color-forest: #2a5c4e;
     --color-peony: #fcd0f8;
-    --color-periwinkle-wash: #dbdbff;
-    --color-prism: #8181ff;
+    --color-periwinkle-wash: #FFE9A3;
+    --color-prism: #F5C518;
 
     /* Gradients */
     --gradient-apricot: linear-gradient(90deg, rgb(254, 129, 228), rgb(254, 129, 228) 31%, rgb(253, 169, 0) 88%);
-    --gradient-prism: conic-gradient(from 270deg, rgb(129, 129, 255) 15%, rgb(51, 219, 219) 40%, rgb(51, 213, 142) 55%, rgb(255, 214, 51) 65%, rgb(252, 82, 125) 85%, rgb(129, 129, 255) 100%);
+    --gradient-prism: conic-gradient(from 270deg, rgb(255, 165, 0) 15%, rgb(51, 219, 219) 40%, rgb(51, 213, 142) 55%, rgb(245, 197, 24) 65%, rgb(252, 82, 125) 85%, rgb(255, 165, 0) 100%);
     --gradient-sunshine: linear-gradient(135deg, #F5C518 0%, #D4A017 50%, #B8860B 100%);
     --gradient-sunrise: linear-gradient(135deg, #F5C518 0%, #D4A017 50%, #8B6914 100%);
 
@@ -103,7 +104,7 @@ html {
     --popover: 0 0% 100%;
     --popover-foreground: 38 20% 11%;
 
-    --primary: 45 100% 59%;        /* #FFD633 sunshine */
+    --primary: 47 92% 53%;         /* #F5C518 sunshine */
     --primary-foreground: 38 20% 11%;
 
     --secondary: 45 20% 97%;       /* #F4F5F7 cloud */
@@ -120,18 +121,18 @@ html {
 
     --border: 40 12% 85%;          /* #D8DCE6 mist */
     --input: 40 12% 85%;
-    --ring: 45 100% 59%;
+    --ring: 43 89% 38%;            /* #B8860B — foco visible sobre claro */
     --radius: 0.375rem;
 
     /* Sidebar — Light theme per DESIGN.md */
     --sidebar-background: 0 0% 100%;        /* #ffffff snow */
     --sidebar-foreground: 38 20% 11%;      /* #1A1B1E ink */
-    --sidebar-primary: 45 100% 59%;        /* #FFD633 sunshine */
+    --sidebar-primary: 47 92% 53%;         /* #F5C518 sunshine */
     --sidebar-primary-foreground: 38 20% 11%;
     --sidebar-accent: 45 20% 97%;          /* #F4F5F7 cloud */
     --sidebar-accent-foreground: 38 20% 11%;
     --sidebar-border: 40 12% 85%;          /* #D8DCE6 mist */
-    --sidebar-ring: 45 100% 59%;
+    --sidebar-ring: 43 89% 38%;
   }
 }
 
@@ -152,7 +153,7 @@ html {
 }
 
 /* ============================================
-   GLOBAL UI — monday.com Style
+   GLOBAL UI — Yellow ERP Style
    ============================================ */
 
 /* Cards */
@@ -174,8 +175,8 @@ textarea.w-full.bg-muted.border.border-border {
 input.w-full.bg-muted.border.border-border:focus,
 select.w-full.bg-muted.border.border-border:focus,
 textarea.w-full.bg-muted.border.border-border:focus {
-  border-color: #FFD633;
-  box-shadow: 0 0 0 3px rgba(255, 214, 51, 0.2);
+  border-color: #B8860B;             /* 3.25:1 sobre blanco */
+  box-shadow: 0 0 0 3px rgba(245, 197, 24, 0.35);
 }
 
 /* Modal Backdrop */
@@ -202,13 +203,13 @@ h1.text-xl.font-bold.text-foreground {
     text-wrap: balance;
   }
   .text-gradient {
-    background: linear-gradient(135deg, #FFD633 0%, #FFA500 50%, #FF8940 100%);
+    background: linear-gradient(135deg, #F5C518 0%, #FFA500 50%, #FF8940 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   .text-gradient-sunshine {
-    background: linear-gradient(135deg, #FFD633 0%, #FFB800 50%, #FF8940 100%);
+    background: linear-gradient(135deg, #F5C518 0%, #FFB800 50%, #FF8940 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -327,9 +328,32 @@ h1.text-xl.font-bold.text-foreground {
    ============================================ */
 
 .landing-page :focus-visible {
-  outline: 2px solid #FFD633;
+  outline: 2px solid #B8860B;        /* dorado, 3.25:1 sobre blanco */
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+/* ============================================
+   CONTRASTE — Amarillo exige texto en tinta
+   El amarillo #F5C518 solo funciona como fondo/relleno:
+   el texto blanco sobre él da 1.7:1, así que cualquier
+   `text-white` dentro de una superficie sunshine se
+   fuerza a tinta (ink) para cumplir WCAG AA.
+   ============================================ */
+
+.bg-sunshine.text-white,
+.bg-sunshine-hover.text-white,
+.bg-sunshine-dark.text-white,
+.bg-monday-violet.text-white,
+.bg-monday-violet-hover.text-white,
+.bg-primary.text-white,
+.bg-sunshine .text-white,
+.bg-sunshine-hover .text-white,
+.bg-sunshine-dark .text-white,
+.bg-monday-violet .text-white,
+.bg-monday-violet-hover .text-white,
+.bg-primary .text-white {
+  color: #1A1B1E;
 }
 
 /* ============================================

@@ -182,7 +182,7 @@ export default function AccountingPage() {
  <div className="flex items-center justify-between">
  <div>
  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Patrimonio</p>
- <p className="text-xl font-bold text-monday-violet mt-1">${totalEquity.toLocaleString('es-CL')}</p>
+ <p className="text-xl font-bold text-sunshine-ink mt-1">${totalEquity.toLocaleString('es-CL')}</p>
  </div>
  <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">
  <Building2 className="w-5 h-5 text-foreground" />

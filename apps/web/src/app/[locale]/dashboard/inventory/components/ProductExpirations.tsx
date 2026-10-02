@@ -126,10 +126,10 @@ export default function ProductExpirations() {
  )}
  {expiringSoon > 0 && (
  <div className="bg-peach/30 border border-peach rounded-xl p-3 flex items-center gap-3">
- <AlertTriangle className="w-5 h-5 text-monday-violet" />
+ <AlertTriangle className="w-5 h-5 text-sunshine-ink" />
  <div>
  <p className="text-lg font-bold text-[#c64d00]">{expiringSoon}</p>
- <p className="text-[9px] text-monday-violet">Por vencer (90 dias)</p>
+ <p className="text-[9px] text-sunshine-ink">Por vencer (90 dias)</p>
  </div>
  </div>
  )}
@@ -193,7 +193,7 @@ export default function ProductExpirations() {
  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
  isExpired ? 'bg-red-100' : isExpiringSoon ? 'bg-peach/50' : 'bg-muted'
  }`}>
- <Calendar className={`w-4 h-4 ${isExpired ? 'text-red-600' : isExpiringSoon ? 'text-monday-violet' : 'text-foreground'}`} />
+ <Calendar className={`w-4 h-4 ${isExpired ? 'text-red-600' : isExpiringSoon ? 'text-sunshine-ink' : 'text-foreground'}`} />
  </div>
  <div>
  <p className="text-sm font-medium text-foreground">{item.product_name}</p>
@@ -205,7 +205,7 @@ export default function ProductExpirations() {
  <p className={`text-sm font-bold ${isExpired ? 'text-red-700' : isExpiringSoon ? 'text-[#c64d00]' : 'text-foreground'}`}>
  {new Date(item.expiration_date).toLocaleDateString('es-CL')}
  </p>
- <p className={`text-[9px] font-semibold ${isExpired ? 'text-red-600' : isExpiringSoon ? 'text-monday-violet' : 'text-muted-foreground'}`}>
+ <p className={`text-[9px] font-semibold ${isExpired ? 'text-red-600' : isExpiringSoon ? 'text-sunshine-ink' : 'text-muted-foreground'}`}>
  {isExpired ? `Vencido hace ${Math.abs(daysLeft)} dias` : `${daysLeft} dias restantes`}
  </p>
  </div>

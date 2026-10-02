@@ -140,7 +140,7 @@ export default function AlertsPage() {
  <div className="flex items-center justify-between">
  <div>
  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Stock Bajo</p>
- <p className="text-2xl font-bold text-monday-violet mt-1">{lowStockCount}</p>
+ <p className="text-2xl font-bold text-sunshine-ink mt-1">{lowStockCount}</p>
  </div>
  <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
  <AlertTriangle className="w-6 h-6 text-foreground" />
@@ -223,7 +223,7 @@ export default function AlertsPage() {
  <td className="px-6 py-3 text-xs font-mono text-muted-foreground">{item.product_sku}</td>
  <td className="px-6 py-3 text-xs text-foreground">{item.warehouse_name}</td>
  <td className="px-6 py-3 text-center">
- <span className={`text-xs font-bold ${item.status === 'out_of_stock' ? 'text-rose-600' : 'text-monday-violet'}`}>
+ <span className={`text-xs font-bold ${item.status === 'out_of_stock' ? 'text-rose-600' : 'text-sunshine-ink'}`}>
  {item.current_stock}
  </span>
  </td>

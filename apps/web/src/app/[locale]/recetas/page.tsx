@@ -56,7 +56,7 @@ export default function RecetasPage() {
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <div className="flex items-center gap-2">
- <h1 className="text-xl font-bold text-monday-violet">Recetas y Fórmulas</h1>
+ <h1 className="text-xl font-bold text-sunshine-ink">Recetas y Fórmulas</h1>
  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-peach/30 text-[#c64d00] border border-peach">
  Producción & BOM
  </span>
@@ -64,7 +64,7 @@ export default function RecetasPage() {
  <p className="text-sm text-[#64748B] mt-1">Estructura de materiales (BOM), rendimientos de producción y costos de formulación</p>
  </div>
  <Link href="/recetas/new"
- className="bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm">
+ className="bg-sunshine hover:bg-sunshine-hover text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm">
  <Plus className="w-4 h-4" /> Nueva Receta
  </Link>
  </div>
@@ -76,7 +76,7 @@ export default function RecetasPage() {
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748B]" />
  <input type="search" value={search} onChange={e => setSearch(e.target.value)}
  onKeyDown={e => e.key === 'Enter' && handleSearch()}
- className="w-full pl-9 pr-4 py-2 bg-white border border-[#E2E8F0] rounded-xl text-sm text-monday-violet placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-monday-violet/30 focus:border-monday-violet transition-colors"
+ className="w-full pl-9 pr-4 py-2 bg-white border border-[#E2E8F0] rounded-xl text-sm text-sunshine-ink placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-sunshine-dark/30 focus:border-sunshine-dark transition-colors"
  placeholder="Buscar por nombre de receta o ingrediente..." />
  </div>
  <div className="flex gap-1.5 w-full sm:w-auto">
@@ -87,7 +87,7 @@ export default function RecetasPage() {
  ].map(f => (
  <button key={f.id} onClick={() => setActiveFilter(f.id)}
  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 ${
- activeFilter === f.id ? 'bg-monday-violet text-monday-violet shadow-sm' : 'text-[#64748B] hover:bg-[#F1F5F9] hover:text-monday-violet'
+ activeFilter === f.id ? 'bg-sunshine text-sunshine-ink shadow-sm' : 'text-[#64748B] hover:bg-[#F1F5F9] hover:text-sunshine-ink'
  }`}>
  {f.label}
  </button>
@@ -117,33 +117,33 @@ export default function RecetasPage() {
  ) : formulas.length === 0 ? (
  <tr><td colSpan={7} className="px-4 py-12 text-center">
  <FlaskConical className="w-12 h-12 text-[#64748B] mx-auto mb-3" />
- <p className="text-sm font-medium text-monday-violet">No hay recetas registradas</p>
+ <p className="text-sm font-medium text-sunshine-ink">No hay recetas registradas</p>
  <p className="text-xs text-[#64748B] mt-1 mb-4">Crea una nueva estructura de materiales para iniciar la producción</p>
- <Link href="/recetas/new" className="bg-monday-violet text-white px-4 py-2 rounded-xl text-xs font-semibold hover:bg-monday-violet-hover transition-colors inline-block">Crear primera receta</Link>
+ <Link href="/recetas/new" className="bg-sunshine text-white px-4 py-2 rounded-xl text-xs font-semibold hover:bg-sunshine-hover transition-colors inline-block">Crear primera receta</Link>
  </td></tr>
  ) : formulas.map(f => (
  <tr key={f.id} className="border-b border-[#E2E8F0] hover:bg-[#F1F5F9] transition-colors duration-100">
  <td className="px-4 py-3">
  <div className="flex items-center gap-3">
  <div className="w-9 h-9 bg-peach/30 rounded-xl flex items-center justify-center border border-peach/50">
- <FlaskConical className="w-4 h-4 text-monday-violet" />
+ <FlaskConical className="w-4 h-4 text-sunshine-ink" />
  </div>
  <div>
- <p className="text-xs font-semibold text-monday-violet">{f.name}</p>
+ <p className="text-xs font-semibold text-sunshine-ink">{f.name}</p>
  {f.description && <p className="text-[10px] text-[#64748B] truncate max-w-xs">{f.description}</p>}
  </div>
  </div>
  </td>
- <td className="px-4 py-3 text-xs font-medium text-monday-violet">{f.output_product?.name || '—'}</td>
+ <td className="px-4 py-3 text-xs font-medium text-sunshine-ink">{f.output_product?.name || '—'}</td>
  <td className="px-4 py-3 text-center">
  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-peach/30 text-[#c64d00] border border-peach">
  <Package className="w-2.5 h-2.5" /> {f.ingredient_count || 0}
  </span>
  </td>
- <td className="px-4 py-3 text-center text-xs font-medium text-monday-violet">
+ <td className="px-4 py-3 text-center text-xs font-medium text-sunshine-ink">
  {formatQuantity(f.yield_quantity, f.yield_unit)}
  </td>
- <td className="px-4 py-3 text-center text-xs font-bold text-monday-violet">
+ <td className="px-4 py-3 text-center text-xs font-bold text-sunshine-ink">
  {f.total_produced || 0} u.
  </td>
  <td className="px-4 py-3 text-center">
@@ -156,7 +156,7 @@ export default function RecetasPage() {
  <td className="px-4 py-3">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
- <button className="p-1.5 text-[#64748B] hover:text-monday-violet hover:bg-slate-100 rounded-xl transition-colors">
+ <button className="p-1.5 text-[#64748B] hover:text-sunshine-ink hover:bg-slate-100 rounded-xl transition-colors">
  <MoreVertical className="w-4 h-4" />
  </button>
  </DropdownMenuTrigger>

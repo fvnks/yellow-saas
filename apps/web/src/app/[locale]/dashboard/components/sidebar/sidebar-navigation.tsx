@@ -249,7 +249,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder={t('searchMenu')}
- className="w-full bg-cloud border border-mist text-xs text-ink placeholder:text-iron rounded-md pl-8 pr-7 py-1.5 focus:outline-none focus:border-monday-violet focus:ring-1 focus:ring-monday-violet/20 transition-all"
+ className="w-full bg-cloud border border-mist text-xs text-ink placeholder:text-iron rounded-md pl-8 pr-7 py-1.5 focus:outline-none focus:border-sunshine-dark focus:ring-1 focus:ring-sunshine-dark/20 transition-all"
  />
  {searchQuery ? (
  <button
@@ -295,7 +295,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
  "text-[10px] font-black uppercase tracking-widest",
  "transition-all duration-150 cursor-pointer",
  groupActive
- ? "text-monday-violet"
+ ? "text-sunshine-ink"
  : "text-iron hover:text-ink",
  "hover:bg-cloud"
  )}>
@@ -305,7 +305,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
  )} />
  <span className="truncate">{navGroup.label}</span>
  {groupActive && !groupOpen && (
- <div className="ml-auto w-2 h-2 rounded-full bg-monday-violet animate-pulse flex-shrink-0 shadow-sm shadow-monday-violet/50" />
+ <div className="ml-auto w-2 h-2 rounded-full bg-sunshine animate-pulse flex-shrink-0 shadow-sm shadow-sunshine/50" />
  )}
  </button>
  </CollapsibleTrigger>
@@ -333,7 +333,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
  className={cn(
  "whitespace-nowrap rounded-xl transition-all duration-150 py-2.5 px-3 text-xs font-semibold",
  itemActive
- ? `bg-monday-violet/10 text-monday-violet font-bold border-l-4 ${theme.activeBorderClass} shadow-xs`
+ ? `bg-sunshine/10 text-sunshine-ink font-bold border-l-4 ${theme.activeBorderClass} shadow-xs`
  : "text-slate-text hover:text-ink hover:bg-cloud"
  )}
  >
@@ -360,7 +360,7 @@ export default function SidebarNavigation({ sidebarItems }: SidebarNavigationPro
  className={cn(
  "rounded-xl text-xs py-1.5 px-2.5 transition-colors font-medium",
  subActive
- ? `bg-monday-violet/10 ${theme.activeSubItemText} font-bold`
+ ? `bg-sunshine/10 ${theme.activeSubItemText} font-bold`
  : "text-iron hover:text-ink hover:bg-cloud"
  )}
  >

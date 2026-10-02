@@ -9,7 +9,7 @@ export default function PrivacyPage() {
       <nav className="fixed top-0 inset-x-0 bg-snow/80 backdrop-blur-xl border-b border-mist z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-9 h-9 bg-monday-violet rounded-xl flex items-center justify-center">
+            <div className="w-9 h-9 bg-sunshine rounded-xl flex items-center justify-center">
               <Building2 className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-bold text-ink">Yellow ERP</span>
@@ -98,7 +98,7 @@ export default function PrivacyPage() {
               </ul>
               <p className="mt-2">
                 Para ejercer estos derechos, contáctenos a{' '}
-                <a href="mailto:privacidad@yellow-erp.cl" className="text-monday-violet hover:text-monday-violet-hover">privacidad@yellow-erp.cl</a>.
+                <a href="mailto:privacidad@yellow-erp.cl" className="text-sunshine-ink hover:text-sunshine-ink-hover">privacidad@yellow-erp.cl</a>.
               </p>
             </section>
 
@@ -134,7 +134,7 @@ export default function PrivacyPage() {
               <h2 className="text-base font-semibold text-ink mb-2">10. Contacto</h2>
               <p>Para consultas sobre esta Política de Privacidad o sobre el tratamiento de sus datos personales:</p>
               <ul className="mt-2 ml-5 list-disc space-y-1">
-                <li>Correo: <a href="mailto:privacidad@yellow-erp.cl" className="text-monday-violet hover:text-monday-violet-hover">privacidad@yellow-erp.cl</a></li>
+                <li>Correo: <a href="mailto:privacidad@yellow-erp.cl" className="text-sunshine-ink hover:text-sunshine-ink-hover">privacidad@yellow-erp.cl</a></li>
                 <li>Dirección: Santiago, Chile</li>
               </ul>
             </section>

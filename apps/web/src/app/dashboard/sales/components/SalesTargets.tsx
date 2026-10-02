@@ -124,7 +124,7 @@ export default function SalesTargets() {
  {overallPct >= 100 ? (
  <Award className="w-5 h-5 text-emerald-500" />
  ) : overallPct >= 70 ? (
- <TrendingUp className="w-5 h-5 text-monday-violet" />
+ <TrendingUp className="w-5 h-5 text-sunshine-ink" />
  ) : (
  <TrendingDown className="w-5 h-5 text-red-500" />
  )}
@@ -152,7 +152,7 @@ export default function SalesTargets() {
  <td key={i} className="px-2 py-3 text-center">
  {t ? (
  <div>
- <p className={`text-[10px] font-bold ${t.achievement_pct >= 100 ? 'text-emerald-600' : t.achievement_pct >= 70 ? 'text-monday-violet' : 'text-red-600'}`}>
+ <p className={`text-[10px] font-bold ${t.achievement_pct >= 100 ? 'text-emerald-600' : t.achievement_pct >= 70 ? 'text-sunshine-ink' : 'text-red-600'}`}>
  {t.achievement_pct.toFixed(0)}%
  </p>
  <p className="text-[9px] text-muted-foreground">${(t.target_amount / 1000).toFixed(0)}k</p>

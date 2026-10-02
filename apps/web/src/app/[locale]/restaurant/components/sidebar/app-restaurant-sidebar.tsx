@@ -33,9 +33,9 @@ export function RestaurantSidebar(props: React.ComponentProps<typeof Sidebar>) {
  <RestaurantSidebarNavigation sidebarItems={restaurantSidebarItems} />
  </SidebarContent>
 
- <SidebarFooter className="bg-monday-violet p-3 border-t border-mist/80 space-y-2">
+ <SidebarFooter className="bg-sunshine p-3 border-t border-mist/80 space-y-2">
  <div className="flex items-center gap-2.5 px-2 py-1.5 rounded-xl bg-cloud border border-mist group-data-[collapsible=icon]:hidden group-data-[collapsible=icon]:justify-center">
- <div className="w-7 h-7 rounded-full flex items-center justify-center font-black text-xs shrink-0 bg-peach text-slate-900 border border-monday-violet/60">
+ <div className="w-7 h-7 rounded-full flex items-center justify-center font-black text-xs shrink-0 bg-peach text-slate-900 border border-sunshine-dark/60">
  {user.name.slice(0, 2).toUpperCase()}
  </div>
  <div className="flex-1 min-w-0">
@@ -50,7 +50,7 @@ export function RestaurantSidebar(props: React.ComponentProps<typeof Sidebar>) {
  <select
  value={currentUser?.id || ''}
  onChange={(e) => switchUser(e.target.value)}
- className="mt-1 w-full bg-cloud border border-mist text-xs text-slate-200 rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-monday-violet transition-all cursor-pointer"
+ className="mt-1 w-full bg-cloud border border-mist text-xs text-slate-200 rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-sunshine-dark transition-all cursor-pointer"
  >
  {users.map((u) => (
  <option key={u.id} value={u.id}>

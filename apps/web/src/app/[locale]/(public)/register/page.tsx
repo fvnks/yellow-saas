@@ -177,7 +177,7 @@ function RegisterForm() {
  <motion.button
  whileTap={{ scale: 0.98 }}
  onClick={() => router.push('/login')}
- className="mt-8 w-full rounded-[160px] bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-3 text-sm font-medium transition-all shadow-sm flex items-center justify-center gap-2"
+ className="mt-8 w-full rounded-[160px] bg-sunshine hover:bg-sunshine-hover text-white px-4 py-3 text-sm font-medium transition-all shadow-sm flex items-center justify-center gap-2"
  >
  <ShieldCheck className="w-4 h-4" />
  Ir a Iniciar Sesión
@@ -188,7 +188,7 @@ function RegisterForm() {
  }
 
  return (
- <div className="flex min-h-screen w-full bg-cloud font-sans text-ink antialiased selection:bg-monday-violet/10 lg:flex-row">
+ <div className="flex min-h-screen w-full bg-cloud font-sans text-ink antialiased selection:bg-sunshine/10 lg:flex-row">
  {/* Left Image Panel */}
  <AuthPanel />
 
@@ -196,9 +196,9 @@ function RegisterForm() {
  <div className="flex w-full flex-col items-center justify-center p-6 sm:p-12 lg:w-1/2">
  {/* Mobile logo */}
  <div className="lg:hidden mb-8 flex items-center gap-3">
- <div className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm" style={{ background: 'conic-gradient(from 270deg, #8181ff 15%, #33dbdb 40%, #33d58e 55%, #F5C518 65%, #fc527d 85%, #8181ff 100%)' }}>
+ <div className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm" style={{ background: 'conic-gradient(from 270deg, #FFA500 15%, #33dbdb 40%, #33d58e 55%, #F5C518 65%, #fc527d 85%, #FFA500 100%)' }}>
  <div className="w-8 h-8 bg-snow rounded-full flex items-center justify-center">
- <Building2 className="w-5 h-5 text-monday-violet" />
+ <Building2 className="w-5 h-5 text-sunshine-ink" />
  </div>
  </div>
  <span className="text-xl font-bold text-ink">Yellow ERP</span>
@@ -347,16 +347,16 @@ function RegisterForm() {
  <input
  type="checkbox"
  id="terms"
- className="w-4 h-4 text-monday-violet border-mist rounded focus:ring-monday-violet focus:ring-2 mt-0.5"
+ className="w-4 h-4 text-sunshine-ink border-mist rounded focus:ring-sunshine-dark focus:ring-2 mt-0.5"
  required
  />
  <label htmlFor="terms" className="ml-2 text-sm text-ink">
  Acepto los{' '}
- <a href="/terms" className="text-monday-violet hover:text-monday-violet-hover font-medium underline underline-offset-2">
+ <a href="/terms" className="text-sunshine-ink hover:text-sunshine-ink-hover font-medium underline underline-offset-2">
  Términos de Servicio
  </a>
  {' '}y la{' '}
- <a href="/privacy" className="text-monday-violet hover:text-monday-violet-hover font-medium underline underline-offset-2">
+ <a href="/privacy" className="text-sunshine-ink hover:text-sunshine-ink-hover font-medium underline underline-offset-2">
  Política de Privacidad
  </a>
  </label>
@@ -372,7 +372,7 @@ function RegisterForm() {
  {/* Footer */}
  <motion.div variants={itemVariants} className="mt-8 text-center text-[14px] text-slate-text">
  ¿Ya tienes una cuenta?{' '}
- <Link href="/login" className="font-semibold text-ink hover:text-monday-violet transition-colors underline underline-offset-2">
+ <Link href="/login" className="font-semibold text-ink hover:text-sunshine-ink transition-colors underline underline-offset-2">
  Iniciar Sesión
  </Link>
  </motion.div>

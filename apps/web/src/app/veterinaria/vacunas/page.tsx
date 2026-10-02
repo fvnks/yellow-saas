@@ -115,7 +115,7 @@ export default function VeterinaryVaccinationsPage() {
  </button>
  <button
  onClick={handleCarnetPDF}
- className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-4 py-2 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2"
+ className="bg-sunshine hover:bg-sunshine-hover text-ink font-bold px-4 py-2 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2"
  >
  <Download className="w-4 h-4" />
  Carnet PDF
@@ -236,7 +236,7 @@ export default function VeterinaryVaccinationsPage() {
 
  <button
  type="submit"
- className="w-full bg-monday-violet hover:bg-monday-violet-hover text-ink font-extrabold py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 active:scale-[0.98] mt-2"
+ className="w-full bg-sunshine hover:bg-sunshine-hover text-ink font-extrabold py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 active:scale-[0.98] mt-2"
  >
  <Plus className="w-4 h-4" />
  Guardar en Carnet

@@ -334,7 +334,7 @@ export default function TicketDetailPage() {
  <p className="text-sm font-semibold text-foreground mb-2">¡Gracias por tu valoración!</p>
  <div className="flex items-center justify-center gap-1 mb-2">
  {[1, 2, 3, 4, 5].map(i => (
- <Star key={i} className={`w-5 h-5 ${i <= feedback.rating ? 'text-monday-violet fill-sunshine' : 'text-foreground'}`} />
+ <Star key={i} className={`w-5 h-5 ${i <= feedback.rating ? 'text-sunshine-ink fill-sunshine' : 'text-foreground'}`} />
  ))}
  </div>
  {feedback.comment && <p className="text-sm text-muted-foreground">{feedback.comment}</p>}
@@ -348,7 +348,7 @@ export default function TicketDetailPage() {
  <button
  key={i}
  onClick={() => setRating(i)}
- className={`p-1.5 rounded-lg transition-colors ${rating >= i ? 'text-monday-violet' : 'text-foreground hover:text-muted-foreground'}`}
+ className={`p-1.5 rounded-lg transition-colors ${rating >= i ? 'text-sunshine-ink' : 'text-foreground hover:text-muted-foreground'}`}
  >
  <Star className={`w-7 h-7 ${rating >= i ? 'fill-sunshine' : ''}`} />
  </button>

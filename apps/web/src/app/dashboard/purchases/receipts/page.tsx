@@ -125,7 +125,7 @@ export default function GoodsReceiptsPage() {
  <p className="text-2xl font-bold text-foreground mt-1">{kpis.pending}</p>
  </div>
  <div className="w-12 h-12 bg-peach/30 rounded-xl flex items-center justify-center">
- <PackageCheck className="w-6 h-6 text-monday-violet" />
+ <PackageCheck className="w-6 h-6 text-sunshine-ink" />
  </div>
  </div>
  </div>

@@ -67,7 +67,7 @@ export default function RestaurantAdminPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
- <LayoutDashboard className="w-5 h-5 text-monday-violet" />
+ <LayoutDashboard className="w-5 h-5 text-sunshine-ink" />
  Consola Admin Restaurante & Analítica
  </h1>
  <p className="text-xs text-slate-500 mt-1">
@@ -83,7 +83,7 @@ export default function RestaurantAdminPage() {
  <p className="text-xs font-semibold text-slate-500">Ventas del Día (CLP)</p>
  <p className="text-xl font-bold text-slate-900 mt-1">{formatCLP(38500)}</p>
  </div>
- <span className="p-3 bg-peach/30 rounded-2xl text-monday-violet border border-peach">
+ <span className="p-3 bg-peach/30 rounded-2xl text-sunshine-ink border border-peach">
  <DollarSign className="w-5 h-5" />
  </span>
  </div>
@@ -127,7 +127,7 @@ export default function RestaurantAdminPage() {
  onClick={() => setActiveTab(tab)}
  className={`pb-3 capitalize transition-all border-b-2 ${
  activeTab === tab
- ? 'border-monday-violet text-slate-900 font-extrabold'
+ ? 'border-sunshine-dark text-slate-900 font-extrabold'
  : 'border-transparent text-slate-500 hover:text-slate-700'
  }`}
  >
@@ -177,7 +177,7 @@ export default function RestaurantAdminPage() {
  {/* Add New Item Form (5 Cols) */}
  <div className="lg:col-span-5 bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5 space-y-4">
  <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
- <Plus className="w-4 h-4 text-monday-violet" /> Nuevo Producto en Carta
+ <Plus className="w-4 h-4 text-sunshine-ink" /> Nuevo Producto en Carta
  </h2>
  <form onSubmit={handleAddMenuItem} className="space-y-3 text-xs">
  <div>
@@ -188,7 +188,7 @@ export default function RestaurantAdminPage() {
  value={newItem.name}
  onChange={e => setNewItem({ ...newItem, name: e.target.value })}
  placeholder="Ej. Pastel de Choclo"
- className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-monday-violet"
+ className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-sunshine-dark"
  />
  </div>
 
@@ -200,7 +200,7 @@ export default function RestaurantAdminPage() {
  required
  value={newItem.priceCLP}
  onChange={e => setNewItem({ ...newItem, priceCLP: Number(e.target.value) })}
- className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-monday-violet"
+ className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-sunshine-dark"
  />
  </div>
  <div>
@@ -208,7 +208,7 @@ export default function RestaurantAdminPage() {
  <select
  value={newItem.station}
  onChange={e => setNewItem({ ...newItem, station: e.target.value as any })}
- className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-monday-violet"
+ className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-sunshine-dark"
  >
  <option value="kitchen">Cocina (Comida)</option>
  <option value="bar">Bar (Bebidas)</option>
@@ -223,13 +223,13 @@ export default function RestaurantAdminPage() {
  value={newItem.description}
  onChange={e => setNewItem({ ...newItem, description: e.target.value })}
  placeholder="Ingredientes principales..."
- className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-monday-violet"
+ className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-sunshine-dark"
  />
  </div>
 
  <button
  type="submit"
- className="w-full bg-monday-violet hover:bg-monday-violet-hover text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-xs mt-2"
+ className="w-full bg-sunshine hover:bg-sunshine-hover text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-xs mt-2"
  >
  Agregar a la Carta
  </button>
@@ -242,7 +242,7 @@ export default function RestaurantAdminPage() {
  {activeTab === 'users' && (
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5 space-y-4">
  <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
- <Shield className="w-4 h-4 text-monday-violet" /> Personal & Permisos del Restaurante
+ <Shield className="w-4 h-4 text-sunshine-ink" /> Personal & Permisos del Restaurante
  </h2>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
  <div className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
@@ -289,7 +289,7 @@ export default function RestaurantAdminPage() {
  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
  <div className="flex justify-between font-bold text-slate-900">
  <span>Total Ventas brutas (con IVA 19%)</span>
- <span className="text-monday-violet">{formatCLP(38500)}</span>
+ <span className="text-sunshine-ink">{formatCLP(38500)}</span>
  </div>
  <div className="flex justify-between text-slate-600">
  <span>Boletas Electrónicas Emitidas SII</span>

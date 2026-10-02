@@ -50,7 +50,7 @@ export function Sidebar({ companyName = 'Yellow ERP', userName, userRole, onNavi
               className={cn(
                 'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
                 isActive
-                   ? 'bg-monday-violet text-white'
+                   ? 'bg-sunshine text-white'
                    : 'text-slate-text hover:bg-cloud hover:text-ink'
               )}
               aria-current={isActive ? 'page' : undefined}
@@ -64,8 +64,8 @@ export function Sidebar({ companyName = 'Yellow ERP', userName, userRole, onNavi
 
       <div className="p-3 border-t border-mist">
         <div className="flex items-center gap-3 px-3 py-2">
-          <div className="w-8 h-8 bg-monday-violet/10 rounded-full flex items-center justify-center">
-            <span className="text-sm font-medium text-monday-violet">
+          <div className="w-8 h-8 bg-sunshine/10 rounded-full flex items-center justify-center">
+            <span className="text-sm font-medium text-sunshine-ink">
               {userName?.charAt(0)?.toUpperCase() || 'U'}
             </span>
           </div>

@@ -12,7 +12,7 @@ export const Badge = ({ className, variant = 'neutral', children, ...props }: Ba
     info: 'bg-[#abf0ff]/30 text-[#006680] border-[#abf0ff]/50',
     neutral: 'bg-cloud text-slate-text border-mist',
     secondary: 'bg-cloud text-slate-text border-mist',
-    violet: 'bg-monday-violet/10 text-monday-violet border-monday-violet/20',
+    violet: 'bg-sunshine/10 text-sunshine-ink border-sunshine-dark/20',
   };
 
   return (

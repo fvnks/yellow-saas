@@ -39,7 +39,7 @@ export default function KDSKitchenPage() {
  <div className="bg-cloud text-white rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <div className="flex items-center gap-2">
- <span className="p-2 rounded-xl bg-monday-violet/20 text-[#c64d00]/70 border border-[#c64d00]/30">
+ <span className="p-2 rounded-xl bg-sunshine/20 text-[#c64d00]/70 border border-[#c64d00]/30">
  <ChefHat className="w-5 h-5" />
  </span>
  <div>
@@ -51,7 +51,7 @@ export default function KDSKitchenPage() {
  </div>
  </div>
  <div className="flex items-center gap-3 text-xs">
- <span className="bg-monday-violet/10 text-[#c64d00]/70 border border-[#c64d00]/20 px-3 py-1.5 rounded-xl font-bold">
+ <span className="bg-sunshine/10 text-[#c64d00]/70 border border-[#c64d00]/20 px-3 py-1.5 rounded-xl font-bold">
  {kitchenOrders.flatMap(o => o.items).filter(i => i.status !== 'ready').length} Platos Pendientes
  </span>
  </div>
@@ -82,7 +82,7 @@ export default function KDSKitchenPage() {
  <h3 className="text-sm font-bold">{order.tableName}</h3>
  <p className="text-[11px] text-slate-400">PIN: {order.pinCode} • Hora: {order.createdAt}</p>
  </div>
- <span className="font-mono text-xs font-bold bg-monday-violet text-white px-2 py-0.5 rounded">
+ <span className="font-mono text-xs font-bold bg-sunshine text-white px-2 py-0.5 rounded">
  {order.id}
  </span>
  </div>
@@ -122,7 +122,7 @@ export default function KDSKitchenPage() {
  {item.status === 'pending' && (
  <button
  onClick={() => handleUpdateItemStatus(order.id, item.id, 'preparing')}
- className="bg-monday-violet hover:bg-[#c64d00] text-white font-bold px-2.5 py-1 rounded-lg text-[11px] flex items-center gap-1 transition-all"
+ className="bg-sunshine hover:bg-[#c64d00] text-white font-bold px-2.5 py-1 rounded-lg text-[11px] flex items-center gap-1 transition-all"
  >
  <Flame className="w-3.5 h-3.5" /> Preparar
  </button>

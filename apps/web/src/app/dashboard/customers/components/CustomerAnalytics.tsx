@@ -195,7 +195,7 @@ export default function CustomerAnalytics({ customerId }: Props) {
  <p className="text-2xl font-bold text-foreground mt-1">{formatDays(metrics.frecuenciaCompra)}</p>
  </div>
  <div className="w-12 h-12 bg-peach/30 rounded-xl flex items-center justify-center">
- <Clock className="w-6 h-6 text-monday-violet" />
+ <Clock className="w-6 h-6 text-sunshine-ink" />
  </div>
  </div>
  </div>
@@ -253,10 +253,10 @@ export default function CustomerAnalytics({ customerId }: Props) {
  <div>
  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Facturas Pendientes</p>
  <p className="text-2xl font-bold text-foreground mt-1">{metrics.facturasPendientes}</p>
- <p className="text-xs text-monday-violet mt-1">{formatCurrency(metrics.montoPendiente)}</p>
+ <p className="text-xs text-sunshine-ink mt-1">{formatCurrency(metrics.montoPendiente)}</p>
  </div>
  <div className="w-12 h-12 bg-peach/30 rounded-xl flex items-center justify-center">
- <AlertTriangle className="w-6 h-6 text-monday-violet" />
+ <AlertTriangle className="w-6 h-6 text-sunshine-ink" />
  </div>
  </div>
  </div>

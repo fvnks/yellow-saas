@@ -162,7 +162,7 @@ export default function VacationTab() {
  <div className="flex items-center justify-between">
  <div>
  <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Pendientes</p>
- <p className="text-2xl font-bold text-monday-violet mt-1">{pendingRequests}</p>
+ <p className="text-2xl font-bold text-sunshine-ink mt-1">{pendingRequests}</p>
  </div>
  <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
  <Clock className="w-6 h-6 text-foreground" />
@@ -247,7 +247,7 @@ export default function VacationTab() {
  <td className="px-4 py-3 text-xs text-muted-foreground">{b.hire_date ? new Date(b.hire_date).toLocaleDateString('es-CL') : '—'}</td>
  <td className="px-4 py-3 text-xs text-center font-medium text-foreground">{b.days_earned}</td>
  <td className="px-4 py-3 text-xs text-center text-rose-600">{b.days_used}</td>
- <td className="px-4 py-3 text-xs text-center text-monday-violet">{b.days_pending}</td>
+ <td className="px-4 py-3 text-xs text-center text-sunshine-ink">{b.days_pending}</td>
  <td className="px-4 py-3 text-center">
  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold ${
  b.days_available > 0
@@ -340,7 +340,7 @@ export default function VacationTab() {
  </button>
  <button
  onClick={() => handleCancel(r.id)}
- className="p-1.5 text-muted-foreground hover:text-monday-violet hover:bg-peach/30 rounded-lg transition-colors"
+ className="p-1.5 text-muted-foreground hover:text-sunshine-ink hover:bg-peach/30 rounded-lg transition-colors"
  title="Cancelar"
  >
  <AlertTriangle className="w-3.5 h-3.5" />

@@ -83,7 +83,7 @@ function ProjectDashboardInner() {
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <div className="flex items-center gap-2">
- <h1 className="text-xl font-bold text-monday-violet">Gestión de Proyectos</h1>
+ <h1 className="text-xl font-bold text-sunshine-ink">Gestión de Proyectos</h1>
  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-purple-50 text-purple-700 border border-purple-200">
  Kanban & Gantt
  </span>
@@ -91,7 +91,7 @@ function ProjectDashboardInner() {
  <p className="text-sm text-[#64748B] mt-1">Control de proyectos, ejecución presupuestaria, hitos y horas del equipo</p>
  </div>
  <Link href="/projects/new"
- className="bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm">
+ className="bg-sunshine hover:bg-sunshine-hover text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm">
  <Plus className="w-4 h-4" /> Nuevo Proyecto
  </Link>
  </div>
@@ -102,7 +102,7 @@ function ProjectDashboardInner() {
  className="bg-card border border-border rounded-xl shadow-sm p-4 w-full text-left hover:shadow-md transition-shadow">
  <div className="flex items-center justify-between">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 bg-peach/30 rounded-xl flex items-center justify-center"><Bell className="w-5 h-5 text-monday-violet" /></div>
+ <div className="w-10 h-10 bg-peach/30 rounded-xl flex items-center justify-center"><Bell className="w-5 h-5 text-sunshine-ink" /></div>
  <div>
  <p className="text-sm font-semibold text-foreground">{notifications.length} notificaciones de proyectos</p>
  <p className="text-xs text-muted-foreground">Tareas atrasadas, hitos vencidos, presupuesto al límite</p>
@@ -118,7 +118,7 @@ function ProjectDashboardInner() {
  {notifications.slice(0, 8).map((n, i) => (
  <Link key={i} href={`/projects/${n.project_id}`} className="block px-4 py-3 hover:bg-muted border-b border-border last:border-0 transition-colors">
  <div className="flex items-start gap-3">
- {n.severity === 'danger' ? <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" /> : <Calendar className="w-4 h-4 text-monday-violet mt-0.5 shrink-0" />}
+ {n.severity === 'danger' ? <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" /> : <Calendar className="w-4 h-4 text-sunshine-ink mt-0.5 shrink-0" />}
  <div>
  <p className="text-xs font-semibold text-foreground">{n.title}</p>
  <p className="text-[10px] text-muted-foreground mt-0.5">{n.description}</p>
@@ -139,7 +139,7 @@ function ProjectDashboardInner() {
  <FolderKanban className="w-5 h-5 text-purple-600" />
  </div>
  </div>
- <p className="text-2xl font-bold text-monday-violet">{projects.length}</p>
+ <p className="text-2xl font-bold text-sunshine-ink">{projects.length}</p>
  <p className="text-[11px] text-emerald-600 mt-1 font-medium">{activeProjects} proyectos activos</p>
  </div>
 
@@ -147,10 +147,10 @@ function ProjectDashboardInner() {
  <div className="flex items-center justify-between mb-2">
  <p className="text-[9px] font-semibold text-[#64748B] uppercase tracking-wider">En Ejecución</p>
  <div className="w-10 h-10 bg-peach/30 rounded-full flex items-center justify-center">
- <Clock className="w-5 h-5 text-monday-violet" />
+ <Clock className="w-5 h-5 text-sunshine-ink" />
  </div>
  </div>
- <p className="text-2xl font-bold text-monday-violet">{activeProjects}</p>
+ <p className="text-2xl font-bold text-sunshine-ink">{activeProjects}</p>
  <p className="text-[11px] text-[#64748B] mt-1">{completedProjects} entregados</p>
  </div>
 
@@ -161,7 +161,7 @@ function ProjectDashboardInner() {
  <DollarSign className="w-5 h-5 text-emerald-600" />
  </div>
  </div>
- <p className="text-2xl font-bold text-monday-violet">${(totalBudget / 1000000).toFixed(1)}M</p>
+ <p className="text-2xl font-bold text-sunshine-ink">${(totalBudget / 1000000).toFixed(1)}M</p>
  <p className="text-[11px] text-[#64748B] mt-1">Pesos Chilenos (CLP)</p>
  </div>
 
@@ -172,7 +172,7 @@ function ProjectDashboardInner() {
  <CheckCircle2 className="w-5 h-5 text-blue-600" />
  </div>
  </div>
- <p className="text-2xl font-bold text-monday-violet">{completedProjects}</p>
+ <p className="text-2xl font-bold text-sunshine-ink">{completedProjects}</p>
  <p className="text-[11px] text-blue-600 mt-1 font-medium">{projects.length > 0 ? Math.round(completedProjects / projects.length * 100) : 0}% tasa de éxito</p>
  </div>
  </div>

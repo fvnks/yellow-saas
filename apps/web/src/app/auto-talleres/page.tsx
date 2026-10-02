@@ -113,7 +113,7 @@ export default function AutoTalleresDashboardPage() {
  return (
  <div className="space-y-6 animate-fade-in-up">
  {/* Header Banner */}
- <div className="bg-gradient-to-r from-monday-violet via-monday-violet-hover to-monday-violet rounded-2xl p-6 text-white shadow-md relative overflow-hidden border border-mist">
+ <div className="bg-gradient-to-r from-sunshine-ink via-sunshine-ink to-sunshine-dark rounded-2xl p-6 text-white shadow-md relative overflow-hidden border border-mist">
  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
  <div className="flex items-center gap-2 mb-2">
@@ -127,21 +127,21 @@ export default function AutoTalleresDashboardPage() {
  <h1 className="text-2xl font-black text-white tracking-tight">
  Consola Operativa Taller
  </h1>
- <p className="text-iron text-sm mt-1 max-w-2xl">
+ <p className="text-white/85 text-sm mt-1 max-w-2xl">
  Gestión integral de órdenes de trabajo, vehículos, técnicos y presupuestos con facturación electrónica SII integrada.
  </p>
  </div>
  <div className="flex flex-wrap items-center gap-3">
  <Link
  href="/auto-talleres/ordenes/new"
- className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-sunshine hover:bg-sunshine-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Plus className="w-4 h-4" />
  Nueva Orden
  </Link>
  <Link
  href="/auto-talleres/vehiculos/new"
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Car className="w-4 h-4" />
  Registrar Vehículo
@@ -149,7 +149,7 @@ export default function AutoTalleresDashboardPage() {
  </div>
  </div>
  <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
- <div className="absolute bottom-0 left-0 w-48 h-48 bg-monday-violet/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
+ <div className="absolute bottom-0 left-0 w-48 h-48 bg-sunshine/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
  </div>
 
  {/* KPI Stats */}
@@ -269,7 +269,7 @@ export default function AutoTalleresDashboardPage() {
  >
  <div className={`flex-shrink-0 w-2 h-2 rounded-full ${
  order.status === 'in_progress' ? 'bg-blue-500' :
- order.status === 'diagnostic' ? 'bg-monday-violet' :
+ order.status === 'diagnostic' ? 'bg-sunshine' :
  order.status === 'approved' ? 'bg-purple-500' :
  order.status === 'quality_check' ? 'bg-orange-500' :
  order.status === 'ready' ? 'bg-emerald-500' :
@@ -338,7 +338,7 @@ export default function AutoTalleresDashboardPage() {
  {baysData.map((bay) => (
  <div key={bay.name || bay.number} className="flex items-center justify-between p-3 rounded-xl bg-slate-50/50">
  <div className="flex items-center gap-3">
- <div className={`w-3 h-3 rounded-full ${bay.isOccupied ? 'bg-monday-violet' : 'bg-emerald-500'}`} />
+ <div className={`w-3 h-3 rounded-full ${bay.isOccupied ? 'bg-sunshine' : 'bg-emerald-500'}`} />
  <div>
  <p className="text-sm font-semibold text-slate-900">{bay.name || `Bay ${bay.number}`}</p>
  <p className="text-xs text-slate-500 capitalize">{bay.type}</p>

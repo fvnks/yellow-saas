@@ -144,7 +144,7 @@ export default function VeterinaryAgendaPage() {
 
  <button
  onClick={() => setShowModal(true)}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
  >
  <Plus className="w-4 h-4" />
  Agendar Cita
@@ -181,7 +181,7 @@ export default function VeterinaryAgendaPage() {
  ) : appointments.map((apt: any) => (
  <div key={apt.id} className="p-5 hover:bg-slate-50/80 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div className="flex items-start gap-4">
- <div className="bg-monday-violet text-white font-mono text-sm font-bold px-3 py-2 rounded-xl text-center shrink-0">
+ <div className="bg-sunshine text-white font-mono text-sm font-bold px-3 py-2 rounded-xl text-center shrink-0">
  <Clock className="w-4 h-4 text-emerald-400 mx-auto mb-0.5" />
  {apt.appointmentTime}
  </div>
@@ -372,7 +372,7 @@ export default function VeterinaryAgendaPage() {
  <button
  type="submit"
  disabled={saving}
- className="bg-monday-violet hover:bg-cloud text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm disabled:opacity-50"
+ className="bg-sunshine hover:bg-cloud text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm disabled:opacity-50"
  >
  {saving ? 'Agendando...' : 'Confirmar Cita'}
  </button>

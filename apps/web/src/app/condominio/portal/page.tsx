@@ -147,7 +147,7 @@ export default function PortalResidentePage() {
 
  <button
  onClick={handlePrintSlip}
- className="bg-monday-violet hover:bg-cloud text-white font-bold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-xs"
+ className="bg-sunshine hover:bg-cloud text-white font-bold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-xs"
  >
  <Printer className="w-4 h-4 text-cyan-400" />
  Imprimir Aviso (PDF)

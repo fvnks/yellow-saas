@@ -54,7 +54,7 @@ function RecetasSidebar() {
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar en Recetas..."
- className="w-full bg-cloud border border-mist text-xs text-slate-200 placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-monday-violet focus:ring-1 focus:ring-monday-violet transition-all"
+ className="w-full bg-cloud border border-mist text-xs text-slate-200 placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-sunshine-dark focus:ring-1 focus:ring-sunshine-dark transition-all"
  />
  {searchQuery ? (
  <button onClick={() => setSearchQuery("")} className="absolute right-2 text-iron hover:text-slate-200">
@@ -77,7 +77,7 @@ function RecetasSidebar() {
  <Link key={item.href} href={item.href}
  className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
  isActive
- ? `bg-cloud text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-sm shadow-monday-violet/10`
+ ? `bg-cloud text-white font-bold border-l-4 ${theme.activeBorderClass} shadow-sm shadow-sunshine/10`
  : 'text-ink hover:text-ink hover:bg-cloud/60'
  }`}>
  <Icon className={`w-4 h-4 shrink-0 ${isActive ? theme.iconActiveColorClass : 'text-iron'}`} />
@@ -106,7 +106,7 @@ export default function RecetasLayout({ children }: { children: ReactNode }) {
  <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between border-b border-mist bg-snow backdrop-blur-xl px-6">
  <div className="flex items-center gap-2">
  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-peach/30 text-[#c64d00] border border-peach">
- <FlaskConical className="w-3.5 h-3.5 text-monday-violet" /> Recetas / BOM
+ <FlaskConical className="w-3.5 h-3.5 text-sunshine-ink" /> Recetas / BOM
  </span>
  <span className="text-xs text-slate-500">Formulación y Órdenes de Producción</span>
  </div>

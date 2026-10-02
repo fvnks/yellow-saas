@@ -95,13 +95,13 @@ export default function DeadStockReport() {
  </div>
  <div className="bg-peach/30 border border-peach rounded-xl p-4">
  <div className="flex items-center justify-between mb-2">
- <span className="text-[9px] font-semibold text-monday-violet uppercase">Valor Total</span>
- <DollarSign className="w-5 h-5 text-monday-violet" />
+ <span className="text-[9px] font-semibold text-sunshine-ink uppercase">Valor Total</span>
+ <DollarSign className="w-5 h-5 text-sunshine-ink" />
  </div>
  <p className="text-2xl font-bold text-foreground">
  ${report.totalValue.toLocaleString('en-US', { minimumFractionDigits: 0 })}
  </p>
- <p className="text-xs text-monday-violet mt-1">en stock estancado</p>
+ <p className="text-xs text-sunshine-ink mt-1">en stock estancado</p>
  </div>
  <div className="bg-muted border border-border rounded-xl p-4">
  <div className="flex items-center justify-between mb-2">

@@ -61,9 +61,9 @@ function ForgotPasswordForm() {
  <div className="flex w-full flex-col items-center justify-center p-6 sm:p-12 lg:w-1/2">
  {/* Mobile logo */}
  <div className="lg:hidden mb-8 flex items-center gap-3">
- <div className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm border border-mist" style={{ background: 'conic-gradient(from 270deg, #8181ff 15%, #33dbdb 40%, #33d58e 55%, #F5C518 65%, #fc527d 85%, #8181ff 100%)' }}>
+ <div className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm border border-mist" style={{ background: 'conic-gradient(from 270deg, #FFA500 15%, #33dbdb 40%, #33d58e 55%, #F5C518 65%, #fc527d 85%, #FFA500 100%)' }}>
  <div className="w-8 h-8 bg-snow rounded-full flex items-center justify-center">
- <Building2 className="w-5 h-5 text-monday-violet" />
+ <Building2 className="w-5 h-5 text-sunshine-ink" />
  </div>
  </div>
  <span className="text-xl font-bold text-ink">Yellow ERP</span>
@@ -131,7 +131,7 @@ function ForgotPasswordForm() {
  placeholder="admin@yellow-erp.cl"
  autoComplete="email"
  required
- className="w-full rounded-md border border-mist bg-snow pl-10 pr-4 py-3 text-[14px] text-ink placeholder:text-iron focus:border-monday-violet focus:outline-none focus:ring-2 focus:ring-monday-violet/20 transition-colors"
+ className="w-full rounded-md border border-mist bg-snow pl-10 pr-4 py-3 text-[14px] text-ink placeholder:text-iron focus:border-sunshine-dark focus:outline-none focus:ring-2 focus:ring-sunshine-dark/20 transition-colors"
  />
  </div>
  </motion.div>
@@ -141,7 +141,7 @@ function ForgotPasswordForm() {
  <button
  type="submit"
  disabled={loading}
- className="w-full rounded-[160px] bg-monday-violet hover:bg-monday-violet-hover py-3 text-[14px] font-medium text-white transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
+ className="w-full rounded-[160px] bg-sunshine hover:bg-sunshine-hover py-3 text-[14px] font-medium text-white transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
  >
  {loading && <Loader2 className="w-4 h-4 animate-spin" />}
  {loading ? 'Enviando...' : 'Enviar instrucciones'}
@@ -179,7 +179,7 @@ function ForgotPasswordForm() {
  </p>
  <Link
  href={devLink}
- className="inline-flex items-center gap-1.5 text-sm font-medium text-monday-violet hover:text-monday-violet-hover underline decoration-monday-violet/30 underline-offset-4 transition-colors break-all"
+ className="inline-flex items-center gap-1.5 text-sm font-medium text-sunshine-ink hover:text-sunshine-ink-hover underline decoration-sunshine-ink/30 underline-offset-4 transition-colors break-all"
  >
  Restablecer contraseña →
  </Link>
@@ -188,7 +188,7 @@ function ForgotPasswordForm() {
 
  <Link
  href="/login"
- className="mt-8 inline-flex items-center gap-2 text-[14px] font-medium text-monday-violet hover:text-monday-violet-hover transition-colors"
+ className="mt-8 inline-flex items-center gap-2 text-[14px] font-medium text-sunshine-ink hover:text-sunshine-ink-hover transition-colors"
  >
  <ArrowLeft className="w-4 h-4" />
  Volver a iniciar sesión

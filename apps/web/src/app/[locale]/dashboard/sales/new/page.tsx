@@ -260,7 +260,7 @@ export default function NewSalePage() {
  </td>
  <td className="px-4 py-3 text-center">
  {product && product.stock != null ? (
- <span className={`text-xs font-medium ${product.stock > 10 ? 'text-emerald-600' : product.stock > 0 ? 'text-monday-violet' : 'text-rose-600'}`}>
+ <span className={`text-xs font-medium ${product.stock > 10 ? 'text-emerald-600' : product.stock > 0 ? 'text-sunshine-ink' : 'text-rose-600'}`}>
  {product.stock} uds
  </span>
  ) : (

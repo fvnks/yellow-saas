@@ -183,7 +183,7 @@ function WebhooksTab() {
  <div className="p-6 space-y-4">
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
  <div className="bg-muted border border-border rounded-xl p-6">
- <Zap className="w-8 h-8 text-monday-violet mx-auto mb-2" />
+ <Zap className="w-8 h-8 text-sunshine-ink mx-auto mb-2" />
  <p className="font-medium text-foreground text-center text-sm">Eventos en Tiempo Real</p>
  <p className="text-xs text-muted-foreground mt-1 text-center">Recibe notificaciones instantáneas de stock, ventas, compras y más</p>
  </div>

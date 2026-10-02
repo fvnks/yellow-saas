@@ -15,8 +15,8 @@ import {
 } from "@/components/ui/sidebar";
 
 const ROLE_CONFIG: Record<string, { label: string; classes: string }> = {
- owner: { label: 'Propietario', classes: 'bg-monday-violet/10 text-monday-violet border border-monday-violet/30 font-black' },
- admin: { label: 'Administrador', classes: 'bg-monday-violet/10 text-monday-violet border border-monday-violet/30 font-black' },
+ owner: { label: 'Propietario', classes: 'bg-sunshine/10 text-sunshine-ink border border-sunshine-dark/30 font-black' },
+ admin: { label: 'Administrador', classes: 'bg-sunshine/10 text-sunshine-ink border border-sunshine-dark/30 font-black' },
  manager: { label: 'Gerente', classes: 'bg-blue-500/10 text-blue-400 border border-blue-500/30 font-bold' },
   member: { label: 'Miembro', classes: 'bg-cloud text-ink border border-mist font-medium' },
   viewer: { label: 'Observador', classes: 'bg-cloud/60 text-iron border border-mist/60 font-normal' },
@@ -57,15 +57,15 @@ export default function HRSidebarFooterMenu({ user }: HRSidebarFooterMenuProps) 
  </DropdownMenuTrigger>
  <DropdownMenuContent side="top" align="start" className="w-56 bg-snow border border-mist text-ink shadow-xl rounded-xl p-1">
  <DropdownMenuItem className="cursor-pointer text-xs focus:bg-cloud focus:text-white rounded-lg">
- <Building2 className="mr-2 h-4 w-4 text-monday-violet" />
+ <Building2 className="mr-2 h-4 w-4 text-sunshine-ink" />
  <span>Mi Empresa</span>
  </DropdownMenuItem>
  <DropdownMenuItem className="cursor-pointer text-xs focus:bg-cloud focus:text-white rounded-lg">
- <User className="mr-2 h-4 w-4 text-monday-violet" />
+ <User className="mr-2 h-4 w-4 text-sunshine-ink" />
  <span>Mi Cuenta</span>
  </DropdownMenuItem>
  <DropdownMenuItem className="cursor-pointer text-xs focus:bg-cloud focus:text-white rounded-lg">
- <Settings className="mr-2 h-4 w-4 text-monday-violet" />
+ <Settings className="mr-2 h-4 w-4 text-sunshine-ink" />
  <span>Configuración</span>
  </DropdownMenuItem>
  <DropdownMenuSeparator className="bg-cloud" />

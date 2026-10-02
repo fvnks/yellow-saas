@@ -145,7 +145,7 @@ export default function PriceListsPage() {
  <p className="text-lg font-bold text-foreground mt-1">{defaultList}</p>
  </div>
  <div className="w-10 h-10 bg-peach/30 rounded-xl flex items-center justify-center">
- <Star className="w-5 h-5 text-monday-violet" />
+ <Star className="w-5 h-5 text-sunshine-ink" />
  </div>
  </div>
  </CardContent></Card>

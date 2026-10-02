@@ -74,10 +74,10 @@ export default function InspeccionesPage() {
  {/* Header */}
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
- <h1 className="text-2xl font-black text-monday-violet">Inspecciones</h1>
+ <h1 className="text-2xl font-black text-sunshine-ink">Inspecciones</h1>
  <p className="text-sm text-slate-500 mt-1">Registro visual y estado de vehículos</p>
  </div>
- <button className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]">
+ <button className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]">
  <Plus className="w-4 h-4" />
  Nueva Inspección
  </button>
@@ -92,7 +92,7 @@ export default function InspeccionesPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total</p>
- <p className="text-2xl font-black text-monday-violet">{inspections.length}</p>
+ <p className="text-2xl font-black text-sunshine-ink">{inspections.length}</p>
  </div>
  </div>
  </div>
@@ -103,18 +103,18 @@ export default function InspeccionesPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Finalizadas</p>
- <p className="text-2xl font-black text-monday-violet">{inspections.filter(i => i.status === 'finalized').length}</p>
+ <p className="text-2xl font-black text-sunshine-ink">{inspections.filter(i => i.status === 'finalized').length}</p>
  </div>
  </div>
  </div>
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
  <div className="flex items-center gap-3">
- <div className="h-10 w-10 rounded-xl bg-monday-violet/10 flex items-center justify-center border border-monday-violet/20">
- <AlertTriangle className="w-5 h-5 text-monday-violet" />
+ <div className="h-10 w-10 rounded-xl bg-sunshine/10 flex items-center justify-center border border-sunshine-dark/20">
+ <AlertTriangle className="w-5 h-5 text-sunshine-ink" />
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Con Daños</p>
- <p className="text-2xl font-black text-monday-violet">{inspections.filter(i => i.damage_notes).length}</p>
+ <p className="text-2xl font-black text-sunshine-ink">{inspections.filter(i => i.damage_notes).length}</p>
  </div>
  </div>
  </div>
@@ -125,7 +125,7 @@ export default function InspeccionesPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Alertas</p>
- <p className="text-2xl font-black text-monday-violet">{inspections.filter(i => i.dashboard_warnings).length}</p>
+ <p className="text-2xl font-black text-sunshine-ink">{inspections.filter(i => i.dashboard_warnings).length}</p>
  </div>
  </div>
  </div>
@@ -159,7 +159,7 @@ export default function InspeccionesPage() {
  </div>
  <div>
  <div className="flex items-center gap-2">
- <p className="text-lg font-black text-monday-violet">{insp.id}</p>
+ <p className="text-lg font-black text-sunshine-ink">{insp.id}</p>
  <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${getStatusBadgeClass(insp.status)}`}>
  {insp.status === 'finalized' ? 'Finalizada' : 'Borrador'}
  </span>
@@ -212,7 +212,7 @@ export default function InspeccionesPage() {
  Dashboard
  </span>
  {insp.damage_notes && (
- <span className="text-monday-violet flex items-center gap-1">
+ <span className="text-sunshine-ink flex items-center gap-1">
  <AlertTriangle className="w-3 h-3" />
  Daños registrados
  </span>

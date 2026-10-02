@@ -20,13 +20,13 @@ export function Navbar() {
  <div className="max-w-[1200px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
  {/* Logo */}
  <Link href="/" className="flex items-center gap-2.5 group">
- <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#8181ff] via-[#33dbdb] via-[#33d58e] via-[#F5C518] via-[#fc527d] to-[#8181ff] flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform duration-150" style={{ background: 'conic-gradient(from 270deg, #8181ff 15%, #33dbdb 40%, #33d58e 55%, #F5C518 65%, #fc527d 85%, #8181ff 100%)' }}>
+ <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#FFA500] via-[#33dbdb] via-[#33d58e] via-[#F5C518] via-[#fc527d] to-[#FFA500] flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform duration-150" style={{ background: 'conic-gradient(from 270deg, #FFA500 15%, #33dbdb 40%, #33d58e 55%, #F5C518 65%, #fc527d 85%, #FFA500 100%)' }}>
  <div className="w-7 h-7 bg-snow rounded-full flex items-center justify-center">
- <span className="text-monday-violet font-bold text-xs">Y</span>
+ <span className="text-sunshine-ink font-bold text-xs">Y</span>
  </div>
  </div>
  <span className="text-lg font-bold text-ink">
- Yellow <span className="text-monday-violet">ERP</span>
+ Yellow <span className="text-sunshine-ink">ERP</span>
  </span>
  </Link>
 
@@ -42,7 +42,7 @@ export function Navbar() {
  {/* Underline de acento que crece desde la izquierda */}
  <span
  aria-hidden="true"
- className="pointer-events-none absolute inset-x-3 bottom-1.5 h-px origin-left scale-x-0 rounded-full bg-monday-violet transition-transform duration-200 ease-out group-hover:scale-x-100"
+ className="pointer-events-none absolute inset-x-3 bottom-1.5 h-px origin-left scale-x-0 rounded-full bg-sunshine transition-transform duration-200 ease-out group-hover:scale-x-100"
  />
  </a>
  ))}
@@ -58,7 +58,7 @@ export function Navbar() {
  </Link>
  <Link
  href="/register"
- className="rounded-[160px] bg-monday-violet hover:bg-monday-violet-hover text-white px-5 py-2.5 text-sm font-medium shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center gap-1.5"
+ className="rounded-[160px] bg-sunshine hover:bg-sunshine-hover text-white px-5 py-2.5 text-sm font-medium shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center gap-1.5"
  >
  <span>Empezar Gratis</span>
  <ChevronRight className="w-4 h-4" />
@@ -104,7 +104,7 @@ export function Navbar() {
  </Link>
  <Link
  href="/register"
- className="block rounded-[160px] bg-monday-violet hover:bg-monday-violet-hover px-4 py-2.5 text-sm font-medium text-white text-center shadow-sm"
+ className="block rounded-[160px] bg-sunshine hover:bg-sunshine-hover px-4 py-2.5 text-sm font-medium text-white text-center shadow-sm"
  onClick={() => setMobileOpen(false)}
  >
  Empezar Gratis

@@ -68,12 +68,12 @@ export default function PortalTokensPage() {
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
- <Key className="w-7 h-7 text-monday-violet" />
+ <Key className="w-7 h-7 text-sunshine-ink" />
  Portal de Tutores
  </h1>
  <p className="text-slate-500 text-sm mt-0.5">Genera enlaces únicos para que los tutores revisen el estado de su mascota.</p>
  </div>
- <button onClick={() => setShowModal(true)} className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]">
+ <button onClick={() => setShowModal(true)} className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]">
  <Plus className="w-4 h-4" /> Generar Token
  </button>
  </div>
@@ -164,7 +164,7 @@ export default function PortalTokensPage() {
  <p className="text-xs text-slate-500">El tutor recibirá un enlace único para consultar el historial clínico, citas y tratamientos de su mascota.</p>
  <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
  <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800">Cancelar</button>
- <button type="submit" disabled={saving} className="bg-monday-violet hover:bg-cloud text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm disabled:opacity-50 flex items-center gap-2">
+ <button type="submit" disabled={saving} className="bg-sunshine hover:bg-cloud text-white font-bold px-5 py-2 rounded-xl text-xs transition-all shadow-sm disabled:opacity-50 flex items-center gap-2">
  {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
  Generar Enlace
  </button>

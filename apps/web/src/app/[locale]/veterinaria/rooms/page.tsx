@@ -38,7 +38,7 @@ const roomTypeBadges: Record<string, string> = {
 
 const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
  active: { label: 'Disponible', color: 'text-emerald-600', icon: <CheckCircle2 className="w-3 h-3" /> },
- maintenance: { label: 'Mantenimiento', color: 'text-monday-violet', icon: <Wrench className="w-3 h-3" /> },
+ maintenance: { label: 'Mantenimiento', color: 'text-sunshine-ink', icon: <Wrench className="w-3 h-3" /> },
  inactive: { label: 'Inactivo', color: 'text-slate-400', icon: <XCircle className="w-3 h-3" /> },
 };
 
@@ -136,7 +136,7 @@ export default function RoomsPage() {
 
  <button
  onClick={openCreate}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
  >
  <Plus className="w-4 h-4" />
  Nueva Sala
@@ -326,7 +326,7 @@ export default function RoomsPage() {
  <button
  type="submit"
  disabled={saving}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-sm flex items-center gap-2 disabled:opacity-50"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-sm flex items-center gap-2 disabled:opacity-50"
  >
  {saving && <Loader2 className="w-4 h-4 animate-spin" />}
  {editingId ? 'Actualizar Sala' : 'Guardar Sala'}

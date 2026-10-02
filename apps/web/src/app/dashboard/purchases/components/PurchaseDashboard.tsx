@@ -43,9 +43,9 @@ export default function PurchaseDashboard() {
  <div className="flex items-center justify-between">
  <div>
  <p className="text-[9px] font-semibold text-muted-foreground uppercase">Órdenes Abiertas</p>
- <p className="text-xl font-bold text-monday-violet mt-1">{kpis.pendingOrders || 0}</p>
+ <p className="text-xl font-bold text-sunshine-ink mt-1">{kpis.pendingOrders || 0}</p>
  </div>
- <div className="w-10 h-10 bg-peach/30 rounded-lg flex items-center justify-center"><Clock className="w-5 h-5 text-monday-violet" /></div>
+ <div className="w-10 h-10 bg-peach/30 rounded-lg flex items-center justify-center"><Clock className="w-5 h-5 text-sunshine-ink" /></div>
  </div>
  </div>
  <div className="bg-card border border-border rounded-xl p-4 bg-primary border-border">

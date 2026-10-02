@@ -104,7 +104,7 @@ export default function VetReportsPage() {
  </div>
  <div className="flex gap-1">
  {['week', 'month', 'year'].map((p) => (
- <button key={p} onClick={() => setPeriod(p)} className={`px-3 py-1.5 rounded-xl text-xs font-bold capitalize transition-all ${period === p ? 'bg-monday-violet text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+ <button key={p} onClick={() => setPeriod(p)} className={`px-3 py-1.5 rounded-xl text-xs font-bold capitalize transition-all ${period === p ? 'bg-sunshine text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
  {p === 'week' ? 'Semana' : p === 'month' ? 'Mes' : 'Año'}
  </button>
  ))}
@@ -191,7 +191,7 @@ export default function VetReportsPage() {
  <div className="p-5 space-y-3">
  {Object.entries(data?.statusMap || {}).map(([status, count]: [string, any]) => {
  const colors: Record<string, string> = {
- agendada: 'bg-blue-500', confirmada: 'bg-monday-violet', en_espera: 'bg-purple-500',
+ agendada: 'bg-blue-500', confirmada: 'bg-sunshine', en_espera: 'bg-purple-500',
  en_atencion: 'bg-emerald-500', finalizada: 'bg-slate-500', cancelada: 'bg-rose-500', no_asistio: 'bg-orange-500',
  };
  return (

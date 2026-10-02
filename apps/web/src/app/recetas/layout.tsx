@@ -89,7 +89,7 @@ function RecetasSidebar() {
  </nav>
 
  {/* Footer */}
- <div className="p-3 border-t border-mist/80 bg-monday-violet">
+ <div className="p-3 border-t border-mist/80 bg-sunshine">
  <ModuleSidebarFooter moduleKey="recetas" user={{ name: 'Operador BOM', role: 'Gestor Recetas' }} />
  </div>
  </div>

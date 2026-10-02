@@ -186,14 +186,14 @@ export default function MultasSegurosPage() {
  <div className="flex gap-2 self-start sm:self-auto">
  <button
  onClick={() => setShowAddPolicyModal(true)}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-3.5 py-2 rounded-xl text-xs flex items-center gap-2 shadow-xs"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-medium px-3.5 py-2 rounded-xl text-xs flex items-center gap-2 shadow-xs"
  >
  <ShieldCheck className="w-4 h-4 text-yellow-400" />
  Registrar Póliza
  </button>
  <button
  onClick={() => setShowAddViolationModal(true)}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-3.5 py-2 rounded-xl text-xs flex items-center gap-2 shadow-xs"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-semibold px-3.5 py-2 rounded-xl text-xs flex items-center gap-2 shadow-xs"
  >
  <Plus className="w-4 h-4" />
  Registrar Multa
@@ -328,7 +328,7 @@ export default function MultasSegurosPage() {
  </button>
  <button
  type="submit"
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2 rounded-xl text-xs"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-semibold px-4 py-2 rounded-xl text-xs"
  >
  Guardar Multa
  </button>
@@ -398,7 +398,7 @@ export default function MultasSegurosPage() {
  </button>
  <button
  type="submit"
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-4 py-2 rounded-xl text-xs"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-medium px-4 py-2 rounded-xl text-xs"
  >
  Guardar Póliza
  </button>

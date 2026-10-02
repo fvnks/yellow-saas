@@ -136,7 +136,7 @@ export default function NuevaOrdenPage() {
  <ArrowLeft className="w-5 h-5 text-slate-600" />
  </Link>
  <div>
- <h1 className="text-2xl font-black text-monday-violet">Nueva Orden de Trabajo</h1>
+ <h1 className="text-2xl font-black text-sunshine-ink">Nueva Orden de Trabajo</h1>
  <p className="text-sm text-slate-500 mt-1">Complete los datos para registrar una nueva orden</p>
  </div>
  </div>
@@ -335,7 +335,7 @@ export default function NuevaOrdenPage() {
  <button
  type="submit"
  disabled={loading || !formData.vehicle_id}
- className="bg-monday-violet hover:bg-monday-violet-hover disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-sunshine hover:bg-sunshine-hover disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Save className="w-4 h-4" />
  {loading ? 'Guardando...' : 'Guardar Orden'}

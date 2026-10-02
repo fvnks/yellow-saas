@@ -194,7 +194,7 @@ export default function ReceivedDocumentsPage() {
  <Card>
  <CardContent className="p-4">
  <p className="text-[9px] font-semibold text-muted-foreground uppercase">Exento</p>
- <p className="text-lg font-bold text-monday-violet mt-1">{formatCLP(Number(summary.summary.total_exempt || 0))}</p>
+ <p className="text-lg font-bold text-sunshine-ink mt-1">{formatCLP(Number(summary.summary.total_exempt || 0))}</p>
  </CardContent>
  </Card>
  </div>

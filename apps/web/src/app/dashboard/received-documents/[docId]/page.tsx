@@ -149,7 +149,7 @@ export default function ReceivedDocumentDetailPage() {
  <Card>
  <CardContent className="p-5">
  <div className="flex items-center gap-2 mb-3">
- <Hash className="w-4 h-4 text-monday-violet" />
+ <Hash className="w-4 h-4 text-sunshine-ink" />
  <h3 className="text-sm font-semibold text-foreground">Totales</h3>
  </div>
  <div className="space-y-2">
@@ -317,10 +317,10 @@ export default function ReceivedDocumentDetailPage() {
  )}
  {doc.validation_warnings && doc.validation_warnings.length > 0 && (
  <div className="space-y-2 mt-4">
- <h3 className="text-sm font-semibold text-monday-violet">Advertencias</h3>
+ <h3 className="text-sm font-semibold text-sunshine-ink">Advertencias</h3>
  {doc.validation_warnings.map((warn: string, i: number) => (
  <div key={i} className="flex items-start gap-2 text-sm">
- <AlertTriangle className="w-4 h-4 text-monday-violet mt-0.5 shrink-0" />
+ <AlertTriangle className="w-4 h-4 text-sunshine-ink mt-0.5 shrink-0" />
  <span>{warn}</span>
  </div>
  ))}

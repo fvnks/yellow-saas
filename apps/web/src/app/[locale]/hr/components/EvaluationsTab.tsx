@@ -28,7 +28,7 @@ const statusConfig: Record<string, { label: string; variant: 'success' | 'warnin
 function getScoreColor(score: number): string {
  if (score >= 4.5) return 'text-emerald-600';
  if (score >= 3.5) return 'text-blue-600';
- if (score >= 2.5) return 'text-monday-violet';
+ if (score >= 2.5) return 'text-sunshine-ink';
  return 'text-red-600';
 }
 

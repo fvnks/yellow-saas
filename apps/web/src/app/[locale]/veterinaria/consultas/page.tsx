@@ -135,7 +135,7 @@ export default function VeterinaryConsultationsPage() {
 
  <button
  onClick={handleSaveConsultation}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
  >
  <Save className="w-4 h-4" />
  Guardar Consulta & Receta
@@ -385,7 +385,7 @@ export default function VeterinaryConsultationsPage() {
  label="Evaluación (Assessment)"
  hint="Diagnóstico(s), problemas activos, evaluación del estado actual."
  color="border-peach bg-peach/30/40"
- badge="bg-monday-violet"
+ badge="bg-sunshine"
  value={soap.assessment}
  onChange={(v) => updateSoap('assessment', v)}
  />
@@ -504,7 +504,7 @@ export default function VeterinaryConsultationsPage() {
  <div className="flex items-center justify-end gap-3 pt-2">
  <button
  type="submit"
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-6 py-3 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-6 py-3 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Save className="w-4 h-4" />
  Finalizar & Emitir Receta

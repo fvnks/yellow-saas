@@ -32,9 +32,9 @@ const REGULATION_CARDS: RegulationCard[] = [
     id: 'sii-dte',
     title: 'Facturación Electrónica SII',
     icon: ShieldCheck,
-    color: 'text-monday-violet',
-    bgColor: 'bg-monday-violet/10',
-    borderColor: 'border-monday-violet/20',
+    color: 'text-sunshine-ink',
+    bgColor: 'bg-sunshine/10',
+    borderColor: 'border-sunshine-dark/20',
     status: 'Activo',
     statusColor: 'bg-mint/30 text-forest',
     features: ['DTE 33, 34, 35, 46, 56, 61', 'CAF con firma digital', 'Timbre en segundos'],
@@ -146,7 +146,7 @@ export function ComplianceCard({ reducedMotion }: { reducedMotion: boolean }) {
                     <ul className="space-y-1.5">
                       {card.features.map((feature, idx) => (
                         <li key={idx} className="flex items-start gap-2 text-[11px] text-ink">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-monday-violet mt-0.5 flex-shrink-0" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-sunshine-ink mt-0.5 flex-shrink-0" />
                           <span>{feature}</span>
                         </li>
                       ))}
@@ -155,7 +155,7 @@ export function ComplianceCard({ reducedMotion }: { reducedMotion: boolean }) {
                       href={card.normativaRef}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-medium text-monday-violet hover:text-monday-violet-hover transition-colors"
+                      className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-medium text-sunshine-ink hover:text-sunshine-ink-hover transition-colors"
                     >
                       <ExternalLink className="w-3 h-3" />
                       {card.normativaLabel}

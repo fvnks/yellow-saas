@@ -399,7 +399,7 @@ export default function ValuationPage() {
  </div>
  </form>
  {methods.length === 0 && (
- <p className="text-xs text-monday-violet mt-3">Crea un método de valoración primero en la pestaña &quot;Métodos&quot;.</p>
+ <p className="text-xs text-sunshine-ink mt-3">Crea un método de valoración primero en la pestaña &quot;Métodos&quot;.</p>
  )}
  </div>
  </div>
@@ -485,7 +485,7 @@ export default function ValuationPage() {
  <p className="text-2xl font-bold text-foreground mt-1">{productCount}</p>
  </div>
  <div className="w-12 h-12 bg-peach/30 rounded-xl flex items-center justify-center">
- <CheckCircle className="w-6 h-6 text-monday-violet" />
+ <CheckCircle className="w-6 h-6 text-sunshine-ink" />
  </div>
  </div>
  </div>

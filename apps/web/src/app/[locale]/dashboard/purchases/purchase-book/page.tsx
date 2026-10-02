@@ -31,7 +31,7 @@ const SII_DOC_TYPES = [
 const SII_STATUSES = [
  { key: 'draft', label: 'Borrador', icon: FileText, color: 'text-muted-foreground', bg: 'bg-muted' },
  { key: 'generated', label: 'XML Generado', icon: Eye, color: 'text-blue-500', bg: 'bg-blue-100' },
- { key: 'submitted', label: 'Enviado al SII', icon: Send, color: 'text-monday-violet', bg: 'bg-peach/50' },
+ { key: 'submitted', label: 'Enviado al SII', icon: Send, color: 'text-sunshine-ink', bg: 'bg-peach/50' },
  { key: 'accepted', label: 'Aceptado', icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-100' },
  { key: 'rejected', label: 'Rechazado', icon: XCircle, color: 'text-rose-500', bg: 'bg-rose-100' },
 ];

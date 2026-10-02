@@ -67,7 +67,7 @@ export default function ReservationsPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
- <CalendarCheck className="w-5 h-5 text-monday-violet" />
+ <CalendarCheck className="w-5 h-5 text-sunshine-ink" />
  Reservas Web en Línea & Confirmación
  </h1>
  <p className="text-xs text-slate-500 mt-1">
@@ -81,7 +81,7 @@ export default function ReservationsPage() {
  <div className="lg:col-span-5 space-y-4">
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
  <h2 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
- <Plus className="w-4 h-4 text-monday-violet" />
+ <Plus className="w-4 h-4 text-sunshine-ink" />
  Formulario de Nueva Reserva
  </h2>
 
@@ -94,7 +94,7 @@ export default function ReservationsPage() {
  value={form.customerName}
  onChange={e => setForm({ ...form, customerName: e.target.value })}
  placeholder="Ej. Constanza Morales"
- className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-monday-violet"
+ className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-sunshine-dark"
  />
  </div>
 
@@ -107,7 +107,7 @@ export default function ReservationsPage() {
  value={form.customerEmail}
  onChange={e => setForm({ ...form, customerEmail: e.target.value })}
  placeholder="cliente@email.cl"
- className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-monday-violet"
+ className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-sunshine-dark"
  />
  </div>
  <div>
@@ -117,7 +117,7 @@ export default function ReservationsPage() {
  value={form.customerPhone}
  onChange={e => setForm({ ...form, customerPhone: e.target.value })}
  placeholder="+56 9 ..."
- className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-monday-violet"
+ className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-sunshine-dark"
  />
  </div>
  </div>
@@ -129,7 +129,7 @@ export default function ReservationsPage() {
  type="date"
  value={form.date}
  onChange={e => setForm({ ...form, date: e.target.value })}
- className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-slate-900 focus:outline-none focus:border-monday-violet"
+ className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-slate-900 focus:outline-none focus:border-sunshine-dark"
  />
  </div>
  <div>
@@ -138,7 +138,7 @@ export default function ReservationsPage() {
  type="time"
  value={form.time}
  onChange={e => setForm({ ...form, time: e.target.value })}
- className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 text-slate-900 focus:outline-none focus:border-monday-violet"
+ className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 text-slate-900 focus:outline-none focus:border-sunshine-dark"
  />
  </div>
  <div>
@@ -149,7 +149,7 @@ export default function ReservationsPage() {
  max={12}
  value={form.peopleCount}
  onChange={e => setForm({ ...form, peopleCount: Number(e.target.value) })}
- className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-monday-violet"
+ className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-sunshine-dark"
  />
  </div>
  </div>
@@ -159,7 +159,7 @@ export default function ReservationsPage() {
  <select
  value={form.tableId}
  onChange={e => setForm({ ...form, tableId: Number(e.target.value) })}
- className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-monday-violet"
+ className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-sunshine-dark"
  >
  {tables.map(t => (
  <option key={t.tableId} value={t.tableId}>
@@ -171,7 +171,7 @@ export default function ReservationsPage() {
 
  <button
  type="submit"
- className="w-full bg-monday-violet hover:bg-monday-violet-hover text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-xs mt-2"
+ className="w-full bg-sunshine hover:bg-sunshine-hover text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-xs mt-2"
  >
  <Mail className="w-4 h-4" /> Confirmar & Enviar Código por Email
  </button>
@@ -202,7 +202,7 @@ export default function ReservationsPage() {
  >
  <div className="space-y-1">
  <div className="flex items-center gap-2">
- <span className="font-mono font-bold text-monday-violet bg-peach/30 px-2 py-0.5 rounded border border-peach text-[11px]">
+ <span className="font-mono font-bold text-sunshine-ink bg-peach/30 px-2 py-0.5 rounded border border-peach text-[11px]">
  {res.reservationCode}
  </span>
  <span className="font-bold text-slate-900 text-sm">{res.customerName}</span>
@@ -219,7 +219,7 @@ export default function ReservationsPage() {
  <span className="font-semibold">{res.tableName}</span>
  <span>•</span>
  <span className="flex items-center gap-1">
- <Clock className="w-3 h-3 text-monday-violet" /> {res.date} a las {res.time} hrs
+ <Clock className="w-3 h-3 text-sunshine-ink" /> {res.date} a las {res.time} hrs
  </span>
  <span>•</span>
  <span className="flex items-center gap-1">

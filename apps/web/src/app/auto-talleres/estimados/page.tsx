@@ -72,7 +72,7 @@ export default function EstimadosPage() {
  <h1 className="text-2xl font-black text-ink">Estimados</h1>
  <p className="text-sm text-slate-500 mt-1">Presupuestos y cotizaciones para clientes</p>
  </div>
- <button className="bg-monday-violet hover:bg-monday-violet-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]">
+ <button className="bg-sunshine hover:bg-sunshine-hover text-ink font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]">
  <Plus className="w-4 h-4" />
  Nuevo Estimado
  </button>
@@ -104,7 +104,7 @@ export default function EstimadosPage() {
  </div>
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
  <div className="flex items-center gap-3">
- <div className="h-10 w-10 rounded-xl bg-monday-violet/10 flex items-center justify-center border border-[#c64d00]/20">
+ <div className="h-10 w-10 rounded-xl bg-sunshine/10 flex items-center justify-center border border-[#c64d00]/20">
  <Clock className="w-5 h-5 text-[#c64d00]" />
  </div>
  <div>

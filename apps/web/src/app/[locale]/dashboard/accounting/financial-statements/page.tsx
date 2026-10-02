@@ -61,7 +61,7 @@ export default function FinancialStatementsPage() {
  </div>
  <button
  onClick={() => window.print()}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-medium px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-xs flex items-center gap-2"
  >
  <Download className="w-4 h-4" />
  Exportar PDF
@@ -72,13 +72,13 @@ export default function FinancialStatementsPage() {
  <div className="flex gap-2">
  <button
  onClick={() => setActiveTab('balance')}
- className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${activeTab === 'balance' ? 'bg-monday-violet text-white shadow-xs' : 'bg-white border border-slate-200/80 text-slate-700 hover:bg-slate-50'}`}
+ className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${activeTab === 'balance' ? 'bg-sunshine text-white shadow-xs' : 'bg-white border border-slate-200/80 text-slate-700 hover:bg-slate-50'}`}
  >
  Balance 8 Columnas
  </button>
  <button
  onClick={() => setActiveTab('eerr')}
- className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${activeTab === 'eerr' ? 'bg-monday-violet text-white shadow-xs' : 'bg-white border border-slate-200/80 text-slate-700 hover:bg-slate-50'}`}
+ className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${activeTab === 'eerr' ? 'bg-sunshine text-white shadow-xs' : 'bg-white border border-slate-200/80 text-slate-700 hover:bg-slate-50'}`}
  >
  Estado de Resultados
  </button>

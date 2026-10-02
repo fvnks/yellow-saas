@@ -191,7 +191,7 @@ export default function PurchasesPage() {
  <Link href="/dashboard/purchases/receipts/new">
  <div className="bg-card border border-border rounded-xl shadow-sm p-4 bg-primary border-border bg-primary border-border hover:bg-muted transition-colors cursor-pointer">
  <div className="flex flex-col items-center gap-2">
- <div className="w-10 h-10 bg-peach/30 rounded-xl flex items-center justify-center"><Package className="w-5 h-5 text-monday-violet" /></div>
+ <div className="w-10 h-10 bg-peach/30 rounded-xl flex items-center justify-center"><Package className="w-5 h-5 text-sunshine-ink" /></div>
  <span className="text-sm font-medium text-foreground text-center">Recepci�n</span>
  </div>
  </div>

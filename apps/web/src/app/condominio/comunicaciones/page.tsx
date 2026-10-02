@@ -187,7 +187,7 @@ export default function ComunicacionesPage() {
 
  <button
  onClick={handleSendEmailDemo}
- className="bg-monday-violet hover:bg-cloud text-white font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-2 shadow-xs transition-all active:scale-[0.98]"
+ className="bg-sunshine hover:bg-cloud text-white font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-2 shadow-xs transition-all active:scale-[0.98]"
  >
  <Mail className="w-4 h-4 text-cyan-400" />
  Enviar Notificación por Correo

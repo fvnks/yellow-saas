@@ -19,7 +19,7 @@ const variantStyles: Record<StatusVariant, string> = {
 
 const dotColors: Record<StatusVariant, string> = {
   success: 'bg-forest',
-  warning: 'bg-monday-violet',
+  warning: 'bg-sunshine',
   danger: 'bg-[#c64d00]',
   info: 'bg-[#006680]',
   neutral: 'bg-muted',

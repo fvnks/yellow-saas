@@ -45,7 +45,7 @@ export default function RestaurantCashierPage() {
  {/* Title Banner */}
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm">
  <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
- <TrendingUp className="w-5 h-5 text-monday-violet" />
+ <TrendingUp className="w-5 h-5 text-sunshine-ink" />
  Cierre de Caja & Arqueo
  </h1>
  <p className="text-xs text-slate-500 mt-1">
@@ -107,7 +107,7 @@ export default function RestaurantCashierPage() {
  <form onSubmit={handleClose} className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
  <div className="px-5 py-4 border-b border-slate-200/80">
  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
- <Wallet className="w-4 h-4 text-monday-violet" /> Arqueo de Efectivo
+ <Wallet className="w-4 h-4 text-sunshine-ink" /> Arqueo de Efectivo
  </h3>
  </div>
  <div className="p-5 space-y-4">
@@ -147,7 +147,7 @@ export default function RestaurantCashierPage() {
  <button
  type="submit"
  disabled={done}
- className="w-full bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
+ className="w-full bg-sunshine hover:bg-sunshine-hover text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
  >
  <TrendingUp className="w-4 h-4" /> {done ? 'Cierre Registrado' : 'Cerrar Caja & Emitir Arqueo'}
  </button>

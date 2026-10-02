@@ -38,7 +38,7 @@ const statusConfig: Record<string, { label: string; variant: 'success' | 'warnin
 const priorityConfig: Record<string, { label: string; color: string }> = {
  low: { label: 'Baja', color: 'bg-muted text-foreground' },
  normal: { label: 'Normal', color: 'bg-blue-100 text-blue-600' },
- high: { label: 'Alta', color: 'bg-peach/50 text-monday-violet' },
+ high: { label: 'Alta', color: 'bg-peach/50 text-sunshine-ink' },
  urgent: { label: 'Urgente', color: 'bg-rose-100 text-rose-600' },
 };
 
@@ -112,7 +112,7 @@ export default function PedidoDetailPage({ params }: { params: { orderId: string
  <ArrowLeft className="w-4 h-4" /> Volver a Pedidos
  </button>
  <div className="bg-card border border-border rounded-xl p-8 text-center">
- <AlertTriangle className="w-8 h-8 text-monday-violet mx-auto mb-3" />
+ <AlertTriangle className="w-8 h-8 text-sunshine-ink mx-auto mb-3" />
  <p className="text-sm text-foreground">{error || 'Pedido no encontrado'}</p>
  </div>
  </div>

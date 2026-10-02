@@ -65,7 +65,7 @@ export default function MiCuentaSidebarNavigation({ sidebarItems }: MiCuentaSide
 
  const renderIcon = (iconName: keyof typeof MI_CUENTA_ICON_MAP | undefined) => {
  const Icon = resolveMiCuentaIcon(iconName);
- return <Icon className="h-4 w-4 text-monday-violet shrink-0" />;
+ return <Icon className="h-4 w-4 text-sunshine-ink shrink-0" />;
  };
 
  const isActive = (itemPath: string, subItems?: MiCuentaNavMainItem["subItems"]) => {
@@ -120,7 +120,7 @@ export default function MiCuentaSidebarNavigation({ sidebarItems }: MiCuentaSide
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar en Configuración..."
- className="w-full bg-cloud border border-mist text-xs text-ink placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-monday-violet focus:ring-1 focus:ring-monday-violet transition-all"
+ className="w-full bg-cloud border border-mist text-xs text-ink placeholder:text-slate-500 rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-sunshine-dark focus:ring-1 focus:ring-sunshine-dark transition-all"
  />
  {searchQuery ? (
  <button onClick={() => setSearchQuery("")} className="absolute right-3 text-iron hover:text-ink">
@@ -150,7 +150,7 @@ export default function MiCuentaSidebarNavigation({ sidebarItems }: MiCuentaSide
  "text-[10px] font-bold uppercase tracking-widest",
  "transition-all duration-150 cursor-pointer",
  groupActive
- ? "text-monday-violet"
+ ? "text-sunshine-ink"
  : "text-slate-500 hover:text-iron",
  "hover:bg-cloud/40"
  )}>
@@ -185,7 +185,7 @@ export default function MiCuentaSidebarNavigation({ sidebarItems }: MiCuentaSide
  className={cn(
  "whitespace-nowrap rounded-xl transition-all duration-150 text-xs",
  itemActive
- ? "bg-cloud text-white font-bold border-l-4 border-monday-violet shadow-sm shadow-monday-violet/10"
+ ? "bg-cloud text-white font-bold border-l-4 border-sunshine-dark shadow-sm shadow-sunshine/10"
  : "text-iron hover:text-ink hover:bg-cloud"
  )}
  >
@@ -204,7 +204,7 @@ export default function MiCuentaSidebarNavigation({ sidebarItems }: MiCuentaSide
  className={cn(
  "whitespace-nowrap rounded-xl transition-all duration-150 text-xs w-full",
  itemActive
- ? "bg-cloud text-white font-bold border-l-4 border-monday-violet shadow-sm shadow-monday-violet/10"
+ ? "bg-cloud text-white font-bold border-l-4 border-sunshine-dark shadow-sm shadow-sunshine/10"
  : "text-iron hover:text-ink hover:bg-cloud"
  )}
  >
@@ -227,7 +227,7 @@ export default function MiCuentaSidebarNavigation({ sidebarItems }: MiCuentaSide
  className={cn(
  "rounded-lg text-xs transition-all",
  subActive
- ? "bg-cloud/90 text-monday-violet font-bold"
+ ? "bg-cloud/90 text-sunshine-ink font-bold"
  : "text-iron hover:text-ink hover:bg-cloud/40"
  )}
  >

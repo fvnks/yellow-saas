@@ -33,13 +33,13 @@ export function Footer() {
  {/* Brand */}
  <div className="col-span-2 md:col-span-1">
  <Link href="/" className="flex items-center gap-2.5 mb-4 group">
- <div className="w-9 h-9 rounded-full flex items-center justify-center shadow-sm" style={{ background: 'conic-gradient(from 270deg, #8181ff 15%, #33dbdb 40%, #33d58e 55%, #F5C518 65%, #fc527d 85%, #8181ff 100%)' }}>
+ <div className="w-9 h-9 rounded-full flex items-center justify-center shadow-sm" style={{ background: 'conic-gradient(from 270deg, #FFA500 15%, #33dbdb 40%, #33d58e 55%, #F5C518 65%, #fc527d 85%, #FFA500 100%)' }}>
  <div className="w-7 h-7 bg-snow rounded-full flex items-center justify-center">
- <span className="text-monday-violet font-bold text-xs">Y</span>
+ <span className="text-sunshine-ink font-bold text-xs">Y</span>
  </div>
  </div>
  <span className="text-lg font-bold text-ink">
- Yellow <span className="text-monday-violet">ERP</span>
+ Yellow <span className="text-sunshine-ink">ERP</span>
  </span>
  </Link>
  <p className="text-xs text-slate-text leading-relaxed">

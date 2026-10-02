@@ -35,14 +35,14 @@ function HRPageInner() {
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <div className="flex items-center gap-2">
- <h1 className="text-xl font-bold text-monday-violet">Recursos Humanos</h1>
+ <h1 className="text-xl font-bold text-sunshine-ink">Recursos Humanos</h1>
  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-rose-50 text-rose-700 border border-rose-200">
  Talento & Nómina
  </span>
  </div>
  <p className="text-sm text-[#64748B] mt-1">Gestión integral de colaboradores, asistencia, evaluaciones y clima laboral</p>
  </div>
- <button className="bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm">
+ <button className="bg-sunshine hover:bg-sunshine-hover text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm">
  <Plus className="w-4 h-4" />
  Nuevo Colaborador
  </button>
@@ -76,11 +76,11 @@ function HRPageInner() {
  <div className="flex items-center justify-between mb-2">
  <p className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Evaluaciones Pendientes</p>
  <div className="w-10 h-10 bg-peach/30 rounded-full flex items-center justify-center">
- <Award className="w-5 h-5 text-monday-violet" />
+ <Award className="w-5 h-5 text-sunshine-ink" />
  </div>
  </div>
  <p className="text-2xl font-black text-slate-900 tracking-tight">7</p>
- <p className="text-[11px] text-monday-violet mt-1 font-semibold">Ciclo de desempeño Q3</p>
+ <p className="text-[11px] text-sunshine-ink mt-1 font-semibold">Ciclo de desempeño Q3</p>
  </div>
 
  <div className="animate-fade-in-up stagger-4 bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm hover:border-rose-300 hover:shadow-md transition-all duration-200 ease-out hover:-translate-y-0.5">

@@ -12,7 +12,7 @@ const actionConfig: Record<string, { label: string; icon: typeof CheckCircle2; c
  update: { label: 'Actualizar', icon: Activity, color: 'text-blue-600' },
  delete: { label: 'Eliminar', icon: XCircle, color: 'text-rose-600' },
  login: { label: 'Login', icon: User, color: 'text-primary' },
- config: { label: 'Config', icon: AlertTriangle, color: 'text-monday-violet' },
+ config: { label: 'Config', icon: AlertTriangle, color: 'text-sunshine-ink' },
  export: { label: 'Exportar', icon: Download, color: 'text-foreground' },
 };
 

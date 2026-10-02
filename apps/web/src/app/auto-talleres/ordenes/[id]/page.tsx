@@ -182,7 +182,7 @@ export default function OrdenDetallePage() {
  <div className="flex items-center gap-2">
  <Link
  href={`/auto-talleres/ordenes/${params.id}/edit`}
- className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-monday-violet hover:bg-monday-violet-hover text-white text-sm font-semibold transition-colors"
+ className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sunshine hover:bg-sunshine-hover text-white text-sm font-semibold transition-colors"
  >
  <Pencil className="w-4 h-4" />
  Editar

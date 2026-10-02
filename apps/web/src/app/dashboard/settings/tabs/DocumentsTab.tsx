@@ -230,7 +230,7 @@ export function DocumentsTab() {
  <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
  <div className="px-6 py-4 border-b border-border flex items-center gap-2.5">
  <div className="w-8 h-8 rounded-lg bg-peach/30 flex items-center justify-center">
- <Type className="w-4 h-4 text-monday-violet" />
+ <Type className="w-4 h-4 text-sunshine-ink" />
  </div>
  <div>
  <h3 className="text-sm font-semibold text-foreground">Textos</h3>

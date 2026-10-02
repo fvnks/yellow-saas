@@ -49,7 +49,7 @@ export default function RestaurantReportsPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
- <FileText className="w-5 h-5 text-monday-violet" />
+ <FileText className="w-5 h-5 text-sunshine-ink" />
  Reportes de Ventas & Desempeño por Garzón
  </h1>
  <p className="text-xs text-slate-500 mt-1">
@@ -63,7 +63,7 @@ export default function RestaurantReportsPage() {
  <button
  key={r}
  onClick={() => setRange(r)}
- className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${range === r ? 'bg-monday-violet text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+ className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${range === r ? 'bg-sunshine text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
  >
  {r === 'hoy' ? 'Hoy' : r === 'semana' ? 'Semana' : 'Mes'}
  </button>
@@ -71,7 +71,7 @@ export default function RestaurantReportsPage() {
  </div>
  <button
  onClick={() => toast.success('Reporte exportado (demo).')}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-3 py-2 rounded-xl text-xs flex items-center gap-2"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-medium px-3 py-2 rounded-xl text-xs flex items-center gap-2"
  >
  <Download className="w-3.5 h-3.5" /> Exportar
  </button>
@@ -91,7 +91,7 @@ export default function RestaurantReportsPage() {
  <p className="text-[11px] text-slate-400 mt-1">por boleta emitida</p>
  </div>
  <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
- <div className="flex items-center gap-2 text-slate-400"><Wallet className="w-4 h-4 text-monday-violet" /><p className="text-xs font-semibold text-slate-500">Propinas Total</p></div>
+ <div className="flex items-center gap-2 text-slate-400"><Wallet className="w-4 h-4 text-sunshine-ink" /><p className="text-xs font-semibold text-slate-500">Propinas Total</p></div>
  <p className="text-2xl font-bold text-slate-900 mt-1">{formatCLP(totalTips)}</p>
  <p className="text-[11px] text-slate-400 mt-1">10% sobre consumos</p>
  </div>
@@ -107,7 +107,7 @@ export default function RestaurantReportsPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
  <div className="px-5 py-4 border-b border-slate-200/80 flex items-center justify-between">
  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
- <User className="w-4 h-4 text-monday-violet" /> Desempeño por Garzón
+ <User className="w-4 h-4 text-sunshine-ink" /> Desempeño por Garzón
  </h3>
  </div>
  <div className="divide-y divide-slate-100">
@@ -127,7 +127,7 @@ export default function RestaurantReportsPage() {
  </div>
  </div>
  <div className="mt-2 h-2 bg-slate-100 rounded-full overflow-hidden">
- <div className="h-full bg-monday-violet rounded-full" style={{ width: `${pct}%` }} />
+ <div className="h-full bg-sunshine rounded-full" style={{ width: `${pct}%` }} />
  </div>
  </div>
  );
@@ -139,7 +139,7 @@ export default function RestaurantReportsPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
  <div className="px-5 py-4 border-b border-slate-200/80 flex items-center justify-between">
  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
- <Filter className="w-4 h-4 text-monday-violet" /> Ventas por Método de Pago
+ <Filter className="w-4 h-4 text-sunshine-ink" /> Ventas por Método de Pago
  </h3>
  </div>
  <div className="p-5 space-y-4">
@@ -168,7 +168,7 @@ export default function RestaurantReportsPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
  <div className="px-5 py-4 border-b border-slate-200/80">
  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
- <Receipt className="w-4 h-4 text-monday-violet" /> Detalle de Boletas Emitidas
+ <Receipt className="w-4 h-4 text-sunshine-ink" /> Detalle de Boletas Emitidas
  </h3>
  </div>
  <div className="overflow-x-auto">
@@ -192,7 +192,7 @@ export default function RestaurantReportsPage() {
  <td className="px-5 py-3 text-slate-500 text-xs">{b.dateTime}</td>
  <td className="px-5 py-3 text-slate-600">{formatCLP(b.netoCLP)}</td>
  <td className="px-5 py-3 text-slate-600">{formatCLP(b.ivaCLP)}</td>
- <td className="px-5 py-3 text-monday-violet font-medium">{formatCLP(b.tipCLP)}</td>
+ <td className="px-5 py-3 text-sunshine-ink font-medium">{formatCLP(b.tipCLP)}</td>
  <td className="px-5 py-3 text-right font-bold text-slate-900">{formatCLP(b.totalCLP)}</td>
  </tr>
  ))}

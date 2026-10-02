@@ -56,7 +56,7 @@ export default function ProjectTasksPage() {
  const getStatusIcon = (status: string) => {
  switch (status) {
  case 'completed': return <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />;
- case 'in_progress': return <Clock className="w-3.5 h-3.5 text-monday-violet" />;
+ case 'in_progress': return <Clock className="w-3.5 h-3.5 text-sunshine-ink" />;
  default: return <AlertCircle className="w-3.5 h-3.5 text-muted-foreground" />;
  }
  };

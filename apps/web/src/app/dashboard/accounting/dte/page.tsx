@@ -115,7 +115,7 @@ export default function DTEPage() {
  </button>
  <Link
  href="/dashboard/settings"
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-4 py-2 rounded-xl text-sm transition-all flex items-center gap-2"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-medium px-4 py-2 rounded-xl text-sm transition-all flex items-center gap-2"
  >
  Configurar SII
  </Link>
@@ -209,7 +209,7 @@ export default function DTEPage() {
  <button
  onClick={() => sendDTE(inv.id)}
  disabled={sending === inv.id}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-all flex items-center gap-1.5"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-all flex items-center gap-1.5"
  >
  {sending === inv.id ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
  Enviar

@@ -53,7 +53,7 @@ export default function AyudaPage() {
  <p className="text-sm text-[#64748B] mt-1">Encuentra respuestas rápidas, documentación oficial y atención directa con nuestro equipo</p>
  </div>
  <Link href="/ayuda/tickets"
- className="bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm">
+ className="bg-sunshine hover:bg-sunshine-hover text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm">
  <Ticket className="w-4 h-4" />
  Crear Ticket de Soporte
  </Link>
@@ -74,7 +74,7 @@ export default function AyudaPage() {
  value={search}
  onChange={e => setSearch(e.target.value)}
  placeholder="Buscar por tema, módulo, DTE, SII, facturas..."
- className="w-full bg-white border border-mist rounded-xl pl-10 pr-4 py-2.5 text-sm text-ink placeholder:text-iron focus:outline-none focus:ring-2 focus:ring-monday-violet/20 focus:border-monday-violet transition-colors"
+ className="w-full bg-white border border-mist rounded-xl pl-10 pr-4 py-2.5 text-sm text-ink placeholder:text-iron focus:outline-none focus:ring-2 focus:ring-sunshine-dark/20 focus:border-sunshine-dark transition-colors"
  />
  </div>
  </div>
@@ -86,7 +86,7 @@ export default function AyudaPage() {
  onClick={() => setCategory(cat)}
  className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-150 ${
  category === cat
- ? 'bg-monday-violet text-white shadow-sm'
+ ? 'bg-sunshine text-white shadow-sm'
  : 'bg-[#F1F5F9] text-[#64748B] hover:bg-[#E2E8F0] hover:text-ink'
  }`}
  >
@@ -112,7 +112,7 @@ export default function AyudaPage() {
  <p className="text-sm font-medium text-ink">No se encontraron preguntas</p>
  <p className="text-xs text-[#64748B] mt-1">Prueba ajustando la búsqueda o crea una solicitud a soporte</p>
  <Link href="/ayuda/tickets"
- className="inline-flex items-center gap-2 mt-4 bg-monday-violet hover:bg-monday-violet-hover text-white px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150 active:scale-[0.98]">
+ className="inline-flex items-center gap-2 mt-4 bg-sunshine hover:bg-sunshine-hover text-white px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150 active:scale-[0.98]">
  <MessageSquare className="w-4 h-4" />
  Crear Ticket
  </Link>
@@ -130,7 +130,7 @@ export default function AyudaPage() {
  >
  <div className="flex items-center gap-3">
  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold border transition-colors ${
- isOpen ? 'bg-monday-violet text-[#c64d00]/70 border-[#1E293B]' : 'bg-[#E2E8F0] text-[#475569] border-[#CBD5E1]'
+ isOpen ? 'bg-sunshine text-[#c64d00]/70 border-[#1E293B]' : 'bg-[#E2E8F0] text-[#475569] border-[#CBD5E1]'
  }`}>
  {item.category}
  </span>

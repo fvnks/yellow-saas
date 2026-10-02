@@ -86,7 +86,7 @@ export default function SalesDashboard() {
  <div className="flex items-center justify-between mb-3">
  <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Despachos Pendientes</span>
  <div className="w-10 h-10 bg-peach/30 rounded-xl flex items-center justify-center">
- <Truck className="w-5 h-5 text-monday-violet" />
+ <Truck className="w-5 h-5 text-sunshine-ink" />
  </div>
  </div>
  <p className="text-2xl font-bold text-foreground">{kpis.pendingDeliveries}</p>
@@ -197,7 +197,7 @@ export default function SalesDashboard() {
  const total = statusBreakdown.reduce((sum: number, x: any) => sum + parseInt(x.count), 0);
  const pct = total > 0 ? (parseInt(s.count) / total) * 100 : 0;
  const colors: Record<string, string> = {
- draft: 'bg-muted', confirmed: 'bg-blue-500', processing: 'bg-monday-violet',
+ draft: 'bg-muted', confirmed: 'bg-blue-500', processing: 'bg-sunshine',
  shipped: 'bg-primary', delivered: 'bg-emerald-500', cancelled: 'bg-red-400', invoiced: 'bg-blue-600'
  };
  return (

@@ -372,7 +372,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
  {item.received_quantity}
  </span>
  ) : (
- <span className={`text-xs font-medium ${item.received_quantity > 0 ? 'text-monday-violet' : 'text-muted-foreground'}`}>
+ <span className={`text-xs font-medium ${item.received_quantity > 0 ? 'text-sunshine-ink' : 'text-muted-foreground'}`}>
  {item.received_quantity}
  </span>
  )}
@@ -435,7 +435,7 @@ export default function PurchaseDetailPage({ params }: { params: { id: string } 
  </div>
  <div className="flex items-center justify-between">
  <span>Recibidos:</span>
- <span className={`font-medium ${totalReceived === totalOrdered ? 'text-emerald-600' : 'text-monday-violet'}`}>
+ <span className={`font-medium ${totalReceived === totalOrdered ? 'text-emerald-600' : 'text-sunshine-ink'}`}>
  {totalReceived} / {totalOrdered}
  </span>
  </div>

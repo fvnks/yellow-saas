@@ -209,7 +209,7 @@ export default function VeterinaryPharmacyPage() {
  </div>
  <button
  onClick={() => setShowModal(true)}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98] shrink-0"
  >
  <Plus className="w-4 h-4" />
  Nuevo Despacho
@@ -271,7 +271,7 @@ export default function VeterinaryPharmacyPage() {
  key={c.id}
  onClick={() => setCategoryFilter(c.id)}
  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
- categoryFilter === c.id ? 'bg-monday-violet text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+ categoryFilter === c.id ? 'bg-sunshine text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
  }`}
  >
  {c.label}
@@ -529,7 +529,7 @@ export default function VeterinaryPharmacyPage() {
  <button
  type="button"
  onClick={handleAddToCart}
- className="bg-monday-violet hover:bg-cloud text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1"
+ className="bg-sunshine hover:bg-cloud text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1"
  >
  <Plus className="w-3.5 h-3.5" /> Agregar
  </button>

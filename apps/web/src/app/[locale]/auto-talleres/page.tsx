@@ -113,35 +113,35 @@ export default function AutoTalleresDashboardPage() {
  return (
  <div className="space-y-6 animate-fade-in-up">
  {/* Header Banner */}
- <div className="bg-gradient-to-r from-monday-violet via-slate-900 to-orange-950 rounded-2xl p-6 text-white shadow-md relative overflow-hidden border border-mist">
+ <div className="bg-gradient-to-r from-sunshine-ink via-slate-900 to-orange-950 rounded-2xl p-6 text-white shadow-md relative overflow-hidden border border-mist">
  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
  <div className="flex items-center gap-2 mb-2">
  <span className="bg-orange-500/20 text-orange-300 text-xs font-bold px-2.5 py-0.5 rounded-full border border-orange-500/30 uppercase tracking-wider">
  Módulo Talleres Automotrices
  </span>
- <span className="bg-peach/20 text-[#c64d00]/60 text-xs font-bold px-2.5 py-0.5 rounded-full border border-monday-violet/30">
+ <span className="bg-peach/20 text-[#c64d00]/60 text-xs font-bold px-2.5 py-0.5 rounded-full border border-sunshine-dark/30">
  DTE SII & CLP
  </span>
  </div>
  <h1 className="text-2xl font-black text-white tracking-tight">
  Consola Operativa Taller
  </h1>
- <p className="text-iron text-sm mt-1 max-w-2xl">
+ <p className="text-white/85 text-sm mt-1 max-w-2xl">
  Gestión integral de órdenes de trabajo, vehículos, técnicos y presupuestos con facturación electrónica SII integrada.
  </p>
  </div>
  <div className="flex flex-wrap items-center gap-3">
  <Link
  href="/auto-talleres/ordenes/new"
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Plus className="w-4 h-4" />
  Nueva Orden
  </Link>
  <Link
  href="/auto-talleres/vehiculos/new"
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
  >
  <Car className="w-4 h-4" />
  Registrar Vehículo
@@ -149,7 +149,7 @@ export default function AutoTalleresDashboardPage() {
  </div>
  </div>
  <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
- <div className="absolute bottom-0 left-0 w-48 h-48 bg-monday-violet/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
+ <div className="absolute bottom-0 left-0 w-48 h-48 bg-sunshine/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
  </div>
 
  {/* KPI Stats */}
@@ -165,7 +165,7 @@ export default function AutoTalleresDashboardPage() {
  <div className="flex items-start justify-between">
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Vehículos Registrados</p>
- <p className="text-3xl font-black text-monday-violet mt-1">{stats.vehicleCount}</p>
+ <p className="text-3xl font-black text-sunshine-ink mt-1">{stats.vehicleCount}</p>
  </div>
  <div className="h-10 w-10 rounded-xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
  <Car className="w-5 h-5 text-orange-500" />
@@ -177,7 +177,7 @@ export default function AutoTalleresDashboardPage() {
  <div className="flex items-start justify-between">
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Órdenes Activas</p>
- <p className="text-3xl font-black text-monday-violet mt-1">{stats.activeOrdersCount}</p>
+ <p className="text-3xl font-black text-sunshine-ink mt-1">{stats.activeOrdersCount}</p>
  </div>
  <div className="h-10 w-10 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
  <FileText className="w-5 h-5 text-blue-500" />
@@ -189,7 +189,7 @@ export default function AutoTalleresDashboardPage() {
  <div className="flex items-start justify-between">
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Revenue del Mes</p>
- <p className="text-3xl font-black text-monday-violet mt-1">{formatCLP(stats.totalRevenue)}</p>
+ <p className="text-3xl font-black text-sunshine-ink mt-1">{formatCLP(stats.totalRevenue)}</p>
  </div>
  <div className="h-10 w-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
  <DollarSign className="w-5 h-5 text-emerald-500" />
@@ -201,7 +201,7 @@ export default function AutoTalleresDashboardPage() {
  <div className="flex items-start justify-between">
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Bays Ocupados</p>
- <p className="text-3xl font-black text-monday-violet mt-1">{stats.occupiedBays}</p>
+ <p className="text-3xl font-black text-sunshine-ink mt-1">{stats.occupiedBays}</p>
  </div>
  <div className="h-10 w-10 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
  <Wrench className="w-5 h-5 text-purple-500" />
@@ -269,7 +269,7 @@ export default function AutoTalleresDashboardPage() {
  >
  <div className={`flex-shrink-0 w-2 h-2 rounded-full ${
  order.status === 'in_progress' ? 'bg-blue-500' :
- order.status === 'diagnostic' ? 'bg-monday-violet' :
+ order.status === 'diagnostic' ? 'bg-sunshine' :
  order.status === 'approved' ? 'bg-purple-500' :
  order.status === 'quality_check' ? 'bg-orange-500' :
  order.status === 'ready' ? 'bg-emerald-500' :
@@ -338,7 +338,7 @@ export default function AutoTalleresDashboardPage() {
  {baysData.map((bay) => (
  <div key={bay.name || bay.number} className="flex items-center justify-between p-3 rounded-xl bg-slate-50/50">
  <div className="flex items-center gap-3">
- <div className={`w-3 h-3 rounded-full ${bay.isOccupied ? 'bg-monday-violet' : 'bg-emerald-500'}`} />
+ <div className={`w-3 h-3 rounded-full ${bay.isOccupied ? 'bg-sunshine' : 'bg-emerald-500'}`} />
  <div>
  <p className="text-sm font-semibold text-slate-900">{bay.name || `Bay ${bay.number}`}</p>
  <p className="text-xs text-slate-500 capitalize">{bay.type}</p>
@@ -439,7 +439,7 @@ export default function AutoTalleresDashboardPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Bays Disponibles</p>
- <p className="text-2xl font-black text-monday-violet">
+ <p className="text-2xl font-black text-sunshine-ink">
  {baysData.filter((b) => !b.isOccupied).length}
  </p>
  </div>
@@ -454,7 +454,7 @@ export default function AutoTalleresDashboardPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Técnicos Registrados</p>
- <p className="text-2xl font-black text-monday-violet">{techniciansData.length}</p>
+ <p className="text-2xl font-black text-sunshine-ink">{techniciansData.length}</p>
  </div>
  </div>
  <p className="text-xs text-slate-500 mt-2">Activos: {activeTechnicians.length}</p>
@@ -467,7 +467,7 @@ export default function AutoTalleresDashboardPage() {
  </div>
  <div>
  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Órdenes Entregadas</p>
- <p className="text-2xl font-black text-monday-violet">{revenueData.length}</p>
+ <p className="text-2xl font-black text-sunshine-ink">{revenueData.length}</p>
  </div>
  </div>
  <p className="text-xs text-slate-500 mt-2">Con facturación en 30 días</p>

@@ -329,7 +329,7 @@ export function PaymentCheckoutModal({
 
  <button
  onClick={handleProcessPayment}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-extrabold px-6 py-2.5 rounded-xl text-xs flex items-center gap-2 transition-all shadow-sm active:scale-98"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-extrabold px-6 py-2.5 rounded-xl text-xs flex items-center gap-2 transition-all shadow-sm active:scale-98"
  >
  <CheckCircle className="w-4 h-4" />
  Procesar Pago {formatCLP(grandTotalCLP)} & Liberar Mesa

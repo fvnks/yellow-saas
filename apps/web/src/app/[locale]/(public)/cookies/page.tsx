@@ -9,7 +9,7 @@ export default function CookiesPage() {
       <nav className="fixed top-0 inset-x-0 bg-snow/80 backdrop-blur-xl border-b border-mist z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-9 h-9 bg-monday-violet rounded-xl flex items-center justify-center">
+            <div className="w-9 h-9 bg-sunshine rounded-xl flex items-center justify-center">
               <Building2 className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-bold text-ink">Yellow ERP</span>
@@ -62,7 +62,7 @@ export default function CookiesPage() {
                 </div>
                 <div className="bg-snow border border-mist rounded-2xl p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <Settings className="w-4 h-4 text-monday-violet" />
+                    <Settings className="w-4 h-4 text-sunshine-ink" />
                     <h3 className="text-sm font-semibold text-ink">Cookies de Preferencias</h3>
                   </div>
                   <p className="text-xs text-slate-text">
@@ -70,8 +70,8 @@ export default function CookiesPage() {
                     regional para proporcionar una experiencia más personalizada.
                   </p>
                   <div className="mt-2 flex flex-wrap gap-2">
-                    <span className="px-2 py-0.5 rounded-md bg-periwinkle/30 text-monday-violet text-[10px] font-mono">locale</span>
-                    <span className="px-2 py-0.5 rounded-md bg-periwinkle/30 text-monday-violet text-[10px] font-mono">theme</span>
+                    <span className="px-2 py-0.5 rounded-md bg-periwinkle/30 text-sunshine-ink text-[10px] font-mono">locale</span>
+                    <span className="px-2 py-0.5 rounded-md bg-periwinkle/30 text-sunshine-ink text-[10px] font-mono">theme</span>
                   </div>
                 </div>
                 <div className="bg-snow border border-mist rounded-2xl p-4">
@@ -144,7 +144,7 @@ export default function CookiesPage() {
                 Para consultas sobre esta Política de Cookies:
               </p>
               <ul className="mt-2 ml-5 list-disc space-y-1">
-                <li>Correo: <a href="mailto:privacidad@yellow-erp.cl" className="text-monday-violet hover:text-monday-violet-hover">privacidad@yellow-erp.cl</a></li>
+                <li>Correo: <a href="mailto:privacidad@yellow-erp.cl" className="text-sunshine-ink hover:text-sunshine-ink-hover">privacidad@yellow-erp.cl</a></li>
                 <li>Dirección: Santiago, Chile</li>
               </ul>
             </section>

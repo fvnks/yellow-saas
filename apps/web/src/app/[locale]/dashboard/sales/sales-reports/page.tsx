@@ -105,7 +105,7 @@ export default function SalesReportsPage() {
  <p className="text-xs text-emerald-600 mt-1">${totalPaid.toLocaleString('es-CL')} cobrado</p>
  </div>
  <div className="w-12 h-12 bg-peach/30 rounded-xl flex items-center justify-center">
- <FileText className="w-6 h-6 text-monday-violet" />
+ <FileText className="w-6 h-6 text-sunshine-ink" />
  </div>
  </div>
  </div>

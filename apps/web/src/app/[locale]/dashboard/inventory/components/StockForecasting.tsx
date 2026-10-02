@@ -54,7 +54,7 @@ export default function StockForecasting() {
  const urgencyColor = (daysLeft: number | null) => {
  if (daysLeft === null) return 'text-muted-foreground';
  if (daysLeft <= 7) return 'text-red-600';
- if (daysLeft <= 14) return 'text-monday-violet';
+ if (daysLeft <= 14) return 'text-sunshine-ink';
  return 'text-emerald-600';
  };
 

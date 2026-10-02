@@ -28,7 +28,7 @@ export default function RestaurantLayout({ children }: LayoutProps) {
  <Separator orientation="vertical" className="h-4 bg-slate-200" />
  <div className="flex items-center gap-2">
  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-peach/30 text-[#c64d00] border border-peach">
- <UtensilsCrossed className="w-3.5 h-3.5 text-monday-violet" /> Restaurante POS
+ <UtensilsCrossed className="w-3.5 h-3.5 text-sunshine-ink" /> Restaurante POS
  </span>
  <RestaurantSidebarBreadcrumbs />
  </div>

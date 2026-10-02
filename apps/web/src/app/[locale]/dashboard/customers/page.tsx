@@ -138,7 +138,7 @@ export default function CustomersPage() {
  <p className="text-2xl font-bold text-foreground mt-1">{customers.filter(c => c.tax_exempt).length}</p>
  </div>
  <div className="w-10 h-10 bg-peach/30 rounded-xl flex items-center justify-center">
- <CreditCard className="w-5 h-5 text-monday-violet" />
+ <CreditCard className="w-5 h-5 text-sunshine-ink" />
  </div>
  </div>
  </CardContent>

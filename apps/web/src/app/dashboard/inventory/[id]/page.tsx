@@ -225,7 +225,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
  <p className="text-2xl font-bold text-foreground mt-1">${(product.cost_price || 0).toLocaleString('es-CL')}</p>
  </div>
  <div className="w-12 h-12 bg-peach/30 rounded-xl flex items-center justify-center">
- <BarChart3 className="w-6 h-6 text-monday-violet" />
+ <BarChart3 className="w-6 h-6 text-sunshine-ink" />
  </div>
  </div>
  </div>

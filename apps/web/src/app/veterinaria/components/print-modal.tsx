@@ -55,11 +55,11 @@ export default function PrintModal({ isOpen, onClose, html, title, message }: Pr
  )}
  {html && (
  <>
- <button onClick={handlePrint} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-monday-violet hover:bg-monday-violet-hover rounded-xl transition-colors">
+ <button onClick={handlePrint} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-sunshine hover:bg-sunshine-hover rounded-xl transition-colors">
  <Printer className="w-4 h-4" />
  Imprimir
  </button>
- <button onClick={handlePrint} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-monday-violet hover:bg-monday-violet-hover text-ink rounded-xl transition-colors">
+ <button onClick={handlePrint} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-sunshine hover:bg-sunshine-hover text-ink rounded-xl transition-colors">
  <Download className="w-4 h-4" />
  PDF
  </button>

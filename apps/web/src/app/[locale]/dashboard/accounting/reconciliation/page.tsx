@@ -214,7 +214,7 @@ export default function ReconciliationPage() {
  <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
  <div className="flex items-center gap-3">
  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${variance === 0 ? "bg-emerald-50" : "bg-peach/30"}`}>
- <AlertCircle className={`w-5 h-5 ${variance === 0 ? "text-emerald-600" : "text-monday-violet"}`} />
+ <AlertCircle className={`w-5 h-5 ${variance === 0 ? "text-emerald-600" : "text-sunshine-ink"}`} />
  </div>
  <div>
  <p className="text-xs text-slate-500">Diferencia</p>
@@ -231,7 +231,7 @@ export default function ReconciliationPage() {
  <button
  onClick={syncFintoc}
  disabled={syncingFintoc || !selectedAccount}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
  >
  {syncingFintoc ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
  Sincronizar Fintoc Bank
@@ -239,7 +239,7 @@ export default function ReconciliationPage() {
  <button
  onClick={loadStatement}
  disabled={loading || !selectedAccount}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-medium px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
  >
  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
  Cargar Estado
@@ -248,7 +248,7 @@ export default function ReconciliationPage() {
  <button
  onClick={createSession}
  disabled={!selectedAccount || refreshing}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-semibold px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
  >
  <Plus className="w-4 h-4" />
  Nueva Sesión
@@ -257,7 +257,7 @@ export default function ReconciliationPage() {
  <button
  onClick={autoMatch}
  disabled={refreshing || matches.length > 0}
- className="bg-monday-violet hover:bg-monday-violet-hover text-white font-medium px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+ className="bg-sunshine hover:bg-sunshine-hover text-white font-medium px-4 py-2 rounded-xl text-sm transition-all duration-150 active:scale-[0.98] shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
  >
  {refreshing ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowUpDown className="w-4 h-4" />}
  Auto-Conciliar
@@ -272,7 +272,7 @@ export default function ReconciliationPage() {
  <select
  value={selectedAccount}
  onChange={e => setSelectedAccount(e.target.value)}
- className="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-monday-violet focus:border-transparent"
+ className="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sunshine-dark focus:border-transparent"
  >
  <option value="">Seleccionar cuenta...</option>
  {accounts.map(acc => (
@@ -286,7 +286,7 @@ export default function ReconciliationPage() {
  type="month"
  value={period}
  onChange={e => setPeriod(e.target.value)}
- className="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-monday-violet focus:border-transparent"
+ className="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sunshine-dark focus:border-transparent"
  />
  </div>
  <div className="flex items-end">
@@ -313,9 +313,9 @@ export default function ReconciliationPage() {
  {activeSession && (
  <div className="mt-4 p-4 bg-peach/30 border border-peach rounded-xl">
  <div className="flex items-center gap-2">
- <AlertCircle className="w-5 h-5 text-monday-violet" />
+ <AlertCircle className="w-5 h-5 text-sunshine-ink" />
  <span className="text-sm font-medium text-[#c64d00]">Sesión activa: {activeSession.statementPeriod}</span>
- <span className="text-xs text-monday-violet ml-auto">{matchedCount}/{statementLines.length} conciliados</span>
+ <span className="text-xs text-sunshine-ink ml-auto">{matchedCount}/{statementLines.length} conciliados</span>
  </div>
  </div>
  )}

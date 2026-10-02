@@ -59,10 +59,10 @@ export default function TecnicosPage() {
  {/* Header */}
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
- <h1 className="text-2xl font-black text-monday-violet">Técnicos</h1>
+ <h1 className="text-2xl font-black text-sunshine-ink">Técnicos</h1>
  <p className="text-sm text-slate-500 mt-1">{technicians.length} técnicos registrados</p>
  </div>
- <button className="bg-monday-violet hover:bg-monday-violet-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]">
+ <button className="bg-sunshine hover:bg-sunshine-hover text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]">
  <Plus className="w-4 h-4" />
  Nuevo Técnico
  </button>
@@ -107,7 +107,7 @@ export default function TecnicosPage() {
  <Users className="w-6 h-6 text-orange-500" />
  </div>
  <div>
- <p className="text-lg font-black text-monday-violet">{tech.full_name}</p>
+ <p className="text-lg font-black text-sunshine-ink">{tech.full_name}</p>
  <p className="text-xs text-slate-500">{tech.specialization}</p>
  </div>
  </div>

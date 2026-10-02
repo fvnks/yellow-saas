@@ -9,7 +9,7 @@ export default function TermsPage() {
       <nav className="fixed top-0 inset-x-0 bg-snow/80 backdrop-blur-xl border-b border-mist z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-9 h-9 bg-monday-violet rounded-xl flex items-center justify-center">
+            <div className="w-9 h-9 bg-sunshine rounded-xl flex items-center justify-center">
               <Building2 className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-bold text-ink">Yellow ERP</span>
@@ -24,7 +24,7 @@ export default function TermsPage() {
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-periwinkle/30 rounded-xl flex items-center justify-center">
-              <FileText className="w-5 h-5 text-monday-violet" />
+              <FileText className="w-5 h-5 text-sunshine-ink" />
             </div>
             <h1 className="text-3xl font-bold text-ink">Términos y Condiciones</h1>
           </div>
