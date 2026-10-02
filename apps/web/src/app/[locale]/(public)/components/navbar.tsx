@@ -36,9 +36,14 @@ export function Navbar() {
  <a
  key={link.label}
  href={link.href}
- className="text-sm font-medium text-slate-text hover:text-ink transition-colors duration-150"
+ className="group relative -mx-3 rounded-full px-3 py-2 text-sm font-medium text-slate-text transition-colors duration-150 hover:bg-cloud hover:text-ink"
  >
  {link.label}
+ {/* Underline de acento que crece desde la izquierda */}
+ <span
+ aria-hidden="true"
+ className="pointer-events-none absolute inset-x-3 bottom-1.5 h-px origin-left scale-x-0 rounded-full bg-monday-violet transition-transform duration-200 ease-out group-hover:scale-x-100"
+ />
  </a>
  ))}
  </nav>
@@ -47,7 +52,7 @@ export function Navbar() {
  <div className="hidden md:flex items-center gap-3">
  <Link
  href="/login"
- className="text-sm font-medium text-slate-text hover:text-ink transition-colors duration-150 px-4 py-2"
+ className="-mx-4 rounded-full px-4 py-2 text-sm font-medium text-slate-text transition-colors duration-150 hover:bg-cloud hover:text-ink"
  >
  Iniciar Sesión
  </Link>
@@ -83,7 +88,7 @@ export function Navbar() {
  <a
  key={link.label}
  href={link.href}
- className="block text-sm font-medium text-ink hover:text-ink/70 py-1"
+ className="-mx-3 block rounded-full px-3 py-2 text-sm font-medium text-ink transition-colors duration-150 hover:bg-cloud"
  onClick={() => setMobileOpen(false)}
  >
  {link.label}
@@ -92,7 +97,7 @@ export function Navbar() {
  <div className="pt-3 border-t border-mist space-y-2">
  <Link
  href="/login"
- className="block text-sm font-medium text-ink py-2 text-center rounded-md border border-mist"
+ className="block text-sm font-medium text-ink py-2 text-center rounded-md border border-mist transition-colors duration-150 hover:bg-cloud"
  onClick={() => setMobileOpen(false)}
  >
  Iniciar Sesión
