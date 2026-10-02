@@ -57,7 +57,8 @@ function LoginForm() {
       }
 
       const maxAge = remember ? 7 * 24 * 60 * 60 : undefined;
-      document.cookie = `auth-token=${data.data.token}; path=/; max-age=${maxAge}; httpOnly; secure; sameSite=lax`;
+      const isSecure = window.location.protocol === 'https:';
+      document.cookie = `auth-token=${data.data.token}; path=/; max-age=${maxAge}; httpOnly; ${isSecure ? 'secure;' : ''} sameSite=lax`;
       localStorage.setItem('yellow_last_access', new Date().toISOString());
 
       const roleType = data.data.user?.role_type;
