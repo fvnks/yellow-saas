@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
 import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight,
 X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail, Sparkles, TrendingUp, ShieldCheck, DollarSign, Building, UtensilsCrossed, Stethoscope, Shield, Car } from 'lucide-react';
-import { getAuthToken } from '@/lib/auth-token';
+import { getAuthToken, setAuthToken, clearAuthToken } from '@/lib/auth-token';
 import { getApiClient } from '@/lib/api-client';
 import { getChileanIndicators, ChileanIndicators } from '@/lib/indicators';
 import {
@@ -225,7 +225,7 @@ async function switchCompany(token: string, companyId: string): Promise<string |
 }
 
 function logout() {
- document.cookie = 'auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+ clearAuthToken();
  window.location.href = '/login';
 }
 
@@ -331,7 +331,7 @@ export default function SelectPage() {
  if (!token) return;
  const newToken = await switchCompany(token, companyId);
  if (newToken) {
- document.cookie = `auth-token=${newToken}; path=/; max-age=604800; SameSite=Lax`;
+ setAuthToken(newToken, 604800);
  window.location.reload();
  }
  };

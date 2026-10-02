@@ -70,7 +70,7 @@ export default function ProjectSidebarFooterMenu({ user }: ProjectSidebarFooterM
  </DropdownMenuItem>
  <DropdownMenuSeparator className="bg-cloud" />
  <DropdownMenuItem
- onClick={() => { document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'; window.location.href = '/login'; }}
+ onClick={() => { document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'; try { localStorage.removeItem('auth-token'); } catch {} window.location.href = '/login'; }}
  className="text-rose-400 cursor-pointer focus:text-rose-300 focus:bg-rose-500/10 text-xs rounded-lg font-semibold"
  >
  <LogOut className="mr-2 h-4 w-4" />

@@ -72,7 +72,7 @@ export default function SidebarFooterMenu({ user }: SidebarFooterMenuProps) {
  </DropdownMenuItem>
  <DropdownMenuSeparator className="bg-mist" />
  <DropdownMenuItem
- onClick={() => { document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'; window.location.href = '/login'; }}
+ onClick={() => { document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'; try { localStorage.removeItem('auth-token'); } catch {} window.location.href = '/login'; }}
  className="text-[#c64d00] cursor-pointer focus:text-[#c64d00] focus:bg-peach/30 text-xs rounded-lg font-semibold"
  >
  <LogOut className="mr-2 h-4 w-4" />

@@ -7,6 +7,7 @@ import { motion, type Variants } from 'motion/react';
 import { Eye, EyeOff, Building2, Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import AuthPanel from '@/components/auth/AuthPanel';
+import { setAuthToken } from '@/lib/auth-token';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -57,8 +58,7 @@ function LoginForm() {
       }
 
       const maxAge = remember ? 7 * 24 * 60 * 60 : undefined;
-      const isSecure = window.location.protocol === 'https:';
-      document.cookie = `auth-token=${data.data.token}; path=/; max-age=${maxAge}; httpOnly; ${isSecure ? 'secure;' : ''} sameSite=lax`;
+      setAuthToken(data.data.token, maxAge);
       localStorage.setItem('yellow_last_access', new Date().toISOString());
 
       const roleType = data.data.user?.role_type;
