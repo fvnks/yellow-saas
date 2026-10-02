@@ -295,17 +295,37 @@ export default function HomePage() {
  </p>
  </div>
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
- {modules.map((mod) => (
- <div
+ {modules.map((mod, i) => (
+ <motion.div
  key={mod.title}
- className="bg-snow border border-mist rounded-3xl p-5 shadow-card hover:border-fog transition-colors"
+ initial={reduce ? false : { opacity: 0, y: 18 }}
+ whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+ whileHover={reduce ? undefined : { y: -4 }}
+ viewport={{ once: true, margin: '-40px' }}
+ transition={{ type: 'spring', damping: 24, stiffness: 170, delay: (i % 4) * 0.06 }}
+ className="group relative flex flex-col overflow-hidden rounded-3xl border border-mist bg-snow p-5 shadow-card transition-[border-color,box-shadow] duration-300 hover:border-fog hover:shadow-card-hover"
  >
- <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 ${mod.iconBg}`}>
- <mod.icon className={`w-5 h-5 ${mod.iconColor}`} />
+ {/* Hairline de acento: crece desde la izquierda al hover */}
+ <span
+ aria-hidden="true"
+ className={`absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100 ${mod.iconColor} bg-current`}
+ />
+ {/* Wash del color del módulo en la esquina superior derecha */}
+ <span
+ aria-hidden="true"
+ className={`pointer-events-none absolute -right-12 -top-14 h-32 w-32 rounded-full opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-70 ${mod.iconBg}`}
+ />
+ <div className="relative mb-4 flex items-start justify-between gap-3">
+ <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ring-1 ring-inset ring-black/5 ${mod.iconBg}`}>
+ <mod.icon className={`h-5 w-5 ${mod.iconColor}`} />
+ </span>
+ <span className="font-mono text-[11px] font-medium tabular-nums text-iron/70 transition-colors duration-300 group-hover:text-ink">
+ {String(i + 1).padStart(2, '0')}
+ </span>
  </div>
- <h3 className="text-sm font-semibold text-ink mb-1.5">{mod.title}</h3>
- <p className="text-xs text-slate-text leading-relaxed">{mod.description}</p>
- </div>
+ <h3 className="relative mb-1.5 text-sm font-semibold tracking-[-0.01em] text-ink">{mod.title}</h3>
+ <p className="relative text-[13px] leading-[1.6] text-slate-text">{mod.description}</p>
+ </motion.div>
  ))}
  </div>
  </div>
@@ -323,17 +343,35 @@ export default function HomePage() {
  </p>
  </div>
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
- {features.map((feature) => (
- <div
+ {features.map((feature, i) => (
+ <motion.div
  key={feature.title}
- className="bg-snow border border-mist rounded-3xl p-6 shadow-card hover:border-fog transition-colors"
+ initial={reduce ? false : { opacity: 0, y: 18 }}
+ whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+ whileHover={reduce ? undefined : { y: -4 }}
+ viewport={{ once: true, margin: '-40px' }}
+ transition={{ type: 'spring', damping: 24, stiffness: 170, delay: (i % 3) * 0.06 }}
+ className="group relative flex flex-col overflow-hidden rounded-3xl border border-mist bg-snow p-6 shadow-card transition-[border-color,box-shadow] duration-300 hover:border-fog hover:shadow-card-hover"
  >
- <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 ${feature.iconBg}`}>
- <feature.icon className={`w-5 h-5 ${feature.iconColor}`} />
+ <span
+ aria-hidden="true"
+ className={`absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100 ${feature.iconColor} bg-current`}
+ />
+ <span
+ aria-hidden="true"
+ className={`pointer-events-none absolute -right-12 -top-14 h-32 w-32 rounded-full opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-70 ${feature.iconBg}`}
+ />
+ <div className="relative mb-4 flex items-start justify-between gap-3">
+ <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ring-1 ring-inset ring-black/5 ${feature.iconBg}`}>
+ <feature.icon className={`h-5 w-5 ${feature.iconColor}`} />
+ </span>
+ <span className="font-mono text-[11px] font-medium tabular-nums text-iron/70 transition-colors duration-300 group-hover:text-ink">
+ {String(i + 1).padStart(2, '0')}
+ </span>
  </div>
- <h3 className="text-sm font-semibold text-ink mb-1.5">{feature.title}</h3>
- <p className="text-xs text-slate-text leading-relaxed">{feature.description}</p>
- </div>
+ <h3 className="relative mb-1.5 text-sm font-semibold tracking-[-0.01em] text-ink">{feature.title}</h3>
+ <p className="relative text-[13px] leading-[1.6] text-slate-text">{feature.description}</p>
+ </motion.div>
  ))}
  </div>
  </div>
