@@ -43,6 +43,8 @@ function setSecurityHeaders(response: NextResponse) {
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  // next-intl usa prefijo de locale (ej: /es/dashboard); normalizar para los checks de auth
+  const authPath = pathname.replace(/^\/(es|en)(?=\/|$)/, '') || '/';
 
   // ── API routes: skip next-intl entirely ──
   // next-intl rewrites /api/* → /es/api/* which causes 404s on all API routes.
@@ -110,9 +112,9 @@ export async function middleware(request: NextRequest) {
   if (isLocalDev) return response;
 
   const publicPaths = ['/', '/login', '/register', '/auth/callback', '/forgot-password', '/reset-password'];
-  if (publicPaths.some(path => pathname === path)) return response;
+  if (publicPaths.some(path => authPath === path)) return response;
 
-  if (pathname === '/super-admin/login') {
+  if (authPath === '/super-admin/login') {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
@@ -136,14 +138,14 @@ export async function middleware(request: NextRequest) {
 
   const roleType = payload.role_type as string | undefined;
 
-  if (pathname.startsWith('/admin') || pathname.startsWith('/super-admin')) {
+  if (authPath.startsWith('/admin') || authPath.startsWith('/super-admin')) {
     if (roleType !== 'super_admin') {
       return NextResponse.redirect(new URL('/login', request.url));
     }
     return response;
   }
 
-  if (pathname.startsWith('/dashboard')) {
+  if (authPath.startsWith('/dashboard')) {
     if (roleType === 'super_admin') {
       return NextResponse.redirect(new URL('/admin', request.url));
     }

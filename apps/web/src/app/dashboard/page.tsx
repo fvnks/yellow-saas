@@ -7,6 +7,7 @@ import {
  Receipt, ArrowRight, ShieldCheck, Zap
 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { getApiClient } from '@/lib/api-client';
 import { formatCLP } from '@/lib/format';
 import {
@@ -51,16 +52,23 @@ const kpiStyles = [
 ];
 
 export default function DashboardPage() {
+ const router = useRouter();
  const [loading, setLoading] = useState(true);
  const [data, setData] = useState<any>(null);
 
  useEffect(() => {
- const api = getApiClient();
+ let api;
+ try {
+ api = getApiClient();
+ } catch {
+ router.push('/select');
+ return;
+ }
  api.getDashboard()
  .then(res => setData(res))
  .catch(() => {})
  .finally(() => setLoading(false));
- }, []);
+ }, [router]);
 
  if (loading) {
  return (
