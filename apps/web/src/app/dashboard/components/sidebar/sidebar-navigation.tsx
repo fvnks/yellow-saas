@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { usePathname } from "next/navigation";
 import { ChevronRight, ChevronDown, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/animate-ui/primitives/radix/collapsible";
 import {
  SidebarMenu,
  SidebarMenuButton,
