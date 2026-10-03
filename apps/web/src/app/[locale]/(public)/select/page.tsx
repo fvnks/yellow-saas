@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight,
 X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail, Sparkles, TrendingUp, ShieldCheck, DollarSign, Building, UtensilsCrossed, Stethoscope, Shield, Car } from 'lucide-react';
 import { getAuthToken, setAuthToken, clearAuthToken } from '@/lib/auth-token';
+import { SiteLiquidButton } from '@/components/landing/SiteLiquidButton';
 import { getApiClient } from '@/lib/api-client';
 import { getChileanIndicators, ChileanIndicators } from '@/lib/indicators';
 import {
@@ -612,26 +613,19 @@ export default function SelectPage() {
  </p>
  </div>
  <div className="px-6 pb-6 flex gap-3">
- <button
- onClick={() => setModalOpen(false)}
- className="flex-1 bg-snow border border-mist hover:bg-cloud text-slate-text px-4 py-2.5 rounded-[160px] text-xs font-bold transition-all duration-150"
- >
- Cancelar
- </button>
- <button
- onClick={handleActivate}
- disabled={activating}
- className="flex-1 bg-sunshine hover:bg-sunshine-hover text-white px-4 py-2.5 rounded-[160px] text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all duration-150 active:scale-[0.98] disabled:opacity-50"
- >
- {activating ? (
- <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
- ) : (
- <>
- <Zap className="w-4 h-4 fill-white" />
- Activar Ahora
- </>
- )}
- </button>
+ <SiteLiquidButton variant="secondary" className="flex-1 py-2.5 text-xs" onClick={() => setModalOpen(false)}>
+Cancelar
+</SiteLiquidButton>
+ <SiteLiquidButton variant="primary" className="flex-1 py-2.5 text-xs" onClick={handleActivate} disabled={activating}>
+{activating ? (
+<div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+) : (
+<>
+<Zap className="w-4 h-4 fill-white" />
+Activar Ahora
+</>
+)}
+</SiteLiquidButton>
  </div>
  </motion.div>
  </motion.div>

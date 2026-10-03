@@ -7,6 +7,7 @@ import { motion, type Variants } from 'motion/react';
 import { Eye, EyeOff, Building2, Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import AuthPanel from '@/components/auth/AuthPanel';
+import { SiteLiquidButton } from '@/components/landing/SiteLiquidButton';
 import { setAuthToken } from '@/lib/auth-token';
 
 const containerVariants: Variants = {
@@ -191,14 +192,11 @@ function LoginForm() {
 
             {/* Sign in Button */}
             <motion.div variants={itemVariants} className="mt-2">
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full rounded-[160px] bg-sunshine hover:bg-sunshine-hover text-white py-3 text-[14px] font-medium transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
-              >
+              <SiteLiquidButton type="submit" disabled={loading} variant="primary" className="w-full py-3 text-[14px]">
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 {loading ? t('signingIn') : t('signIn')}
-              </button>
+              
+</SiteLiquidButton>
             </motion.div>
           </form>
 

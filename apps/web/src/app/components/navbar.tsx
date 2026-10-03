@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { Menu, X, ChevronRight } from 'lucide-react';
+import { SiteLiquidButton } from '@/components/landing/SiteLiquidButton';
 import { cn } from '@/lib/utils';
 
 const navLinks = [
@@ -52,13 +53,12 @@ export function Navbar() {
  >
  Iniciar Sesi�n
  </Link>
- <Link
- href="/es/register"
- className="rounded-[160px] bg-sunshine hover:bg-sunshine-hover text-ink px-5 py-2.5 text-sm font-medium shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center gap-1.5"
- >
+ <SiteLiquidButton href="/es/register" variant="primary" className="px-5 py-2.5">
+
  <span>Comenzar Ahora</span>
  <ChevronRight className="w-4 h-4" />
- </Link>
+ 
+</SiteLiquidButton>
  </div>
 
  {/* Mobile toggle */}
@@ -98,13 +98,9 @@ export function Navbar() {
  >
  Iniciar Sesi�n
  </Link>
- <Link
- href="/es/register"
- className="block rounded-[160px] bg-sunshine hover:bg-sunshine-hover px-4 py-2.5 text-sm font-medium text-ink text-center shadow-sm"
- onClick={() => setMobileOpen(false)}
- >
- Comenzar Ahora
- </Link>
+<SiteLiquidButton href="/es/register" variant="primary" className="px-4 py-2.5 text-center" onClick={() => setMobileOpen(false)}>
+Comenzar Ahora
+</SiteLiquidButton>
  </div>
  </div>
  </div>

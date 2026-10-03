@@ -3,6 +3,7 @@
 import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { SiteLiquidButton } from '@/components/landing/SiteLiquidButton';
 import { motion, type Variants } from 'motion/react';
 import { ArrowLeft, Building2, Lock, Eye, EyeOff, AlertCircle, Loader2, CheckCircle2 } from 'lucide-react';
 import AuthPanel from '@/components/auth/AuthPanel';
@@ -203,14 +204,11 @@ function ResetPasswordForm() {
 
  {/* Submit */}
  <motion.div variants={itemVariants} className="mt-2">
- <button
- type="submit"
- disabled={loading}
- className="w-full rounded-lg bg-primary hover:bg-primary/90 py-3 text-[14px] font-medium text-white transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
- >
+ <SiteLiquidButton type="submit" disabled={loading} variant="primary" className="w-full py-3 text-[14px]">
  {loading && <Loader2 className="w-4 h-4 animate-spin" />}
  {loading ? 'Guardando...' : 'Restablecer contraseña'}
- </button>
+ 
+</SiteLiquidButton>
  </motion.div>
  </form>
  </>
@@ -232,12 +230,9 @@ function ResetPasswordForm() {
  <p className="text-[15px] text-muted-foreground text-balance">
  Tu contraseña fue restablecida correctamente. Ahora puedes iniciar sesión con tu nueva contraseña.
  </p>
- <button
- onClick={() => router.push('/login')}
- className="mt-8 w-full rounded-lg bg-primary hover:bg-primary/90 text-white px-4 py-3 text-sm font-medium transition-all duration-150 active:scale-[0.98]"
- >
- Ir a Iniciar Sesión
- </button>
+ <SiteLiquidButton href="/login" variant="primary" className="w-full py-3 text-sm">
+Ir a Iniciar Sesión
+</SiteLiquidButton>
  </motion.div>
  </>
  )}

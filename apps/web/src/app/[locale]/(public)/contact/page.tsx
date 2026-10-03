@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Building2, ArrowLeft, Send, Mail, MapPin, Phone, MessageSquare, CheckCircle } from 'lucide-react';
+import { SiteLiquidButton } from '@/components/landing/SiteLiquidButton';
 
 export default function ContactPage() {
  const [sent, setSent] = useState(false);
@@ -211,11 +212,7 @@ export default function ContactPage() {
  </p>
  )}
 
- <button
- type="submit"
- disabled={submitting}
- className="w-full bg-primary hover:bg-primary/90 text-white px-4 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
- >
+ <SiteLiquidButton type="submit" disabled={submitting} variant="primary" className="w-full px-4 py-2.5 text-sm">
  {submitting ? (
  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
  ) : (
@@ -224,7 +221,8 @@ export default function ContactPage() {
  Enviar mensaje
  </>
  )}
- </button>
+ 
+</SiteLiquidButton>
 
  <p className="text-[10px] text-muted-foreground text-center">
  Al enviar aceptas nuestra{' '}

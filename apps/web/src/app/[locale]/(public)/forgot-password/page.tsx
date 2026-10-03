@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion, type Variants } from 'motion/react';
 import { ArrowLeft, Building2, Mail, AlertCircle, Loader2, CheckCircle2, Lock } from 'lucide-react';
 import AuthPanel from '@/components/auth/AuthPanel';
+import { SiteLiquidButton } from '@/components/landing/SiteLiquidButton';
 
 function ForgotPasswordForm() {
  const [email, setEmail] = useState('');
@@ -138,14 +139,11 @@ function ForgotPasswordForm() {
 
  {/* Submit */}
  <motion.div variants={itemVariants} className="mt-2">
- <button
- type="submit"
- disabled={loading}
- className="w-full rounded-[160px] bg-sunshine hover:bg-sunshine-hover py-3 text-[14px] font-medium text-white transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
- >
+ <SiteLiquidButton type="submit" disabled={loading} variant="primary" className="w-full py-3 text-[14px]">
  {loading && <Loader2 className="w-4 h-4 animate-spin" />}
  {loading ? 'Enviando...' : 'Enviar instrucciones'}
- </button>
+ 
+</SiteLiquidButton>
  </motion.div>
  </form>
  </>

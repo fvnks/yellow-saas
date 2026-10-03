@@ -18,6 +18,7 @@ import { FaqAccordion } from '@/components/landing/FaqAccordion';
 
 import { ComplianceCard } from '@/components/landing/ComplianceCard';
 import { Navbar } from './components/navbar';
+import { SiteLiquidButton } from '@/components/landing/SiteLiquidButton';
 
 const modules = [
  { icon: Package, title: 'Inventario', description: 'Control completo de stock, trazabilidad por lote y serie, alertas de reorden automáticas.', iconBg: 'bg-sky-accent/30', iconColor: 'text-[#006680]' },
@@ -198,20 +199,14 @@ export default function HomePage() {
  transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0.12 }}
  className="flex flex-col sm:flex-row items-start gap-3"
  >
- <Link
- href="/register"
- className="w-full sm:w-auto rounded-[160px] bg-sunshine hover:bg-sunshine-hover text-white px-8 py-3.5 text-sm font-medium shadow-md transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2"
- >
- <Plus className="w-4 h-4" />
- Comenzar Ahora
- </Link>
- <Link
- href="#demo"
- className="w-full sm:w-auto rounded-[160px] border border-mist bg-snow hover:bg-cloud text-ink px-8 py-3.5 text-sm font-medium transition-all duration-150 flex items-center justify-center gap-2"
- >
- <span>Ver Demo Interactiva</span>
- <ArrowRight className="w-4 h-4 text-slate-text" />
- </Link>
+ <SiteLiquidButton href="/register" variant="primary" className="w-full sm:w-auto">
+<Plus className="w-4 h-4" />
+Comenzar Ahora
+</SiteLiquidButton>
+ <SiteLiquidButton href="#demo" variant="secondary" className="w-full sm:w-auto">
+<span>Ver Demo Interactiva</span>
+<ArrowRight className="w-4 h-4 text-slate-text" />
+</SiteLiquidButton>
  </motion.div>
 
  {/* Live trust counters */}
@@ -424,16 +419,9 @@ export default function HomePage() {
  ))}
  </ul>
  </div>
- <Link
- href="/register"
- className={`block w-full text-center rounded-[160px] py-3 text-sm font-medium transition-all duration-200 active:scale-[0.98] ${
- plan.popular
- ? 'bg-sunshine text-white hover:bg-sunshine-hover shadow-sm'
- : 'bg-snow border border-mist hover:bg-cloud text-ink'
- }`}
- >
- {plan.cta}
- </Link>
+ <SiteLiquidButton href="/register" variant={plan.popular ? 'primary' : 'secondary'} className="w-full py-3">
+{plan.cta}
+</SiteLiquidButton>
  </div>
  ))}
  </div>
@@ -469,19 +457,13 @@ export default function HomePage() {
  Únete a las más de 250 PyMEs en Chile que ahorran tiempo y automatizan sus procesos con Yellow ERP.
  </p>
  <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
- <Link
- href="/register"
- className="w-full sm:w-auto rounded-[160px] bg-sunshine hover:bg-sunshine-hover text-white px-8 py-3.5 text-sm font-medium shadow-md transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2"
- >
- <span>Comenzar Ahora</span>
- <ChevronRight className="w-4 h-4" />
- </Link>
- <Link
- href="mailto:hola@yellow-erp.cl"
- className="w-full sm:w-auto rounded-[160px] border border-mist bg-snow hover:bg-cloud text-ink px-8 py-3.5 text-sm font-medium transition-all duration-150"
- >
- Agendar Demo Personalizada
- </Link>
+ <SiteLiquidButton href="/register" variant="primary" className="w-full sm:w-auto">
+<span>Comenzar Ahora</span>
+<ChevronRight className="w-4 h-4" />
+</SiteLiquidButton>
+ <SiteLiquidButton href="mailto:hola@yellow-erp.cl" variant="secondary" className="w-full sm:w-auto">
+Agendar Demo Personalizada
+</SiteLiquidButton>
  </div>
  </div>
  </div>
@@ -616,20 +598,21 @@ export default function HomePage() {
  {contactError}
  </p>
  )}
- <button
- type="submit"
- disabled={contactSubmitting}
- className="w-full bg-sunshine hover:bg-sunshine-hover text-white px-6 py-3.5 rounded-[160px] text-sm font-semibold flex items-center justify-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm disabled:opacity-60"
- >
- {contactSubmitting ? (
- <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
- ) : (
- <>
- <Send className="w-4 h-4" />
- Enviar mensaje
- </>
- )}
- </button>
+ <SiteLiquidButton
+type="submit"
+variant="primary"
+disabled={contactSubmitting}
+className="w-full px-6"
+>
+{contactSubmitting ? (
+<div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+) : (
+<>
+<Send className="w-4 h-4" />
+Enviar mensaje
+</>
+)}
+</SiteLiquidButton>
  <p className="text-[10px] text-iron text-center">
  Al enviar aceptas nuestra{' '}
  <Link href="/privacy" className="text-sunshine-ink hover:text-sunshine-ink-hover underline underline-offset-2">Política de Privacidad</Link>.

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <title>Yellow ERP — Módulos (60s)</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        background: #1a1b1e;
+        color: #1a1b1e;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #f4f5f7;
+      }
+      .clip {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+      }
+      .scene {
+        width: 1400px;
+        text-align: left;
+      }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: #4a4d58;
+        margin: 0 0 24px 0;
+      }
+      .dot {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #f5c518;
+        display: inline-block;
+      }
+      h1 {
+        margin: 0;
+        font-size: 120px;
+        line-height: 1.05;
+        font-weight: 300;
+        letter-spacing: -2px;
+      }
+      h1 strong {
+        font-weight: 700;
+        color: #8a6100;
+      }
+      .sub {
+        margin: 32px 0 0 0;
+        font-size: 40px;
+        line-height: 1.4;
+        color: #4a4d58;
+        max-width: 1100px;
+      }
+      .count {
+        margin: 0 0 16px 0;
+        font-size: 32px;
+        font-weight: 700;
+        color: #8a6100;
+        letter-spacing: 2px;
+      }
+      .bar {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 12px;
+        width: 100%;
+        background: #d8dce6;
+      }
+      .bar > div {
+        height: 100%;
+        width: 100%;
+        background: #f5c518;
+        transform-origin: left center;
+      }
+      #preview-btn {
+        position: absolute;
+        right: 32px;
+        bottom: 40px;
+        z-index: 10;
+        font-size: 24px;
+        padding: 12px 28px;
+        border-radius: 999px;
+        border: none;
+        background: #1a1b1e;
+        color: #fff;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-xpy3" id="root" data-composition-id="yellow-erp-modulos" data-start="0" data-width="1920" data-height="1080" data-duration="60">
+      <section data-hf-id="hf-fc1z" id="scene-intro" class="clip" data-start="0" data-duration="6">
+        <div data-hf-id="hf-0w0h" class="scene" id="s00">
+          <p data-hf-id="hf-66o7" class="eyebrow"><span data-hf-id="hf-9gry" class="dot"></span>Yellow ERP · Hecho para PyMEs en Chile</p>
+          <h1 data-hf-id="hf-z5nm">El ERP que simplifica<br data-hf-id="hf-x5px"><strong data-hf-id="hf-z9ck">toda tu empresa</strong></h1>
+          <p data-hf-id="hf-4a5i" class="sub">Inventario, Ventas, Compras, Contabilidad y Nómina chilena en una sola plataforma.</p>
+        </div>
+      </section>
+      <section data-hf-id="hf-wzns" id="scene-inventario" class="clip" data-start="6" data-duration="6">
+        <div data-hf-id="hf-04co" class="scene" id="s01">
+          <p data-hf-id="hf-kbuq" class="count">01 / 08</p>
+          <h1 data-hf-id="hf-41v5">Inventario</h1>
+          <p data-hf-id="hf-u0ip" class="sub">Stock, bodegas y trazabilidad en tiempo real.</p>
+        </div>
+      </section>
+      <section data-hf-id="hf-g9c3" id="scene-ventas" class="clip" data-start="12" data-duration="6">
+        <div data-hf-id="hf-8s8j" class="scene" id="s02">
+          <p data-hf-id="hf-m5k9" class="count">02 / 08</p>
+          <h1 data-hf-id="hf-0z9l">Ventas</h1>
+          <p data-hf-id="hf-avyt" class="sub">Facturación electrónica SII integrada.</p>
+        </div>
+      </section>
+      <section data-hf-id="hf-y4pp" id="scene-compras" class="clip" data-start="18" data-duration="6">
+        <div data-hf-id="hf-4u4i" class="scene" id="s03">
+          <p data-hf-id="hf-jt2o" class="count">03 / 08</p>
+          <h1 data-hf-id="hf-0kxt">Compras</h1>
+          <p data-hf-id="hf-eocw" class="sub">Órdenes, recepción y gestión de proveedores.</p>
+        </div>
+      </section>
+      <section data-hf-id="hf-35b7" id="scene-crm" class="clip" data-start="24" data-duration="6">
+        <div data-hf-id="hf-m2et" class="scene" id="s04">
+          <p data-hf-id="hf-cuwv" class="count">04 / 08</p>
+          <h1 data-hf-id="hf-p6ai">CRM</h1>
+          <p data-hf-id="hf-g831" class="sub">Clientes y pipeline de ventas en un solo lugar.</p>
+        </div>
+      </section>
+      <section data-hf-id="hf-7jg0" id="scene-contabilidad" class="clip" data-start="30" data-duration="6">
+        <div data-hf-id="hf-lar0" class="scene" id="s05">
+          <p data-hf-id="hf-lyyu" class="count">05 / 08</p>
+          <h1 data-hf-id="hf-lc5s">Contabilidad</h1>
+          <p data-hf-id="hf-ofkb" class="sub">Asientos automáticos y balances al día.</p>
+        </div>
+      </section>
+      <section data-hf-id="hf-o8ag" id="scene-proyectos" class="clip" data-start="36" data-duration="6">
+        <div data-hf-id="hf-w68n" class="scene" id="s06">
+          <p data-hf-id="hf-buu5" class="count">06 / 08</p>
+          <h1 data-hf-id="hf-phze">Proyectos</h1>
+          <p data-hf-id="hf-380c" class="sub">Presupuestos, hitos y avance de obra.</p>
+        </div>
+      </section>
+      <section data-hf-id="hf-9vn5" id="scene-nomina" class="clip" data-start="42" data-duration="6">
+        <div data-hf-id="hf-q0iu" class="scene" id="s07">
+          <p data-hf-id="hf-0750" class="count">07 / 08</p>
+          <h1 data-hf-id="hf-nb9u">Nómina</h1>
+          <p data-hf-id="hf-vezr" class="sub">AFP, ISAPRE y Previred automáticos.</p>
+        </div>
+      </section>
+      <section data-hf-id="hf-6j9y" id="scene-costos" class="clip" data-start="48" data-duration="6">
+        <div data-hf-id="hf-9gex" class="scene" id="s08">
+          <p data-hf-id="hf-62xv" class="count">08 / 08</p>
+          <h1 data-hf-id="hf-qdp1">Costos</h1>
+          <p data-hf-id="hf-ko0o" class="sub">Costeo FIFO y márgenes por producto.</p>
+        </div>
+      </section>
+      <section data-hf-id="hf-wuy6" id="scene-cierre" class="clip" data-start="54" data-duration="6">
+        <div data-hf-id="hf-8or4" class="scene" id="s09">
+          <p data-hf-id="hf-3udl" class="eyebrow"><span data-hf-id="hf-zcc2" class="dot"></span>Yellow ERP</p>
+          <h1 data-hf-id="hf-g2an">Toma el control<br data-hf-id="hf-rsrt"><strong data-hf-id="hf-5kr1">hoy mismo</strong></h1>
+          <p data-hf-id="hf-frpk" class="sub">Contáctanos para una demo personalizada.</p>
+        </div>
+      </section>
+      <div data-hf-id="hf-ufsv" class="bar"><div data-hf-id="hf-o6ww" id="progress"></div></div>
+      <button data-hf-id="hf-2boz" id="preview-btn" type="button">Reproducir vista previa</button>
+    </div>
+    <script>
+      var tl = gsap.timeline({ paused: true });
+      var scenes = ["#s00","#s01","#s02","#s03","#s04","#s05","#s06","#s07","#s08","#s09"];
+      scenes.forEach(function (sel, i) {
+        var t = i * 6;
+        tl.fromTo(sel, { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" }, t + 0.15);
+      });
+      tl.fromTo("#progress", { scaleX: 0 }, { scaleX: 1, duration: 60, ease: "none" }, 0);
+      window.__timelines["yellow-erp-modulos"] = tl;
+      document.getElementById("preview-btn").addEventListener("click", function () {
+        tl.play(0);
+      });
+    </script>
+  </body>
+</html>

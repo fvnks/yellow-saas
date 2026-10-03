@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Building2, Eye, EyeOff, AlertCircle, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { motion, type Variants } from 'motion/react';
-import { Button, Input } from '@yellow-erp/ui';
+import { Input } from '@yellow-erp/ui';
+import { SiteLiquidButton } from '@/components/landing/SiteLiquidButton';
 import AuthPanel from '@/components/auth/AuthPanel';
 
 function PasswordStrength({ password }: { password: string }) {
@@ -174,14 +175,10 @@ function RegisterForm() {
  <p className="text-slate-text mt-3 text-sm">
  Tu cuenta fue creada exitosamente. Ahora puedes iniciar sesión con tu correo y contraseña.
  </p>
- <motion.button
- whileTap={{ scale: 0.98 }}
- onClick={() => router.push('/login')}
- className="mt-8 w-full rounded-[160px] bg-sunshine hover:bg-sunshine-hover text-white px-4 py-3 text-sm font-medium transition-all shadow-sm flex items-center justify-center gap-2"
- >
- <ShieldCheck className="w-4 h-4" />
- Ir a Iniciar Sesión
- </motion.button>
+ <SiteLiquidButton href="/login" variant="primary" className="mt-8 w-full py-3 text-sm">
+<ShieldCheck className="w-4 h-4" />
+Ir a Iniciar Sesión
+</SiteLiquidButton>
  </motion.div>
  </div>
  );
@@ -363,9 +360,9 @@ function RegisterForm() {
  </motion.div>
 
  <motion.div variants={itemVariants}>
- <Button type="submit" className="w-full shadow-sm" loading={loading}>
- Crear Cuenta Gratuita
- </Button>
+ <SiteLiquidButton type="submit" variant="primary" className="w-full py-3 text-sm">
+{loading ? 'Creando cuenta...' : 'Crear Cuenta'}
+</SiteLiquidButton>
  </motion.div>
  </form>
 

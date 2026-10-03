@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Navbar } from '@/app/components/navbar';
 import { Footer } from '@/app/components/footer';
+import { SiteLiquidButton } from '@/components/landing/SiteLiquidButton';
 
 const modules = [
   { icon: Package, title: 'Inventario', desc: 'Stock, bodegas y trazabilidad en tiempo real.' },
@@ -138,20 +139,14 @@ export default function HomePage() {
               transition={{ duration: 0.5, delay: 0.15 }}
               className="flex flex-col sm:flex-row items-start gap-3"
             >
-              <Link
-                href="/es/register"
-                className="w-full sm:w-auto rounded-[160px] bg-sunshine hover:bg-sunshine-hover text-ink px-8 py-3.5 text-sm font-semibold transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2 shadow-sm"
-              >
+              <SiteLiquidButton href="/es/register" variant="primary" className="w-full sm:w-auto">
                 Comenzar Ahora — 14 Días
                 <ChevronRight className="w-4 h-4" />
-              </Link>
-              <Link
-                href="#modules"
-                className="w-full sm:w-auto rounded-[160px] border border-mist bg-snow hover:bg-cloud text-ink px-8 py-3.5 text-sm font-medium transition-all duration-150 flex items-center justify-center gap-2"
-              >
+              </SiteLiquidButton>
+              <SiteLiquidButton href="#modules" variant="secondary" className="w-full sm:w-auto">
                 Explorar Módulos
                 <ArrowRight className="w-4 h-4 text-slate-text" />
-              </Link>
+              </SiteLiquidButton>
             </motion.div>
 
             <motion.div
@@ -355,16 +350,13 @@ export default function HomePage() {
                     </li>
                   ))}
                 </ul>
-                <Link
+                <SiteLiquidButton
                   href="/es/register"
-                  className={`block w-full text-center rounded-[160px] py-3 text-sm font-medium transition-all duration-200 active:scale-[0.98] ${
-                    plan.popular
-                      ? 'bg-sunshine text-ink hover:bg-sunshine-hover shadow-sm'
-                      : 'bg-cloud border border-mist hover:bg-snow text-ink'
-                  }`}
+                  variant={plan.popular ? 'primary' : 'secondary'}
+                  className="w-full py-3"
                 >
                   {plan.cta}
-                </Link>
+                </SiteLiquidButton>
               </div>
             ))}
           </div>
@@ -382,19 +374,13 @@ export default function HomePage() {
               Únete a las más de 250 PyMEs en Chile que ahorran tiempo y automatizan sus procesos con Yellow ERP.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="/es/register"
-                className="w-full sm:w-auto rounded-[160px] bg-sunshine hover:bg-sunshine-hover text-ink px-8 py-3.5 text-sm font-semibold transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2 shadow-sm"
-              >
+              <SiteLiquidButton href="/es/register" variant="primary" className="w-full sm:w-auto">
                 Comenzar Ahora
                 <ChevronRight className="w-4 h-4" />
-              </Link>
-              <Link
-                href="mailto:hola@yellow-erp.cl"
-                className="w-full sm:w-auto rounded-[160px] border border-mist bg-snow hover:bg-cloud text-ink px-8 py-3.5 text-sm font-medium transition-all duration-150"
-              >
+              </SiteLiquidButton>
+              <SiteLiquidButton href="mailto:hola@yellow-erp.cl" variant="secondary" className="w-full sm:w-auto">
                 Agendar Demo
-              </Link>
+              </SiteLiquidButton>
             </div>
           </div>
         </div>
@@ -512,10 +498,11 @@ export default function HomePage() {
                         placeholder="Cuéntanos en qué podemos ayudarte..."
                       />
                     </div>
-                    <button
+                    <SiteLiquidButton
                       type="submit"
+                      variant="primary"
                       disabled={contactSubmitting}
-                      className="w-full bg-sunshine hover:bg-sunshine-hover text-ink px-6 py-3.5 rounded-[160px] text-sm font-semibold flex items-center justify-center gap-2 transition-all duration-150 active:scale-[0.98] shadow-sm disabled:opacity-60"
+                      className="w-full px-6"
                     >
                       {contactSubmitting ? (
                         <div className="w-4 h-4 border-2 border-ink/30 border-t-ink rounded-full animate-spin" />
@@ -525,7 +512,7 @@ export default function HomePage() {
                           Enviar mensaje
                         </>
                       )}
-                    </button>
+                    </SiteLiquidButton>
                     <p className="text-[10px] text-iron text-center">
                       Al enviar aceptas nuestra{' '}
                       <Link href="/es/privacy" className="text-sunshine-dark hover:text-sunshine-hover underline underline-offset-2">Política de Privacidad</Link>.
