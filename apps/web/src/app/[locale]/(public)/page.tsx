@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useReducedMotion } from 'motion/react';
-import { motion } from 'motion/react';
+import { useReducedMotion, motion } from 'motion/react';
 import {
  Package, ShoppingCart, Users, BarChart3, Shield,
  Truck, Calculator, Briefcase, ChevronRight, Check, Zap,
@@ -15,7 +14,6 @@ import { PricingToggle } from '@/components/landing/PricingToggle';
 import { StatsCounter } from '@/components/landing/StatsCounter';
 import { InteractiveDTEPipeline } from '@/components/landing/InteractiveDTEPipeline';
 import { FaqAccordion } from '@/components/landing/FaqAccordion';
-
 import { ComplianceCard } from '@/components/landing/ComplianceCard';
 import { Navbar } from './components/navbar';
 import { SiteLiquidButton } from '@/components/landing/SiteLiquidButton';
@@ -54,6 +52,7 @@ const pricingPlans = [
  'Soporte estándar por email',
  ],
  cta: 'Comenzar Ahora',
+ ctaHref: '/register',
  popular: false,
  },
  {
@@ -70,6 +69,7 @@ const pricingPlans = [
  'Soporte prioritario 24/7',
  ],
  cta: 'Comenzar Ahora',
+ ctaHref: '/register',
  popular: true,
  },
  {
@@ -86,6 +86,7 @@ const pricingPlans = [
  'Account Manager dedicado',
  ],
  cta: 'Contactar a Ventas',
+ ctaHref: '#contacto',
  popular: false,
  },
 ];
@@ -154,9 +155,16 @@ export default function HomePage() {
  };
  return (
  <div className="landing-page min-h-screen bg-cloud text-ink">
+ <a
+ href="#contenido"
+ className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[60] focus:bg-snow focus:text-ink focus:text-sm focus:font-semibold focus:px-4 focus:py-2 focus:rounded-lg focus:border focus:border-sunshine-dark focus:shadow-card"
+ >
+ Saltar al contenido principal
+ </a>
  {/* ─── 1. NAVBAR ─── */}
  <Navbar />
 
+ <main id="contenido" tabIndex={-1} className="focus:outline-none">
  {/* ─── 2. HERO ─── */}
  <section className="relative pt-20 pb-16 lg:pt-24 lg:pb-20 overflow-hidden bg-gradient-to-b from-snow via-snow to-cloud">
  <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
@@ -295,7 +303,7 @@ Comenzar Ahora
  <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ring-1 ring-inset ring-black/5 ${mod.iconBg}`}>
  <mod.icon className={`h-5 w-5 ${mod.iconColor}`} />
  </span>
- <span className="font-mono text-[11px] font-medium tabular-nums text-iron/70 transition-colors duration-300 group-hover:text-ink">
+ <span className="font-mono text-[11px] font-medium tabular-nums text-slate-text transition-colors duration-300 group-hover:text-ink">
  {String(i + 1).padStart(2, '0')}
  </span>
  </div>
@@ -341,7 +349,7 @@ Comenzar Ahora
  <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ring-1 ring-inset ring-black/5 ${feature.iconBg}`}>
  <feature.icon className={`h-5 w-5 ${feature.iconColor}`} />
  </span>
- <span className="font-mono text-[11px] font-medium tabular-nums text-iron/70 transition-colors duration-300 group-hover:text-ink">
+ <span className="font-mono text-[11px] font-medium tabular-nums text-slate-text transition-colors duration-300 group-hover:text-ink">
  {String(i + 1).padStart(2, '0')}
  </span>
  </div>
@@ -419,7 +427,7 @@ Comenzar Ahora
  ))}
  </ul>
  </div>
- <SiteLiquidButton href="/register" variant={plan.popular ? 'primary' : 'secondary'} className="w-full py-3">
+ <SiteLiquidButton href={plan.ctaHref} variant={plan.popular ? 'primary' : 'secondary'} className="w-full py-3">
 {plan.cta}
 </SiteLiquidButton>
  </div>
@@ -491,7 +499,7 @@ Agendar Demo Personalizada
  <Mail className="w-4 h-4" />
  </div>
  <div>
- <p className="text-xs font-semibold text-iron uppercase tracking-wider">Email</p>
+ <p className="text-xs font-semibold text-slate-text uppercase tracking-wider">Email</p>
  <a href="mailto:hola@yellow-erp.cl" className="text-sm font-medium text-ink hover:text-sunshine-ink transition-colors">hola@yellow-erp.cl</a>
  </div>
  </div>
@@ -500,7 +508,7 @@ Agendar Demo Personalizada
  <Phone className="w-4 h-4" />
  </div>
  <div>
- <p className="text-xs font-semibold text-iron uppercase tracking-wider">Teléfono</p>
+ <p className="text-xs font-semibold text-slate-text uppercase tracking-wider">Teléfono</p>
  <p className="text-sm font-medium text-ink">+56 9 1234 5678</p>
  </div>
  </div>
@@ -509,7 +517,7 @@ Agendar Demo Personalizada
  <MapPin className="w-4 h-4" />
  </div>
  <div>
- <p className="text-xs font-semibold text-iron uppercase tracking-wider">Ubicación</p>
+ <p className="text-xs font-semibold text-slate-text uppercase tracking-wider">Ubicación</p>
  <p className="text-sm font-medium text-ink">Santiago, Chile</p>
  </div>
  </div>
@@ -550,10 +558,13 @@ Agendar Demo Personalizada
  <form onSubmit={handleContactSubmit} className="space-y-5">
  <div className="grid gap-5 sm:grid-cols-2">
  <div className="space-y-1.5">
- <label className="block text-xs font-semibold text-ink">Nombre *</label>
+ <label htmlFor="contact-nombre" className="block text-xs font-semibold text-ink">Nombre *</label>
  <input
+ id="contact-nombre"
+ name="name"
  type="text"
  required
+ autoComplete="name"
  value={contactForm.name}
  onChange={e => setContactForm({ ...contactForm, name: e.target.value })}
  className="w-full bg-cloud border border-mist rounded-md px-4 py-3 text-sm text-ink placeholder-iron focus:outline-none focus:ring-2 focus:ring-sunshine-dark/20 focus:border-sunshine-dark transition-all"
@@ -561,10 +572,13 @@ Agendar Demo Personalizada
  />
  </div>
  <div className="space-y-1.5">
- <label className="block text-xs font-semibold text-ink">Correo electrónico *</label>
+ <label htmlFor="contact-email" className="block text-xs font-semibold text-ink">Correo electrónico *</label>
  <input
+ id="contact-email"
+ name="email"
  type="email"
  required
+ autoComplete="email"
  value={contactForm.email}
  onChange={e => setContactForm({ ...contactForm, email: e.target.value })}
  className="w-full bg-cloud border border-mist rounded-md px-4 py-3 text-sm text-ink placeholder-iron focus:outline-none focus:ring-2 focus:ring-sunshine-dark/20 focus:border-sunshine-dark transition-all"
@@ -573,8 +587,10 @@ Agendar Demo Personalizada
  </div>
  </div>
  <div className="space-y-1.5">
- <label className="block text-xs font-semibold text-ink">Mensaje *</label>
+ <label htmlFor="contact-mensaje" className="block text-xs font-semibold text-ink">Mensaje *</label>
  <textarea
+ id="contact-mensaje"
+ name="message"
  required
  rows={5}
  value={contactForm.message}
@@ -613,7 +629,7 @@ Enviar mensaje
 </>
 )}
 </SiteLiquidButton>
- <p className="text-[10px] text-iron text-center">
+ <p className="text-[10px] text-slate-text text-center">
  Al enviar aceptas nuestra{' '}
  <Link href="/privacy" className="text-sunshine-ink hover:text-sunshine-ink-hover underline underline-offset-2">Política de Privacidad</Link>.
  </p>
@@ -624,6 +640,7 @@ Enviar mensaje
  </div>
  </div>
  </section>
+ </main>
 
  {/* ─── 12. FOOTER WITH CHILEAN RESOURCES ─── */}
  <footer className="bg-snow border-t border-mist">
@@ -641,7 +658,7 @@ Enviar mensaje
  </p>
  </div>
  <div>
- <h4 className="text-xs font-semibold text-iron uppercase tracking-wider mb-3">Módulos</h4>
+ <h4 className="text-xs font-semibold text-slate-text uppercase tracking-wider mb-3">Módulos</h4>
  <ul className="space-y-2 text-sm text-slate-text">
  <li><Link href="/#modules" className="hover:text-sunshine-ink transition-colors">Inventario</Link></li>
  <li><Link href="/#modules" className="hover:text-sunshine-ink transition-colors">Ventas & DTE</Link></li>
@@ -652,7 +669,7 @@ Enviar mensaje
  </ul>
  </div>
  <div>
- <h4 className="text-xs font-semibold text-iron uppercase tracking-wider mb-3">Empresa</h4>
+ <h4 className="text-xs font-semibold text-slate-text uppercase tracking-wider mb-3">Empresa</h4>
  <ul className="space-y-2 text-sm text-slate-text">
  <li><Link href="/#pricing" className="hover:text-sunshine-ink transition-colors">Precios</Link></li>
  <li><Link href="/contact" className="hover:text-sunshine-ink transition-colors">Demo personalizada</Link></li>
@@ -661,7 +678,7 @@ Enviar mensaje
  </ul>
  </div>
  <div>
- <h4 className="text-xs font-semibold text-iron uppercase tracking-wider mb-3">Recursos Chile</h4>
+ <h4 className="text-xs font-semibold text-slate-text uppercase tracking-wider mb-3">Recursos Chile</h4>
  <ul className="space-y-2 text-sm text-slate-text">
  <li><a href="https://www.sii.cl" target="_blank" rel="noopener noreferrer" className="hover:text-sunshine-ink transition-colors">Portal SII</a></li>
  <li><a href="https://www.sii.cl/valores_y_fechas/uf/uf.htm" target="_blank" rel="noopener noreferrer" className="hover:text-sunshine-ink transition-colors">UF Hoy</a></li>
@@ -672,10 +689,10 @@ Enviar mensaje
  </div>
  </div>
  <div className="border-t border-mist pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
- <p className="text-xs text-iron">
+ <p className="text-xs text-slate-text">
  © {new Date().getFullYear()} Yellow ERP. Todos los derechos reservados.
  </p>
- <div className="flex items-center gap-6 text-xs text-iron">
+ <div className="flex items-center gap-6 text-xs text-slate-text">
  <Link href="/privacy" className="hover:text-sunshine-ink transition-colors">Privacidad</Link>
  <Link href="/terms" className="hover:text-sunshine-ink transition-colors">Términos</Link>
  <Link href="/cookies" className="hover:text-sunshine-ink transition-colors">Cookies</Link>

@@ -31,7 +31,7 @@ export function InteractiveDTEPipeline() {
         <div className='flex items-center gap-2'>
           <Layers className='w-5 h-5 text-sunshine-ink' />
           <div>
-            <h3 className='text-sm font-bold text-ink'>Ciclo DTE en Tiempo Real</h3>
+            <h2 className='text-sm font-bold text-ink'>Ciclo DTE en Tiempo Real</h2>
             <p className='text-[10px] text-slate-text'>Procesamiento automático SII con timbrado</p>
           </div>
         </div>
@@ -54,7 +54,7 @@ export function InteractiveDTEPipeline() {
             {/* Stamp/Status indicators overlay */}
             <div className='absolute top-4 right-4'>
               {step === 1 && (
-                <span className='px-2 py-0.5 rounded-md text-[9px] font-bold bg-iron/20 text-iron uppercase tracking-wider'>
+                <span className='px-2 py-0.5 rounded-md text-[9px] font-bold bg-iron/20 text-slate-text uppercase tracking-wider'>
                   1. Borrador
                 </span>
               )}
@@ -82,7 +82,7 @@ export function InteractiveDTEPipeline() {
               </div>
               <div className='text-left'>
                 <p className='text-xs font-bold text-ink'>FACTURA ELECTRÓNICA</p>
-                <p className='text-[10px] text-iron font-mono'>Folio: N° {step >= 2 ? '41029' : '---'}</p>
+                <p className='text-[10px] text-slate-text font-mono'>Folio: N° {step >= 2 ? '41029' : '---'}</p>
               </div>
             </div>
 
@@ -151,19 +151,20 @@ export function InteractiveDTEPipeline() {
           return (
             <button
               key={s.id}
+              type="button"
               onClick={() => setStep(s.id)}
               className='flex flex-col items-center gap-1.5 focus:outline-none transition-transform active:scale-95'
             >
-              <div className={'w-8 h-8 rounded-full border flex items-center justify-center text-xs font-bold transition-all duration-300 ' + (
+              <span className={'w-8 h-8 rounded-full border flex items-center justify-center text-xs font-bold transition-all duration-300 ' + (
                 isActive 
                   ? 'bg-sunshine text-white border-sunshine-dark shadow-sm scale-110' 
                   : isDone 
                     ? 'bg-mint/30 text-forest border-mint/50' 
-                    : 'bg-cloud text-iron border-mist'
+                    : 'bg-cloud text-slate-text border-mist'
               )}>
                 {isDone ? <Check className='w-4 h-4' /> : s.id}
-              </div>
-              <span className={'text-[9px] font-bold uppercase transition-colors ' + (isActive ? 'text-sunshine-ink' : 'text-iron')}>
+              </span>
+              <span className={'text-[9px] font-bold uppercase transition-colors ' + (isActive ? 'text-sunshine-ink' : 'text-slate-text')}>
                 {s.label}
               </span>
             </button>

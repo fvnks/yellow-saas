@@ -30,12 +30,13 @@ export function FaqAccordion({ items, className }: FaqAccordionProps) {
           )}
         >
           <button
+            type="button"
             onClick={() => setOpenIndex(openIndex === index ? null : index)}
             aria-expanded={openIndex === index}
             aria-controls={`faq-panel-${index}`}
             className="flex items-center justify-between w-full p-5 text-left cursor-pointer"
           >
-            <div className="flex items-center gap-3">
+            <span className="flex items-center gap-3">
               <HelpCircle className={cn(
                 'w-5 h-5 flex-shrink-0 transition-colors',
                 openIndex === index ? 'text-sunshine-dark' : 'text-iron'
@@ -43,7 +44,7 @@ export function FaqAccordion({ items, className }: FaqAccordionProps) {
               <span className="text-sm font-semibold text-ink">
                 {item.question}
               </span>
-            </div>
+            </span>
             <ChevronDown
               className={cn(
                 'w-5 h-5 text-iron transition-transform duration-300 flex-shrink-0',
@@ -56,13 +57,15 @@ export function FaqAccordion({ items, className }: FaqAccordionProps) {
             role="region"
             aria-label={item.question}
             className={cn(
-              'overflow-hidden transition-all duration-300',
-              openIndex === index ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
+              'grid transition-all duration-300',
+              openIndex === index ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
             )}
           >
-            <p className="px-5 pb-5 pl-12 text-sm text-slate-text leading-relaxed">
-              {item.answer}
-            </p>
+            <div className="overflow-hidden min-h-0">
+              <p className="px-5 pb-5 pl-12 text-sm text-slate-text leading-relaxed">
+                {item.answer}
+              </p>
+            </div>
           </div>
         </div>
       ))}

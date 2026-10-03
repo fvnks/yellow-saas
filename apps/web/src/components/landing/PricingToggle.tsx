@@ -25,14 +25,21 @@ export function PricingToggle({ monthlyLabel = 'Mensual', yearlyLabel = 'Anual',
         {monthlyLabel}
       </span>
       <button
+        type="button"
         onClick={handleToggle}
         aria-pressed={isYearly}
+        aria-label={
+          isYearly
+            ? `${monthlyLabel}: cambiar a facturación mensual`
+            : `${yearlyLabel}: cambiar a facturación anual con 20% de descuento`
+        }
         className={cn(
           'relative w-12 h-6 rounded-full cursor-pointer transition-colors duration-300',
           isYearly ? 'bg-sunshine' : 'bg-mist'
         )}
       >
-        <div
+        <span
+          aria-hidden="true"
           className={cn(
             'absolute top-0.5 w-5 h-5 rounded-full bg-snow shadow-sm transition-transform duration-300',
             isYearly ? 'translate-x-[26px]' : 'translate-x-0.5'
@@ -41,7 +48,7 @@ export function PricingToggle({ monthlyLabel = 'Mensual', yearlyLabel = 'Anual',
       </button>
       <span className={cn('text-sm font-medium transition-colors', isYearly ? 'text-ink' : 'text-slate-text')}>
         {yearlyLabel}
-        <span className="ml-1.5 inline-flex items-center rounded-full bg-sunshine/20 border border-sunshine/50 px-2 py-0.5 text-[10px] font-semibold text-sunshine-dark ">
+        <span className="ml-1.5 inline-flex items-center rounded-full bg-sunshine/20 border border-sunshine/50 px-2 py-0.5 text-[10px] font-semibold text-sunshine-ink ">
           -20%
         </span>
       </span>
