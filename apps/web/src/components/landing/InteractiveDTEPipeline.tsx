@@ -97,15 +97,15 @@ export function InteractiveDTEPipeline() {
               </div>
               <div className='flex justify-between'>
                 <span className='text-slate-text'>Monto Neto:</span>
-                <span className='font-medium text-ink'>.000 CLP</span>
+                <span className='font-medium text-ink'>$1.000.000</span>
               </div>
               <div className='flex justify-between border-b border-mist pb-1.5'>
                 <span className='text-slate-text'>IVA (19%):</span>
-                <span className='font-medium text-ink'>.600 CLP</span>
+                <span className='font-medium text-ink'>$190.000</span>
               </div>
               <div className='flex justify-between text-xs font-bold pt-0.5'>
                 <span className='text-ink'>Total DTE:</span>
-                <span className='text-sunshine-ink'>.600 CLP</span>
+                <span className='text-sunshine-ink'>$1.190.000</span>
               </div>
             </div>
 

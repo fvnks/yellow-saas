@@ -99,7 +99,7 @@ const faqItems = [
  },
  {
  question: '¿Puedo probarlo sin tarjeta de crédito?',
- answer: 'Sí. Contáctanos para acceder a todos los módulos del plan Professional. Al terminar, decides si contratas o simplemente dejas de usarlo.',
+ answer: 'Sí. Crear tu cuenta no requiere tarjeta de crédito. Puedes recorrer la demo interactiva de arriba para ver el flujo DTE completo, y si quieres evaluarlo con tus propios datos, contáctanos y te acompañamos en la carga inicial.',
  },
  {
  question: '¿Puedo importar mis datos desde otro sistema?',
@@ -275,7 +275,7 @@ Comenzar Ahora
  Flujo de datos que conecta tu empresa
  </h2>
  <p className="text-sm sm:text-base text-slate-text max-w-2xl mx-auto">
- Cada módulo alimenta al siguiente. Ventas genera asientos contables, Contabilidad calcula nómina, Nómina actualiza inventario, Proyectos cierra el ciclo.
+ Cada módulo alimenta al siguiente. Ventas genera asientos contables, Nómina alimenta la contabilidad, Inventario actualiza costos, Proyectos cierra el ciclo.
  </p>
  </div>
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
