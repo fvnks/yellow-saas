@@ -218,7 +218,12 @@ export default function SidebarBreadcrumbs() {
  const [resolvedNames, setResolvedNames] = useState<Record<string, string>>({});
 
  useEffect(() => {
- const api = getApiClient();
+ try {
+ getApiClient();
+ } catch {
+ setResolvedNames({});
+ return;
+ }
  const uuidSegments = segments.filter((s) => isUUID(s));
  if (uuidSegments.length === 0) {
  setResolvedNames({});

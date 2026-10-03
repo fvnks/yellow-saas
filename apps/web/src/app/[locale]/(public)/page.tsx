@@ -11,7 +11,6 @@ import {
  Wallet, Bell, Send, Mail, MapPin, Phone, CheckCircle2,
  Plus
 } from 'lucide-react';
-import { Marquee } from '@/components/landing/Marquee';
 import { PricingToggle } from '@/components/landing/PricingToggle';
 import { StatsCounter } from '@/components/landing/StatsCounter';
 import { InteractiveDTEPipeline } from '@/components/landing/InteractiveDTEPipeline';
@@ -90,10 +89,6 @@ const pricingPlans = [
  },
 ];
 
-const logos = [
- 'SII Chile', 'Supabase', 'Next.js 14', 'TypeScript', 'Tailwind CSS', 'PostgreSQL',
- 'Turborepo', 'Vercel', 'Docker', 'Redis', 'Lucide React', 'Motion',
-];
 
 const faqItems = [
  {
@@ -211,7 +206,7 @@ export default function HomePage() {
  Comenzar Ahora
  </Link>
  <Link
- href="#modules"
+ href="#demo"
  className="w-full sm:w-auto rounded-[160px] border border-mist bg-snow hover:bg-cloud text-ink px-8 py-3.5 text-sm font-medium transition-all duration-150 flex items-center justify-center gap-2"
  >
  <span>Ver Demo Interactiva</span>
@@ -246,6 +241,7 @@ export default function HomePage() {
 
  {/* Right: Interactive DTE Pipeline */}
  <motion.div
+  id="demo"
  initial={reduce ? false : { opacity: 0, x: 32, scale: 0.94 }}
  animate={reduce ? { opacity: 1 } : { opacity: 1, x: 0, scale: 1 }}
  transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0.1 }}
@@ -266,22 +262,7 @@ export default function HomePage() {
  </div>
  </section>
 
- {/* ─── 4. LOGOS / MARQUEE ─── */}
- <section className="py-10 bg-cloud border-b border-mist">
- <p className="text-center text-[11px] font-semibold uppercase tracking-wider text-iron mb-5 px-4">
- Construido sobre tecnología probada
- </p>
- <Marquee speed={25} className="py-1">
- {logos.map((logo) => (
- <div
- key={logo}
- className="flex items-center justify-center px-6 py-2 text-xs font-bold text-iron hover:text-ink transition-colors whitespace-nowrap bg-snow border border-mist rounded-md mx-2 shadow-xs"
- >
- {logo}
- </div>
- ))}
- </Marquee>
- </section>
+
 
  {/* ─── 5. MODULE FLOW ─── */}
  <section id="modules" className="py-20 px-4 sm:px-6 bg-cloud">
