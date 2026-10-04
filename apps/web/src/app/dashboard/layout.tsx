@@ -2,14 +2,16 @@
 
 import { ReactNode, useEffect, useState } from "react";
 import { Toaster } from "sonner";
-import { AppSidebar } from "@/app/dashboard/components/sidebar/app-sidebar";
+import { UnifiedSidebar } from '@/components/sidebar/UnifiedSidebar';
+import { sidebarItems } from '@/navigation/sidebar/sidebar-items';
+import { getCompanyIdFromToken } from '@/lib/api-client';
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/animate-ui/components/radix/sidebar';
 import SidebarBreadcrumbs from "./components/sidebar/sidebar-breadcrumbs";
 import NotificationsDropdown from "./components/NotificationsDropdown";
 import LocaleSwitcher from "@/components/i18n/LocaleSwitcher";
 import { getChileanIndicators, ChileanIndicators } from "@/lib/indicators";
-import { TrendingUp, ShieldCheck, DollarSign } from "lucide-react";
+import { TrendingUp, ShieldCheck, DollarSign, LayoutDashboard } from "lucide-react";
 import { useTranslations } from 'next-intl';
 
 interface LayoutProps {
@@ -44,7 +46,16 @@ export default function DashboardLayout({ children }: LayoutProps) {
  <main className="bg-cloud min-h-screen text-ink transition-colors">
  <Toaster position="top-right" richColors closeButton />
  <SidebarProvider>
- <AppSidebar />
+ <UnifiedSidebar
+   sidebarItems={sidebarItems}
+   moduleKey="dashboard"
+   moduleTitle="ERP"
+   moduleSubtitle="Ventas, Bodega & Finanzas"
+   moduleIcon={LayoutDashboard}
+   theme="default"
+   filterByActiveModules={true}
+   getCompanyId={getCompanyIdFromToken}
+ />
  <SidebarInset className="bg-cloud">
  <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between border-b border-mist bg-snow/90 backdrop-blur-xl px-6">
  <div className="flex items-center gap-3">
