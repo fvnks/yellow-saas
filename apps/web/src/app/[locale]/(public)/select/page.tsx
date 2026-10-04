@@ -558,7 +558,7 @@ export default function SelectPage() {
  </p>
  </motion.div>
 
- <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+ <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
  {modules.map((mod, i) => {
  const Icon = mod.icon;
  const activated = isModuleActivated(mod);
@@ -569,50 +569,48 @@ export default function SelectPage() {
  animate={{ opacity: 1, y: 0 }}
  transition={{ duration: 0.2, delay: 0.04 * i }}
  onClick={() => handleModuleClick(mod)}
- className="group bg-snow border border-mist rounded-3xl p-6 text-left transition-all duration-200 hover:shadow-card-hover hover:border-fog active:scale-[0.99] flex flex-col justify-between"
+ whileHover={{ y: -2 }}
+ whileTap={{ scale: 0.98 }}
+ className="group relative w-full text-left bg-snow border border-mist rounded-xl p-5 transition-all duration-200 hover:border-[#2563EB]/40 hover:shadow-md hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2563EB] focus-visible:ring-offset-2 focus-visible:ring-offset-snow"
  >
- <div>
- <div className="flex items-center justify-between mb-4">
- <div className={`w-12 h-12 ${mod.iconBg} rounded-2xl flex items-center justify-center shrink-0 border transition-transform duration-200 group-hover:scale-105 shadow-xs`}>
- <Icon className={`w-6 h-6 ${mod.iconColor}`} />
+ <div className="flex flex-col gap-4">
+ <div className="flex items-start justify-between gap-3">
+ <div className={`w-11 h-11 shrink-0 rounded-xl bg-slate-100 border border-mist/60 flex items-center justify-center transition-colors duration-200 group-hover:bg-[#2563EB]/10`}>
+ <Icon className={`w-5 h-5 ${mod.iconColor}`} />
  </div>
- {activated ? (
- <div className="w-8 h-8 rounded-full bg-cloud flex items-center justify-center group-hover:bg-sunshine group-hover:text-ink transition-colors duration-200">
- <ArrowRight className="w-4 h-4 text-iron group-hover:text-white transition-colors" />
+ <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold border tracking-wide ${
+ activated
+ ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
+ : 'bg-amber-100 text-amber-700 border-amber-200'
+ }`}>
+ {activated ? '● Activo' : 'Requiere activación'}
+ </span>
  </div>
- ) : (
- <div className="w-8 h-8 rounded-full bg-cloud flex items-center justify-center">
- <Lock className="w-4 h-4 text-iron" />
- </div>
- )}
- </div>
- 
- <div className="flex items-center gap-2 mb-1">
- <h3 className="text-base font-black text-ink">{mod.title}</h3>
- <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[9px] font-bold border ${mod.accentBadge}`}>
+
+ <div className="space-y-0.5">
+ <h3 className="text-base font-bold text-ink tracking-tight group-hover:text-[#2563EB] transition-colors duration-200">
+ {mod.title}
+ </h3>
+ <p className="text-xs text-slate-text font-medium">
  {mod.subtitle}
- </span>
+ </p>
  </div>
 
- <div className="flex flex-wrap gap-1.5 mt-4">
- {mod.description.map((item, j) => (
- <span
- key={j}
- className="inline-flex items-center px-2.5 py-1 bg-cloud text-slate-text text-[10px] font-semibold rounded-md border border-mist/60"
- >
- {item}
- </span>
- ))}
- </div>
- </div>
+ <p className="text-xs text-slate-text leading-relaxed">
+ {mod.description.join(' · ')}
+ </p>
 
- <div className="mt-6 pt-3 border-t border-mist/50 flex items-center justify-between text-[10px]">
- <span className={activated ? 'text-forest font-bold' : 'text-iron font-medium'}>
- {activated ? '● Módulo Activo' : '🔒 Requiere Activación'}
+ <div className="mt-auto pt-3 border-t border-mist/60 flex items-center justify-between">
+ <span className={`text-[10px] font-bold uppercase tracking-wide ${
+ activated ? 'text-emerald-600' : 'text-amber-600'
+ }`}>
+ {activated ? 'Módulo activo' : 'Activa para continuar'}
  </span>
- <span className="text-ink font-bold group-hover:text-sunshine-ink transition-colors">
- Ingresar &rarr;
+ <span className="inline-flex items-center gap-1 text-xs font-bold text-[#2563EB] opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+ Ingresar
+ <ArrowRight className="w-3.5 h-3.5" />
  </span>
+ </div>
  </div>
  </motion.button>
  );
