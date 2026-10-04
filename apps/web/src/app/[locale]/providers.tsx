@@ -4,6 +4,7 @@ import { ReactNode, useEffect } from 'react';
 import { ThemeProvider } from '@/components/ui/theme-toggle';
 import { PermissionsProvider } from '@/lib/permissions';
 import { syncAuthCookie } from '@/lib/auth-token';
+import { CookieConsent } from '@/components/cookie-consent/CookieConsent';
 
 export default function Providers({ children }: { children: ReactNode }) {
   // Mantiene la cookie `auth-token` sincronizada con localStorage:
@@ -19,6 +20,7 @@ export default function Providers({ children }: { children: ReactNode }) {
     <ThemeProvider>
       <PermissionsProvider>
         {children}
+        <CookieConsent />
       </PermissionsProvider>
     </ThemeProvider>
   );

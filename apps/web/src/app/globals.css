@@ -223,6 +223,9 @@ h1.text-xl.font-bold.text-foreground {
       linear-gradient(to bottom, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
     background-size: 48px 48px;
   }
+  .shadow-xl-2 {
+    box-shadow: 0 8px 24px rgba(50,51,56,0.12);
+  }
 }
 
 /* ============================================
