@@ -1,12 +1,5 @@
 const API_BASE = '/api';
 
-function getTokenFromCookie(): string | null {
-  if (typeof window === 'undefined') return null;
-  const cookies = document.cookie.split(';');
-  const authCookie = cookies.find(c => c.trim().startsWith('auth-token='));
-  return authCookie ? authCookie.split('=')[1] : null;
-}
-
 function parseJwt(token: string): { company_id?: string } | null {
   try {
     const base64Url = token.split('.')[1];
@@ -23,8 +16,12 @@ function parseJwt(token: string): { company_id?: string } | null {
   }
 }
 
+import { getAuthToken } from './auth-token';
+
 export function getCompanyIdFromToken(): string | null {
-  const token = getTokenFromCookie();
+  // Use getAuthToken which reads from localStorage first (source of truth)
+  // then falls back to cookie. This avoids the stale HttpOnly cookie issue.
+  const token = getAuthToken();
   if (!token) return null;
   const payload = parseJwt(token);
   return payload?.company_id || null;
@@ -1385,7 +1382,7 @@ async deleteAdjustmentReason(id: string) {
     if (description) formData.append('description', description);
 
     const url = `${API_BASE}/companies/${this.companyId}/projects/${projectId}/documents/upload`;
-    const token = getTokenFromCookie();
+    const token = getAuthToken();
     const response = await fetch(url, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
@@ -1885,7 +1882,7 @@ async deleteAdjustmentReason(id: string) {
 
   // Auth - Multi-company
   async getAuthCompanies() {
-    const token = getTokenFromCookie();
+    const token = getAuthToken();
     const response = await fetch(`${API_BASE}/auth/companies`, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -1895,7 +1892,7 @@ async deleteAdjustmentReason(id: string) {
   }
 
   async switchCompany(companyId: string) {
-    const token = getTokenFromCookie();
+    const token = getAuthToken();
     const response = await fetch(`${API_BASE}/auth/switch-company`, {
       method: 'POST',
       headers: {
@@ -1966,7 +1963,7 @@ async deleteAdjustmentReason(id: string) {
 
   async importReceivedDocumentsBulk(formData: FormData) {
     const url = `${API_BASE}/companies/${this.companyId}/received-documents/import`;
-    const token = getTokenFromCookie();
+    const token = getAuthToken();
     const response = await fetch(url, {
       method: 'POST',
       credentials: 'include',

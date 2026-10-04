@@ -61,8 +61,9 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
 
   const hasPermission = useCallback(
     (module: string, action: string) => {
-      if (loading) return false;
       if (isOwner) return true;
+      // While loading, be permissive (show items) rather than hiding them
+      if (loading) return true;
       return permissions.some((p) => p.module === module && p.action === action);
     },
     [permissions, isOwner, loading]
@@ -70,8 +71,8 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
 
   const hasAnyPermission = useCallback(
     (module: string) => {
-      if (loading) return false;
       if (isOwner) return true;
+      if (loading) return true;
       return permissions.some((p) => p.module === module);
     },
     [permissions, isOwner, loading]
