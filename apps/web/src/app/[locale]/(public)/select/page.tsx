@@ -318,6 +318,11 @@ export default function SelectPage() {
  return activatedModules.has(mod.moduleName);
  }, [activatedModules, user?.role_type]);
 
+ const isSuperAdmin = user?.role_type === 'super_admin';
+ const visibleModules = isSuperAdmin
+   ? modules.filter((m) => m.id === 'mi-cuenta' || m.id === 'ayuda')
+   : modules;
+
  const handleModuleClick = (mod: ModuleOption) => {
  if (isModuleActivated(mod)) {
  router.push(mod.href);
@@ -514,7 +519,7 @@ export default function SelectPage() {
  </motion.div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
- {modules.map((mod, i) => {
+ {visibleModules.map((mod, i) => {
  const Icon = mod.icon;
  const activated = isModuleActivated(mod);
  return (
