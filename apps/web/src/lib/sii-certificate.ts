@@ -1,5 +1,3 @@
-'use server';
-
 import { createHash, createSign, createVerify, randomBytes } from 'crypto';
 import { query } from '@/api/lib/db';
 
