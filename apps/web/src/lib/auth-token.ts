@@ -55,6 +55,29 @@ export function setAuthToken(token: string, maxAgeSeconds?: number): void {
 }
 
 /**
+ * Decodifica el payload de un JWT (base64url) sin verificar
+ * la firma — solo para lectura cliente (role, exp, company_id).
+ * `atob` no acepta los caracteres base64url (- y _), por lo
+ * que hay que normalizar a base64 estándar antes de decodificar.
+ */
+export function parseJwtPayload(token: string): Record<string, unknown> | null {
+  try {
+    const base64Url = token.split('.')[1];
+    if (!base64Url) return null;
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const json = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(json);
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Reescribe la cookie `auth-token` cuando localStorage tiene un token
  * pero la cookie está ausente o desincronizada (por ejemplo, si se
  * borraron las cookies del navegador o expiró una cookie de otro flujo).
@@ -71,14 +94,11 @@ export function syncAuthCookie(): boolean {
   if (readCookieToken() === stored) return false;
 
   let maxAge: number | undefined;
-  try {
-    const payload = JSON.parse(atob(stored.split('.')[1]));
-    if (typeof payload.exp === 'number') {
-      const remaining = payload.exp - Math.floor(Date.now() / 1000);
-      if (remaining > 0) maxAge = remaining;
-    }
-  } catch {
-    // Token no parseable: deja la cookie como de sesión
+  const payload = parseJwtPayload(stored);
+  const exp = typeof payload?.exp === 'number' ? payload.exp : undefined;
+  if (exp !== undefined) {
+    const remaining = exp - Math.floor(Date.now() / 1000);
+    if (remaining > 0) maxAge = remaining;
   }
 
   writeCookieToken(stored, maxAge);

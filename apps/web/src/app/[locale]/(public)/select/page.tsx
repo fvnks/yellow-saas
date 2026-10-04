@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
 import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight,
 X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail, Sparkles, TrendingUp, ShieldCheck, DollarSign, Building, UtensilsCrossed, Stethoscope, Shield, Car } from 'lucide-react';
-import { getAuthToken, setAuthToken, clearAuthToken } from '@/lib/auth-token';
+import { getAuthToken, setAuthToken, clearAuthToken, parseJwtPayload } from '@/lib/auth-token';
 import { SiteLiquidButton } from '@/components/landing/SiteLiquidButton';
 import { getApiClient } from '@/lib/api-client';
 import { getChileanIndicators, ChileanIndicators } from '@/lib/indicators';
@@ -184,17 +184,14 @@ function getUserFromToken() {
  // cuya cookie expiró pero el token aún es válido.
  const token = getAuthToken();
  if (!token) return null;
- try {
- const payload = JSON.parse(atob(token.split('.')[1]));
+ const payload = parseJwtPayload(token);
+ if (!payload) return null;
  return {
- role: payload.role || 'member',
- role_type: payload.role_type || 'company',
- name: payload.name || 'Usuario',
- email: payload.email || '',
+ role: (payload.role as string) || 'member',
+ role_type: (payload.role_type as string) || 'company',
+ name: (payload.name as string) || 'Usuario',
+ email: (payload.email as string) || '',
  };
- } catch {
- return null;
- }
 }
 
 async function fetchUserCompanies(token: string): Promise<Company[]> {

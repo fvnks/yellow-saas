@@ -8,7 +8,7 @@ import { Eye, EyeOff, Building2, Mail, Lock, AlertCircle, Loader2 } from 'lucide
 import { useTranslations } from 'next-intl';
 import AuthPanel from '@/components/auth/AuthPanel';
 import { SiteLiquidButton } from '@/components/landing/SiteLiquidButton';
-import { setAuthToken, clearAuthToken, getAuthToken, syncAuthCookie } from '@/lib/auth-token';
+import { setAuthToken, clearAuthToken, getAuthToken, syncAuthCookie, parseJwtPayload } from '@/lib/auth-token';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -30,7 +30,13 @@ const itemVariants: Variants = {
 function LoginForm() {
   const t = useTranslations('auth');
   const searchParams = useSearchParams();
-  const redirect = searchParams.get('redirect') || '/select';
+  const rawRedirect = searchParams.get('redirect') || '/select';
+  // Evita open-redirect: solo acepta rutas internas.
+  const redirect =
+    rawRedirect.startsWith('/') && !rawRedirect.startsWith('//')
+      ? rawRedirect
+      : '/select';
+  const redirectParam = searchParams.get('redirect');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -38,42 +44,47 @@ function LoginForm() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Si ya existe un token válido en localStorage (el middleware
-  // redirige a /login cuando la cookie está ausente), reescribimos
-  // la cookie y volvemos al destino original en lugar de mostrar
-  // el formulario y caer en un bucle de login.
+  // Si el middleware nos devolvió a /login (?redirect=...) es
+  // porque la cookie estaba ausente: reescribimos la cookie
+  // desde localStorage y volvemos al destino original.
+  // Una visita voluntaria a /login (sin ?redirect) muestra
+  // el formulario para poder cambiar de cuenta.
   useEffect(() => {
     const token = getAuthToken();
-    if (!token) return;
+    if (!token || !redirectParam) return;
     syncAuthCookie();
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const exp = typeof payload.exp === 'number' ? payload.exp : 0;
-      if (exp * 1000 <= Date.now()) {
-        clearAuthToken();
-        return;
-      }
-      // Guardia anti-bucle: si el middleware rechaza el token
-      // (ej: secreto JWT rotado) volvemos a /login en <3s y
-      // ahí limpiamos el token en vez de redirigir otra vez.
-      const REDIRECT_TS = 'yellow_login_redirect_ts';
-      const last = Number(sessionStorage.getItem(REDIRECT_TS) || '0');
-      if (Date.now() - last < 3000) {
-        sessionStorage.removeItem(REDIRECT_TS);
-        clearAuthToken();
-        return;
-      }
-      sessionStorage.setItem(REDIRECT_TS, String(Date.now()));
-      // Super admin sin empresa activa va a la consola,
-      // no a /dashboard (el middleware lo redirigiría a /admin).
-      window.location.href =
-        payload.role_type === 'super_admin' && !payload.company_id
-          ? '/admin'
-          : redirect;
-    } catch {
+    const payload = parseJwtPayload(token);
+    const exp = typeof payload?.exp === 'number' ? payload.exp : 0;
+    if (!payload || exp * 1000 <= Date.now()) {
       clearAuthToken();
+      return;
     }
-  }, [redirect]);
+    // Guardia anti-bucle: si el middleware sigue devolviéndonos
+    // a /login (ej: secreto JWT rotado), el token no es válido
+    // para el servidor. Tras 3 redirecciones en menos de 30s
+    // limpiamos y mostramos el formulario.
+    const BOUNCES_KEY = 'yellow_login_bounces';
+    const now = Date.now();
+    const last = Number(sessionStorage.getItem(`${BOUNCES_KEY}_ts`) || '0');
+    const count =
+      now - last < 30_000
+        ? Number(sessionStorage.getItem(BOUNCES_KEY) || '0') + 1
+        : 1;
+    sessionStorage.setItem(BOUNCES_KEY, String(count));
+    sessionStorage.setItem(`${BOUNCES_KEY}_ts`, String(now));
+    if (count >= 3) {
+      sessionStorage.removeItem(BOUNCES_KEY);
+      sessionStorage.removeItem(`${BOUNCES_KEY}_ts`);
+      clearAuthToken();
+      return;
+    }
+    // Super admin sin empresa activa va a la consola,
+    // no a /dashboard (el middleware lo redirigiría a /admin).
+    window.location.href =
+      payload.role_type === 'super_admin' && !payload.company_id
+        ? '/admin'
+        : redirectParam;
+  }, [redirectParam]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
