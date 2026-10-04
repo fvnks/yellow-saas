@@ -21,24 +21,53 @@ export interface SignedDteResult {
 
 /**
  * Parses a PKCS#12 (.p12/.pfx) buffer and extracts private key and certificate
- * Requires: npm install pkcs12
+ * Uses node-forge (npm install node-forge)
  */
 export function parsePkcs12(p12Buffer: Buffer, password: string): { privateKey: string; certificate: string; certInfo: CertificateInfo } {
-  // Dynamic import to avoid build issues if package not installed
-  let pkcs12: any;
-  try {
-    pkcs12 = require('pkcs12');
-  } catch {
-    throw new Error('PKCS#12 parsing requires "pkcs12" npm package. Install with: npm install pkcs12');
-  }
-
-  const parsed = pkcs12.parse(p12Buffer, password);
+  const forge = require('node-forge');
   
-  const certInfo = extractCertInfo(parsed.cert);
+  // Convert buffer to binary string
+  const p12Der = Buffer.from(p12Buffer).toString('binary');
+  
+  // Parse PKCS#12
+  const p12 = forge.pkcs12.pkcs12FromAsn1(
+    forge.asn1.fromDer(p12Der),
+    password
+  );
+  
+  // Extract private key and certificate
+  const bags = p12.getBags({ bagType: forge.pki.oids.pkcs8ShroudedKeyBag });
+  const keyBags = bags[forge.pki.oids.pkcs8ShroudedKeyBag] || [];
+  
+  if (keyBags.length === 0) {
+    // Try alternative bag type
+    const keyBags2 = p12.getBags({ bagType: forge.pki.oids.keyBag });
+    if (keyBags2[forge.pki.oids.keyBag]?.length) {
+      // Handle keyBag type
+    }
+  }
+  
+  if (keyBags.length === 0) {
+    throw new Error('No private key found in PKCS#12');
+  }
+  
+  const privateKey = forge.pki.privateKeyToPem(keyBags[0].key);
+  
+  // Get certificate
+  const certBags = p12.getBags({ bagType: forge.pki.oids.certBag });
+  const certBag = certBags[forge.pki.oids.certBag]?.[0];
+  
+  if (!certBag) {
+    throw new Error('No certificate found in PKCS#12');
+  }
+  
+  const certificate = forge.pki.certificateToPem(certBag.cert);
+  
+  const certInfo = extractCertInfo(certificate);
   
   return {
-    privateKey: parsed.key,
-    certificate: parsed.cert,
+    privateKey,
+    certificate,
     certInfo,
   };
 }
