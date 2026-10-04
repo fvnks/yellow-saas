@@ -146,7 +146,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (authPath.startsWith('/dashboard')) {
-    if (roleType === 'super_admin') {
+    if (roleType === 'super_admin' && !payload.company_id) {
       return NextResponse.redirect(new URL('/admin', request.url));
     }
     if (!payload.company_id) {

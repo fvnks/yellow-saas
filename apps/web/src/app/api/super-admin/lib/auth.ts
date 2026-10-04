@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 import { getJwtSecret } from '@/lib/env';
 
-export async function verifySuperAdmin(request: NextRequest): Promise<{ id: string; email: string } | null> {
+export async function verifySuperAdmin(request: NextRequest): Promise<{ id: string; email: string; name: string } | null> {
   const JWT_SECRET = getJwtSecret();
   const authHeader = request.headers.get('Authorization');
   const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
@@ -14,7 +14,7 @@ export async function verifySuperAdmin(request: NextRequest): Promise<{ id: stri
     try {
       const { payload } = await jwtVerify(cookieToken, JWT_SECRET);
       if (payload.role_type !== 'super_admin') return null;
-      return { id: payload.id as string, email: payload.email as string };
+      return { id: payload.id as string, email: payload.email as string, name: payload.name as string };
     } catch (err) {
       console.error('Super admin cookie auth error:', err);
       return null;
@@ -24,7 +24,7 @@ export async function verifySuperAdmin(request: NextRequest): Promise<{ id: stri
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
     if (payload.role_type !== 'super_admin') return null;
-    return { id: payload.id as string, email: payload.email as string };
+    return { id: payload.id as string, email: payload.email as string, name: payload.name as string };
   } catch (err) {
     console.error('Super admin token auth error:', err);
     return null;

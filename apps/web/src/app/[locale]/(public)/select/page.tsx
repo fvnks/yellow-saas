@@ -243,6 +243,9 @@ export default function SelectPage() {
  const [companies, setCompanies] = useState<Company[]>([]);
  const [companiesLoading, setCompaniesLoading] = useState(true);
  const [indicators, setIndicators] = useState<ChileanIndicators | null>(null);
+ const [companyPickerOpen, setCompanyPickerOpen] = useState(false);
+ const [superAdminCompanies, setSuperAdminCompanies] = useState<Company[]>([]);
+ const [switchingCompany, setSwitchingCompany] = useState(false);
 
  useEffect(() => {
  getChileanIndicators().then(setIndicators);
@@ -319,17 +322,56 @@ export default function SelectPage() {
  }, [activatedModules, user?.role_type]);
 
  const isSuperAdmin = user?.role_type === 'super_admin';
- const visibleModules = isSuperAdmin
-   ? modules.filter((m) => m.id === 'mi-cuenta' || m.id === 'ayuda')
-   : modules;
 
  const handleModuleClick = (mod: ModuleOption) => {
+ if (isSuperAdmin && mod.id !== 'mi-cuenta' && mod.id !== 'ayuda') {
+ openCompanyPicker(mod);
+ return;
+ }
  if (isModuleActivated(mod)) {
  router.push(mod.href);
  } else {
  setSelectedModule(mod);
  setModalOpen(true);
  }
+ };
+
+ const openCompanyPicker = async (mod: ModuleOption) => {
+ setSelectedModule(mod);
+ setCompanyPickerOpen(true);
+ if (superAdminCompanies.length > 0) return;
+ try {
+ const token = getAuthToken();
+ const res = await fetch('/api/super-admin/companies?limit=100', {
+ headers: { Authorization: `Bearer ${token}` },
+ });
+ const data = await res.json();
+ setSuperAdminCompanies(data.data || []);
+ } catch (err) {
+ console.error('Failed to fetch companies:', err);
+ }
+ };
+
+ const handleSuperAdminCompanySelect = async (companyId: string) => {
+ if (!selectedModule) return;
+ setSwitchingCompany(true);
+ try {
+ const token = getAuthToken();
+ const res = await fetch('/api/super-admin/switch-company', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+ body: JSON.stringify({ company_id: companyId }),
+ });
+ const data = await res.json();
+ if (res.ok && data.data?.token) {
+ setAuthToken(data.data.token, 604800);
+ setCompanyPickerOpen(false);
+ router.push(selectedModule.href);
+ }
+ } catch (err) {
+ console.error('Failed to switch company:', err);
+ }
+ setSwitchingCompany(false);
  };
 
  const handleCompanySwitch = async (companyId: string) => {
@@ -519,7 +561,7 @@ export default function SelectPage() {
  </motion.div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
- {visibleModules.map((mod, i) => {
+ {modules.map((mod, i) => {
  const Icon = mod.icon;
  const activated = isModuleActivated(mod);
  return (
@@ -631,6 +673,64 @@ Activar Ahora
 </>
 )}
 </SiteLiquidButton>
+ </div>
+ </motion.div>
+ </motion.div>
+ )}
+ </AnimatePresence>
+
+ <AnimatePresence>
+ {companyPickerOpen && selectedModule && (
+ <motion.div
+ initial={{ opacity: 0 }}
+ animate={{ opacity: 1 }}
+ exit={{ opacity: 0 }}
+ className="fixed inset-0 bg-ink/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+ onClick={() => setCompanyPickerOpen(false)}
+ >
+ <motion.div
+ initial={{ opacity: 0, scale: 0.95, y: 10 }}
+ animate={{ opacity: 1, scale: 1, y: 0 }}
+ exit={{ opacity: 0, scale: 0.95, y: 10 }}
+ transition={{ duration: 0.15 }}
+ onClick={(e) => e.stopPropagation()}
+ className="bg-snow rounded-3xl border border-mist shadow-xl w-full max-w-md overflow-hidden"
+ >
+ <div className="p-6">
+ <div className="w-14 h-14 bg-sunshine/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-sunshine-dark/15">
+ <Building2 className="w-6 h-6 text-sunshine-ink" />
+ </div>
+ <h2 className="text-lg font-black text-ink text-center">Seleccionar Empresa</h2>
+ <p className="text-xs text-slate-text mt-2 leading-relaxed font-medium text-center">
+ Como Super Administrador, elige la empresa para acceder a <span className="font-bold text-ink">{selectedModule.title}</span>.
+ </p>
+ </div>
+ <div className="px-6 pb-2 max-h-80 overflow-y-auto">
+ {superAdminCompanies.map((c) => (
+ <button
+ key={c.id}
+ onClick={() => handleSuperAdminCompanySelect(c.id)}
+ disabled={switchingCompany}
+ className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-cloud border border-transparent hover:border-mist transition-all text-left"
+ >
+ <div className="w-9 h-9 bg-ink rounded-lg flex items-center justify-center shrink-0">
+ <Building2 className="w-4 h-4 text-sunshine-ink" />
+ </div>
+ <div className="flex-1 min-w-0">
+ <p className="text-sm font-semibold text-ink truncate">{c.name}</p>
+ <p className="text-[10px] text-slate-text capitalize">{c.plan} · {c.status}</p>
+ </div>
+ <ChevronRight className="w-4 h-4 text-iron shrink-0" />
+ </button>
+ ))}
+ {superAdminCompanies.length === 0 && (
+ <p className="text-xs text-slate-text text-center py-6">No hay empresas disponibles.</p>
+ )}
+ </div>
+ <div className="px-6 pb-6 flex gap-3">
+ <SiteLiquidButton variant="secondary" className="flex-1 py-2.5 text-xs" onClick={() => setCompanyPickerOpen(false)}>
+ Cancelar
+ </SiteLiquidButton>
  </div>
  </motion.div>
  </motion.div>
