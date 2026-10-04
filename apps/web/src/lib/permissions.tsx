@@ -38,7 +38,7 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
   const [permissions, setPermissions] = useState<Permission[]>([]);
   const [loading, setLoading] = useState(true);
   const userRole = getUserRole();
-  const isOwner = userRole === 'owner' || userRole === 'admin';
+  const isOwner = userRole === 'owner' || userRole === 'admin' || userRole === 'super_admin';
 
   const load = useCallback(() => {
     try {

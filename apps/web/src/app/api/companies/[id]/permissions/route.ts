@@ -33,8 +33,8 @@ export async function GET(request: NextRequest) {
         return errorResponse('Invalid token', 401);
       }
 
-      // Owner/admin sees everything
-      if (currentUserRole === 'owner' || currentUserRole === 'admin') {
+      // Owner/admin/super_admin sees everything
+      if (currentUserRole === 'owner' || currentUserRole === 'admin' || currentUserRole === 'super_admin') {
         const { rows } = await query(
           `SELECT * FROM permissions ORDER BY module, action`
         );
