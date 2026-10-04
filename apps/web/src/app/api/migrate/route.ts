@@ -125,6 +125,19 @@ export async function POST(request: Request) {
       `ALTER TABLE companies ADD COLUMN IF NOT EXISTS region TEXT`,
       `ALTER TABLE companies ADD COLUMN IF NOT EXISTS phone TEXT`,
       `ALTER TABLE companies ADD COLUMN IF NOT EXISTS email TEXT`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS sii_username TEXT`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS sii_password TEXT`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS sii_test_mode BOOLEAN DEFAULT true`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS sii_cert_data BYTEA`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS sii_cert_password TEXT`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS sii_cert_subject TEXT`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS sii_cert_issuer TEXT`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS sii_cert_not_before TIMESTAMPTZ`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS sii_cert_not_after TIMESTAMPTZ`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS sii_quota_enabled BOOLEAN DEFAULT false`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS sii_quota_limit INTEGER DEFAULT 1000`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS sii_document_type_default TEXT DEFAULT '33' CHECK (sii_document_type_default IN ('33','34','39','52','55','56','61'))`,
+      `ALTER TABLE companies ADD COLUMN IF NOT EXISTS sii_last_submission_at TIMESTAMPTZ`,
     ];
     for (const sql of alters) {
       await query(sql);
@@ -168,6 +181,23 @@ export async function POST(request: Request) {
       `CREATE TABLE IF NOT EXISTS consignment_stock (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, agreement_id UUID NOT NULL REFERENCES consignment_agreements(id) ON DELETE CASCADE, product_id UUID NOT NULL REFERENCES products(id), warehouse_id UUID NOT NULL REFERENCES warehouses(id), quantity_on_hand DECIMAL(14,4) DEFAULT 0, quantity_sold DECIMAL(14,4) DEFAULT 0, quantity_returned DECIMAL(14,4) DEFAULT 0, unit_cost DECIMAL(14,2) NOT NULL, last_settlement_date DATE, created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now(), UNIQUE (company_id, agreement_id, product_id, warehouse_id))`,
       `CREATE TABLE IF NOT EXISTS sii_inventory_book (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, period_year INTEGER NOT NULL, period_month INTEGER NOT NULL, book_number TEXT NOT NULL, status TEXT DEFAULT 'draft' CHECK (status IN ('draft', 'submitted', 'accepted', 'rejected')), total_items INTEGER DEFAULT 0, total_value DECIMAL(18,2) DEFAULT 0, xml_content TEXT, response_xml TEXT, submitted_at TIMESTAMPTZ, submitted_by UUID REFERENCES profiles(id), created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now(), UNIQUE (company_id, period_year, period_month))`,
       `CREATE TABLE IF NOT EXISTS sii_inventory_book_items (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, book_id UUID NOT NULL REFERENCES sii_inventory_book(id) ON DELETE CASCADE, product_id UUID NOT NULL REFERENCES products(id), warehouse_id UUID NOT NULL REFERENCES warehouses(id), quantity DECIMAL(14,4) NOT NULL, unit_cost DECIMAL(14,2) NOT NULL, total_value DECIMAL(18,2) GENERATED ALWAYS AS (quantity * unit_cost) STORED, created_at TIMESTAMPTZ DEFAULT now())`,
+
+      // SII CAF (Folio Authorization Codes) table
+      `CREATE TABLE IF NOT EXISTS sii_caf (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+        tipo_dte TEXT NOT NULL CHECK (tipo_dte IN ('33','34','39','52','55','56','61')),
+        folio_desde INTEGER NOT NULL,
+        folio_hasta INTEGER NOT NULL,
+        folio_actual INTEGER DEFAULT 0,
+        fecha_vencimiento TIMESTAMPTZ NOT NULL,
+        rsa_public_key TEXT NOT NULL,
+        certificado TEXT NOT NULL,
+        archivo_caf_xml TEXT,
+        created_at TIMESTAMPTZ DEFAULT now(),
+        updated_at TIMESTAMPTZ DEFAULT now(),
+        UNIQUE (company_id, tipo_dte)
+      )`,
 
       // FASE 4: Inteligencia y Escalabilidad
       `CREATE TABLE IF NOT EXISTS product_abc_classification (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE, product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE, warehouse_id UUID REFERENCES warehouses(id), period_start DATE NOT NULL, period_end DATE NOT NULL, abc_class TEXT NOT NULL CHECK (abc_class IN ('A', 'B', 'C')), xyz_class TEXT NOT NULL CHECK (xyz_class IN ('X', 'Y', 'Z')), combined_class TEXT NOT NULL, annual_consumption_value DECIMAL(18,2), annual_consumption_qty DECIMAL(14,4), demand_variance DECIMAL(10,4), coefficient_of_variation DECIMAL(10,4), rank_position INTEGER, total_products INTEGER, cummulative_pct DECIMAL(5,2), calculated_at TIMESTAMPTZ DEFAULT now(), UNIQUE (company_id, product_id, warehouse_id, period_start, period_end))`,
