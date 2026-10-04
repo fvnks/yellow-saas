@@ -348,7 +348,10 @@ function SidebarInset({ className, ...props }: SidebarInsetProps) {
       data-slot="sidebar-inset"
       className={cn(
         'bg-background relative flex w-full flex-1 flex-col',
-        'md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2',
+        // Default variant "sidebar": inset content needs margin for fixed sidebar
+        'md:peer-data-[variant=sidebar]:ml-[var(--sidebar-width)] md:peer-data-[variant=sidebar]:peer-data-[state=collapsed]:ml-[var(--sidebar-width-icon)]',
+        // Inset/floating variants: small margins, rounded, shadow
+        'md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm',
         className,
       )}
       {...props}
