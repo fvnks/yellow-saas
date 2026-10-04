@@ -178,7 +178,7 @@ export default function HomePage() {
  className="inline-flex items-center gap-2 rounded-md border border-mist bg-snow/60 backdrop-blur-md px-4 py-1.5 text-xs font-semibold text-ink mb-6 shadow-xs"
  >
  <span className="inline-block w-2 h-2 rounded-full bg-sunshine animate-pulse" />
- ERP SaaS · Hecho para PyMEs en Chile
+ ERP SaaS · Soluciones para PyMEs en Chile
  </motion.div>
 
  <motion.h1
@@ -187,9 +187,9 @@ export default function HomePage() {
  transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0.04 }}
  className="text-4xl sm:text-5xl lg:text-[4rem] font-light text-ink leading-[1.05] tracking-[-0.04em] mb-5"
  >
- El ERP que emite facturas
+ El ERP que transforma tu PyME en Chile
  <br />
- mientras tú vendes
+ con facturación electrónica SII en segundos
  </motion.h1>
 
  <motion.p
@@ -198,7 +198,7 @@ export default function HomePage() {
  transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0.08 }}
  className="text-base sm:text-lg text-slate-text max-w-xl mb-8 leading-relaxed font-normal"
  >
- Inventario, Ventas, Compras, Contabilidad y Nómina chilena conectados. Emite DTEs al SII en segundos, no en horas.
+ Gestiona tu negocio completo en una sola plataforma: inventario, ventas, compras, contabilidad y nómina chilena. Emite DTEs al SII al instante, ahorra tiempo y reduce errores.
  </motion.p>
 
  <motion.div
@@ -209,10 +209,10 @@ export default function HomePage() {
  >
  <SiteLiquidButton href="/register" variant="primary" className="w-full sm:w-auto">
 <Plus className="w-4 h-4" />
-Comenzar Ahora
+Comenzar prueba gratis
 </SiteLiquidButton>
  <SiteLiquidButton href="#demo" variant="secondary" className="w-full sm:w-auto">
-<span>Ver Demo Interactiva</span>
+<span>Ver demo en vivo</span>
 <ArrowRight className="w-4 h-4 text-slate-text" />
 </SiteLiquidButton>
  </motion.div>
@@ -272,10 +272,10 @@ Comenzar Ahora
  <div className="max-w-[1200px] mx-auto">
  <div className="text-center mb-10">
  <h2 className="text-3xl sm:text-4xl font-light text-ink mb-3 tracking-[-0.02em]">
- Flujo de datos que conecta tu empresa
+ Todo lo que necesitas para gestionar tu negocio, integrado y trabajando en armonía
  </h2>
  <p className="text-sm sm:text-base text-slate-text max-w-2xl mx-auto">
- Cada módulo alimenta al siguiente. Ventas genera asientos contables, Nómina alimenta la contabilidad, Inventario actualiza costos, Proyectos cierra el ciclo.
+ Módulos completamente integrados que comparten datos en tiempo real, eliminando la doble entrada de información y mejorando la toma de decisiones.
  </p>
  </div>
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -320,10 +320,10 @@ Comenzar Ahora
  <div className="max-w-[1200px] mx-auto">
  <div className="text-center mb-10">
  <h2 className="text-3xl sm:text-4xl font-light text-ink mb-3 tracking-[-0.02em]">
- Por qué las PyMEs eligen Yellow ERP
+ Ventajas competitivas para tu negocio
  </h2>
  <p className="text-sm sm:text-base text-slate-text max-w-2xl mx-auto">
- Seguridad, cumplimiento y automatización desde el primer día, sin equipo técnico ni costos de implementación.
+ Plataforma segura, cumplimiento total con normativa chilena y automatización de procesos críticos para reducir costos operativos y aumentar la productividad.
  </p>
  </div>
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
