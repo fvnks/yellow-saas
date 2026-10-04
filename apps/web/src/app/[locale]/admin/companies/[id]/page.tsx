@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Building2, Users, Calendar, Shield, AlertTriangle, CheckCircle, Clock, LogIn, Download, Package } from 'lucide-react';
-import { getAuthToken } from '@/lib/auth-token';
+import { getAuthToken, setAuthToken } from '@/lib/auth-token';
 
 interface ModuleActivation {
  id: string;
@@ -99,7 +99,8 @@ export default function AdminCompanyDetailPage() {
  body: JSON.stringify({ company_id: id, user_id: userId }),
  });
  const data = await res.json();
- if (data.success) {
+ if (data.success && data.data?.token) {
+ setAuthToken(data.data.token, 4 * 60 * 60);
  window.location.href = '/dashboard';
  }
  } catch (err) {

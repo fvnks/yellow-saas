@@ -56,20 +56,15 @@ export async function POST(request: NextRequest) {
       [admin.id, company_id, JSON.stringify({ action: 'login_as', target_user: user.email }), clientIp]
     );
 
-    const response = NextResponse.json(
-      { success: true, data: { user: { id: user.id, email: user.email, name: user.full_name } } },
+    // El token se entrega en el body para que el cliente lo guarde
+    // con setAuthToken (localStorage + cookie no-httpOnly). Una cookie
+    // httpOnly aquí creaba un segundo dueño de `auth-token`: expiraba
+    // a las 4h mientras localStorage conservaba el token de 7 días,
+    // desincronizando al middleware (que lee solo la cookie).
+    return NextResponse.json(
+      { success: true, data: { token, user: { id: user.id, email: user.email, name: user.full_name } } },
       { status: 200 }
     );
-
-    response.cookies.set('auth-token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 4 * 60 * 60, // 4 hours
-    });
-
-    return response;
   } catch (err) {
     console.error('Login as error:', err);
     return errorResponse('Error al impersonar usuario', 500);

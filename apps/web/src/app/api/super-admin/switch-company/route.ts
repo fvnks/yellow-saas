@@ -66,14 +66,10 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    response.cookies.set('auth-token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 4 * 60 * 60,
-    });
-
+    // El token se entrega SOLO en el body: el cliente lo persiste
+    // con setAuthToken (localStorage + cookie no-httpOnly). Escribir
+    // aquí una cookie httpOnly creaba un segundo dueño de la cookie
+    // `auth-token` que desincronizaba localStorage del middleware.
     return response;
   } catch (err) {
     console.error('Super admin switch company error:', err);

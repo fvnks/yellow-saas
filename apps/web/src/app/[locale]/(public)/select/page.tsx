@@ -177,13 +177,14 @@ const modules: ModuleOption[] = [
  },
 ];
 
-function getUserFromCookie() {
+function getUserFromToken() {
  if (typeof window === 'undefined') return null;
- const cookies = document.cookie.split(';');
- const authCookie = cookies.find(c => c.trim().startsWith('auth-token='));
- if (!authCookie) return null;
+ // localStorage es la fuente de verdad (con fallback a
+ // cookie); leer solo la cookie dejaba fuera sesiones
+ // cuya cookie expiró pero el token aún es válido.
+ const token = getAuthToken();
+ if (!token) return null;
  try {
- const token = authCookie.split('=')[1];
  const payload = JSON.parse(atob(token.split('.')[1]));
  return {
  role: payload.role || 'member',
@@ -252,7 +253,7 @@ export default function SelectPage() {
  }, []);
 
  useEffect(() => {
- const userData = getUserFromCookie();
+ const userData = getUserFromToken();
  if (!userData) { router.push('/login'); return; }
  setUser(userData);
 

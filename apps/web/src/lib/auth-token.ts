@@ -55,6 +55,37 @@ export function setAuthToken(token: string, maxAgeSeconds?: number): void {
 }
 
 /**
+ * Reescribe la cookie `auth-token` cuando localStorage tiene un token
+ * pero la cookie está ausente o desincronizada (por ejemplo, si se
+ * borraron las cookies del navegador o expiró una cookie de otro flujo).
+ * localStorage es la fuente de verdad; la cookie se deriva de ella.
+ *
+ * El maxAge se calcula del propio JWT (`exp`) para que la cookie
+ * expire junto con el token, sin acortar sesiones "recordarme".
+ * Retorna true si reescribió la cookie.
+ */
+export function syncAuthCookie(): boolean {
+  if (typeof window === 'undefined') return false;
+  const stored = localStorage.getItem(TOKEN_KEY);
+  if (!stored) return false;
+  if (readCookieToken() === stored) return false;
+
+  let maxAge: number | undefined;
+  try {
+    const payload = JSON.parse(atob(stored.split('.')[1]));
+    if (typeof payload.exp === 'number') {
+      const remaining = payload.exp - Math.floor(Date.now() / 1000);
+      if (remaining > 0) maxAge = remaining;
+    }
+  } catch {
+    // Token no parseable: deja la cookie como de sesión
+  }
+
+  writeCookieToken(stored, maxAge);
+  return true;
+}
+
+/**
  * Elimina el token de localStorage Y de la cookie.
  */
 export function clearAuthToken(): void {
