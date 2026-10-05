@@ -37,6 +37,9 @@ function LoginForm() {
       ? rawRedirect
       : '/select';
   const redirectParam = searchParams.get('redirect');
+  // La sesión fue invalidada por el servidor (token caducado o JWT_SECRET rotado):
+  // AuthWatcher limpia el token y redirige aquí con este flag.
+  const sessionExpired = searchParams.get('session') === 'expired';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -154,6 +157,18 @@ function LoginForm() {
               {t('loginSubtitle')}
             </p>
           </motion.div>
+
+          {/* Sesión expirada */}
+          {sessionExpired && (
+            <motion.div
+              variants={itemVariants}
+              role="status"
+              className="mb-4 flex items-center gap-2 p-3 bg-[#f0b400]/10 border border-[#f0b400]/30 rounded-md text-[#8a6100] text-sm"
+            >
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              Tu sesión expiró. Vuelve a iniciar sesión para continuar.
+            </motion.div>
+          )}
 
           {/* Error */}
           {error && (
