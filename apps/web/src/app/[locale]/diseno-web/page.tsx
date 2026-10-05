@@ -364,7 +364,7 @@ export default function DisenoWebPage() {
                   <img 
                     alt="Sitio web corporativo para empresa de servicios financieros"
                     className="object-cover w-full h-full"
-                    src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=60"
+                    src="https://picsum.photos/seed/financial-corp/800/450.jpg"
                   />
                 </div>
                 <div className="p-4">
@@ -391,7 +391,7 @@ export default function DisenoWebPage() {
                   <img 
                     alt="Tienda en línea para moda y accesorios"
                     className="object-cover w-full h-full"
-                    src="https://images.unsplash.com/photo-1441986300917-646742611088?auto=format&fit=crop&w=800&q=60"
+                    src="https://picsum.photos/seed/fashion-ecommerce/800/450.jpg"
                   />
                 </div>
                 <div className="p-4">
@@ -418,7 +418,7 @@ export default function DisenoWebPage() {
                   <img 
                     alt="Portafolio personal de fotógrafo"
                     className="object-cover w-full h-full"
-                    src="https://images.unsplash.com/photo-1523275335684-3788876b46c1?auto=format&fit=crop&w=800&q=60"
+                    src="https://picsum.photos/seed/photography-portfolio/800/450.jpg"
                   />
                 </div>
                 <div className="p-4">
@@ -445,7 +445,7 @@ export default function DisenoWebPage() {
                   <img 
                     alt="Sitio web para restaurante y delivery"
                     className="object-cover w-full h-full"
-                    src="https://images.unsplash.com/photo-1517248135467-4c7edb34c457?auto=format&fit=crop&w=800&q=60"
+                    src="https://picsum.photos/seed/restaurant-delivery/800/450.jpg"
                   />
                 </div>
                 <div className="p-4">
