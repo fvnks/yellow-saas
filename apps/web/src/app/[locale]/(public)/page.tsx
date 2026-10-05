@@ -324,7 +324,7 @@ Comenzar prueba gratis
  Plataforma segura, cumplimiento total con normativa chilena y automatización de procesos críticos para reducir costos operativos y aumentar la productividad.
  </p>
  </div>
- <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+ <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
  {features.map((feature, i) => (
  <motion.div
  key={feature.title}
@@ -332,8 +332,15 @@ Comenzar prueba gratis
  whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
  whileHover={reduce ? undefined : { y: -4 }}
  viewport={{ once: true, margin: '-40px' }}
- transition={{ type: 'spring', damping: 24, stiffness: 170, delay: (i % 3) * 0.06 }}
- className="group relative flex flex-col overflow-hidden rounded-3xl border border-mist bg-snow p-6 shadow-card transition-[border-color,box-shadow] duration-300 hover:border-fog hover:shadow-card-hover"
+ transition={{ type: 'spring', damping: 24, stiffness: 170, delay: i * 0.06 }}
+ className={`group relative flex overflow-hidden rounded-3xl border border-mist bg-snow shadow-card transition-[border-color,box-shadow] duration-300 hover:border-fog hover:shadow-card-hover ${
+   i === 0 ? 'lg:col-span-2 lg:row-span-2 p-7 flex-col' :
+   i === 1 ? 'lg:col-span-2 p-6 flex-col' :
+   i === 2 ? 'lg:col-span-2 p-6 flex-col' :
+   i === 3 ? 'lg:col-span-2 lg:col-start-3 p-6 flex-col' :
+   i === 4 ? 'lg:col-span-2 p-6 flex-col' :
+   'lg:col-span-6 p-6 flex-row items-center gap-6'
+ }`}
  >
  <span
  aria-hidden="true"
@@ -343,16 +350,28 @@ Comenzar prueba gratis
  aria-hidden="true"
  className={`pointer-events-none absolute -right-12 -top-14 h-32 w-32 rounded-full opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-70 ${feature.iconBg}`}
  />
- <div className="relative mb-4 flex items-start justify-between gap-3">
- <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ring-1 ring-inset ring-black/5 ${feature.iconBg}`}>
- <feature.icon className={`h-5 w-5 ${feature.iconColor}`} />
+ <div className={`relative ${i === 0 ? 'mb-5 flex flex-col gap-4' : i === 5 ? 'flex items-start gap-4 flex-1' : 'mb-4 flex items-start justify-between gap-3'}`}>
+ <span className={`flex shrink-0 items-center justify-center rounded-xl ring-1 ring-inset ring-black/5 ${i === 0 ? 'h-14 w-14' : 'h-11 w-11'} ${feature.iconBg}`}>
+ <feature.icon className={`${i === 0 ? 'h-7 w-7' : 'h-5 w-5'} ${feature.iconColor}`} />
  </span>
+ {i > 0 && i < 5 && (
  <span className="font-mono text-[11px] font-medium tabular-nums text-slate-text transition-colors duration-300 group-hover:text-ink">
  {String(i + 1).padStart(2, '0')}
  </span>
+ )}
+ {i === 0 && (
+ <div className="flex flex-col gap-1.5">
+ <span className="text-[10px] font-bold uppercase tracking-wider text-sunshine-ink">Pilar del sistema</span>
+ <h3 className="text-xl font-semibold tracking-[-0.01em] text-ink">{feature.title}</h3>
  </div>
- <h3 className="relative mb-1.5 text-sm font-semibold tracking-[-0.01em] text-ink">{feature.title}</h3>
- <p className="relative text-[13px] leading-[1.6] text-slate-text">{feature.description}</p>
+ )}
+ </div>
+ <div className={i === 5 ? "flex-1" : undefined}>
+ {i !== 0 && (
+ <h3 className={`relative ${i === 5 ? 'text-base' : 'text-sm'} font-semibold tracking-[-0.01em] text-ink ${i === 5 ? 'mb-1' : 'mb-1.5'}`}>{feature.title}</h3>
+ )}
+ <p className={`relative text-[13px] leading-[1.6] text-slate-text ${i === 5 ? 'max-w-2xl' : ''}`}>{feature.description}</p>
+ </div>
  </motion.div>
  ))}
  </div>
