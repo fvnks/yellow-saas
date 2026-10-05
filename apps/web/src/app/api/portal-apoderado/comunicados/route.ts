@@ -1,22 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
-import { jwtVerify } from 'jose';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+import { verifyPortalAuth } from '@/api/portal-apoderado/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    const authHeader = request.headers.get('authorization');
-    
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    // Exige un token de apoderado (no uno de empresa) y devuelve su id.
+    const sesion = await verifyPortalAuth(request);
+    if (!sesion) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
-    const token = authHeader.substring(7);
-    const secret = new TextEncoder().encode(JWT_SECRET);
-    const { payload } = await jwtVerify(token, secret);
-
     const db = await getDb();
+
+    // Tokens antiguos no traían company_id: en ese caso se resuelve desde la
+    // ficha del apoderado para no devolver comunicados de otra empresa.
+    let companyId = typeof sesion.company_id === 'string' ? sesion.company_id : null;
+    if (!companyId) {
+      const fila = await db.query(
+        'SELECT company_id FROM educacion_apoderados WHERE id = $1',
+        [sesion.id]
+      );
+      companyId = fila.rows[0]?.company_id ?? null;
+    }
+    if (!companyId) {
+      return NextResponse.json({ data: [] });
+    }
 
     // Obtener comunicados generales y de los cursos de los pupilos
     const result = await db.query(
@@ -41,7 +49,7 @@ export async function GET(request: NextRequest) {
            )
          )
        ORDER BY com.fecha_publicacion DESC`,
-      [payload.company_id, payload.id]
+      [companyId, sesion.id]
     );
 
     return NextResponse.json({

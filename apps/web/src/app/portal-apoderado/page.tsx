@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, LogIn, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function PortalApoderadoPage() {
   const router = useRouter();
@@ -98,7 +99,13 @@ export default function PortalApoderadoPage() {
           </form>
 
           <div className="mt-6 text-center text-sm text-gray-500">
-            <p>¿No tienes cuenta? Contacta al establecimiento</p>
+            <p>
+              ¿No tienes cuenta?{' '}
+              <Link href="/portal-apoderado/registro" className="text-blue-600 hover:underline">
+                Regístrate aquí
+              </Link>
+            </p>
+            <p className="mt-1">También puedes contactar al establecimiento</p>
           </div>
         </CardContent>
       </Card>

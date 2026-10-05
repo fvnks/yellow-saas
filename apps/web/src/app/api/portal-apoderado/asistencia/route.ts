@@ -1,20 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
-import { jwtVerify } from 'jose';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+import { verifyPortalAuth } from '@/api/portal-apoderado/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    const authHeader = request.headers.get('authorization');
-    
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    // Exige un token de apoderado (no uno de empresa) y devuelve su id.
+    const sesion = await verifyPortalAuth(request);
+    if (!sesion) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
-
-    const token = authHeader.substring(7);
-    const secret = new TextEncoder().encode(JWT_SECRET);
-    const { payload } = await jwtVerify(token, secret);
 
     const db = await getDb();
 
@@ -35,7 +29,7 @@ export async function GET(request: NextRequest) {
        JOIN educacion_estudiante_apoderado ea ON e.id = ea.estudiante_id
        WHERE ea.apoderado_id = $1
        ORDER BY e.apellido_paterno, asis.fecha DESC`,
-      [payload.id]
+      [sesion.id]
     );
 
     // Agrupar por estudiante
@@ -72,7 +66,7 @@ export async function GET(request: NextRequest) {
       if (row.estado === 'presente') acc[key].resumen.presentes++;
       if (row.estado === 'ausente') acc[key].resumen.ausentes++;
       if (row.estado === 'atrasado') acc[key].resumen.atrasos++;
-      if (row.estado === 'justificado') acc[key].resummary.justificados++;
+      if (row.estado === 'justificado') acc[key].resumen.justificados++;
       
       return acc;
     }, {});

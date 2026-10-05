@@ -58,6 +58,11 @@ export async function middleware(request: NextRequest) {
 
     if (pathname.startsWith('/api/public/') || pathname.startsWith('/api/portal/')) return response;
 
+    // Portal de apoderados: registro y login son públicos; las rutas de datos
+    // validan su propio token (tipo `apoderado`), que el middleware solo
+    // comprueba por firma.
+    if (pathname.startsWith('/api/portal-apoderado/')) return response;
+
     if (pathname.startsWith('/api/auth/login') || pathname.startsWith('/api/auth/register')) return response;
 
     if (pathname.startsWith('/api/auth/')) {

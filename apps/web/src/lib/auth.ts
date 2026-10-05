@@ -41,6 +41,12 @@ export async function verifyAuth(request: NextRequest): Promise<AuthUser | null>
 
   try {
     const { payload } = await jwtVerify(token, getJwtSecret());
+
+    // Los tokens del portal de apoderados se firman con el mismo secreto que
+    // la app. Si pasaran aquí, un apoderado podría consumir las APIs del
+    // colegio. El claim `tipo` solo lo portan los tokens de portal.
+    if (payload.tipo === 'apoderado') return null;
+
     return payload as AuthUser;
   } catch {
     return null;

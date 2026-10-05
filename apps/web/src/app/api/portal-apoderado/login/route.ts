@@ -1,8 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
-import { SignJWT } from 'jose';
+import { crearTokenPortal } from '@/api/portal-apoderado/lib/auth';
+import { compare } from 'bcryptjs';
+import { timingSafeEqual } from 'crypto';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+/**
+ * Compara contra una contraseña guardada en texto plano (datos sembrados
+ * antiguos que nunca pasaron por bcrypt). Se hace en tiempo constante para no
+ * filtrar el largo por timing.
+ */
+function compararTextoSeguro(almacenada: string, recibida: string): boolean {
+  const a = Buffer.from(almacenada, 'utf8');
+  const b = Buffer.from(recibida, 'utf8');
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(a, b);
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,23 +30,28 @@ export async function POST(request: NextRequest) {
 
     const db = await getDb();
 
-    // Buscar apoderado por email
+    // Buscar apoderado por email y traer sus pupilos en un solo paso.
+    // El FILTER/COALESCE evita que un apoderado sin hijos reciba un objeto
+    // fantasma con todos los campos en null.
     const result = await db.query(
-      `SELECT a.*, 
-              array_agg(json_build_object(
-                'id', e.id,
-                'nombres', e.nombres,
-                'apellido_paterno', e.apellido_paterno,
-                'apellido_materno', e.apellido_materno,
-                'rut', e.rut,
-                'curso_nombre', c.nombre
-              )) as pupilos
+      `SELECT a.id, a.company_id, a.nombres, a.apellido_paterno, a.apellido_materno,
+              a.email, a.telefono, a.password,
+              COALESCE((
+                SELECT json_agg(json_build_object(
+                         'id', e.id,
+                         'nombres', e.nombres,
+                         'apellido_paterno', e.apellido_paterno,
+                         'apellido_materno', e.apellido_materno,
+                         'rut', e.rut,
+                         'curso_nombre', c.nombre
+                       ) ORDER BY e.apellido_paterno)
+                FROM educacion_estudiante_apoderado ea
+                JOIN educacion_estudiantes e ON e.id = ea.estudiante_id
+                LEFT JOIN educacion_cursos c ON e.curso_id = c.id
+                WHERE ea.apoderado_id = a.id
+              ), '[]'::json) AS pupilos
        FROM educacion_apoderados a
-       LEFT JOIN educacion_estudiante_apoderado ea ON a.id = ea.apoderado_id
-       LEFT JOIN educacion_estudiantes e ON ea.estudiante_id = e.id
-       LEFT JOIN educacion_cursos c ON e.curso_id = c.id
-       WHERE a.email = $1
-       GROUP BY a.id`,
+       WHERE lower(a.email) = lower($1)`,
       [email]
     );
 
@@ -47,26 +64,24 @@ export async function POST(request: NextRequest) {
 
     const apoderado = result.rows[0];
 
-    // Verificar contraseña (en producción, usar bcrypt)
-    // Por ahora, comparación directa (implementar bcrypt después)
-    if (apoderado.password !== password) {
+    const almacenada = typeof apoderado.password === 'string' ? apoderado.password : '';
+    let passwordOk = false;
+
+    if (almacenada.startsWith('$2')) {
+      passwordOk = await compare(password, almacenada);
+    } else if (almacenada.length > 0) {
+      passwordOk = compararTextoSeguro(almacenada, String(password));
+    }
+
+    if (!passwordOk) {
       return NextResponse.json(
         { error: 'Credenciales inválidas' },
         { status: 401 }
       );
     }
 
-    // Generar token JWT
-    const secret = new TextEncoder().encode(JWT_SECRET);
-    const token = await new SignJWT({
-      id: apoderado.id,
-      email: apoderado.email,
-      nombre: `${apoderado.nombres} ${apoderado.apellido_paterno}`,
-      tipo: 'apoderado',
-    })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setExpirationTime('8h')
-      .sign(secret);
+    // Generar token JWT del portal (8h)
+    const token = await crearTokenPortal(apoderado);
 
     return NextResponse.json({
       data: {

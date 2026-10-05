@@ -33,7 +33,13 @@ export async function transaction<T>(fn: (client: PoolClient) => Promise<T>, com
   try {
     await client.query('BEGIN');
     if (companyId) {
-      await client.query(`SET LOCAL app.current_company_id = $1`, [companyId]);
+      // `SET LOCAL x = $1` no acepta parámetros en PostgreSQL (syntax error),
+      // así que se usa set_config(), que sí recibe placeholders y respeta el
+      // ámbito de la transacción.
+      await client.query('SELECT set_config($1, $2, true)', [
+        'app.current_company_id',
+        companyId,
+      ]);
     }
     const result = await fn(client);
     await client.query('COMMIT');
