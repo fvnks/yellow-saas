@@ -6,6 +6,7 @@ import { Menu, X, ChevronRight, User, LogOut, Settings, ChevronDown } from 'luci
 import { cn } from '@/lib/utils';
 import { SiteLiquidButton } from '@/components/landing/SiteLiquidButton';
 import { useAuthToken } from '@/hooks/use-auth-token';
+import { useActiveSection } from '@/hooks/use-active-section';
 
 const navLinks = [
   { label: 'Módulos', href: '#modules' },
@@ -19,6 +20,7 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const user = useAuthToken();
+  const activeSection = useActiveSection(['modules', 'features', 'pricing', 'faq', 'contacto']);
 
   const handleLogout = () => {
     if (typeof window !== 'undefined') {
@@ -45,20 +47,31 @@ export function Navbar() {
 
   {/* Desktop nav */}
   <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
-  {navLinks.map((link) => (
-  <a
-  key={link.label}
-  href={link.href}
-  className="group relative -mx-3 rounded-full px-3 py-2 text-sm font-medium text-slate-text transition-colors duration-150 hover:bg-cloud hover:text-ink"
-  >
-  {link.label}
-  {/* Underline de acento que crece desde la izquierda */}
-  <span
-  aria-hidden="true"
-  className="pointer-events-none absolute inset-x-3 bottom-1.5 h-px origin-left scale-x-0 rounded-full bg-sunshine transition-transform duration-200 ease-out group-hover:scale-x-100"
-  />
-  </a>
-  ))}
+  {navLinks.map((link) => {
+    const isActive = link.href.startsWith('#') && activeSection === link.href.slice(1);
+    return (
+    <a
+    key={link.label}
+    href={link.href}
+    className={cn(
+      "group relative -mx-3 rounded-full px-3 py-2 text-sm font-medium transition-colors duration-150 hover:bg-cloud active:scale-[0.98]",
+      isActive
+        ? "text-ink"
+        : "text-slate-text hover:text-ink"
+    )}
+    >
+    {link.label}
+    {/* Underline de acento que crece desde la izquierda */}
+    <span
+    aria-hidden="true"
+    className={cn(
+      "pointer-events-none absolute inset-x-3 bottom-1.5 h-px origin-left scale-x-0 rounded-full bg-sunshine transition-transform duration-200 ease-out",
+      isActive ? "scale-x-100" : "group-hover:scale-x-100"
+    )}
+    />
+    </a>
+    );
+  })}
   </nav>
 
   {/* Desktop CTA / User Menu */}
@@ -157,7 +170,7 @@ export function Navbar() {
   <a
   key={link.label}
   href={link.href}
-  className="-mx-3 block rounded-full px-3 py-2 text-sm font-medium text-ink transition-colors duration-150 hover:bg-cloud"
+  className="-mx-3 block rounded-full px-3 py-2 text-sm font-medium text-ink transition-colors duration-150 hover:bg-cloud active:scale-[0.98]"
   onClick={() => setMobileOpen(false)}
   >
   {link.label}
@@ -168,7 +181,7 @@ export function Navbar() {
     <div className="space-y-2">
       <Link
         href="/select"
-        className="block text-sm font-medium text-ink py-2 rounded-md hover:bg-cloud transition-colors"
+        className="block text-sm font-medium text-ink py-2 rounded-md hover:bg-cloud active:scale-[0.98] transition-colors"
         onClick={() => setMobileOpen(false)}
       >
         <Settings className="w-4 h-4 inline mr-2" />
@@ -176,7 +189,7 @@ export function Navbar() {
       </Link>
       <Link
         href="/mi-cuenta"
-        className="block text-sm font-medium text-ink py-2 rounded-md hover:bg-cloud transition-colors"
+        className="block text-sm font-medium text-ink py-2 rounded-md hover:bg-cloud active:scale-[0.98] transition-colors"
         onClick={() => setMobileOpen(false)}
       >
         <User className="w-4 h-4 inline mr-2" />
@@ -184,7 +197,7 @@ export function Navbar() {
       </Link>
       <button
         onClick={handleLogout}
-        className="w-full text-left text-sm font-medium text-red-600 py-2 rounded-md hover:bg-red-50 transition-colors"
+        className="w-full text-left text-sm font-medium text-red-600 py-2 rounded-md hover:bg-red-50 active:scale-[0.98] transition-colors"
       >
         <LogOut className="w-4 h-4 inline mr-2" />
         Cerrar sesión
@@ -194,7 +207,7 @@ export function Navbar() {
     <>
       <Link
       href="/login"
-      className="block text-sm font-medium text-ink py-2 text-center rounded-md border border-mist transition-colors duration-150 hover:bg-cloud"
+      className="block text-sm font-medium text-ink py-2 text-center rounded-md border border-mist transition-colors duration-150 hover:bg-cloud active:scale-[0.98]"
       onClick={() => setMobileOpen(false)}
       >
       Iniciar Sesión

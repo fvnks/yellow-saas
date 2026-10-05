@@ -364,7 +364,7 @@ export default function DisenoWebPage() {
                   <img 
                     alt="Sitio web corporativo para empresa de servicios financieros"
                     className="object-cover w-full h-full"
-                    src="https://picsum.photos/seed/financial-corp/800/450.jpg"
+                    src="https://picsum.photos/seed/yellow-web-financial-corp-dashboard/800/450.jpg"
                   />
                 </div>
                 <div className="p-4">
@@ -391,7 +391,7 @@ export default function DisenoWebPage() {
                   <img 
                     alt="Tienda en línea para moda y accesorios"
                     className="object-cover w-full h-full"
-                    src="https://picsum.photos/seed/fashion-ecommerce/800/450.jpg"
+                    src="https://picsum.photos/seed/yellow-web-fashion-ecommerce-mobile/800/450.jpg"
                   />
                 </div>
                 <div className="p-4">
@@ -418,7 +418,7 @@ export default function DisenoWebPage() {
                   <img 
                     alt="Portafolio personal de fotógrafo"
                     className="object-cover w-full h-full"
-                    src="https://picsum.photos/seed/photography-portfolio/800/450.jpg"
+                    src="https://picsum.photos/seed/yellow-web-photography-portfolio-gallery/800/450.jpg"
                   />
                 </div>
                 <div className="p-4">
@@ -445,7 +445,7 @@ export default function DisenoWebPage() {
                   <img 
                     alt="Sitio web para restaurante y delivery"
                     className="object-cover w-full h-full"
-                    src="https://picsum.photos/seed/restaurant-delivery/800/450.jpg"
+                    src="https://picsum.photos/seed/yellow-web-restaurant-delivery-booking/800/450.jpg"
                   />
                 </div>
                 <div className="p-4">
