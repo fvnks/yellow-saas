@@ -38,6 +38,7 @@ export async function GET(request: NextRequest) {
 
     const result = await query(
       `SELECT c.id, c.name, c.slug, c.plan, c.status, c.created_at, c.trial_ends_at,
+        c.company_type, c.vertical,
         (SELECT COUNT(*) FROM profiles WHERE company_id = c.id) as user_count,
         COALESCE(
           (SELECT json_agg(ma.module_name)
@@ -65,10 +66,30 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { name, slug, plan, email, password, modules } = body;
+    const { name, slug, plan, email, password, modules, company_type, vertical: verticalInput } = body;
 
     if (!name || !slug) return errorResponse('Nombre y slug son requeridos', 400);
     if (!email || !password) return errorResponse('Email y password son requeridos', 400);
+
+    // Clasificación de la empresa: colegio (educación) o empresa con rubro según módulos.
+    const COMPANY_TYPES = ['colegio', 'empresa'];
+    const VERTICALS = ['educacion', 'restaurante', 'veterinaria', 'talleres', 'condominio', 'general'];
+
+    const companyType = company_type || 'empresa';
+    if (!COMPANY_TYPES.includes(companyType)) {
+      return errorResponse(`company_type inválido. Valores permitidos: ${COMPANY_TYPES.join(', ')}`, 400);
+    }
+
+    let vertical: string;
+    if (companyType === 'colegio') {
+      vertical = 'educacion';
+    } else if (!verticalInput) {
+      vertical = 'general';
+    } else if (!VERTICALS.includes(verticalInput)) {
+      return errorResponse(`vertical inválido. Valores permitidos: ${VERTICALS.join(', ')}`, 400);
+    } else {
+      vertical = verticalInput;
+    }
 
     const existing = await query('SELECT id FROM companies WHERE slug = $1', [slug]);
     if (existing.rows.length > 0) return errorResponse('Ya existe una empresa con ese slug', 409);
@@ -77,10 +98,10 @@ export async function POST(request: NextRequest) {
 
     const createdCompany = await transaction(async (client) => {
       const companyResult = await client.query(
-        `INSERT INTO companies (name, slug, plan, status, trial_ends_at)
-         VALUES ($1, $2, $3, 'active', NOW() + INTERVAL '14 days')
+        `INSERT INTO companies (name, slug, plan, status, trial_ends_at, company_type, vertical)
+         VALUES ($1, $2, $3, 'active', NOW() + INTERVAL '14 days', $4, $5)
          RETURNING *`,
-        [name, slug, plan || 'professional']
+        [name, slug, plan || 'professional', companyType, vertical]
       );
       const company = companyResult.rows[0];
 
@@ -134,10 +155,10 @@ export async function POST(request: NextRequest) {
       );
       if (ownerProfile.rows[0] && createdRoles['owner']) {
         await client.query(
-          `INSERT INTO user_roles (user_id, role_id, company_id)
-           VALUES ($1, $2, $3)
-           ON CONFLICT (user_id, role_id, company_id) DO NOTHING`,
-          [ownerProfile.rows[0].id, createdRoles['owner'], company.id]
+          `INSERT INTO user_roles (user_id, role_id)
+           VALUES ($1, $2)
+           ON CONFLICT (user_id, role_id) DO NOTHING`,
+          [ownerProfile.rows[0].id, createdRoles['owner']]
         );
       }
 

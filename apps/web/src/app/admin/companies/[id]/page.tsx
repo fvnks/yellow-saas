@@ -32,11 +32,22 @@ interface CompanyDetail {
  status: string;
  created_at: string;
  trial_ends_at: string;
+ company_type: 'colegio' | 'empresa' | null;
+ vertical: string | null;
  users: { id: string; email: string; full_name: string; role: string; status: string; created_at: string }[];
  grants: { id: string; super_admin_name: string; super_admin_email: string; access_level: string; reason: string; is_active: boolean; created_at: string }[];
  modules: ModuleActivation[];
  module_catalog: ModuleCatalog[];
 }
+
+const VERTICAL_LABELS: Record<string, string> = {
+ educacion: 'Educación',
+ restaurante: 'Restaurante',
+ veterinaria: 'Veterinaria',
+ talleres: 'Talleres',
+ condominio: 'Condominio',
+ general: 'General',
+};
 
 const statusColors: Record<string, string> = {
  active: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
@@ -207,6 +218,14 @@ export default function AdminCompanyDetailPage() {
  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${statusColors[company.status] || statusColors.active}`}>
  {company.status}
  </span>
+ {company.company_type && (
+ <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${company.company_type === 'colegio' ? 'bg-sky-50 text-sky-700 border-sky-200' : 'bg-violet-500/10 text-violet-500 border-violet-500/20'}`}>
+ {company.company_type === 'colegio' ? 'Colegio' : 'Empresa'}
+ {company.vertical && !(company.company_type === 'empresa' && company.vertical === 'general')
+ ? ` · ${VERTICAL_LABELS[company.vertical] || company.vertical}`
+ : ''}
+ </span>
+ )}
  </div>
  <p className="text-sm text-muted-foreground mt-1">ID: {company.id}</p>
  </div>

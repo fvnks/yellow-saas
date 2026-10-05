@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Building2, Search, ExternalLink, Users, Calendar, Plus, X, FlaskConical, Package, FolderKanban, UsersRound, CreditCard } from 'lucide-react';
+import { Building2, Search, ExternalLink, Users, Calendar, Plus, X, FlaskConical, Package, FolderKanban, UsersRound, CreditCard, GraduationCap, UtensilsCrossed, Stethoscope, Wrench, Building } from 'lucide-react';
 import { getAuthToken } from '@/lib/auth-token';
 import { toast } from 'sonner';
 
@@ -15,7 +15,39 @@ interface Company {
  created_at: string;
  trial_ends_at: string;
  user_count: number;
+ company_type: 'colegio' | 'empresa' | null;
+ vertical: string | null;
 }
+
+// Tipo de organización: se pregunta al crear la empresa.
+const COMPANY_TYPES = [
+ { id: 'colegio', label: 'Colegio / Escuela', hint: 'Módulo de educación', icon: GraduationCap },
+ { id: 'empresa', label: 'Empresa', hint: 'Según su rubro', icon: Building },
+] as const;
+
+// Rubros disponibles según los módulos de Yellow. Elegir uno precarga los
+// módulos a activar (siguen siendo editables antes de crear la empresa).
+const VERTICALS = [
+ { id: 'general', label: 'ERP / General', icon: Package, modules: ['mi-cuenta', 'erp'] },
+ { id: 'restaurante', label: 'Restaurante', icon: UtensilsCrossed, modules: ['mi-cuenta', 'restaurant', 'recetas'] },
+ { id: 'veterinaria', label: 'Veterinaria', icon: Stethoscope, modules: ['mi-cuenta', 'veterinaria'] },
+ { id: 'talleres', label: 'Talleres Automotrices', icon: Wrench, modules: ['mi-cuenta', 'auto-talleres'] },
+ { id: 'condominio', label: 'Condominio', icon: Building2, modules: ['mi-cuenta', 'condominiums'] },
+] as const;
+
+const COMPANY_TYPE_LABELS: Record<string, string> = {
+ colegio: 'Colegio',
+ empresa: 'Empresa',
+};
+
+const VERTICAL_LABELS: Record<string, string> = {
+ educacion: 'Educación',
+ restaurante: 'Restaurante',
+ veterinaria: 'Veterinaria',
+ talleres: 'Talleres',
+ condominio: 'Condominio',
+ general: 'General',
+};
 
 const MODULE_OPTIONS = [
  { id: 'erp', label: 'ERP Core', icon: Package, color: 'text-violet-600 bg-violet-50 border-violet-200' },
@@ -33,6 +65,7 @@ const MODULE_OPTIONS = [
  { id: 'restaurant', label: 'Restaurante', icon: Package, color: 'text-[#c64d00] bg-peach/30 border-peach' },
  { id: 'recetas', label: 'Recetas BOM', icon: FlaskConical, color: 'text-orange-600 bg-orange-50 border-orange-200' },
  { id: 'condominiums', label: 'Condominios', icon: Package, color: 'text-cyan-600 bg-cyan-50 border-cyan-200' },
+ { id: 'educacion', label: 'Educación & Colegios', icon: GraduationCap, color: 'text-sky-700 bg-sky-50 border-sky-200' },
  { id: 'expense_management', label: 'Gestión de Gastos', icon: Package, color: 'text-rose-600 bg-rose-50 border-rose-200' },
  { id: 'documentos_recibidos', label: 'Documentos Recibidos', icon: Package, color: 'text-blue-600 bg-blue-50 border-blue-200' },
 ];
@@ -56,10 +89,13 @@ export default function AdminCompaniesPage() {
  const [loading, setLoading] = useState(true);
  const [search, setSearch] = useState('');
  const [statusFilter, setStatusFilter] = useState('all');
+ const [typeFilter, setTypeFilter] = useState('all');
  const [showCreate, setShowCreate] = useState(false);
  const [creating, setCreating] = useState(false);
  const [form, setForm] = useState({ name: '', slug: '', email: '', password: '', plan: 'professional' });
  const [selectedModules, setSelectedModules] = useState<string[]>(['mi-cuenta']);
+ const [companyType, setCompanyType] = useState<'colegio' | 'empresa'>('empresa');
+ const [vertical, setVertical] = useState<string>('general');
 
  useEffect(() => { fetchCompanies(); }, []);
 
@@ -81,18 +117,48 @@ export default function AdminCompaniesPage() {
  const res = await fetch('/api/super-admin/companies', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
- body: JSON.stringify({ ...form, modules: selectedModules }),
+ body: JSON.stringify({
+ ...form,
+ modules: selectedModules,
+ company_type: companyType,
+ vertical: companyType === 'colegio' ? 'educacion' : vertical,
+ }),
  });
  const data = await res.json();
  if (data.success) {
  toast.success('Empresa creada correctamente');
- setShowCreate(false);
- setForm({ name: '', slug: '', email: '', password: '', plan: 'professional' });
- setSelectedModules(['mi-cuenta']);
+ closeCreate();
  fetchCompanies();
+ } else {
+ toast.error(data?.error?.message || 'No se pudo crear la empresa');
  }
  } catch (err) { toast.error('Error al crear empresa'); }
  setCreating(false);
+ };
+
+ const closeCreate = () => {
+ setShowCreate(false);
+ setForm({ name: '', slug: '', email: '', password: '', plan: 'professional' });
+ setSelectedModules(['mi-cuenta']);
+ setCompanyType('empresa');
+ setVertical('general');
+ };
+
+ // Elegir el tipo de organización (o el rubro) precarga los módulos a activar.
+ const pickCompanyType = (type: 'colegio' | 'empresa') => {
+ setCompanyType(type);
+ if (type === 'colegio') {
+ setSelectedModules(['mi-cuenta', 'educacion']);
+ } else {
+ const preset = VERTICALS.find(v => v.id === vertical);
+ setSelectedModules(preset ? [...preset.modules] : ['mi-cuenta']);
+ }
+ };
+
+ const pickVertical = (id: string) => {
+ setVertical(id);
+ const preset = VERTICALS.find(v => v.id === id);
+ if (preset) setSelectedModules([...preset.modules]);
  };
 
  const toggleModule = (id: string) => {
@@ -102,7 +168,8 @@ export default function AdminCompaniesPage() {
  const filtered = companies.filter(c => {
  const matchSearch = c.name.toLowerCase().includes(search.toLowerCase()) || c.slug.toLowerCase().includes(search.toLowerCase());
  const matchStatus = statusFilter === 'all' || c.status === statusFilter;
- return matchSearch && matchStatus;
+ const matchType = typeFilter === 'all' || c.company_type === typeFilter;
+ return matchSearch && matchStatus && matchType;
  });
 
  return (
@@ -124,6 +191,12 @@ export default function AdminCompaniesPage() {
  <input type="text" placeholder="Buscar empresa..." value={search} onChange={e => setSearch(e.target.value)}
  className="w-full bg-white border border-mist rounded-lg pl-10 pr-4 py-2 text-sm text-ink placeholder:text-iron focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-500/50" />
  </div>
+ <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)}
+ className="bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-500/50">
+ <option value="all">Colegios y empresas</option>
+ <option value="colegio">Solo colegios</option>
+ <option value="empresa">Solo empresas</option>
+ </select>
  <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
  className="bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-500/50">
  <option value="all">Todos los estados</option>
@@ -139,6 +212,7 @@ export default function AdminCompaniesPage() {
  <thead>
  <tr className="border-b border-border">
  <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Empresa</th>
+ <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Tipo</th>
  <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Plan</th>
  <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Estado</th>
  <th className="text-left px-6 py-3 text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Usuarios</th>
@@ -150,11 +224,11 @@ export default function AdminCompaniesPage() {
  {loading ? (
  Array.from({ length: 5 }).map((_, i) => (
  <tr key={i} className="border-b border-border/50">
- <td colSpan={6} className="px-6 py-4"><div className="h-4 bg-card rounded animate-pulse" /></td>
+ <td colSpan={7} className="px-6 py-4"><div className="h-4 bg-card rounded animate-pulse" /></td>
  </tr>
  ))
  ) : filtered.length === 0 ? (
- <tr><td colSpan={6} className="px-6 py-12 text-center text-sm text-muted-foreground">No se encontraron empresas</td></tr>
+ <tr><td colSpan={7} className="px-6 py-12 text-center text-sm text-muted-foreground">No se encontraron empresas</td></tr>
  ) : (
  filtered.map(company => (
  <tr key={company.id} className="border-b border-border/50 hover:bg-cloud/60 transition-colors">
@@ -168,6 +242,14 @@ export default function AdminCompaniesPage() {
  <p className="text-xs text-muted-foreground">{company.slug}</p>
  </div>
  </div>
+ </td>
+ <td className="px-6 py-4">
+ <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${company.company_type === 'colegio' ? 'bg-sky-50 text-sky-700 border-sky-200' : 'bg-violet-500/10 text-violet-500 border-violet-500/20'}`}>
+ {COMPANY_TYPE_LABELS[company.company_type || 'empresa'] || '—'}
+ </span>
+ {company.vertical && !(company.company_type === 'empresa' && company.vertical === 'general') && (
+ <span className="block mt-1 text-[10px] text-muted-foreground">{VERTICAL_LABELS[company.vertical] || company.vertical}</span>
+ )}
  </td>
  <td className="px-6 py-4">
  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border ${planColors[company.plan] || planColors.free}`}>{company.plan}</span>
@@ -195,13 +277,54 @@ export default function AdminCompaniesPage() {
  </div>
 
  {showCreate && (
- <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setShowCreate(false)}>
+ <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={closeCreate}>
  <div className="bg-cloud border border-mist rounded-xl shadow-2xl w-full max-w-lg" onClick={e => e.stopPropagation()}>
  <div className="px-6 py-4 border-b border-border flex items-center justify-between">
  <h2 className="text-lg font-semibold text-ink">Nueva Empresa</h2>
- <button onClick={() => setShowCreate(false)} className="text-muted-foreground hover:text-ink"><X className="w-5 h-5" /></button>
+ <button onClick={closeCreate} className="text-muted-foreground hover:text-ink"><X className="w-5 h-5" /></button>
  </div>
  <div className="p-6 space-y-4">
+ <div className="space-y-2">
+ <label className="block text-xs font-medium text-muted-foreground">¿Qué estás creando? *</label>
+ <div className="grid grid-cols-2 gap-2">
+ {COMPANY_TYPES.map(t => {
+ const Icon = t.icon;
+ const active = companyType === t.id;
+ return (
+ <button key={t.id} type="button" onClick={() => pickCompanyType(t.id)}
+ className={`p-3 rounded-lg border-2 flex items-center gap-3 transition-all text-left ${
+ active ? 'bg-sky-50 border-sky-500 text-sky-800' : 'border-border text-muted-foreground hover:border-border'
+ }`}>
+ <Icon className="w-4 h-4 shrink-0" />
+ <span className="min-w-0">
+ <span className="block text-xs font-semibold">{t.label}</span>
+ <span className="block text-[10px] opacity-70">{t.hint}</span>
+ </span>
+ </button>
+ );
+ })}
+ </div>
+ </div>
+ {companyType === 'empresa' && (
+ <div className="space-y-2">
+ <label className="block text-xs font-medium text-muted-foreground">Rubro de la empresa *</label>
+ <div className="grid grid-cols-2 gap-2">
+ {VERTICALS.map(v => {
+ const Icon = v.icon;
+ const active = vertical === v.id;
+ return (
+ <button key={v.id} type="button" onClick={() => pickVertical(v.id)}
+ className={`p-2.5 rounded-lg border-2 flex items-center gap-2 transition-all text-left ${
+ active ? 'bg-violet-500/10 border-violet-500/50 text-ink' : 'border-border text-muted-foreground hover:border-border'
+ }`}>
+ <Icon className="w-4 h-4 shrink-0" />
+ <span className="text-xs font-medium truncate">{v.label}</span>
+ </button>
+ );
+ })}
+ </div>
+ </div>
+ )}
  <div className="grid grid-cols-2 gap-3">
  <div className="space-y-1">
  <label className="block text-xs font-medium text-muted-foreground">Nombre *</label>
@@ -260,7 +383,7 @@ export default function AdminCompaniesPage() {
  </div>
  </div>
  <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
- <button onClick={() => setShowCreate(false)}
+ <button onClick={closeCreate}
  className="bg-cloud hover:bg-mist text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">
  Cancelar
  </button>
