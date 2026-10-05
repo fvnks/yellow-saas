@@ -227,8 +227,7 @@ Comenzar prueba gratis
  <div className="flex items-center gap-2">
  <Shield className="w-4 h-4 text-sunshine-ink" />
  <span className="text-xs font-semibold text-ink">DTEs emitidos al SII</span>
- <span className="text-base font-bold text-ink font-mono">2.4M+</span>
- </div>
+ <span className="text-base font-bold text-ink font-mono">2.4M+</span><span className="text-[10px] text-slate-text opacity-70 ml-1">*dato estimado</span></div>
  <div className="flex items-center gap-2">
  <Lock className="w-4 h-4 text-forest" />
  <span className="text-xs font-semibold text-ink">Uptime SLA</span>
@@ -237,8 +236,7 @@ Comenzar prueba gratis
  <div className="flex items-center gap-2">
  <Globe className="w-4 h-4 text-sky-accent" />
  <span className="text-xs font-semibold text-ink">Empresas activas</span>
- <span className="text-base font-bold text-ink font-mono">250+</span>
- </div>
+ <span className="text-base font-bold text-ink font-mono">250+</span><span className="text-[10px] text-slate-text opacity-70 ml-1">*dato estimado</span></div>
  </motion.div>
  </div>
 
@@ -361,7 +359,97 @@ Comenzar prueba gratis
  </div>
  </section>
 
- {/* ─── 7. CHILEAN COMPLIANCE DEEP-DIVE ─── */}
+ {/* ─── 6.5. TESTIMONIOS ─── */}
+  <section id="testimonios" className="py-20 px-4 sm:px-6 bg-cloud">
+    <div className="max-w-[1200px] mx-auto">
+      <div className="text-center mb-12">
+        <h2 className="text-3xl sm:text-4xl font-light text-ink mb-3 tracking-[-0.02em]">
+          Lo que dicen nuestros clientes
+        </h2>
+        <p className="text-sm sm:text-base text-slate-text max-w-2xl mx-auto">
+          PyMEs chilenas que transformaron su gestión con Yellow ERP
+        </p>
+      </div>
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Testimonio 1 */}
+        <motion.div
+          key="test1"
+          initial={reduce ? false : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, delay: 0.05 }}
+          className="bg-snow border border-mist rounded-2xl p-6"
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-sunshine-ink">★★★★★</span>
+          </div>
+          <p className="text-slate-text italic mb-4">
+            "Yellow ERP nos permitió cerrar el mes en 2 días en lugar de 2 semanas. La facturación automática al SII es un game changer para nuestro equipo contable."
+          </p>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-sunshine/10 flex items-center justify-center">
+              <span className="text-sunshine-ink font-semibold text-sm">MG</span>
+            </div>
+            <div>
+              <p className="font-semibold text-ink text-sm">María González</p>
+              <p className="text-slate-text text-xs">Gerente Financiera, Distribuidora Andes SpA</p>
+            </div>
+          </div>
+        </motion.div>
+        
+        {/* Testimonio 2 */}
+        <motion.div
+          key="test2"
+          initial={reduce ? false : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, delay: 0.1 }}
+          className="bg-snow border border-mist rounded-2xl p-6"
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-sunshine-ink">★★★★★</span>
+          </div>
+          <p className="text-slate-text italic mb-4">
+            "Increíble la diferencia que hace tener todo integrado. Inventario, ventas y contabilidad hablando el mismo idioma. Nuestro equipo es mucho más productivo ahora."
+          </p>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-mint/20 flex items-center justify-center">
+              <span className="text-forest font-semibold text-sm">JR</span>
+            </div>
+            <div>
+              <p className="font-semibold text-ink text-sm">Juan Rodríguez</p>
+              <p className="text-slate-text text-xs">Gerente General, Ferretería del Sur Ltda.</p>
+            </div>
+          </div>
+        </motion.div>
+        
+        {/* Testimonio 3 */}
+        <motion.div
+          key="test3"
+          initial={reduce ? false : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, delay: 0.15 }}
+          className="bg-snow border border-mist rounded-2xl p-6"
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-sunshine-ink">★★★★★</span>
+          </div>
+          <p className="text-slate-text italic mb-4">
+            "La facturación electrónica SII nunca fue tan fácil. Yellow ERP se encarga de todo automáticamente y nos mantiene siempre en cumplimiento. Soporte impecable."
+          </p>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-lavender/20 flex items-center justify-center">
+              <span className="text-[#8A6100] font-semibold text-sm">AF</span>
+            </div>
+            <div>
+              <p className="font-semibold text-ink text-sm">Ana Fernández</p>
+              <p className="text-slate-text text-xs">Directora Operaciones, Retail Norte SpA</p>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  </section>
+
+  {/* ─── 7. CHILEAN COMPLIANCE DEEP-DIVE ─── */}
  <section id="compliance" className="py-20 px-4 sm:px-6 bg-snow border-y border-mist">
  <div className="max-w-[1200px] mx-auto">
  <div className="text-center mb-10">

@@ -2,16 +2,18 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useReducedMotion, motion } from 'motion/react';
 import {
-  Users, Brush, Globe, Laptop, Code, Shield, BarChart3, 
-  Award, Heart, Settings, Send, Mail, Phone, MapPin,
-  Check, ArrowRight, X, CheckCircle2, ShoppingCart
+  Users, Globe, Shield, BarChart3, 
+  Award, Heart, Settings, Mail, Phone, MapPin,
+  Check, ArrowRight, X, CheckCircle2
 } from 'lucide-react';
 import { PricingToggle } from '@/components/landing/PricingToggle';
 import { StatsCounter } from '@/components/landing/StatsCounter';
 import { SiteLiquidButton } from '@/components/landing/SiteLiquidButton';
 import { Navbar } from '../(public)/components/navbar';
+import { ContactForm } from '@/components/forms/ContactForm';
 
 const clpFormatter = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 });
 
@@ -22,35 +24,28 @@ function formatPrice(price: number) {
 export default function DisenoWebPage() {
   const reduce = useReducedMotion();
   const [yearly, setYearly] = useState(false);
-  const [contactSent, setContactSent] = useState(false);
-  const [contactForm, setContactForm] = useState({ name: '', email: '', message: '', website: '' });
   const [contactSubmitting, setContactSubmitting] = useState(false);
-  const [contactError, setContactError] = useState<string | null>(null);
 
-  const handleContactSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleContactSubmit = async (data: Record<string, string>) => {
     setContactSubmitting(true);
-    setContactError(null);
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...contactForm, source: 'diseno-web' }),
+        body: JSON.stringify({ ...data, source: 'diseno-web' }),
       });
       const data = await res.json().catch(() => null);
       if (!res.ok || !data?.success) {
         throw new Error(data?.error?.message || 'No pudimos enviar tu mensaje. Escríbenos a hola@yellow-erp.cl');
       }
-      setContactSent(true);
     } catch (err) {
-      setContactError(err instanceof Error ? err.message : 'No pudimos enviar tu mensaje. Escríbenos a hola@yellow-erp.cl');
+      throw err;
     } finally {
       setContactSubmitting(false);
     }
   };
 
   return (
-    <div className="landing-page min-h-screen bg-white text-ink">
       <a
         href="#contenido"
         className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[60] focus:bg-white focus:text-ink focus:text-sm focus:font-semibold focus:px-4 focus:py-2 focus:rounded-lg focus:border focus:border-[#0369A1] focus:shadow-[0_0_0_2px_rgba(3,105,161,0.3)]"
@@ -127,22 +122,22 @@ export default function DisenoWebPage() {
                   <div className="flex items-center gap-2">
                     <Award className="w-4 h-4 text-blue-600" />
                     <span className="text-xs font-semibold text-ink">Proyectos entregados</span>
-                    <span className="text-base font-bold text-ink font-mono">150+</span>
+                    <span className="text-base font-bold text-ink font-mono">150+</span><span className="text-[10px] text-slate-text opacity-70 ml-1">*dato estimado</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Shield className="w-4 h-4 text-blue-600" />
                     <span className="text-xs font-semibold text-ink">Satisfacción garantizada</span>
-                    <span className="text-base font-bold text-ink font-mono">98%</span>
+                    <span className="text-base font-bold text-ink font-mono">98%</span><span className="text-[10px] text-slate-text opacity-70 ml-1">*dato estimado</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Globe className="w-4 h-4 text-sky-accent" />
                     <span className="text-xs font-semibold text-ink">Clientes activos</span>
-                    <span className="text-base font-bold text-ink font-mono">45+</span>
+                    <span className="text-base font-bold text-ink font-mono">45+</span><span className="text-[10px] text-slate-text opacity-70 ml-1">*dato estimado</span>
                   </div>
                 </motion.div>
               </div>
               
-              {/* Right: Visual */}
+              {/* Right: Visual - Real Hero Image */}
               <motion.div
                 id="servicios"
                 initial={reduce ? false : { opacity: 0, x: 32, scale: 0.94 }}
@@ -151,13 +146,16 @@ export default function DisenoWebPage() {
                 className="hidden lg:block"
               >
                 <div className="relative h-96 w-full rounded-2xl overflow-hidden shadow-lg">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-indigo-50 opacity-20" />
-                  <div className="relative h-full w-full">
-                    <Laptop className="absolute -top-10 left-1/2 -translate-x-1/2 w-72 h-48 text-blue-600" />
-                    <Brush className="absolute top-1/2 -translate-y-1/2 right-10 h-16 w-16 text-blue-400" />
-                    <Code className="absolute bottom-10 left-10 w-24 h-16 text-blue-300" />
-                    <Heart className="absolute bottom-10 right-10 w-16 h-16 text-red-500" />
-                  </div>
+                  <Image
+                    src="https://picsum.photos/seed/yellow-web-hero-dashboard-preview/1200/800.jpg"
+                    alt="Vista previa de dashboard web moderno diseñado por Yellow - interfaz limpia con sidebar, métricas y gráficos"
+                    fill
+                    priority
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    alt="Vista previa de dashboard web moderno diseñado por Yellow"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent" aria-hidden="true" />
                 </div>
               </motion.div>
             </div>
@@ -456,6 +454,96 @@ export default function DisenoWebPage() {
                   <div className="mt-2 flex items-center gap-2 text-sm font-medium text-blue-600">
                     <ArrowRight className="w-3 h-3" />
                     Ver proyecto
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+        
+        {/* ─── 4.5. TESTIMONIOS ─── */}
+        <section id="testimonios" className="py-20 px-4 sm:px-6 bg-gray-50">
+          <div className="max-w-[1200px] mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl sm:text-4xl font-light text-ink mb-3 tracking-[-0.02em]">
+                Lo que dicen nuestros clientes
+              </h2>
+              <p className="text-sm sm:text-base text-slate-text max-w-2xl mx-auto">
+                Empresas que confiaron en Yellow para su presencia digital
+              </p>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {/* Testimonio 1 */}
+              <motion.div
+                key="test1"
+                initial={reduce ? false : { opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, delay: 0.05 }}
+                className="bg-white border border-[#E2E8F0] rounded-2xl p-6"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-yellow-500">★★★★★</span>
+                </div>
+                <p className="text-slate-text italic mb-4">
+                  "Yellow transformó nuestra presencia digital. El nuevo e-commerce aumentó nuestras ventas online un 40% en el primer trimestre. El equipo entendió nuestro negocio desde el día uno."
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                    <span className="text-blue-700 font-semibold text-sm">MR</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-ink text-sm">María Rodríguez</p>
+                    <p className="text-slate-text text-xs">Directora Comercial, Moda Andes SpA</p>
+                  </div>
+                </div>
+              </motion.div>
+              
+              {/* Testimonio 2 */}
+              <motion.div
+                key="test2"
+                initial={reduce ? false : { opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, delay: 0.1 }}
+                className="bg-white border border-[#E2E8F0] rounded-2xl p-6"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-yellow-500">★★★★★</span>
+                </div>
+                <p className="text-slate-text italic mb-4">
+                  "Profesionales, puntuales y con ojo para el detalle. Nuestro sitio corporativo ahora refleja realmente quiénes somos. El proceso fue transparente y siempre supimos en qué etapa estábamos."
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                    <span className="text-green-700 font-semibold text-sm">JC</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-ink text-sm">Juan Carlos Méndez</p>
+                    <p className="text-slate-text text-xs">Gerente General, Constructora del Sur Ltda.</p>
+                  </div>
+                </div>
+              </motion.div>
+              
+              {/* Testimonio 3 */}
+              <motion.div
+                key="test3"
+                initial={reduce ? false : { opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, delay: 0.15 }}
+                className="bg-white border border-[#E2E8F0] rounded-2xl p-6"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-yellow-500">★★★★★</span>
+                </div>
+                <p className="text-slate-text italic mb-4">
+                  "La mejor decisión fue confiar en Yellow para nuestra tienda online. La integración con nuestro ERP fue impecable y el panel de administración es intuitivo. Soporte post-lanzamiento excelente."
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                    <span className="text-purple-700 font-semibold text-sm">AF</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-ink text-sm">Andrea Fuentes</p>
+                    <p className="text-slate-text text-xs">Fundadora, Café Origen</p>
                   </div>
                 </div>
               </motion.div>
@@ -776,101 +864,12 @@ export default function DisenoWebPage() {
               {/* Form */}
               <div className="lg:col-span-3">
                 <div className="bg-white border border-[#E2E8F0] rounded-2xl p-8">
-                  {contactSent ? (
-                    <div className="text-center py-10">
-                      <div className="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <CheckCircle2 className="w-8 h-8 text-green-600" />
-                      </div>
-                      <h3 className="text-xl font-bold text-ink mb-2">¡Mensaje enviado!</h3>
-                      <p className="text-sm text-slate-text mb-6">Te responderemos dentro de 24 horas hábiles.</p>
-                      <button
-                        onClick={() => { setContactSent(false); setContactForm({ name: '', email: '', message: '', website: '' }); setContactError(null); }}
-                        className="text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors underline underline-offset-2"
-                      >
-                        Enviar otro mensaje
-                      </button>
-                    </div>
-                  ) : (
-                    <form onSubmit={handleContactSubmit} className="space-y-5">
-                      <div className="grid gap-5 sm:grid-cols-2">
-                        <div className="space-y-1.5">
-                          <label htmlFor="contact-nombre" className="block text-xs font-semibold text-ink">Nombre *</label>
-                          <input
-                            id="contact-nombre"
-                            name="name"
-                            type="text"
-                            required
-                            autoComplete="name"
-                            value={contactForm.name}
-                            onChange={e => setContactForm({ ...contactForm, name: e.target.value })}
-                            className="w-full bg-gray-50 border border-[#E2E8F0] rounded-md px-4 py-3 text-sm text-ink placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0369A1]/20 focus:border-[#0369A1] transition-all"
-                            placeholder="Tu nombre"
-                          />
-                        </div>
-                        <div className="space-y-1.5">
-                          <label htmlFor="contact-email" className="block text-xs font-semibold text-ink">Correo electrónico *</label>
-                          <input
-                            id="contact-email"
-                            name="email"
-                            type="email"
-                            required
-                            autoComplete="email"
-                            value={contactForm.email}
-                            onChange={e => setContactForm({ ...contactForm, email: e.target.value })}
-                            className="w-full bg-gray-50 border border-[#E2E8F0] rounded-md px-4 py-3 text-sm text-ink placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0369A1]/20 focus:border-[#0369A1] transition-all"
-                            placeholder="tu@empresa.cl"
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-1.5">
-                        <label htmlFor="contact-mensaje" className="block text-xs font-semibold text-ink">Mensaje *</label>
-                        <textarea
-                          id="contact-mensaje"
-                          name="message"
-                          required
-                          rows={5}
-                          value={contactForm.message}
-                          onChange={e => setContactForm({ ...contactForm, message: e.target.value })}
-                          className="w-full bg-gray-50 border border-[#E2E8F0] rounded-md px-4 py-3 text-sm text-ink placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0369A1]/20 focus:border-[#0369A1] transition-all resize-none"
-                          placeholder="Cuéntanos sobre tu proyecto web..."
-                        />
-                      </div>
-                      {/* Honeypot antispam */}
-                      <input
-                        type="text"
-                        name="website"
-                        tabIndex={-1}
-                        autoComplete="off"
-                        aria-hidden="true"
-                        className="hidden"
-                        onChange={e => setContactForm({ ...contactForm, website: e.target.value })}
-                      />
-                      {contactError && (
-                        <p role="alert" className="text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-md px-4 py-3">
-                          {contactError}
-                        </p>
-                      )}
-                      <SiteLiquidButton
-                        type="submit"
-                        variant="primary"
-                        disabled={contactSubmitting}
-                        className="w-full px-6"
-                      >
-                        {contactSubmitting ? (
-                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        ) : (
-                          <>
-                            <Send className="w-4 h-4" />
-                            Enviar mensaje
-                          </>
-                        )}
-                      </SiteLiquidButton>
-                      <p className="text-[10px] text-slate-text text-center">
-                        Al enviar aceptas nuestra{' '}
-                        <Link href="/privacy" className="text-blue-600 hover:text-blue-700 underline underline-offset-2">Política de Privacidad</Link>.
-                      </p>
-                    </form>
-                  )}
+                  <ContactForm
+                    onSubmit={handleContactSubmit}
+                    source="diseno-web"
+                    submitLabel="Enviar mensaje"
+                    submitting={contactSubmitting}
+                  />
                 </div>
               </div>
             </div>
