@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
 import { Package, UsersRound, FolderKanban, Settings, CreditCard, ChevronRight,
-X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail, Sparkles, TrendingUp, ShieldCheck, DollarSign, Building, UtensilsCrossed, Stethoscope, Shield, Car } from 'lucide-react';
+X, Lock, Zap, FlaskConical, LifeBuoy, ArrowRight, LogOut, Building2, User, ChevronDown, Mail, Sparkles, TrendingUp, ShieldCheck, DollarSign, Building, UtensilsCrossed, Stethoscope, Shield, Car, GraduationCap } from 'lucide-react';
 import { getAuthToken, setAuthToken, clearAuthToken, parseJwtPayload } from '@/lib/auth-token';
 import { SiteLiquidButton } from '@/components/landing/SiteLiquidButton';
 import { getApiClient } from '@/lib/api-client';
@@ -148,6 +148,19 @@ const modules: ModuleOption[] = [
  href: '/auto-talleres',
  requiredModules: [],
  moduleName: 'auto-talleres',
+ },
+ {
+ id: 'educacion',
+ title: 'Educación & Colegios',
+ subtitle: 'Estudiantes y Cursos',
+ description: ['Asistencia y Calificaciones', 'Pensiones y Cartolas', 'Portal del Apoderado', 'Comunicados y Notas'],
+ icon: GraduationCap,
+ iconBg: 'bg-electric-cyan/20 border-electric-cyan/50',
+ iconColor: 'text-[#006680]',
+ accentBadge: 'bg-electric-cyan/20 text-[#006680] border-electric-cyan/50',
+ href: '/educacion',
+ requiredModules: [],
+ moduleName: 'educacion',
  },
  {
  id: 'mi-cuenta',
