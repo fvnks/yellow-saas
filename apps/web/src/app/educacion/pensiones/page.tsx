@@ -5,12 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, DollarSign, Check, Clock, AlertCircle, Download } from 'lucide-react';
 import { Pension } from '@/types/educacion';
+import { CreateEntityModal } from '@/components/educacion/CreateEntityModal';
 
 export default function PensionesPage() {
   const [pensiones, setPensiones] = useState<Pension[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMes, setSelectedMes] = useState(new Date().getMonth() + 1);
   const [selectedAnio, setSelectedAnio] = useState(new Date().getFullYear());
+  const [createOpen, setCreateOpen] = useState(false);
+  const [registrandoId, setRegistrandoId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchPensiones();
@@ -30,6 +33,28 @@ export default function PensionesPage() {
       console.error('Error fetching pensiones:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const marcarPagada = async (id: string) => {
+    setRegistrandoId(id);
+    try {
+      const hoy = new Date().toISOString().slice(0, 10);
+      const res = await fetch(`/api/educacion/pensiones/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          estado: 'pagada',
+          fecha_pago: hoy,
+          metodo_pago: 'efectivo',
+        }),
+      });
+
+      if (res.ok) fetchPensiones();
+    } catch (error) {
+      console.error('Error registrando pago:', error);
+    } finally {
+      setRegistrandoId(null);
     }
   };
 
@@ -69,7 +94,7 @@ export default function PensionesPage() {
           <h1 className="text-2xl font-bold text-gray-900">Pensiones</h1>
           <p className="text-gray-600">Gestión de pensiones mensuales</p>
         </div>
-        <Button>
+        <Button onClick={() => setCreateOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Generar Pensiones
         </Button>
@@ -170,7 +195,9 @@ export default function PensionesPage() {
                       <td className="py-3 px-4 text-right">
                         <div className="flex justify-end gap-2">
                           {pension.estado === 'pendiente' && (
-                            <Button size="sm">Registrar Pago</Button>
+                            <Button size="sm" onClick={() => marcarPagada(pension.id)} disabled={registrandoId === pension.id}>
+                              Registrar Pago
+                            </Button>
                           )}
                           {pension.estado === 'pagada' && (
                             <Button variant="outline" size="sm">
@@ -188,6 +215,20 @@ export default function PensionesPage() {
           )}
         </CardContent>
       </Card>
+
+      <CreateEntityModal
+        title="Generar Pensiones"
+        isOpen={createOpen}
+        onClose={() => setCreateOpen(false)}
+        endpoint="/api/educacion/pensiones/generar"
+        fields={[
+          { name: 'mes', label: 'Mes (1-12)', type: 'number', required: true, min: 1, max: 12, defaultValue: selectedMes },
+          { name: 'anio', label: 'Año', type: 'number', required: true, defaultValue: selectedAnio },
+          { name: 'monto', label: 'Monto mensual (CLP)', type: 'number', required: true },
+          { name: 'fecha_vencimiento', label: 'Fecha de vencimiento', type: 'date', required: true },
+        ]}
+        onSuccess={fetchPensiones}
+      />
     </div>
   );
 }

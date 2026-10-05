@@ -5,12 +5,16 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Bell, Users, GraduationCap, Send, Loader2 } from 'lucide-react';
 import { Comunicado } from '@/types/educacion';
+import { CreateEntityModal } from '@/components/educacion/CreateEntityModal';
+import { useEducacionOptions } from '@/hooks/useEducacionOptions';
 
 export default function ComunicadosPage() {
   const [comunicados, setComunicados] = useState<Comunicado[]>([]);
   const [loading, setLoading] = useState(true);
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [sendResult, setSendResult] = useState<{ success: number; failed: number } | null>(null);
+  const [createOpen, setCreateOpen] = useState(false);
+  const opciones = useEducacionOptions();
 
   useEffect(() => {
     fetchComunicados();
@@ -73,7 +77,7 @@ export default function ComunicadosPage() {
           <h1 className="text-2xl font-bold text-gray-900">Comunicados</h1>
           <p className="text-gray-600">Gestión de comunicados a apoderados</p>
         </div>
-        <Button>
+        <Button onClick={() => setCreateOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Nuevo Comunicado
         </Button>
@@ -138,6 +142,35 @@ export default function ComunicadosPage() {
           ))}
         </div>
       )}
+
+      <CreateEntityModal
+        title="Nuevo Comunicado"
+        isOpen={createOpen}
+        onClose={() => setCreateOpen(false)}
+        endpoint="/api/educacion/comunicados"
+        fields={[
+          { name: 'titulo', label: 'Título', required: true },
+          { name: 'contenido', label: 'Contenido', type: 'textarea', required: true },
+          {
+            name: 'tipo',
+            label: 'Tipo',
+            type: 'select',
+            required: true,
+            options: [
+              { value: 'general', label: 'General' },
+              { value: 'por_curso', label: 'Por curso' },
+              { value: 'por_nivel', label: 'Por nivel' },
+            ],
+          },
+          {
+            name: 'curso_id',
+            label: 'Curso (solo para tipo por curso)',
+            type: 'select',
+            options: opciones.cursos.map((c) => ({ value: c.id, label: `${c.nombre} (${c.anio_lectivo})` })),
+          },
+        ]}
+        onSuccess={fetchComunicados}
+      />
     </div>
   );
 }

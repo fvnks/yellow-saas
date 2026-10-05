@@ -5,10 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Bus, MapPin, Users, Clock } from 'lucide-react';
 import { TransporteRuta } from '@/types/educacion';
+import { CreateEntityModal } from '@/components/educacion/CreateEntityModal';
 
 export default function TransportePage() {
   const [rutas, setRutas] = useState<TransporteRuta[]>([]);
   const [loading, setLoading] = useState(true);
+  const [createOpen, setCreateOpen] = useState(false);
 
   useEffect(() => {
     fetchRutas();
@@ -34,7 +36,7 @@ export default function TransportePage() {
           <h1 className="text-2xl font-bold text-gray-900">Transporte Escolar</h1>
           <p className="text-gray-600">Gestión de rutas y paraderos</p>
         </div>
-        <Button>
+        <Button onClick={() => setCreateOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Nueva Ruta
         </Button>
@@ -95,6 +97,19 @@ export default function TransportePage() {
           ))}
         </div>
       )}
+
+      <CreateEntityModal
+        title="Nueva Ruta"
+        isOpen={createOpen}
+        onClose={() => setCreateOpen(false)}
+        endpoint="/api/educacion/transporte/rutas"
+        fields={[
+          { name: 'nombre', label: 'Nombre de la ruta', required: true },
+          { name: 'conductor', label: 'Conductor' },
+          { name: 'patente', label: 'Patente' },
+        ]}
+        onSuccess={fetchRutas}
+      />
     </div>
   );
 }

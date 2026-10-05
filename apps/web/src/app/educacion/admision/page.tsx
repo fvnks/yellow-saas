@@ -5,10 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Users, Check, X, Clock, AlertCircle } from 'lucide-react';
 import { Postulacion } from '@/types/educacion';
+import { CreateEntityModal } from '@/components/educacion/CreateEntityModal';
 
 export default function AdmisionPage() {
   const [postulaciones, setPostulaciones] = useState<Postulacion[]>([]);
   const [loading, setLoading] = useState(true);
+  const [createOpen, setCreateOpen] = useState(false);
 
   useEffect(() => {
     fetchPostulaciones();
@@ -60,7 +62,7 @@ export default function AdmisionPage() {
           <h1 className="text-2xl font-bold text-gray-900">Admisión</h1>
           <p className="text-gray-600">Gestión de postulaciones</p>
         </div>
-        <Button>
+        <Button onClick={() => setCreateOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Nueva Postulación
         </Button>
@@ -166,6 +168,27 @@ export default function AdmisionPage() {
           )}
         </CardContent>
       </Card>
+
+      <CreateEntityModal
+        title="Nueva Postulación"
+        isOpen={createOpen}
+        onClose={() => setCreateOpen(false)}
+        endpoint="/api/educacion/postulaciones"
+        fields={[
+          { name: 'estudiante_nombres', label: 'Nombres del estudiante', required: true },
+          { name: 'estudiante_apellido_paterno', label: 'Apellido paterno del estudiante', required: true },
+          { name: 'estudiante_apellido_materno', label: 'Apellido materno del estudiante' },
+          { name: 'estudiante_fecha_nacimiento', label: 'Fecha de nacimiento', type: 'date' },
+          { name: 'apoderado_nombres', label: 'Nombres del apoderado' },
+          { name: 'apoderado_apellido_paterno', label: 'Apellido paterno del apoderado' },
+          { name: 'apoderado_email', label: 'Email del apoderado', type: 'email' },
+          { name: 'apoderado_telefono', label: 'Teléfono del apoderado' },
+          { name: 'nivel_postulacion', label: 'Nivel al que postula' },
+          { name: 'anio_postulacion', label: 'Año de postulación', type: 'number', defaultValue: 2026 },
+          { name: 'observaciones', label: 'Observaciones', type: 'textarea' },
+        ]}
+        onSuccess={fetchPostulaciones}
+      />
     </div>
   );
 }

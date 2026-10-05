@@ -11,3 +11,4 @@ export * from './AsignaturaForm';
 export * from './StudentCard';
 export * from './AttendanceGrid';
 export * from './GradeBook';
+export * from './CreateEntityModal';

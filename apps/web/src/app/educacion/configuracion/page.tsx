@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,39 +10,66 @@ import { Save, School, Calendar, Bell, DollarSign, Mail, AlertTriangle } from 'l
 export default function ConfiguracionPage() {
   const [configuracion, setConfiguracion] = useState({
     // Datos del establecimiento
-    nombre: 'Colegio San Andrés',
-    rut: '12345678-9',
-    direccion: 'Av. Principal 123',
-    telefono: '+56 2 2345 6789',
-    email: 'info@colegio.cl',
+    nombre: '',
+    rut: '',
+    direccion: '',
+    telefono: '',
+    email: '',
     
     // Año lectivo
     anio_lectivo: 2026,
-    fecha_inicio: '2026-03-01',
-    fecha_termino: '2026-12-15',
-    periodos: 'trimestral',
+    fecha_inicio: '',
+    fecha_termino: '',
+    periodos: '',
     
     // Pensiones
-    monto_pension: 150000,
+    monto_pension: 0,
     dia_vencimiento: 5,
     descuento_pronto_pago: 0,
     
     // Notificaciones
-    notif_inasistencia: true,
+    notif_inasistencia: false,
     notif_inasistencia_umbral: 3,
-    notif_nota_baja: true,
+    notif_nota_baja: false,
     notif_nota_baja_umbral: 4.0,
-    notif_pago_vencido: true,
-    notif_evento_proximo: true,
+    notif_pago_vencido: false,
+    notif_evento_proximo: false,
     notif_evento_dias: 7,
     
     // Email
-    smtp_host: 'smtp.gmail.com',
+    smtp_host: '',
     smtp_port: 587,
     smtp_user: '',
     smtp_password: '',
-    smtp_from: 'noreply@colegio.cl',
+    smtp_from: '',
   });
+  const [cargando, setCargando] = useState(true);
+  const [guardando, setGuardando] = useState(false);
+  const [estado, setEstado] = useState<'idle' | 'ok' | 'error'>('idle');
+  const [mensaje, setMensaje] = useState('');
+
+  useEffect(() => {
+    let cancelado = false;
+
+    async function cargar() {
+      try {
+        const res = await fetch('/api/educacion/configuracion');
+        const data = await res.json();
+        if (!cancelado && data?.data?.datos) {
+          setConfiguracion((prev) => ({ ...prev, ...data.data.datos }));
+        }
+      } catch (error) {
+        console.error('Error cargando configuración:', error);
+      } finally {
+        if (!cancelado) setCargando(false);
+      }
+    }
+
+    cargar();
+    return () => {
+      cancelado = true;
+    };
+  }, []);
 
   const handleChange = (field: string, value: any) => {
     setConfiguracion((prev) => ({
@@ -51,9 +78,36 @@ export default function ConfiguracionPage() {
     }));
   };
 
-  const handleSave = () => {
-    // TODO: Implementar guardado en la base de datos
-    alert('Configuración guardada exitosamente');
+  const handleSave = async () => {
+    setGuardando(true);
+    setEstado('idle');
+
+    try {
+      // Evita que un input numérico vacío termine como NaN en el JSON.
+      const datos = Object.fromEntries(
+        Object.entries(configuracion).map(([k, v]) => [
+          k,
+          typeof v === 'number' && Number.isNaN(v) ? 0 : v,
+        ])
+      );
+
+      const res = await fetch('/api/educacion/configuracion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos),
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || 'No se pudo guardar');
+
+      setEstado('ok');
+      setMensaje('Configuración guardada correctamente.');
+    } catch (error) {
+      setEstado('error');
+      setMensaje(error instanceof Error ? error.message : 'No se pudo guardar');
+    } finally {
+      setGuardando(false);
+    }
   };
 
   return (
@@ -385,10 +439,15 @@ export default function ConfiguracionPage() {
         </Card>
       </div>
 
-      <div className="flex justify-end">
-        <Button onClick={handleSave}>
+      <div className="flex items-center justify-end gap-4">
+        {mensaje && (
+          <span className={estado === 'ok' ? 'text-sm text-green-600' : 'text-sm text-red-600'}>
+            {mensaje}
+          </span>
+        )}
+        <Button onClick={handleSave} disabled={guardando || cargando}>
           <Save className="h-4 w-4 mr-2" />
-          Guardar Configuración
+          {guardando ? 'Guardando...' : 'Guardar Configuración'}
         </Button>
       </div>
     </div>

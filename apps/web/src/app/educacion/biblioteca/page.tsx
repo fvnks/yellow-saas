@@ -6,11 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Search, BookOpen, Edit, Trash2, Eye, BookMarked } from 'lucide-react';
 import { Libro } from '@/types/educacion';
+import { CreateEntityModal } from '@/components/educacion/CreateEntityModal';
 
 export default function BibliotecaPage() {
   const [libros, setLibros] = useState<Libro[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [createOpen, setCreateOpen] = useState(false);
 
   useEffect(() => {
     fetchLibros();
@@ -60,7 +62,7 @@ export default function BibliotecaPage() {
             <BookMarked className="h-4 w-4 mr-2" />
             Préstamos
           </Button>
-          <Button>
+          <Button onClick={() => setCreateOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Nuevo Libro
           </Button>
@@ -147,6 +149,23 @@ export default function BibliotecaPage() {
           )}
         </CardContent>
       </Card>
+
+      <CreateEntityModal
+        title="Nuevo Libro"
+        isOpen={createOpen}
+        onClose={() => setCreateOpen(false)}
+        endpoint="/api/educacion/libros"
+        fields={[
+          { name: 'titulo', label: 'Título', required: true },
+          { name: 'isbn', label: 'ISBN' },
+          { name: 'autor', label: 'Autor' },
+          { name: 'editorial', label: 'Editorial' },
+          { name: 'anio_publicacion', label: 'Año de publicación', type: 'number' },
+          { name: 'cantidad_total', label: 'Cantidad total', type: 'number', defaultValue: 1 },
+          { name: 'ubicacion', label: 'Ubicación' },
+        ]}
+        onSuccess={fetchLibros}
+      />
     </div>
   );
 }

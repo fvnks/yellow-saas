@@ -73,9 +73,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
-    const body: CalificacionCreate = await request.json();
+    const rawBody = await request.json();
+    const body: any = rawBody;
 
-    if (!body.estudiante_id || !body.curso_asignatura_id || !body.periodo || !body.anio_lectivo || !body.nota || !body.tipo_evaluacion) {
+    const faltaCursoAsignatura =
+      !body.curso_asignatura_id && (!body.curso_id || !body.asignatura_id);
+
+    if (!body.estudiante_id || faltaCursoAsignatura || !body.periodo || !body.anio_lectivo || !body.nota || !body.tipo_evaluacion) {
       return NextResponse.json({ error: 'Faltan campos requeridos' }, { status: 400 });
     }
 
@@ -84,6 +88,32 @@ export async function POST(request: NextRequest) {
     }
 
     const db = await getDb();
+
+    // Permite enviar `curso_id` + `asignatura_id` en vez del id de la tabla
+    // intermedia; la asignación se crea o reutiliza en ese caso.
+    let cursoAsignaturaId = body.curso_asignatura_id;
+
+    if (!cursoAsignaturaId && body.curso_id && body.asignatura_id) {
+      const existente = await db.query(
+        `SELECT id FROM educacion_curso_asignatura
+          WHERE curso_id = $1 AND asignatura_id = $2 AND anio_lectivo = $3
+          LIMIT 1`,
+        [body.curso_id, body.asignatura_id, body.anio_lectivo]
+      );
+
+      if (existente.rows.length > 0) {
+        cursoAsignaturaId = existente.rows[0].id;
+      } else {
+        const creada = await db.query(
+          `INSERT INTO educacion_curso_asignatura
+             (curso_id, asignatura_id, anio_lectivo)
+           VALUES ($1, $2, $3)
+           RETURNING id`,
+          [body.curso_id, body.asignatura_id, body.anio_lectivo]
+        );
+        cursoAsignaturaId = creada.rows[0].id;
+      }
+    }
 
     const result = await db.query(
       `INSERT INTO educacion_calificaciones 
@@ -95,7 +125,7 @@ export async function POST(request: NextRequest) {
       [
         user.company_id,
         body.estudiante_id,
-        body.curso_asignatura_id,
+        cursoAsignaturaId,
         body.periodo,
         body.anio_lectivo,
         body.nota,

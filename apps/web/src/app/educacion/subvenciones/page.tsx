@@ -5,11 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, DollarSign, Check, Clock, AlertCircle } from 'lucide-react';
 import { Subvencion } from '@/types/educacion';
+import { CreateEntityModal } from '@/components/educacion/CreateEntityModal';
 
 export default function SubvencionesPage() {
   const [subvenciones, setSubvenciones] = useState<Subvencion[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedAnio, setSelectedAnio] = useState(2026);
+  const [createOpen, setCreateOpen] = useState(false);
 
   useEffect(() => {
     fetchSubvenciones();
@@ -64,7 +66,7 @@ export default function SubvencionesPage() {
           <h1 className="text-2xl font-bold text-gray-900">Subvenciones</h1>
           <p className="text-gray-600">Gestión de subvenciones del Mineduc</p>
         </div>
-        <Button>
+        <Button onClick={() => setCreateOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Nueva Subvención
         </Button>
@@ -158,6 +160,31 @@ export default function SubvencionesPage() {
           )}
         </CardContent>
       </Card>
+
+      <CreateEntityModal
+        title="Nueva Subvención"
+        isOpen={createOpen}
+        onClose={() => setCreateOpen(false)}
+        endpoint="/api/educacion/subvenciones"
+        fields={[
+          { name: 'tipo', label: 'Tipo', required: true, placeholder: 'Ej: Subvención escolar preferencial' },
+          { name: 'anio', label: 'Año', type: 'number', required: true, defaultValue: 2026 },
+          { name: 'monto', label: 'Monto (CLP)', type: 'number' },
+          {
+            name: 'estado',
+            label: 'Estado',
+            type: 'select',
+            options: [
+              { value: 'solicitada', label: 'Solicitada' },
+              { value: 'aprobada', label: 'Aprobada' },
+              { value: 'recibida', label: 'Recibida' },
+            ],
+          },
+          { name: 'fecha_recepcion', label: 'Fecha de recepción', type: 'date' },
+          { name: 'observaciones', label: 'Observaciones', type: 'textarea' },
+        ]}
+        onSuccess={fetchSubvenciones}
+      />
     </div>
   );
 }

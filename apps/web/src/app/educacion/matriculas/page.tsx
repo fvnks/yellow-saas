@@ -3,17 +3,76 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, FileText, Check, X, Clock } from 'lucide-react';
+import { Plus, FileText, Check, X, Clock, Loader2 } from 'lucide-react';
 import { Matricula } from '@/types/educacion';
+import { Modal } from '@/components/educacion/Modal';
 
 export default function MatriculasPage() {
   const [matriculas, setMatriculas] = useState<Matricula[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedAnio, setSelectedAnio] = useState(2026);
 
+  // Modal de nueva matrícula
+  const [modalOpen, setModalOpen] = useState(false);
+  const [estudiantes, setEstudiantes] = useState<{ id: string; nombres: string; apellido_paterno: string; rut: string }[]>([]);
+  const [cursos, setCursos] = useState<{ id: string; nombre: string; anio_lectivo: number }[]>([]);
+  const [estudianteId, setEstudianteId] = useState('');
+  const [cursoId, setCursoId] = useState('');
+  const [anioLectivo, setAnioLectivo] = useState(2026);
+  const [observaciones, setObservaciones] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [modalError, setModalError] = useState('');
+
   useEffect(() => {
     fetchMatriculas();
   }, [selectedAnio]);
+
+  const abrirModal = async () => {
+    setModalError('');
+    setModalOpen(true);
+    try {
+      const [estRes, curRes] = await Promise.all([
+        fetch('/api/educacion/estudiantes?limit=200').then((r) => r.json()),
+        fetch('/api/educacion/cursos').then((r) => r.json()),
+      ]);
+      setEstudiantes(estRes.data || []);
+      setCursos(curRes.data || []);
+    } catch (err) {
+      console.error('Error cargando opciones:', err);
+    }
+  };
+
+  const crearMatricula = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setModalError('');
+    setSaving(true);
+
+    try {
+      const res = await fetch('/api/educacion/matriculas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          estudiante_id: estudianteId,
+          curso_id: cursoId,
+          anio_lectivo: anioLectivo,
+          observaciones: observaciones || undefined,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'No se pudo crear la matrícula');
+
+      setEstudianteId('');
+      setCursoId('');
+      setObservaciones('');
+      setModalOpen(false);
+      fetchMatriculas();
+    } catch (err) {
+      setModalError(err instanceof Error ? err.message : 'No se pudo crear la matrícula');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const fetchMatriculas = async () => {
     try {
@@ -51,11 +110,88 @@ export default function MatriculasPage() {
           <h1 className="text-2xl font-bold text-gray-900">Matrículas</h1>
           <p className="text-gray-600">Gestión de matrículas anuales</p>
         </div>
-        <Button>
+        <Button onClick={abrirModal}>
           <Plus className="h-4 w-4 mr-2" />
           Nueva Matrícula
         </Button>
       </div>
+
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Nueva Matrícula">
+        <form onSubmit={crearMatricula} className="space-y-4">
+          {modalError && (
+            <div className="p-3 bg-red-50 text-red-700 rounded-lg text-sm">{modalError}</div>
+          )}
+
+          <div className="space-y-2">
+            <label htmlFor="estudiante" className="text-sm font-medium">Estudiante *</label>
+            <select
+              id="estudiante"
+              value={estudianteId}
+              onChange={(e) => setEstudianteId(e.target.value)}
+              required
+              className="w-full px-3 py-2 border rounded-md"
+            >
+              <option value="">Selecciona un estudiante</option>
+              {estudiantes.map((e) => (
+                <option key={e.id} value={e.id}>
+                  {e.nombres} {e.apellido_paterno} ({e.rut})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="curso" className="text-sm font-medium">Curso *</label>
+            <select
+              id="curso"
+              value={cursoId}
+              onChange={(e) => setCursoId(e.target.value)}
+              required
+              className="w-full px-3 py-2 border rounded-md"
+            >
+              <option value="">Selecciona un curso</option>
+              {cursos.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.nombre} ({c.anio_lectivo})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="anio" className="text-sm font-medium">Año lectivo *</label>
+            <input
+              id="anio"
+              type="number"
+              value={anioLectivo}
+              onChange={(e) => setAnioLectivo(parseInt(e.target.value))}
+              required
+              className="w-full px-3 py-2 border rounded-md"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="obs" className="text-sm font-medium">Observaciones</label>
+            <textarea
+              id="obs"
+              value={observaciones}
+              onChange={(e) => setObservaciones(e.target.value)}
+              rows={3}
+              className="w-full px-3 py-2 border rounded-md"
+            />
+          </div>
+
+          <div className="flex justify-end gap-2 pt-2">
+            <Button type="button" variant="outline" onClick={() => setModalOpen(false)}>
+              Cancelar
+            </Button>
+            <Button type="submit" disabled={saving}>
+              {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+              Crear matrícula
+            </Button>
+          </div>
+        </form>
+      </Modal>
 
       <Card>
         <CardHeader>

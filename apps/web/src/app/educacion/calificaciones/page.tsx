@@ -5,12 +5,16 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, TrendingUp, TrendingDown } from 'lucide-react';
 import { Calificacion } from '@/types/educacion';
+import { CreateEntityModal } from '@/components/educacion/CreateEntityModal';
+import { useEducacionOptions } from '@/hooks/useEducacionOptions';
 
 export default function CalificacionesPage() {
   const [calificaciones, setCalificaciones] = useState<Calificacion[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCurso, setSelectedCurso] = useState('');
   const [selectedPeriodo, setSelectedPeriodo] = useState('1');
+  const [createOpen, setCreateOpen] = useState(false);
+  const opciones = useEducacionOptions();
 
   useEffect(() => {
     fetchCalificaciones();
@@ -46,7 +50,7 @@ export default function CalificacionesPage() {
           <h1 className="text-2xl font-bold text-gray-900">Libro de Clases</h1>
           <p className="text-gray-600">Gestión de calificaciones y evaluaciones</p>
         </div>
-        <Button>
+        <Button onClick={() => setCreateOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Ingresar Notas
         </Button>
@@ -66,9 +70,11 @@ export default function CalificacionesPage() {
                 className="px-3 py-2 border rounded-md"
               >
                 <option value="">Seleccionar curso</option>
-                <option value="1">1° Básico A</option>
-                <option value="2">1° Básico B</option>
-                <option value="3">2° Básico A</option>
+                {opciones.cursos.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.nombre} ({c.anio_lectivo})
+                  </option>
+                ))}
               </select>
             </div>
             <div>
@@ -107,8 +113,8 @@ export default function CalificacionesPage() {
                       </td>
                       <td className="py-3 px-4">{cal.asignatura_nombre}</td>
                       <td className="py-3 px-4 capitalize">{cal.tipo_evaluacion}</td>
-                      <td className={`py-3 px-4 font-bold ${getNotaColor(cal.nota)}`}>
-                        {cal.nota.toFixed(1)}
+                      <td className={`py-3 px-4 font-bold ${getNotaColor(Number(cal.nota))}`}>
+                        {Number(cal.nota).toFixed(1)}
                       </td>
                       <td className="py-3 px-4">
                         {cal.fecha_evaluacion
@@ -123,6 +129,53 @@ export default function CalificacionesPage() {
           )}
         </CardContent>
       </Card>
+
+      <CreateEntityModal
+        title="Ingresar Nota"
+        isOpen={createOpen}
+        onClose={() => setCreateOpen(false)}
+        endpoint="/api/educacion/calificaciones"
+        fields={[
+          {
+            name: 'estudiante_id',
+            label: 'Estudiante',
+            type: 'select',
+            required: true,
+            options: opciones.estudiantes.map((e) => ({ value: e.id, label: `${e.nombres} ${e.apellido_paterno} (${e.rut})` })),
+          },
+          {
+            name: 'curso_id',
+            label: 'Curso',
+            type: 'select',
+            required: true,
+            options: opciones.cursos.map((c) => ({ value: c.id, label: `${c.nombre} (${c.anio_lectivo})` })),
+          },
+          {
+            name: 'asignatura_id',
+            label: 'Asignatura',
+            type: 'select',
+            required: true,
+            options: opciones.asignaturas.map((a) => ({ value: a.id, label: a.nombre })),
+          },
+          {
+            name: 'periodo',
+            label: 'Período',
+            type: 'select',
+            required: true,
+            options: [
+              { value: '1', label: '1° Trimestre' },
+              { value: '2', label: '2° Trimestre' },
+              { value: '3', label: '3° Trimestre' },
+            ],
+          },
+          { name: 'anio_lectivo', label: 'Año lectivo', type: 'number', required: true, defaultValue: 2026 },
+          { name: 'nota', label: 'Nota (1.0 - 7.0)', type: 'number', required: true, min: 1, max: 7, step: '0.1' },
+          { name: 'tipo_evaluacion', label: 'Tipo de evaluación', required: true, placeholder: 'Ej: Prueba 1' },
+          { name: 'descripcion', label: 'Descripción' },
+          { name: 'fecha_evaluacion', label: 'Fecha de evaluación', type: 'date' },
+        ]}
+        onSuccess={fetchCalificaciones}
+      />
     </div>
   );
 }

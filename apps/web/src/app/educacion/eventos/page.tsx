@@ -5,10 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Calendar, MapPin, Users, Check } from 'lucide-react';
 import { Evento } from '@/types/educacion';
+import { CreateEntityModal } from '@/components/educacion/CreateEntityModal';
 
 export default function EventosPage() {
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [loading, setLoading] = useState(true);
+  const [createOpen, setCreateOpen] = useState(false);
 
   useEffect(() => {
     fetchEventos();
@@ -47,7 +49,7 @@ export default function EventosPage() {
           <h1 className="text-2xl font-bold text-gray-900">Eventos</h1>
           <p className="text-gray-600">Gestión de eventos y actividades</p>
         </div>
-        <Button>
+        <Button onClick={() => setCreateOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Nuevo Evento
         </Button>
@@ -110,6 +112,34 @@ export default function EventosPage() {
           ))}
         </div>
       )}
+
+      <CreateEntityModal
+        title="Nuevo Evento"
+        isOpen={createOpen}
+        onClose={() => setCreateOpen(false)}
+        endpoint="/api/educacion/eventos"
+        fields={[
+          { name: 'titulo', label: 'Título', required: true },
+          {
+            name: 'tipo',
+            label: 'Tipo',
+            type: 'select',
+            required: true,
+            options: [
+              { value: 'reunion', label: 'Reunión' },
+              { value: 'celebracion', label: 'Celebración' },
+              { value: 'salida_pedagogica', label: 'Salida pedagógica' },
+              { value: 'otro', label: 'Otro' },
+            ],
+          },
+          { name: 'fecha_inicio', label: 'Fecha de inicio', type: 'date', required: true },
+          { name: 'fecha_termino', label: 'Fecha de término', type: 'date' },
+          { name: 'ubicacion', label: 'Ubicación' },
+          { name: 'descripcion', label: 'Descripción', type: 'textarea' },
+          { name: 'requiere_autorizacion', label: 'Requiere autorización', type: 'checkbox', defaultValue: false },
+        ]}
+        onSuccess={fetchEventos}
+      />
     </div>
   );
 }
