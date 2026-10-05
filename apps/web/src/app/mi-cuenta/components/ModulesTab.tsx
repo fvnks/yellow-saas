@@ -29,9 +29,16 @@ const CATEGORY_LABELS: Record<string, string> = {
  finanzas: 'Finanzas',
  inventario: 'Inventario',
  proyectos: 'Proyectos',
+ projects: 'Proyectos',
  soporte: 'Soporte',
  desarrollo: 'Desarrollo',
  general: 'General',
+ erp: 'ERP',
+ hr: 'RRHH',
+ production: 'Producción',
+ administracion: 'Administración',
+ educacion: 'Educación',
+ system: 'Cuenta',
 };
 
 export default function ModulesTab() {
