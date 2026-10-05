@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import Providers from './providers';
 import { SupportWidget } from '@/components/support/support-widget';
@@ -8,13 +8,14 @@ import { SupportWidget } from '@/components/support/support-widget';
 // This prevents build-time errors when database is not available
 export const dynamic = 'force-dynamic';
 
-const geist = Geist({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-sans',
   display: 'swap',
+  weight: ['300', '400', '500', '600', '700'],
 });
 
-const geistMono = Geist_Mono({
+const jetBrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono',
   display: 'swap',
@@ -60,7 +61,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-  <html lang="es" className={`${geist.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
+  <html lang="es" className={`${plusJakartaSans.variable} ${jetBrainsMono.variable} antialiased`} suppressHydrationWarning>
   <head>
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#0f172a" />
