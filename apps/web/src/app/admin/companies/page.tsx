@@ -277,13 +277,13 @@ export default function AdminCompaniesPage() {
  </div>
 
  {showCreate && (
- <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={closeCreate}>
- <div className="bg-cloud border border-mist rounded-xl shadow-2xl w-full max-w-lg" onClick={e => e.stopPropagation()}>
- <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+ <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 overflow-y-auto" onClick={closeCreate}>
+ <div className="bg-cloud border border-mist rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col my-auto" onClick={e => e.stopPropagation()}>
+ <div className="px-6 py-4 border-b border-border flex items-center justify-between shrink-0">
  <h2 className="text-lg font-semibold text-ink">Nueva Empresa</h2>
  <button onClick={closeCreate} className="text-muted-foreground hover:text-ink"><X className="w-5 h-5" /></button>
  </div>
- <div className="p-6 space-y-4">
+ <div className="p-6 space-y-4 overflow-y-auto min-h-0">
  <div className="space-y-2">
  <label className="block text-xs font-medium text-muted-foreground">¿Qué estás creando? *</label>
  <div className="grid grid-cols-2 gap-2">
@@ -330,7 +330,7 @@ export default function AdminCompaniesPage() {
  <label className="block text-xs font-medium text-muted-foreground">Nombre *</label>
  <input type="text" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
  className="w-full bg-white border border-mist rounded-lg px-3 py-2 text-sm text-ink placeholder:text-iron focus:outline-none focus:ring-1 focus:ring-violet-500/30"
- placeholder="Mi Empresa" autoFocus />
+ placeholder="Mi Empresa" />
  </div>
  <div className="space-y-1">
  <label className="block text-xs font-medium text-muted-foreground">Slug *</label>
@@ -382,7 +382,7 @@ export default function AdminCompaniesPage() {
  </div>
  </div>
  </div>
- <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
+ <div className="px-6 py-4 border-t border-border flex justify-end gap-3 shrink-0">
  <button onClick={closeCreate}
  className="bg-cloud hover:bg-mist text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">
  Cancelar
