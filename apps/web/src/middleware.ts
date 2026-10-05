@@ -162,6 +162,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|manifest.json|public/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|json|ico|js|css|woff2?|ttf|eot)$|admin|auto-talleres|ayuda|portal|view).*)',
+    '/((?!_next/static|_next/image|favicon.ico|manifest.json|public/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|json|ico|js|css|woff2?|ttf|eot)$|admin|auto-talleres|ayuda|educacion|portal|view).*)',
   ],
 };
