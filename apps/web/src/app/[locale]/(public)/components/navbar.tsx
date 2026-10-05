@@ -11,6 +11,7 @@ const navLinks = [
  { label: 'Beneficios', href: '#features' },
  { label: 'Precios', href: '#pricing' },
  { label: 'FAQ', href: '#faq' },
+  { label: 'Diseño Web', href: '/diseno-web' },
 ];
 
 export function Navbar() {
