@@ -166,8 +166,10 @@ export default function HomePage() {
 
  <main id="contenido" tabIndex={-1} className="focus:outline-none">
  {/* ─── 2. HERO ─── */}
- <section className="relative pt-20 pb-16 lg:pt-24 lg:pb-20 overflow-hidden bg-gradient-to-b from-snow via-snow to-cloud">
- <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
+  <section className="relative pt-20 pb-16 lg:pt-24 lg:pb-20 overflow-hidden bg-slate-900">
+  <div className="absolute top-0 right-0 w-[560px] h-96 rounded-full bg-gradient-to-br from-yellow-400/20 to-amber-500/10 blur-[120px] pointer-events-none" />
+  <div className="absolute bottom-0 left-0 w-[400px] h-72 rounded-full bg-sky-500/10 blur-[100px] pointer-events-none" />
+  <div className="max-w-[1200px] mx-auto px-4 sm:px-6 relative">
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
  {/* Left: Copy */}
  <div className="text-left">
@@ -185,7 +187,7 @@ export default function HomePage() {
  initial={reduce ? false : { opacity: 0, y: 14 }}
  animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
  transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0.04 }}
- className="text-4xl sm:text-5xl lg:text-[4rem] font-light text-ink leading-[1.05] tracking-[-0.04em] mb-5"
+ className="text-4xl sm:text-5xl lg:text-[4rem] font-light text-white leading-[1.05] tracking-[-0.04em] mb-5"
  >
  El ERP que transforma tu PyME en Chile
  <br />

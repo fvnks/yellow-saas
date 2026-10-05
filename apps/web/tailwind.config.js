@@ -16,20 +16,39 @@ module.exports = {
         sans: ['Poppins', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
       },
       colors: {
-        /* Yellow ERP Brand Tokens — Sunshine Primary */
+        /* === Brand Tokens (Pro Max) === */
+        brand: {
+          DEFAULT: '#F5C518',
+          hover: '#D4A017',
+          dark: '#B8860B',
+          ink: '#8A6100',
+          'ink-hover': '#6B4700',
+          glow: 'rgba(245, 197, 24, 0.15)',
+        },
+        /* === Surface Palette (60-30-10 rule) === */
+        surface: {
+          DEFAULT: '#F8FAFC',
+          card: '#FFFFFF',
+          muted: '#F1F5F9',
+          border: '#E2E8F0',
+          dark: '#0F172A',
+        },
+        ink: {
+          DEFAULT: '#1E293B',
+          muted: '#64748B',
+          faint: '#94A3B8',
+        },
+        /* Legacy aliases — keep for backward compat */
         'sunshine': '#F5C518',
         'sunshine-hover': '#D4A017',
         'sunshine-dark': '#B8860B',
         'amber-gold': '#D4A017',
         'gold': '#FFA500',
-        /* Tonos legibles del amarillo (texto/bordes sobre fondos claros) */
         'sunshine-ink': '#8A6100',
         'sunshine-ink-hover': '#6B4700',
         'sunshine-dark-hover': '#8A6100',
-        /* Alias históricos: la paleta violeta fue reemplazada por sunshine */
         'monday-violet': '#F5C518',
         'monday-violet-hover': '#D4A017',
-        'ink': '#1A1B1E',
         'slate-text': '#4A4D58',
         'iron': '#8A8E9C',
         'fog': '#C5C9D4',
@@ -78,10 +97,9 @@ module.exports = {
           ring: 'hsl(var(--sidebar-ring))',
         },
         brand: {
-          violet: '#F5C518',
-          'violet-hover': '#D4A017',
-          sunshine: '#F5C518',
-          'sunshine-hover': '#D4A017',
+          DEFAULT: 'hsl(var(--brand, #F5C518))',
+          hover: '#D4A017',
+          dark: '#B8860B',
         },
       },
       borderRadius: {

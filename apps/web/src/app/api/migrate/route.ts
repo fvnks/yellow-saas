@@ -913,6 +913,7 @@ export async function POST(request: Request) {
       { name: 'sistema', label: 'Sistema', description: 'Usuarios, Roles, Permisos, Logs' },
       { name: 'mi-cuenta', label: 'Mi Cuenta SaaS', description: 'Suscripción, Facturación, Módulos' },
       { name: 'ayuda', label: 'Soporte & Ayuda', description: 'Tickets, Base de Conocimiento' },
+      { name: 'educacion', label: 'Educación & Colegios', description: 'Estudiantes, Cursos, Asistencia, Calificaciones, Pensiones' },
     ];
     for (const mod of moduleCatalog) {
       await query(
