@@ -243,7 +243,13 @@ export default function EstudiantesPage() {
         <EstudianteForm
           estudiante={editingEstudiante}
           cursos={cursos}
-          onSave={editingEstudiante ? handleUpdate : handleCreate}
+          onSave={async (data) => {
+            if (editingEstudiante) {
+              await handleUpdate(data as EstudianteUpdate);
+            } else {
+              await handleCreate(data as EstudianteCreate);
+            }
+          }}
           onCancel={() => {
             setIsModalOpen(false);
             setEditingEstudiante(undefined);

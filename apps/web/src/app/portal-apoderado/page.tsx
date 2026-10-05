@@ -5,10 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, LogIn } from 'lucide-react';
+import { Loader2, LogIn, AlertCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function PortalApoderadoPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -17,13 +20,28 @@ export default function PortalApoderadoPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
 
     try {
-      // TODO: Implementar autenticación real
-      console.log('Login:', formData);
-      alert('Autenticación en desarrollo');
-    } catch (error) {
-      console.error('Error logging in:', error);
+      const res = await fetch('/api/portal-apoderado/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Error al iniciar sesión');
+      }
+
+      // Guardar token en cookie
+      document.cookie = `portal_token=${data.data.token}; path=/; max-age=28800; SameSite=Lax`;
+
+      // Redirigir al dashboard
+      router.push('/portal-apoderado/dashboard');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al iniciar sesión');
     } finally {
       setLoading(false);
     }
@@ -38,6 +56,13 @@ export default function PortalApoderadoPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="flex items-center gap-2 p-3 bg-red-50 text-red-700 rounded-lg">
+                <AlertCircle className="h-4 w-4" />
+                <span className="text-sm">{error}</span>
+              </div>
+            )}
+
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -49,6 +74,7 @@ export default function PortalApoderadoPage() {
                 required
               />
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="password">Contraseña</Label>
               <Input
@@ -60,6 +86,7 @@ export default function PortalApoderadoPage() {
                 required
               />
             </div>
+
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? (
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />

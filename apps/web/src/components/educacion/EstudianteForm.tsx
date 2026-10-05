@@ -63,7 +63,7 @@ export function EstudianteForm({ estudiante, cursos, onSave, onCancel }: Estudia
       const data: EstudianteCreate | EstudianteUpdate = {
         ...formData,
         curso_id: formData.curso_id || undefined,
-        genero: formData.genero || undefined,
+        genero: (formData.genero || undefined) as EstudianteCreate['genero'],
       };
 
       await onSave(data);

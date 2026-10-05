@@ -56,7 +56,7 @@ export function useCalificaciones(options: UseCalificacionesOptions = {}) {
     try {
       setLoading(true);
       setError(null);
-      const nuevasCalificaciones = [];
+      const nuevasCalificaciones: Calificacion[] = [];
       for (const cal of data) {
         const response = await calificacionesApi.crear(cal);
         nuevasCalificaciones.push(response.data);

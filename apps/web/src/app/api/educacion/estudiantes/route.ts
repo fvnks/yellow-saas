@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
     // Contar total
     const countQuery = `SELECT COUNT(*) FROM (${query}) as subquery`;
     const countResult = await db.query(countQuery, params);
-    const total = parseInt(countQuery.rows[0].count);
+    const total = parseInt(countResult.rows[0].count);
 
     // Paginación
     query += ` ORDER BY e.apellido_paterno, e.nombres LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`;

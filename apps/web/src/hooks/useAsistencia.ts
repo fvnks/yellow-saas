@@ -40,12 +40,15 @@ export function useAsistencia(options: UseAsistenciaOptions = {}) {
       setLoading(true);
       setError(null);
       const response = await asistenciaApi.registrar(data);
-      
+      const registradas: Asistencia[] = Array.isArray(response.data)
+        ? response.data
+        : [response.data];
+
       if (Array.isArray(data)) {
         // Registro masivo
         setAsistencias((prev) => {
           const newAsistencias = [...prev];
-          response.data.forEach((asist: Asistencia) => {
+          registradas.forEach((asist: Asistencia) => {
             const index = newAsistencias.findIndex(
               (a) => a.estudiante_id === asist.estudiante_id && a.fecha === asist.fecha
             );
@@ -59,16 +62,17 @@ export function useAsistencia(options: UseAsistenciaOptions = {}) {
         });
       } else {
         // Registro individual
+        const guardada = registradas[0];
         setAsistencias((prev) => {
           const index = prev.findIndex(
             (a) => a.estudiante_id === data.estudiante_id && a.fecha === data.fecha
           );
           if (index >= 0) {
             const newAsistencias = [...prev];
-            newAsistencias[index] = response.data;
+            newAsistencias[index] = guardada;
             return newAsistencias;
           }
-          return [...prev, response.data];
+          return [...prev, guardada];
         });
       }
       

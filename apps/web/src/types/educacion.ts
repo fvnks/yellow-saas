@@ -114,6 +114,10 @@ export interface Curso {
   activo: boolean;
   created_at: string;
   updated_at: string;
+  // Campos enriquecidos desde JOINs
+  profesor_jefe_nombres?: string;
+  profesor_jefe_apellido?: string;
+  total_estudiantes?: number;
 }
 
 export interface CursoCreate {
@@ -152,6 +156,9 @@ export interface Profesor {
   estado: 'activo' | 'inactivo';
   created_at: string;
   updated_at: string;
+  // Campos enriquecidos desde JOINs
+  cursos_jefe?: number;
+  asignaturas?: number;
 }
 
 export interface ProfesorCreate {
@@ -227,6 +234,11 @@ export interface Asistencia {
   justificado_por?: string;
   created_at: string;
   updated_at: string;
+  // Campos enriquecidos desde JOINs
+  estudiante_nombres?: string;
+  estudiante_apellido?: string;
+  estudiante_rut?: string;
+  curso_nombre?: string;
 }
 
 export interface AsistenciaCreate {
@@ -256,6 +268,11 @@ export interface Calificacion {
   fecha_evaluacion?: string;
   created_at: string;
   updated_at: string;
+  // Campos enriquecidos desde JOINs
+  estudiante_nombres?: string;
+  estudiante_apellido?: string;
+  asignatura_nombre?: string;
+  curso_nombre?: string;
 }
 
 export interface CalificacionCreate {
@@ -311,6 +328,8 @@ export interface Comunicado {
   activo: boolean;
   created_at: string;
   updated_at: string;
+  // Campos enriquecidos desde JOINs
+  curso_nombre?: string;
 }
 
 export interface ComunicadoCreate {
@@ -339,6 +358,11 @@ export interface Matricula {
   observaciones?: string;
   created_at: string;
   updated_at: string;
+  // Campos enriquecidos desde JOINs
+  estudiante_nombres?: string;
+  estudiante_apellido?: string;
+  estudiante_rut?: string;
+  curso_nombre?: string;
 }
 
 export interface MatriculaCreate {
@@ -363,6 +387,10 @@ export interface Pension {
   dte_id?: string;
   created_at: string;
   updated_at: string;
+  // Campos enriquecidos desde JOINs
+  estudiante_nombres?: string;
+  estudiante_apellido?: string;
+  curso_nombre?: string;
 }
 
 export interface PensionCreate {
@@ -393,6 +421,8 @@ export interface Evento {
   requiere_autorizacion: boolean;
   created_at: string;
   updated_at: string;
+  // Campos enriquecidos desde JOINs
+  curso_nombre?: string;
 }
 
 export interface EventoCreate {
@@ -479,6 +509,9 @@ export interface TransporteRuta {
   activo: boolean;
   created_at: string;
   updated_at: string;
+  // Campos enriquecidos desde JOINs
+  total_paraderos?: number;
+  total_estudiantes?: number;
 }
 
 export interface TransporteParadero {

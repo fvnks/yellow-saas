@@ -211,7 +211,13 @@ export default function ProfesoresPage() {
       >
         <ProfesorForm
           profesor={editingProfesor}
-          onSave={editingProfesor ? handleUpdate : handleCreate}
+          onSave={async (data) => {
+            if (editingProfesor) {
+              await handleUpdate(data as ProfesorUpdate);
+            } else {
+              await handleCreate(data as ProfesorCreate);
+            }
+          }}
           onCancel={() => {
             setIsModalOpen(false);
             setEditingProfesor(undefined);

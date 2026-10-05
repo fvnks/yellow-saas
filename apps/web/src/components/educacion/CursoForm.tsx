@@ -54,8 +54,9 @@ export function CursoForm({ curso, profesores, onSave, onCancel }: CursoFormProp
     try {
       const data: CursoCreate | CursoUpdate = {
         ...formData,
+        nivel: formData.nivel as CursoCreate['nivel'],
         profesor_jefe_id: formData.profesor_jefe_id || undefined,
-        jornada: formData.jornada || undefined,
+        jornada: (formData.jornada || undefined) as CursoCreate['jornada'],
       };
 
       await onSave(data);

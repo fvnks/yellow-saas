@@ -210,7 +210,13 @@ export default function CursosPage() {
         <CursoForm
           curso={editingCurso}
           profesores={profesores}
-          onSave={editingCurso ? handleUpdate : handleCreate}
+          onSave={async (data) => {
+            if (editingCurso) {
+              await handleUpdate(data as CursoUpdate);
+            } else {
+              await handleCreate(data as CursoCreate);
+            }
+          }}
           onCancel={() => {
             setIsModalOpen(false);
             setEditingCurso(undefined);
