@@ -304,6 +304,88 @@ h1.text-xl.font-bold.text-foreground {
 .stagger-3 { animation-delay: 120ms; }
 .stagger-4 { animation-delay: 160ms; }
 
+/* ============================================
+   DASHBOARD ENTRANCE SEQUENCE
+   Hero chart -> stats cards -> sidebar
+   ============================================ */
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes heroRise {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.992);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes chartDraw {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes riseStagger {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.45s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.animate-hero-rise {
+  animation: heroRise 0.55s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.animate-chart-draw {
+  animation: chartDraw 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.animate-rise-stagger {
+  animation: riseStagger 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.hero-section {
+  opacity: 0;
+}
+
+.hero-section.is-mounted {
+  animation: heroRise 0.55s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.sidebar-section {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+.sidebar-section.is-mounted {
+  animation: slideInLeft 0.45s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -314,7 +396,13 @@ h1.text-xl.font-bold.text-foreground {
   .animate-float,
   .animate-shimmer,
   .animate-gradient,
-  .animate-pulse-glow {
+  .animate-pulse-glow,
+  .animate-slide-in-left,
+  .animate-hero-rise,
+  .animate-chart-draw,
+  .animate-rise-stagger,
+  .hero-section.is-mounted,
+  .sidebar-section.is-mounted {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;

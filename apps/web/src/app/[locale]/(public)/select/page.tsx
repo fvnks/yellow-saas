@@ -440,7 +440,7 @@ export default function SelectPage() {
  return (
  <div className="min-h-screen bg-cloud flex flex-col font-sans select-none text-ink">
  {/* Header */}
- <header className="bg-snow/90 border-b border-mist px-6 h-16 sticky top-0 z-30 backdrop-blur-xl flex items-center justify-between">
+ <header className="animate-slide-in-left bg-snow/90 border-b border-mist px-6 h-16 sticky top-0 z-30 backdrop-blur-xl flex items-center justify-between">
  <div className="max-w-[1200px] mx-auto w-full flex items-center justify-between">
  <div className="flex items-center gap-3">
  <div className="h-9 w-9 rounded-full p-0.5 shadow-sm flex items-center justify-center shrink-0" style={{ background: 'conic-gradient(from 270deg, #FFA500 15%, #33dbdb 40%, #33d58e 55%, #F5C518 65%, #fc527d 85%, #FFA500 100%)' }}>
@@ -557,7 +557,7 @@ export default function SelectPage() {
  initial={{ opacity: 0, y: 10 }}
  animate={{ opacity: 1, y: 0 }}
  transition={{ duration: 0.25 }}
- className="text-center mb-10"
+ className="animate-hero-rise text-center mb-10"
  >
  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-snow border border-mist text-xs font-bold text-slate-text shadow-xs mb-3">
  <Sparkles className="w-3.5 h-3.5 text-sunshine-ink" />
@@ -584,7 +584,7 @@ export default function SelectPage() {
  onClick={() => handleModuleClick(mod)}
  whileHover={{ y: -2 }}
  whileTap={{ scale: 0.98 }}
- className="group relative w-full text-left bg-snow border border-mist rounded-xl p-5 transition-all duration-200 hover:border-[#2563EB]/40 hover:shadow-md hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2563EB] focus-visible:ring-offset-2 focus-visible:ring-offset-snow"
+ className="animate-rise-stagger group relative w-full text-left bg-snow border border-mist rounded-xl p-5 transition-all duration-200 hover:border-[#2563EB]/40 hover:shadow-md hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2563EB] focus-visible:ring-offset-2 focus-visible:ring-offset-snow"
  >
  <div className="flex flex-col gap-4">
  <div className="flex items-start justify-between gap-3">

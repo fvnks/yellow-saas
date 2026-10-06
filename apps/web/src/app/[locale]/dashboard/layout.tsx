@@ -46,16 +46,18 @@ export default function DashboardLayout({ children }: LayoutProps) {
     <main className="bg-cloud min-h-screen text-ink transition-colors">
       <Toaster position="top-right" richColors closeButton />
       <SidebarProvider>
-        <UnifiedSidebar
-          sidebarItems={sidebarItems}
-          moduleKey="dashboard"
-          moduleTitle="ERP"
-          moduleSubtitle="Ventas, Bodega & Finanzas"
-          moduleIcon={LayoutDashboard}
-          theme="default"
-          filterByActiveModules={true}
-          getCompanyId={getCompanyIdFromToken}
-        />
+        <div className="animate-slide-in-left h-full">
+          <UnifiedSidebar
+            sidebarItems={sidebarItems}
+            moduleKey="dashboard"
+            moduleTitle="ERP"
+            moduleSubtitle="Ventas, Bodega & Finanzas"
+            moduleIcon={LayoutDashboard}
+            theme="default"
+            filterByActiveModules={true}
+            getCompanyId={getCompanyIdFromToken}
+          />
+        </div>
         <SidebarInset className="bg-cloud">
           <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between border-b border-mist bg-snow/90 backdrop-blur-xl px-6">
             <div className="flex items-center gap-3">

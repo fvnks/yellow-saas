@@ -23,11 +23,25 @@ COPY . .
 # Clean turbo and next.js cache to force fresh build
 RUN rm -rf .turbo apps/web/.next apps/web/.next-static
 
-# Add build argument for JWT_SECRET
+# Re-install to ensure lockfile sync after copy
+RUN npm ci
+
+# Add build arguments
 ARG JWT_SECRET
+ARG NEXT_PUBLIC_APP_URL
+ARG DATABASE_URL
+ARG DB_HOST
+ARG DB_PASSWORD
+ARG COOLIFY_FQDN
+
 ENV JWT_SECRET=${JWT_SECRET}
+ENV NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
+ENV DATABASE_URL=${DATABASE_URL}
+ENV DB_HOST=${DB_HOST}
+ENV DB_PASSWORD=${DB_PASSWORD}
+
 # Build only the web app and its dependencies
-RUN npm run build
+RUN npm ci && npm run build
 # ---- runner ----
 FROM node:20-alpine AS runner
 WORKDIR /app
