@@ -39,6 +39,7 @@ export async function GET(request: NextRequest) {
     const result = await query(
       `SELECT c.id, c.name, c.slug, c.plan, c.status, c.created_at, c.trial_ends_at,
         c.company_type, c.vertical,
+        c.logo_url, c.color_principal, c.color_secundario,
         (SELECT COUNT(*) FROM profiles WHERE company_id = c.id) as user_count,
         COALESCE(
           (SELECT json_agg(ma.module_name)
