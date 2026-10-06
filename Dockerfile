@@ -1,7 +1,6 @@
 FROM node:20-alpine AS base
 
 # Install turbo globally
-RUN npm install -g turbo@1.13.0
 
 # ---- base ----
 FROM base AS builder
@@ -28,8 +27,7 @@ RUN rm -rf .turbo apps/web/.next apps/web/.next-static
 ARG JWT_SECRET
 ENV JWT_SECRET=${JWT_SECRET}
 # Build only the web app and its dependencies
-RUN turbo run build --filter=@yellow-erp/web
-
+RUN npm run build
 # ---- runner ----
 FROM node:20-alpine AS runner
 WORKDIR /app
