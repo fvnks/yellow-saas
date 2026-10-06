@@ -40,11 +40,18 @@ ON CONFLICT (name) DO UPDATE SET
   route = EXCLUDED.route;
 
 -- 3. Add RLS policies for module_catalog and module_activations
-ALTER TABLE module_catalog ENABLE ROW LEVEL SECURITY;
-ALTER TABLE module_activations ENABLE ROW LEVEL SECURITY;
-
+-- (requiere el schema `auth` de Supabase; en Postgres plano se omite — la app
+--  se conecta como dueño de las tablas y la RLS no aplica igual)
 DO $$
 BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_namespace WHERE nspname = 'auth') THEN
+    RAISE NOTICE 'auth schema inexistente: se omiten las políticas RLS';
+    RETURN;
+  END IF;
+
+  ALTER TABLE module_catalog ENABLE ROW LEVEL SECURITY;
+  ALTER TABLE module_activations ENABLE ROW LEVEL SECURITY;
+
   -- module_catalog: anyone can read, only service role can write
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'module_catalog_read' AND tablename = 'module_catalog') THEN
     CREATE POLICY module_catalog_read ON module_catalog FOR SELECT USING (true);
