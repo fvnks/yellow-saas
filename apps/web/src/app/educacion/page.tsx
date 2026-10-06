@@ -89,17 +89,17 @@ export default function EducacionDashboard() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in-up">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Módulo Educativo</h1>
-        <p className="text-gray-600 mt-2">Gestión integral de tu institución educativa</p>
+        <h1 className="text-2xl font-black text-ink tracking-tight">Módulo Educativo</h1>
+        <p className="text-sm text-slate-500 mt-1">Gestión integral de tu institución educativa</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {tarjetas.map((stat) => (
           <Card key={stat.title}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">{stat.title}</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-600">{stat.title}</CardTitle>
               <div className={`p-2 rounded-lg ${stat.bgColor}`}>
                 <stat.icon className={`h-4 w-4 ${stat.color}`} />
               </div>
@@ -121,21 +121,21 @@ export default function EducacionDashboard() {
             <CardDescription>Accede a las funciones más utilizadas</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-            <a href="/educacion/estudiantes" className="block p-3 rounded-lg border hover:bg-gray-50 transition-colors">
+            <a href="/educacion/estudiantes" className="block p-3 rounded-lg border hover:bg-slate-50 transition-colors">
               <div className="font-medium">Gestionar Estudiantes</div>
-              <div className="text-sm text-gray-500">Ver, agregar o editar estudiantes</div>
+              <div className="text-sm text-slate-500">Ver, agregar o editar estudiantes</div>
             </a>
-            <a href="/educacion/asistencia" className="block p-3 rounded-lg border hover:bg-gray-50 transition-colors">
+            <a href="/educacion/asistencia" className="block p-3 rounded-lg border hover:bg-slate-50 transition-colors">
               <div className="font-medium">Registrar Asistencia</div>
-              <div className="text-sm text-gray-500">Control de asistencia diaria</div>
+              <div className="text-sm text-slate-500">Control de asistencia diaria</div>
             </a>
-            <a href="/educacion/calificaciones" className="block p-3 rounded-lg border hover:bg-gray-50 transition-colors">
+            <a href="/educacion/calificaciones" className="block p-3 rounded-lg border hover:bg-slate-50 transition-colors">
               <div className="font-medium">Libro de Clases</div>
-              <div className="text-sm text-gray-500">Gestión de calificaciones</div>
+              <div className="text-sm text-slate-500">Gestión de calificaciones</div>
             </a>
-            <a href="/educacion/pensiones" className="block p-3 rounded-lg border hover:bg-gray-50 transition-colors">
+            <a href="/educacion/pensiones" className="block p-3 rounded-lg border hover:bg-slate-50 transition-colors">
               <div className="font-medium">Pensiones</div>
-              <div className="text-sm text-gray-500">Control de pagos mensuales</div>
+              <div className="text-sm text-slate-500">Control de pagos mensuales</div>
             </a>
           </CardContent>
         </Card>
@@ -147,7 +147,7 @@ export default function EducacionDashboard() {
           </CardHeader>
           <CardContent>
             {eventos.length === 0 ? (
-              <p className="text-sm text-gray-500">No hay eventos próximos registrados todavía.</p>
+              <p className="text-sm text-slate-500">No hay eventos próximos registrados todavía.</p>
             ) : (
               <div className="space-y-4">
                 {eventos.map((e, i) => (
@@ -155,8 +155,8 @@ export default function EducacionDashboard() {
                     <div className={`w-2 h-2 mt-2 rounded-full ${['bg-blue-500', 'bg-green-500', 'bg-purple-500'][i % 3]}`} />
                     <div>
                       <div className="font-medium">{e.titulo}</div>
-                      <div className="text-sm text-gray-500">{e.ubicacion || e.descripcion || '—'}</div>
-                      <div className="text-xs text-gray-400">
+                      <div className="text-sm text-slate-500">{e.ubicacion || e.descripcion || '—'}</div>
+                      <div className="text-xs text-slate-400">
                         {new Date(String(e.fecha_inicio).slice(0, 10) + 'T00:00:00').toLocaleDateString('es-CL', { day: 'numeric', month: 'short', year: 'numeric' })}
                       </div>
                     </div>

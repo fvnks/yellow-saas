@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { PRIMARY_ACTION, SECONDARY_ACTION } from '@/components/educacion/button-classes';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, DollarSign, Check, Clock, AlertCircle, Download } from 'lucide-react';
 import { Pension } from '@/types/educacion';
@@ -88,13 +89,13 @@ export default function PensionesPage() {
     .reduce((acc, p) => acc + p.monto, 0);
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 animate-fade-in-up">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Pensiones</h1>
-          <p className="text-gray-600">Gestión de pensiones mensuales</p>
+          <h1 className="text-2xl font-black text-ink">Pensiones</h1>
+          <p className="text-sm text-slate-500 mt-1">Gestión de pensiones mensuales</p>
         </div>
-        <Button onClick={() => setCreateOpen(true)}>
+        <Button className={PRIMARY_ACTION} onClick={() => setCreateOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Generar Pensiones
         </Button>
@@ -103,7 +104,7 @@ export default function PensionesPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Pendiente</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-600">Total Pendiente</CardTitle>
             <DollarSign className="h-4 w-4 text-red-600" />
           </CardHeader>
           <CardContent>
@@ -113,7 +114,7 @@ export default function PensionesPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Pagado</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-600">Total Pagado</CardTitle>
             <Check className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
@@ -123,7 +124,7 @@ export default function PensionesPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Pensiones</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-600">Total Pensiones</CardTitle>
             <DollarSign className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
@@ -140,7 +141,7 @@ export default function PensionesPage() {
               <select
                 value={selectedMes}
                 onChange={(e) => setSelectedMes(parseInt(e.target.value))}
-                className="px-3 py-2 border rounded-md"
+                className="px-3 py-2 rounded-xl border border-slate-200/80 bg-white"
               >
                 {Array.from({ length: 12 }, (_, i) => (
                   <option key={i + 1} value={i + 1}>
@@ -151,7 +152,7 @@ export default function PensionesPage() {
               <select
                 value={selectedAnio}
                 onChange={(e) => setSelectedAnio(parseInt(e.target.value))}
-                className="px-3 py-2 border rounded-md"
+                className="px-3 py-2 rounded-xl border border-slate-200/80 bg-white"
               >
                 <option value={2026}>2026</option>
                 <option value={2025}>2025</option>
@@ -161,23 +162,23 @@ export default function PensionesPage() {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <div className="text-center py-8 text-gray-500">Cargando...</div>
+            <div className="text-center py-8 text-slate-500">Cargando...</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Estudiante</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Curso</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Monto</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Vencimiento</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Estado</th>
-                    <th className="text-right py-3 px-4 font-medium text-gray-600">Acciones</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Estudiante</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Curso</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Monto</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Vencimiento</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Estado</th>
+                    <th className="text-right py-3 px-4 font-medium text-slate-600">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pensiones.map((pension) => (
-                    <tr key={pension.id} className="border-b hover:bg-gray-50">
+                    <tr key={pension.id} className="border-b hover:bg-slate-50">
                       <td className="py-3 px-4">
                         {pension.estudiante_nombres} {pension.estudiante_apellido}
                       </td>
@@ -195,12 +196,12 @@ export default function PensionesPage() {
                       <td className="py-3 px-4 text-right">
                         <div className="flex justify-end gap-2">
                           {pension.estado === 'pendiente' && (
-                            <Button size="sm" onClick={() => marcarPagada(pension.id)} disabled={registrandoId === pension.id}>
+                            <Button size="sm" className={PRIMARY_ACTION} onClick={() => marcarPagada(pension.id)} disabled={registrandoId === pension.id}>
                               Registrar Pago
                             </Button>
                           )}
                           {pension.estado === 'pagada' && (
-                            <Button variant="outline" size="sm">
+                            <Button variant="outline" size="sm" className={SECONDARY_ACTION}>
                               <Download className="h-4 w-4 mr-1" />
                               Boleta
                             </Button>

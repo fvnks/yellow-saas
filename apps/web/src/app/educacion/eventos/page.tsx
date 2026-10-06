@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { PRIMARY_ACTION } from '@/components/educacion/button-classes';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Calendar, MapPin, Users, Check } from 'lucide-react';
 import { Evento } from '@/types/educacion';
@@ -38,25 +39,25 @@ export default function EventosPage() {
       case 'salida_pedagogica':
         return 'bg-purple-100 text-purple-800';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-slate-100 text-slate-800';
     }
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 animate-fade-in-up">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Eventos</h1>
-          <p className="text-gray-600">Gestión de eventos y actividades</p>
+          <h1 className="text-2xl font-black text-ink">Eventos</h1>
+          <p className="text-sm text-slate-500 mt-1">Gestión de eventos y actividades</p>
         </div>
-        <Button onClick={() => setCreateOpen(true)}>
+        <Button className={PRIMARY_ACTION} onClick={() => setCreateOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Nuevo Evento
         </Button>
       </div>
 
       {loading ? (
-        <div className="text-center py-8 text-gray-500">Cargando...</div>
+        <div className="text-center py-8 text-slate-500">Cargando...</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {eventos.map((evento) => (
@@ -79,7 +80,7 @@ export default function EventosPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <div className="flex items-center gap-2 text-sm text-slate-600">
                     <Calendar className="h-4 w-4" />
                     <span>
                       {new Date(evento.fecha_inicio).toLocaleDateString('es-CL', {
@@ -92,20 +93,20 @@ export default function EventosPage() {
                     </span>
                   </div>
                   {evento.ubicacion && (
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-2 text-sm text-slate-600">
                       <MapPin className="h-4 w-4" />
                       <span>{evento.ubicacion}</span>
                     </div>
                   )}
                   {evento.curso_nombre && (
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-2 text-sm text-slate-600">
                       <Users className="h-4 w-4" />
                       <span>{evento.curso_nombre}</span>
                     </div>
                   )}
                 </div>
                 {evento.descripcion && (
-                  <p className="mt-3 text-sm text-gray-700">{evento.descripcion}</p>
+                  <p className="mt-3 text-sm text-slate-700">{evento.descripcion}</p>
                 )}
               </CardContent>
             </Card>

@@ -6,13 +6,15 @@ import { NavGroup } from '@/navigation/sidebar/sidebar-items';
 import ModuleSidebarBackButton from '@/components/sidebar/module-sidebar-back-button';
 import ModuleSidebarFooter from '@/components/sidebar/module-sidebar-footer';
 import { cn } from '@/lib/utils';
+import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard, Package, Warehouse, ShoppingCart, ShoppingBag, Users, Truck, Handshake, Wallet, Calculator,
   FolderKanban, Monitor, CreditCard, Settings, UtensilsCrossed, RefreshCw, ScrollText, AlertTriangle, FileText,
   Receipt, BarChart3, MapPin, DollarSign, TrendingUp, Tag, BookOpen, UserCheck, Shield, Bell, Webhook, Globe,
   ArrowLeftRight, Boxes, Wrench, History, ClipboardList, FileBarChart, TruckIcon, CircleDollarSign, Building2,
   UsersRound, ClipboardCheck, GraduationCap, UserPlus, Upload, Plus, Clock, List, Lock, FlaskConical, Play,
-  Building, FileDown, Search, X, ChevronDown, ChevronRight
+  Building, FileDown, Search, X, ChevronDown, ChevronRight,
+  Calendar, Library, Bus, FileSpreadsheet
 } from 'lucide-react';
 
 export interface UnifiedSidebarProps {
@@ -102,7 +104,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Receipt, BarChart3, MapPin, DollarSign, TrendingUp, Tag, BookOpen, UserCheck, Shield, Bell, Webhook, Globe,
   ArrowLeftRight, Boxes, Wrench, History, ClipboardList, FileBarChart, TruckIcon, CircleDollarSign, Building2,
   UsersRound, ClipboardCheck, GraduationCap, UserPlus, Upload, Plus, Clock, List, Lock, FlaskConical, Play,
-  Building, FileDown,
+  Building, FileDown, Calendar, Library, Bus, FileSpreadsheet,
 };
 
 function getIcon(iconName?: string): React.ComponentType<{ className?: string }> {
@@ -244,7 +246,10 @@ function UnifiedSidebarNavigation({
   const groupTriggerRefs = React.useRef<Record<string, HTMLButtonElement | null>>({});
   const itemTriggerRefs = React.useRef<Record<string, HTMLElement | null>>({});
 
-  const path = typeof window !== 'undefined' ? window.location.pathname : '';
+  // `usePathname` devuelve la misma ruta en SSR y en cliente, evitando el
+  // error de hidratación que ocurría al leer `window.location` durante el
+  // render. Se normaliza para ignorar el prefijo de locale (/es, /en).
+  const path = usePathname().replace(/^\/(es|en)(?=\/|$)/, '') || '/';
 
   const filteredItems = React.useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -273,16 +278,47 @@ function UnifiedSidebarNavigation({
 
   const colors = THEME_CLASSES[theme];
 
+  // Longitud del prefijo con el que `path` coincide con `itemPath` (-1 si no).
+  const matchLen = React.useCallback(
+    (itemPath: string) => {
+      const clean = (itemPath || '').split('?')[0].replace(/\/+$/, '');
+      if (!clean) return -1;
+      if (path === clean) return clean.length;
+      if (path.startsWith(clean + '/')) return clean.length;
+      return -1;
+    },
+    [path]
+  );
+
+  // El ítem más específico gana: así "Dashboard" no queda resaltado junto a
+  // la subpágina activa (p. ej. /educacion/estudiantes).
+  const bestMatch = React.useMemo(() => {
+    let best = -1;
+    for (const group of filteredItems) {
+      for (const item of group.items) {
+        const candidates = item.subItems
+          ? item.subItems.flatMap((sub: any) => [sub.path, ...(sub.subItems ?? []).map((n: any) => n.path)])
+          : [item.path];
+        for (const candidate of candidates) {
+          const len = matchLen(candidate);
+          if (len > best) best = len;
+        }
+      }
+    }
+    return best;
+  }, [filteredItems, matchLen]);
+
   const isActive = (itemPath: string, subItems?: any[]) => {
     if (subItems) {
-      return subItems.some((subItem) => {
-        const subPath = subItem.path.split('?')[0];
-        if (path.startsWith(subPath)) return true;
-        if (subItem.subItems) return subItem.subItems.some((nested: any) => path.startsWith(nested.path.split('?')[0]));
-        return false;
-      });
+      // Un contenedor con hijos está activo si alguno de ellos coincide.
+      return subItems.some(
+        (subItem) =>
+          matchLen(subItem.path) >= 0 ||
+          (subItem.subItems ?? []).some((nested: any) => matchLen(nested.path) >= 0)
+      );
     }
-    return path.startsWith(itemPath);
+    const len = matchLen(itemPath);
+    return len >= 0 && len === bestMatch;
   };
 
   const isGroupActive = (group: NavGroup) => {

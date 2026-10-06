@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { PRIMARY_ACTION, SECONDARY_ACTION } from '@/components/educacion/button-classes';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Bell, Users, GraduationCap, Send, Loader2 } from 'lucide-react';
 import { Comunicado } from '@/types/educacion';
@@ -71,13 +72,13 @@ export default function ComunicadosPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 animate-fade-in-up">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Comunicados</h1>
-          <p className="text-gray-600">Gestión de comunicados a apoderados</p>
+          <h1 className="text-2xl font-black text-ink">Comunicados</h1>
+          <p className="text-sm text-slate-500 mt-1">Gestión de comunicados a apoderados</p>
         </div>
-        <Button onClick={() => setCreateOpen(true)}>
+        <Button className={PRIMARY_ACTION} onClick={() => setCreateOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Nuevo Comunicado
         </Button>
@@ -90,7 +91,7 @@ export default function ComunicadosPage() {
       )}
 
       {loading ? (
-        <div className="text-center py-8 text-gray-500">Cargando...</div>
+        <div className="text-center py-8 text-slate-500">Cargando...</div>
       ) : (
         <div className="space-y-4">
           {comunicados.map((comunicado) => (
@@ -99,7 +100,7 @@ export default function ComunicadosPage() {
                 <div className="flex items-start justify-between">
                   <div>
                     <CardTitle className="text-lg">{comunicado.titulo}</CardTitle>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-slate-500">
                       {new Date(comunicado.fecha_publicacion).toLocaleDateString('es-CL', {
                         year: 'numeric',
                         month: 'long',
@@ -109,21 +110,22 @@ export default function ComunicadosPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     {getTipoIcon(comunicado.tipo)}
-                    <span className="capitalize text-sm text-gray-600">
+                    <span className="capitalize text-sm text-slate-600">
                       {comunicado.tipo.replace('_', ' ')}
                     </span>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-700">{comunicado.contenido}</p>
+                <p className="text-slate-700">{comunicado.contenido}</p>
                 {comunicado.curso_nombre && (
-                  <p className="mt-2 text-sm text-gray-500">
+                  <p className="mt-2 text-sm text-slate-500">
                     Curso: {comunicado.curso_nombre}
                   </p>
                 )}
                 <div className="mt-4 flex justify-end">
                   <Button
+                    className={SECONDARY_ACTION}
                     variant="outline"
                     size="sm"
                     onClick={() => handleEnviarNotificacion(comunicado.id)}

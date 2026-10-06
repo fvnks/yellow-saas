@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { PRIMARY_ACTION } from '@/components/educacion/button-classes';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, DollarSign, Check, Clock, AlertCircle } from 'lucide-react';
 import { Subvencion } from '@/types/educacion';
@@ -60,13 +61,13 @@ export default function SubvencionesPage() {
   );
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 animate-fade-in-up">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Subvenciones</h1>
-          <p className="text-gray-600">Gestión de subvenciones del Mineduc</p>
+          <h1 className="text-2xl font-black text-ink">Subvenciones</h1>
+          <p className="text-sm text-slate-500 mt-1">Gestión de subvenciones del Mineduc</p>
         </div>
-        <Button onClick={() => setCreateOpen(true)}>
+        <Button className={PRIMARY_ACTION} onClick={() => setCreateOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Nueva Subvención
         </Button>
@@ -75,7 +76,7 @@ export default function SubvencionesPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Subvenciones</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-600">Total Subvenciones</CardTitle>
             <DollarSign className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
@@ -85,7 +86,7 @@ export default function SubvencionesPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Cantidad</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-600">Cantidad</CardTitle>
             <DollarSign className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
@@ -95,7 +96,7 @@ export default function SubvencionesPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Año</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-600">Año</CardTitle>
             <DollarSign className="h-4 w-4 text-purple-600" />
           </CardHeader>
           <CardContent>
@@ -111,7 +112,7 @@ export default function SubvencionesPage() {
             <select
               value={selectedAnio}
               onChange={(e) => setSelectedAnio(parseInt(e.target.value))}
-              className="px-3 py-2 border rounded-md"
+              className="px-3 py-2 rounded-xl border border-slate-200/80 bg-white"
             >
               <option value={2026}>2026</option>
               <option value={2025}>2025</option>
@@ -120,22 +121,22 @@ export default function SubvencionesPage() {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <div className="text-center py-8 text-gray-500">Cargando...</div>
+            <div className="text-center py-8 text-slate-500">Cargando...</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Tipo</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Año</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Monto</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Estado</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Fecha Recepción</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Tipo</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Año</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Monto</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Estado</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Fecha Recepción</th>
                   </tr>
                 </thead>
                 <tbody>
                   {subvenciones.map((subvencion) => (
-                    <tr key={subvencion.id} className="border-b hover:bg-gray-50">
+                    <tr key={subvencion.id} className="border-b hover:bg-slate-50">
                       <td className="py-3 px-4">{subvencion.tipo}</td>
                       <td className="py-3 px-4">{subvencion.anio}</td>
                       <td className="py-3 px-4 font-medium">

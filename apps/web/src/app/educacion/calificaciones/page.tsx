@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { PRIMARY_ACTION } from '@/components/educacion/button-classes';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, TrendingUp, TrendingDown } from 'lucide-react';
 import { Calificacion } from '@/types/educacion';
@@ -44,13 +45,13 @@ export default function CalificacionesPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 animate-fade-in-up">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Libro de Clases</h1>
-          <p className="text-gray-600">Gestión de calificaciones y evaluaciones</p>
+          <h1 className="text-2xl font-black text-ink">Libro de Clases</h1>
+          <p className="text-sm text-slate-500 mt-1">Gestión de calificaciones y evaluaciones</p>
         </div>
-        <Button onClick={() => setCreateOpen(true)}>
+        <Button className={PRIMARY_ACTION} onClick={() => setCreateOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Ingresar Notas
         </Button>
@@ -63,11 +64,11 @@ export default function CalificacionesPage() {
         <CardContent>
           <div className="flex gap-4 mb-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Curso</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Curso</label>
               <select
                 value={selectedCurso}
                 onChange={(e) => setSelectedCurso(e.target.value)}
-                className="px-3 py-2 border rounded-md"
+                className="px-3 py-2 rounded-xl border border-slate-200/80 bg-white"
               >
                 <option value="">Seleccionar curso</option>
                 {opciones.cursos.map((c) => (
@@ -78,11 +79,11 @@ export default function CalificacionesPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Período</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Período</label>
               <select
                 value={selectedPeriodo}
                 onChange={(e) => setSelectedPeriodo(e.target.value)}
-                className="px-3 py-2 border rounded-md"
+                className="px-3 py-2 rounded-xl border border-slate-200/80 bg-white"
               >
                 <option value="1">1° Trimestre</option>
                 <option value="2">2° Trimestre</option>
@@ -92,22 +93,22 @@ export default function CalificacionesPage() {
           </div>
 
           {loading ? (
-            <div className="text-center py-8 text-gray-500">Cargando...</div>
+            <div className="text-center py-8 text-slate-500">Cargando...</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Estudiante</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Asignatura</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Tipo Evaluación</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Nota</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Fecha</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Estudiante</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Asignatura</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Tipo Evaluación</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Nota</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Fecha</th>
                   </tr>
                 </thead>
                 <tbody>
                   {calificaciones.map((cal) => (
-                    <tr key={cal.id} className="border-b hover:bg-gray-50">
+                    <tr key={cal.id} className="border-b hover:bg-slate-50">
                       <td className="py-3 px-4">
                         {cal.estudiante_nombres} {cal.estudiante_apellido}
                       </td>

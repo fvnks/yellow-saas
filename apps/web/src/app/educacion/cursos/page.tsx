@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { PRIMARY_ACTION, SECONDARY_ACTION } from '@/components/educacion/button-classes';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Users, BookOpen, Edit, Trash2, Eye } from 'lucide-react';
 import { Curso, CursoCreate, CursoUpdate } from '@/types/educacion';
@@ -117,20 +118,20 @@ export default function CursosPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 animate-fade-in-up">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Cursos</h1>
-          <p className="text-gray-600">Gestión de cursos y asignación de profesores</p>
+          <h1 className="text-2xl font-black text-ink">Cursos</h1>
+          <p className="text-sm text-slate-500 mt-1">Gestión de cursos y asignación de profesores</p>
         </div>
-        <Button onClick={openCreateModal}>
+        <Button className={PRIMARY_ACTION} onClick={openCreateModal}>
           <Plus className="h-4 w-4 mr-2" />
           Nuevo Curso
         </Button>
       </div>
 
       {loading ? (
-        <div className="text-center py-8 text-gray-500">Cargando...</div>
+        <div className="text-center py-8 text-slate-500">Cargando...</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {cursos.map((curso) => (
@@ -139,10 +140,10 @@ export default function CursosPage() {
                 <div className="flex justify-between items-start">
                   <div>
                     <CardTitle className="text-lg">{curso.nombre}</CardTitle>
-                    <p className="text-sm text-gray-500 capitalize">{curso.nivel}</p>
+                    <p className="text-sm text-slate-500 capitalize">{curso.nivel}</p>
                   </div>
                   <span className={`px-2 py-1 rounded-full text-xs ${
-                    curso.activo ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                    curso.activo ? 'bg-green-100 text-green-800' : 'bg-slate-100 text-slate-800'
                   }`}>
                     {curso.activo ? 'Activo' : 'Inactivo'}
                   </span>
@@ -150,16 +151,16 @@ export default function CursosPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <div className="flex items-center gap-2 text-sm text-slate-600">
                     <Users className="h-4 w-4" />
                     <span>Profesor Jefe: {curso.profesor_jefe_nombres || 'Sin asignar'}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <div className="flex items-center gap-2 text-sm text-slate-600">
                     <BookOpen className="h-4 w-4" />
                     <span>Año Lectivo: {curso.anio_lectivo}</span>
                   </div>
                   {curso.sala && (
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-slate-600">
                       Sala: {curso.sala}
                     </div>
                   )}
@@ -168,7 +169,7 @@ export default function CursosPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="flex-1"
+                    className={`${SECONDARY_ACTION} flex-1`}
                     onClick={() => setViewingCurso(curso)}
                   >
                     <Eye className="h-4 w-4 mr-1" />
@@ -177,13 +178,14 @@ export default function CursosPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="flex-1"
+                    className={`${SECONDARY_ACTION} flex-1`}
                     onClick={() => openEditModal(curso)}
                   >
                     <Edit className="h-4 w-4 mr-1" />
                     Editar
                   </Button>
                   <Button
+                    className={SECONDARY_ACTION}
                     variant="outline"
                     size="sm"
                     onClick={() => handleDelete(curso.id)}
@@ -235,40 +237,40 @@ export default function CursosPage() {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium text-gray-500">Nombre</label>
-                <p className="text-gray-900">{viewingCurso.nombre}</p>
+                <label className="text-sm font-medium text-slate-500">Nombre</label>
+                <p className="text-ink">{viewingCurso.nombre}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Nivel</label>
-                <p className="text-gray-900 capitalize">{viewingCurso.nivel}</p>
+                <label className="text-sm font-medium text-slate-500">Nivel</label>
+                <p className="text-ink capitalize">{viewingCurso.nivel}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Jornada</label>
-                <p className="text-gray-900 capitalize">{viewingCurso.jornada || '-'}</p>
+                <label className="text-sm font-medium text-slate-500">Jornada</label>
+                <p className="text-ink capitalize">{viewingCurso.jornada || '-'}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Año Lectivo</label>
-                <p className="text-gray-900">{viewingCurso.anio_lectivo}</p>
+                <label className="text-sm font-medium text-slate-500">Año Lectivo</label>
+                <p className="text-ink">{viewingCurso.anio_lectivo}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Profesor Jefe</label>
-                <p className="text-gray-900">
+                <label className="text-sm font-medium text-slate-500">Profesor Jefe</label>
+                <p className="text-ink">
                   {viewingCurso.profesor_jefe_nombres
                     ? `${viewingCurso.profesor_jefe_nombres} ${viewingCurso.profesor_jefe_apellido}`
                     : 'Sin asignar'}
                 </p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Sala</label>
-                <p className="text-gray-900">{viewingCurso.sala || '-'}</p>
+                <label className="text-sm font-medium text-slate-500">Sala</label>
+                <p className="text-ink">{viewingCurso.sala || '-'}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Cupos</label>
-                <p className="text-gray-900">{viewingCurso.cupo_maximo || '-'}</p>
+                <label className="text-sm font-medium text-slate-500">Cupos</label>
+                <p className="text-ink">{viewingCurso.cupo_maximo || '-'}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Total Estudiantes</label>
-                <p className="text-gray-900">{viewingCurso.total_estudiantes || 0}</p>
+                <label className="text-sm font-medium text-slate-500">Total Estudiantes</label>
+                <p className="text-ink">{viewingCurso.total_estudiantes || 0}</p>
               </div>
             </div>
           </div>

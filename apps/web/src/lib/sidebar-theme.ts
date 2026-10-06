@@ -10,7 +10,8 @@ export type ModuleType =
   | 'restaurante'
   | 'veterinaria'
   | 'gastos'
-  | 'auto-talleres';
+  | 'auto-talleres'
+  | 'educacion';
 
 export interface ModuleSidebarTheme {
   moduleKey: ModuleType;
@@ -234,5 +235,22 @@ export const MODULE_SIDEBAR_THEMES: Record<ModuleType, ModuleSidebarTheme> = {
      activeBadgeClass: 'bg-apricot text-[#cc5500] border-apricot font-black',
      inactiveBadgeClass: 'bg-apricot/15 text-ink border-apricot/40 font-extrabold',
      avatarClass: 'bg-apricot/15 text-[#cc5500] border-apricot/40',
+   },
+   educacion: {
+     moduleKey: 'educacion',
+     title: 'Educación',
+     badgeLabel: 'Colegios',
+     subtitle: 'Gestión Escolar',
+     headerBadgeBg: 'bg-electric-cyan/20',
+     headerBadgeText: 'text-[#006680]',
+     headerBadgeBorder: 'border-electric-cyan/50',
+     activeBorderClass: 'border-electric-cyan',
+     iconActiveColorClass: 'text-[#006680]',
+     backIconColorClass: 'text-[#006680]',
+     activeSubItemText: 'text-[#006680]',
+     groupActiveText: 'text-[#006680]',
+     activeBadgeClass: 'bg-electric-cyan text-[#006680] border-electric-cyan font-black',
+     inactiveBadgeClass: 'bg-electric-cyan/20 text-ink border-electric-cyan/50 font-extrabold',
+     avatarClass: 'bg-electric-cyan/20 text-[#006680] border-electric-cyan/50',
    },
 };

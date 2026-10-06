@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { PRIMARY_ACTION, SECONDARY_ACTION } from './button-classes';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
@@ -163,9 +164,9 @@ export function CreateEntityModal({
                   type="checkbox"
                   checked={Boolean(values[f.name])}
                   onChange={(e) => setField(f.name, e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300"
+                  className="h-4 w-4 rounded border-slate-300"
                 />
-                <span className="text-sm text-gray-600">{f.placeholder || 'Sí'}</span>
+                <span className="text-sm text-slate-600">{f.placeholder || 'Sí'}</span>
               </div>
             ) : (
               <Input
@@ -184,10 +185,10 @@ export function CreateEntityModal({
         ))}
 
         <div className="flex justify-end gap-2 pt-2">
-          <Button type="button" variant="outline" onClick={onClose}>
+          <Button type="button" variant="outline" className={SECONDARY_ACTION} onClick={onClose}>
             Cancelar
           </Button>
-          <Button type="submit" disabled={saving}>
+          <Button type="submit" className={PRIMARY_ACTION} disabled={saving}>
             {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
             Guardar
           </Button>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { PRIMARY_ACTION, SECONDARY_ACTION } from '@/components/educacion/button-classes';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Edit, Trash2, Eye, BookOpen } from 'lucide-react';
 import { Asignatura, AsignaturaCreate, AsignaturaUpdate } from '@/types/educacion';
@@ -102,20 +103,20 @@ export default function AsignaturasPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 animate-fade-in-up">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Asignaturas</h1>
-          <p className="text-gray-600">Gestión del plan de estudios</p>
+          <h1 className="text-2xl font-black text-ink">Asignaturas</h1>
+          <p className="text-sm text-slate-500 mt-1">Gestión del plan de estudios</p>
         </div>
-        <Button onClick={openCreateModal}>
+        <Button className={PRIMARY_ACTION} onClick={openCreateModal}>
           <Plus className="h-4 w-4 mr-2" />
           Nueva Asignatura
         </Button>
       </div>
 
       {loading ? (
-        <div className="text-center py-8 text-gray-500">Cargando...</div>
+        <div className="text-center py-8 text-slate-500">Cargando...</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {asignaturas.map((asignatura) => (
@@ -124,12 +125,12 @@ export default function AsignaturasPage() {
                 <div className="flex justify-between items-start">
                   <div>
                     <CardTitle className="text-lg">{asignatura.nombre}</CardTitle>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-slate-500">
                       {asignatura.codigo ? `Código: ${asignatura.codigo}` : 'Sin código'}
                     </p>
                   </div>
                   <span className={`px-2 py-1 rounded-full text-xs ${
-                    asignatura.activo ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                    asignatura.activo ? 'bg-green-100 text-green-800' : 'bg-slate-100 text-slate-800'
                   }`}>
                     {asignatura.activo ? 'Activa' : 'Inactiva'}
                   </span>
@@ -137,12 +138,12 @@ export default function AsignaturasPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <div className="flex items-center gap-2 text-sm text-slate-600">
                     <BookOpen className="h-4 w-4" />
                     <span>Horas semanales: {asignatura.horas_semanales || 0}</span>
                   </div>
                   {asignatura.nivel && (
-                    <div className="text-sm text-gray-600 capitalize">
+                    <div className="text-sm text-slate-600 capitalize">
                       Nivel: {asignatura.nivel}
                     </div>
                   )}
@@ -151,7 +152,7 @@ export default function AsignaturasPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="flex-1"
+                    className={`${SECONDARY_ACTION} flex-1`}
                     onClick={() => setViewingAsignatura(asignatura)}
                   >
                     <Eye className="h-4 w-4 mr-1" />
@@ -160,13 +161,14 @@ export default function AsignaturasPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="flex-1"
+                    className={`${SECONDARY_ACTION} flex-1`}
                     onClick={() => openEditModal(asignatura)}
                   >
                     <Edit className="h-4 w-4 mr-1" />
                     Editar
                   </Button>
                   <Button
+                    className={SECONDARY_ACTION}
                     variant="outline"
                     size="sm"
                     onClick={() => handleDelete(asignatura.id)}
@@ -217,20 +219,20 @@ export default function AsignaturasPage() {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium text-gray-500">Nombre</label>
-                <p className="text-gray-900">{viewingAsignatura.nombre}</p>
+                <label className="text-sm font-medium text-slate-500">Nombre</label>
+                <p className="text-ink">{viewingAsignatura.nombre}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Código</label>
-                <p className="text-gray-900">{viewingAsignatura.codigo || '-'}</p>
+                <label className="text-sm font-medium text-slate-500">Código</label>
+                <p className="text-ink">{viewingAsignatura.codigo || '-'}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Nivel</label>
-                <p className="text-gray-900 capitalize">{viewingAsignatura.nivel || '-'}</p>
+                <label className="text-sm font-medium text-slate-500">Nivel</label>
+                <p className="text-ink capitalize">{viewingAsignatura.nivel || '-'}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Horas Semanales</label>
-                <p className="text-gray-900">{viewingAsignatura.horas_semanales || 0}</p>
+                <label className="text-sm font-medium text-slate-500">Horas Semanales</label>
+                <p className="text-ink">{viewingAsignatura.horas_semanales || 0}</p>
               </div>
             </div>
           </div>

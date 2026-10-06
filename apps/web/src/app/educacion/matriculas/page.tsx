@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { PRIMARY_ACTION, SECONDARY_ACTION } from '@/components/educacion/button-classes';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, FileText, Check, X, Clock, Loader2 } from 'lucide-react';
 import { Matricula } from '@/types/educacion';
@@ -22,6 +23,9 @@ export default function MatriculasPage() {
   const [observaciones, setObservaciones] = useState('');
   const [saving, setSaving] = useState(false);
   const [modalError, setModalError] = useState('');
+
+  // Detalle de matrícula
+  const [matriculaVer, setMatriculaVer] = useState<Matricula | null>(null);
 
   useEffect(() => {
     fetchMatriculas();
@@ -104,13 +108,13 @@ export default function MatriculasPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 animate-fade-in-up">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Matrículas</h1>
-          <p className="text-gray-600">Gestión de matrículas anuales</p>
+          <h1 className="text-2xl font-black text-ink">Matrículas</h1>
+          <p className="text-sm text-slate-500 mt-1">Gestión de matrículas anuales</p>
         </div>
-        <Button onClick={abrirModal}>
+        <Button className={PRIMARY_ACTION} onClick={abrirModal}>
           <Plus className="h-4 w-4 mr-2" />
           Nueva Matrícula
         </Button>
@@ -129,7 +133,7 @@ export default function MatriculasPage() {
               value={estudianteId}
               onChange={(e) => setEstudianteId(e.target.value)}
               required
-              className="w-full px-3 py-2 border rounded-md"
+              className="w-full px-3 py-2 rounded-xl border border-slate-200/80 bg-white"
             >
               <option value="">Selecciona un estudiante</option>
               {estudiantes.map((e) => (
@@ -147,7 +151,7 @@ export default function MatriculasPage() {
               value={cursoId}
               onChange={(e) => setCursoId(e.target.value)}
               required
-              className="w-full px-3 py-2 border rounded-md"
+              className="w-full px-3 py-2 rounded-xl border border-slate-200/80 bg-white"
             >
               <option value="">Selecciona un curso</option>
               {cursos.map((c) => (
@@ -166,7 +170,7 @@ export default function MatriculasPage() {
               value={anioLectivo}
               onChange={(e) => setAnioLectivo(parseInt(e.target.value))}
               required
-              className="w-full px-3 py-2 border rounded-md"
+              className="w-full px-3 py-2 rounded-xl border border-slate-200/80 bg-white"
             />
           </div>
 
@@ -177,20 +181,77 @@ export default function MatriculasPage() {
               value={observaciones}
               onChange={(e) => setObservaciones(e.target.value)}
               rows={3}
-              className="w-full px-3 py-2 border rounded-md"
+              className="w-full px-3 py-2 rounded-xl border border-slate-200/80 bg-white"
             />
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button type="button" variant="outline" onClick={() => setModalOpen(false)}>
+            <Button type="button" variant="outline" className={SECONDARY_ACTION} onClick={() => setModalOpen(false)}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={saving}>
+            <Button type="submit" className={PRIMARY_ACTION} disabled={saving}>
               {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               Crear matrícula
             </Button>
           </div>
         </form>
+      </Modal>
+
+      <Modal
+        isOpen={!!matriculaVer}
+        onClose={() => setMatriculaVer(null)}
+        title="Detalle de Matrícula"
+      >
+        {matriculaVer && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium text-slate-500">Estudiante</label>
+                <p className="text-ink">
+                  {matriculaVer.estudiante_nombres} {matriculaVer.estudiante_apellido}
+                </p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-slate-500">RUT</label>
+                <p className="text-ink">{matriculaVer.estudiante_rut || '—'}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-slate-500">Curso</label>
+                <p className="text-ink">{matriculaVer.curso_nombre || '—'}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-slate-500">Año Lectivo</label>
+                <p className="text-ink">{matriculaVer.anio_lectivo}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-slate-500">Fecha de Matrícula</label>
+                <p className="text-ink">
+                  {new Date(matriculaVer.fecha_matricula).toLocaleDateString('es-CL')}
+                </p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-slate-500">Estado</label>
+                <p className="capitalize text-ink">{matriculaVer.estado}</p>
+              </div>
+            </div>
+            {matriculaVer.observaciones && (
+              <div>
+                <label className="text-sm font-medium text-slate-500">Observaciones</label>
+                <p className="text-ink">{matriculaVer.observaciones}</p>
+              </div>
+            )}
+            <div className="flex justify-end pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                className={SECONDARY_ACTION}
+                onClick={() => setMatriculaVer(null)}
+              >
+                Cerrar
+              </Button>
+            </div>
+          </div>
+        )}
       </Modal>
 
       <Card>
@@ -200,7 +261,7 @@ export default function MatriculasPage() {
             <select
               value={selectedAnio}
               onChange={(e) => setSelectedAnio(parseInt(e.target.value))}
-              className="px-3 py-2 border rounded-md"
+              className="px-3 py-2 rounded-xl border border-slate-200/80 bg-white"
             >
               <option value={2026}>2026</option>
               <option value={2025}>2025</option>
@@ -209,23 +270,23 @@ export default function MatriculasPage() {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <div className="text-center py-8 text-gray-500">Cargando...</div>
+            <div className="text-center py-8 text-slate-500">Cargando...</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Estudiante</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">RUT</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Curso</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Fecha Matrícula</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Estado</th>
-                    <th className="text-right py-3 px-4 font-medium text-gray-600">Acciones</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Estudiante</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">RUT</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Curso</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Fecha Matrícula</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Estado</th>
+                    <th className="text-right py-3 px-4 font-medium text-slate-600">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {matriculas.map((matricula) => (
-                    <tr key={matricula.id} className="border-b hover:bg-gray-50">
+                    <tr key={matricula.id} className="border-b hover:bg-slate-50">
                       <td className="py-3 px-4">
                         {matricula.estudiante_nombres} {matricula.estudiante_apellido}
                       </td>
@@ -241,7 +302,12 @@ export default function MatriculasPage() {
                         </div>
                       </td>
                       <td className="py-3 px-4 text-right">
-                        <Button variant="outline" size="sm">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className={SECONDARY_ACTION}
+                          onClick={() => setMatriculaVer(matricula)}
+                        >
                           <FileText className="h-4 w-4 mr-1" />
                           Ver
                         </Button>

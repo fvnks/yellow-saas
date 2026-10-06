@@ -19,12 +19,12 @@ export function StudentCard({ estudiante, onClick }: StudentCardProps) {
             <CardTitle className="text-base">
               {estudiante.nombres} {estudiante.apellido_paterno}
             </CardTitle>
-            <p className="text-sm text-gray-500">RUT: {estudiante.rut}</p>
+            <p className="text-sm text-slate-500">RUT: {estudiante.rut}</p>
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-2 text-sm text-gray-600">
+        <div className="space-y-2 text-sm text-slate-600">
           {estudiante.email && (
             <div className="flex items-center gap-2">
               <Mail className="h-4 w-4" />

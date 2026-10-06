@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { PRIMARY_ACTION, ICON_ACTION } from '@/components/educacion/button-classes';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Search, Edit, Trash2, Eye } from 'lucide-react';
@@ -107,13 +108,13 @@ export default function ProfesoresPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 animate-fade-in-up">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Profesores</h1>
-          <p className="text-gray-600">Gestión del cuerpo docente</p>
+          <h1 className="text-2xl font-black text-ink">Profesores</h1>
+          <p className="text-sm text-slate-500 mt-1">Gestión del cuerpo docente</p>
         </div>
-        <Button onClick={openCreateModal}>
+        <Button className={PRIMARY_ACTION} onClick={openCreateModal}>
           <Plus className="h-4 w-4 mr-2" />
           Nuevo Profesor
         </Button>
@@ -126,7 +127,7 @@ export default function ProfesoresPage() {
         <CardContent>
           <div className="mb-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input
                 placeholder="Buscar por nombre o RUT..."
                 value={search}
@@ -137,22 +138,22 @@ export default function ProfesoresPage() {
           </div>
 
           {loading ? (
-            <div className="text-center py-8 text-gray-500">Cargando...</div>
+            <div className="text-center py-8 text-slate-500">Cargando...</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">RUT</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Nombre</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Especialidad</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Estado</th>
-                    <th className="text-right py-3 px-4 font-medium text-gray-600">Acciones</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">RUT</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Nombre</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Especialidad</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Estado</th>
+                    <th className="text-right py-3 px-4 font-medium text-slate-600">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {profesores.map((prof) => (
-                    <tr key={prof.id} className="border-b hover:bg-gray-50">
+                    <tr key={prof.id} className="border-b hover:bg-slate-50">
                       <td className="py-3 px-4">{prof.rut}</td>
                       <td className="py-3 px-4">
                         {prof.nombres} {prof.apellido_paterno} {prof.apellido_materno}
@@ -160,7 +161,7 @@ export default function ProfesoresPage() {
                       <td className="py-3 px-4">{prof.especialidad || '-'}</td>
                       <td className="py-3 px-4">
                         <span className={`px-2 py-1 rounded-full text-xs ${
-                          prof.estado === 'activo' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                          prof.estado === 'activo' ? 'bg-green-100 text-green-800' : 'bg-slate-100 text-slate-800'
                         }`}>
                           {prof.estado}
                         </span>
@@ -168,6 +169,7 @@ export default function ProfesoresPage() {
                       <td className="py-3 px-4 text-right">
                         <div className="flex justify-end gap-2">
                           <Button
+                            className={ICON_ACTION}
                             variant="ghost"
                             size="sm"
                             onClick={() => setViewingProfesor(prof)}
@@ -175,6 +177,7 @@ export default function ProfesoresPage() {
                             <Eye className="h-4 w-4" />
                           </Button>
                           <Button
+                            className={ICON_ACTION}
                             variant="ghost"
                             size="sm"
                             onClick={() => openEditModal(prof)}
@@ -182,6 +185,7 @@ export default function ProfesoresPage() {
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button
+                            className={ICON_ACTION}
                             variant="ghost"
                             size="sm"
                             onClick={() => handleDelete(prof.id)}
@@ -236,46 +240,46 @@ export default function ProfesoresPage() {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium text-gray-500">RUT</label>
-                <p className="text-gray-900">{viewingProfesor.rut}</p>
+                <label className="text-sm font-medium text-slate-500">RUT</label>
+                <p className="text-ink">{viewingProfesor.rut}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Nombre Completo</label>
-                <p className="text-gray-900">
+                <label className="text-sm font-medium text-slate-500">Nombre Completo</label>
+                <p className="text-ink">
                   {viewingProfesor.nombres} {viewingProfesor.apellido_paterno} {viewingProfesor.apellido_materno}
                 </p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Email</label>
-                <p className="text-gray-900">{viewingProfesor.email || '-'}</p>
+                <label className="text-sm font-medium text-slate-500">Email</label>
+                <p className="text-ink">{viewingProfesor.email || '-'}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Teléfono</label>
-                <p className="text-gray-900">{viewingProfesor.telefono || '-'}</p>
+                <label className="text-sm font-medium text-slate-500">Teléfono</label>
+                <p className="text-ink">{viewingProfesor.telefono || '-'}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Especialidad</label>
-                <p className="text-gray-900">{viewingProfesor.especialidad || '-'}</p>
+                <label className="text-sm font-medium text-slate-500">Especialidad</label>
+                <p className="text-ink">{viewingProfesor.especialidad || '-'}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Título</label>
-                <p className="text-gray-900">{viewingProfesor.titulo || '-'}</p>
+                <label className="text-sm font-medium text-slate-500">Título</label>
+                <p className="text-ink">{viewingProfesor.titulo || '-'}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Fecha de Ingreso</label>
-                <p className="text-gray-900">
+                <label className="text-sm font-medium text-slate-500">Fecha de Ingreso</label>
+                <p className="text-ink">
                   {viewingProfesor.fecha_ingreso
                     ? new Date(viewingProfesor.fecha_ingreso).toLocaleDateString('es-CL')
                     : '-'}
                 </p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Cursos como Jefe</label>
-                <p className="text-gray-900">{viewingProfesor.cursos_jefe || 0}</p>
+                <label className="text-sm font-medium text-slate-500">Cursos como Jefe</label>
+                <p className="text-ink">{viewingProfesor.cursos_jefe || 0}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Asignaturas</label>
-                <p className="text-gray-900">{viewingProfesor.asignaturas || 0}</p>
+                <label className="text-sm font-medium text-slate-500">Asignaturas</label>
+                <p className="text-ink">{viewingProfesor.asignaturas || 0}</p>
               </div>
             </div>
           </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { PRIMARY_ACTION, ICON_ACTION } from '@/components/educacion/button-classes';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Search, Edit, Trash2, Eye } from 'lucide-react';
@@ -107,13 +108,13 @@ export default function ApoderadosPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 animate-fade-in-up">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Apoderados</h1>
-          <p className="text-gray-600">Gestión de apoderados y tutores</p>
+          <h1 className="text-2xl font-black text-ink">Apoderados</h1>
+          <p className="text-sm text-slate-500 mt-1">Gestión de apoderados y tutores</p>
         </div>
-        <Button onClick={openCreateModal}>
+        <Button className={PRIMARY_ACTION} onClick={openCreateModal}>
           <Plus className="h-4 w-4 mr-2" />
           Nuevo Apoderado
         </Button>
@@ -126,7 +127,7 @@ export default function ApoderadosPage() {
         <CardContent>
           <div className="mb-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input
                 placeholder="Buscar por nombre o RUT..."
                 value={search}
@@ -137,22 +138,22 @@ export default function ApoderadosPage() {
           </div>
 
           {loading ? (
-            <div className="text-center py-8 text-gray-500">Cargando...</div>
+            <div className="text-center py-8 text-slate-500">Cargando...</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">RUT</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Nombre</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Teléfono</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Email</th>
-                    <th className="text-right py-3 px-4 font-medium text-gray-600">Acciones</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">RUT</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Nombre</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Teléfono</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Email</th>
+                    <th className="text-right py-3 px-4 font-medium text-slate-600">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {apoderados.map((ap) => (
-                    <tr key={ap.id} className="border-b hover:bg-gray-50">
+                    <tr key={ap.id} className="border-b hover:bg-slate-50">
                       <td className="py-3 px-4">{ap.rut}</td>
                       <td className="py-3 px-4">
                         {ap.nombres} {ap.apellido_paterno} {ap.apellido_materno}
@@ -162,6 +163,7 @@ export default function ApoderadosPage() {
                       <td className="py-3 px-4 text-right">
                         <div className="flex justify-end gap-2">
                           <Button
+                            className={ICON_ACTION}
                             variant="ghost"
                             size="sm"
                             onClick={() => setViewingApoderado(ap)}
@@ -169,6 +171,7 @@ export default function ApoderadosPage() {
                             <Eye className="h-4 w-4" />
                           </Button>
                           <Button
+                            className={ICON_ACTION}
                             variant="ghost"
                             size="sm"
                             onClick={() => openEditModal(ap)}
@@ -176,6 +179,7 @@ export default function ApoderadosPage() {
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button
+                            className={ICON_ACTION}
                             variant="ghost"
                             size="sm"
                             onClick={() => handleDelete(ap.id)}
@@ -230,30 +234,30 @@ export default function ApoderadosPage() {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium text-gray-500">RUT</label>
-                <p className="text-gray-900">{viewingApoderado.rut}</p>
+                <label className="text-sm font-medium text-slate-500">RUT</label>
+                <p className="text-ink">{viewingApoderado.rut}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Nombre Completo</label>
-                <p className="text-gray-900">
+                <label className="text-sm font-medium text-slate-500">Nombre Completo</label>
+                <p className="text-ink">
                   {viewingApoderado.nombres} {viewingApoderado.apellido_paterno} {viewingApoderado.apellido_materno}
                 </p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Teléfono</label>
-                <p className="text-gray-900">{viewingApoderado.telefono || '-'}</p>
+                <label className="text-sm font-medium text-slate-500">Teléfono</label>
+                <p className="text-ink">{viewingApoderado.telefono || '-'}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Email</label>
-                <p className="text-gray-900">{viewingApoderado.email || '-'}</p>
+                <label className="text-sm font-medium text-slate-500">Email</label>
+                <p className="text-ink">{viewingApoderado.email || '-'}</p>
               </div>
               <div className="col-span-2">
-                <label className="text-sm font-medium text-gray-500">Dirección</label>
-                <p className="text-gray-900">{viewingApoderado.direccion || '-'}</p>
+                <label className="text-sm font-medium text-slate-500">Dirección</label>
+                <p className="text-ink">{viewingApoderado.direccion || '-'}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Ocupación</label>
-                <p className="text-gray-900">{viewingApoderado.ocupacion || '-'}</p>
+                <label className="text-sm font-medium text-slate-500">Ocupación</label>
+                <p className="text-ink">{viewingApoderado.ocupacion || '-'}</p>
               </div>
             </div>
           </div>

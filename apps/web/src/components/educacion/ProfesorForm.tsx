@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { PRIMARY_ACTION, SECONDARY_ACTION } from './button-classes';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Profesor, ProfesorCreate, ProfesorUpdate } from '@/types/educacion';
@@ -163,10 +164,10 @@ export function ProfesorForm({ profesor, onSave, onCancel }: ProfesorFormProps) 
       </div>
 
       <div className="flex justify-end gap-2 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel}>
+        <Button type="button" variant="outline" className={SECONDARY_ACTION} onClick={onCancel}>
           Cancelar
         </Button>
-        <Button type="submit" disabled={loading}>
+        <Button type="submit" className={PRIMARY_ACTION} disabled={loading}>
           {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
           {profesor ? 'Actualizar' : 'Crear'} Profesor
         </Button>

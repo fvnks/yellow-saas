@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { PRIMARY_ACTION } from '@/components/educacion/button-classes';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Save, School, Calendar, Bell, DollarSign, Mail, AlertTriangle } from 'lucide-react';
@@ -111,10 +112,10 @@ export default function ConfiguracionPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in-up">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Configuración</h1>
-        <p className="text-gray-600">Configuración del módulo educativo</p>
+        <h1 className="text-2xl font-black text-ink">Configuración</h1>
+        <p className="text-sm text-slate-500 mt-1">Configuración del módulo educativo</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -211,7 +212,7 @@ export default function ConfiguracionPage() {
                 id="periodos"
                 value={configuracion.periodos}
                 onChange={(e) => handleChange('periodos', e.target.value)}
-                className="w-full px-3 py-2 border rounded-md"
+                className="w-full px-3 py-2 rounded-xl border border-slate-200/80 bg-white"
               >
                 <option value="semestral">Semestral (2 períodos)</option>
                 <option value="trimestral">Trimestral (3 períodos)</option>
@@ -273,7 +274,7 @@ export default function ConfiguracionPage() {
             <div className="flex items-center justify-between">
               <div>
                 <Label>Alertas de Inasistencia</Label>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-slate-500">
                   Enviar alerta cuando un estudiante supere el límite de inasistencias
                 </p>
               </div>
@@ -301,7 +302,7 @@ export default function ConfiguracionPage() {
             <div className="flex items-center justify-between">
               <div>
                 <Label>Alertas de Notas Bajas</Label>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-slate-500">
                   Enviar alerta cuando un estudiante tenga notas menores al umbral
                 </p>
               </div>
@@ -330,7 +331,7 @@ export default function ConfiguracionPage() {
             <div className="flex items-center justify-between">
               <div>
                 <Label>Alertas de Pagos Vencidos</Label>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-slate-500">
                   Enviar alerta cuando una pensión esté vencida
                 </p>
               </div>
@@ -345,7 +346,7 @@ export default function ConfiguracionPage() {
             <div className="flex items-center justify-between">
               <div>
                 <Label>Recordatorios de Eventos</Label>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-slate-500">
                   Enviar recordatorio días antes del evento
                 </p>
               </div>
@@ -445,7 +446,7 @@ export default function ConfiguracionPage() {
             {mensaje}
           </span>
         )}
-        <Button onClick={handleSave} disabled={guardando || cargando}>
+        <Button className={PRIMARY_ACTION} onClick={handleSave} disabled={guardando || cargando}>
           <Save className="h-4 w-4 mr-2" />
           {guardando ? 'Guardando...' : 'Guardar Configuración'}
         </Button>

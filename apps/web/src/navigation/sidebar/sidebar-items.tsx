@@ -72,6 +72,8 @@ import {
   Megaphone,
   Calendar,
   Hash,
+  Library,
+  Bus,
 } from "lucide-react";
 
 export const ICON_MAP = {
@@ -147,6 +149,8 @@ export const ICON_MAP = {
   Megaphone,
   Calendar,
   Hash,
+  Library,
+  Bus,
 } as const;
 
 export const resolveIcon = (iconName: keyof typeof ICON_MAP | undefined): LucideIcon => {

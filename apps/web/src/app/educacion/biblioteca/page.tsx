@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { PRIMARY_ACTION, SECONDARY_ACTION, ICON_ACTION } from '@/components/educacion/button-classes';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Search, BookOpen, Edit, Trash2, Eye, BookMarked } from 'lucide-react';
@@ -51,18 +52,18 @@ export default function BibliotecaPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 animate-fade-in-up">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Biblioteca</h1>
-          <p className="text-gray-600">Gestión de libros y préstamos</p>
+          <h1 className="text-2xl font-black text-ink">Biblioteca</h1>
+          <p className="text-sm text-slate-500 mt-1">Gestión de libros y préstamos</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button variant="outline" className={SECONDARY_ACTION}>
             <BookMarked className="h-4 w-4 mr-2" />
             Préstamos
           </Button>
-          <Button onClick={() => setCreateOpen(true)}>
+          <Button className={PRIMARY_ACTION} onClick={() => setCreateOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Nuevo Libro
           </Button>
@@ -76,7 +77,7 @@ export default function BibliotecaPage() {
         <CardContent>
           <div className="mb-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input
                 placeholder="Buscar por título, autor o ISBN..."
                 value={search}
@@ -87,24 +88,24 @@ export default function BibliotecaPage() {
           </div>
 
           {loading ? (
-            <div className="text-center py-8 text-gray-500">Cargando...</div>
+            <div className="text-center py-8 text-slate-500">Cargando...</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Título</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Autor</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">ISBN</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Cantidad</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Disponible</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">Ubicación</th>
-                    <th className="text-right py-3 px-4 font-medium text-gray-600">Acciones</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Título</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Autor</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">ISBN</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Cantidad</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Disponible</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-600">Ubicación</th>
+                    <th className="text-right py-3 px-4 font-medium text-slate-600">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {libros.map((libro) => (
-                    <tr key={libro.id} className="border-b hover:bg-gray-50">
+                    <tr key={libro.id} className="border-b hover:bg-slate-50">
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
                           <BookOpen className="h-4 w-4 text-blue-600" />
@@ -126,13 +127,14 @@ export default function BibliotecaPage() {
                       <td className="py-3 px-4">{libro.ubicacion || '-'}</td>
                       <td className="py-3 px-4 text-right">
                         <div className="flex justify-end gap-2">
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="sm" className={ICON_ACTION}>
                             <Eye className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="sm" className={ICON_ACTION}>
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button
+                            className={ICON_ACTION}
                             variant="ghost"
                             size="sm"
                             onClick={() => handleDelete(libro.id)}

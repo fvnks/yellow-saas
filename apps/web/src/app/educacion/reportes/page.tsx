@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { PRIMARY_ACTION } from '@/components/educacion/button-classes';
 import { FileText, Download, Calendar, Users, TrendingUp, DollarSign, Loader2 } from 'lucide-react';
 
 export default function ReportesPage() {
@@ -98,10 +99,10 @@ export default function ReportesPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in-up">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Reportes</h1>
-        <p className="text-gray-600">Generación de reportes y exportaciones</p>
+        <h1 className="text-2xl font-black text-ink">Reportes</h1>
+        <p className="text-sm text-slate-500 mt-1">Generación de reportes y exportaciones</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -124,7 +125,7 @@ export default function ReportesPage() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-gray-600">{reporte.descripcion}</p>
+                  <p className="text-sm text-slate-600">{reporte.descripcion}</p>
                 </CardContent>
               </Card>
             ))}
@@ -138,11 +139,11 @@ export default function ReportesPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Curso</label>
+                <label className="text-sm font-medium text-slate-700">Curso</label>
                 <select
                   value={selectedCurso}
                   onChange={(e) => setSelectedCurso(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-md"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200/80 bg-white"
                 >
                   <option value="">Todos los cursos</option>
                   {cursos.map((curso) => (
@@ -154,11 +155,11 @@ export default function ReportesPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Mes</label>
+                <label className="text-sm font-medium text-slate-700">Mes</label>
                 <select
                   value={selectedMes}
                   onChange={(e) => setSelectedMes(parseInt(e.target.value))}
-                  className="w-full px-3 py-2 border rounded-md"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200/80 bg-white"
                 >
                   {Array.from({ length: 12 }, (_, i) => (
                     <option key={i + 1} value={i + 1}>
@@ -169,11 +170,11 @@ export default function ReportesPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Año</label>
+                <label className="text-sm font-medium text-slate-700">Año</label>
                 <select
                   value={selectedAnio}
                   onChange={(e) => setSelectedAnio(parseInt(e.target.value))}
-                  className="w-full px-3 py-2 border rounded-md"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200/80 bg-white"
                 >
                   <option value={2026}>2026</option>
                   <option value={2025}>2025</option>
@@ -182,11 +183,11 @@ export default function ReportesPage() {
 
               {selectedReporte === 'calificaciones' && (
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Período</label>
+                  <label className="text-sm font-medium text-slate-700">Período</label>
                   <select
                     value={selectedPeriodo}
                     onChange={(e) => setSelectedPeriodo(parseInt(e.target.value))}
-                    className="w-full px-3 py-2 border rounded-md"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200/80 bg-white"
                   >
                     <option value={1}>1° Trimestre</option>
                     <option value={2}>2° Trimestre</option>
@@ -196,7 +197,7 @@ export default function ReportesPage() {
               )}
 
               <Button
-                className="w-full"
+                className={`${PRIMARY_ACTION} w-full`}
                 disabled={!selectedReporte || loading}
                 onClick={() => handleDescargar(selectedReporte)}
               >

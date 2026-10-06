@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { PRIMARY_ACTION, SECONDARY_ACTION } from './button-classes';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -203,17 +204,17 @@ export function EstudianteForm({ estudiante, cursos, onSave, onCancel }: Estudia
           id="observaciones"
           value={formData.observaciones}
           onChange={(e) => setFormData({ ...formData, observaciones: e.target.value })}
-          className="w-full px-3 py-2 border rounded-md"
+          className="w-full px-3 py-2 rounded-xl border border-slate-200/80 bg-white"
           rows={3}
           placeholder="Observaciones adicionales..."
         />
       </div>
 
       <div className="flex justify-end gap-2 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel}>
+        <Button type="button" variant="outline" className={SECONDARY_ACTION} onClick={onCancel}>
           Cancelar
         </Button>
-        <Button type="submit" disabled={loading}>
+        <Button type="submit" className={PRIMARY_ACTION} disabled={loading}>
           {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
           {estudiante ? 'Actualizar' : 'Crear'} Estudiante
         </Button>
