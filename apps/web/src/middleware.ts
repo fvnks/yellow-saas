@@ -62,8 +62,9 @@ export async function middleware(request: NextRequest) {
     // validan su propio token (tipo `apoderado`), que el middleware solo
     // comprueba por firma.
     if (pathname.startsWith('/api/portal-apoderado/')) return response;
+    if (pathname.startsWith('/api/portal-profesor/')) return response;
 
-    if (pathname.startsWith('/api/auth/login') || pathname.startsWith('/api/auth/register')) return response;
+    if (pathname.startsWith('/api/auth/login') || pathname.startsWith('/api/auth/register') || pathname.startsWith('/api/auth/login-unified')) return response;
 
     if (pathname.startsWith('/api/auth/')) {
       const ip = getClientIp(request);

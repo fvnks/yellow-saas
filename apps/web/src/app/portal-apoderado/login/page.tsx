@@ -3,11 +3,11 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function PortalApoderadoRedirectPage() {
+export default function PortalApoderadoLoginRedirectPage() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace('/login?redirect=/educacion');
+    router.replace('/login');
   }, [router]);
 
   return (

@@ -95,7 +95,7 @@ function LoginForm() {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch('/api/auth/login-unified', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -109,6 +109,24 @@ function LoginForm() {
         return;
       }
 
+      const tokenType = data.data.tokenType || data.data.user?.role_type || data.data.user?.tipo;
+
+      if (tokenType === 'apoderado') {
+        const maxAge = remember ? 8 * 60 * 60 : 8 * 60 * 60;
+        document.cookie = `portal_token=${data.data.token}; path=/; max-age=${maxAge}; SameSite=Lax`;
+        localStorage.setItem('yellow_last_access', new Date().toISOString());
+        window.location.href = data.data.redirectTo || '/portal-apoderado/dashboard';
+        return;
+      }
+
+      if (tokenType === 'profesor') {
+        const maxAge = remember ? 8 * 60 * 60 : 8 * 60 * 60;
+        document.cookie = `portal_profesor_token=${data.data.token}; path=/; max-age=${maxAge}; SameSite=Lax`;
+        localStorage.setItem('yellow_last_access', new Date().toISOString());
+        window.location.href = data.data.redirectTo || '/portal-profesor/dashboard';
+        return;
+      }
+
       const maxAge = remember ? 7 * 24 * 60 * 60 : undefined;
       setAuthToken(data.data.token, maxAge);
       localStorage.setItem('yellow_last_access', new Date().toISOString());
@@ -116,6 +134,8 @@ function LoginForm() {
       const roleType = data.data.user?.role_type;
       if (roleType === 'super_admin') {
         window.location.href = '/admin';
+      } else if (data.data.redirectTo) {
+        window.location.href = data.data.redirectTo;
       } else {
         window.location.href = redirect;
       }
