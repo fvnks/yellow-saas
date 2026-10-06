@@ -62,7 +62,7 @@ describe('usePortalAuth', () => {
 
     await waitFor(() => expect(result.current.loading).toBe(false));
 
-    expect(push).toHaveBeenCalledWith('/portal-apoderado');
+    expect(push).toHaveBeenCalledWith('/portal-apoderado/login');
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -106,7 +106,7 @@ describe('usePortalAuth', () => {
 
     expect(result.current.apoderado).toBeNull();
     expect(result.current.error).toBe('Token inválido');
-    expect(push).toHaveBeenCalledWith('/portal-apoderado');
+    expect(push).toHaveBeenCalledWith('/portal-apoderado/login?expired=1');
   });
 
   it('debe hacer logout correctamente', async () => {

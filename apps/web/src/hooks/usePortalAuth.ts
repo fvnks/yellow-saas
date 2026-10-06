@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { limpiarSesionPortal } from '@/lib/portal-session';
 
 interface Apoderado {
   id: string;
@@ -37,7 +38,8 @@ export function usePortalAuth() {
         ?.split('=')[1];
 
       if (!token) {
-        router.push('/portal-apoderado');
+        // Sin sesión: al login propio del portal (la portada es pública).
+        router.push('/portal-apoderado/login');
         return;
       }
 
@@ -55,15 +57,17 @@ export function usePortalAuth() {
       setApoderado(data.data.apoderado);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error de autenticación');
-      router.push('/portal-apoderado');
+      // Token vencido o inválido: avisa de la expiración en el login.
+      router.push('/portal-apoderado/login?expired=1');
     } finally {
       setLoading(false);
     }
   }, [router]);
 
   const logout = useCallback(() => {
-    document.cookie = 'portal_token=; path=/; max-age=0';
+    limpiarSesionPortal('apoderado');
     setApoderado(null);
+    // La portada es pública: buen destino para cerrar sesión.
     router.push('/portal-apoderado');
   }, [router]);
 

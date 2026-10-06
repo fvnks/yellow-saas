@@ -19,6 +19,16 @@ async function verifyToken(token: string) {
   }
 }
 
+/** Token válido del portal de apoderados: firma OK y `tipo === 'apoderado'`. */
+async function esTokenPortalValido(token: string): Promise<boolean> {
+  try {
+    const { payload } = await jwtVerify(token, getJwtSecret());
+    return payload.tipo === 'apoderado' && typeof payload.id === 'string' && payload.id.length > 0;
+  } catch {
+    return false;
+  }
+}
+
 function getClientIp(request: NextRequest): string {
   return (
     request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
@@ -64,8 +74,8 @@ export async function middleware(request: NextRequest) {
     if (pathname.startsWith('/api/portal-apoderado/')) return response;
     if (pathname.startsWith('/api/portal-profesor/')) return response;
 
-    if (pathname.startsWith('/api/auth/login') || pathname.startsWith('/api/auth/register') || pathname.startsWith('/api/auth/login-unified')) return response;
-
+    // Incluye login/register/login-unified a propósito: el rate limit de
+    // AUTH_CONFIG (5 intentos/min por IP) solo protege lo que llega hasta aquí.
     if (pathname.startsWith('/api/auth/')) {
       const ip = getClientIp(request);
       const { allowed, remaining, resetAt } = checkRateLimit(ip, pathname, AUTH_CONFIG);
@@ -104,6 +114,28 @@ export async function middleware(request: NextRequest) {
     const payload = await verifyToken(token);
     if (!payload) return NextResponse.json({ error: 'Token invalido' }, { status: 401 });
     return response;
+  }
+
+  // ── Portal de apoderados: guard server-side ──
+  // Corta con 307 **antes** de renderizar (el guard del layout del grupo
+  // `(protegido)` queda como respaldo). Portada, login y aviso de registro
+  // son públicos; el resto exige cookie `portal_token` con `tipo=apoderado`.
+  if (pathname.startsWith('/portal-apoderado')) {
+    const ruta = pathname.replace(/\/+$/, '');
+    const portalResponse = NextResponse.next({ request: { headers: request.headers } });
+    setSecurityHeaders(portalResponse);
+
+    const rutasPublicas = new Set([
+      '/portal-apoderado',
+      '/portal-apoderado/login',
+      '/portal-apoderado/registro',
+    ]);
+    if (rutasPublicas.has(ruta)) return portalResponse;
+
+    const tokenPortal = request.cookies.get('portal_token')?.value;
+    if (tokenPortal && (await esTokenPortalValido(tokenPortal))) return portalResponse;
+
+    return NextResponse.redirect(new URL('/portal-apoderado/login?expired=1', request.url));
   }
 
   // ── Non-API routes: run next-intl locale detection ──
@@ -168,6 +200,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|manifest.json|public/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|json|ico|js|css|woff2?|ttf|eot)$|admin|auto-talleres|ayuda|educacion|portal|view).*)',
+    '/((?!_next/static|_next/image|favicon.ico|manifest.json|public/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|json|ico|js|css|woff2?|ttf|eot)$|admin|auto-talleres|ayuda|educacion|portal-profesor|view).*)',
   ],
 };

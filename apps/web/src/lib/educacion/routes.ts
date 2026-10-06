@@ -135,7 +135,7 @@ export const EDUCACION_ROUTES = {
 
 // Rutas del portal del apoderado
 export const PORTAL_APODERADO_ROUTES = {
-  login: '/portal-apoderado',
+  login: '/portal-apoderado/login',
   dashboard: '/portal-apoderado/dashboard',
   notas: '/portal-apoderado/notas',
   asistencia: '/portal-apoderado/asistencia',

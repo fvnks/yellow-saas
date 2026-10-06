@@ -9,6 +9,7 @@ import { useTranslations } from 'next-intl';
 import AuthPanel from '@/components/auth/AuthPanel';
 import { SiteLiquidButton } from '@/components/landing/SiteLiquidButton';
 import { setAuthToken, clearAuthToken, getAuthToken, syncAuthCookie, parseJwtPayload } from '@/lib/auth-token';
+import { fijarSesionPortal } from '@/lib/portal-session';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -37,6 +38,13 @@ function LoginForm() {
       ? rawRedirect
       : '/select';
   const redirectParam = searchParams.get('redirect');
+  // Contexto apoderado: llegan enlaces con ?contexto=apoderado o con
+  // ?redirect=/portal-apoderado/* (marcadores viejos del portal). El login
+  // propio vive en /portal-apoderado/login; este es el respaldo con copy que
+  // sí le corresponde (el campo acepta correo, RUT o nombre y apellido).
+  const contextoApoderado =
+    searchParams.get('contexto') === 'apoderado' ||
+    (redirectParam?.startsWith('/portal-apoderado') ?? false);
   // La sesión fue invalidada por el servidor (token caducado o JWT_SECRET rotado):
   // AuthWatcher limpia el token y redirige aquí con este flag.
   const sessionExpired = searchParams.get('session') === 'expired';
@@ -98,13 +106,17 @@ function LoginForm() {
       const res = await fetch('/api/auth/login-unified', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, recordar: remember }),
       });
 
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        setError(data.error?.message || t('invalidCredentials'));
+        // El middleware responde { error: string } y las rutas { error: { message } }.
+        setError(
+          (typeof data.error === 'string' ? data.error : data.error?.message) ||
+            t('invalidCredentials')
+        );
         setLoading(false);
         return;
       }
@@ -112,16 +124,15 @@ function LoginForm() {
       const tokenType = data.data.tokenType || data.data.user?.role_type || data.data.user?.tipo;
 
       if (tokenType === 'apoderado') {
-        const maxAge = remember ? 8 * 60 * 60 : 8 * 60 * 60;
-        document.cookie = `portal_token=${data.data.token}; path=/; max-age=${maxAge}; SameSite=Lax`;
+        // Cookie + JWT con la misma duración: 8h o 30 días según "recordarme".
+        fijarSesionPortal(data.data.token, 'apoderado', remember);
         localStorage.setItem('yellow_last_access', new Date().toISOString());
         window.location.href = data.data.redirectTo || '/portal-apoderado/dashboard';
         return;
       }
 
       if (tokenType === 'profesor') {
-        const maxAge = remember ? 8 * 60 * 60 : 8 * 60 * 60;
-        document.cookie = `portal_profesor_token=${data.data.token}; path=/; max-age=${maxAge}; SameSite=Lax`;
+        fijarSesionPortal(data.data.token, 'profesor', remember);
         localStorage.setItem('yellow_last_access', new Date().toISOString());
         window.location.href = data.data.redirectTo || '/portal-profesor/dashboard';
         return;
@@ -171,10 +182,12 @@ function LoginForm() {
           {/* Title */}
           <motion.div variants={itemVariants} className="mb-10">
             <h1 className="mb-4 text-[40px] font-bold leading-[1.05] tracking-tight text-ink sm:text-[48px]">
-              {t('welcomeBack')}
+              {contextoApoderado ? 'Portal de Apoderados' : t('welcomeBack')}
             </h1>
             <p className="text-[15px] text-slate-text text-balance">
-              {t('loginSubtitle')}
+              {contextoApoderado
+                ? 'Consulta las notas, asistencia y pagos de tus hijos.'
+                : t('loginSubtitle')}
             </p>
           </motion.div>
 
@@ -203,20 +216,24 @@ function LoginForm() {
           )}
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-            {/* Email */}
+            {/* Email / identificador */}
             <motion.div variants={itemVariants} className="flex flex-col gap-2">
               <label htmlFor="email" className="text-[14px] font-medium text-ink">
-                {t('email')}
+                {contextoApoderado ? 'Correo, RUT o nombre y apellido' : t('email')}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-iron" />
                 <input
                   id="email"
-                  type="email"
+                  type={contextoApoderado ? 'text' : 'email'}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@yellow-erp.cl"
-                  autoComplete="email"
+                  placeholder={
+                    contextoApoderado
+                      ? 'maria.gonzalez@correo.cl, 12.345.678-9 o María González'
+                      : 'admin@yellow-erp.cl'
+                  }
+                  autoComplete={contextoApoderado ? 'username' : 'email'}
                   required
                   className="w-full rounded-md border border-mist bg-snow pl-10 pr-4 py-3 text-[14px] text-ink placeholder:text-iron focus:border-sunshine-dark focus:outline-none focus:ring-2 focus:ring-sunshine-dark/20 transition-colors"
                 />
@@ -262,15 +279,17 @@ function LoginForm() {
                   className="size-[18px] rounded border-mist text-sunshine-ink focus:ring-sunshine-dark focus:ring-2 transition-colors"
                 />
                 <label htmlFor="remember" className="text-[14px] text-ink cursor-pointer">
-                  {t('rememberMe')}
+                  {contextoApoderado ? 'Recordarme por 30 días' : t('rememberMe')}
                 </label>
               </div>
-              <Link
-                href="/es/forgot-password"
-                className="text-[14px] font-medium text-ink hover:text-sunshine-ink transition-colors"
-              >
-                {t('forgotPassword')}
-              </Link>
+              {!contextoApoderado && (
+                <Link
+                  href="/es/forgot-password"
+                  className="text-[14px] font-medium text-ink hover:text-sunshine-ink transition-colors"
+                >
+                  {t('forgotPassword')}
+                </Link>
+              )}
             </motion.div>
 
             {/* Sign in Button */}
@@ -292,10 +311,24 @@ function LoginForm() {
 
           {/* Footer */}
           <motion.div variants={itemVariants} className="mt-8 text-center text-[14px] text-slate-text">
-            {t('noAccount')}{' '}
-            <Link href="/es/register" className="font-semibold text-ink hover:text-sunshine-ink transition-colors">
-              {t('signUp')}
-            </Link>
+            {contextoApoderado ? (
+              <>
+                ¿Problemas para entrar? Contacta a la administración del colegio.{' '}
+                <Link
+                  href="/portal-apoderado/login"
+                  className="font-semibold text-ink hover:text-sunshine-ink transition-colors"
+                >
+                  Ir al login del portal
+                </Link>
+              </>
+            ) : (
+              <>
+                {t('noAccount')}{' '}
+                <Link href="/es/register" className="font-semibold text-ink hover:text-sunshine-ink transition-colors">
+                  {t('signUp')}
+                </Link>
+              </>
+            )}
           </motion.div>
         </motion.div>
       </div>

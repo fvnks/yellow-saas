@@ -31,7 +31,15 @@ export function extractPortalToken(request: NextRequest): string | null {
  * válidas o cuando el token no es de un apoderado.
  */
 export async function verifyPortalAuth(request: NextRequest): Promise<PortalSession | null> {
-  const token = extractPortalToken(request);
+  return verificarTokenPortal(extractPortalToken(request));
+}
+
+/**
+ * Valida un token de portal aislado (sin request). La usa `verifyPortalAuth`
+ * y el guard del layout del portal, para que ambos exigan exactamente lo
+ * mismo: firma válida y `tipo === 'apoderado'`.
+ */
+export async function verificarTokenPortal(token: string | null): Promise<PortalSession | null> {
   if (!token) return null;
 
   try {

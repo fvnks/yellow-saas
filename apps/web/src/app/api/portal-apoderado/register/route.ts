@@ -18,6 +18,14 @@ import {
  */
 const COMPANY_ID_DEFECTO = '135e7b20-adc4-43d2-a5b8-822521865f47';
 
+/**
+ * Auto-registro apagado en la Fase 1a del login de apoderados: las
+ * credenciales las genera el colegio desde Educación → Apoderados. El código
+ * de alta sigue intacto por si se reactiva (con código de activación);
+ * basta con volver a poner `true`.
+ */
+const REGISTRO_ACTIVO = false;
+
 /** Error de negocio: se responde con su estado (400) y se revierte la tx. */
 class ErrorPortal extends Error {
   status: number;
@@ -32,6 +40,13 @@ function esDuplicado(error: unknown): boolean {
 }
 
 export async function POST(request: NextRequest) {
+  if (!REGISTRO_ACTIVO) {
+    return NextResponse.json(
+      { error: 'El registro de apoderados está deshabilitado. El colegio te entrega tus credenciales de acceso.' },
+      { status: 410 }
+    );
+  }
+
   try {
     const body = await request.json().catch(() => null);
     if (!body || typeof body !== 'object') {
