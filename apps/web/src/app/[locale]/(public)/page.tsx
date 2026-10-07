@@ -166,9 +166,9 @@ export default function HomePage() {
 
  <main id="contenido" tabIndex={-1} className="focus:outline-none">
  {/* ─── 2. HERO ─── */}
-  <section className="relative pt-20 pb-16 lg:pt-24 lg:pb-20 overflow-hidden bg-slate-900">
-  <div className="absolute top-0 right-0 w-[560px] h-96 rounded-full bg-gradient-to-br from-yellow-400/20 to-amber-500/10 blur-[120px] pointer-events-none" />
-  <div className="absolute bottom-0 left-0 w-[400px] h-72 rounded-full bg-sky-500/10 blur-[100px] pointer-events-none" />
+  <section className="relative pt-20 pb-16 lg:pt-24 lg:pb-20 overflow-hidden bg-snow">
+  <div className="absolute top-0 right-0 w-[560px] h-96 rounded-full bg-gradient-to-br from-sunshine/25 to-amber-500/10 blur-[120px] pointer-events-none" />
+  <div className="absolute bottom-0 left-0 w-[400px] h-72 rounded-full bg-sky-500/8 blur-[100px] pointer-events-none" />
   <div className="max-w-[1200px] mx-auto px-4 sm:px-6 relative">
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
  {/* Left: Copy */}
@@ -187,7 +187,7 @@ export default function HomePage() {
  initial={reduce ? false : { opacity: 0, y: 14 }}
  animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
  transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0.04 }}
- className="text-4xl sm:text-5xl lg:text-[4rem] font-light text-white leading-[1.05] tracking-[-0.04em] mb-5"
+ className="text-4xl sm:text-5xl lg:text-[4rem] font-light leading-[1.05] tracking-[-0.04em] mb-5 bg-gradient-to-r from-sunshine via-amber-400 to-amber-500 bg-clip-text text-transparent"
  >
  El ERP que transforma tu PyME en Chile
  <br />
@@ -218,14 +218,24 @@ Comenzar prueba gratis
 <ArrowRight className="w-4 h-4 text-slate-text" />
 </SiteLiquidButton>
  </motion.div>
+        </div>
 
- {/* Live trust counters */}
+ {/* Right: Interactive DTE Pipeline */}
  <motion.div
- initial={reduce ? false : { opacity: 0, y: 14 }}
- animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
- transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0.16 }}
- className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3"
+  id="demo"
+ initial={reduce ? false : { opacity: 0, x: 32, scale: 0.94 }}
+ animate={reduce ? { opacity: 1 } : { opacity: 1, x: 0, scale: 1 }}
+ transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0.1 }}
  >
+ <InteractiveDTEPipeline />
+ </motion.div>
+ </div>
+ </div>
+ </section>
+
+ {/* ─── 2.5. TRUST STRIP ─── */}
+ <section className="py-6 bg-snow border-y border-mist">
+ <div className="max-w-[1200px] mx-auto px-4 sm:px-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-3">
  <div className="flex items-center gap-2">
  <Shield className="w-4 h-4 text-sunshine-ink" />
  <span className="text-xs font-semibold text-ink">DTEs emitidos al SII</span>
@@ -239,19 +249,6 @@ Comenzar prueba gratis
  <Globe className="w-4 h-4 text-sky-accent" />
  <span className="text-xs font-semibold text-ink">Empresas activas</span>
  <span className="text-base font-bold text-ink font-mono">250+</span><span className="text-[10px] text-slate-text opacity-70 ml-1">*dato estimado</span></div>
- </motion.div>
- </div>
-
- {/* Right: Interactive DTE Pipeline */}
- <motion.div
-  id="demo"
- initial={reduce ? false : { opacity: 0, x: 32, scale: 0.94 }}
- animate={reduce ? { opacity: 1 } : { opacity: 1, x: 0, scale: 1 }}
- transition={{ type: 'spring', damping: 20, stiffness: 180, mass: 0.9, delay: 0.1 }}
- >
- <InteractiveDTEPipeline />
- </motion.div>
- </div>
  </div>
  </section>
 
